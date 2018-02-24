@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace dotnet_cpnucleo_pages.Repository.Sistema
+{
+    public class SistemaRepository : IRepository<SistemaItem>
+    {
+        private readonly SistemaContext _context;
+
+        public SistemaRepository(SistemaContext context)
+        {
+            _context = context;
+        }        
+
+        public async Task Incluir(SistemaItem sistema)
+        {
+            sistema.DataInclusao = DateTime.Now;
+            
+            _context.Sistemas.Add(sistema);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Alterar(SistemaItem sistema)
+        {
+            var SistemaItem = _context.Sistemas.Find(sistema.IdSistema);
+            SistemaItem.Nome = sistema.Nome;
+            SistemaItem.Descricao = sistema.Descricao;
+
+            SistemaItem.DataAlteracao = DateTime.Now;
+
+            _context.Sistemas.Update(SistemaItem);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<SistemaItem> Consultar(int idSistema)
+        {
+            return await _context.Sistemas
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.IdSistema == idSistema);
+        }
+
+        public async Task<IList<SistemaItem>> Listar()
+        {
+            return await _context.Sistemas
+                .AsNoTracking()
+                .OrderBy(y => y.DataInclusao)
+                .ToListAsync();
+        }
+
+        public async Task Remover(SistemaItem sistema)
+        {    
+            var sistemaItem = _context.Sistemas.Find(sistema.IdSistema);            
+
+            _context.Sistemas.Remove(sistemaItem);
+            await _context.SaveChangesAsync();
+        }
+    }
+}

@@ -1,0 +1,46 @@
+﻿using System.Threading.Tasks;
+using dotnet_cpnucleo_pages.Repository.Projeto;
+using Microsoft.AspNetCore.Mvc;
+using dotnet_cpnucleo_pages.Repository.Sistema;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
+using dotnet_cpnucleo_pages.Repository;
+
+namespace dotnet_cpnucleo_pages.Pages.Projeto
+{
+    [Authorize]
+    public class RemoverModel : PageModel
+    {
+        private readonly IRepository<ProjetoItem> _projetoRepository;
+
+        private readonly IRepository<SistemaItem> _sistemaRepository;
+
+        public RemoverModel(IRepository<ProjetoItem> projetoRepository, IRepository<SistemaItem> sistemaRepository)
+        {
+            _projetoRepository = projetoRepository;
+            _sistemaRepository = sistemaRepository;
+        }
+
+        [BindProperty]
+        public ProjetoItem Projeto { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int idProjeto)
+        {
+            Projeto = await _projetoRepository.Consultar(idProjeto);
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(ProjetoItem projeto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            await _projetoRepository.Remover(projeto);
+
+            return RedirectToPage("Listar");
+        }
+    }
+}

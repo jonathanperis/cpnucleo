@@ -1,0 +1,115 @@
+﻿@page
+@model dotnet_cpnucleo_pages.Pages.LoginModel
+@inject IOptions<ApplicationConfigurations> OptionsApplicationConfiguration
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewData["Title"] - @OptionsApplicationConfiguration.Value.NomeSistema</title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="~/css/animate.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="~/manifest.json">
+
+    <style type="text/css">
+        .middle-box h1 {
+            font-size: 145px;
+        }
+
+        .logo-name {
+            letter-spacing: -5px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">@OptionsApplicationConfiguration.Value.NomeSistema </h1>
+
+            </div>
+            <h3>Bem vindo ao @OptionsApplicationConfiguration.Value.NomeSistema!</h3>
+            <form asp-page="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="m-t" role="form">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                }
+                <div class="form-group">
+                    <input type="text" class="form-control" asp-for="Login.Usuario" placeholder="@Html.DisplayNameFor(x => x.Login.Usuario)">
+                    <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Login.Usuario)</span>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" asp-for="Login.Senha" placeholder="@Html.DisplayNameFor(x => x.Login.Senha)">
+                    <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Login.Senha)</span>
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <p style="text-align: left;">Fazendo uma visita? utilize as seguintes credenciais:</p>
+                    <br>
+                    <ul style="padding-left: 15px;">
+                        <li style="text-align: left;">login: "usuario.teste"</li>
+                        <li style="text-align: left;">senha: "12345678"</li>
+                    </ul>
+                </div>
+            </form>
+            <p class="m-t"> <small><strong>Copyright</strong> &copy; @DateTime.Now.Year @OptionsApplicationConfiguration.Value.Copyright</small> </p>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="~/js/jquery-3.1.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <!-- Ajax Unobtrusive -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        (function ($) {
+            var defaultOptions = {
+                validClass: 'has-success',
+                errorClass: 'has-error',
+                highlight: function (element, errorClass, validClass) {
+                    $(element).closest(".form-group")
+                        .removeClass(validClass)
+                        .addClass('has-error');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).closest(".form-group")
+                        .removeClass('has-error')
+                        .addClass(validClass);
+                }
+            };
+
+            $.validator.setDefaults(defaultOptions);
+
+            $.validator.unobtrusive.options = {
+                errorClass: defaultOptions.errorClass,
+                validClass: defaultOptions.validClass,
+            };
+        })(jQuery);
+    </script>
+
+</body>
+
+</html>

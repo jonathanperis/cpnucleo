@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
+{
+    public class TipoTarefaRepository : IRepository<TipoTarefaItem>
+    {
+        private readonly TipoTarefaContext _context;
+
+        public TipoTarefaRepository(TipoTarefaContext context)
+        {
+            _context = context;
+        }        
+
+        public async Task Incluir(TipoTarefaItem tipoTarefa)
+        {
+            tipoTarefa.DataInclusao = DateTime.Now;
+            
+            _context.TipoTarefas.Add(tipoTarefa);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Alterar(TipoTarefaItem tipoTarefa)
+        {
+            var TipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);
+            TipoTarefaItem.Nome = tipoTarefa.Nome;
+
+            TipoTarefaItem.DataAlteracao = DateTime.Now;
+
+            _context.TipoTarefas.Update(TipoTarefaItem);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<TipoTarefaItem> Consultar(int idTipoTarefa)
+        {
+            return await _context.TipoTarefas
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.IdTipoTarefa == idTipoTarefa);
+        }
+
+        public async Task<IList<TipoTarefaItem>> Listar()
+        {
+            return await _context.TipoTarefas
+                .AsNoTracking()
+                .OrderBy(y => y.DataInclusao)
+                .ToListAsync();
+        }
+
+        public async Task Remover(TipoTarefaItem tipoTarefa)
+        {    
+            var TipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);            
+
+            _context.TipoTarefas.Remove(TipoTarefaItem);
+            await _context.SaveChangesAsync();
+        }
+    }
+}
