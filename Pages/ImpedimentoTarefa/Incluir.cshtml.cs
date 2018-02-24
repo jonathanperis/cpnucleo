@@ -13,19 +13,19 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IImpedimentoTarefaRepository _ImpedimentoTarefaRepository;
+        private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        private readonly IRepository<ImpedimentoItem> _ImpedimentoRepository;
+        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
 
-        private readonly ITarefaRepository _TarefaRepository;
+        private readonly ITarefaRepository _tarefaRepository;
 
-        public IncluirModel(IImpedimentoTarefaRepository ImpedimentoTarefaRepository,
-                            IRepository<ImpedimentoItem> ImpedimentoRepository,
-                            ITarefaRepository TarefaRepository)
+        public IncluirModel(IImpedimentoTarefaRepository impedimentoTarefaRepository,
+                            IRepository<ImpedimentoItem> impedimentoRepository,
+                            ITarefaRepository tarefaRepository)
         {
-            _ImpedimentoTarefaRepository = ImpedimentoTarefaRepository;
-            _ImpedimentoRepository = ImpedimentoRepository;
-            _TarefaRepository = TarefaRepository;
+            _impedimentoTarefaRepository = impedimentoTarefaRepository;
+            _impedimentoRepository = impedimentoRepository;
+            _tarefaRepository = tarefaRepository;
         }
 
         [BindProperty]
@@ -37,9 +37,9 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Tarefa = await _TarefaRepository.Consultar(idTarefa);
+            Tarefa = await _tarefaRepository.Consultar(idTarefa);
 
-            SelectImpedimentos = new SelectList(await _ImpedimentoRepository.Listar(), "IdImpedimento", "Nome");
+            SelectImpedimentos = new SelectList(await _impedimentoRepository.Listar(), "IdImpedimento", "Nome");
 
             return Page();
         }
@@ -48,12 +48,12 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectImpedimentos = new SelectList(await _ImpedimentoRepository.Listar(), "IdImpedimento", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoRepository.Listar(), "IdImpedimento", "Nome");
 
                 return Page();
             }
 
-            await _ImpedimentoTarefaRepository.Incluir(impedimentoTarefa);
+            await _impedimentoTarefaRepository.Incluir(impedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = impedimentoTarefa.IdTarefa });
         }

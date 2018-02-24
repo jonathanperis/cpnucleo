@@ -28,23 +28,23 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
             _context.Apontamentos.Add(apontamento);
             await _context.SaveChangesAsync();
 
-            var TarefaItem = await _tarefaRepository.Consultar(apontamento.IdTarefa);
-            TarefaItem.PercentualConcluido = apontamento.PercentualConcluido;
+            var tarefaItem = await _tarefaRepository.Consultar(apontamento.IdTarefa);
+            tarefaItem.PercentualConcluido = apontamento.PercentualConcluido;
 
-            await _tarefaRepository.Alterar(TarefaItem);            
+            await _tarefaRepository.Alterar(tarefaItem);            
         }
 
         public async Task Alterar(ApontamentoItem apontamento)
         {
-            var ApontamentoItem = _context.Apontamentos.Find(apontamento.IdApontamento);
-            ApontamentoItem.Descricao = apontamento.Descricao;
-            ApontamentoItem.DataApontamento = apontamento.DataApontamento;
-            ApontamentoItem.QtdHoras = apontamento.QtdHoras;
-            ApontamentoItem.PercentualConcluido = apontamento.PercentualConcluido;
+            var apontamentoItem = _context.Apontamentos.Find(apontamento.IdApontamento);
+            apontamentoItem.Descricao = apontamento.Descricao;
+            apontamentoItem.DataApontamento = apontamento.DataApontamento;
+            apontamentoItem.QtdHoras = apontamento.QtdHoras;
+            apontamentoItem.PercentualConcluido = apontamento.PercentualConcluido;
 
-            ApontamentoItem.DataAlteracao = DateTime.Now;
+            apontamentoItem.DataAlteracao = DateTime.Now;
 
-            _context.Apontamentos.Update(ApontamentoItem);
+            _context.Apontamentos.Update(apontamentoItem);
             await _context.SaveChangesAsync();
         }
 
@@ -65,11 +65,11 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
                 .ToListAsync();
         }  
 
-        public async Task Remover(ApontamentoItem Apontamento)
+        public async Task Remover(ApontamentoItem apontamento)
         {    
-            var ApontamentoItem = _context.Apontamentos.Find(Apontamento.IdApontamento);            
+            var apontamentoItem = _context.Apontamentos.Find(apontamento.IdApontamento);            
 
-            _context.Apontamentos.Remove(ApontamentoItem);
+            _context.Apontamentos.Remove(apontamentoItem);
             await _context.SaveChangesAsync();
         }
 
@@ -96,7 +96,9 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
 
             foreach (var apontamento in listaApontamentos)
             {
-                apontamento.DiaSemana = string.Format("Semana {0}", apontamento.DataApontamento.Value.GetWeekOfMonth());
+                if (apontamento.DataApontamento != null)
+                    apontamento.DiaSemana =
+                        string.Format("Semana {0}", apontamento.DataApontamento.Value.GetWeekOfMonth());
             } 
 
             return listaApontamentos;

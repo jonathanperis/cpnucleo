@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRecursoRepository _recursoRepository;
 
-        public RemoverModel(IRecursoRepository RecursoRepository)
+        public RemoverModel(IRecursoRepository recursoRepository)
         {
-            _RecursoRepository = RecursoRepository;
+            _recursoRepository = recursoRepository;
         }
 
         [BindProperty]
@@ -21,14 +21,14 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync(int idRecurso)
         {
-            Recurso = await _RecursoRepository.Consultar(idRecurso);
+            Recurso = await _recursoRepository.Consultar(idRecurso);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(RecursoItem recurso)
         {
-            await _RecursoRepository.Remover(recurso);
+            await _recursoRepository.Remover(recurso);
 
             return RedirectToPage("Listar");
         }

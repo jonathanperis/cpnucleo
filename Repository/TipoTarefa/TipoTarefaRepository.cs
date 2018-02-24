@@ -25,12 +25,12 @@ namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
 
         public async Task Alterar(TipoTarefaItem tipoTarefa)
         {
-            var TipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);
-            TipoTarefaItem.Nome = tipoTarefa.Nome;
+            var tipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);
+            tipoTarefaItem.Nome = tipoTarefa.Nome;
 
-            TipoTarefaItem.DataAlteracao = DateTime.Now;
+            tipoTarefaItem.DataAlteracao = DateTime.Now;
 
-            _context.TipoTarefas.Update(TipoTarefaItem);
+            _context.TipoTarefas.Update(tipoTarefaItem);
             await _context.SaveChangesAsync();
         }
 
@@ -51,9 +51,9 @@ namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
 
         public async Task Remover(TipoTarefaItem tipoTarefa)
         {    
-            var TipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);            
+            var tipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);            
 
-            _context.TipoTarefas.Remove(TipoTarefaItem);
+            _context.TipoTarefas.Remove(tipoTarefaItem);
             await _context.SaveChangesAsync();
         }
     }

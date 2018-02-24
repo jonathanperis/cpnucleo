@@ -11,11 +11,11 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IRepository<ImpedimentoItem> _ImpedimentoRepository;
+        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
 
-        public ListarModel(IRepository<ImpedimentoItem> ImpedimentoRepository)
+        public ListarModel(IRepository<ImpedimentoItem> impedimentoRepository)
         {
-            _ImpedimentoRepository = ImpedimentoRepository;
+            _impedimentoRepository = impedimentoRepository;
         }
 
         [BindProperty]
@@ -26,7 +26,7 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _ImpedimentoRepository.Listar();
+            Lista = await _impedimentoRepository.Listar();
 
             return Page();
         }

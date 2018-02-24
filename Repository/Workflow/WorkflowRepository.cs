@@ -25,13 +25,13 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
 
         public async Task Alterar(WorkflowItem workflow)
         {
-            var WorkflowItem = _context.Workflows.Find(workflow.IdWorkflow);
-            WorkflowItem.Nome = workflow.Nome;
-            WorkflowItem.Ordem = workflow.Ordem;
+            var workflowItem = _context.Workflows.Find(workflow.IdWorkflow);
+            workflowItem.Nome = workflow.Nome;
+            workflowItem.Ordem = workflow.Ordem;
 
-            WorkflowItem.DataAlteracao = DateTime.Now;
+            workflowItem.DataAlteracao = DateTime.Now;
 
-            _context.Workflows.Update(WorkflowItem);
+            _context.Workflows.Update(workflowItem);
             await _context.SaveChangesAsync();
         }
 
@@ -52,17 +52,10 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
 
         public async Task Remover(WorkflowItem workflow)
         {    
-            var WorkflowItem = _context.Workflows.Find(workflow.IdWorkflow);            
+            var workflowItem = _context.Workflows.Find(workflow.IdWorkflow);            
 
-            _context.Workflows.Remove(WorkflowItem);
+            _context.Workflows.Remove(workflowItem);
             await _context.SaveChangesAsync();
-        }
-
-        public int VerificarQuantidadeItensCadastrados()
-        {
-            return _context.Workflows
-                .AsNoTracking()
-                .Count();
         }
 
         public async Task<IList<WorkflowItem>> ListarTarefasWorkflow()

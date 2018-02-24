@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IImpedimentoTarefaRepository _ImpedimentoTarefaRepository;
+        private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        public ListarModel(IImpedimentoTarefaRepository ImpedimentoTarefaRepository)
+        public ListarModel(IImpedimentoTarefaRepository impedimentoTarefaRepository)
         {
-            _ImpedimentoTarefaRepository = ImpedimentoTarefaRepository;
+            _impedimentoTarefaRepository = impedimentoTarefaRepository;
         }
 
         [BindProperty]
@@ -25,7 +25,7 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Lista = await _ImpedimentoTarefaRepository.ListarPoridTarefa(idTarefa);
+            Lista = await _impedimentoTarefaRepository.ListarPoridTarefa(idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 

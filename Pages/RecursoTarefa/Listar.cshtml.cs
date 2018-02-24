@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IRecursoTarefaRepository _RecursoTarefaRepository;
+        private readonly IRecursoTarefaRepository _recursoTarefaRepository;
 
-        public ListarModel(IRecursoTarefaRepository RecursoTarefaRepository)
+        public ListarModel(IRecursoTarefaRepository recursoTarefaRepository)
         {
-            _RecursoTarefaRepository = RecursoTarefaRepository;
+            _recursoTarefaRepository = recursoTarefaRepository;
         }
 
         [BindProperty]
@@ -25,7 +25,7 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Lista = await _RecursoTarefaRepository.ListarPoridTarefa(idTarefa);
+            Lista = await _recursoTarefaRepository.ListarPoridTarefa(idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 

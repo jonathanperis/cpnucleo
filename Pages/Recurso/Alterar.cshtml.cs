@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRecursoRepository _recursoRepository;
 
-        public AlterarModel(IRecursoRepository RecursoRepository)
+        public AlterarModel(IRecursoRepository recursoRepository)
         {
-            _RecursoRepository = RecursoRepository;
+            _recursoRepository = recursoRepository;
         }
 
         [BindProperty]
@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync(int idRecurso)
         {
-            Recurso = await _RecursoRepository.Consultar(idRecurso);
+            Recurso = await _recursoRepository.Consultar(idRecurso);
 
             return Page();
         }
@@ -33,7 +33,7 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
                 return Page();
             }
 
-            await _RecursoRepository.Alterar(recurso);
+            await _recursoRepository.Alterar(recurso);
 
             return RedirectToPage("Listar");
         }

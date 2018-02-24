@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using dotnet_cpnucleo_pages.Authentication;
 using Microsoft.AspNetCore.Authentication;
-using System.ComponentModel.DataAnnotations;
+using dotnet_cpnucleo_pages.Repository.Login;
 using dotnet_cpnucleo_pages.Repository.Recurso;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -11,11 +11,11 @@ namespace dotnet_cpnucleo_pages.Pages
 {
     public class LoginModel : PageModel
     {
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRecursoRepository _recursoRepository;
 
-        public LoginModel(IRecursoRepository RecursoRepository)
+        public LoginModel(IRecursoRepository recursoRepository)
         {
-            _RecursoRepository = RecursoRepository;
+            _recursoRepository = recursoRepository;
         }
 
         [BindProperty]
@@ -40,7 +40,7 @@ namespace dotnet_cpnucleo_pages.Pages
                 return Page();
             }
 
-            var RecursoItem = _RecursoRepository.ValidarRecurso(login.Usuario, login.Senha, out bool valido);
+            var recursoItem = _recursoRepository.ValidarRecurso(login.Usuario, login.Senha, out bool valido);
 
             if (!valido)
             {
@@ -48,7 +48,7 @@ namespace dotnet_cpnucleo_pages.Pages
                 return Page();
             }
 
-            ClaimsPrincipal principal = ClaimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, RecursoItem.IdRecurso.ToString());
+            ClaimsPrincipal principal = ClaimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recursoItem.IdRecurso.ToString());
             await HttpContext.SignInAsync(principal);
 
             return RedirectToLocal(returnUrl);
@@ -65,18 +65,5 @@ namespace dotnet_cpnucleo_pages.Pages
                 return RedirectToPage("Apontamento");
             }
         }
-    }
-
-    public class LoginItem
-    {
-        public int IdRecurso { get; set; }
-
-        [Display(Name = "Login")]
-        [Required(ErrorMessage = "Necessário informar o {0}.")]
-        public string Usuario { get; set; }
-
-        [Display(Name = "Senha")]
-        [Required(ErrorMessage = "Necessário informar a {0}.")]
-        public string Senha { get; set; }
     }
 }

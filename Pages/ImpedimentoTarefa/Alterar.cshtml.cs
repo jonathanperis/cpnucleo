@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using dotnet_cpnucleo_pages.Repository.Impedimento;
@@ -13,19 +12,15 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IImpedimentoTarefaRepository _ImpedimentoTarefaRepository;
+        private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        private readonly IRepository<ImpedimentoItem> _ImpedimentoRepository;
+        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
 
-        private readonly ITarefaRepository _TarefaRepository;
-
-        public AlterarModel(IImpedimentoTarefaRepository ImpedimentoTarefaRepository,
-                                           IRepository<ImpedimentoItem> ImpedimentoRepository,
-                                           ITarefaRepository TarefaRepository)
+        public AlterarModel(IImpedimentoTarefaRepository impedimentoTarefaRepository,
+                                           IRepository<ImpedimentoItem> impedimentoRepository)
         {
-            _ImpedimentoTarefaRepository = ImpedimentoTarefaRepository;
-            _ImpedimentoRepository = ImpedimentoRepository;
-            _TarefaRepository = TarefaRepository;
+            _impedimentoTarefaRepository = impedimentoTarefaRepository;
+            _impedimentoRepository = impedimentoRepository;
         }
 
         [BindProperty]
@@ -35,8 +30,8 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync(int idImpedimentoTarefa)
         {
-            ImpedimentoTarefa = await _ImpedimentoTarefaRepository.Consultar(idImpedimentoTarefa);
-            SelectImpedimentos = new SelectList(await _ImpedimentoRepository.Listar(), "IdImpedimento", "Nome");
+            ImpedimentoTarefa = await _impedimentoTarefaRepository.Consultar(idImpedimentoTarefa);
+            SelectImpedimentos = new SelectList(await _impedimentoRepository.Listar(), "IdImpedimento", "Nome");
 
             return Page();
         }
@@ -45,12 +40,12 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectImpedimentos = new SelectList(await _ImpedimentoRepository.Listar(), "IdImpedimento", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoRepository.Listar(), "IdImpedimento", "Nome");
 
                 return Page();
             }
 
-            await _ImpedimentoTarefaRepository.Alterar(impedimentoTarefa);
+            await _impedimentoTarefaRepository.Alterar(impedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = impedimentoTarefa.IdTarefa });
         }

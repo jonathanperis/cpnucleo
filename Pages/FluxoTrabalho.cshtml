@@ -1,5 +1,5 @@
 ﻿@page
-@model dotnet_cpnucleo_pages.Pages.FluxoTrabalhoModel
+@model FluxoTrabalhoModel
 @{
     ViewData["Title"] = "Fluxo de Trabalho";
 }
@@ -13,21 +13,8 @@
     </style>
 }
 
-@section SignalR {
-    <script>
-        //let connection = new signalR.HubConnection('/fluxoTrabalho');
-
-        //connection.on('send', data => {
-        //    console.log(data);
-        //});
-
-        //connection.start()
-        //        .then(() => connection.invoke('send', 'Hello'));
-    </script>
-}
-
 <div class="row">
-    @if (Model != null)
+    @if (Model.Lista != null)
     {
         @Html.AntiForgeryToken()
 
@@ -651,7 +638,7 @@
 </div>
 
 @section Scripts {
-    @if (Model != null)
+    @if (Model.Lista != null)
     {
         foreach (var workflow in Model.Lista)
         {
@@ -733,4 +720,19 @@
             </script>
         }
     }
+}
+
+@section SignalR {
+    <script>
+        //var transport = signalR.TransportType.All;
+
+        var transport = signalR.TransportType.ServerSentEvents;
+        var connection = new signalR.HubConnection('/hubs/fluxoTrabalho', { transport: transport });
+
+        connection.on('send', data => {
+            console.log(data);
+        });
+
+        connection.start();
+    </script>
 }

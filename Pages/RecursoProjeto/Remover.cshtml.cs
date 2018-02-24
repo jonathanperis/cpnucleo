@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using dotnet_cpnucleo_pages.Repository.RecursoProjeto;
-using dotnet_cpnucleo_pages.Repository.Recurso;
 using Microsoft.AspNetCore.Authorization;
 using dotnet_cpnucleo_pages.Repository.Projeto;
 using dotnet_cpnucleo_pages.Repository;
@@ -12,19 +11,15 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IRecursoProjetoRepository _RecursoProjetoRepository;
+        private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRepository<ProjetoItem> _projetoRepository;
 
-        private readonly IRepository<ProjetoItem> _ProjetoRepository;
-
-        public RemoverModel(IRecursoProjetoRepository RecursoProjetoRepository,
-                                        IRecursoRepository RecursoRepository,
-                                        IRepository<ProjetoItem> ProjetoRepository)
+        public RemoverModel(IRecursoProjetoRepository recursoProjetoRepository,
+                                        IRepository<ProjetoItem> projetoRepository)
         {
-            _RecursoProjetoRepository = RecursoProjetoRepository;
-            _RecursoRepository = RecursoRepository;
-            _ProjetoRepository = ProjetoRepository;
+            _recursoProjetoRepository = recursoProjetoRepository;
+            _projetoRepository = projetoRepository;
         }
 
         [BindProperty]
@@ -32,7 +27,7 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync(int idRecursoProjeto)
         {
-            RecursoProjeto = await _RecursoProjetoRepository.Consultar(idRecursoProjeto);
+            RecursoProjeto = await _recursoProjetoRepository.Consultar(idRecursoProjeto);
 
             return Page();
         }
@@ -41,12 +36,12 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                recursoProjeto.Projeto = await _ProjetoRepository.Consultar(recursoProjeto.IdProjeto);
+                recursoProjeto.Projeto = await _projetoRepository.Consultar(recursoProjeto.IdProjeto);
 
                 return Page();
             }
 
-            await _RecursoProjetoRepository.Remover(recursoProjeto);
+            await _recursoProjetoRepository.Remover(recursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto = recursoProjeto.IdProjeto });
         }

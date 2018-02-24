@@ -13,19 +13,19 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IRecursoProjetoRepository _RecursoProjetoRepository;
+        private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRecursoRepository _recursoRepository;
 
-        private readonly IRepository<ProjetoItem> _ProjetoRepository;
+        private readonly IRepository<ProjetoItem> _projetoRepository;
 
-        public IncluirModel(IRecursoProjetoRepository RecursoProjetoRepository,
-                                        IRecursoRepository RecursoRepository,
-                                        IRepository<ProjetoItem> ProjetoRepository)
+        public IncluirModel(IRecursoProjetoRepository recursoProjetoRepository,
+                                        IRecursoRepository recursoRepository,
+                                        IRepository<ProjetoItem> projetoRepository)
         {
-            _RecursoProjetoRepository = RecursoProjetoRepository;
-            _RecursoRepository = RecursoRepository;
-            _ProjetoRepository = ProjetoRepository;
+            _recursoProjetoRepository = recursoProjetoRepository;
+            _recursoRepository = recursoRepository;
+            _projetoRepository = projetoRepository;
         }
 
         [BindProperty]
@@ -37,8 +37,8 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync(int idProjeto)
         {
-            Projeto = await _ProjetoRepository.Consultar(idProjeto);
-            SelectRecursos = new SelectList(await _RecursoRepository.Listar(), "IdRecurso", "Nome");
+            Projeto = await _projetoRepository.Consultar(idProjeto);
+            SelectRecursos = new SelectList(await _recursoRepository.Listar(), "IdRecurso", "Nome");
 
             return Page();
         }
@@ -47,13 +47,13 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _ProjetoRepository.Consultar(recursoProjeto.IdProjeto);
-                SelectRecursos = new SelectList(await _RecursoRepository.Listar(), "IdRecurso", "Nome");
+                Projeto = await _projetoRepository.Consultar(recursoProjeto.IdProjeto);
+                SelectRecursos = new SelectList(await _recursoRepository.Listar(), "IdRecurso", "Nome");
 
                 return Page();
             }
 
-            await _RecursoProjetoRepository.Incluir(recursoProjeto);
+            await _recursoProjetoRepository.Incluir(recursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto = recursoProjeto.IdProjeto });
         }

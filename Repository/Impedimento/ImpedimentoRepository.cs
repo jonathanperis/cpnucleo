@@ -25,12 +25,12 @@ namespace dotnet_cpnucleo_pages.Repository.Impedimento
 
         public async Task Alterar(ImpedimentoItem impedimento)
         {
-            var ImpedimentoItem = _context.Impedimentos.Find(impedimento.IdImpedimento);
-            ImpedimentoItem.Nome = impedimento.Nome;
+            var impedimentoItem = _context.Impedimentos.Find(impedimento.IdImpedimento);
+            impedimentoItem.Nome = impedimento.Nome;
 
-            ImpedimentoItem.DataAlteracao = DateTime.Now;
+            impedimentoItem.DataAlteracao = DateTime.Now;
 
-            _context.Impedimentos.Update(ImpedimentoItem);
+            _context.Impedimentos.Update(impedimentoItem);
             await _context.SaveChangesAsync();
         }
 
@@ -51,9 +51,9 @@ namespace dotnet_cpnucleo_pages.Repository.Impedimento
 
         public async Task Remover(ImpedimentoItem impedimento)
         {    
-            var ImpedimentoItem = _context.Impedimentos.Find(impedimento.IdImpedimento);            
+            var impedimentoItem = _context.Impedimentos.Find(impedimento.IdImpedimento);            
 
-            _context.Impedimentos.Remove(ImpedimentoItem);
+            _context.Impedimentos.Remove(impedimentoItem);
             await _context.SaveChangesAsync();
         }
     }

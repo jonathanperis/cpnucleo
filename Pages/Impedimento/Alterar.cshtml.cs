@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IRepository<ImpedimentoItem> _ImpedimentoRepository;
+        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
 
-        public AlterarModel(IRepository<ImpedimentoItem> ImpedimentoRepository)
+        public AlterarModel(IRepository<ImpedimentoItem> impedimentoRepository)
         {
-            _ImpedimentoRepository = ImpedimentoRepository;
+            _impedimentoRepository = impedimentoRepository;
         }
 
         [BindProperty]
@@ -22,7 +22,7 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
 
         public async Task<IActionResult> OnGetAsync(int idImpedimento)
         {
-            Impedimento = await _ImpedimentoRepository.Consultar(idImpedimento);
+            Impedimento = await _impedimentoRepository.Consultar(idImpedimento);
 
             return Page();
         }
@@ -34,7 +34,7 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
                 return Page();
             }
 
-            await _ImpedimentoRepository.Alterar(impedimento);
+            await _impedimentoRepository.Alterar(impedimento);
 
             return RedirectToPage("Listar");
         }

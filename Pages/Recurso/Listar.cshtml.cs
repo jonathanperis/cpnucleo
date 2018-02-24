@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
     [Authorize]    
     public class ListarModel : PageModel
     {
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRecursoRepository _recursoRepository;
 
-        public ListarModel(IRecursoRepository RecursoRepository)
+        public ListarModel(IRecursoRepository recursoRepository)
         {
-            _RecursoRepository = RecursoRepository;
+            _recursoRepository = recursoRepository;
         }
 
         [BindProperty]
@@ -25,7 +25,7 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _RecursoRepository.Listar();
+            Lista = await _recursoRepository.Listar();
 
             return Page();
         }

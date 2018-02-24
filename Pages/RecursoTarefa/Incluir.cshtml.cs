@@ -12,19 +12,19 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IRecursoTarefaRepository _RecursoTarefaRepository;
+        private readonly IRecursoTarefaRepository _recursoTarefaRepository;
 
-        private readonly IRecursoProjetoRepository _RecursoProjetoRepository;
+        private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        private readonly ITarefaRepository _TarefaRepository;
+        private readonly ITarefaRepository _tarefaRepository;
 
-        public IncluirModel(IRecursoTarefaRepository RecursoTarefaRepository,
-                                       IRecursoProjetoRepository RecursoProjetoRepository,
-                                       ITarefaRepository TarefaRepository)
+        public IncluirModel(IRecursoTarefaRepository recursoTarefaRepository,
+                                       IRecursoProjetoRepository recursoProjetoRepository,
+                                       ITarefaRepository tarefaRepository)
         {
-            _RecursoTarefaRepository = RecursoTarefaRepository;
-            _RecursoProjetoRepository = RecursoProjetoRepository;
-            _TarefaRepository = TarefaRepository;
+            _recursoTarefaRepository = recursoTarefaRepository;
+            _recursoProjetoRepository = recursoProjetoRepository;
+            _tarefaRepository = tarefaRepository;
         }
 
         [BindProperty]
@@ -36,9 +36,9 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Tarefa = await _TarefaRepository.Consultar(idTarefa);
+            Tarefa = await _tarefaRepository.Consultar(idTarefa);
 
-            SelectRecursos = new SelectList(await _RecursoProjetoRepository.ListarPoridProjeto(Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
+            SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
             return Page();
         }
@@ -47,13 +47,13 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
         {
             if (!ModelState.IsValid)
             {
-                recursoTarefa.Tarefa = await _TarefaRepository.Consultar(recursoTarefa.IdTarefa);
-                SelectRecursos = new SelectList(await _RecursoProjetoRepository.ListarPoridProjeto(recursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
+                recursoTarefa.Tarefa = await _tarefaRepository.Consultar(recursoTarefa.IdTarefa);
+                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(recursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
                 return Page();
             }
 
-            await _RecursoTarefaRepository.Incluir(recursoTarefa);
+            await _recursoTarefaRepository.Incluir(recursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = recursoTarefa.IdTarefa });
         }

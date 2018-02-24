@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using dotnet_cpnucleo_pages.Repository.Projeto;
 using Microsoft.AspNetCore.Mvc;
-using dotnet_cpnucleo_pages.Repository.Sistema;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
@@ -14,12 +13,9 @@ namespace dotnet_cpnucleo_pages.Pages.Projeto
     {
         private readonly IRepository<ProjetoItem> _projetoRepository;
 
-        private readonly IRepository<SistemaItem> _sistemaRepository;
-
-        public ListarModel(IRepository<ProjetoItem> projetoRepository, IRepository<SistemaItem> sistemaRepository)
+        public ListarModel(IRepository<ProjetoItem> projetoRepository)
         {
             _projetoRepository = projetoRepository;
-            _sistemaRepository = sistemaRepository;
         }
 
         [BindProperty]

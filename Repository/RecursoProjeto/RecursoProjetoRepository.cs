@@ -34,9 +34,9 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoProjeto
 
         public async Task Remover(RecursoProjetoItem recursoProjeto)
         {
-            var RecursoProjetoItem = _context.RecursoProjetos.Find(recursoProjeto.IdRecursoProjeto);
+            var recursoProjetoItem = _context.RecursoProjetos.Find(recursoProjeto.IdRecursoProjeto);
 
-            _context.RecursoProjetos.Remove(RecursoProjetoItem);
+            _context.RecursoProjetos.Remove(recursoProjetoItem);
             await _context.SaveChangesAsync();
         }
 

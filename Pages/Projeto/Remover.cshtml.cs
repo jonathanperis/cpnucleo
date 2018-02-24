@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using dotnet_cpnucleo_pages.Repository.Projeto;
 using Microsoft.AspNetCore.Mvc;
-using dotnet_cpnucleo_pages.Repository.Sistema;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using dotnet_cpnucleo_pages.Repository;
@@ -13,12 +12,9 @@ namespace dotnet_cpnucleo_pages.Pages.Projeto
     {
         private readonly IRepository<ProjetoItem> _projetoRepository;
 
-        private readonly IRepository<SistemaItem> _sistemaRepository;
-
-        public RemoverModel(IRepository<ProjetoItem> projetoRepository, IRepository<SistemaItem> sistemaRepository)
+        public RemoverModel(IRepository<ProjetoItem> projetoRepository)
         {
             _projetoRepository = projetoRepository;
-            _sistemaRepository = sistemaRepository;
         }
 
         [BindProperty]

@@ -6,7 +6,7 @@ namespace dotnet_cpnucleo_pages.Security
 {
     public static class CryptographyManager
     {
-        public static void CryptPBKDF2(string item, out string itemCriptografado, out string salt)
+        public static void CryptPbkdf2(string item, out string itemCriptografado, out string salt)
         {
             using (var deriveBytes = new Rfc2898DeriveBytes(item, 48))
             {
@@ -18,7 +18,7 @@ namespace dotnet_cpnucleo_pages.Security
             }
         }
 
-        public static bool VerifyPBKDF2(string item, string itemCriptografado, string salt)
+        public static bool VerifyPbkdf2(string item, string itemCriptografado, string salt)
         {
             byte[] saltBytes = Convert.FromBase64String(salt);
             byte[] itemBytes = Convert.FromBase64String(itemCriptografado);

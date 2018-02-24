@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IRepository<ImpedimentoItem> _ImpedimentoRepository;
+        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
 
-        public IncluirModel(IRepository<ImpedimentoItem> ImpedimentoRepository)
+        public IncluirModel(IRepository<ImpedimentoItem> impedimentoRepository)
         {
-            _ImpedimentoRepository = ImpedimentoRepository;
+            _impedimentoRepository = impedimentoRepository;
         }
 
         [BindProperty]
@@ -32,7 +32,7 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
                 return Page();
             }
 
-            await _ImpedimentoRepository.Incluir(impedimento);
+            await _impedimentoRepository.Incluir(impedimento);
 
             return RedirectToPage("Listar");
         }

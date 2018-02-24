@@ -25,13 +25,13 @@ namespace dotnet_cpnucleo_pages.Repository.Sistema
 
         public async Task Alterar(SistemaItem sistema)
         {
-            var SistemaItem = _context.Sistemas.Find(sistema.IdSistema);
-            SistemaItem.Nome = sistema.Nome;
-            SistemaItem.Descricao = sistema.Descricao;
+            var sistemaItem = _context.Sistemas.Find(sistema.IdSistema);
+            sistemaItem.Nome = sistema.Nome;
+            sistemaItem.Descricao = sistema.Descricao;
 
-            SistemaItem.DataAlteracao = DateTime.Now;
+            sistemaItem.DataAlteracao = DateTime.Now;
 
-            _context.Sistemas.Update(SistemaItem);
+            _context.Sistemas.Update(sistemaItem);
             await _context.SaveChangesAsync();
         }
 

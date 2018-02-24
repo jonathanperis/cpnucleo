@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IWorkflowRepository _WorkflowRepository;
+        private readonly IWorkflowRepository _workflowRepository;
 
-        public AlterarModel(IWorkflowRepository WorkflowRepository)
+        public AlterarModel(IWorkflowRepository workflowRepository)
         {
-            _WorkflowRepository = WorkflowRepository;
+            _workflowRepository = workflowRepository;
         }
 
         [BindProperty]
@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
 
         public async Task<IActionResult> OnGetAsync(int idWorkflow)
         {
-            Workflow = await _WorkflowRepository.Consultar(idWorkflow);
+            Workflow = await _workflowRepository.Consultar(idWorkflow);
 
             return Page();
         }
@@ -33,7 +33,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
                 return Page();
             }
 
-            await _WorkflowRepository.Alterar(workflow);
+            await _workflowRepository.Alterar(workflow);
 
             return RedirectToPage("Listar");
         }

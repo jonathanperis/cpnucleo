@@ -25,14 +25,14 @@ namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
 
         public async Task Alterar(ImpedimentoTarefaItem impedimentoTarefa)
         {
-            var ImpedimentoTarefaItem = _context.ImpedimentoTarefas.Find(impedimentoTarefa.IdImpedimentoTarefa);
-            ImpedimentoTarefaItem.Descricao = impedimentoTarefa.Descricao;
-            ImpedimentoTarefaItem.IdImpedimento = impedimentoTarefa.IdImpedimento;
-            ImpedimentoTarefaItem.Ativo = impedimentoTarefa.Ativo;            
+            var impedimentoTarefaItem = _context.ImpedimentoTarefas.Find(impedimentoTarefa.IdImpedimentoTarefa);
+            impedimentoTarefaItem.Descricao = impedimentoTarefa.Descricao;
+            impedimentoTarefaItem.IdImpedimento = impedimentoTarefa.IdImpedimento;
+            impedimentoTarefaItem.Ativo = impedimentoTarefa.Ativo;            
 
-            ImpedimentoTarefaItem.DataAlteracao = DateTime.Now;
+            impedimentoTarefaItem.DataAlteracao = DateTime.Now;
 
-            _context.ImpedimentoTarefas.Update(ImpedimentoTarefaItem);
+            _context.ImpedimentoTarefas.Update(impedimentoTarefaItem);
             await _context.SaveChangesAsync();
         }
 
@@ -47,9 +47,9 @@ namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
 
         public async Task Remover(ImpedimentoTarefaItem impedimentoTarefa)
         {    
-            var ImpedimentoTarefaItem = _context.ImpedimentoTarefas.Find(impedimentoTarefa.IdImpedimentoTarefa);            
+            var impedimentoTarefaItem = _context.ImpedimentoTarefas.Find(impedimentoTarefa.IdImpedimentoTarefa);            
 
-            _context.ImpedimentoTarefas.Remove(ImpedimentoTarefaItem);
+            _context.ImpedimentoTarefas.Remove(impedimentoTarefaItem);
             await _context.SaveChangesAsync();
         }
 

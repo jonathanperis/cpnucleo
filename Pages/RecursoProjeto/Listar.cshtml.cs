@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IRecursoProjetoRepository _RecursoProjetoRepository;
+        private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        public ListarModel(IRecursoProjetoRepository RecursoProjetoRepository)
+        public ListarModel(IRecursoProjetoRepository recursoProjetoRepository)
         {
-            _RecursoProjetoRepository = RecursoProjetoRepository;
+            _recursoProjetoRepository = recursoProjetoRepository;
         }
 
         [BindProperty]
@@ -25,7 +25,7 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync(int idProjeto)
         {
-            Lista = await _RecursoProjetoRepository.ListarPoridProjeto(idProjeto);
+            Lista = await _recursoProjetoRepository.ListarPoridProjeto(idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 

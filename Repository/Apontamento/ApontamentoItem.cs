@@ -56,11 +56,7 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
         [Required]
         [Display(Name = "Recurso")]      
         [Column("REC_ID", TypeName = "int")]
-        public int IdRecurso { get; set; }      
-
-        [NotMapped]
-        [Display(Name = "Mês Referência")]      
-        public int MesReferencia { get; set; }    
+        public int IdRecurso { get; set; }
 
         [NotMapped]
         [Display(Name = "Semana")]      

@@ -30,13 +30,13 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
 
         public async Task Alterar(RecursoTarefaItem recursoTarefa)
         {
-            var RecursoTarefaItem = _context.RecursoTarefas.Find(recursoTarefa.IdRecursoTarefa);
-            RecursoTarefaItem.IdRecurso = recursoTarefa.IdRecurso;
-            RecursoTarefaItem.PercentualTarefa = recursoTarefa.PercentualTarefa;
+            var recursoTarefaItem = _context.RecursoTarefas.Find(recursoTarefa.IdRecursoTarefa);
+            recursoTarefaItem.IdRecurso = recursoTarefa.IdRecurso;
+            recursoTarefaItem.PercentualTarefa = recursoTarefa.PercentualTarefa;
 
-            RecursoTarefaItem.DataAlteracao = DateTime.Now;
+            recursoTarefaItem.DataAlteracao = DateTime.Now;
 
-            _context.RecursoTarefas.Update(RecursoTarefaItem);
+            _context.RecursoTarefas.Update(recursoTarefaItem);
             await _context.SaveChangesAsync();
         }
 
@@ -62,9 +62,9 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
 
         public async Task Remover(RecursoTarefaItem recursoTarefa)
         {
-            var RecursoTarefaItem = _context.RecursoTarefas.Find(recursoTarefa.IdRecursoTarefa);
+            var recursoTarefaItem = _context.RecursoTarefas.Find(recursoTarefa.IdRecursoTarefa);
 
-            _context.RecursoTarefas.Remove(RecursoTarefaItem);
+            _context.RecursoTarefas.Remove(recursoTarefaItem);
             await _context.SaveChangesAsync();
         }
 
@@ -89,8 +89,11 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
             {
                 item.HorasUtilizadas = await _apontamentoRepository.ObterTotalHorasPoridRecurso(item.IdRecurso, item.IdTarefa);
 
-                double horasFracionadas = ((item.Tarefa.QtdHoras / 100.0) * item.PercentualTarefa.Value);               
-                item.HorasDisponiveis = (int)(horasFracionadas - item.HorasUtilizadas);
+                if (item.PercentualTarefa != null)
+                {
+                    double horasFracionadas = ((item.Tarefa.QtdHoras / 100.0) * item.PercentualTarefa.Value);               
+                    item.HorasDisponiveis = (int)(horasFracionadas - item.HorasUtilizadas);
+                }
             }     
 
             return listaRecursoTarefa;           

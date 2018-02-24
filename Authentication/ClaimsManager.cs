@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace dotnet_cpnucleo_pages.Authentication
 {
-    public class ClaimsManager
+    public static class ClaimsManager
     {
         public static ClaimsPrincipal CreateClaimsPrincipal(string type, string value)
         {
@@ -16,7 +16,7 @@ namespace dotnet_cpnucleo_pages.Authentication
         
         public static string ReadClaimsPrincipal(ClaimsPrincipal principal, string type)
         {          
-            return principal.Claims.SingleOrDefault(x => x.Type == type).Value;
+            return principal.Claims.SingleOrDefault(x => x.Type == type)?.Value;
         }
 
         private static IEnumerable<Claim> CreateClaims(string type, string value)

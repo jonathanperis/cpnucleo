@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IWorkflowRepository _WorkflowRepository;
+        private readonly IWorkflowRepository _workflowRepository;
 
-        public IncluirModel(IWorkflowRepository WorkflowRepository)
+        public IncluirModel(IWorkflowRepository workflowRepository)
         {
-            _WorkflowRepository = WorkflowRepository;
+            _workflowRepository = workflowRepository;
         }
 
         [BindProperty]
@@ -31,7 +31,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
                 return Page();
             }
 
-            await _WorkflowRepository.Incluir(workflow);
+            await _workflowRepository.Incluir(workflow);
 
             return RedirectToPage("Listar");
         }

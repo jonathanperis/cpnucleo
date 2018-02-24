@@ -5,7 +5,7 @@ namespace dotnet_cpnucleo_pages.Extension
 {
     public static class DateTimeExtensions 
     {
-        private static GregorianCalendar _gc = new GregorianCalendar();
+        private static readonly GregorianCalendar Gc = new GregorianCalendar();
         
         public static int GetWeekOfMonth(this DateTime input) 
         {
@@ -15,7 +15,7 @@ namespace dotnet_cpnucleo_pages.Extension
 
         private static int GetWeekOfYear(this DateTime input) 
         {
-            return _gc.GetWeekOfYear(input, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
+            return Gc.GetWeekOfYear(input, CalendarWeekRule.FirstDay, DayOfWeek.Sunday);
         }
     }    
 }

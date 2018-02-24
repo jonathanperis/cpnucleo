@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IWorkflowRepository _WorkflowRepository;
+        private readonly IWorkflowRepository _workflowRepository;
 
-        public RemoverModel(IWorkflowRepository WorkflowRepository)
+        public RemoverModel(IWorkflowRepository workflowRepository)
         {
-            _WorkflowRepository = WorkflowRepository;
+            _workflowRepository = workflowRepository;
         }
 
         [BindProperty]
@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
 
         public async Task<IActionResult> OnGetAsync(int idWorkflow)
         {
-            Workflow = await _WorkflowRepository.Consultar(idWorkflow);
+            Workflow = await _workflowRepository.Consultar(idWorkflow);
 
             return Page();
         }
@@ -33,7 +33,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
                 return Page();
             }
 
-            await _WorkflowRepository.Remover(workflow);
+            await _workflowRepository.Remover(workflow);
 
             return RedirectToPage("Listar");
         }

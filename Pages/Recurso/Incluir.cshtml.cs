@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IRecursoRepository _RecursoRepository;
+        private readonly IRecursoRepository _recursoRepository;
 
-        public IncluirModel(IRecursoRepository RecursoRepository)
+        public IncluirModel(IRecursoRepository recursoRepository)
         {
-            _RecursoRepository = RecursoRepository;
+            _recursoRepository = recursoRepository;
         }
 
         [BindProperty]
@@ -31,7 +31,7 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
                 return Page();
             }
 
-            await _RecursoRepository.Incluir(recurso);
+            await _recursoRepository.Incluir(recurso);
 
             return RedirectToPage("Listar");
         }

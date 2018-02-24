@@ -10,11 +10,11 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IWorkflowRepository _WorkflowRepository;
+        private readonly IWorkflowRepository _workflowRepository;
 
-        public ListarModel(IWorkflowRepository WorkflowRepository)
+        public ListarModel(IWorkflowRepository workflowRepository)
         {
-            _WorkflowRepository = WorkflowRepository;
+            _workflowRepository = workflowRepository;
         }
 
         [BindProperty]
@@ -25,7 +25,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _WorkflowRepository.Listar();
+            Lista = await _workflowRepository.Listar();
 
             return Page();
         }

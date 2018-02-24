@@ -18,7 +18,7 @@ namespace dotnet_cpnucleo_pages.Repository.Recurso
 
         public async Task Incluir(RecursoItem recurso)
         {
-            CryptographyManager.CryptPBKDF2(recurso.Senha, out string itemCriptografado, out string salt);
+            CryptographyManager.CryptPbkdf2(recurso.Senha, out string itemCriptografado, out string salt);
 
             recurso.SenhaCriptografada = itemCriptografado;
             recurso.Salt = salt;
@@ -31,19 +31,19 @@ namespace dotnet_cpnucleo_pages.Repository.Recurso
 
         public async Task Alterar(RecursoItem recurso)
         {
-            var RecursoItem = _context.Recursos.Find(recurso.IdRecurso);
+            var recursoItem = _context.Recursos.Find(recurso.IdRecurso);
 
-            CryptographyManager.CryptPBKDF2(recurso.Senha, out string itemCriptografado, out string salt);
+            CryptographyManager.CryptPbkdf2(recurso.Senha, out string itemCriptografado, out string salt);
 
-            RecursoItem.SenhaCriptografada = itemCriptografado;
-            RecursoItem.Salt = salt;
+            recursoItem.SenhaCriptografada = itemCriptografado;
+            recursoItem.Salt = salt;
 
-            RecursoItem.Nome = recurso.Nome;
-            RecursoItem.Ativo = recurso.Ativo;
+            recursoItem.Nome = recurso.Nome;
+            recursoItem.Ativo = recurso.Ativo;
 
-            RecursoItem.DataAlteracao = DateTime.Now;
+            recursoItem.DataAlteracao = DateTime.Now;
 
-            _context.Recursos.Update(RecursoItem);
+            _context.Recursos.Update(recursoItem);
             await _context.SaveChangesAsync();
         }
 
@@ -64,9 +64,9 @@ namespace dotnet_cpnucleo_pages.Repository.Recurso
 
         public async Task Remover(RecursoItem recurso)
         {    
-            var RecursoItem = _context.Recursos.Find(recurso.IdRecurso);            
+            var recursoItem = _context.Recursos.Find(recurso.IdRecurso);            
 
-            _context.Recursos.Remove(RecursoItem);
+            _context.Recursos.Remove(recursoItem);
             await _context.SaveChangesAsync();
         }
 
@@ -74,13 +74,13 @@ namespace dotnet_cpnucleo_pages.Repository.Recurso
         {
             valido = false;
 
-            var RecursoItem = _context.Recursos.SingleOrDefault(x => x.Login == login);
+            var recursoItem = _context.Recursos.SingleOrDefault(x => x.Login == login);
 
-            if (RecursoItem == null) return RecursoItem;
+            if (recursoItem == null) return null;
 
-            valido = CryptographyManager.VerifyPBKDF2(senha, RecursoItem.SenhaCriptografada, RecursoItem.Salt);
+            valido = CryptographyManager.VerifyPbkdf2(senha, recursoItem.SenhaCriptografada, recursoItem.Salt);
 
-            return RecursoItem;
+            return recursoItem;
         }        
     }
 }

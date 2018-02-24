@@ -2,29 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
 using Microsoft.AspNetCore.Authorization;
-using dotnet_cpnucleo_pages.Repository.Impedimento;
-using dotnet_cpnucleo_pages.Repository;
 
 namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 {
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IImpedimentoTarefaRepository _ImpedimentoTarefaRepository;
+        private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        private readonly IRepository<ImpedimentoItem> _ImpedimentoRepository;
-
-        private readonly ITarefaRepository _TarefaRepository;
-
-        public RemoverModel(IImpedimentoTarefaRepository ImpedimentoTarefaRepository,
-                            IRepository<ImpedimentoItem> ImpedimentoRepository,
-                            ITarefaRepository TarefaRepository)
+        public RemoverModel(IImpedimentoTarefaRepository impedimentoTarefaRepository)
         {
-            _ImpedimentoTarefaRepository = ImpedimentoTarefaRepository;
-            _ImpedimentoRepository = ImpedimentoRepository;
-            _TarefaRepository = TarefaRepository;
+            _impedimentoTarefaRepository = impedimentoTarefaRepository;
         }
 
         [BindProperty]
@@ -32,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync(int idImpedimentoTarefa)
         {
-            ImpedimentoTarefa = await _ImpedimentoTarefaRepository.Consultar(idImpedimentoTarefa);
+            ImpedimentoTarefa = await _impedimentoTarefaRepository.Consultar(idImpedimentoTarefa);
 
             return Page();
         }
@@ -44,7 +33,7 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
                 return Page();
             }
 
-            await _ImpedimentoTarefaRepository.Remover(impedimentoTarefa);
+            await _impedimentoTarefaRepository.Remover(impedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = impedimentoTarefa.IdTarefa });
         }

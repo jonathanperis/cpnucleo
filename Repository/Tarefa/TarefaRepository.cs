@@ -78,11 +78,15 @@ namespace dotnet_cpnucleo_pages.Repository.Tarefa
             lock (this)
             {
                 var tarefaItem = _context.Tarefas
-                    .SingleOrDefault(x => x.IdTarefa == idTarefa);            
+                    .SingleOrDefault(x => x.IdTarefa == idTarefa);
 
-                tarefaItem.IdWorkflow = idWorkflow;
+                if (tarefaItem != null)
+                {
+                    tarefaItem.IdWorkflow = idWorkflow;
 
-                _context.Tarefas.Update(tarefaItem);
+                    _context.Tarefas.Update(tarefaItem);
+                }
+
                 _context.SaveChanges();                
             }
         }   

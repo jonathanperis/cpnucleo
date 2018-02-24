@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace dotnet_cpnucleo_pages
 {
@@ -30,11 +29,15 @@ namespace dotnet_cpnucleo_pages
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Login", "");
+            });
+
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
             services.Configure<ApplicationConfigurations>(
@@ -86,6 +89,9 @@ namespace dotnet_cpnucleo_pages
                 .AddScoped<IRecursoProjetoRepository, RecursoProjetoRepository>()
                 .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>();
 
+            services
+                .AddScoped<Repository2.IRepository<Repository2.Sistema.SistemaItem>, Repository2.Sistema.SistemaRepository>();
+
             services.AddAuthentication()
                 .AddCookie(options =>
                 {
@@ -103,33 +109,28 @@ namespace dotnet_cpnucleo_pages
             services.AddSignalR();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Erro");
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseBrowserLink();
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Erro");
+            //}
 
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            app.UseBrowserLink();
+            app.UseDeveloperExceptionPage();
 
             app.UseStaticFiles();
             app.UseAuthentication();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Login}/{id?}");
-            });
+            app.UseMvc();
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<FluxoTrabalhoHub>("fluxoTrabalho");
+                routes.MapHub<FluxoTrabalhoHub>("hubs/fluxoTrabalho");
             });
         }
     }

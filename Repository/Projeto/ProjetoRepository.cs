@@ -25,13 +25,13 @@ namespace dotnet_cpnucleo_pages.Repository.Projeto
 
         public async Task Alterar(ProjetoItem projeto)
         {
-            var ProjetoItem = _context.Projetos.Find(projeto.IdProjeto);
-            ProjetoItem.Nome = projeto.Nome;
-            ProjetoItem.IdSistema = projeto.IdSistema;
+            var projetoItem = _context.Projetos.Find(projeto.IdProjeto);
+            projetoItem.Nome = projeto.Nome;
+            projetoItem.IdSistema = projeto.IdSistema;
 
-            ProjetoItem.DataAlteracao = DateTime.Now;
+            projetoItem.DataAlteracao = DateTime.Now;
 
-            _context.Projetos.Update(ProjetoItem);
+            _context.Projetos.Update(projetoItem);
             await _context.SaveChangesAsync();
         }
 
@@ -54,9 +54,9 @@ namespace dotnet_cpnucleo_pages.Repository.Projeto
 
         public async Task Remover(ProjetoItem projeto)
         {    
-            var ProjetoItem = _context.Projetos.Find(projeto.IdProjeto);            
+            var projetoItem = _context.Projetos.Find(projeto.IdProjeto);            
 
-            _context.Projetos.Remove(ProjetoItem);
+            _context.Projetos.Remove(projetoItem);
             await _context.SaveChangesAsync();
         }
     }
