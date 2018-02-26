@@ -1,16 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace dotnet_cpnucleo_pages.Repository2.Sistema
+namespace dotnet_cpnucleo_pages.Repository2
 {
-    public class SistemaContext
+    public class Context 
     {
         private string _connectionString;
 
         protected string ConnectionString => _connectionString;
 
-        public SistemaContext(IConfiguration configuration)
+        public Context(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-    } 
+    }
 }

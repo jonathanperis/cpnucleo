@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Repository2.Sistema
 {
-    public class SistemaRepository : SistemaContext, IRepository<SistemaItem>
+    public class SistemaRepository : Context, IRepository<SistemaItem>
     {
         public SistemaRepository(IConfiguration configuration) : base(configuration) { }
 
