@@ -38,26 +38,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 
         public async Task Alterar(SistemaItem sistema)
         {
-            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
-            {
-                sistema.DataAlteracao = DateTime.Now;
-
-                string query = @"INSERT INTO CPN_TB_SISTEMA
-                                (
-                                    SIS_NOME,
-                                    SIS_DESCRICAO,
-                                    SIS_DATA_INCLUSAO
-                                )
-                                VALUES
-                                (
-                                    @Nome,
-                                    @Descricao,
-                                    @DataInclusao
-                                )";
-
-                dbConnection.Open();
-                await dbConnection.QueryAsync(query, sistema);
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<SistemaItem> Consultar(int idSistema)
