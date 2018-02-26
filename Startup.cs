@@ -43,6 +43,8 @@ namespace dotnet_cpnucleo_pages
             services.Configure<ApplicationConfigurations>(
                 Configuration.GetSection("ApplicationConfigurations"));
 
+            #region --- Repository ---
+
             services
                 .AddDbContext<SistemaContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
@@ -89,8 +91,14 @@ namespace dotnet_cpnucleo_pages
                 .AddScoped<IRecursoProjetoRepository, RecursoProjetoRepository>()
                 .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>();
 
+            #endregion --- Repository ---
+
+            #region --- Repository2 ---
+
             services
                 .AddScoped<Repository2.IRepository<Repository2.Sistema.SistemaItem>, Repository2.Sistema.SistemaRepository>();
+
+            #endregion --- Repository2 ---
 
             services.AddAuthentication()
                 .AddCookie(options =>

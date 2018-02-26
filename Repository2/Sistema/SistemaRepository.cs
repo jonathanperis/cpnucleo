@@ -10,7 +10,9 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 {
     public class SistemaRepository : Context, IRepository<SistemaItem>
     {
-        public SistemaRepository(IConfiguration configuration) : base(configuration) { }
+        public SistemaRepository(IConfiguration configuration) 
+            : base(configuration)
+        { }
 
         public async Task Incluir(SistemaItem sistema)
         {
