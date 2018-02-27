@@ -25,7 +25,7 @@
                                 <th>@Html.DisplayNameFor(x => x.Impedimento.IdImpedimento)</th>
                                 <th>@Html.DisplayNameFor(x => x.Impedimento.Nome)</th>
                                 <th>@Html.DisplayNameFor(x => x.Impedimento.DataInclusao)</th>
-                                @if (Model.Lista.Count > 0)
+                                @if (Model.Lista.Count() > 0)
                                 {
                                     <th class="no-sort"></th>
                                     <th class="no-sort"></th>
@@ -39,7 +39,7 @@
                                     <td>@item.IdImpedimento</td>
                                     <td>@item.Nome</td>
                                     <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
-                                    @if (Model.Lista.Count > 0)
+                                    @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idImpedimento="@item.IdImpedimento">Alterar</a>
@@ -56,7 +56,7 @@
                                 <th>@Html.DisplayNameFor(x => x.Impedimento.IdImpedimento)</th>
                                 <th>@Html.DisplayNameFor(x => x.Impedimento.Nome)</th>
                                 <th>@Html.DisplayNameFor(x => x.Impedimento.DataInclusao)</th>
-                                @if (Model.Lista.Count > 0)
+                                @if (Model.Lista.Count() > 0)
                                 {
                                     <th></th>
                                     <th></th>

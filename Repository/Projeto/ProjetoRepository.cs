@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.Projeto
 {
@@ -43,7 +43,7 @@ namespace dotnet_cpnucleo_pages.Repository.Projeto
                 .SingleOrDefaultAsync(x => x.IdProjeto == idProjeto);
         }
 
-        public async Task<IList<ProjetoItem>> Listar()
+        public async Task<IEnumerable<ProjetoItem>> Listar()
         {
             return await _context.Projetos
                 .AsNoTracking()

@@ -28,7 +28,7 @@
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Recurso)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.PercentualTarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.DataInclusao)</th>
-                                @if (Model.Lista.Count > 0)
+                                @if (Model.Lista.Count() > 0)
                                 {
                                     <th class="no-sort"></th>
                                     <th class="no-sort"></th>
@@ -44,7 +44,7 @@
                                     <td>@item.Recurso.Nome</td>
                                     <td>@item.PercentualTarefa</td>
                                     <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
-                                    @if (Model.Lista.Count > 0)
+                                    @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idRecursoTarefa="@item.IdRecursoTarefa">Alterar</a>
@@ -63,7 +63,7 @@
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Recurso)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.PercentualTarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.DataInclusao)</th>
-                                @if (Model.Lista.Count > 0)
+                                @if (Model.Lista.Count() > 0)
                                 {
                                     <th></th>
                                     <th></th>

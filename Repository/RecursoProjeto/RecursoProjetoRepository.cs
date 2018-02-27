@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.RecursoProjeto
 {
@@ -45,12 +45,12 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoProjeto
             throw new NotImplementedException();
         }
 
-        public Task<IList<RecursoProjetoItem>> Listar()
+        public Task<IEnumerable<RecursoProjetoItem>> Listar()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IList<RecursoProjetoItem>> ListarPoridProjeto(int idProjeto)
+        public async Task<IEnumerable<RecursoProjetoItem>> ListarPoridProjeto(int idProjeto)
         {
             return await _context.RecursoProjetos
                 .AsNoTracking()

@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
         public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
 
         [BindProperty]
-        public IList<ImpedimentoTarefaItem> Lista { get; set; }
+        public IEnumerable<ImpedimentoTarefaItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {

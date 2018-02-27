@@ -1,8 +1,8 @@
+using dotnet_cpnucleo_pages.Repository.Recurso;
+using dotnet_cpnucleo_pages.Repository.Tarefa;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
-using dotnet_cpnucleo_pages.Repository.Recurso;
 
 namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
 {

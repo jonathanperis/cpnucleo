@@ -1,8 +1,8 @@
+using dotnet_cpnucleo_pages.Repository.Impedimento;
+using dotnet_cpnucleo_pages.Repository.Tarefa;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using dotnet_cpnucleo_pages.Repository.Impedimento;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
 
 namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
 {

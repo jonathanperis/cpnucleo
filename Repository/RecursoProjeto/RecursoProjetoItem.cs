@@ -1,8 +1,8 @@
+using dotnet_cpnucleo_pages.Repository.Projeto;
+using dotnet_cpnucleo_pages.Repository.Recurso;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using dotnet_cpnucleo_pages.Repository.Projeto;
-using dotnet_cpnucleo_pages.Repository.Recurso;
 
 namespace dotnet_cpnucleo_pages.Repository.RecursoProjeto
 {

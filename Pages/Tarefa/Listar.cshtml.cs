@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.Tarefa
         public TarefaItem Tarefa { get; set; }
 
         [BindProperty]
-        public IList<TarefaItem> Lista { get; set; }
+        public IEnumerable<TarefaItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {

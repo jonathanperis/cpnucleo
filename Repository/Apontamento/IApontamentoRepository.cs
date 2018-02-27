@@ -7,6 +7,6 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
     {
         Task<int> ObterTotalHorasPoridRecurso(int idRecurso, int idTarefa);
 
-        Task<IList<ApontamentoItem>> ListarPoridRecurso(int idRecurso);
+        Task<IEnumerable<ApontamentoItem>> ListarPoridRecurso(int idRecurso);
     }
 }

@@ -5,8 +5,8 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
 {
     public interface IRecursoTarefaRepository : IRepository<RecursoTarefaItem>
     {
-        Task<IList<RecursoTarefaItem>> ListarPoridTarefa(int idTarefa);
+        Task<IEnumerable<RecursoTarefaItem>> ListarPoridTarefa(int idTarefa);
 
-        Task<IList<RecursoTarefaItem>> ListarPoridRecurso(int idRecurso);
+        Task<IEnumerable<RecursoTarefaItem>> ListarPoridRecurso(int idRecurso);
     }
 }

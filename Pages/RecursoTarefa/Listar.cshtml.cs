@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
         public RecursoTarefaItem RecursoTarefa { get; set; }
 
         [BindProperty]
-        public IList<RecursoTarefaItem> Lista { get; set; }
+        public IEnumerable<RecursoTarefaItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {

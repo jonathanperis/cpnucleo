@@ -22,7 +22,7 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
         public ImpedimentoItem Impedimento { get; set; }
 
         [BindProperty]
-        public IList<ImpedimentoItem> Lista { get; set; }
+        public IEnumerable<ImpedimentoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

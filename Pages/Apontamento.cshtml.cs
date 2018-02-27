@@ -28,10 +28,10 @@ namespace dotnet_cpnucleo_pages.Pages
         public ApontamentoItem Apontamento { get; set; }
 
         [BindProperty]
-        public IList<ApontamentoItem> Lista { get; set; }
+        public IEnumerable<ApontamentoItem> Lista { get; set; }
 
         [BindProperty]
-        public IList<RecursoTarefaItem> ListaRecursoTarefas { get; set; }
+        public IEnumerable<RecursoTarefaItem> ListaRecursoTarefas { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

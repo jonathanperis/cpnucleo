@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.Impedimento
 {
@@ -41,7 +41,7 @@ namespace dotnet_cpnucleo_pages.Repository.Impedimento
                 .SingleOrDefaultAsync(x => x.IdImpedimento == idImpedimento);
         }
 
-        public async Task<IList<ImpedimentoItem>> Listar()
+        public async Task<IEnumerable<ImpedimentoItem>> Listar()
         {
             return await _context.Impedimentos
                 .AsNoTracking()

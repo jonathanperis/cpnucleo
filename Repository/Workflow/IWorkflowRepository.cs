@@ -5,6 +5,6 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
 {
     public interface IWorkflowRepository : IRepository<WorkflowItem>
     {
-        Task<IList<WorkflowItem>> ListarTarefasWorkflow();        
+        Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflow();        
     }
 }

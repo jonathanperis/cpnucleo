@@ -1,9 +1,8 @@
+using dotnet_cpnucleo_pages.Repository.Tarefa;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-// using Microsoft.AspNetCore.Mvc;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
 
 namespace dotnet_cpnucleo_pages.Repository.Workflow
 {
@@ -18,7 +17,6 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
         [Display(Name = "Nome")]      
         [Required(ErrorMessage = "Necessário informar o {0} do Workflow.")]
         [MaxLength(50, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
-        //[Remote("VerificarQuantidadeItensCadastrados", "Workflow", ErrorMessage = "Remote validation is working")]        
         [Column("WOR_NOME", TypeName = "varchar(50)")]          
         public string Nome { get; set; }
 

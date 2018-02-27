@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.Workflow
 {
@@ -42,7 +42,7 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
                 .SingleOrDefaultAsync(x => x.IdWorkflow == idWorkflow);
         }
 
-        public async Task<IList<WorkflowItem>> Listar()
+        public async Task<IEnumerable<WorkflowItem>> Listar()
         {
             return await _context.Workflows
                 .AsNoTracking()
@@ -58,7 +58,7 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IList<WorkflowItem>> ListarTarefasWorkflow()
+        public async Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflow()
         {
             var listaWorkflow =  await _context.Workflows
                 .AsNoTracking()

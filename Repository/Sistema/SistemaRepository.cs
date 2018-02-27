@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.Sistema
 {
@@ -42,7 +42,7 @@ namespace dotnet_cpnucleo_pages.Repository.Sistema
                 .SingleOrDefaultAsync(x => x.IdSistema == idSistema);
         }
 
-        public async Task<IList<SistemaItem>> Listar()
+        public async Task<IEnumerable<SistemaItem>> Listar()
         {
             return await _context.Sistemas
                 .AsNoTracking()

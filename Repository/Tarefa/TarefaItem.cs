@@ -1,13 +1,13 @@
+using dotnet_cpnucleo_pages.Repository.Apontamento;
+using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
+using dotnet_cpnucleo_pages.Repository.Projeto;
+using dotnet_cpnucleo_pages.Repository.Recurso;
+using dotnet_cpnucleo_pages.Repository.TipoTarefa;
+using dotnet_cpnucleo_pages.Repository.Workflow;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using dotnet_cpnucleo_pages.Repository.Apontamento;
-using dotnet_cpnucleo_pages.Repository.Projeto;
-using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
-using dotnet_cpnucleo_pages.Repository.Workflow;
-using dotnet_cpnucleo_pages.Repository.Recurso;
-using dotnet_cpnucleo_pages.Repository.TipoTarefa;
 
 namespace dotnet_cpnucleo_pages.Repository.Tarefa
 {

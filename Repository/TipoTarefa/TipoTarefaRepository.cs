@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
 {
@@ -41,7 +41,7 @@ namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
                 .SingleOrDefaultAsync(x => x.IdTipoTarefa == idTipoTarefa);
         }
 
-        public async Task<IList<TipoTarefaItem>> Listar()
+        public async Task<IEnumerable<TipoTarefaItem>> Listar()
         {
             return await _context.TipoTarefas
                 .AsNoTracking()

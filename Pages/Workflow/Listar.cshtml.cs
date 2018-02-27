@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
         public WorkflowItem Workflow { get; set; }
 
         [BindProperty]
-        public IList<WorkflowItem> Lista { get; set; }
+        public IEnumerable<WorkflowItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

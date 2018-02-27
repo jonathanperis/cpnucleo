@@ -27,7 +27,7 @@
                                 <th>@Html.DisplayNameFor(x => x.RecursoProjeto.Projeto)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoProjeto.Recurso)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoProjeto.DataInclusao)</th>
-                                @if (Model.Lista.Count > 0)
+                                @if (Model.Lista.Count() > 0)
                                 {
                                     <th class="no-sort"></th>
                                 }
@@ -41,7 +41,7 @@
                                     <td>@item.Projeto.Nome</td>
                                     <td>@item.Recurso.Nome</td>
                                     <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
-                                    @if (Model.Lista.Count > 0)
+                                    @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idRecursoProjeto="@item.IdRecursoProjeto">Remover</a>
@@ -56,7 +56,7 @@
                                 <th>@Html.DisplayNameFor(x => x.RecursoProjeto.Projeto)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoProjeto.Recurso)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoProjeto.DataInclusao)</th>
-                                @if (Model.Lista.Count > 0)
+                                @if (Model.Lista.Count() > 0)
                                 {
                                     <th></th>
                                 }

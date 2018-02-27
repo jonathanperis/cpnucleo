@@ -1,9 +1,9 @@
+using dotnet_cpnucleo_pages.Security;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using dotnet_cpnucleo_pages.Security;
 
 namespace dotnet_cpnucleo_pages.Repository.Recurso
 {
@@ -54,7 +54,7 @@ namespace dotnet_cpnucleo_pages.Repository.Recurso
                 .SingleOrDefaultAsync(x => x.IdRecurso == idRecurso);
         }
 
-        public async Task<IList<RecursoItem>> Listar()
+        public async Task<IEnumerable<RecursoItem>> Listar()
         {
             return await _context.Recursos
                 .AsNoTracking()

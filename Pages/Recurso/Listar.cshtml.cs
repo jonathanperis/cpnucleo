@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
         public RecursoItem Recurso { get; set; }
 
         [BindProperty]
-        public IList<RecursoItem> Lista { get; set; }
+        public IEnumerable<RecursoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

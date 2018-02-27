@@ -1,10 +1,9 @@
+using dotnet_cpnucleo_pages.Repository.Tarefa;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
-using dotnet_cpnucleo_pages.Extension;
 
 namespace dotnet_cpnucleo_pages.Repository.Apontamento
 {
@@ -56,7 +55,7 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
                 .SingleOrDefaultAsync(x => x.IdApontamento == idApontamento);
         }
 
-        public async Task<IList<ApontamentoItem>> Listar()
+        public async Task<IEnumerable<ApontamentoItem>> Listar()
         {
             return await _context.Apontamentos
                 .AsNoTracking()
@@ -83,28 +82,7 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
                 .SumAsync(x => x.QtdHoras);
         }              
 
-        public async Task<IList<ApontamentoItem>> ListarAnalitico(int mesReferencia)
-        {
-            var listaApontamentos = await _context.Apontamentos
-                .AsNoTracking()
-                .Include(x => x.Tarefa)
-                .Include(x => x.Tarefa.Projeto)
-                .Include(x => x.Recurso)
-                .OrderBy(x => x.DataInclusao)
-                .Where(x => x.DataApontamento.Value.Month == mesReferencia)
-                .ToListAsync();
-
-            foreach (var apontamento in listaApontamentos)
-            {
-                if (apontamento.DataApontamento != null)
-                    apontamento.DiaSemana =
-                        string.Format("Semana {0}", apontamento.DataApontamento.Value.GetWeekOfMonth());
-            } 
-
-            return listaApontamentos;
-        }     
-
-        public async Task<IList<ApontamentoItem>> ListarPoridRecurso(int idRecurso)
+        public async Task<IEnumerable<ApontamentoItem>> ListarPoridRecurso(int idRecurso)
         {
             return await _context.Apontamentos
                 .AsNoTracking()

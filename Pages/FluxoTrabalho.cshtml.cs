@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages
@@ -30,13 +31,13 @@ namespace dotnet_cpnucleo_pages.Pages
 
         public WorkflowItem Workflow { get; set; }
 
-        public IList<WorkflowItem> Lista { get; set; }
+        public IEnumerable<WorkflowItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _workflowRepository.ListarTarefasWorkflow();
 
-            int qtdLista = Lista.Count;
+            int qtdLista = Lista.Count();
             qtdLista = qtdLista == 1 ? 2 : qtdLista;
 
             int i = 12 / qtdLista;

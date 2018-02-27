@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
 {
@@ -53,12 +53,12 @@ namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
             await _context.SaveChangesAsync();
         }
 
-        public Task<IList<ImpedimentoTarefaItem>> Listar()
+        public Task<IEnumerable<ImpedimentoTarefaItem>> Listar()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IList<ImpedimentoTarefaItem>> ListarPoridTarefa(int idTarefa)
+        public async Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefa(int idTarefa)
         {
             return await _context.ImpedimentoTarefas
                 .AsNoTracking()

@@ -21,7 +21,7 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
         public RecursoProjetoItem RecursoProjeto { get; set; }
 
         [BindProperty]
-        public IList<RecursoProjetoItem> Lista { get; set; }
+        public IEnumerable<RecursoProjetoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idProjeto)
         {

@@ -1,9 +1,9 @@
+using dotnet_cpnucleo_pages.Repository.Apontamento;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using dotnet_cpnucleo_pages.Repository.Apontamento;
 
 namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
 {
@@ -49,7 +49,7 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
                 .SingleOrDefaultAsync(x => x.IdRecursoTarefa == idRecursoTarefa);
         }
 
-        public async Task<IList<RecursoTarefaItem>> ListarPoridTarefa(int idTarefa)
+        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridTarefa(int idTarefa)
         {
             return await _context.RecursoTarefas
                 .AsNoTracking()
@@ -68,12 +68,12 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
             await _context.SaveChangesAsync();
         }
 
-        public Task<IList<RecursoTarefaItem>> Listar()
+        public Task<IEnumerable<RecursoTarefaItem>> Listar()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IList<RecursoTarefaItem>> ListarPoridRecurso(int idRecurso)
+        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridRecurso(int idRecurso)
         {
             var listaRecursoTarefa = await _context.RecursoTarefas
                 .AsNoTracking()
