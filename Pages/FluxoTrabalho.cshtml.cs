@@ -49,7 +49,7 @@ namespace dotnet_cpnucleo_pages.Pages
         {
             _tarefaRepository.AlterarPorFluxoTrabalho(idTarefa, idWorkflow);
 
-            _hubContext.Clients.All.SendAsync("send", "-> Lorem Ipsum");
+            _hubContext.Clients.All.InvokeAsync("send", "-> Lorem Ipsum");
 
             return Page();
         }
