@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
     {
         private readonly Context _context;
 
-        public WorkflowRepository(Context context)
-        {
-            _context = context;
-        }
+        public WorkflowRepository(Context context) => _context = context;
 
         public async Task Incluir(WorkflowItem workflow)
         {

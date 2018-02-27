@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.Impedimento
     {
         private readonly Context _context;
 
-        public ImpedimentoRepository(Context context)
-        {
-            _context = context;
-        }        
+        public ImpedimentoRepository(Context context) => _context = context;
 
         public async Task Incluir(ImpedimentoItem impedimento)
         {

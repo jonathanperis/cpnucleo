@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
     {
         private readonly Context _context;
 
-        public TipoTarefaRepository(Context context)
-        {
-            _context = context;
-        }        
+        public TipoTarefaRepository(Context context) => _context = context;
 
         public async Task Incluir(TipoTarefaItem tipoTarefa)
         {

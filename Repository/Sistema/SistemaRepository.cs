@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.Sistema
     {
         private readonly Context _context;
 
-        public SistemaRepository(Context context)
-        {
-            _context = context;
-        }        
+        public SistemaRepository(Context context) => _context = context;
 
         public async Task Incluir(SistemaItem sistema)
         {

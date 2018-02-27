@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
     {
         private readonly Context _context;
 
-        public ImpedimentoTarefaRepository(Context context)
-        {
-            _context = context;
-        }        
+        public ImpedimentoTarefaRepository(Context context) => _context = context;
 
         public async Task Incluir(ImpedimentoTarefaItem impedimentoTarefa)
         {

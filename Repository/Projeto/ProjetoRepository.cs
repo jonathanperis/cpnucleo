@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.Projeto
     {
         private readonly Context _context;
 
-        public ProjetoRepository(Context context)
-        {
-            _context = context;
-        }        
+        public ProjetoRepository(Context context) => _context = context;
 
         public async Task Incluir(ProjetoItem projeto)
         {

@@ -10,10 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository.Tarefa
     {
         private readonly Context _context;
 
-        public TarefaRepository(Context context)
-        {
-            _context = context;
-        }
+        public TarefaRepository(Context context) => _context = context;
 
         public async Task Incluir(TarefaItem tarefa)
         {
