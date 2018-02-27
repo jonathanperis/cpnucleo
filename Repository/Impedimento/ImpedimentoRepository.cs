@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.Impedimento
 {
     public class ImpedimentoRepository : IRepository<ImpedimentoItem>
     {
-        private readonly ImpedimentoContext _context;
+        private readonly Context _context;
 
-        public ImpedimentoRepository(ImpedimentoContext context)
+        public ImpedimentoRepository(Context context)
         {
             _context = context;
         }        

@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.Tarefa
 {
     public class TarefaRepository : ITarefaRepository
     {
-        private readonly TarefaContext _context;
+        private readonly Context _context;
 
-        public TarefaRepository(TarefaContext context)
+        public TarefaRepository(Context context)
         {
             _context = context;
         }

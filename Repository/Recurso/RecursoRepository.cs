@@ -9,9 +9,9 @@ namespace dotnet_cpnucleo_pages.Repository.Recurso
 {
     public class RecursoRepository : IRecursoRepository
     {
-        private readonly RecursoContext _context;
+        private readonly Context _context;
 
-        public RecursoRepository(RecursoContext context)
+        public RecursoRepository(Context context)
         {
             _context = context;
         }        

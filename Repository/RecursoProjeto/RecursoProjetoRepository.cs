@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoProjeto
 {
     public class RecursoProjetoRepository : IRecursoProjetoRepository
     {
-        private readonly RecursoProjetoContext _context;
+        private readonly Context _context;
 
-        public RecursoProjetoRepository(RecursoProjetoContext context)
+        public RecursoProjetoRepository(Context context)
         {
             _context = context;
         }        

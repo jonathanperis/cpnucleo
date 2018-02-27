@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa
 {
     public class ImpedimentoTarefaRepository : IImpedimentoTarefaRepository
     {
-        private readonly ImpedimentoTarefaContext _context;
+        private readonly Context _context;
 
-        public ImpedimentoTarefaRepository(ImpedimentoTarefaContext context)
+        public ImpedimentoTarefaRepository(Context context)
         {
             _context = context;
         }        

@@ -1,5 +1,4 @@
 using Dapper;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Repository2.Sistema
 {
-    public class SistemaRepository : Context, IRepository<SistemaItem>
+    public class SistemaRepository : IRepository<SistemaItem>
     {
-        public SistemaRepository(IConfiguration configuration)
-            : base(configuration)
-        { }
+        private readonly Context _context;
+
+        public SistemaRepository(Context context)
+        {
+            _context = context;
+        }
 
         public async Task Incluir(SistemaItem sistema)
         {
-            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
             {
                 sistema.DataInclusao = DateTime.Now;
 
@@ -40,7 +42,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 
         public async Task Alterar(SistemaItem sistema)
         {
-            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
             {
                 sistema.DataAlteracao = DateTime.Now;
 
@@ -57,7 +59,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 
         public async Task<SistemaItem> Consultar(int idSistema)
         {
-            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
             {
                 string query = @"SELECT 
                                     SIS_ID AS IdSistema,
@@ -76,7 +78,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 
         public async Task<IEnumerable<SistemaItem>> Listar()
         {
-            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
             {
                 string query = @"SELECT 
                                     SIS_ID AS IdSistema,
@@ -93,7 +95,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 
         public async Task Remover(SistemaItem sistema)
         {
-            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
             {
                 string query = @"DELETE FROM CPN_TB_SISTEMA
                                 WHERE SIS_ID = @IdSistema;";

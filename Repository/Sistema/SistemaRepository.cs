@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.Sistema
 {
     public class SistemaRepository : IRepository<SistemaItem>
     {
-        private readonly SistemaContext _context;
+        private readonly Context _context;
 
-        public SistemaRepository(SistemaContext context)
+        public SistemaRepository(Context context)
         {
             _context = context;
         }        

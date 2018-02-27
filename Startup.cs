@@ -46,28 +46,32 @@ namespace dotnet_cpnucleo_pages
             #region --- Repository ---
 
             services
-                .AddDbContext<SistemaContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<ProjetoContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<TarefaContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<ApontamentoContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<WorkflowContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<RecursoContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<ImpedimentoContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<ImpedimentoTarefaContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<RecursoProjetoContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<RecursoTarefaContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
-                .AddDbContext<TipoTarefaContext>(options =>
+                .AddDbContext<Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //services
+            //    .AddDbContext<SistemaContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<ProjetoContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<TarefaContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<ApontamentoContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<WorkflowContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<RecursoContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<ImpedimentoContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<ImpedimentoTarefaContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<RecursoProjetoContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<RecursoTarefaContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")))
+            //    .AddDbContext<TipoTarefaContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services
                 .AddScoped<IRepository<SistemaItem>, SistemaRepository>()

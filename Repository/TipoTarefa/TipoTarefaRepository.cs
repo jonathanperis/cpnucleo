@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.TipoTarefa
 {
     public class TipoTarefaRepository : IRepository<TipoTarefaItem>
     {
-        private readonly TipoTarefaContext _context;
+        private readonly Context _context;
 
-        public TipoTarefaRepository(TipoTarefaContext context)
+        public TipoTarefaRepository(Context context)
         {
             _context = context;
         }        

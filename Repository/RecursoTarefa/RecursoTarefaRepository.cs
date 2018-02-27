@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Repository.RecursoTarefa
 {
     public class RecursoTarefaRepository : IRecursoTarefaRepository
     {
-        private readonly RecursoTarefaContext _context;
+        private readonly Context _context;
 
         private readonly IApontamentoRepository _apontamentoRepository;
 
-        public RecursoTarefaRepository(RecursoTarefaContext context,
+        public RecursoTarefaRepository(Context context,
                                        IApontamentoRepository apontamentoRepository)
         {
             _context = context;

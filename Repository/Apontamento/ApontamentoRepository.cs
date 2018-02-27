@@ -9,11 +9,11 @@ namespace dotnet_cpnucleo_pages.Repository.Apontamento
 {
     public class ApontamentoRepository : IApontamentoRepository
     {
-        private readonly ApontamentoContext _context;
+        private readonly Context _context;
 
         private readonly ITarefaRepository _tarefaRepository;
 
-        public ApontamentoRepository(ApontamentoContext context,
+        public ApontamentoRepository(Context context,
                                     ITarefaRepository tarefaRepository)
         {
             _context = context;

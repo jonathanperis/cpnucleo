@@ -8,9 +8,9 @@ namespace dotnet_cpnucleo_pages.Repository.Workflow
 {
     public class WorkflowRepository : IWorkflowRepository
     {
-        private readonly WorkflowContext _context;
+        private readonly Context _context;
 
-        public WorkflowRepository(WorkflowContext context)
+        public WorkflowRepository(Context context)
         {
             _context = context;
         }
