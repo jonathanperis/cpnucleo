@@ -1,5 +1,5 @@
 using Dapper;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,18 +8,15 @@ using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Repository2.Projeto
 {
-    public class ProjetoRepository : IRepository<ProjetoItem>
+    public class ProjetoRepository : Context, IRepository<ProjetoItem>
     {
-        private readonly Context _context;
-
-        public ProjetoRepository(Context context)
-        {
-            _context = context;
-        }
+        public ProjetoRepository(IConfiguration configuration)
+            : base(configuration)
+        { }
 
         public async Task Incluir(ProjetoItem projeto)
         {
-            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 projeto.DataInclusao = DateTime.Now;
 
@@ -43,7 +40,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Projeto
 
         public async Task Alterar(ProjetoItem projeto)
         {
-            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 projeto.DataAlteracao = DateTime.Now;
 
@@ -60,7 +57,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Projeto
 
         public async Task<ProjetoItem> Consultar(int idProjeto)
         {
-            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 string query = @"SELECT 
                                     PROJETO.PROJ_ID AS IdProjeto,
@@ -82,7 +79,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Projeto
 
         public async Task<IEnumerable<ProjetoItem>> Listar()
         {
-            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 string query = @"SELECT 
                                     PROJETO.PROJ_ID AS IdProjeto,
@@ -102,7 +99,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Projeto
 
         public async Task Remover(ProjetoItem projeto)
         {
-            using (IDbConnection dbConnection = new SqlConnection(_context.ConnectionString))
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 string query = @"DELETE FROM CPN_TB_PROJETO
                                 WHERE PROJ_ID = @IdProjeto;";

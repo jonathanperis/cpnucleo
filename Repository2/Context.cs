@@ -6,7 +6,7 @@ namespace dotnet_cpnucleo_pages.Repository2
     {
         private string _connectionString;
 
-        public string ConnectionString => _connectionString;
+        protected string ConnectionString => _connectionString;
 
         public Context(IConfiguration configuration)
         {
