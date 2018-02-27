@@ -63,8 +63,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
                                     SIS_ID AS IdSistema,
                                     SIS_NOME AS Nome,
                                     SIS_DESCRICAO AS Descricao,
-                                    SIS_DATA_INCLUSAO AS DataInclusao,
-                                    SIS_DATA_ALTERACAO AS DataAlteracao
+                                    SIS_DATA_INCLUSAO AS DataInclusao
                                 FROM 
                                     CPN_TB_SISTEMA
                                 WHERE 
@@ -83,8 +82,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
                                     SIS_ID AS IdSistema,
                                     SIS_NOME AS Nome,
                                     SIS_DESCRICAO AS Descricao,
-                                    SIS_DATA_INCLUSAO AS DataInclusao,
-                                    SIS_DATA_ALTERACAO AS DataAlteracao
+                                    SIS_DATA_INCLUSAO AS DataInclusao
                                 FROM 
                                     CPN_TB_SISTEMA";
 
@@ -97,8 +95,6 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
         {
             using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
-                sistema.DataAlteracao = DateTime.Now;
-
                 string query = @"DELETE FROM CPN_TB_SISTEMA
                                 WHERE SIS_ID = @IdSistema;";
 
