@@ -10,7 +10,7 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 {
     public class SistemaRepository : Context, IRepository<SistemaItem>
     {
-        public SistemaRepository(IConfiguration configuration) 
+        public SistemaRepository(IConfiguration configuration)
             : base(configuration)
         { }
 
@@ -40,22 +40,71 @@ namespace dotnet_cpnucleo_pages.Repository2.Sistema
 
         public async Task Alterar(SistemaItem sistema)
         {
-            throw new NotImplementedException();
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            {
+                sistema.DataAlteracao = DateTime.Now;
+
+                string query = @"UPDATE CPN_TB_SISTEMA SET 
+                                    SIS_NOME = @Nome, 
+                                    SIS_DESCRICAO= @Descricao,
+                                    SIS_DATA_ALTERACAO = @DataAlteracao
+                                WHERE SIS_ID = @IdSistema;";
+
+                dbConnection.Open();
+                await dbConnection.ExecuteAsync(query, sistema);
+            }
         }
 
         public async Task<SistemaItem> Consultar(int idSistema)
         {
-            throw new NotImplementedException();
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            {
+                string query = @"SELECT 
+                                    SIS_ID AS IdSistema,
+                                    SIS_NOME AS Nome,
+                                    SIS_DESCRICAO AS Descricao,
+                                    SIS_DATA_INCLUSAO AS DataInclusao,
+                                    SIS_DATA_ALTERACAO AS DataAlteracao
+                                FROM 
+                                    CPN_TB_SISTEMA
+                                WHERE 
+                                    SIS_ID = @idSistema";
+
+                dbConnection.Open();
+                return await dbConnection.QueryFirstOrDefaultAsync<SistemaItem>(query, new { idSistema });
+            }
         }
 
-        public async Task<IList<SistemaItem>> Listar()
+        public async Task<IEnumerable<SistemaItem>> Listar()
         {
-            throw new NotImplementedException();
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            {
+                string query = @"SELECT 
+                                    SIS_ID AS IdSistema,
+                                    SIS_NOME AS Nome,
+                                    SIS_DESCRICAO AS Descricao,
+                                    SIS_DATA_INCLUSAO AS DataInclusao,
+                                    SIS_DATA_ALTERACAO AS DataAlteracao
+                                FROM 
+                                    CPN_TB_SISTEMA";
+
+                dbConnection.Open();
+                return await dbConnection.QueryAsync<SistemaItem>(query);
+            }
         }
 
         public async Task Remover(SistemaItem sistema)
         {
-            throw new NotImplementedException();
+            using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            {
+                sistema.DataAlteracao = DateTime.Now;
+
+                string query = @"DELETE FROM CPN_TB_SISTEMA
+                                WHERE SIS_ID = @IdSistema;";
+
+                dbConnection.Open();
+                await dbConnection.ExecuteAsync(query, new { sistema.IdSistema });
+            }
         }
     }
 }

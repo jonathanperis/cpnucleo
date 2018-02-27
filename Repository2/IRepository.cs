@@ -13,6 +13,6 @@ namespace dotnet_cpnucleo_pages.Repository2
 
         Task Remover(T item);
 
-        Task<IList<T>> Listar();
+        Task<IEnumerable<T>> Listar();
     }
 }

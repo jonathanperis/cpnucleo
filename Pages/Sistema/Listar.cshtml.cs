@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository2;
+using dotnet_cpnucleo_pages.Repository2.Sistema;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.Sistema;
-using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
-using dotnet_cpnucleo_pages.Repository;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Sistema
 {
@@ -22,7 +22,7 @@ namespace dotnet_cpnucleo_pages.Pages.Sistema
         public SistemaItem Sistema { get; set; }
 
         [BindProperty]
-        public IList<SistemaItem> Lista { get; set; }
+        public IEnumerable<SistemaItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository2;
+using dotnet_cpnucleo_pages.Repository2.Sistema;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.Sistema;
-using Microsoft.AspNetCore.Authorization;
-using dotnet_cpnucleo_pages.Repository;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Sistema
 {
