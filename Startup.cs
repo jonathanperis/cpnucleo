@@ -96,7 +96,8 @@ namespace dotnet_cpnucleo_pages
             #region --- Repository2 ---
 
             services
-                .AddScoped<Repository2.IRepository<Repository2.Sistema.SistemaItem>, Repository2.Sistema.SistemaRepository>();
+                .AddScoped<Repository2.IRepository<Repository2.Sistema.SistemaItem>, Repository2.Sistema.SistemaRepository>()
+                .AddScoped<Repository2.IRepository<Repository2.Projeto.ProjetoItem>, Repository2.Projeto.ProjetoRepository>();
 
             #endregion --- Repository2 ---
 

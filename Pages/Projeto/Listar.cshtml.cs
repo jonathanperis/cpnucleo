@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using dotnet_cpnucleo_pages.Repository.Projeto;
+﻿using dotnet_cpnucleo_pages.Repository2;
+using dotnet_cpnucleo_pages.Repository2.Projeto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
-using dotnet_cpnucleo_pages.Repository;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Projeto
 {
@@ -22,7 +22,7 @@ namespace dotnet_cpnucleo_pages.Pages.Projeto
         public ProjetoItem Projeto { get; set; }
 
         [BindProperty]
-        public IList<ProjetoItem> Lista { get; set; }
+        public IEnumerable<ProjetoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
