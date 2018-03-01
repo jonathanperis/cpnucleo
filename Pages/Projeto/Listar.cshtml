@@ -4,6 +4,11 @@
     ViewData["Title"] = "Relação de Projetos";
 }
 
+@section Styles {
+    <!-- DataTables -->
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -53,7 +58,7 @@
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-info btn-xs" role="button" asp-page="/RecursoProjeto/Listar" asp-route-idProjeto="@item.IdProjeto">+ Recurso</a>
                                         </td>
-                                    }                                    
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -79,6 +84,8 @@
 </div>
 
 @section Scripts {
+    <!-- DataTables -->
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
     <script>
         $(document).ready(function () {
             $('.table-datatable').DataTable({

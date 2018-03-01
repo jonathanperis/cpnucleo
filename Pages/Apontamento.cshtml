@@ -4,6 +4,13 @@
     ViewData["Title"] = "Apontamentos";
 }
 
+@section Styles {
+    <!-- TouchSpin -->
+    <link href="~/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
+    <!-- DataTables -->
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox collapsed">
@@ -378,8 +385,20 @@
 </div>
 
 @section Scripts {
+    <!-- TouchSpin -->
+    <script src="~/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
+    <!-- DatePicker -->
+    <script src="~/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/js/plugins/datapicker/bootstrap-datepicker.pt-BR.js"></script>
+    <!-- DataTables -->
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
     <script>
         $(document).ready(function () {
+
+            $("#percentual-conclusao").TouchSpin({
+                buttondown_class: 'btn btn-white',
+                buttonup_class: 'btn btn-white'
+            });
 
             $('#date-apontamento .input-group.date').datepicker({
                 todayBtn: "linked",
@@ -389,11 +408,6 @@
                 autoclose: true,
                 format: 'dd/mm/yyyy',
                 language: 'pt-BR'
-            });
-
-            $("#percentual-conclusao").TouchSpin({
-                buttondown_class: 'btn btn-white',
-                buttonup_class: 'btn btn-white'
             });
         });
 

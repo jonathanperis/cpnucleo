@@ -4,6 +4,11 @@
     ViewData["Title"] = "Inclusão de Tarefa";
 }
 
+@section Styles {
+    <!-- DataTables -->
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+}
+
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
@@ -96,8 +101,15 @@
 </div>
 
 @section Scripts {
+    <!-- DatePicker -->
+    <script src="~/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/js/plugins/datapicker/bootstrap-datepicker.pt-BR.js"></script>
+    <!-- Ajax Unobtrusive -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
 
             $('#date-inicio .input-group.date').datepicker({
                 todayBtn: "linked",
@@ -119,5 +131,30 @@
                 language: 'pt-BR'
             });
         });
+    </script>
+    <script type="text/javascript">
+        (function ($) {
+            var defaultOptions = {
+                validClass: 'has-success',
+                errorClass: 'has-error',
+                highlight: function (element, errorClass, validClass) {
+                    $(element).closest(".form-group")
+                        .removeClass(validClass)
+                        .addClass('has-error');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).closest(".form-group")
+                        .removeClass('has-error')
+                        .addClass(validClass);
+                }
+            };
+
+            $.validator.setDefaults(defaultOptions);
+
+            $.validator.unobtrusive.options = {
+                errorClass: defaultOptions.errorClass,
+                validClass: defaultOptions.validClass,
+            };
+        })(jQuery);
     </script>
 }

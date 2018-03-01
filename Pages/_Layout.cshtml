@@ -5,18 +5,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - @OptionsApplicationConfiguration.Value.NomeSistema</title>
+    <title>@OptionsApplicationConfiguration.Value.NomeSistema - @ViewData["Title"]</title>
+    <!-- Mainly links -->
     <link href="~/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="~/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="~/css/animate.css" rel="stylesheet">
     <link href="~/css/style.css" rel="stylesheet">
-    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
-    <link href="~/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-    <link href="~/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
-    <link href="~/css/plugins/iCheck/custom.css" rel="stylesheet">
-    <link href="~/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/plugins/c3/c3.min.css" rel="stylesheet">
+    <link href="~/font-awesome/css/font-awesome.css" rel="stylesheet">
     @RenderSection("styles", required: false)
 </head>
 <body class="top-navigation">
@@ -67,7 +61,7 @@
             </div>
             <div class="footer">
                 <div>
-                    <strong>Copyright</strong> &copy; @DateTime.Now.Year @OptionsApplicationConfiguration.Value.Copyright
+                    <strong>Copyright</strong> &copy; @DateTime.Now.Year <a href="https://peris-studio.azurewebsites.net/" target="_blank">Jonathan Peris</a>, todos os direitos Reservados.
                 </div>
             </div>
         </div>
@@ -80,68 +74,6 @@
     <!-- Custom and plugin javascript -->
     <script src="~/js/inspinia.js"></script>
     <script src="~/js/plugins/pace/pace.min.js"></script>
-    <!-- DataTables -->
-    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
-    <!-- TouchSpin -->
-    <script src="~/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
-    <!-- jquery UI -->
-    <script src="~/js/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Touch Punch - Touch Event Support for jQuery UI -->
-    <script src="~/js/plugins/touchpunch/jquery.ui.touch-punch.min.js"></script>
-    <!-- DatePicker -->
-    <script src="~/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-    <script src="~/js/plugins/datapicker/bootstrap-datepicker.pt-BR.js"></script>
-    <!-- Password meter -->
-    <script src="~/js/plugins/pwstrength/pwstrength-bootstrap.min.js"></script>
-    <!-- iCheck -->
-    <script src="~/js/plugins/iCheck/icheck.min.js"></script>
-    <!-- Input Mask -->
-    <script src="~/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-    <!-- d3 and c3 charts -->
-    <script src="~/js/plugins/d3/d3.min.js"></script>
-    <script src="~/js/plugins/c3/c3.min.js"></script>
-    <!-- Toastr script -->
-    <script src="~/js/plugins/toastr/toastr.min.js"></script>
-    <!-- Ajax Unobtrusive -->
-    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
-    <script type="text/javascript">
-        (function ($) {
-            var defaultOptions = {
-                validClass: 'has-success',
-                errorClass: 'has-error',
-                highlight: function (element, errorClass, validClass) {
-                    $(element).closest(".form-group")
-                        .removeClass(validClass)
-                        .addClass('has-error');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).closest(".form-group")
-                        .removeClass('has-error')
-                        .addClass(validClass);
-                }
-            };
-
-            $.validator.setDefaults(defaultOptions);
-
-            $.validator.unobtrusive.options = {
-                errorClass: defaultOptions.errorClass,
-                validClass: defaultOptions.validClass,
-            };
-        })(jQuery);
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
-            });
-        });
-    </script>
     @RenderSection("scripts", required: false)
-    <!-- SignalR -->
-    <script src="~/js/signalr-client-1.0.0-alpha2-final.min.js"></script>
-    @RenderSection("signalr", required: false)
 </body>
 </html>

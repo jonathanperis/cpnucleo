@@ -4,6 +4,11 @@
     ViewData["Title"] = "Relação de Impedimentos (Tarefa)";
 }
 
+@section Styles {
+    <!-- DataTables -->
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -81,6 +86,8 @@
 </div>
 
 @section Scripts {
+    <!-- DataTables -->
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
     <script>
         $(document).ready(function () {
             $('.table-datatable').DataTable({

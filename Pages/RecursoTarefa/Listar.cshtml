@@ -4,6 +4,11 @@
     ViewData["Title"] = "Relação de Recursos (Tarefa)";
 }
 
+@section Styles {
+    <!-- DataTables -->
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -52,7 +57,7 @@
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idRecursoTarefa="@item.IdRecursoTarefa">Remover</a>
                                         </td>
-                                    }      
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -78,6 +83,8 @@
 </div>
 
 @section Scripts {
+    <!-- DataTables -->
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
     <script>
         $(document).ready(function () {
             $('.table-datatable').DataTable({

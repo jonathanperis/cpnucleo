@@ -4,6 +4,11 @@
     ViewData["Title"] = "Relação de Tarefas";
 }
 
+@section Styles {
+    <!-- DatePicker -->
+    <link href="~/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -57,7 +62,7 @@
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-success btn-xs" role="button" asp-page="/ImpedimentoTarefa/Listar" asp-route-idTarefa="@item.IdTarefa">+ Impedimento</a>
                                         </td>
-                                    }                                     
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -73,7 +78,7 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                }                                
+                                }
                             </tr>
                         </tfoot>
                     </table>
@@ -84,8 +89,10 @@
 </div>
 
 @section Scripts {
+    <!-- DataTables -->
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             $('.table-datatable').DataTable({
                 language: {
                     "lengthMenu": "Mostrando _MENU_ registros por página",
@@ -107,26 +114,27 @@
                 responsive: true,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [
-                    {extend: 'copy', text: 'Copiar', exportOptions: { columns: [0, 1, 2, 3] }},
+                    { extend: 'copy', text: 'Copiar', exportOptions: { columns: [0, 1, 2, 3] } },
                     //{extend: 'csv', title: 'Relação de Tarefas', exportOptions: { columns: [0, 1, 2, 3] }},
-                    {extend: 'excel', title: 'Relação de Tarefas', exportOptions: { columns: [0, 1, 2, 3] }},
-                    {extend: 'pdf', title: 'Relação de Tarefas', exportOptions: { columns: [0, 1, 2, 3] }},
-                    {extend: 'print', text: 'Imprimir', exportOptions: { columns: [0, 1, 2, 3] },
-                        customize: function (win){
-                                $(win.document.body).addClass('white-bg');
-                                $(win.document.body).css('font-size', '10px');
+                    { extend: 'excel', title: 'Relação de Tarefas', exportOptions: { columns: [0, 1, 2, 3] } },
+                    { extend: 'pdf', title: 'Relação de Tarefas', exportOptions: { columns: [0, 1, 2, 3] } },
+                    {
+                        extend: 'print', text: 'Imprimir', exportOptions: { columns: [0, 1, 2, 3] },
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
 
-                                $(win.document.body).find('table')
-                                        .addClass('compact')
-                                        .css('font-size', 'inherit');
-                            }
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
                         }
+                    }
                 ],
-                "columnDefs": [ {
+                "columnDefs": [{
                     "targets": 'no-sort',
                     "orderable": false,
-                    }
-                 ]
+                }
+                ]
             });
         });
     </script>

@@ -4,6 +4,11 @@
     ViewData["Title"] = "Relação de Recursos (Projeto)";
 }
 
+@section Styles {
+    <!-- DataTables -->
+    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+}
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -46,7 +51,7 @@
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idRecursoProjeto="@item.IdRecursoProjeto">Remover</a>
                                         </td>
-                                    }                                    
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -70,50 +75,52 @@
 </div>
 
 @section Scripts {
+    <!-- DataTables -->
+    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
     <script>
-    $(document).ready(function () {
-        $('.table-datatable').DataTable({
-            language: {
-                "lengthMenu": "Mostrando _MENU_ registros por página",
-                "zeroRecords": "Nenhum registro encontrado",
-                "info": "Mostrando página _PAGE_ de _PAGES_",
-                "infoEmpty": "Não há registros disponíveis",
-                "infoFiltered": "(filtrando de _MAX_ registros totais)",
-                "search": "Buscar",
-                "loadingRecords": "Carregando...",
-                "processing": "Processando...",
-                "paginate": {
-                    "first": "Primeira",
-                    "last": "Ultima",
-                    "next": "Próxima",
-                    "previous": "Anterior"
-                }
-            },
-            pageLength: 10,
-            responsive: true,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: [
-                { extend: 'copy', text: 'Copiar', exportOptions: { columns: [0, 1, 2, 3] } },
-                //{extend: 'csv', title: 'Relação de Recursos (Projeto)', exportOptions: { columns: [0, 1, 2, 3] }},
-                { extend: 'excel', title: 'Relação de Recursos (Projeto)', exportOptions: { columns: [0, 1, 2, 3] } },
-                { extend: 'pdf', title: 'Relação de Recursos (Projeto)', exportOptions: { columns: [0, 1, 2, 3] } },
-                {
-                    extend: 'print', text: 'Imprimir', exportOptions: { columns: [0, 1, 2, 3] },
-                    customize: function (win) {
-                        $(win.document.body).addClass('white-bg');
-                        $(win.document.body).css('font-size', '10px');
-
-                        $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
+        $(document).ready(function () {
+            $('.table-datatable').DataTable({
+                language: {
+                    "lengthMenu": "Mostrando _MENU_ registros por página",
+                    "zeroRecords": "Nenhum registro encontrado",
+                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                    "infoEmpty": "Não há registros disponíveis",
+                    "infoFiltered": "(filtrando de _MAX_ registros totais)",
+                    "search": "Buscar",
+                    "loadingRecords": "Carregando...",
+                    "processing": "Processando...",
+                    "paginate": {
+                        "first": "Primeira",
+                        "last": "Ultima",
+                        "next": "Próxima",
+                        "previous": "Anterior"
                     }
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                },
+                pageLength: 10,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy', text: 'Copiar', exportOptions: { columns: [0, 1, 2, 3] } },
+                    //{extend: 'csv', title: 'Relação de Recursos (Projeto)', exportOptions: { columns: [0, 1, 2, 3] }},
+                    { extend: 'excel', title: 'Relação de Recursos (Projeto)', exportOptions: { columns: [0, 1, 2, 3] } },
+                    { extend: 'pdf', title: 'Relação de Recursos (Projeto)', exportOptions: { columns: [0, 1, 2, 3] } },
+                    {
+                        extend: 'print', text: 'Imprimir', exportOptions: { columns: [0, 1, 2, 3] },
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        }
+                    }
+                ],
+                "columnDefs": [{
+                    "targets": 'no-sort',
+                    "orderable": false,
+                }]
+            });
         });
-    });
     </script>
 }

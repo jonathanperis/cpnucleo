@@ -5,6 +5,8 @@
 }
 
 @section Styles {
+    <!-- iCheck -->
+    <link href="~/css/plugins/iCheck/custom.css" rel="stylesheet">
     <style>
         .progress {
             margin-top: 10px;
@@ -79,6 +81,22 @@
 </div>
 
 @section Scripts {
+    <!-- iCheck -->
+    <script src="~/js/plugins/iCheck/icheck.min.js"></script>
+    <!-- Password meter -->
+    <script src="~/js/plugins/pwstrength/pwstrength-bootstrap.min.js"></script>
+    <!-- Ajax Unobtrusive -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
 
@@ -130,5 +148,30 @@
                 return "Muito Forte";
             }
         }
+    </script>
+    <script type="text/javascript">
+        (function ($) {
+            var defaultOptions = {
+                validClass: 'has-success',
+                errorClass: 'has-error',
+                highlight: function (element, errorClass, validClass) {
+                    $(element).closest(".form-group")
+                        .removeClass(validClass)
+                        .addClass('has-error');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).closest(".form-group")
+                        .removeClass('has-error')
+                        .addClass(validClass);
+                }
+            };
+
+            $.validator.setDefaults(defaultOptions);
+
+            $.validator.unobtrusive.options = {
+                errorClass: defaultOptions.errorClass,
+                validClass: defaultOptions.validClass,
+            };
+        })(jQuery);
     </script>
 }

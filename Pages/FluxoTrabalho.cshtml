@@ -5,6 +5,8 @@
 }
 
 @section Styles {
+    <!-- Toastr script -->
+    <link href="~/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <style>
         .image-align {
             background-repeat: no-repeat !important;
@@ -638,6 +640,14 @@
 </div>
 
 @section Scripts {
+    <!-- jquery UI -->
+    <script src="~/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Touch Punch - Touch Event Support for jQuery UI -->
+    <script src="~/js/plugins/touchpunch/jquery.ui.touch-punch.min.js"></script>
+    <!-- Toastr script -->
+    <script src="~/js/plugins/toastr/toastr.min.js"></script>
+    <!-- SignalR -->
+    <script src="~/js/signalr-client-1.0.0-alpha2-final.min.js"></script>
     @if (Model.Lista != null)
     {
         foreach (var workflow in Model.Lista)
@@ -720,9 +730,6 @@
             </script>
         }
     }
-}
-
-@section SignalR {
     <script>
         //var transport = signalR.TransportType.All;
 
