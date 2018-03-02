@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages
 {
-    //[Authorize]
+    [Authorize]
     public class FluxoTrabalhoModel : PageModel
     {
         private readonly IWorkflowRepository _workflowRepository;
