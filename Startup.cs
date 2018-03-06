@@ -43,8 +43,6 @@ namespace dotnet_cpnucleo_pages
             services.Configure<ApplicationConfigurations>(
                 Configuration.GetSection("ApplicationConfigurations"));
 
-            #region --- Repository ---
-
             services
                 .AddDbContext<Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -71,16 +69,6 @@ namespace dotnet_cpnucleo_pages
                 .AddScoped<IRecursoProjetoRepository, RecursoProjetoRepository>()
                 .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>();
 
-            #endregion --- Repository ---
-
-            #region --- Repository2 ---
-
-            services
-                .AddScoped<Repository2.IRepository<Repository2.Sistema.SistemaItem>, Repository2.Sistema.SistemaRepository>()
-                .AddScoped<Repository2.IRepository<Repository2.Projeto.ProjetoItem>, Repository2.Projeto.ProjetoRepository>();
-
-            #endregion --- Repository2 ---
-
             services.AddAuthentication()
                 .AddCookie(options =>
                 {
@@ -100,18 +88,15 @@ namespace dotnet_cpnucleo_pages
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseBrowserLink();
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Erro");
-            //}
-
-            app.UseBrowserLink();
-            app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Erro");
+            }
 
             app.UseStaticFiles();
             app.UseAuthentication();
