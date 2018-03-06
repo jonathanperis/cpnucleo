@@ -16,11 +16,6 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
         [BindProperty]
         public WorkflowItem Workflow { get; set; }
 
-        public void OnGet()
-        {
-
-        }
-
         public async Task<IActionResult> OnPostAsync(WorkflowItem workflow)
         {
             if (!ModelState.IsValid)

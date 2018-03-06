@@ -16,11 +16,6 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
         [BindProperty]
         public RecursoItem Recurso { get; set; }
 
-        public void OnGet()
-        {
-
-        }
-
         public async Task<IActionResult> OnPostAsync(RecursoItem recurso)
         {
             if (!ModelState.IsValid)

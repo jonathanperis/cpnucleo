@@ -17,11 +17,6 @@ namespace dotnet_cpnucleo_pages.Pages.Sistema
         [BindProperty]
         public SistemaItem Sistema { get; set; }
 
-        public void OnGet()
-        {
-
-        }
-
         public async Task<IActionResult> OnPostAsync(SistemaItem sistema)
         {
             if (!ModelState.IsValid)

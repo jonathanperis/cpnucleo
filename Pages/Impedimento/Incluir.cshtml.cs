@@ -17,11 +17,6 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
         [BindProperty]
         public ImpedimentoItem Impedimento { get; set; }
 
-        public void OnGet()
-        {
-
-        }
-
         public async Task<IActionResult> OnPostAsync(ImpedimentoItem impedimento)
         {
             if (!ModelState.IsValid)
