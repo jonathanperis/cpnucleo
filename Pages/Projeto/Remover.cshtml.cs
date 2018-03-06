@@ -12,10 +12,7 @@ namespace dotnet_cpnucleo_pages.Pages.Projeto
     {
         private readonly IRepository<ProjetoItem> _projetoRepository;
 
-        public RemoverModel(IRepository<ProjetoItem> projetoRepository)
-        {
-            _projetoRepository = projetoRepository;
-        }
+        public RemoverModel(IRepository<ProjetoItem> projetoRepository) => _projetoRepository = projetoRepository;
 
         [BindProperty]
         public ProjetoItem Projeto { get; set; }

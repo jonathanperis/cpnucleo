@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository.Recurso;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.Recurso;
-using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Recurso
 {
@@ -12,10 +12,7 @@ namespace dotnet_cpnucleo_pages.Pages.Recurso
     {
         private readonly IRecursoRepository _recursoRepository;
 
-        public ListarModel(IRecursoRepository recursoRepository)
-        {
-            _recursoRepository = recursoRepository;
-        }
+        public ListarModel(IRecursoRepository recursoRepository) => _recursoRepository = recursoRepository;
 
         [BindProperty]
         public RecursoItem Recurso { get; set; }

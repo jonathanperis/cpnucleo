@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository;
+using dotnet_cpnucleo_pages.Repository.Projeto;
+using dotnet_cpnucleo_pages.Repository.Recurso;
+using dotnet_cpnucleo_pages.Repository.RecursoProjeto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using dotnet_cpnucleo_pages.Repository.RecursoProjeto;
-using dotnet_cpnucleo_pages.Repository.Recurso;
-using Microsoft.AspNetCore.Authorization;
-using dotnet_cpnucleo_pages.Repository.Projeto;
-using dotnet_cpnucleo_pages.Repository;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
 {

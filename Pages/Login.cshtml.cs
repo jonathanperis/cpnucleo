@@ -1,11 +1,11 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using dotnet_cpnucleo_pages.Authentication;
-using Microsoft.AspNetCore.Authentication;
+﻿using dotnet_cpnucleo_pages.Authentication;
 using dotnet_cpnucleo_pages.Repository.Login;
 using dotnet_cpnucleo_pages.Repository.Recurso;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages
 {
@@ -13,10 +13,7 @@ namespace dotnet_cpnucleo_pages.Pages
     {
         private readonly IRecursoRepository _recursoRepository;
 
-        public LoginModel(IRecursoRepository recursoRepository)
-        {
-            _recursoRepository = recursoRepository;
-        }
+        public LoginModel(IRecursoRepository recursoRepository) => _recursoRepository = recursoRepository;
 
         [BindProperty]
         public LoginItem Login { get; set; }

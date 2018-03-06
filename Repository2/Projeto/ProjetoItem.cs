@@ -1,4 +1,4 @@
-using dotnet_cpnucleo_pages.Repository.Sistema;
+using dotnet_cpnucleo_pages.Repository2.Sistema;
 using System;
 using System.ComponentModel.DataAnnotations;
 

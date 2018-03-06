@@ -1,6 +1,6 @@
-﻿using dotnet_cpnucleo_pages.Repository;
-using dotnet_cpnucleo_pages.Repository.Projeto;
-using dotnet_cpnucleo_pages.Repository.Sistema;
+﻿using dotnet_cpnucleo_pages.Repository2;
+using dotnet_cpnucleo_pages.Repository2.Projeto;
+using dotnet_cpnucleo_pages.Repository2.Sistema;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

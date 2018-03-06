@@ -1,14 +1,14 @@
-﻿using System.Threading.Tasks;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
-using Microsoft.AspNetCore.Mvc;
-using dotnet_cpnucleo_pages.Repository.Sistema;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using dotnet_cpnucleo_pages.Repository;
 using dotnet_cpnucleo_pages.Repository.Projeto;
-using dotnet_cpnucleo_pages.Repository.Workflow;
+using dotnet_cpnucleo_pages.Repository.Sistema;
+using dotnet_cpnucleo_pages.Repository.Tarefa;
 using dotnet_cpnucleo_pages.Repository.TipoTarefa;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using dotnet_cpnucleo_pages.Repository.Workflow;
 using Microsoft.AspNetCore.Authorization;
-using dotnet_cpnucleo_pages.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Tarefa
 {

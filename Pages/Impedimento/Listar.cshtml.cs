@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using dotnet_cpnucleo_pages.Repository;
 using dotnet_cpnucleo_pages.Repository.Impedimento;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
-using dotnet_cpnucleo_pages.Repository;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Impedimento
 {
@@ -13,10 +13,7 @@ namespace dotnet_cpnucleo_pages.Pages.Impedimento
     {
         private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
 
-        public ListarModel(IRepository<ImpedimentoItem> impedimentoRepository)
-        {
-            _impedimentoRepository = impedimentoRepository;
-        }
+        public ListarModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
         [BindProperty]
         public ImpedimentoItem Impedimento { get; set; }

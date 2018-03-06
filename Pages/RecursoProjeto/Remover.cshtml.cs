@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using dotnet_cpnucleo_pages.Repository;
+using dotnet_cpnucleo_pages.Repository.Projeto;
 using dotnet_cpnucleo_pages.Repository.RecursoProjeto;
 using Microsoft.AspNetCore.Authorization;
-using dotnet_cpnucleo_pages.Repository.Projeto;
-using dotnet_cpnucleo_pages.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.RecursoProjeto
 {

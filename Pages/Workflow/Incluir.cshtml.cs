@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository.Workflow;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.Workflow;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Workflow
 {
@@ -11,10 +11,7 @@ namespace dotnet_cpnucleo_pages.Pages.Workflow
     {
         private readonly IWorkflowRepository _workflowRepository;
 
-        public IncluirModel(IWorkflowRepository workflowRepository)
-        {
-            _workflowRepository = workflowRepository;
-        }
+        public IncluirModel(IWorkflowRepository workflowRepository) => _workflowRepository = workflowRepository;
 
         [BindProperty]
         public WorkflowItem Workflow { get; set; }

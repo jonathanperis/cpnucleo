@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using dotnet_cpnucleo_pages.Repository;
+using dotnet_cpnucleo_pages.Repository.Impedimento;
 using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
 using dotnet_cpnucleo_pages.Repository.Tarefa;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
-using dotnet_cpnucleo_pages.Repository.Impedimento;
-using dotnet_cpnucleo_pages.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 {

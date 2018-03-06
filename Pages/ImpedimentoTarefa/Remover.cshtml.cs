@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.ImpedimentoTarefa;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
 {
@@ -11,10 +11,7 @@ namespace dotnet_cpnucleo_pages.Pages.ImpedimentoTarefa
     {
         private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        public RemoverModel(IImpedimentoTarefaRepository impedimentoTarefaRepository)
-        {
-            _impedimentoTarefaRepository = impedimentoTarefaRepository;
-        }
+        public RemoverModel(IImpedimentoTarefaRepository impedimentoTarefaRepository) => _impedimentoTarefaRepository = impedimentoTarefaRepository;
 
         [BindProperty]
         public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }

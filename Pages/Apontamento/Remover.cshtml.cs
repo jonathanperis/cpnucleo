@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository.Apontamento;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.Apontamento;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Apontamento
 {
@@ -11,10 +11,7 @@ namespace dotnet_cpnucleo_pages.Pages.Apontamento
     {
         private readonly IApontamentoRepository _apontamentoRepository;
 
-        public RemoverModel(IApontamentoRepository apontamentoRepository)
-        {
-            _apontamentoRepository = apontamentoRepository;
-        }
+        public RemoverModel(IApontamentoRepository apontamentoRepository) => _apontamentoRepository = apontamentoRepository;
 
         [BindProperty]
         public ApontamentoItem Apontamento { get; set; }

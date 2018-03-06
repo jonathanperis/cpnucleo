@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using dotnet_cpnucleo_pages.Repository.Tarefa;
+﻿using dotnet_cpnucleo_pages.Repository.Tarefa;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.Tarefa
 {
@@ -11,10 +11,7 @@ namespace dotnet_cpnucleo_pages.Pages.Tarefa
     {
         private readonly ITarefaRepository _tarefaRepository;
 
-        public RemoverModel(ITarefaRepository tarefaRepository)
-        {
-            _tarefaRepository = tarefaRepository;
-        }
+        public RemoverModel(ITarefaRepository tarefaRepository) => _tarefaRepository = tarefaRepository;
 
         [BindProperty]
         public TarefaItem Tarefa { get; set; }

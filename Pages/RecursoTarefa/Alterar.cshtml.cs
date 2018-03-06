@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using dotnet_cpnucleo_pages.Repository.RecursoProjeto;
+﻿using dotnet_cpnucleo_pages.Repository.RecursoProjeto;
 using dotnet_cpnucleo_pages.Repository.RecursoTarefa;
 using dotnet_cpnucleo_pages.Repository.Tarefa;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
 {

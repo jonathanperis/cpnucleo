@@ -1,4 +1,5 @@
 using Dapper;
+using dotnet_cpnucleo_pages.Repository2.Sistema;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -79,21 +80,43 @@ namespace dotnet_cpnucleo_pages.Repository2.Projeto
 
         public async Task<IEnumerable<ProjetoItem>> Listar()
         {
+            //using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
+            //{
+            //    string query = @"SELECT 
+            //                        PROJETO.PROJ_ID AS IdProjeto,
+            //                        PROJETO.PROJ_NOME AS Nome,
+            //                        PROJETO.PROJ_DATA_INCLUSAO AS DataInclusao,
+            //                        SISTEMA.SIS_ID AS Sistema.IdSistema,
+            //                        SISTEMA.SIS_NOME AS Sistema.Nome
+            //                    FROM 
+            //                        CPN_TB_PROJETO PROJETO
+            //                    INNER JOIN 
+            //                        CPN_TB_SISTEMA SISTEMA ON PROJETO.SIS_ID = SISTEMA.SIS_ID";
+
+            //    dbConnection.Open();
+            //    return await dbConnection.QueryAsync<ProjetoItem>(query);
+            //}
+
             using (IDbConnection dbConnection = new SqlConnection(ConnectionString))
             {
                 string query = @"SELECT 
                                     PROJETO.PROJ_ID AS IdProjeto,
                                     PROJETO.PROJ_NOME AS Nome,
                                     PROJETO.PROJ_DATA_INCLUSAO AS DataInclusao,
-                                    SISTEMA.SIS_ID AS Sistema.IdSistema,
                                     SISTEMA.SIS_NOME AS Sistema.Nome
                                 FROM 
                                     CPN_TB_PROJETO PROJETO
                                 INNER JOIN 
                                     CPN_TB_SISTEMA SISTEMA ON PROJETO.SIS_ID = SISTEMA.SIS_ID";
 
-                dbConnection.Open();
-                return await dbConnection.QueryAsync<ProjetoItem>(query);
+                return await dbConnection.QueryAsync<ProjetoItem, SistemaItem, ProjetoItem>(
+                        query,
+                        (projeto, sistema) =>
+                        {
+                            projeto.Sistema = sistema;
+                            return projeto;
+                        },
+                        splitOn: "IdSistema");
             }
         }
 

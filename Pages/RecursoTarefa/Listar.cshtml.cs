@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using dotnet_cpnucleo_pages.Repository.RecursoTarefa;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using dotnet_cpnucleo_pages.Repository.RecursoTarefa;
-using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
 {
@@ -12,10 +12,7 @@ namespace dotnet_cpnucleo_pages.Pages.RecursoTarefa
     {
         private readonly IRecursoTarefaRepository _recursoTarefaRepository;
 
-        public ListarModel(IRecursoTarefaRepository recursoTarefaRepository)
-        {
-            _recursoTarefaRepository = recursoTarefaRepository;
-        }
+        public ListarModel(IRecursoTarefaRepository recursoTarefaRepository) => _recursoTarefaRepository = recursoTarefaRepository;
 
         [BindProperty]
         public RecursoTarefaItem RecursoTarefa { get; set; }

@@ -1,5 +1,5 @@
-﻿using dotnet_cpnucleo_pages.Repository2;
-using dotnet_cpnucleo_pages.Repository2.Sistema;
+﻿using dotnet_cpnucleo_pages.Repository;
+using dotnet_cpnucleo_pages.Repository.Sistema;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,10 +12,7 @@ namespace dotnet_cpnucleo_pages.Pages.Sistema
     {
         private readonly IRepository<SistemaItem> _sistemaRepository;
 
-        public AlterarModel(IRepository<SistemaItem> sistemaRepository)
-        {
-            _sistemaRepository = sistemaRepository;
-        }
+        public AlterarModel(IRepository<SistemaItem> sistemaRepository) => _sistemaRepository = sistemaRepository;
 
         [BindProperty]
         public SistemaItem Sistema { get; set; }

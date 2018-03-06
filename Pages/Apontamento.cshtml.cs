@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using dotnet_cpnucleo_pages.Authentication;
 using dotnet_cpnucleo_pages.Repository.Apontamento;
 using dotnet_cpnucleo_pages.Repository.RecursoTarefa;
-using dotnet_cpnucleo_pages.Authentication;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace dotnet_cpnucleo_pages.Pages
 {
