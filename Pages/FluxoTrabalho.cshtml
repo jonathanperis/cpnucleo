@@ -732,8 +732,8 @@
     }
     <script>
         //var transport = signalR.TransportType.All;
-
         var transport = signalR.TransportType.ServerSentEvents;
+
         var connection = new signalR.HubConnection('/hubs/fluxoTrabalho', { transport: transport });
 
         connection.on('send', data => {
