@@ -29,7 +29,7 @@ namespace dotnet_cpnucleo_pages
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -98,15 +98,13 @@ namespace dotnet_cpnucleo_pages
                 app.UseExceptionHandler("/Erro");
             }
 
-            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
-
             app.UseMvc();
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<FluxoTrabalhoHub>("/hubs/fluxoTrabalho");
+                routes.MapHub<FluxoTrabalhoHub>("hubs/fluxoTrabalho");
             });
         }
     }
