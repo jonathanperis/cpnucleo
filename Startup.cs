@@ -98,7 +98,7 @@ namespace dotnet_cpnucleo_pages
                 app.UseExceptionHandler("/Erro");
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
 
