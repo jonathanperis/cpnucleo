@@ -90,12 +90,12 @@ namespace dotnet_cpnucleo_pages
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Erro");
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
