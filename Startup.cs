@@ -92,7 +92,7 @@ namespace dotnet_cpnucleo_pages
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+
             }
             else
             {
