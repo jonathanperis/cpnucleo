@@ -88,13 +88,15 @@ namespace dotnet_cpnucleo_pages
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseDeveloperExceptionPage();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Erro");
+                //app.UseExceptionHandler("/Erro");
                 app.UseHsts();
             }
 

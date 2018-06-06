@@ -648,7 +648,7 @@
     <!-- Toastr script -->
     <script src="~/js/plugins/toastr/toastr.min.js"></script>
     <!-- SignalR -->
-    <script src="~/js/signalr.min.js"></script>
+    <script src="~/lib/signalr/signalr.min.js"></script>
     @if (Model.Lista != null)
     {
         foreach (var workflow in Model.Lista)
@@ -732,15 +732,14 @@
         }
     }
     <script>
-        //var transport = signalR.TransportType.All;
-        var transport = signalR.TransportType.ServerSentEvents;
-
-        var connection = new signalR.HubConnection('/hubs/fluxoTrabalho', { transport: transport });
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/fluxoTrabalho")
+            .build();
 
         connection.on('send', data => {
             console.log(data);
         });
 
-        connection.start();
+        connection.start().catch(err => console.error(err.toString()));
     </script>
 }
