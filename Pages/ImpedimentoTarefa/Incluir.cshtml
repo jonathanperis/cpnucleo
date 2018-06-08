@@ -68,6 +68,14 @@
 @section Scripts {
     <!-- iCheck -->
     <script src="~/js/plugins/iCheck/icheck.min.js"></script>
-    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+        });
+    </script>    
+
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
