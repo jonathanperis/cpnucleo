@@ -38,7 +38,7 @@ namespace dotnet_cpnucleo_pages
                 options.Conventions.AddPageRoute("/Login", "");
             });
 
-            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+            services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
 
             services.Configure<ApplicationConfigurations>(
                 Configuration.GetSection("ApplicationConfigurations"));
