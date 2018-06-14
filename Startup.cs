@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -104,12 +105,15 @@ namespace dotnet_cpnucleo_pages
             app.UseStaticFiles();
             app.UseAuthentication();
 
-            app.UseMvc();
-
             app.UseSignalR(routes =>
             {
-                routes.MapHub<FluxoTrabalhoHub>("/hubs/fluxoTrabalho");
+                routes.MapHub<FluxoTrabalhoHub>("/hubs/fluxoTrabalhoHub", options => 
+                {
+                    options.Transports = HttpTransportType.ServerSentEvents;
+                });
             });
+
+            app.UseMvc();
         }
     }
 }

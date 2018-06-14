@@ -733,7 +733,7 @@
     }
     <script>
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/hubs/fluxoTrabalho")
+            .withUrl("/hubs/fluxoTrabalhoHub")
             .build();
 
         connection.on('send', data => {
