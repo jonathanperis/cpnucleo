@@ -27,8 +27,6 @@ namespace dotnet_cpnucleo_pages.Pages.Sistema
             await _sistemaRepository.Incluir(sistema);
 
             return RedirectToPage("Listar");
-
-            //TESTE.
         }
     }
 }
