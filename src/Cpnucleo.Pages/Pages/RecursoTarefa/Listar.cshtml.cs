@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Pages.Repository.RecursoTarefa;
+﻿using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

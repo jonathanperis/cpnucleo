@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Pages.Repository;
-using Cpnucleo.Pages.Repository.Projeto;
+﻿using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -26,10 +26,7 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public async Task<IActionResult> OnPostAsync(ProjetoItem projeto)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            if (!ModelState.IsValid) return Page();
 
             await _projetoRepository.Remover(projeto);
 

@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Pages.Repository.ImpedimentoTarefa;
+﻿using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -25,10 +26,7 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnPostAsync(ImpedimentoTarefaItem impedimentoTarefa)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            if (!ModelState.IsValid) return Page();
 
             await _impedimentoTarefaRepository.Remover(impedimentoTarefa);
 

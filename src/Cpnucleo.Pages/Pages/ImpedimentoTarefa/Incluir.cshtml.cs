@@ -1,7 +1,5 @@
-﻿using Cpnucleo.Pages.Repository;
-using Cpnucleo.Pages.Repository.Impedimento;
-using Cpnucleo.Pages.Repository.ImpedimentoTarefa;
-using Cpnucleo.Pages.Repository.Tarefa;
+﻿using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

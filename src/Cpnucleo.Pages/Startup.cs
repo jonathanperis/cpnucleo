@@ -1,17 +1,8 @@
 using Cpnucleo.Pages.Configuration;
+using Cpnucleo.Pages.Data;
 using Cpnucleo.Pages.Hubs;
+using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Repository;
-using Cpnucleo.Pages.Repository.Apontamento;
-using Cpnucleo.Pages.Repository.Impedimento;
-using Cpnucleo.Pages.Repository.ImpedimentoTarefa;
-using Cpnucleo.Pages.Repository.Projeto;
-using Cpnucleo.Pages.Repository.Recurso;
-using Cpnucleo.Pages.Repository.RecursoProjeto;
-using Cpnucleo.Pages.Repository.RecursoTarefa;
-using Cpnucleo.Pages.Repository.Sistema;
-using Cpnucleo.Pages.Repository.Tarefa;
-using Cpnucleo.Pages.Repository.TipoTarefa;
-using Cpnucleo.Pages.Repository.Workflow;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -91,7 +82,7 @@ namespace Cpnucleo.Pages
         {
             if (env.IsDevelopment())
             {
-
+                app.UseDeveloperExceptionPage();
             }
             else
             {
@@ -99,8 +90,6 @@ namespace Cpnucleo.Pages
                 app.UseHsts();
                 app.UseHttpsRedirection();                
             }
-
-            app.UseDeveloperExceptionPage();
 
             app.UseStaticFiles();
             app.UseAuthentication();

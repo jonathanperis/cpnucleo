@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Pages.Hubs;
-using Cpnucleo.Pages.Repository.Tarefa;
-using Cpnucleo.Pages.Repository.Workflow;
+using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Pages.Authentication;
-using Cpnucleo.Pages.Repository.Login;
-using Cpnucleo.Pages.Repository.Recurso;
+using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

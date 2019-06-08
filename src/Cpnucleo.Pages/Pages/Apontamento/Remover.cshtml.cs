@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Pages.Repository.Apontamento;
+﻿using Cpnucleo.Pages.Models;
+using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -25,10 +26,7 @@ namespace Cpnucleo.Pages.Pages.Apontamento
 
         public async Task<IActionResult> OnPostAsync(ApontamentoItem apontamento)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            if (!ModelState.IsValid) return Page();
 
             await _apontamentoRepository.Remover(apontamento);
 
