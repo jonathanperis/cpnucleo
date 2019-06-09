@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             var listaMock = new List<ProjetoItem> { };
 
             _projetoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
+
             var listarModel = new ListarModel(_projetoRepository.Object);
 
             // Act

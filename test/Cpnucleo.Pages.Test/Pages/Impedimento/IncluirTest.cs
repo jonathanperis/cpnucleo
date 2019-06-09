@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
             var impedimentoMock = new ImpedimentoItem { Nome = nome };
 
             _impedimentoRepository.Setup(x => x.IncluirAsync(impedimentoMock));
+
             var incluirModel = new IncluirModel(_impedimentoRepository.Object);
 
             // Act

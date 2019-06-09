@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
             var recursoMock = new RecursoItem { };
 
             _recursoRepository.Setup(x => x.ConsultarAsync(idRecurso)).ReturnsAsync(recursoMock);
+
             var RemoverModel = new RemoverModel(_recursoRepository.Object);
 
             // Act
@@ -35,9 +36,10 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
         public async Task Test_OnPostAsync(int idRecurso)
         {
             // Arrange
-            RecursoItem recursoMock = new RecursoItem { IdRecurso = idRecurso };
+            var recursoMock = new RecursoItem { IdRecurso = idRecurso };
 
             _recursoRepository.Setup(x => x.RemoverAsync(recursoMock));
+
             var removerModel = new RemoverModel(_recursoRepository.Object);
 
             // Act

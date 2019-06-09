@@ -44,7 +44,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
         public async Task Test_OnPostAsync(int idProjeto, string nome, int idSistema)
         {
             // Arrange
-            ProjetoItem projetoMock = new ProjetoItem { IdProjeto = idProjeto, Nome = nome, IdSistema = idSistema };
+            var projetoMock = new ProjetoItem { IdProjeto = idProjeto, Nome = nome, IdSistema = idSistema };
             var listaMock = new List<SistemaItem> { };
 
             _projetoRepository.Setup(x => x.AlterarAsync(projetoMock));

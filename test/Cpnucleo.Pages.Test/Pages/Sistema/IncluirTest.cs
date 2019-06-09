@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
             var sistemaMock = new SistemaItem { Nome = nome, Descricao = descricao };
 
             _sistemaRepository.Setup(x => x.IncluirAsync(sistemaMock));
+
             var incluirModel = new IncluirModel(_sistemaRepository.Object);
 
             // Act

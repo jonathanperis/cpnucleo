@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
             var listaMock = new List<ImpedimentoItem> { };
 
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
+
             var listarModel = new ListarModel(_impedimentoRepository.Object);
 
             // Act

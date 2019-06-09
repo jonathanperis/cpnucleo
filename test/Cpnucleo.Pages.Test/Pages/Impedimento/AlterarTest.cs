@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
             var impedimentoMock = new ImpedimentoItem { };
 
             _impedimentoRepository.Setup(x => x.ConsultarAsync(idImpedimento)).ReturnsAsync(impedimentoMock);
+
             var AlterarModel = new AlterarModel(_impedimentoRepository.Object);
 
             // Act
@@ -35,9 +36,10 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
         public async Task Test_OnPostAsync(int idImpedimento, string nome)
         {
             // Arrange
-            ImpedimentoItem impedimentoMock = new ImpedimentoItem { IdImpedimento = idImpedimento, Nome = nome };
+            var impedimentoMock = new ImpedimentoItem { IdImpedimento = idImpedimento, Nome = nome };
 
             _impedimentoRepository.Setup(x => x.AlterarAsync(impedimentoMock));
+
             var alterarModel = new AlterarModel(_impedimentoRepository.Object);
 
             // Act

@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
             var listaMock = new List<WorkflowItem> { };
 
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
+
             var listarModel = new ListarModel(_workflowRepository.Object);
 
             // Act

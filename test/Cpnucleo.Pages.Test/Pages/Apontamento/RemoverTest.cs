@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Apontamento
             var apontamentoMock = new ApontamentoItem { };
 
             _apontamentoRepository.Setup(x => x.ConsultarAsync(idApontamento)).ReturnsAsync(apontamentoMock);
+
             var RemoverModel = new RemoverModel(_apontamentoRepository.Object);
 
             // Act
@@ -35,9 +36,10 @@ namespace Cpnucleo.Pages.Test.Pages.Apontamento
         public async Task Test_OnPostAsync(int idApontamento)
         {
             // Arrange
-            ApontamentoItem apontamentoMock = new ApontamentoItem { IdApontamento = idApontamento };
+            var apontamentoMock = new ApontamentoItem { IdApontamento = idApontamento };
 
             _apontamentoRepository.Setup(x => x.RemoverAsync(apontamentoMock));
+
             var removerModel = new RemoverModel(_apontamentoRepository.Object);
 
             // Act

@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
             var workflowMock = new WorkflowItem { };
 
             _workflowRepository.Setup(x => x.ConsultarAsync(idWorkflow)).ReturnsAsync(workflowMock);
+
             var RemoverModel = new RemoverModel(_workflowRepository.Object);
 
             // Act
@@ -35,9 +36,10 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
         public async Task Test_OnPostAsync(int idWorkflow)
         {
             // Arrange
-            WorkflowItem workflowMock = new WorkflowItem { IdWorkflow = idWorkflow };
+            var workflowMock = new WorkflowItem { IdWorkflow = idWorkflow };
 
             _workflowRepository.Setup(x => x.RemoverAsync(workflowMock));
+
             var removerModel = new RemoverModel(_workflowRepository.Object);
 
             // Act

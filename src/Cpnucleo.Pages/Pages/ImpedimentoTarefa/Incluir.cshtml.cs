@@ -46,6 +46,8 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
+                Tarefa = await _tarefaRepository.ConsultarAsync(ImpedimentoTarefa.IdTarefa);
+
                 SelectImpedimentos = new SelectList(await _impedimentoRepository.ListarAsync(), "IdImpedimento", "Nome");
 
                 return Page();

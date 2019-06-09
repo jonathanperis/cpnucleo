@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
             var workflowMock = new WorkflowItem { Nome = nome, Ordem = ordem };
 
             _workflowRepository.Setup(x => x.IncluirAsync(workflowMock));
+
             var incluirModel = new IncluirModel(_workflowRepository.Object);
 
             // Act

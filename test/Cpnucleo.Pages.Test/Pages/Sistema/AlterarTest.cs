@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
             var sistemaMock = new SistemaItem { };
 
             _sistemaRepository.Setup(x => x.ConsultarAsync(idSistema)).ReturnsAsync(sistemaMock);
+
             var AlterarModel = new AlterarModel(_sistemaRepository.Object);
 
             // Act
@@ -35,9 +36,10 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
         public async Task Test_OnPostAsync(int idSistema, string nome, string descricao)
         {
             // Arrange
-            SistemaItem sistemaMock = new SistemaItem { IdSistema = idSistema, Nome = nome, Descricao = descricao };
+            var sistemaMock = new SistemaItem { IdSistema = idSistema, Nome = nome, Descricao = descricao };
 
             _sistemaRepository.Setup(x => x.AlterarAsync(sistemaMock));
+
             var alterarModel = new AlterarModel(_sistemaRepository.Object);
 
             // Act

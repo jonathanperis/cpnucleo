@@ -21,6 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             var projetoMock = new ProjetoItem { };
 
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
+
             var RemoverModel = new RemoverModel(_projetoRepository.Object);
 
             // Act
@@ -35,9 +36,10 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
         public async Task Test_OnPostAsync(int idProjeto)
         {
             // Arrange
-            ProjetoItem projetoMock = new ProjetoItem { IdProjeto = idProjeto };
+            var projetoMock = new ProjetoItem { IdProjeto = idProjeto };
 
             _projetoRepository.Setup(x => x.RemoverAsync(projetoMock));
+
             var removerModel = new RemoverModel(_projetoRepository.Object);
 
             // Act
