@@ -24,7 +24,7 @@ namespace Cpnucleo.Pages.Pages.Recurso
                 return Page();
             }
 
-            await _recursoRepository.Incluir(Recurso);
+            await _recursoRepository.IncluirAsync(Recurso);
 
             return RedirectToPage("Listar");
         }

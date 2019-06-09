@@ -56,12 +56,6 @@ namespace Cpnucleo.Pages.Models
         [Column("REC_ID", TypeName = "int")]
         public int IdRecurso { get; set; }
 
-        [NotMapped]
-        [Display(Name = "Semana")]      
-        public string DiaSemana { get; set; }
-
         public TarefaItem Tarefa { get; set; }
-
-        public RecursoItem Recurso { get; set; }
     }
 }

@@ -47,11 +47,11 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Tarefa = await _tarefaRepository.Consultar(Tarefa.IdTarefa);
-            SelectProjetos = new SelectList(await _projetoRepository.Listar(), "IdProjeto", "Nome");
-            SelectSistemas = new SelectList(await _sistemaRepository.Listar(), "IdSistema", "Descricao");
-            SelectWorkflows = new SelectList(await _workflowRepository.Listar(), "IdWorkflow", "Nome");
-            SelectTipoTarefas = new SelectList(await _tipoTarefaRepository.Listar(), "IdTipoTarefa", "Nome");
+            Tarefa = await _tarefaRepository.ConsultarAsync(Tarefa.IdTarefa);
+            SelectProjetos = new SelectList(await _projetoRepository.ListarAsync(), "IdProjeto", "Nome");
+            SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Descricao");
+            SelectWorkflows = new SelectList(await _workflowRepository.ListarAsync(), "IdWorkflow", "Nome");
+            SelectTipoTarefas = new SelectList(await _tipoTarefaRepository.ListarAsync(), "IdTipoTarefa", "Nome");
 
             return Page();
         }
@@ -60,15 +60,15 @@ namespace Cpnucleo.Pages.Pages.Tarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectProjetos = new SelectList(await _projetoRepository.Listar(), "IdProjeto", "Nome");
-                SelectSistemas = new SelectList(await _sistemaRepository.Listar(), "IdSistema", "Descricao");
-                SelectWorkflows = new SelectList(await _workflowRepository.Listar(), "IdWorkflow", "Nome");
-                SelectTipoTarefas = new SelectList(await _tipoTarefaRepository.Listar(), "IdTipoTarefa", "Nome");
+                SelectProjetos = new SelectList(await _projetoRepository.ListarAsync(), "IdProjeto", "Nome");
+                SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Descricao");
+                SelectWorkflows = new SelectList(await _workflowRepository.ListarAsync(), "IdWorkflow", "Nome");
+                SelectTipoTarefas = new SelectList(await _tipoTarefaRepository.ListarAsync(), "IdTipoTarefa", "Nome");
 
                 return Page();
             }
 
-            await _tarefaRepository.Alterar(Tarefa);
+            await _tarefaRepository.AlterarAsync(Tarefa);
 
             return RedirectToPage("Listar");
         }

@@ -29,8 +29,8 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            ImpedimentoTarefa = await _impedimentoTarefaRepository.Consultar(ImpedimentoTarefa.IdImpedimentoTarefa);
-            SelectImpedimentos = new SelectList(await _impedimentoRepository.Listar(), "IdImpedimento", "Nome");
+            ImpedimentoTarefa = await _impedimentoTarefaRepository.ConsultarAsync(ImpedimentoTarefa.IdImpedimentoTarefa);
+            SelectImpedimentos = new SelectList(await _impedimentoRepository.ListarAsync(), "IdImpedimento", "Nome");
 
             return Page();
         }
@@ -39,12 +39,12 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectImpedimentos = new SelectList(await _impedimentoRepository.Listar(), "IdImpedimento", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoRepository.ListarAsync(), "IdImpedimento", "Nome");
 
                 return Page();
             }
 
-            await _impedimentoTarefaRepository.Alterar(ImpedimentoTarefa);
+            await _impedimentoTarefaRepository.AlterarAsync(ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }

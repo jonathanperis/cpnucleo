@@ -35,7 +35,7 @@ namespace Cpnucleo.Pages.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _workflowRepository.ListarTarefasWorkflow();
+            Lista = await _workflowRepository.ListarTarefasWorkflowAsync();
 
             int qtdLista = Lista.Count();
             qtdLista = qtdLista == 1 ? 2 : qtdLista;

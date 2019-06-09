@@ -6,10 +6,10 @@ namespace Cpnucleo.Pages.Repository
 {
     public interface IApontamentoRepository : IRepository<ApontamentoItem>
     {
-        Task ApontarHoras(ApontamentoItem apontamento);
+        Task ApontarHorasAsync(ApontamentoItem apontamento);
 
-        Task<int> ObterTotalHorasPoridRecurso(int idRecurso, int idTarefa);
+        Task<int> ObterTotalHorasPoridRecursoAsync(int idRecurso, int idTarefa);
 
-        Task<IEnumerable<ApontamentoItem>> ListarPoridRecurso(int idRecurso);
+        Task<IEnumerable<ApontamentoItem>> ListarPoridRecursoAsync(int idRecurso);
     }
 }

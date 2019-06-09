@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _recursoProjetoRepository.ListarPoridProjeto(RecursoProjeto.IdProjeto);
+            Lista = await _recursoProjetoRepository.ListarPoridProjetoAsync(RecursoProjeto.IdProjeto);
 
             ViewData["idProjeto"] = RecursoProjeto.IdProjeto;
 

@@ -7,10 +7,7 @@ namespace Cpnucleo.Pages.Models
     [Table("CPN_TB_RECURSO")]
     public class RecursoItem
     {
-        public RecursoItem()
-        {
-            Ativo = true;
-        }
+        public RecursoItem() => Ativo = true;
 
         [Key]
         [Display(Name = "Código Recurso")]      
@@ -61,6 +58,6 @@ namespace Cpnucleo.Pages.Models
         [Display(Name = "Data de Alteração")]      
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Column("REC_DATA_ALTERACAO", TypeName = "datetime")]
-        public DateTime? DataAlteracao { get; set; }                
+        public DateTime? DataAlteracao { get; set; }
     }
 }

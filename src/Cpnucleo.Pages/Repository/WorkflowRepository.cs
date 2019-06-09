@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public WorkflowRepository(Context context) => _context = context;
 
-        public async Task Incluir(WorkflowItem workflow)
+        public async Task IncluirAsync(WorkflowItem workflow)
         {
             workflow.DataInclusao = DateTime.Now;
 
@@ -22,9 +22,9 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(WorkflowItem workflow)
+        public async Task AlterarAsync(WorkflowItem workflow)
         {
-            var workflowItem = await Consultar(workflow.IdWorkflow);
+            var workflowItem = await ConsultarAsync(workflow.IdWorkflow);
 
             workflowItem.Nome = workflow.Nome;
             workflowItem.Ordem = workflow.Ordem;
@@ -35,13 +35,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<WorkflowItem> Consultar(int idWorkflow)
+        public async Task<WorkflowItem> ConsultarAsync(int idWorkflow)
         {
             return await _context.Workflows
                 .SingleOrDefaultAsync(x => x.IdWorkflow == idWorkflow);
         }
 
-        public async Task<IEnumerable<WorkflowItem>> Listar()
+        public async Task<IEnumerable<WorkflowItem>> ListarAsync()
         {
             return await _context.Workflows
                 .AsNoTracking()
@@ -49,15 +49,15 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task Remover(WorkflowItem workflow)
+        public async Task RemoverAsync(WorkflowItem workflow)
         {    
-            var workflowItem = await Consultar(workflow.IdWorkflow);            
+            var workflowItem = await ConsultarAsync(workflow.IdWorkflow);            
 
             _context.Workflows.Remove(workflowItem);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflow()
+        public async Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflowAsync()
         {
             var listaWorkflow =  await _context.Workflows
                 .AsNoTracking()

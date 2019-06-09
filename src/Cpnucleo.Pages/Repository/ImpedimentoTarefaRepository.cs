@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public ImpedimentoTarefaRepository(Context context) => _context = context;
 
-        public async Task Incluir(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task IncluirAsync(ImpedimentoTarefaItem impedimentoTarefa)
         {
             impedimentoTarefa.DataInclusao = DateTime.Now;
             
@@ -22,9 +22,9 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task AlterarAsync(ImpedimentoTarefaItem impedimentoTarefa)
         {
-            var impedimentoTarefaItem = await Consultar(impedimentoTarefa.IdImpedimentoTarefa);
+            var impedimentoTarefaItem = await ConsultarAsync(impedimentoTarefa.IdImpedimentoTarefa);
 
             impedimentoTarefaItem.Descricao = impedimentoTarefa.Descricao;
             impedimentoTarefaItem.IdImpedimento = impedimentoTarefa.IdImpedimento;
@@ -36,7 +36,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ImpedimentoTarefaItem> Consultar(int idImpedimentoTarefa)
+        public async Task<ImpedimentoTarefaItem> ConsultarAsync(int idImpedimentoTarefa)
         {
             return await _context.ImpedimentoTarefas
                 .Include(x => x.Tarefa)
@@ -44,20 +44,20 @@ namespace Cpnucleo.Pages.Repository
                 .SingleOrDefaultAsync(x => x.IdImpedimentoTarefa == idImpedimentoTarefa);
         }
 
-        public async Task Remover(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task RemoverAsync(ImpedimentoTarefaItem impedimentoTarefa)
         {    
-            var impedimentoTarefaItem = await Consultar(impedimentoTarefa.IdImpedimentoTarefa);            
+            var impedimentoTarefaItem = await ConsultarAsync(impedimentoTarefa.IdImpedimentoTarefa);            
 
             _context.ImpedimentoTarefas.Remove(impedimentoTarefaItem);
             await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<ImpedimentoTarefaItem>> Listar()
+        public Task<IEnumerable<ImpedimentoTarefaItem>> ListarAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefa(int idTarefa)
+        public async Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefaAsync(int idTarefa)
         {
             return await _context.ImpedimentoTarefas
                 .AsNoTracking()

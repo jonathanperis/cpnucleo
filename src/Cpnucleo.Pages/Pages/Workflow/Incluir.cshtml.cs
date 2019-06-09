@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Pages.Workflow
         {
             if (!ModelState.IsValid) return Page();
 
-            await _workflowRepository.Incluir(Workflow);
+            await _workflowRepository.IncluirAsync(Workflow);
 
             return RedirectToPage("Listar");
         }

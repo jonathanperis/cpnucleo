@@ -19,14 +19,14 @@ namespace Cpnucleo.Pages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Recurso = await _recursoRepository.Consultar(Recurso.IdRecurso);
+            Recurso = await _recursoRepository.ConsultarAsync(Recurso.IdRecurso);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _recursoRepository.Remover(Recurso);
+            await _recursoRepository.RemoverAsync(Recurso);
 
             return RedirectToPage("Listar");
         }

@@ -6,6 +6,6 @@ namespace Cpnucleo.Pages.Repository
 {
     public interface IWorkflowRepository : IRepository<WorkflowItem>
     {
-        Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflow();        
+        Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflowAsync();        
     }
 }

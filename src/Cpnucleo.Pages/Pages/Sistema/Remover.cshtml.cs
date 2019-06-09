@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Sistema
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Sistema = await _sistemaRepository.Consultar(Sistema.IdSistema);
+            Sistema = await _sistemaRepository.ConsultarAsync(Sistema.IdSistema);
 
             return Page();
         }
@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Sistema
         {
             if (!ModelState.IsValid) return Page();
 
-            await _sistemaRepository.Remover(Sistema);
+            await _sistemaRepository.RemoverAsync(Sistema);
 
             return RedirectToPage("Listar");
         }

@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Pages.Impedimento
         {
             if (!ModelState.IsValid) return Page();
 
-            await _impedimentoRepository.Incluir(Impedimento);
+            await _impedimentoRepository.IncluirAsync(Impedimento);
 
             return RedirectToPage("Listar");
         }

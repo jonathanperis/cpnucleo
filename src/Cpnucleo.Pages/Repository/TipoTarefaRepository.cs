@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public TipoTarefaRepository(Context context) => _context = context;
 
-        public async Task Incluir(TipoTarefaItem tipoTarefa)
+        public async Task IncluirAsync(TipoTarefaItem tipoTarefa)
         {
             tipoTarefa.DataInclusao = DateTime.Now;
             
@@ -22,9 +22,9 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(TipoTarefaItem tipoTarefa)
+        public async Task AlterarAsync(TipoTarefaItem tipoTarefa)
         {
-            var tipoTarefaItem = await Consultar(tipoTarefa.IdTipoTarefa);
+            var tipoTarefaItem = await ConsultarAsync(tipoTarefa.IdTipoTarefa);
 
             tipoTarefaItem.Nome = tipoTarefa.Nome;
 
@@ -34,13 +34,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<TipoTarefaItem> Consultar(int idTipoTarefa)
+        public async Task<TipoTarefaItem> ConsultarAsync(int idTipoTarefa)
         {
             return await _context.TipoTarefas
                 .SingleOrDefaultAsync(x => x.IdTipoTarefa == idTipoTarefa);
         }
 
-        public async Task<IEnumerable<TipoTarefaItem>> Listar()
+        public async Task<IEnumerable<TipoTarefaItem>> ListarAsync()
         {
             return await _context.TipoTarefas
                 .AsNoTracking()
@@ -48,9 +48,9 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task Remover(TipoTarefaItem tipoTarefa)
+        public async Task RemoverAsync(TipoTarefaItem tipoTarefa)
         {    
-            var tipoTarefaItem = await Consultar(tipoTarefa.IdTipoTarefa);            
+            var tipoTarefaItem = await ConsultarAsync(tipoTarefa.IdTipoTarefa);            
 
             _context.TipoTarefas.Remove(tipoTarefaItem);
             await _context.SaveChangesAsync();

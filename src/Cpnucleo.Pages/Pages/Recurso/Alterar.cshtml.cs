@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Recurso = await _recursoRepository.Consultar(Recurso.IdRecurso);
+            Recurso = await _recursoRepository.ConsultarAsync(Recurso.IdRecurso);
 
             return Page();
         }
@@ -31,7 +31,7 @@ namespace Cpnucleo.Pages.Pages.Recurso
                 return Page();
             }
 
-            await _recursoRepository.Alterar(Recurso);
+            await _recursoRepository.AlterarAsync(Recurso);
 
             return RedirectToPage("Listar");
         }

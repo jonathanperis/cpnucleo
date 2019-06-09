@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public RecursoProjetoRepository(Context context) => _context = context;
 
-        public async Task Incluir(RecursoProjetoItem recursoProjeto)
+        public async Task IncluirAsync(RecursoProjetoItem recursoProjeto)
         {
             recursoProjeto.DataInclusao = DateTime.Now;
             
@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RecursoProjetoItem> Consultar(int idRecursoProjeto)
+        public async Task<RecursoProjetoItem> ConsultarAsync(int idRecursoProjeto)
         {
             return await _context.RecursoProjetos
                 .Include(x => x.Projeto)
@@ -30,25 +30,25 @@ namespace Cpnucleo.Pages.Repository
                 .SingleOrDefaultAsync(x => x.IdRecursoProjeto == idRecursoProjeto);
         }
 
-        public async Task Remover(RecursoProjetoItem recursoProjeto)
+        public async Task RemoverAsync(RecursoProjetoItem recursoProjeto)
         {
-            var recursoProjetoItem = await Consultar(recursoProjeto.IdRecursoProjeto);
+            var recursoProjetoItem = await ConsultarAsync(recursoProjeto.IdRecursoProjeto);
 
             _context.RecursoProjetos.Remove(recursoProjetoItem);
             await _context.SaveChangesAsync();
         }
 
-        public Task Alterar(RecursoProjetoItem item)
+        public Task AlterarAsync(RecursoProjetoItem item)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<RecursoProjetoItem>> Listar()
+        public Task<IEnumerable<RecursoProjetoItem>> ListarAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<RecursoProjetoItem>> ListarPoridProjeto(int idProjeto)
+        public async Task<IEnumerable<RecursoProjetoItem>> ListarPoridProjetoAsync(int idProjeto)
         {
             return await _context.RecursoProjetos
                 .AsNoTracking()

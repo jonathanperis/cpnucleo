@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Workflow
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Workflow = await _workflowRepository.Consultar(Workflow.IdWorkflow);
+            Workflow = await _workflowRepository.ConsultarAsync(Workflow.IdWorkflow);
 
             return Page();
         }
@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Workflow
         {
             if (!ModelState.IsValid) return Page();
 
-            await _workflowRepository.Remover(Workflow);
+            await _workflowRepository.RemoverAsync(Workflow);
 
             return RedirectToPage("Listar");
         }

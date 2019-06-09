@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Pages.Impedimento
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _impedimentoRepository.Listar();
+            Lista = await _impedimentoRepository.ListarAsync();
 
             return Page();
         }

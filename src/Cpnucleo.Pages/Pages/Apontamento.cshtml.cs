@@ -36,8 +36,8 @@ namespace Cpnucleo.Pages.Pages
             string retorno = ClaimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             int idRecurso = int.Parse(retorno);
 
-            Lista = await _apontamentoRepository.ListarPoridRecurso(idRecurso);
-            ListaRecursoTarefas = await _recursoTarefaRepository.ListarPoridRecurso(idRecurso);
+            Lista = await _apontamentoRepository.ListarPoridRecursoAsync(idRecurso);
+            ListaRecursoTarefas = await _recursoTarefaRepository.ListarPoridRecursoAsync(idRecurso);
 
             return Page();
         }
@@ -46,7 +46,7 @@ namespace Cpnucleo.Pages.Pages
         {
             if (!ModelState.IsValid) return Page();
 
-            await _apontamentoRepository.ApontarHoras(Apontamento);
+            await _apontamentoRepository.ApontarHorasAsync(Apontamento);
 
             return RedirectToPage("Apontamento", new { idRecurso = Apontamento.IdRecurso });
         }

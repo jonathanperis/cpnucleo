@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Repository
             _tarefaRepository = tarefaRepository;
         }        
 
-        public async Task Incluir(ApontamentoItem apontamento)
+        public async Task IncluirAsync(ApontamentoItem apontamento)
         {           
             apontamento.DataInclusao = DateTime.Now;
             
@@ -29,19 +29,19 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();          
         }
 
-        public Task Alterar(ApontamentoItem apontamento)
+        public Task AlterarAsync(ApontamentoItem apontamento)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ApontamentoItem> Consultar(int idApontamento)
+        public async Task<ApontamentoItem> ConsultarAsync(int idApontamento)
         {
             return await _context.Apontamentos
                 .Include(x => x.Tarefa)
                 .SingleOrDefaultAsync(x => x.IdApontamento == idApontamento);
         }
 
-        public async Task<IEnumerable<ApontamentoItem>> Listar()
+        public async Task<IEnumerable<ApontamentoItem>> ListarAsync()
         {
             return await _context.Apontamentos
                 .AsNoTracking()
@@ -50,25 +50,25 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }  
 
-        public async Task Remover(ApontamentoItem apontamento)
+        public async Task RemoverAsync(ApontamentoItem apontamento)
         {    
-            var apontamentoItem = await Consultar(apontamento.IdApontamento);            
+            var apontamentoItem = await ConsultarAsync(apontamento.IdApontamento);            
 
             _context.Apontamentos.Remove(apontamentoItem);
             await _context.SaveChangesAsync();
         }
 
-        public async Task ApontarHoras(ApontamentoItem apontamento)
+        public async Task ApontarHorasAsync(ApontamentoItem apontamento)
         {
-            await Incluir(apontamento);
+            await IncluirAsync(apontamento);
 
-            var tarefaItem = await _tarefaRepository.Consultar(apontamento.IdTarefa);
+            var tarefaItem = await _tarefaRepository.ConsultarAsync(apontamento.IdTarefa);
             tarefaItem.PercentualConcluido = apontamento.PercentualConcluido;
 
-            await _tarefaRepository.Alterar(tarefaItem);
+            await _tarefaRepository.AlterarAsync(tarefaItem);
         }
 
-        public async Task<int> ObterTotalHorasPoridRecurso(int idRecurso, int idTarefa)
+        public async Task<int> ObterTotalHorasPoridRecursoAsync(int idRecurso, int idTarefa)
         {
             return await _context.Apontamentos
                 .AsNoTracking()
@@ -78,7 +78,7 @@ namespace Cpnucleo.Pages.Repository
                 .SumAsync(x => x.QtdHoras);
         }              
 
-        public async Task<IEnumerable<ApontamentoItem>> ListarPoridRecurso(int idRecurso)
+        public async Task<IEnumerable<ApontamentoItem>> ListarPoridRecursoAsync(int idRecurso)
         {
             return await _context.Apontamentos
                 .AsNoTracking()

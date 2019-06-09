@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _tarefaRepository.Listar();
+            Lista = await _tarefaRepository.ListarAsync();
 
             return Page();
         }

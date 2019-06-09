@@ -32,6 +32,6 @@ namespace Cpnucleo.Pages.Models
         [Display(Name = "Data de Alteração")]      
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Column("SIS_DATA_ALTERACAO", TypeName = "datetime")]
-        public DateTime? DataAlteracao { get; set; }        
+        public DateTime? DataAlteracao { get; set; }
     }
 }

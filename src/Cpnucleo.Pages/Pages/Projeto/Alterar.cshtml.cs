@@ -28,8 +28,8 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Projeto = await _projetoRepository.Consultar(Projeto.IdProjeto);
-            SelectSistemas = new SelectList(await _sistemaRepository.Listar(), "IdSistema", "Nome");
+            Projeto = await _projetoRepository.ConsultarAsync(Projeto.IdProjeto);
+            SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Nome");
 
             return Page();
         }
@@ -38,12 +38,12 @@ namespace Cpnucleo.Pages.Pages.Projeto
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(await _sistemaRepository.Listar(), "IdSistema", "Nome");
+                SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Nome");
 
                 return Page();
             }
 
-            await _projetoRepository.Alterar(Projeto);
+            await _projetoRepository.AlterarAsync(Projeto);
 
             return RedirectToPage("Listar");
         }

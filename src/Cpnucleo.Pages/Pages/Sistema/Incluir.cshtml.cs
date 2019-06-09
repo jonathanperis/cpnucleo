@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Pages.Sistema
         {
             if (!ModelState.IsValid) return Page();
 
-            await _sistemaRepository.Incluir(Sistema);
+            await _sistemaRepository.IncluirAsync(Sistema);
 
             return RedirectToPage("Listar");
         }

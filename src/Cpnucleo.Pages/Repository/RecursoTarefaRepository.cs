@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Repository
             _apontamentoRepository = apontamentoRepository;
         }        
 
-        public async Task Incluir(RecursoTarefaItem recursoTarefa)
+        public async Task IncluirAsync(RecursoTarefaItem recursoTarefa)
         {
             recursoTarefa.DataInclusao = DateTime.Now;
             
@@ -29,9 +29,9 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(RecursoTarefaItem recursoTarefa)
+        public async Task AlterarAsync(RecursoTarefaItem recursoTarefa)
         {
-            var recursoTarefaItem = await Consultar(recursoTarefa.IdRecursoTarefa);
+            var recursoTarefaItem = await ConsultarAsync(recursoTarefa.IdRecursoTarefa);
 
             recursoTarefaItem.IdRecurso = recursoTarefa.IdRecurso;
             recursoTarefaItem.PercentualTarefa = recursoTarefa.PercentualTarefa;
@@ -42,7 +42,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RecursoTarefaItem> Consultar(int idRecursoTarefa)
+        public async Task<RecursoTarefaItem> ConsultarAsync(int idRecursoTarefa)
         {
             return await _context.RecursoTarefas
                 .Include(x => x.Tarefa)
@@ -50,7 +50,7 @@ namespace Cpnucleo.Pages.Repository
                 .SingleOrDefaultAsync(x => x.IdRecursoTarefa == idRecursoTarefa);
         }
 
-        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridTarefa(int idTarefa)
+        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridTarefaAsync(int idTarefa)
         {
             return await _context.RecursoTarefas
                 .AsNoTracking()
@@ -61,20 +61,20 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task Remover(RecursoTarefaItem recursoTarefa)
+        public async Task RemoverAsync(RecursoTarefaItem recursoTarefa)
         {
-            var recursoTarefaItem = await Consultar(recursoTarefa.IdRecursoTarefa);
+            var recursoTarefaItem = await ConsultarAsync(recursoTarefa.IdRecursoTarefa);
 
             _context.RecursoTarefas.Remove(recursoTarefaItem);
             await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<RecursoTarefaItem>> Listar()
+        public Task<IEnumerable<RecursoTarefaItem>> ListarAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridRecurso(int idRecurso)
+        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridRecursoAsync(int idRecurso)
         {
             var listaRecursoTarefa = await _context.RecursoTarefas
                 .AsNoTracking()
@@ -88,7 +88,7 @@ namespace Cpnucleo.Pages.Repository
 
             foreach (var item in listaRecursoTarefa)
             {
-                item.HorasUtilizadas = await _apontamentoRepository.ObterTotalHorasPoridRecurso(item.IdRecurso, item.IdTarefa);
+                item.HorasUtilizadas = await _apontamentoRepository.ObterTotalHorasPoridRecursoAsync(item.IdRecurso, item.IdTarefa);
 
                 if (item.PercentualTarefa != null)
                 {

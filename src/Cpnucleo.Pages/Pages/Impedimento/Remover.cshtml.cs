@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Impedimento
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Impedimento = await _impedimentoRepository.Consultar(Impedimento.IdImpedimento);
+            Impedimento = await _impedimentoRepository.ConsultarAsync(Impedimento.IdImpedimento);
 
             return Page();
         }
@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Impedimento
         {
             if (!ModelState.IsValid) return Page();
 
-            await _impedimentoRepository.Remover(Impedimento);
+            await _impedimentoRepository.RemoverAsync(Impedimento);
 
             return RedirectToPage("Listar");
         }

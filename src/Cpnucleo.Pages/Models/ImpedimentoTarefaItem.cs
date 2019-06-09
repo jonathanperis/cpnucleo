@@ -44,6 +44,6 @@ namespace Cpnucleo.Pages.Models
 
         public TarefaItem Tarefa { get; set; }
 
-        public ImpedimentoItem Impedimento { get; set; }        
+        public ImpedimentoItem Impedimento { get; set; }
     }
 }

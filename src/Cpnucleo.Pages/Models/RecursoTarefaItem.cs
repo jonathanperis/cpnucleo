@@ -39,12 +39,12 @@ namespace Cpnucleo.Pages.Models
         [Column("TAR_ID", TypeName = "int")]
         public int IdTarefa { get; set; }
 
+        public TarefaItem Tarefa { get; set; }
+
         [NotMapped]
         public int HorasUtilizadas { get; set; }
 
         [NotMapped]
         public int HorasDisponiveis { get; set; }
-
-        public TarefaItem Tarefa { get; set; }
     }
 }

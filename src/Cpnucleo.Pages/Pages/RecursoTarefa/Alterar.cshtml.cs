@@ -33,8 +33,8 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            RecursoTarefa = await _recursoTarefaRepository.Consultar(RecursoTarefa.IdRecursoTarefa);
-            SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
+            RecursoTarefa = await _recursoTarefaRepository.ConsultarAsync(RecursoTarefa.IdRecursoTarefa);
+            SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjetoAsync(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
             return Page();
         }
@@ -43,13 +43,13 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa.Tarefa = await _tarefaRepository.Consultar(RecursoTarefa.IdTarefa);
-                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
+                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(RecursoTarefa.IdTarefa);
+                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjetoAsync(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
                 return Page();
             }
 
-            await _recursoTarefaRepository.Alterar(RecursoTarefa);
+            await _recursoTarefaRepository.AlterarAsync(RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }

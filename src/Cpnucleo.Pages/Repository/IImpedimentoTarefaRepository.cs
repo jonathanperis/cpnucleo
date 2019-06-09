@@ -6,6 +6,6 @@ namespace Cpnucleo.Pages.Repository
 {
     public interface IImpedimentoTarefaRepository : IRepository<ImpedimentoTarefaItem>
     {
-        Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefa(int idTarefa);
+        Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefaAsync(int idTarefa);
     }
 }

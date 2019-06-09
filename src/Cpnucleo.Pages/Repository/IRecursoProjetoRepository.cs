@@ -6,6 +6,6 @@ namespace Cpnucleo.Pages.Repository
 {
     public interface IRecursoProjetoRepository : IRepository<RecursoProjetoItem>
     {
-        Task<IEnumerable<RecursoProjetoItem>> ListarPoridProjeto(int idProjeto);
+        Task<IEnumerable<RecursoProjetoItem>> ListarPoridProjetoAsync(int idProjeto);
     }
 }

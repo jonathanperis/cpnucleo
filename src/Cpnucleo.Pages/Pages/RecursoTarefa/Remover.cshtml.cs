@@ -26,7 +26,7 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            RecursoTarefa = await _recursoTarefaRepository.Consultar(RecursoTarefa.IdRecursoTarefa);
+            RecursoTarefa = await _recursoTarefaRepository.ConsultarAsync(RecursoTarefa.IdRecursoTarefa);
 
             return Page();
         }
@@ -35,12 +35,12 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa.Tarefa = await _tarefaRepository.Consultar(RecursoTarefa.IdTarefa);
+                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(RecursoTarefa.IdTarefa);
 
                 return Page();
             }
 
-            await _recursoTarefaRepository.Remover(RecursoTarefa);
+            await _recursoTarefaRepository.RemoverAsync(RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }

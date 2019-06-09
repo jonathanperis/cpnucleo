@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Apontamento
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Apontamento = await _apontamentoRepository.Consultar(Apontamento.IdApontamento);
+            Apontamento = await _apontamentoRepository.ConsultarAsync(Apontamento.IdApontamento);
 
             return Page();
         }
@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Apontamento
         {
             if (!ModelState.IsValid) return Page();
 
-            await _apontamentoRepository.Remover(Apontamento);
+            await _apontamentoRepository.RemoverAsync(Apontamento);
 
             return RedirectToPage("/Apontamento");
         }

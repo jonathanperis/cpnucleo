@@ -26,7 +26,7 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            RecursoProjeto = await _recursoProjetoRepository.Consultar(RecursoProjeto.IdRecursoProjeto);
+            RecursoProjeto = await _recursoProjetoRepository.ConsultarAsync(RecursoProjeto.IdRecursoProjeto);
 
             return Page();
         }
@@ -35,12 +35,12 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjeto.Projeto = await _projetoRepository.Consultar(RecursoProjeto.IdProjeto);
+                RecursoProjeto.Projeto = await _projetoRepository.ConsultarAsync(RecursoProjeto.IdProjeto);
 
                 return Page();
             }
 
-            await _recursoProjetoRepository.Remover(RecursoProjeto);
+            await _recursoProjetoRepository.RemoverAsync(RecursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }

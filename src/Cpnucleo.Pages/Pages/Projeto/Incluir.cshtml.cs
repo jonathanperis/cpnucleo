@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            SelectSistemas = new SelectList(await _sistemaRepository.Listar(), "IdSistema", "Nome");
+            SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Nome");
 
             return Page();
         }
@@ -37,12 +37,12 @@ namespace Cpnucleo.Pages.Pages.Projeto
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(await _sistemaRepository.Listar(), "IdSistema", "Nome");
+                SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Nome");
 
                 return Page();
             }
 
-            await _projetoRepository.Incluir(Projeto);
+            await _projetoRepository.IncluirAsync(Projeto);
 
             return RedirectToPage("Listar");
         }

@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public ImpedimentoRepository(Context context) => _context = context;
 
-        public async Task Incluir(ImpedimentoItem impedimento)
+        public async Task IncluirAsync(ImpedimentoItem impedimento)
         {
             impedimento.DataInclusao = DateTime.Now;
             
@@ -22,9 +22,9 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(ImpedimentoItem impedimento)
+        public async Task AlterarAsync(ImpedimentoItem impedimento)
         {
-            var impedimentoItem = await Consultar(impedimento.IdImpedimento);
+            var impedimentoItem = await ConsultarAsync(impedimento.IdImpedimento);
 
             impedimentoItem.Nome = impedimento.Nome;
 
@@ -34,13 +34,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ImpedimentoItem> Consultar(int idImpedimento)
+        public async Task<ImpedimentoItem> ConsultarAsync(int idImpedimento)
         {
             return await _context.Impedimentos
                 .SingleOrDefaultAsync(x => x.IdImpedimento == idImpedimento);
         }
 
-        public async Task<IEnumerable<ImpedimentoItem>> Listar()
+        public async Task<IEnumerable<ImpedimentoItem>> ListarAsync()
         {
             return await _context.Impedimentos
                 .AsNoTracking()
@@ -48,9 +48,9 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task Remover(ImpedimentoItem impedimento)
+        public async Task RemoverAsync(ImpedimentoItem impedimento)
         {    
-            var impedimentoItem = await Consultar(impedimento.IdImpedimento);            
+            var impedimentoItem = await ConsultarAsync(impedimento.IdImpedimento);            
 
             _context.Impedimentos.Remove(impedimentoItem);
             await _context.SaveChangesAsync();

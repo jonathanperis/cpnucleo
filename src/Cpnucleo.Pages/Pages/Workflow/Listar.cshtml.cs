@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Pages.Workflow
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _workflowRepository.Listar();
+            Lista = await _workflowRepository.ListarAsync();
 
             return Page();
         }

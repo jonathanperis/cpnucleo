@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public SistemaRepository(Context context) => _context = context;
 
-        public async Task Incluir(SistemaItem sistema)
+        public async Task IncluirAsync(SistemaItem sistema)
         {
             sistema.DataInclusao = DateTime.Now;
             
@@ -22,9 +22,9 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Alterar(SistemaItem sistema)
+        public async Task AlterarAsync(SistemaItem sistema)
         {
-            var sistemaItem = await Consultar(sistema.IdSistema);
+            var sistemaItem = await ConsultarAsync(sistema.IdSistema);
 
             sistemaItem.Nome = sistema.Nome;
             sistemaItem.Descricao = sistema.Descricao;
@@ -35,13 +35,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<SistemaItem> Consultar(int idSistema)
+        public async Task<SistemaItem> ConsultarAsync(int idSistema)
         {
             return await _context.Sistemas
                 .SingleOrDefaultAsync(x => x.IdSistema == idSistema);
         }
 
-        public async Task<IEnumerable<SistemaItem>> Listar()
+        public async Task<IEnumerable<SistemaItem>> ListarAsync()
         {
             return await _context.Sistemas
                 .AsNoTracking()
@@ -49,9 +49,9 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task Remover(SistemaItem sistema)
+        public async Task RemoverAsync(SistemaItem sistema)
         {    
-            var sistemaItem = await Consultar(sistema.IdSistema);            
+            var sistemaItem = await ConsultarAsync(sistema.IdSistema);            
 
             _context.Sistemas.Remove(sistemaItem);
             await _context.SaveChangesAsync();

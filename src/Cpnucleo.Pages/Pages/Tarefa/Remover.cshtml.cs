@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Tarefa = await _tarefaRepository.Consultar(Tarefa.IdTarefa);
+            Tarefa = await _tarefaRepository.ConsultarAsync(Tarefa.IdTarefa);
 
             return Page();
         }
@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
         {
             if (!ModelState.IsValid) return Page();
 
-            await _tarefaRepository.Remover(Tarefa);
+            await _tarefaRepository.RemoverAsync(Tarefa);
 
             return RedirectToPage("Listar");
         }

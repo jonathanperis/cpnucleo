@@ -5,14 +5,14 @@ namespace Cpnucleo.Pages.Repository
 {
     public interface IRepository<T>
     {
-        Task Incluir(T item);
+        Task IncluirAsync(T item);
 
-        Task<T> Consultar(int id);
+        Task<T> ConsultarAsync(int id);
 
-        Task Alterar(T item);
+        Task AlterarAsync(T item);
 
-        Task Remover(T item);
+        Task RemoverAsync(T item);
 
-        Task<IEnumerable<T>> Listar();
+        Task<IEnumerable<T>> ListarAsync();
     }
 }

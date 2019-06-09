@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _impedimentoTarefaRepository.ListarPoridTarefa(ImpedimentoTarefa.IdTarefa);
+            Lista = await _impedimentoTarefaRepository.ListarPoridTarefaAsync(ImpedimentoTarefa.IdTarefa);
 
             ViewData["idTarefa"] = ImpedimentoTarefa.IdTarefa;
 

@@ -33,8 +33,8 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            RecursoProjeto.Projeto = await _projetoRepository.Consultar(RecursoProjeto.IdProjeto);
-            SelectRecursos = new SelectList(await _recursoRepository.Listar(), "IdRecurso", "Nome");
+            RecursoProjeto.Projeto = await _projetoRepository.ConsultarAsync(RecursoProjeto.IdProjeto);
+            SelectRecursos = new SelectList(await _recursoRepository.ListarAsync(), "IdRecurso", "Nome");
 
             return Page();
         }
@@ -43,13 +43,13 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjeto.Projeto = await _projetoRepository.Consultar(RecursoProjeto.IdProjeto);
-                SelectRecursos = new SelectList(await _recursoRepository.Listar(), "IdRecurso", "Nome");
+                RecursoProjeto.Projeto = await _projetoRepository.ConsultarAsync(RecursoProjeto.IdProjeto);
+                SelectRecursos = new SelectList(await _recursoRepository.ListarAsync(), "IdRecurso", "Nome");
 
                 return Page();
             }
 
-            await _recursoProjetoRepository.Incluir(RecursoProjeto);
+            await _recursoProjetoRepository.IncluirAsync(RecursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }

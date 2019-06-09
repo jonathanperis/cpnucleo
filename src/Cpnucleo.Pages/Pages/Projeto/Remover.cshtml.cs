@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Projeto = await _projetoRepository.Consultar(Projeto.IdProjeto);
+            Projeto = await _projetoRepository.ConsultarAsync(Projeto.IdProjeto);
 
             return Page();
         }
@@ -28,7 +28,7 @@ namespace Cpnucleo.Pages.Pages.Projeto
         {
             if (!ModelState.IsValid) return Page();
 
-            await _projetoRepository.Remover(Projeto);
+            await _projetoRepository.RemoverAsync(Projeto);
 
             return RedirectToPage("Listar");
         }
