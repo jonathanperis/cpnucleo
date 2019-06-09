@@ -57,12 +57,12 @@ namespace Cpnucleo.Pages.Pages.Tarefa
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(TarefaItem tarefa)
+        public async Task<IActionResult> OnPostAsync()
         {
             string retorno = ClaimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             int idRecurso = int.Parse(retorno);
 
-            tarefa.IdRecurso = idRecurso;
+            Tarefa.IdRecurso = idRecurso;
 
             if (!ModelState.IsValid)
             {
@@ -74,7 +74,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
                 return Page();
             }
 
-            await _tarefaRepository.Incluir(tarefa);
+            await _tarefaRepository.Incluir(Tarefa);
 
             return RedirectToPage("Listar");
         }

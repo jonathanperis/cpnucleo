@@ -26,32 +26,17 @@ namespace Cpnucleo.Pages.Repository
             apontamento.DataInclusao = DateTime.Now;
             
             _context.Apontamentos.Add(apontamento);
-            await _context.SaveChangesAsync();
-
-            var tarefaItem = await _tarefaRepository.Consultar(apontamento.IdTarefa);
-            tarefaItem.PercentualConcluido = apontamento.PercentualConcluido;
-
-            await _tarefaRepository.Alterar(tarefaItem);            
+            await _context.SaveChangesAsync();          
         }
 
-        public async Task Alterar(ApontamentoItem apontamento)
+        public Task Alterar(ApontamentoItem apontamento)
         {
-            var apontamentoItem = _context.Apontamentos.Find(apontamento.IdApontamento);
-            apontamentoItem.Descricao = apontamento.Descricao;
-            apontamentoItem.DataApontamento = apontamento.DataApontamento;
-            apontamentoItem.QtdHoras = apontamento.QtdHoras;
-            apontamentoItem.PercentualConcluido = apontamento.PercentualConcluido;
-
-            apontamentoItem.DataAlteracao = DateTime.Now;
-
-            _context.Apontamentos.Update(apontamentoItem);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
         public async Task<ApontamentoItem> Consultar(int idApontamento)
         {
             return await _context.Apontamentos
-                .AsNoTracking()
                 .Include(x => x.Tarefa)
                 .SingleOrDefaultAsync(x => x.IdApontamento == idApontamento);
         }
@@ -67,10 +52,20 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(ApontamentoItem apontamento)
         {    
-            var apontamentoItem = _context.Apontamentos.Find(apontamento.IdApontamento);            
+            var apontamentoItem = await Consultar(apontamento.IdApontamento);            
 
             _context.Apontamentos.Remove(apontamentoItem);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task ApontarHoras(ApontamentoItem apontamento)
+        {
+            await Incluir(apontamento);
+
+            var tarefaItem = await _tarefaRepository.Consultar(apontamento.IdTarefa);
+            tarefaItem.PercentualConcluido = apontamento.PercentualConcluido;
+
+            await _tarefaRepository.Alterar(tarefaItem);
         }
 
         public async Task<int> ObterTotalHorasPoridRecurso(int idRecurso, int idTarefa)

@@ -33,7 +33,7 @@ namespace Cpnucleo.Pages.Pages.Projeto
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(ProjetoItem projeto)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -42,7 +42,7 @@ namespace Cpnucleo.Pages.Pages.Projeto
                 return Page();
             }
 
-            await _projetoRepository.Incluir(projeto);
+            await _projetoRepository.Incluir(Projeto);
 
             return RedirectToPage("Listar");
         }

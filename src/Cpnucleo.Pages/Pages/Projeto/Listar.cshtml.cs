@@ -15,10 +15,8 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public ListarModel(IRepository<ProjetoItem> projetoRepository) => _projetoRepository = projetoRepository;
 
-        [BindProperty]
         public ProjetoItem Projeto { get; set; }
 
-        [BindProperty]
         public IEnumerable<ProjetoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()

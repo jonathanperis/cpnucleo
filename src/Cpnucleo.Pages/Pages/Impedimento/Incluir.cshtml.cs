@@ -17,11 +17,11 @@ namespace Cpnucleo.Pages.Pages.Impedimento
         [BindProperty]
         public ImpedimentoItem Impedimento { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(ImpedimentoItem impedimento)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _impedimentoRepository.Incluir(impedimento);
+            await _impedimentoRepository.Incluir(Impedimento);
 
             return RedirectToPage("Listar");
         }

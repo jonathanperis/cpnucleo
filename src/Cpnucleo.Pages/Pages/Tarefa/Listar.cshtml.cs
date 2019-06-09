@@ -15,13 +15,11 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public ListarModel(ITarefaRepository tarefaRepository) => _tarefaRepository = tarefaRepository;
 
-        [BindProperty]
         public TarefaItem Tarefa { get; set; }
 
-        [BindProperty]
         public IEnumerable<TarefaItem> Lista { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idTarefa)
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _tarefaRepository.Listar();
 

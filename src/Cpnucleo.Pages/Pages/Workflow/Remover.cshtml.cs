@@ -14,21 +14,21 @@ namespace Cpnucleo.Pages.Pages.Workflow
 
         public RemoverModel(IWorkflowRepository workflowRepository) => _workflowRepository = workflowRepository;
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public WorkflowItem Workflow { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idWorkflow)
+        public async Task<IActionResult> OnGetAsync()
         {
-            Workflow = await _workflowRepository.Consultar(idWorkflow);
+            Workflow = await _workflowRepository.Consultar(Workflow.IdWorkflow);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(WorkflowItem workflow)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _workflowRepository.Remover(workflow);
+            await _workflowRepository.Remover(Workflow);
 
             return RedirectToPage("Listar");
         }

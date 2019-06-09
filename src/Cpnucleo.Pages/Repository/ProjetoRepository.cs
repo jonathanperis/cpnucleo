@@ -24,7 +24,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(ProjetoItem projeto)
         {
-            var projetoItem = _context.Projetos.Find(projeto.IdProjeto);
+            var projetoItem = await Consultar(projeto.IdProjeto);
+
             projetoItem.Nome = projeto.Nome;
             projetoItem.IdSistema = projeto.IdSistema;
 
@@ -37,7 +38,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<ProjetoItem> Consultar(int idProjeto)
         {
             return await _context.Projetos
-                .AsNoTracking()
                 .Include(x => x.Sistema)
                 .SingleOrDefaultAsync(x => x.IdProjeto == idProjeto);
         }
@@ -53,7 +53,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(ProjetoItem projeto)
         {    
-            var projetoItem = _context.Projetos.Find(projeto.IdProjeto);            
+            var projetoItem = await Consultar(projeto.IdProjeto);            
 
             _context.Projetos.Remove(projetoItem);
             await _context.SaveChangesAsync();

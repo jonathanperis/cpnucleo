@@ -30,7 +30,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(RecursoItem recurso)
         {
-            var recursoItem = _context.Recursos.Find(recurso.IdRecurso);
+            var recursoItem = await Consultar(recurso.IdRecurso);
 
             CryptographyManager.CryptPbkdf2(recurso.Senha, out string itemCriptografado, out string salt);
 
@@ -49,7 +49,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<RecursoItem> Consultar(int idRecurso)
         {
             return await _context.Recursos
-                .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.IdRecurso == idRecurso);
         }
 
@@ -63,7 +62,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(RecursoItem recurso)
         {    
-            var recursoItem = _context.Recursos.Find(recurso.IdRecurso);            
+            var recursoItem = await Consultar(recurso.IdRecurso);            
 
             _context.Recursos.Remove(recursoItem);
             await _context.SaveChangesAsync();

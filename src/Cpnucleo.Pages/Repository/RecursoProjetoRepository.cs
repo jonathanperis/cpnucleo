@@ -25,7 +25,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<RecursoProjetoItem> Consultar(int idRecursoProjeto)
         {
             return await _context.RecursoProjetos
-                .AsNoTracking()
                 .Include(x => x.Projeto)
                 .Include(x => x.Recurso)
                 .SingleOrDefaultAsync(x => x.IdRecursoProjeto == idRecursoProjeto);
@@ -33,7 +32,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(RecursoProjetoItem recursoProjeto)
         {
-            var recursoProjetoItem = _context.RecursoProjetos.Find(recursoProjeto.IdRecursoProjeto);
+            var recursoProjetoItem = await Consultar(recursoProjeto.IdRecursoProjeto);
 
             _context.RecursoProjetos.Remove(recursoProjetoItem);
             await _context.SaveChangesAsync();

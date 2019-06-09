@@ -17,11 +17,11 @@ namespace Cpnucleo.Pages.Pages.Sistema
         [BindProperty]
         public SistemaItem Sistema { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(SistemaItem sistema)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _sistemaRepository.Incluir(sistema);
+            await _sistemaRepository.Incluir(Sistema);
 
             return RedirectToPage("Listar");
         }

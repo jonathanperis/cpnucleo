@@ -17,14 +17,14 @@ namespace Cpnucleo.Pages.Pages.Recurso
         [BindProperty]
         public RecursoItem Recurso { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(RecursoItem recurso)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            await _recursoRepository.Incluir(recurso);
+            await _recursoRepository.Incluir(Recurso);
 
             return RedirectToPage("Listar");
         }

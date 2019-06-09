@@ -27,10 +27,8 @@ namespace Cpnucleo.Pages.Pages
         [BindProperty]
         public ApontamentoItem Apontamento { get; set; }
 
-        [BindProperty]
         public IEnumerable<ApontamentoItem> Lista { get; set; }
 
-        [BindProperty]
         public IEnumerable<RecursoTarefaItem> ListaRecursoTarefas { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
@@ -44,13 +42,13 @@ namespace Cpnucleo.Pages.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(ApontamentoItem apontamento)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _apontamentoRepository.Incluir(apontamento);
+            await _apontamentoRepository.ApontarHoras(Apontamento);
 
-            return RedirectToPage("Apontamento", new { idRecurso = apontamento.IdRecurso });
+            return RedirectToPage("Apontamento", new { idRecurso = Apontamento.IdRecurso });
         }
     }
 }

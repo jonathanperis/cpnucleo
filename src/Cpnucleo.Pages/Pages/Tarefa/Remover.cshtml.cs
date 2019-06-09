@@ -14,21 +14,21 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public RemoverModel(ITarefaRepository tarefaRepository) => _tarefaRepository = tarefaRepository;
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public TarefaItem Tarefa { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idTarefa)
+        public async Task<IActionResult> OnGetAsync()
         {
-            Tarefa = await _tarefaRepository.Consultar(idTarefa);
+            Tarefa = await _tarefaRepository.Consultar(Tarefa.IdTarefa);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(TarefaItem tarefa)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _tarefaRepository.Remover(tarefa);
+            await _tarefaRepository.Remover(Tarefa);
 
             return RedirectToPage("Listar");
         }

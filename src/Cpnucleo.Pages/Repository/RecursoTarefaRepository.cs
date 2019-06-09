@@ -31,7 +31,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(RecursoTarefaItem recursoTarefa)
         {
-            var recursoTarefaItem = _context.RecursoTarefas.Find(recursoTarefa.IdRecursoTarefa);
+            var recursoTarefaItem = await Consultar(recursoTarefa.IdRecursoTarefa);
+
             recursoTarefaItem.IdRecurso = recursoTarefa.IdRecurso;
             recursoTarefaItem.PercentualTarefa = recursoTarefa.PercentualTarefa;
 
@@ -44,7 +45,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<RecursoTarefaItem> Consultar(int idRecursoTarefa)
         {
             return await _context.RecursoTarefas
-                .AsNoTracking()
                 .Include(x => x.Tarefa)
                 .Include(x => x.Recurso)
                 .SingleOrDefaultAsync(x => x.IdRecursoTarefa == idRecursoTarefa);
@@ -63,7 +63,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(RecursoTarefaItem recursoTarefa)
         {
-            var recursoTarefaItem = _context.RecursoTarefas.Find(recursoTarefa.IdRecursoTarefa);
+            var recursoTarefaItem = await Consultar(recursoTarefa.IdRecursoTarefa);
 
             _context.RecursoTarefas.Remove(recursoTarefaItem);
             await _context.SaveChangesAsync();

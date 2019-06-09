@@ -26,34 +26,32 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
             _projetoRepository = projetoRepository;
         }
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public RecursoProjetoItem RecursoProjeto { get; set; }
-
-        public ProjetoItem Projeto { get; set; }
 
         public SelectList SelectRecursos { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idProjeto)
+        public async Task<IActionResult> OnGetAsync()
         {
-            Projeto = await _projetoRepository.Consultar(idProjeto);
+            RecursoProjeto.Projeto = await _projetoRepository.Consultar(RecursoProjeto.IdProjeto);
             SelectRecursos = new SelectList(await _recursoRepository.Listar(), "IdRecurso", "Nome");
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(RecursoProjetoItem recursoProjeto)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _projetoRepository.Consultar(recursoProjeto.IdProjeto);
+                RecursoProjeto.Projeto = await _projetoRepository.Consultar(RecursoProjeto.IdProjeto);
                 SelectRecursos = new SelectList(await _recursoRepository.Listar(), "IdRecurso", "Nome");
 
                 return Page();
             }
 
-            await _recursoProjetoRepository.Incluir(recursoProjeto);
+            await _recursoProjetoRepository.Incluir(RecursoProjeto);
 
-            return RedirectToPage("Listar", new { idProjeto = recursoProjeto.IdProjeto });
+            return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }
     }
 }

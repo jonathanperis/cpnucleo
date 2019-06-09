@@ -26,32 +26,32 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
             _tarefaRepository = tarefaRepository;
         }
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public RecursoTarefaItem RecursoTarefa { get; set; }
 
         public SelectList SelectRecursos { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idRecursoTarefa)
+        public async Task<IActionResult> OnGetAsync()
         {
-            RecursoTarefa = await _recursoTarefaRepository.Consultar(idRecursoTarefa);
+            RecursoTarefa = await _recursoTarefaRepository.Consultar(RecursoTarefa.IdRecursoTarefa);
             SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(RecursoTarefaItem recursoTarefa)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                recursoTarefa.Tarefa = await _tarefaRepository.Consultar(recursoTarefa.IdTarefa);
-                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(recursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
+                RecursoTarefa.Tarefa = await _tarefaRepository.Consultar(RecursoTarefa.IdTarefa);
+                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
                 return Page();
             }
 
-            await _recursoTarefaRepository.Alterar(recursoTarefa);
+            await _recursoTarefaRepository.Alterar(RecursoTarefa);
 
-            return RedirectToPage("Listar", new { idTarefa = recursoTarefa.IdTarefa });
+            return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }
     }
 }

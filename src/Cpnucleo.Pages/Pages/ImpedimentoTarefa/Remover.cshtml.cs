@@ -14,23 +14,23 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
         public RemoverModel(IImpedimentoTarefaRepository impedimentoTarefaRepository) => _impedimentoTarefaRepository = impedimentoTarefaRepository;
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idImpedimentoTarefa)
+        public async Task<IActionResult> OnGetAsync()
         {
-            ImpedimentoTarefa = await _impedimentoTarefaRepository.Consultar(idImpedimentoTarefa);
+            ImpedimentoTarefa = await _impedimentoTarefaRepository.Consultar(ImpedimentoTarefa.IdImpedimentoTarefa);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _impedimentoTarefaRepository.Remover(impedimentoTarefa);
+            await _impedimentoTarefaRepository.Remover(ImpedimentoTarefa);
 
-            return RedirectToPage("Listar", new { idTarefa = impedimentoTarefa.IdTarefa });
+            return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }
     }
 }

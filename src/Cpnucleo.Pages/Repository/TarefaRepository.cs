@@ -24,7 +24,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(TarefaItem tarefa)
         {
-            var tarefaItem = _context.Tarefas.Find(tarefa.IdTarefa);
+            var tarefaItem = await Consultar(tarefa.IdTarefa);
+
             tarefaItem.Nome = tarefa.Nome;
             tarefaItem.IdProjeto = tarefa.IdProjeto;
             tarefaItem.DataInicio = tarefa.DataInicio;
@@ -45,7 +46,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<TarefaItem> Consultar(int idTarefa)
         {
             return await _context.Tarefas
-                .AsNoTracking()
                 .Include(x => x.Projeto)
                 .Include(x => x.Projeto.Sistema)
                 .Include(x => x.Workflow)
@@ -66,7 +66,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(TarefaItem tarefa)
         {    
-            var tarefaItem = _context.Tarefas.Find(tarefa.IdTarefa);            
+            var tarefaItem = await Consultar(tarefa.IdTarefa);            
 
             _context.Tarefas.Remove(tarefaItem);
             await _context.SaveChangesAsync();

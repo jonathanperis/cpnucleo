@@ -21,28 +21,28 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
             _projetoRepository = projetoRepository;
         }
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public RecursoProjetoItem RecursoProjeto { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idRecursoProjeto)
+        public async Task<IActionResult> OnGetAsync()
         {
-            RecursoProjeto = await _recursoProjetoRepository.Consultar(idRecursoProjeto);
+            RecursoProjeto = await _recursoProjetoRepository.Consultar(RecursoProjeto.IdRecursoProjeto);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(RecursoProjetoItem recursoProjeto)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                recursoProjeto.Projeto = await _projetoRepository.Consultar(recursoProjeto.IdProjeto);
+                RecursoProjeto.Projeto = await _projetoRepository.Consultar(RecursoProjeto.IdProjeto);
 
                 return Page();
             }
 
-            await _recursoProjetoRepository.Remover(recursoProjeto);
+            await _recursoProjetoRepository.Remover(RecursoProjeto);
 
-            return RedirectToPage("Listar", new { idProjeto = recursoProjeto.IdProjeto });
+            return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }
     }
 }

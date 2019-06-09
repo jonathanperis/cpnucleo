@@ -15,10 +15,8 @@ namespace Cpnucleo.Pages.Pages.Sistema
 
         public ListarModel(IRepository<SistemaItem> sistemaRepository) => _sistemaRepository = sistemaRepository;
 
-        [BindProperty]
         public SistemaItem Sistema { get; set; }
 
-        [BindProperty]
         public IEnumerable<SistemaItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()

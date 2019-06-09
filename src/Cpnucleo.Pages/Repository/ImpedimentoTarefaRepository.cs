@@ -24,7 +24,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(ImpedimentoTarefaItem impedimentoTarefa)
         {
-            var impedimentoTarefaItem = _context.ImpedimentoTarefas.Find(impedimentoTarefa.IdImpedimentoTarefa);
+            var impedimentoTarefaItem = await Consultar(impedimentoTarefa.IdImpedimentoTarefa);
+
             impedimentoTarefaItem.Descricao = impedimentoTarefa.Descricao;
             impedimentoTarefaItem.IdImpedimento = impedimentoTarefa.IdImpedimento;
             impedimentoTarefaItem.Ativo = impedimentoTarefa.Ativo;            
@@ -38,7 +39,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<ImpedimentoTarefaItem> Consultar(int idImpedimentoTarefa)
         {
             return await _context.ImpedimentoTarefas
-                .AsNoTracking()
                 .Include(x => x.Tarefa)
                 .Include(x => x.Impedimento)
                 .SingleOrDefaultAsync(x => x.IdImpedimentoTarefa == idImpedimentoTarefa);
@@ -46,7 +46,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(ImpedimentoTarefaItem impedimentoTarefa)
         {    
-            var impedimentoTarefaItem = _context.ImpedimentoTarefas.Find(impedimentoTarefa.IdImpedimentoTarefa);            
+            var impedimentoTarefaItem = await Consultar(impedimentoTarefa.IdImpedimentoTarefa);            
 
             _context.ImpedimentoTarefas.Remove(impedimentoTarefaItem);
             await _context.SaveChangesAsync();

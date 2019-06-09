@@ -14,21 +14,21 @@ namespace Cpnucleo.Pages.Pages.Impedimento
 
         public AlterarModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public ImpedimentoItem Impedimento { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idImpedimento)
+        public async Task<IActionResult> OnGetAsync()
         {
-            Impedimento = await _impedimentoRepository.Consultar(idImpedimento);
+            Impedimento = await _impedimentoRepository.Consultar(Impedimento.IdImpedimento);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(ImpedimentoItem impedimento)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _impedimentoRepository.Alterar(impedimento);
+            await _impedimentoRepository.Alterar(Impedimento);
 
             return RedirectToPage("Listar");
         }

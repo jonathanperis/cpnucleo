@@ -15,10 +15,8 @@ namespace Cpnucleo.Pages.Pages.Recurso
 
         public ListarModel(IRecursoRepository recursoRepository) => _recursoRepository = recursoRepository;
 
-        [BindProperty]
         public RecursoItem Recurso { get; set; }
 
-        [BindProperty]
         public IEnumerable<RecursoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()

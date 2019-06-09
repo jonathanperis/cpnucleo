@@ -30,14 +30,14 @@ namespace Cpnucleo.Pages.Pages
             return RedirectToPage("Login");
         }
 
-        public async Task<IActionResult> OnPostAsync(LoginItem login, string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var recursoItem = _recursoRepository.ValidarRecurso(login.Usuario, login.Senha, out bool valido);
+            var recurso = _recursoRepository.ValidarRecurso(Login.Usuario, Login.Senha, out bool valido);
 
             if (!valido)
             {
@@ -45,7 +45,7 @@ namespace Cpnucleo.Pages.Pages
                 return Page();
             }
 
-            ClaimsPrincipal principal = ClaimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recursoItem.IdRecurso.ToString());
+            ClaimsPrincipal principal = ClaimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recurso.IdRecurso.ToString());
             await HttpContext.SignInAsync(principal);
 
             return RedirectToLocal(returnUrl);

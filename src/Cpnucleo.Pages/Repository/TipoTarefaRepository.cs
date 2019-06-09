@@ -24,7 +24,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(TipoTarefaItem tipoTarefa)
         {
-            var tipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);
+            var tipoTarefaItem = await Consultar(tipoTarefa.IdTipoTarefa);
+
             tipoTarefaItem.Nome = tipoTarefa.Nome;
 
             tipoTarefaItem.DataAlteracao = DateTime.Now;
@@ -36,7 +37,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<TipoTarefaItem> Consultar(int idTipoTarefa)
         {
             return await _context.TipoTarefas
-                .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.IdTipoTarefa == idTipoTarefa);
         }
 
@@ -50,7 +50,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(TipoTarefaItem tipoTarefa)
         {    
-            var tipoTarefaItem = _context.TipoTarefas.Find(tipoTarefa.IdTipoTarefa);            
+            var tipoTarefaItem = await Consultar(tipoTarefa.IdTipoTarefa);            
 
             _context.TipoTarefas.Remove(tipoTarefaItem);
             await _context.SaveChangesAsync();

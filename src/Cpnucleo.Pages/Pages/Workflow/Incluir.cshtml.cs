@@ -17,11 +17,11 @@ namespace Cpnucleo.Pages.Pages.Workflow
         [BindProperty]
         public WorkflowItem Workflow { get; set; }
 
-        public async Task<IActionResult> OnPostAsync(WorkflowItem workflow)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _workflowRepository.Incluir(workflow);
+            await _workflowRepository.Incluir(Workflow);
 
             return RedirectToPage("Listar");
         }

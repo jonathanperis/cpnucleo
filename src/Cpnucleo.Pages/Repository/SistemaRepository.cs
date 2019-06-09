@@ -24,7 +24,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(SistemaItem sistema)
         {
-            var sistemaItem = _context.Sistemas.Find(sistema.IdSistema);
+            var sistemaItem = await Consultar(sistema.IdSistema);
+
             sistemaItem.Nome = sistema.Nome;
             sistemaItem.Descricao = sistema.Descricao;
 
@@ -37,7 +38,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<SistemaItem> Consultar(int idSistema)
         {
             return await _context.Sistemas
-                .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.IdSistema == idSistema);
         }
 
@@ -51,7 +51,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(SistemaItem sistema)
         {    
-            var sistemaItem = _context.Sistemas.Find(sistema.IdSistema);            
+            var sistemaItem = await Consultar(sistema.IdSistema);            
 
             _context.Sistemas.Remove(sistemaItem);
             await _context.SaveChangesAsync();

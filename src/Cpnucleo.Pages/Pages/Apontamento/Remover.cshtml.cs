@@ -14,21 +14,21 @@ namespace Cpnucleo.Pages.Pages.Apontamento
 
         public RemoverModel(IApontamentoRepository apontamentoRepository) => _apontamentoRepository = apontamentoRepository;
 
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public ApontamentoItem Apontamento { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int idApontamento)
+        public async Task<IActionResult> OnGetAsync()
         {
-            Apontamento = await _apontamentoRepository.Consultar(idApontamento);
+            Apontamento = await _apontamentoRepository.Consultar(Apontamento.IdApontamento);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(ApontamentoItem apontamento)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
 
-            await _apontamentoRepository.Remover(apontamento);
+            await _apontamentoRepository.Remover(Apontamento);
 
             return RedirectToPage("/Apontamento");
         }

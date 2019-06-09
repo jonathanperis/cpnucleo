@@ -24,7 +24,8 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Alterar(WorkflowItem workflow)
         {
-            var workflowItem = _context.Workflows.Find(workflow.IdWorkflow);
+            var workflowItem = await Consultar(workflow.IdWorkflow);
+
             workflowItem.Nome = workflow.Nome;
             workflowItem.Ordem = workflow.Ordem;
 
@@ -37,7 +38,6 @@ namespace Cpnucleo.Pages.Repository
         public async Task<WorkflowItem> Consultar(int idWorkflow)
         {
             return await _context.Workflows
-                .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.IdWorkflow == idWorkflow);
         }
 
@@ -51,7 +51,7 @@ namespace Cpnucleo.Pages.Repository
 
         public async Task Remover(WorkflowItem workflow)
         {    
-            var workflowItem = _context.Workflows.Find(workflow.IdWorkflow);            
+            var workflowItem = await Consultar(workflow.IdWorkflow);            
 
             _context.Workflows.Remove(workflowItem);
             await _context.SaveChangesAsync();

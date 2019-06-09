@@ -15,10 +15,8 @@ namespace Cpnucleo.Pages.Pages.Impedimento
 
         public ListarModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
-        [BindProperty]
         public ImpedimentoItem Impedimento { get; set; }
 
-        [BindProperty]
         public IEnumerable<ImpedimentoItem> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
