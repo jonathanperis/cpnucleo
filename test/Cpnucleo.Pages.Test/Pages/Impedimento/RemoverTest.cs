@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
             var RemoverModel = new RemoverModel(_impedimentoRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync();
+            var actionResult = await RemoverModel.OnGetAsync(idImpedimento);
 
             // Assert
             Assert.NotNull(actionResult);

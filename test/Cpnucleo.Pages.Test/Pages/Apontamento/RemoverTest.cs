@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Apontamento
             var RemoverModel = new RemoverModel(_apontamentoRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync();
+            var actionResult = await RemoverModel.OnGetAsync(idApontamento);
 
             // Assert
             Assert.NotNull(actionResult);

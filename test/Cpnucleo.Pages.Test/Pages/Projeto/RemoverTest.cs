@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             var RemoverModel = new RemoverModel(_projetoRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync();
+            var actionResult = await RemoverModel.OnGetAsync(idProjeto);
 
             // Assert
             Assert.NotNull(actionResult);

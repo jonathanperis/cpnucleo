@@ -21,14 +21,14 @@ namespace Cpnucleo.Pages.Pages.Projeto
             _sistemaRepository = sistemaRepository;
         }
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public ProjetoItem Projeto { get; set; }
 
         public SelectList SelectSistemas { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idProjeto)
         {
-            Projeto = await _projetoRepository.ConsultarAsync(Projeto.IdProjeto);
+            Projeto = await _projetoRepository.ConsultarAsync(idProjeto);
             SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Nome");
 
             return Page();

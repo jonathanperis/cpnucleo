@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
             var AlterarModel = new AlterarModel(_recursoRepository.Object);
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync();
+            var actionResult = await AlterarModel.OnGetAsync(idRecurso);
 
             // Assert
             Assert.NotNull(actionResult);

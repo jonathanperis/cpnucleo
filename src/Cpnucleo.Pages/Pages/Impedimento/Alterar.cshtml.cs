@@ -14,12 +14,12 @@ namespace Cpnucleo.Pages.Pages.Impedimento
 
         public AlterarModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public ImpedimentoItem Impedimento { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idImpedimento)
         {
-            Impedimento = await _impedimentoRepository.ConsultarAsync(Impedimento.IdImpedimento);
+            Impedimento = await _impedimentoRepository.ConsultarAsync(idImpedimento);
 
             return Page();
         }

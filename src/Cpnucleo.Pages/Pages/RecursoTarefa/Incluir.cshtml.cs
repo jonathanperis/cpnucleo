@@ -26,27 +26,27 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
             _tarefaRepository = tarefaRepository;
         }
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public RecursoTarefaItem RecursoTarefa { get; set; }
 
         public TarefaItem Tarefa { get; set; }
 
         public SelectList SelectRecursos { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Tarefa = await _tarefaRepository.ConsultarAsync(RecursoTarefa.IdTarefa);
+            Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
 
             SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjetoAsync(Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int idTarefa)
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(RecursoTarefa.IdTarefa);
+                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
                 SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjetoAsync(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
                 return Page();

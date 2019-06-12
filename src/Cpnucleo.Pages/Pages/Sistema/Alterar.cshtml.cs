@@ -14,12 +14,12 @@ namespace Cpnucleo.Pages.Pages.Sistema
 
         public AlterarModel(IRepository<SistemaItem> sistemaRepository) => _sistemaRepository = sistemaRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public SistemaItem Sistema { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idSistema)
         {
-            Sistema = await _sistemaRepository.ConsultarAsync(Sistema.IdSistema);
+            Sistema = await _sistemaRepository.ConsultarAsync(idSistema);
 
             return Page();
         }

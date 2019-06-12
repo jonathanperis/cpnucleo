@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
             var RemoverModel = new RemoverModel(_recursoRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync();
+            var actionResult = await RemoverModel.OnGetAsync(idRecurso);
 
             // Assert
             Assert.NotNull(actionResult);

@@ -21,28 +21,28 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
             _tarefaRepository = tarefaRepository;
         }
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public RecursoTarefaItem RecursoTarefa { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idRecursoTarefa)
         {
-            RecursoTarefa = await _recursoTarefaRepository.ConsultarAsync(RecursoTarefa.IdRecursoTarefa);
+            RecursoTarefa = await _recursoTarefaRepository.ConsultarAsync(idRecursoTarefa);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int idTarefa)
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(RecursoTarefa.IdTarefa);
+                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
 
                 return Page();
             }
 
             await _recursoTarefaRepository.RemoverAsync(RecursoTarefa);
 
-            return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
+            return RedirectToPage("Listar", new { idTarefa });
         }
     }
 }

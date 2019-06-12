@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
             var RemoverModel = new RemoverModel(_workflowRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync();
+            var actionResult = await RemoverModel.OnGetAsync(idWorkflow);
 
             // Assert
             Assert.NotNull(actionResult);

@@ -12,37 +12,28 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
     {
         private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        private readonly IRepository<ProjetoItem> _projetoRepository;
+        public RemoverModel(IRecursoProjetoRepository recursoProjetoRepository) => _recursoProjetoRepository = recursoProjetoRepository;
 
-        public RemoverModel(IRecursoProjetoRepository recursoProjetoRepository,
-                                        IRepository<ProjetoItem> projetoRepository)
-        {
-            _recursoProjetoRepository = recursoProjetoRepository;
-            _projetoRepository = projetoRepository;
-        }
-
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public RecursoProjetoItem RecursoProjeto { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idRecursoProjeto)
         {
-            RecursoProjeto = await _recursoProjetoRepository.ConsultarAsync(RecursoProjeto.IdRecursoProjeto);
+            RecursoProjeto = await _recursoProjetoRepository.ConsultarAsync(idRecursoProjeto);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int idProjeto)
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjeto.Projeto = await _projetoRepository.ConsultarAsync(RecursoProjeto.IdProjeto);
-
                 return Page();
             }
 
             await _recursoProjetoRepository.RemoverAsync(RecursoProjeto);
 
-            return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
+            return RedirectToPage("Listar", new { idProjeto });
         }
     }
 }

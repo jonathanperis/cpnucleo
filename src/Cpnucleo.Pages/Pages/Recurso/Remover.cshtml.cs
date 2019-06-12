@@ -14,12 +14,12 @@ namespace Cpnucleo.Pages.Pages.Recurso
 
         public RemoverModel(IRecursoRepository recursoRepository) => _recursoRepository = recursoRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public RecursoItem Recurso { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idRecurso)
         {
-            Recurso = await _recursoRepository.ConsultarAsync(Recurso.IdRecurso);
+            Recurso = await _recursoRepository.ConsultarAsync(idRecurso);
 
             return Page();
         }

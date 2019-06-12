@@ -15,16 +15,16 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
 
         public ListarModel(IRecursoTarefaRepository recursoTarefaRepository) => _recursoTarefaRepository = recursoTarefaRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public RecursoTarefaItem RecursoTarefa { get; set; }
 
         public IEnumerable<RecursoTarefaItem> Lista { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Lista = await _recursoTarefaRepository.ListarPoridTarefaAsync(RecursoTarefa.IdTarefa);
+            Lista = await _recursoTarefaRepository.ListarPoridTarefaAsync(idTarefa);
 
-            ViewData["idTarefa"] = RecursoTarefa.IdTarefa;
+            ViewData["idTarefa"] = idTarefa;
 
             return Page();
         }

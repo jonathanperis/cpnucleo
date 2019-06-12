@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
             var AlterarModel = new AlterarModel(_workflowRepository.Object);
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync();
+            var actionResult = await AlterarModel.OnGetAsync(idWorkflow);
 
             // Assert
             Assert.NotNull(actionResult);

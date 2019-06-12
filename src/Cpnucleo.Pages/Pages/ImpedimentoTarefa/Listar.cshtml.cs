@@ -15,16 +15,16 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
         public ListarModel(IImpedimentoTarefaRepository impedimentoTarefaRepository) => _impedimentoTarefaRepository = impedimentoTarefaRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
 
         public IEnumerable<ImpedimentoTarefaItem> Lista { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Lista = await _impedimentoTarefaRepository.ListarPoridTarefaAsync(ImpedimentoTarefa.IdTarefa);
+            Lista = await _impedimentoTarefaRepository.ListarPoridTarefaAsync(idTarefa);
 
-            ViewData["idTarefa"] = ImpedimentoTarefa.IdTarefa;
+            ViewData["idTarefa"] = idTarefa;
 
             return Page();
         }

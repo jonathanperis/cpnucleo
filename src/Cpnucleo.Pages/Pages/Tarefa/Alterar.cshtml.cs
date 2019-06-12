@@ -34,7 +34,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
             _tipoTarefaRepository = tipoTarefaRepository;
         }
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public TarefaItem Tarefa { get; set; }
 
         public SelectList SelectProjetos { get; set; }
@@ -45,9 +45,9 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Tarefa = await _tarefaRepository.ConsultarAsync(Tarefa.IdTarefa);
+            Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
             SelectProjetos = new SelectList(await _projetoRepository.ListarAsync(), "IdProjeto", "Nome");
             SelectSistemas = new SelectList(await _sistemaRepository.ListarAsync(), "IdSistema", "Descricao");
             SelectWorkflows = new SelectList(await _workflowRepository.ListarAsync(), "IdWorkflow", "Nome");

@@ -14,12 +14,12 @@ namespace Cpnucleo.Pages.Pages.Workflow
 
         public AlterarModel(IWorkflowRepository workflowRepository) => _workflowRepository = workflowRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public WorkflowItem Workflow { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idWorkflow)
         {
-            Workflow = await _workflowRepository.ConsultarAsync(Workflow.IdWorkflow);
+            Workflow = await _workflowRepository.ConsultarAsync(idWorkflow);
 
             return Page();
         }

@@ -14,12 +14,12 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public RemoverModel(IRepository<ProjetoItem> projetoRepository) => _projetoRepository = projetoRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public ProjetoItem Projeto { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idProjeto)
         {
-            Projeto = await _projetoRepository.ConsultarAsync(Projeto.IdProjeto);
+            Projeto = await _projetoRepository.ConsultarAsync(idProjeto);
 
             return Page();
         }

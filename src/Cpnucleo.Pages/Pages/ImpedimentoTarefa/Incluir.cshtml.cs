@@ -26,27 +26,27 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
             _tarefaRepository = tarefaRepository;
         }
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
 
         public TarefaItem Tarefa { get; set; }
 
         public SelectList SelectImpedimentos { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idTarefa)
         {
-            Tarefa = await _tarefaRepository.ConsultarAsync(ImpedimentoTarefa.IdTarefa);
+            Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
 
             SelectImpedimentos = new SelectList(await _impedimentoRepository.ListarAsync(), "IdImpedimento", "Nome");
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int idTarefa)
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = await _tarefaRepository.ConsultarAsync(ImpedimentoTarefa.IdTarefa);
+                Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
 
                 SelectImpedimentos = new SelectList(await _impedimentoRepository.ListarAsync(), "IdImpedimento", "Nome");
 
@@ -55,7 +55,7 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
             await _impedimentoTarefaRepository.IncluirAsync(ImpedimentoTarefa);
 
-            return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
+            return RedirectToPage("Listar", new { idTarefa });
         }
     }
 }

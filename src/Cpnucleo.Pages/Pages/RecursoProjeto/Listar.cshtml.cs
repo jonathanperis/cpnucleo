@@ -15,16 +15,16 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
 
         public ListarModel(IRecursoProjetoRepository recursoProjetoRepository) => _recursoProjetoRepository = recursoProjetoRepository;
 
-        [BindProperty(SupportsGet = true)]
+        [BindProperty]
         public RecursoProjetoItem RecursoProjeto { get; set; }
 
         public IEnumerable<RecursoProjetoItem> Lista { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int idProjeto)
         {
-            Lista = await _recursoProjetoRepository.ListarPoridProjetoAsync(RecursoProjeto.IdProjeto);
+            Lista = await _recursoProjetoRepository.ListarPoridProjetoAsync(idProjeto);
 
-            ViewData["idProjeto"] = RecursoProjeto.IdProjeto;
+            ViewData["idProjeto"] = idProjeto;
 
             return Page();
         }

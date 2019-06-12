@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
             var AlterarModel = new AlterarModel(_impedimentoRepository.Object);
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync();
+            var actionResult = await AlterarModel.OnGetAsync(idImpedimento);
 
             // Assert
             Assert.NotNull(actionResult);

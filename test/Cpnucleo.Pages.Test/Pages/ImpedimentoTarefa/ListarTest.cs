@@ -26,7 +26,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             var listarModel = new ListarModel(_impedimentoTarefaRepository.Object);
 
             // Act
-            var actionResult = await listarModel.OnGetAsync();
+            var actionResult = await listarModel.OnGetAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);

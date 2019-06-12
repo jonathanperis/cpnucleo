@@ -37,7 +37,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             var AlterarModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync();
+            var actionResult = await AlterarModel.OnGetAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);
@@ -59,7 +59,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             var incluirModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync();
+            var actionResult = await incluirModel.OnPostAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);

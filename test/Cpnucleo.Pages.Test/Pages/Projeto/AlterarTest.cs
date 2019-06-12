@@ -33,7 +33,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             var AlterarModel = new AlterarModel(_projetoRepository.Object, _sistemaRepository.Object);
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync();
+            var actionResult = await AlterarModel.OnGetAsync(idProjeto);
 
             // Assert
             Assert.NotNull(actionResult);

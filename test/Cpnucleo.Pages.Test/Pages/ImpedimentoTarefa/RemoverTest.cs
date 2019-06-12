@@ -25,15 +25,15 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             var RemoverModel = new RemoverModel(_impedimentoTarefaRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync();
+            var actionResult = await RemoverModel.OnGetAsync(idImpedimentoTarefa);
 
             // Assert
             Assert.NotNull(actionResult);
         }
 
         [Theory]
-        [InlineData(1)]
-        public async Task Test_OnPostAsync(int idImpedimentoTarefa)
+        [InlineData(1, 1)]
+        public async Task Test_OnPostAsync(int idImpedimentoTarefa, int idTarefa)
         {
             // Arrange
             var impedimentoTarefaMock = new ImpedimentoTarefaItem { IdImpedimentoTarefa = idImpedimentoTarefa };
@@ -43,7 +43,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             var removerModel = new RemoverModel(_impedimentoTarefaRepository.Object);
 
             // Act
-            var actionResult = await removerModel.OnPostAsync();
+            var actionResult = await removerModel.OnPostAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);
