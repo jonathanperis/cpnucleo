@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\RecursoTarefa\**" />
     <Compile Remove="Repository\**" />
-    <EmbeddedResource Remove="Pages\RecursoTarefa\**" />
     <EmbeddedResource Remove="Repository\**" />
-    <None Remove="Pages\RecursoTarefa\**" />
     <None Remove="Repository\**" />
   </ItemGroup>
 

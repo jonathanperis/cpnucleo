@@ -1,31 +1,36 @@
 ﻿using Cpnucleo.Pages.Models;
-using Cpnucleo.Pages.Pages.Sistema;
+using Cpnucleo.Pages.Pages.RecursoTarefa;
 using Cpnucleo.Pages.Repository;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Cpnucleo.Pages.Test.Pages.Sistema
+namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 {
     public class RemoverTest
     {
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRecursoTarefaRepository> _recursoTarefaRepository;
+        private readonly Mock<ITarefaRepository> _tarefaRepository;
 
-        public RemoverTest() => _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+        public RemoverTest()
+        {
+            _recursoTarefaRepository = new Mock<IRecursoTarefaRepository>();
+            _tarefaRepository = new Mock<ITarefaRepository>();
+        }
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idSistema)
+        public async Task Test_OnGetAsync(int idRecursoTarefa)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { };
+            var recursoTarefaMock = new RecursoTarefaItem { };
 
-            _sistemaRepository.Setup(x => x.ConsultarAsync(idSistema)).ReturnsAsync(sistemaMock);
+            _recursoTarefaRepository.Setup(x => x.ConsultarAsync(idRecursoTarefa)).ReturnsAsync(recursoTarefaMock);
 
-            var RemoverModel = new RemoverModel(_sistemaRepository.Object);
+            var removerModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync(idSistema);
+            var actionResult = await removerModel.OnGetAsync(idRecursoTarefa);
 
             // Assert
             Assert.NotNull(actionResult);
@@ -33,17 +38,17 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnPostAsync(int idSistema)
+        public async Task Test_OnPostAsync(int idTarefa)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { IdSistema = idSistema };
+            var recursoTarefaMock = new RecursoTarefaItem { };
 
-            _sistemaRepository.Setup(x => x.RemoverAsync(sistemaMock));
+            _recursoTarefaRepository.Setup(x => x.RemoverAsync(recursoTarefaMock));
 
-            var removerModel = new RemoverModel(_sistemaRepository.Object);
+            var removerModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
 
             // Act
-            var actionResult = await removerModel.OnPostAsync();
+            var actionResult = await removerModel.OnPostAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);

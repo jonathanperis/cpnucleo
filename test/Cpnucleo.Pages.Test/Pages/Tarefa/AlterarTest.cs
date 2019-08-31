@@ -53,11 +53,11 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         }
 
         [Theory]
-        [InlineData(1, "Tarefa de Teste", 1, "20190610 00:00:00", "20190615 00:00:00", "Detalhe da Tarefa", 1, 1)]
-        public async Task Test_OnPostAsync(int idTarefa, string nome, int idProjeto, DateTime dataInicio, DateTime dataTermino, string detalhe, int idTipoTarefa, int idWorkflow)
+        [InlineData(1, "Tarefa de Teste", 1)]
+        public async Task Test_OnPostAsync(int idTarefa, string nome, int idProjeto)
         {
             // Arrange
-            var tarefaMock = new TarefaItem { IdTarefa = idTarefa, Nome = nome, IdProjeto = idProjeto, DataInicio = dataInicio, DataTermino = dataTermino, Detalhe = detalhe, IdTipoTarefa = idTipoTarefa, IdWorkflow = idWorkflow };
+            var tarefaMock = new TarefaItem { IdTarefa = idTarefa, Nome = nome, IdProjeto = idProjeto };
             var listaProjetosMock = new List<ProjetoItem> { };
             var listaSistemasMock = new List<SistemaItem> { };
             var listaWorkflowMock = new List<WorkflowItem> { };

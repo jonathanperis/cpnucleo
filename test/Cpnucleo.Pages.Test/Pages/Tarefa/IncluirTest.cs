@@ -1,8 +1,13 @@
-﻿using Cpnucleo.Pages.Models;
+﻿using Cpnucleo.Pages.Authentication;
+using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Tarefa;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Routing;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -50,15 +55,23 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         }
 
         [Theory]
-        [InlineData("Tarefa de Teste", 1, "20190610 00:00:00", "20190615 00:00:00", "Detalhe da Tarefa", 1, 1)]
-        public async Task Test_OnPostAsync(string nome, int idProjeto, DateTime dataInicio, DateTime dataTermino, string detalhe, int idTipoTarefa, int idWorkflow)
+        [InlineData("Tarefa de Teste", 1)]
+        public async Task Test_OnPostAsync(string nome, int idProjeto)
         {
             // Arrange
-            var tarefaMock = new TarefaItem { Nome = nome, IdProjeto = idProjeto, DataInicio = dataInicio, DataTermino = dataTermino, Detalhe = detalhe, IdTipoTarefa = idTipoTarefa, IdWorkflow = idWorkflow };
+            var tarefaMock = new TarefaItem { Nome = nome, IdProjeto = idProjeto };
 
             _tarefaRepository.Setup(x => x.IncluirAsync(tarefaMock));
 
-            var incluirModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
+            var httpContext = new DefaultHttpContext();
+            var modelState = new ModelStateDictionary();
+            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+            var pageContext = new PageContext(actionContext);
+
+            var incluirModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
+            {
+                PageContext = pageContext
+            };
 
             // Act
             var actionResult = await incluirModel.OnPostAsync();

@@ -1,49 +1,59 @@
 ﻿using Cpnucleo.Pages.Models;
-using Cpnucleo.Pages.Pages.Sistema;
+using Cpnucleo.Pages.Pages.RecursoTarefa;
 using Cpnucleo.Pages.Repository;
 using Moq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Cpnucleo.Pages.Test.Pages.Sistema
+namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 {
     public class AlterarTest
     {
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRecursoTarefaRepository> _recursoTarefaRepository;
+        private readonly Mock<IRecursoProjetoRepository> _recursoProjetoRepository;
+        private readonly Mock<ITarefaRepository> _tarefaRepository;
 
-        public AlterarTest() => _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+        public AlterarTest()
+        {
+            _recursoTarefaRepository = new Mock<IRecursoTarefaRepository>();
+            _recursoProjetoRepository = new Mock<IRecursoProjetoRepository>();
+            _tarefaRepository = new Mock<ITarefaRepository>();
+        }
 
         [Theory]
-        [InlineData(1)]
-        public async Task Test_OnGetAsync(int idSistema)
+        [InlineData(1, 1)]
+        public async Task Test_OnGetAsync(int idRecursoTarefa, int idProjeto)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { };
+            var recursoTarefaMock = new RecursoTarefaItem { Tarefa = new TarefaItem { } };
+            var listaRecursoProjetoMock = new List<RecursoProjetoItem> { };
 
-            _sistemaRepository.Setup(x => x.ConsultarAsync(idSistema)).ReturnsAsync(sistemaMock);
+            _recursoTarefaRepository.Setup(x => x.ConsultarAsync(idRecursoTarefa)).ReturnsAsync(recursoTarefaMock);
+            _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idProjeto)).ReturnsAsync(listaRecursoProjetoMock);
 
-            var alterarModel = new AlterarModel(_sistemaRepository.Object);
-            
+            var alterarModel = new AlterarModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object);
+
             // Act
-            var actionResult = await alterarModel.OnGetAsync(idSistema);
+            var actionResult = await alterarModel.OnGetAsync(idRecursoTarefa);
 
             // Assert
             Assert.NotNull(actionResult);
         }
 
         [Theory]
-        [InlineData(1, "Sistema de Teste", "Descrição de Teste")]
-        public async Task Test_OnPostAsync(int idSistema, string nome, string descricao)
+        [InlineData(1)]
+        public async Task Test_OnPostAsync(int idTarefa)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { IdSistema = idSistema, Nome = nome, Descricao = descricao };
+            var recursoTarefaMock = new RecursoTarefaItem { };
 
-            _sistemaRepository.Setup(x => x.AlterarAsync(sistemaMock));
+            _recursoTarefaRepository.Setup(x => x.AlterarAsync(recursoTarefaMock));
 
-            var alterarModel = new AlterarModel(_sistemaRepository.Object);
+            var alterarModel = new AlterarModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object);
 
             // Act
-            var actionResult = await alterarModel.OnPostAsync();
+            var actionResult = await alterarModel.OnPostAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);

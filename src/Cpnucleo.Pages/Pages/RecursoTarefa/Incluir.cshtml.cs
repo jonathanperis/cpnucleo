@@ -54,7 +54,7 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
 
             await _recursoTarefaRepository.IncluirAsync(RecursoTarefa);
 
-            return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
+            return RedirectToPage("Listar", new { idTarefa });
         }
     }
 }

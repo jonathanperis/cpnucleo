@@ -2,6 +2,7 @@
 using Cpnucleo.Pages.Pages.RecursoTarefa;
 using Cpnucleo.Pages.Repository;
 using Moq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,12 +26,13 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         public async Task Test_OnGetAsync(int idTarefa)
         {
             // Arrange
-            var listaMock = new List<RecursoTarefaItem> { };
+            var listaMock = new List<RecursoProjetoItem> { };
+            var tarefaMock = new TarefaItem { };
 
-            _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync());
-            _sistemaRepository.Setup(x => x.ListarPoridTarefaAsync(idTarefa)).ReturnsAsync(listaMock);
+            _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
+            _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idTarefa)).ReturnsAsync(listaMock);
 
-            var incluirModel = new IncluirModel(_recursoTarefaRepository.Object);
+            var incluirModel = new IncluirModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object);
 
             // Act
             var actionResult = await incluirModel.OnGetAsync(idTarefa);
@@ -40,18 +42,22 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         }
 
         [Theory]
-        [InlineData("RecursoTarefa de Teste", "Descrição de Teste")]
-        public async Task Test_OnPostAsync(string nome, string descricao)
+        [InlineData(1, "RecursoTarefa de Teste", "Descrição de Teste")]
+        public async Task Test_OnPostAsync(int idTarefa, string nome, string descricao)
         {
             // Arrange
-            var recursoTarefaMock = new RecursoTarefaItem { Nome = nome, Descricao = descricao };
+            var listaMock = new List<RecursoProjetoItem> { };
+            var tarefaMock = new TarefaItem { };
+            var recursoTarefaMock = new RecursoTarefaItem { Tarefa = new TarefaItem() };
 
+            _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
+            _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idTarefa)).ReturnsAsync(listaMock);
             _recursoTarefaRepository.Setup(x => x.IncluirAsync(recursoTarefaMock));
 
-            var incluirModel = new IncluirModel(_recursoTarefaRepository.Object);
+            var incluirModel = new IncluirModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object);
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync();
+            var actionResult = await incluirModel.OnPostAsync(idTarefa);
 
             // Assert
             Assert.NotNull(actionResult);

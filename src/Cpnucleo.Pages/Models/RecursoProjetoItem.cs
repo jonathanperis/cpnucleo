@@ -22,7 +22,8 @@ namespace Cpnucleo.Pages.Models
         [Column("REC_ID", TypeName = "int")]
         public int IdRecurso { get; set; }
 
-        [Display(Name = "Projeto")]      
+        [Display(Name = "Projeto")]
+        [Required(ErrorMessage = "Necessário informar o {0}.")]
         [Column("PROJ_ID", TypeName = "int")]
         public int IdProjeto { get; set; }
 

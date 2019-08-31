@@ -26,14 +26,16 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
             _projetoRepository = projetoRepository;
         }
 
-        [BindProperty]
         public RecursoProjetoItem RecursoProjeto { get; set; }
+
+        [BindProperty]
+        public ProjetoItem Projeto { get; set; }
 
         public SelectList SelectRecursos { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idProjeto)
         {
-            RecursoProjeto.Projeto = await _projetoRepository.ConsultarAsync(idProjeto);
+            Projeto = await _projetoRepository.ConsultarAsync(idProjeto);
             SelectRecursos = new SelectList(await _recursoRepository.ListarAsync(), "IdRecurso", "Nome");
 
             return Page();
@@ -43,7 +45,7 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjeto.Projeto = await _projetoRepository.ConsultarAsync(idProjeto);
+                Projeto = await _projetoRepository.ConsultarAsync(idProjeto);
                 SelectRecursos = new SelectList(await _recursoRepository.ListarAsync(), "IdRecurso", "Nome");
 
                 return Page();
