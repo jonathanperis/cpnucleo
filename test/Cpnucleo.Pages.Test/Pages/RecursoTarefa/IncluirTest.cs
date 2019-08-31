@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoTarefa;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
             var result = await pageModel.OnPostAsync(idTarefa);
 
             // Assert
-            Assert.IsType<PageResult>(result);
+            Assert.IsType<RedirectToPageResult>(result);
         }
     }
 }

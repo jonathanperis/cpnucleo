@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Impedimento;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
@@ -53,7 +54,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
             var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.IsType<PageResult>(result);
+            Assert.IsType<RedirectToPageResult>(result);
         }
     }
 }

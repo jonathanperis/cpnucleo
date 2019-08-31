@@ -11,9 +11,16 @@ namespace Cpnucleo.Pages.Pages
 {
     public class LoginModel : PageModel
     {
+        private readonly IClaimsManager _claimsManager;
+
         private readonly IRecursoRepository _recursoRepository;
 
-        public LoginModel(IRecursoRepository recursoRepository) => _recursoRepository = recursoRepository;
+        public LoginModel(IClaimsManager claimsManager, IRecursoRepository recursoRepository)
+        {
+            _claimsManager = claimsManager;
+
+            _recursoRepository = recursoRepository;
+        }
 
         [BindProperty]
         public LoginItem Login { get; set; }
@@ -45,7 +52,7 @@ namespace Cpnucleo.Pages.Pages
                 return Page();
             }
 
-            ClaimsPrincipal principal = ClaimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recurso.IdRecurso.ToString());
+            ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recurso.IdRecurso.ToString());
             await HttpContext.SignInAsync(principal);
 
             return RedirectToLocal(returnUrl);

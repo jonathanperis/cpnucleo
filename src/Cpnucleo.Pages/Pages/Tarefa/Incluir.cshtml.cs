@@ -13,22 +13,23 @@ namespace Cpnucleo.Pages.Pages.Tarefa
     [Authorize]
     public class IncluirModel : PageModel
     {
+        private readonly IClaimsManager _claimsManager;
+
         private readonly ITarefaRepository _tarefaRepository;
-
         private readonly IRepository<ProjetoItem> _projetoRepository;
-
         private readonly IRepository<SistemaItem> _sistemaRepository;
-
         private readonly IWorkflowRepository _workflowRepository;
-
         private readonly IRepository<TipoTarefaItem> _tipoTarefaRepository;
 
-        public IncluirModel(ITarefaRepository tarefaRepository,
+        public IncluirModel(IClaimsManager claimsManager,
+                                ITarefaRepository tarefaRepository,
                                 IRepository<ProjetoItem> projetoRepository,
                                 IRepository<SistemaItem> sistemaRepository,
                                 IWorkflowRepository workflowRepository,
                                 IRepository<TipoTarefaItem> tipoTarefaRepository)
         {
+            _claimsManager = claimsManager;
+
             _tarefaRepository = tarefaRepository;
             _projetoRepository = projetoRepository;
             _sistemaRepository = sistemaRepository;
@@ -59,7 +60,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public async Task<IActionResult> OnPostAsync()
         {
-            string retorno = ClaimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+            string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             int idRecurso = int.Parse(retorno);
 
             Tarefa.IdRecurso = idRecurso;

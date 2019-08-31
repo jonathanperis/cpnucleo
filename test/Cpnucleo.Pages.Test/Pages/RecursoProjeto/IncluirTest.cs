@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoProjeto;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
@@ -67,7 +68,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
             var result = await pageModel.OnPostAsync(idProjeto);
 
             // Assert
-            Assert.IsType<PageResult>(result);
+            Assert.IsType<RedirectToPageResult>(result);
         }
     }
 }

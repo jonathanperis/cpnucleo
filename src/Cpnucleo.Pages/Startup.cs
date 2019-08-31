@@ -1,3 +1,4 @@
+using Cpnucleo.Pages.Authentication;
 using Cpnucleo.Pages.Configuration;
 using Cpnucleo.Pages.Data;
 using Cpnucleo.Pages.Hubs;
@@ -38,6 +39,9 @@ namespace Cpnucleo.Pages
             services
                 .AddDbContext<Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services
+                .AddSingleton<IClaimsManager, ClaimsManager>();
 
             services
                 .AddScoped<IRepository<SistemaItem>, SistemaRepository>()

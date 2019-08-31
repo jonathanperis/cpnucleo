@@ -13,13 +13,17 @@ namespace Cpnucleo.Pages.Pages
     [Authorize]
     public class ApontamentoModel : PageModel
     {
-        private readonly IApontamentoRepository _apontamentoRepository;
+        private readonly IClaimsManager _claimsManager;
 
+        private readonly IApontamentoRepository _apontamentoRepository;
         private readonly IRecursoTarefaRepository _recursoTarefaRepository;
 
-        public ApontamentoModel(IApontamentoRepository apontamentoRepository,
-                                     IRecursoTarefaRepository recursoTarefaRepository)
+        public ApontamentoModel(IClaimsManager claimsManager,
+                                    IApontamentoRepository apontamentoRepository,
+                                    IRecursoTarefaRepository recursoTarefaRepository)
         {
+            _claimsManager = claimsManager;
+
             _apontamentoRepository = apontamentoRepository;
             _recursoTarefaRepository = recursoTarefaRepository;
         }
@@ -33,7 +37,7 @@ namespace Cpnucleo.Pages.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            string retorno = ClaimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+            string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             int idRecurso = int.Parse(retorno);
 
             Lista = await _apontamentoRepository.ListarPoridRecursoAsync(idRecurso);

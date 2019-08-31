@@ -4,17 +4,17 @@ using System.Security.Claims;
 
 namespace Cpnucleo.Pages.Authentication
 {
-    public static class ClaimsManager
+    public class ClaimsManager : IClaimsManager
     {
-        public static ClaimsPrincipal CreateClaimsPrincipal(string type, string value)
+        public ClaimsPrincipal CreateClaimsPrincipal(string type, string value)
         {
             IEnumerable<Claim> claims = CreateClaims(type, value);
 
             var identities = new ClaimsIdentity(claims, "Dummy");
             return new ClaimsPrincipal(new[] { identities });
-        }  
-        
-        public static string ReadClaimsPrincipal(ClaimsPrincipal principal, string type)
+        }
+
+        public string ReadClaimsPrincipal(ClaimsPrincipal principal, string type)
         {          
             return principal.Claims.SingleOrDefault(x => x.Type == type)?.Value;
         }
