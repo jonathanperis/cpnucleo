@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/dotnet-cpnucleo-pages.csproj"
+                "${workspaceRoot}/Cpnucleo.Pages.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

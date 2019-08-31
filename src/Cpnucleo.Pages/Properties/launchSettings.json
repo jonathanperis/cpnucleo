@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "dotnet-cpnucleo-pages": {
+    "Cpnucleo.Pages": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

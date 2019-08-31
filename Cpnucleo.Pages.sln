@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Pages", "src\Cpnuc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Pages.Test", "test\Cpnucleo.Pages.Test\Cpnucleo.Pages.Test.csproj", "{212A6602-44A4-4281-823E-09D85893F9AD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1754EB6E-EE09-461B-8A2C-ED41EC36C315}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{27FF6EAC-9984-4184-98BB-995B54A81B29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{16F63568-86D3-4476-AD3A-7C602C806FDD} = {1754EB6E-EE09-461B-8A2C-ED41EC36C315}
+		{212A6602-44A4-4281-823E-09D85893F9AD} = {27FF6EAC-9984-4184-98BB-995B54A81B29}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4FE8CCD-5BD5-4287-8B6D-F523698604BE}
