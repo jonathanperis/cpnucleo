@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Recurso;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,13 +23,16 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
             _recursoRepository.Setup(x => x.IncluirAsync(recursoMock));
 
-            var incluirModel = new IncluirModel(_recursoRepository.Object);
+            var pageModel = new IncluirModel(_recursoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

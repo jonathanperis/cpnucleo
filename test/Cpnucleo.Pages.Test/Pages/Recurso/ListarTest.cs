@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Recurso;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,13 +23,16 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var listarModel = new ListarModel(_recursoRepository.Object);
+            var pageModel = new ListarModel(_recursoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await listarModel.OnGetAsync();
+            var result = await pageModel.OnGetAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

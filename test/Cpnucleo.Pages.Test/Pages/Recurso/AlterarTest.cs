@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Recurso;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,13 +23,16 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
             _recursoRepository.Setup(x => x.ConsultarAsync(idRecurso)).ReturnsAsync(recursoMock);
 
-            var AlterarModel = new AlterarModel(_recursoRepository.Object);
+            var pageModel = new AlterarModel(_recursoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync(idRecurso);
+            var result = await pageModel.OnGetAsync(idRecurso);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -40,13 +44,16 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
             _recursoRepository.Setup(x => x.AlterarAsync(recursoMock));
 
-            var alterarModel = new AlterarModel(_recursoRepository.Object);
+            var pageModel = new AlterarModel(_recursoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await alterarModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

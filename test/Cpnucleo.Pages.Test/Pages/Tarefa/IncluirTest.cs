@@ -1,12 +1,7 @@
-﻿using Cpnucleo.Pages.Authentication;
-using Cpnucleo.Pages.Models;
+﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Tarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -45,13 +40,16 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaWorkflowMock);
             _tipoTarefaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaTipoTarefaMock);
 
-            var AlterarModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
+            var pageModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync();
+            var result = await pageModel.OnGetAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -63,21 +61,16 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
 
             _tarefaRepository.Setup(x => x.IncluirAsync(tarefaMock));
 
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
-            var pageContext = new PageContext(actionContext);
-
-            var incluirModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
+            var pageModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
             {
-                PageContext = pageContext
+                PageContext = PageContextManager.CreatePageContext()
             };
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

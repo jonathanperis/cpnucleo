@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Impedimento;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,13 +23,16 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
             _impedimentoRepository.Setup(x => x.ConsultarAsync(idImpedimento)).ReturnsAsync(impedimentoMock);
 
-            var AlterarModel = new AlterarModel(_impedimentoRepository.Object);
+            var pageModel = new AlterarModel(_impedimentoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync(idImpedimento);
+            var result = await pageModel.OnGetAsync(idImpedimento);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -40,13 +44,16 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
             _impedimentoRepository.Setup(x => x.AlterarAsync(impedimentoMock));
 
-            var alterarModel = new AlterarModel(_impedimentoRepository.Object);
+            var pageModel = new AlterarModel(_impedimentoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await alterarModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

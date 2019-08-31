@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoProjeto;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,13 +23,16 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
             _recursoProjetoRepository.Setup(x => x.ConsultarAsync(idRecursoProjeto)).ReturnsAsync(recursoProjetoMock);
 
-            var RemoverModel = new RemoverModel(_recursoProjetoRepository.Object);
+            var pageModel = new RemoverModel(_recursoProjetoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync(idRecursoProjeto);
+            var result = await pageModel.OnGetAsync(idRecursoProjeto);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -40,13 +44,16 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
             _recursoProjetoRepository.Setup(x => x.RemoverAsync(recursoProjetoMock));
 
-            var removerModel = new RemoverModel(_recursoProjetoRepository.Object);
+            var pageModel = new RemoverModel(_recursoProjetoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await removerModel.OnPostAsync(idProjeto);
+            var result = await pageModel.OnPostAsync(idProjeto);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

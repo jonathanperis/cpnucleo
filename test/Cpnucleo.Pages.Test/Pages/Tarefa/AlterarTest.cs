@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Tarefa;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -43,13 +43,16 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaWorkflowMock);
             _tipoTarefaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaTipoTarefaMock);
 
-            var AlterarModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
+            var pageModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync(idTarefa);
+            var result = await pageModel.OnGetAsync(idTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -69,13 +72,16 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaWorkflowMock);
             _tipoTarefaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaTipoTarefaMock);
 
-            var AlterarModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
+            var pageModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

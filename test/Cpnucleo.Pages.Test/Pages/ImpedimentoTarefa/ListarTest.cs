@@ -1,12 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.ImpedimentoTarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -29,26 +24,16 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
             _impedimentoTarefaRepository.Setup(x => x.ListarPoridTarefaAsync(idTarefa)).ReturnsAsync(listaMock);
 
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var pageContext = new PageContext(actionContext)
+            var pageModel = new ListarModel(_impedimentoTarefaRepository.Object)
             {
-                ViewData = viewData
-            };
-
-            var listarModel = new ListarModel(_impedimentoTarefaRepository.Object)
-            {
-                PageContext = pageContext
+                PageContext = PageContextManager.CreatePageContext()
             };
 
             // Act
-            var actionResult = await listarModel.OnGetAsync(idTarefa);
+            var result = await pageModel.OnGetAsync(idTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

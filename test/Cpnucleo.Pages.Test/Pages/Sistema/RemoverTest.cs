@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Sistema;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,13 +23,16 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 
             _sistemaRepository.Setup(x => x.ConsultarAsync(idSistema)).ReturnsAsync(sistemaMock);
 
-            var RemoverModel = new RemoverModel(_sistemaRepository.Object);
+            var pageModel = new RemoverModel(_sistemaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await RemoverModel.OnGetAsync(idSistema);
+            var result = await pageModel.OnGetAsync(idSistema);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -40,13 +44,16 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 
             _sistemaRepository.Setup(x => x.RemoverAsync(sistemaMock));
 
-            var removerModel = new RemoverModel(_sistemaRepository.Object);
+            var pageModel = new RemoverModel(_sistemaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await removerModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

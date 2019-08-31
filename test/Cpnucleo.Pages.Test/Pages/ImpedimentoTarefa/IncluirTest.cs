@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.ImpedimentoTarefa;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,13 +35,16 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
 
-            var AlterarModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
+            var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync(idTarefa);
+            var result = await pageModel.OnGetAsync(idTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -56,13 +60,16 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
 
-            var incluirModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
+            var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync(idTarefa);
+            var result = await pageModel.OnPostAsync(idTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

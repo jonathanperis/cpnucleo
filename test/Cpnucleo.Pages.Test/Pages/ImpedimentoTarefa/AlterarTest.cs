@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.ImpedimentoTarefa;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,13 +31,16 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoTarefaRepository.Setup(x => x.ConsultarAsync(idImpedimentoTarefa)).ReturnsAsync(impedimentoTarefaMock);
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var AlterarModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object);
+            var pageModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync(idImpedimentoTarefa);
+            var result = await pageModel.OnGetAsync(idImpedimentoTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -50,13 +54,16 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoTarefaRepository.Setup(x => x.AlterarAsync(impedimentoTarefaMock));
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var alterarModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object);
+            var pageModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await alterarModel.OnPostAsync(idTarefa);
+            var result = await pageModel.OnPostAsync(idTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

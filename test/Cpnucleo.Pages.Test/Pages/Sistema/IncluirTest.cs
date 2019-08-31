@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Sistema;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -18,17 +19,20 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
         public async Task Test_OnPostAsync(string nome, string descricao)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { Nome = nome, Descricao = descricao };
+            var sistemaMock = new SistemaItem { Nome = nome };
 
             _sistemaRepository.Setup(x => x.IncluirAsync(sistemaMock));
 
-            var incluirModel = new IncluirModel(_sistemaRepository.Object);
+            var pageModel = new IncluirModel(_sistemaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

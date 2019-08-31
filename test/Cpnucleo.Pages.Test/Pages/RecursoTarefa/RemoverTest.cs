@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoTarefa;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -27,13 +28,16 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
             _recursoTarefaRepository.Setup(x => x.ConsultarAsync(idRecursoTarefa)).ReturnsAsync(recursoTarefaMock);
 
-            var removerModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
+            var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await removerModel.OnGetAsync(idRecursoTarefa);
+            var result = await pageModel.OnGetAsync(idRecursoTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -45,13 +49,16 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
             _recursoTarefaRepository.Setup(x => x.RemoverAsync(recursoTarefaMock));
 
-            var removerModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
+            var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await removerModel.OnPostAsync(idTarefa);
+            var result = await pageModel.OnPostAsync(idTarefa);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoProjeto;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,13 +33,16 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var incluirModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object);
+            var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await incluirModel.OnGetAsync(idProjeto);
+            var result = await pageModel.OnGetAsync(idProjeto);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -54,13 +58,16 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
             _recursoProjetoRepository.Setup(x => x.IncluirAsync(recursoProjetoMock));
 
-            var incluirModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object);
+            var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await incluirModel.OnPostAsync(idProjeto);
+            var result = await pageModel.OnPostAsync(idProjeto);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }

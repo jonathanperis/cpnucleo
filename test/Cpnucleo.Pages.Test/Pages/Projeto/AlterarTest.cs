@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Projeto;
 using Cpnucleo.Pages.Repository;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,13 +31,16 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var AlterarModel = new AlterarModel(_projetoRepository.Object, _sistemaRepository.Object);
+            var pageModel = new AlterarModel(_projetoRepository.Object, _sistemaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await AlterarModel.OnGetAsync(idProjeto);
+            var result = await pageModel.OnGetAsync(idProjeto);
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
 
         [Theory]
@@ -50,13 +54,16 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             _projetoRepository.Setup(x => x.AlterarAsync(projetoMock));
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var alterarModel = new AlterarModel(_projetoRepository.Object, _sistemaRepository.Object);
+            var pageModel = new AlterarModel(_projetoRepository.Object, _sistemaRepository.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
 
             // Act
-            var actionResult = await alterarModel.OnPostAsync();
+            var result = await pageModel.OnPostAsync();
 
             // Assert
-            Assert.NotNull(actionResult);
+            Assert.IsType<PageResult>(result);
         }
     }
 }
