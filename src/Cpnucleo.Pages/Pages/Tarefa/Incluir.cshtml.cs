@@ -1,11 +1,9 @@
-﻿using Cpnucleo.Pages.Authentication;
-using Cpnucleo.Pages.Models;
+﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Pages.Tarefa
@@ -13,23 +11,18 @@ namespace Cpnucleo.Pages.Pages.Tarefa
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IClaimsManager _claimsManager;
-
         private readonly ITarefaRepository _tarefaRepository;
         private readonly IRepository<ProjetoItem> _projetoRepository;
         private readonly IRepository<SistemaItem> _sistemaRepository;
         private readonly IWorkflowRepository _workflowRepository;
         private readonly IRepository<TipoTarefaItem> _tipoTarefaRepository;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                ITarefaRepository tarefaRepository,
+        public IncluirModel(ITarefaRepository tarefaRepository,
                                 IRepository<ProjetoItem> projetoRepository,
                                 IRepository<SistemaItem> sistemaRepository,
                                 IWorkflowRepository workflowRepository,
                                 IRepository<TipoTarefaItem> tipoTarefaRepository)
         {
-            _claimsManager = claimsManager;
-
             _tarefaRepository = tarefaRepository;
             _projetoRepository = projetoRepository;
             _sistemaRepository = sistemaRepository;
@@ -60,11 +53,6 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public async Task<IActionResult> OnPostAsync()
         {
-            string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-            int idRecurso = int.Parse(retorno);
-
-            Tarefa.IdRecurso = idRecurso;
-
             if (!ModelState.IsValid)
             {
                 SelectProjetos = new SelectList(await _projetoRepository.ListarAsync(), "IdProjeto", "Nome");

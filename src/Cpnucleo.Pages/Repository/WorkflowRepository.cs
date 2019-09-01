@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class WorkflowRepository : IWorkflowRepository
+    class WorkflowRepository : IWorkflowRepository
     {
         private readonly Context _context;
 
@@ -28,7 +28,6 @@ namespace Cpnucleo.Pages.Repository
 
             workflowItem.Nome = workflow.Nome;
             workflowItem.Ordem = workflow.Ordem;
-
             workflowItem.DataAlteracao = DateTime.Now;
 
             _context.Workflows.Update(workflowItem);

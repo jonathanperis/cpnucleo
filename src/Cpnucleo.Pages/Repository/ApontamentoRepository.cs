@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class ApontamentoRepository : IApontamentoRepository
+    class ApontamentoRepository : IApontamentoRepository
     {
         private readonly Context _context;
 

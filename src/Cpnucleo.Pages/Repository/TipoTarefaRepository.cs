@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class TipoTarefaRepository : IRepository<TipoTarefaItem>
+    class TipoTarefaRepository : IRepository<TipoTarefaItem>
     {
         private readonly Context _context;
 
@@ -27,7 +27,6 @@ namespace Cpnucleo.Pages.Repository
             var tipoTarefaItem = await ConsultarAsync(tipoTarefa.IdTipoTarefa);
 
             tipoTarefaItem.Nome = tipoTarefa.Nome;
-
             tipoTarefaItem.DataAlteracao = DateTime.Now;
 
             _context.TipoTarefas.Update(tipoTarefaItem);

@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class TarefaRepository : ITarefaRepository
+    class TarefaRepository : ITarefaRepository
     {
         private readonly Context _context;
 
-        public TarefaRepository(Context context) => _context = context;
+        public TarefaRepository(Context context)
+        {
+            _context = context;
+        }
 
         public async Task IncluirAsync(TarefaItem tarefa)
         {
@@ -36,7 +39,6 @@ namespace Cpnucleo.Pages.Repository
             tarefaItem.PercentualConcluido = tarefa.PercentualConcluido;
             tarefaItem.IdRecurso = tarefa.IdRecurso;
             tarefaItem.IdTipoTarefa = tarefa.IdTipoTarefa;
-
             tarefaItem.DataAlteracao = tarefa.DataAlteracao;
 
             _context.Tarefas.Update(tarefaItem);

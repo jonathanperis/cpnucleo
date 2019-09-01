@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class ProjetoRepository : IRepository<ProjetoItem>
+    class ProjetoRepository : IRepository<ProjetoItem>
     {
         private readonly Context _context;
 
@@ -28,7 +28,6 @@ namespace Cpnucleo.Pages.Repository
 
             projetoItem.Nome = projeto.Nome;
             projetoItem.IdSistema = projeto.IdSistema;
-
             projetoItem.DataAlteracao = DateTime.Now;
 
             _context.Projetos.Update(projetoItem);

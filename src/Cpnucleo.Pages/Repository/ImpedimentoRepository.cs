@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class ImpedimentoRepository : IRepository<ImpedimentoItem>
+    class ImpedimentoRepository : IRepository<ImpedimentoItem>
     {
         private readonly Context _context;
 
@@ -27,7 +27,6 @@ namespace Cpnucleo.Pages.Repository
             var impedimentoItem = await ConsultarAsync(impedimento.IdImpedimento);
 
             impedimentoItem.Nome = impedimento.Nome;
-
             impedimentoItem.DataAlteracao = DateTime.Now;
 
             _context.Impedimentos.Update(impedimentoItem);

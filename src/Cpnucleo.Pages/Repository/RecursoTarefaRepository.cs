@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class RecursoTarefaRepository : IRecursoTarefaRepository
+    class RecursoTarefaRepository : IRecursoTarefaRepository
     {
         private readonly Context _context;
 
@@ -35,7 +35,6 @@ namespace Cpnucleo.Pages.Repository
 
             recursoTarefaItem.IdRecurso = recursoTarefa.IdRecurso;
             recursoTarefaItem.PercentualTarefa = recursoTarefa.PercentualTarefa;
-
             recursoTarefaItem.DataAlteracao = DateTime.Now;
 
             _context.RecursoTarefas.Update(recursoTarefaItem);

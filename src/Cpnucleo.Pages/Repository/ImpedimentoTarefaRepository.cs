@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class ImpedimentoTarefaRepository : IImpedimentoTarefaRepository
+    class ImpedimentoTarefaRepository : IImpedimentoTarefaRepository
     {
         private readonly Context _context;
 
@@ -29,7 +29,6 @@ namespace Cpnucleo.Pages.Repository
             impedimentoTarefaItem.Descricao = impedimentoTarefa.Descricao;
             impedimentoTarefaItem.IdImpedimento = impedimentoTarefa.IdImpedimento;
             impedimentoTarefaItem.Ativo = impedimentoTarefa.Ativo;            
-
             impedimentoTarefaItem.DataAlteracao = DateTime.Now;
 
             _context.ImpedimentoTarefas.Update(impedimentoTarefaItem);

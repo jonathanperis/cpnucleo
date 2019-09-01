@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class RecursoRepository : IRecursoRepository
+    class RecursoRepository : IRecursoRepository
     {
         private readonly Context _context;
 
@@ -21,7 +21,6 @@ namespace Cpnucleo.Pages.Repository
 
             recurso.SenhaCriptografada = itemCriptografado;
             recurso.Salt = salt;
-
             recurso.DataInclusao = DateTime.Now;
             
             _context.Recursos.Add(recurso);
@@ -36,10 +35,8 @@ namespace Cpnucleo.Pages.Repository
 
             recursoItem.SenhaCriptografada = itemCriptografado;
             recursoItem.Salt = salt;
-
             recursoItem.Nome = recurso.Nome;
             recursoItem.Ativo = recurso.Ativo;
-
             recursoItem.DataAlteracao = DateTime.Now;
 
             _context.Recursos.Update(recursoItem);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public class SistemaRepository : IRepository<SistemaItem>
+    class SistemaRepository : IRepository<SistemaItem>
     {
         private readonly Context _context;
 
@@ -28,7 +28,6 @@ namespace Cpnucleo.Pages.Repository
 
             sistemaItem.Nome = sistema.Nome;
             sistemaItem.Descricao = sistema.Descricao;
-
             sistemaItem.DataAlteracao = DateTime.Now;
 
             _context.Sistemas.Update(sistemaItem);
