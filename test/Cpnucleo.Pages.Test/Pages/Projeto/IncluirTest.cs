@@ -1,10 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Projeto;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Projeto
@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
 
         [Theory]
         [InlineData("Projeto de Teste", 1)]
-        public async Task Test_OnPostAsync(string nome, int idSistema)
+        public void Test_OnPostAsync(string nome, int idSistema)
         {
             // Arrange
             var projetoMock = new ProjetoItem { Nome = nome, IdSistema = idSistema };
@@ -31,16 +31,28 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
             _projetoRepository.Setup(x => x.IncluirAsync(projetoMock));
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var pageModel = new IncluirModel(_projetoRepository.Object, _sistemaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_projetoRepository.Object, _sistemaRepository.Object);
+
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(projetoMock).ShouldReturn.NoErrors();
         }
     }
 }

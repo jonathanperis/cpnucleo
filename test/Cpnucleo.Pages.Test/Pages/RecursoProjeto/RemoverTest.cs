@@ -24,10 +24,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
             _recursoProjetoRepository.Setup(x => x.ConsultarAsync(idRecursoProjeto)).ReturnsAsync(recursoProjetoMock);
 
-            var pageModel = new RemoverModel(_recursoProjetoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_recursoProjetoRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idRecursoProjeto);
@@ -45,10 +42,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
             _recursoProjetoRepository.Setup(x => x.RemoverAsync(recursoProjetoMock));
 
-            var pageModel = new RemoverModel(_recursoProjetoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_recursoProjetoRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idProjeto);

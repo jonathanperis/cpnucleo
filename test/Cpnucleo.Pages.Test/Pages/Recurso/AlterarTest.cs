@@ -1,9 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Recurso;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,10 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
             _recursoRepository.Setup(x => x.ConsultarAsync(idRecurso)).ReturnsAsync(recursoMock);
 
-            var pageModel = new AlterarModel(_recursoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_recursoRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idRecurso);
@@ -38,23 +36,35 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
         [Theory]
         [InlineData(1, "Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
-        public async Task Test_OnPostAsync(int idRecurso, string nome, string login, string senha, string confirmarSenha, bool ativo)
+        public void Test_OnPostAsync(int idRecurso, string nome, string login, string senha, string confirmarSenha, bool ativo)
         {
             // Arrange
             var recursoMock = new RecursoItem { IdRecurso = idRecurso, Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo};
 
             _recursoRepository.Setup(x => x.AlterarAsync(recursoMock));
 
-            var pageModel = new AlterarModel(_recursoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_recursoRepository.Object);
+
+            var pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(recursoMock).ShouldReturn.NoErrors();
         }
     }
 }

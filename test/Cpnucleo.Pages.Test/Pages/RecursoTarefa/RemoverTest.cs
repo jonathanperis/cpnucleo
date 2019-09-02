@@ -29,10 +29,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
             _recursoTarefaRepository.Setup(x => x.ConsultarAsync(idRecursoTarefa)).ReturnsAsync(recursoTarefaMock);
 
-            var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idRecursoTarefa);
@@ -50,10 +47,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
             _recursoTarefaRepository.Setup(x => x.RemoverAsync(recursoTarefaMock));
 
-            var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idTarefa);

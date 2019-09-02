@@ -32,10 +32,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoTarefaRepository.Setup(x => x.ConsultarAsync(idImpedimentoTarefa)).ReturnsAsync(impedimentoTarefaMock);
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var pageModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idImpedimentoTarefa);
@@ -55,10 +52,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoTarefaRepository.Setup(x => x.AlterarAsync(impedimentoTarefaMock));
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var pageModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idTarefa);

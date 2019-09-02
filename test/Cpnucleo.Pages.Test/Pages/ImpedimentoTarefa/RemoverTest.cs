@@ -24,10 +24,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
             _impedimentoTarefaRepository.Setup(x => x.ConsultarAsync(idImpedimentoTarefa)).ReturnsAsync(impedimentoTarefaMock);
 
-            var pageModel = new RemoverModel(_impedimentoTarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_impedimentoTarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idImpedimentoTarefa);
@@ -45,10 +42,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
             _impedimentoTarefaRepository.Setup(x => x.RemoverAsync(impedimentoTarefaMock));
 
-            var pageModel = new RemoverModel(_impedimentoTarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_impedimentoTarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idTarefa);

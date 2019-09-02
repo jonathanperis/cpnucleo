@@ -34,10 +34,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 
-            var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idProjeto);
@@ -59,10 +56,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
             _recursoProjetoRepository.Setup(x => x.IncluirAsync(recursoProjetoMock));
 
-            var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idProjeto);

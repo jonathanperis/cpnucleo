@@ -36,10 +36,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
 
-            var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idTarefa);
@@ -61,10 +58,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
 
-            var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idTarefa);

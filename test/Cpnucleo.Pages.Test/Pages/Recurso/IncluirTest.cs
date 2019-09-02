@@ -1,9 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Recurso;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Threading.Tasks;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Recurso
@@ -16,23 +16,35 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
 
         [Theory]
         [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
-        public async Task Test_OnPostAsync(string nome, string login, string senha, string confirmarSenha, bool ativo)
+        public void Test_OnPostAsync(string nome, string login, string senha, string confirmarSenha, bool ativo)
         {
             // Arrange
             var recursoMock = new RecursoItem { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
             _recursoRepository.Setup(x => x.IncluirAsync(recursoMock));
 
-            var pageModel = new IncluirModel(_recursoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_recursoRepository.Object);
+
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(recursoMock).ShouldReturn.NoErrors();
         }
     }
 }

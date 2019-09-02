@@ -1,9 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Tarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -44,10 +45,7 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaWorkflowMock);
             _tipoTarefaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaTipoTarefaMock);
 
-            var pageModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idTarefa);
@@ -58,7 +56,7 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
 
         [Theory]
         [InlineData(1, "Tarefa de Teste", 1)]
-        public async Task Test_OnPostAsync(int idTarefa, string nome, int idProjeto)
+        public void Test_OnPostAsync(int idTarefa, string nome, int idProjeto)
         {
             // Arrange
             var tarefaMock = new TarefaItem { IdTarefa = idTarefa, Nome = nome, IdProjeto = idProjeto };
@@ -73,16 +71,28 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaWorkflowMock);
             _tipoTarefaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaTipoTarefaMock);
 
-            var pageModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
+
+            var pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(tarefaMock).ShouldReturn.NoErrors();
         }
     }
 }

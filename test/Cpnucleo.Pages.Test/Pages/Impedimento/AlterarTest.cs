@@ -1,9 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Impedimento;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,10 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
             _impedimentoRepository.Setup(x => x.ConsultarAsync(idImpedimento)).ReturnsAsync(impedimentoMock);
 
-            var pageModel = new AlterarModel(_impedimentoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_impedimentoRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idImpedimento);
@@ -38,23 +36,35 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
         [Theory]
         [InlineData(1, "Impedimento de Teste")]
-        public async Task Test_OnPostAsync(int idImpedimento, string nome)
+        public void Test_OnPostAsync(int idImpedimento, string nome)
         {
             // Arrange
             var impedimentoMock = new ImpedimentoItem { IdImpedimento = idImpedimento, Nome = nome };
 
             _impedimentoRepository.Setup(x => x.AlterarAsync(impedimentoMock));
 
-            var pageModel = new AlterarModel(_impedimentoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_impedimentoRepository.Object);
+
+            var pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(impedimentoMock).ShouldReturn.NoErrors();
         }
     }
 }

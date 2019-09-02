@@ -1,9 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Workflow;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,10 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
 
             _workflowRepository.Setup(x => x.ConsultarAsync(idWorkflow)).ReturnsAsync(workflowMock);
 
-            var pageModel = new RemoverModel(_workflowRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_workflowRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idWorkflow);
@@ -37,24 +35,36 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
         }
 
         [Theory]
-        [InlineData(1)]
-        public async Task Test_OnPostAsync(int idWorkflow)
+        [InlineData(129, "Workflow de Teste", 3)]
+        public void Test_OnPostAsync(int idWorkflow, string nome, int ordem)
         {
             // Arrange
-            var workflowMock = new WorkflowItem { IdWorkflow = idWorkflow };
+            var workflowMock = new WorkflowItem { IdWorkflow = idWorkflow, Nome = nome, Ordem = ordem };
 
             _workflowRepository.Setup(x => x.RemoverAsync(workflowMock));
 
-            var pageModel = new RemoverModel(_workflowRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new RemoverModel(_workflowRepository.Object);
+
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(workflowMock).ShouldReturn.NoErrors();
         }
     }
 }

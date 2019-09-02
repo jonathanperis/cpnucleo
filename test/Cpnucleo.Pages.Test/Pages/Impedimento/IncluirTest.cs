@@ -1,9 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Impedimento;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Threading.Tasks;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Impedimento
@@ -16,23 +16,35 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
         [Theory]
         [InlineData("Impedimento de Teste")]
-        public async Task Test_OnPostAsync(string nome)
+        public void Test_OnPostAsync(string nome)
         {
             // Arrange
             var impedimentoMock = new ImpedimentoItem { Nome = nome };
 
             _impedimentoRepository.Setup(x => x.IncluirAsync(impedimentoMock));
 
-            var pageModel = new IncluirModel(_impedimentoRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_impedimentoRepository.Object);
+
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(impedimentoMock).ShouldReturn.NoErrors();
         }
     }
 }

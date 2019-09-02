@@ -1,9 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Workflow;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Threading.Tasks;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Workflow
@@ -16,23 +16,35 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
 
         [Theory]
         [InlineData("Workflow de Teste", 3)]
-        public async Task Test_OnPostAsync(string nome, int ordem)
+        public void Test_OnPostAsync(string nome, int ordem)
         {
             // Arrange
             var workflowMock = new WorkflowItem { Nome = nome, Ordem = ordem };
 
             _workflowRepository.Setup(x => x.IncluirAsync(workflowMock));
 
-            var pageModel = new IncluirModel(_workflowRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_workflowRepository.Object);
+
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(workflowMock).ShouldReturn.NoErrors();
         }
     }
 }

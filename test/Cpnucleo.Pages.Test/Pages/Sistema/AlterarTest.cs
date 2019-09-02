@@ -1,9 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Sistema;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,10 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 
             _sistemaRepository.Setup(x => x.ConsultarAsync(idSistema)).ReturnsAsync(sistemaMock);
 
-            var pageModel = new AlterarModel(_sistemaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_sistemaRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idSistema);
@@ -38,23 +36,35 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 
         [Theory]
         [InlineData(1, "Sistema de Teste", "Descrição de Teste")]
-        public async Task Test_OnPostAsync(int idSistema, string nome, string descricao)
+        public void Test_OnPostAsync(int idSistema, string nome, string descricao)
         {
             // Arrange
             var sistemaMock = new SistemaItem { IdSistema = idSistema, Nome = nome, Descricao = descricao };
 
             _sistemaRepository.Setup(x => x.AlterarAsync(sistemaMock));
 
-            var pageModel = new AlterarModel(_sistemaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new AlterarModel(_sistemaRepository.Object);
+
+            var pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
-            var result = await pageModel.OnPostAsync();
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => x.OnPostAsync)
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(sistemaMock).ShouldReturn.NoErrors();
         }
     }
 }

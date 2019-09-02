@@ -34,10 +34,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
             _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idTarefa)).ReturnsAsync(listaMock);
 
-            var pageModel = new IncluirModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnGetAsync(idTarefa);
@@ -59,10 +56,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
             _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idTarefa)).ReturnsAsync(listaMock);
             _recursoTarefaRepository.Setup(x => x.IncluirAsync(recursoTarefaMock));
 
-            var pageModel = new IncluirModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object)
-            {
-                PageContext = PageContextManager.CreatePageContext()
-            };
+            var pageModel = new IncluirModel(_recursoTarefaRepository.Object, _recursoProjetoRepository.Object, _tarefaRepository.Object);
 
             // Act
             var result = await pageModel.OnPostAsync(idTarefa);
