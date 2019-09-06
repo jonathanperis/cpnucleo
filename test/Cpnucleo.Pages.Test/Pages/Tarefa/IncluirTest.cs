@@ -1,12 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Tarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Tarefa
@@ -29,7 +27,7 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         }
 
         [Fact]
-        public async Task Test_OnGetAsync()
+        public void Test_OnGetAsync()
         {
             // Arrange
             var listaProjetosMock = new List<ProjetoModel> { };
@@ -44,11 +42,14 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
 
             var pageModel = new IncluirModel(_tarefaRepository.Object, _projetoRepository.Object, _sistemaRepository.Object, _workflowRepository.Object, _tipoTarefaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync();
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => x.OnGetAsync)
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]

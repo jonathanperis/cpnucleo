@@ -1,11 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Apontamento;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Apontamento
@@ -18,7 +16,7 @@ namespace Cpnucleo.Pages.Test.Pages.Apontamento
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idApontamento)
+        public void Test_OnGetAsync(int idApontamento)
         {
             // Arrange
             var apontamentoMock = new ApontamentoModel { };
@@ -27,19 +25,21 @@ namespace Cpnucleo.Pages.Test.Pages.Apontamento
 
             var pageModel = new RemoverModel(_apontamentoRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idApontamento);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idApontamento))
+
+                // Assert
+                .TestPage();
         }
 
-        [Theory]
-        [InlineData(1, "Descrição do apontamento")]
-        public void Test_OnPostAsync(int idApontamento, string descricao)
+        [Fact]
+        public void Test_OnPostAsync()
         {
             // Arrange
-            var apontamentoMock = new ApontamentoModel { IdApontamento = idApontamento, Descricao = descricao };
+            var apontamentoMock = new ApontamentoModel { };
 
             _apontamentoRepository.Setup(x => x.RemoverAsync(apontamentoMock));
 
@@ -52,19 +52,7 @@ namespace Cpnucleo.Pages.Test.Pages.Apontamento
                 .Action(x => x.OnPostAsync)
 
                 // Assert
-                .WhenModelStateIsValidEquals(false)
-                .TestPage();
-
-            // Act
-            pageTester
-                .Action(x => x.OnPostAsync)
-
-                // Assert
-                .WhenModelStateIsValidEquals(true)
-                .TestRedirectToPage("/Apontamento");
-
-            // Assert
-            Validation.For(apontamentoMock).ShouldReturn.NoErrors();
+                .TestRedirectToPage("Listar");
         }
     }
 }

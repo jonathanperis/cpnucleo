@@ -26,8 +26,6 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
-
             await _tarefaRepository.RemoverAsync(Tarefa);
 
             return RedirectToPage("Listar");

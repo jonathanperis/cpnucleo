@@ -1,11 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Impedimento;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Impedimento
@@ -18,7 +16,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idImpedimento)
+        public void Test_OnGetAsync(int idImpedimento)
         {
             // Arrange
             var impedimentoMock = new ImpedimentoModel { };
@@ -27,19 +25,21 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 
             var pageModel = new RemoverModel(_impedimentoRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idImpedimento);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idImpedimento))
+
+                // Assert
+                .TestPage();
         }
 
-        [Theory]
-        [InlineData(1, "Impedimento de Teste")]
-        public void Test_OnPostAsync(int idImpedimento, string nome)
+        [Fact]
+        public void Test_OnPostAsync()
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoModel { IdImpedimento = idImpedimento, Nome = nome };
+            var impedimentoMock = new ImpedimentoModel { };
 
             _impedimentoRepository.Setup(x => x.RemoverAsync(impedimentoMock));
 
@@ -52,19 +52,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
                 .Action(x => x.OnPostAsync)
 
                 // Assert
-                .WhenModelStateIsValidEquals(false)
-                .TestPage();
-
-            // Act
-            pageTester
-                .Action(x => x.OnPostAsync)
-
-                // Assert
-                .WhenModelStateIsValidEquals(true)
                 .TestRedirectToPage("Listar");
-
-            // Assert
-            Validation.For(impedimentoMock).ShouldReturn.NoErrors();
         }
     }
 }

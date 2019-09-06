@@ -26,8 +26,6 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnPostAsync(int idTarefa)
         {
-            if (!ModelState.IsValid) return Page();
-
             await _impedimentoTarefaRepository.RemoverAsync(ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });

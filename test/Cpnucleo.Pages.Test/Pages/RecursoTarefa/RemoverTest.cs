@@ -1,10 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoTarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System.Threading.Tasks;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
@@ -22,7 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idRecursoTarefa)
+        public void Test_OnGetAsync(int idRecursoTarefa)
         {
             // Arrange
             var recursoTarefaMock = new RecursoTarefaModel { };
@@ -31,16 +30,19 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
             var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idRecursoTarefa);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idRecursoTarefa))
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnPostAsync(int idTarefa)
+        public void Test_OnPostAsync(int idTarefa)
         {
             // Arrange
             var recursoTarefaMock = new RecursoTarefaModel { };
@@ -49,11 +51,14 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
 
             var pageModel = new RemoverModel(_recursoTarefaRepository.Object, _tarefaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnPostAsync(idTarefa);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnPostAsync(idTarefa))
+
+                // Assert
+                .TestRedirectToPage("Listar");
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoProjeto;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
@@ -17,7 +16,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idProjeto)
+        public void Test_OnGetAsync(int idProjeto)
         {
             // Arrange
             var listaMock = new List<RecursoProjetoModel> { };
@@ -29,11 +28,14 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
                 PageContext = PageContextManager.CreatePageContext()
             };
 
-            // Act
-            var result = await pageModel.OnGetAsync(idProjeto);
+            var pageTester = new PageModelTester<ListarModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idProjeto))
+
+                // Assert
+                .TestPage();
         }
     }
 }

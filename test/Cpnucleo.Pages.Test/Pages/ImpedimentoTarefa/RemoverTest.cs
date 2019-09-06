@@ -1,10 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.ImpedimentoTarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System.Threading.Tasks;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
@@ -17,7 +16,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idImpedimentoTarefa)
+        public void Test_OnGetAsync(int idImpedimentoTarefa)
         {
             // Arrange
             var impedimentoTarefaMock = new ImpedimentoTarefaModel { };
@@ -26,29 +25,35 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
             var pageModel = new RemoverModel(_impedimentoTarefaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idImpedimentoTarefa);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idImpedimentoTarefa))
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]
-        [InlineData(1, 1)]
-        public async Task Test_OnPostAsync(int idImpedimentoTarefa, int idTarefa)
+        [InlineData(1)]
+        public void Test_OnPostAsync(int idTarefa)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaModel { IdImpedimentoTarefa = idImpedimentoTarefa };
+            var impedimentoTarefaMock = new ImpedimentoTarefaModel { };
 
             _impedimentoTarefaRepository.Setup(x => x.RemoverAsync(impedimentoTarefaMock));
 
             var pageModel = new RemoverModel(_impedimentoTarefaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnPostAsync(idTarefa);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnPostAsync(idTarefa))
+
+                // Assert
+                .TestRedirectToPage("Listar");
         }
     }
 }

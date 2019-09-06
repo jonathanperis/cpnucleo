@@ -26,11 +26,9 @@ namespace Cpnucleo.Pages.Pages.Apontamento
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
-
             await _apontamentoRepository.RemoverAsync(Apontamento);
 
-            return RedirectToPage("/Apontamento");
+            return RedirectToPage("Listar");
         }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Workflow;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Workflow
@@ -18,7 +16,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idWorkflow)
+        public void Test_OnGetAsync(int idWorkflow)
         {
             // Arrange
             var workflowMock = new WorkflowModel { };
@@ -27,19 +25,21 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
 
             var pageModel = new RemoverModel(_workflowRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idWorkflow);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idWorkflow))
+
+                // Assert
+                .TestPage();
         }
 
-        [Theory]
-        [InlineData(129, "Workflow de Teste", 3)]
-        public void Test_OnPostAsync(int idWorkflow, string nome, int ordem)
+        [Fact]
+        public void Test_OnPostAsync()
         {
             // Arrange
-            var workflowMock = new WorkflowModel { IdWorkflow = idWorkflow, Nome = nome, Ordem = ordem };
+            var workflowMock = new WorkflowModel { };
 
             _workflowRepository.Setup(x => x.RemoverAsync(workflowMock));
 
@@ -52,19 +52,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
                 .Action(x => x.OnPostAsync)
 
                 // Assert
-                .WhenModelStateIsValidEquals(false)
-                .TestPage();
-
-            // Act
-            pageTester
-                .Action(x => x.OnPostAsync)
-
-                // Assert
-                .WhenModelStateIsValidEquals(true)
                 .TestRedirectToPage("Listar");
-
-            // Assert
-            Validation.For(workflowMock).ShouldReturn.NoErrors();
         }
     }
 }

@@ -26,8 +26,6 @@ namespace Cpnucleo.Pages.Pages.Impedimento
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
-
             await _impedimentoRepository.RemoverAsync(Impedimento);
 
             return RedirectToPage("Listar");

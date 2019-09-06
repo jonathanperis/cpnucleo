@@ -1,12 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.Projeto;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.Projeto
@@ -24,7 +22,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idProjeto)
+        public void Test_OnGetAsync(int idProjeto)
         {
             // Arrange
             var projetoMock = new ProjetoModel { };
@@ -35,11 +33,14 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
 
             var pageModel = new AlterarModel(_projetoRepository.Object, _sistemaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idProjeto);
+            var pageTester = new PageModelTester<AlterarModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idProjeto))
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]

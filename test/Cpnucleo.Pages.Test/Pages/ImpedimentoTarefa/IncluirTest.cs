@@ -1,11 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.ImpedimentoTarefa;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
@@ -25,7 +24,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
         [Theory]
         [InlineData(1, 1)]
-        public async Task Test_OnGetAsync(int idImpedimentoTarefa, int idTarefa)
+        public void Test_OnGetAsync(int idImpedimentoTarefa, int idTarefa)
         {
             // Arrange
             var impedimentoTarefaMock = new ImpedimentoTarefaModel { };
@@ -38,19 +37,22 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
             var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idTarefa);
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idTarefa))
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]
-        [InlineData(1, 1)]
-        public async Task Test_OnPostAsync(int idImpedimentoTarefa, int idTarefa)
+        [InlineData(1, 1, "Descrição do Impedimento")]
+        public void Test_OnPostAsync(int idImpedimentoTarefa, int idTarefa, string descricao)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaModel { IdImpedimentoTarefa = idImpedimentoTarefa, IdTarefa = idTarefa };
+            var impedimentoTarefaMock = new ImpedimentoTarefaModel { IdImpedimentoTarefa = idImpedimentoTarefa, IdTarefa = idTarefa, Descricao = descricao };
             var listaMock = new List<ImpedimentoModel> { };
             var tarefaMock = new TarefaModel { };
 
@@ -60,11 +62,26 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
 
             var pageModel = new IncluirModel(_impedimentoTarefaRepository.Object, _impedimentoRepository.Object, _tarefaRepository.Object);
 
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+
             // Act
-            var result = await pageModel.OnPostAsync(idTarefa);
+            pageTester
+                .Action(x => () => x.OnPostAsync(idTarefa))
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => () => x.OnPostAsync(idTarefa))
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(impedimentoTarefaMock).ShouldReturn.NoErrors();
         }
     }
 }

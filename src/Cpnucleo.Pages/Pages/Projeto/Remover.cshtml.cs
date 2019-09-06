@@ -26,8 +26,6 @@ namespace Cpnucleo.Pages.Pages.Projeto
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
-
             await _projetoRepository.RemoverAsync(Projeto);
 
             return RedirectToPage("Listar");

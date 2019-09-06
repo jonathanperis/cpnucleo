@@ -33,8 +33,8 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" asp-for="RecursoTarefa.IdTarefa"></label>
                     <div class="col-sm-10">
-                        <input type="hidden" asp-for="RecursoTarefa.IdTarefa">
-                        <p class="form-control-static">@Html.DisplayFor(x => x.RecursoTarefa.Tarefa.Nome)</p>
+                        <input type="hidden" asp-for="RecursoTarefa.IdTarefa" value="@Model.Tarefa.IdTarefa">
+                        <p class="form-control-static">@Html.DisplayFor(x => x.Tarefa.Nome)</p>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>

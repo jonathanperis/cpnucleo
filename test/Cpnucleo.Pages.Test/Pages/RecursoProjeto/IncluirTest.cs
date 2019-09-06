@@ -1,11 +1,10 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoProjeto;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
@@ -25,7 +24,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idProjeto)
+        public void Test_OnGetAsync(int idProjeto)
         {
             // Arrange
             var projetoMock = new ProjetoModel { };
@@ -36,33 +35,51 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
             var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idProjeto);
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idProjeto))
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnPostAsync(int idProjeto)
+        public void Test_OnPostAsync(int idProjeto)
         {
             // Arrange
+            var recursoProjetoMock = new RecursoProjetoModel { IdProjeto = idProjeto };
             var projetoMock = new ProjetoModel { };
             var listaMock = new List<RecursoModel> { };
-            var recursoProjetoMock = new RecursoProjetoModel { };
 
+            _recursoProjetoRepository.Setup(x => x.IncluirAsync(recursoProjetoMock));
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
-            _recursoProjetoRepository.Setup(x => x.IncluirAsync(recursoProjetoMock));
 
             var pageModel = new IncluirModel(_recursoProjetoRepository.Object, _recursoRepository.Object, _projetoRepository.Object);
 
+            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+
             // Act
-            var result = await pageModel.OnPostAsync(idProjeto);
+            pageTester
+                .Action(x => () => x.OnPostAsync(idProjeto))
+
+                // Assert
+                .WhenModelStateIsValidEquals(false)
+                .TestPage();
+
+            // Act
+            pageTester
+                .Action(x => () => x.OnPostAsync(idProjeto))
+
+                // Assert
+                .WhenModelStateIsValidEquals(true)
+                .TestRedirectToPage("Listar");
 
             // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            Validation.For(recursoProjetoMock).ShouldReturn.NoErrors();
         }
     }
 }

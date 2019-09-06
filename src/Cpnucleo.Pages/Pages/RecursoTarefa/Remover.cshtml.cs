@@ -33,13 +33,6 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnPostAsync(int idTarefa)
         {
-            if (!ModelState.IsValid)
-            {
-                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
-
-                return Page();
-            }
-
             await _recursoTarefaRepository.RemoverAsync(RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });

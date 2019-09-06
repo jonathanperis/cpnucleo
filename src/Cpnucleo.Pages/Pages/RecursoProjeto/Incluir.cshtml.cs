@@ -26,9 +26,9 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
             _projetoRepository = projetoRepository;
         }
 
+        [BindProperty]
         public RecursoProjetoModel RecursoProjeto { get; set; }
 
-        [BindProperty]
         public ProjetoModel Projeto { get; set; }
 
         public SelectList SelectRecursos { get; set; }

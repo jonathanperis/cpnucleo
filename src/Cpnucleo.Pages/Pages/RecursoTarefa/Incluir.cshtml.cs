@@ -46,8 +46,8 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa.Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
-                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjetoAsync(RecursoTarefa.Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
+                Tarefa = await _tarefaRepository.ConsultarAsync(idTarefa);
+                SelectRecursos = new SelectList(await _recursoProjetoRepository.ListarPoridProjetoAsync(Tarefa.IdProjeto), "Recurso.IdRecurso", "Recurso.Nome");
 
                 return Page();
             }

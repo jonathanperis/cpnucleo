@@ -1,10 +1,9 @@
 ﻿using Cpnucleo.Pages.Models;
 using Cpnucleo.Pages.Pages.RecursoProjeto;
 using Cpnucleo.Pages.Repository;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System.Threading.Tasks;
+using SparkyTestHelpers.AspNetMvc.Core;
+using SparkyTestHelpers.DataAnnotations;
 using Xunit;
 
 namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
@@ -17,7 +16,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnGetAsync(int idRecursoProjeto)
+        public void Test_OnGetAsync(int idRecursoProjeto)
         {
             // Arrange
             var recursoProjetoMock = new RecursoProjetoModel { };
@@ -26,29 +25,35 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
 
             var pageModel = new RemoverModel(_recursoProjetoRepository.Object);
 
-            // Act
-            var result = await pageModel.OnGetAsync(idRecursoProjeto);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<PageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnGetAsync(idRecursoProjeto))
+
+                // Assert
+                .TestPage();
         }
 
         [Theory]
         [InlineData(1)]
-        public async Task Test_OnPostAsync(int idProjeto)
+        public void Test_OnPostAsync(int idProjeto)
         {
             // Arrange
-            var recursoProjetoMock = new RecursoProjetoModel { IdRecursoProjeto = idProjeto };
+            var recursoProjetoMock = new RecursoProjetoModel { };
 
             _recursoProjetoRepository.Setup(x => x.RemoverAsync(recursoProjetoMock));
 
             var pageModel = new RemoverModel(_recursoProjetoRepository.Object);
 
-            // Act
-            var result = await pageModel.OnPostAsync(idProjeto);
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
 
-            // Assert
-            Assert.IsType<RedirectToPageResult>(result);
+            // Act
+            pageTester
+                .Action(x => () => x.OnPostAsync(idProjeto))
+
+                // Assert
+                .TestRedirectToPage("Listar");
         }
     }
 }

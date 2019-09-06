@@ -26,8 +26,6 @@ namespace Cpnucleo.Pages.Pages.Sistema
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
-
             await _sistemaRepository.RemoverAsync(Sistema);
 
             return RedirectToPage("Listar");

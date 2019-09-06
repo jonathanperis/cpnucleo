@@ -26,8 +26,6 @@ namespace Cpnucleo.Pages.Pages.Workflow
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
-
             await _workflowRepository.RemoverAsync(Workflow);
 
             return RedirectToPage("Listar");
