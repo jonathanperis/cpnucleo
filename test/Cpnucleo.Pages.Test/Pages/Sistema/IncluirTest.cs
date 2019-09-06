@@ -10,16 +10,16 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 {
     public class IncluirTest
     {
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRepository<SistemaModel>> _sistemaRepository;
 
-        public IncluirTest() => _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+        public IncluirTest() => _sistemaRepository = new Mock<IRepository<SistemaModel>>();
 
         [Theory]
         [InlineData("Sistema de Teste", "Descrição de Teste")]
         public void Test_OnPostAsync(string nome, string descricao)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { Nome = nome, Descricao = descricao };
+            var sistemaMock = new SistemaModel { Nome = nome, Descricao = descricao };
 
             _sistemaRepository.Setup(x => x.IncluirAsync(sistemaMock));
 

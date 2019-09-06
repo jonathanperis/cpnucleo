@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_TAREFA")]
-    public class TarefaItem //:IValidatableObject
+    public class TarefaModel //:IValidatableObject
     {
         [Key]
         [Display(Name = "Código Tarefa")]      
@@ -59,7 +59,7 @@ namespace Cpnucleo.Pages.Models
         [Column("PROJ_ID", TypeName = "int")]
         public int IdProjeto { get; set; }
 
-        public ProjetoItem Projeto { get; set; }
+        public ProjetoModel Projeto { get; set; }
 
         [Display(Name = "Workflow")]      
         [Column("WOR_ID", TypeName = "int")]
@@ -79,15 +79,15 @@ namespace Cpnucleo.Pages.Models
         [NotMapped]
         public int HorasRestantes { get; set; }
 
-        public WorkflowItem Workflow { get; set; }
+        public WorkflowModel Workflow { get; set; }
 
-        public RecursoItem Recurso { get; set; }
+        public RecursoModel Recurso { get; set; }
 
-        public TipoTarefaItem TipoTarefa { get; set; }
+        public TipoTarefaModel TipoTarefa { get; set; }
 
-        public List<ImpedimentoTarefaItem> ListaImpedimentos { get; set; }
+        public List<ImpedimentoTarefaModel> ListaImpedimentos { get; set; }
 
-        public List<ApontamentoItem> ListaApontamentos { get; set; }
+        public List<ApontamentoModel> ListaApontamentos { get; set; }
 
         // public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         // {

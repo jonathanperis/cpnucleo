@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public interface IImpedimentoTarefaRepository : IRepository<ImpedimentoTarefaItem>
+    public interface IImpedimentoTarefaRepository : IRepository<ImpedimentoTarefaModel>
     {
-        Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefaAsync(int idTarefa);
+        Task<IEnumerable<ImpedimentoTarefaModel>> ListarPoridTarefaAsync(int idTarefa);
     }
 }

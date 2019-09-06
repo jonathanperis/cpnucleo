@@ -20,7 +20,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         public async Task Test_OnGetAsync(int idTarefa)
         {
             // Arrange
-            var listaMock = new List<RecursoTarefaItem> { };
+            var listaMock = new List<RecursoTarefaModel> { };
 
             _sistemaRepository.Setup(x => x.ListarPoridTarefaAsync(idTarefa)).ReturnsAsync(listaMock);
 

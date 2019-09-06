@@ -10,12 +10,12 @@ namespace Cpnucleo.Pages.Pages.Sistema
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IRepository<SistemaItem> _sistemaRepository;
+        private readonly IRepository<SistemaModel> _sistemaRepository;
 
-        public AlterarModel(IRepository<SistemaItem> sistemaRepository) => _sistemaRepository = sistemaRepository;
+        public AlterarModel(IRepository<SistemaModel> sistemaRepository) => _sistemaRepository = sistemaRepository;
 
         [BindProperty]
-        public SistemaItem Sistema { get; set; }
+        public SistemaModel Sistema { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idSistema)
         {

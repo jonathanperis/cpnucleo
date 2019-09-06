@@ -18,7 +18,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
         public void Test_OnGetAsync()
         {
             // Arrange
-            var listaMock = new List<WorkflowItem> { };
+            var listaMock = new List<WorkflowModel> { };
 
             _workflowRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 

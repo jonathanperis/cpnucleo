@@ -10,12 +10,12 @@ namespace Cpnucleo.Pages.Pages.Sistema
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IRepository<SistemaItem> _sistemaRepository;
+        private readonly IRepository<SistemaModel> _sistemaRepository;
 
-        public IncluirModel(IRepository<SistemaItem> sistemaRepository) => _sistemaRepository = sistemaRepository;
+        public IncluirModel(IRepository<SistemaModel> sistemaRepository) => _sistemaRepository = sistemaRepository;
 
         [BindProperty]
-        public SistemaItem Sistema { get; set; }
+        public SistemaModel Sistema { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {

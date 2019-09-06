@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
         public void Test_OnPostAsync(string nome, string login, string senha, string confirmarSenha, bool ativo)
         {
             // Arrange
-            var recursoMock = new RecursoItem { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
+            var recursoMock = new RecursoModel { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
             _recursoRepository.Setup(x => x.IncluirAsync(recursoMock));
 

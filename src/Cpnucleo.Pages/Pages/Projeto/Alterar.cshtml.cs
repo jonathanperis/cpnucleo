@@ -11,18 +11,18 @@ namespace Cpnucleo.Pages.Pages.Projeto
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IRepository<ProjetoItem> _projetoRepository;
+        private readonly IRepository<ProjetoModel> _projetoRepository;
 
-        private readonly IRepository<SistemaItem> _sistemaRepository;
+        private readonly IRepository<SistemaModel> _sistemaRepository;
 
-        public AlterarModel(IRepository<ProjetoItem> projetoRepository, IRepository<SistemaItem> sistemaRepository)
+        public AlterarModel(IRepository<ProjetoModel> projetoRepository, IRepository<SistemaModel> sistemaRepository)
         {
             _projetoRepository = projetoRepository;
             _sistemaRepository = sistemaRepository;
         }
 
         [BindProperty]
-        public ProjetoItem Projeto { get; set; }
+        public ProjetoModel Projeto { get; set; }
 
         public SelectList SelectSistemas { get; set; }
 

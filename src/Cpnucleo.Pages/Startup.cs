@@ -44,17 +44,17 @@ namespace Cpnucleo.Pages
                 .AddSingleton<IClaimsManager, ClaimsManager>();
 
             services
-                .AddScoped<IRepository<SistemaItem>, SistemaRepository>()
-                .AddScoped<IRepository<ProjetoItem>, ProjetoRepository>()
-                .AddScoped<IRepository<TarefaItem>, TarefaRepository>()
-                .AddScoped<IRepository<ApontamentoItem>, ApontamentoRepository>()
-                .AddScoped<IRepository<WorkflowItem>, WorkflowRepository>()
-                .AddScoped<IRepository<RecursoItem>, RecursoRepository>()
-                .AddScoped<IRepository<ImpedimentoItem>, ImpedimentoRepository>()
-                .AddScoped<IRepository<ImpedimentoTarefaItem>, ImpedimentoTarefaRepository>()
-                .AddScoped<IRepository<RecursoProjetoItem>, RecursoProjetoRepository>()
-                .AddScoped<IRepository<RecursoTarefaItem>, RecursoTarefaRepository>()
-                .AddScoped<IRepository<TipoTarefaItem>, TipoTarefaRepository>();
+                .AddScoped<IRepository<SistemaModel>, SistemaRepository>()
+                .AddScoped<IRepository<ProjetoModel>, ProjetoRepository>()
+                .AddScoped<IRepository<TarefaModel>, TarefaRepository>()
+                .AddScoped<IRepository<ApontamentoModel>, ApontamentoRepository>()
+                .AddScoped<IRepository<WorkflowModel>, WorkflowRepository>()
+                .AddScoped<IRepository<RecursoModel>, RecursoRepository>()
+                .AddScoped<IRepository<ImpedimentoModel>, ImpedimentoRepository>()
+                .AddScoped<IRepository<ImpedimentoTarefaModel>, ImpedimentoTarefaRepository>()
+                .AddScoped<IRepository<RecursoProjetoModel>, RecursoProjetoRepository>()
+                .AddScoped<IRepository<RecursoTarefaModel>, RecursoTarefaRepository>()
+                .AddScoped<IRepository<TipoTarefaModel>, TipoTarefaRepository>();
 
             services
                 .AddScoped<ITarefaRepository, TarefaRepository>()

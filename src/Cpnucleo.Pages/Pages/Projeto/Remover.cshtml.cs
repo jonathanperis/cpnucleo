@@ -10,12 +10,12 @@ namespace Cpnucleo.Pages.Pages.Projeto
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IRepository<ProjetoItem> _projetoRepository;
+        private readonly IRepository<ProjetoModel> _projetoRepository;
 
-        public RemoverModel(IRepository<ProjetoItem> projetoRepository) => _projetoRepository = projetoRepository;
+        public RemoverModel(IRepository<ProjetoModel> projetoRepository) => _projetoRepository = projetoRepository;
 
         [BindProperty]
-        public ProjetoItem Projeto { get; set; }
+        public ProjetoModel Projeto { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idProjeto)
         {

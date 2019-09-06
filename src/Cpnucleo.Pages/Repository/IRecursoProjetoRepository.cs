@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public interface IRecursoProjetoRepository : IRepository<RecursoProjetoItem>
+    public interface IRecursoProjetoRepository : IRepository<RecursoProjetoModel>
     {
-        Task<IEnumerable<RecursoProjetoItem>> ListarPoridProjetoAsync(int idProjeto);
+        Task<IEnumerable<RecursoProjetoModel>> ListarPoridProjetoAsync(int idProjeto);
     }
 }

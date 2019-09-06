@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
         public RemoverModel(ITarefaRepository tarefaRepository) => _tarefaRepository = tarefaRepository;
 
         [BindProperty]
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {

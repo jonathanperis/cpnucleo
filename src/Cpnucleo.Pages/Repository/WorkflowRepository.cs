@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public WorkflowRepository(Context context) => _context = context;
 
-        public async Task IncluirAsync(WorkflowItem workflow)
+        public async Task IncluirAsync(WorkflowModel workflow)
         {
             workflow.DataInclusao = DateTime.Now;
 
@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(WorkflowItem workflow)
+        public async Task AlterarAsync(WorkflowModel workflow)
         {
             var workflowItem = await ConsultarAsync(workflow.IdWorkflow);
 
@@ -34,13 +34,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<WorkflowItem> ConsultarAsync(int idWorkflow)
+        public async Task<WorkflowModel> ConsultarAsync(int idWorkflow)
         {
             return await _context.Workflows
                 .SingleOrDefaultAsync(x => x.IdWorkflow == idWorkflow);
         }
 
-        public async Task<IEnumerable<WorkflowItem>> ListarAsync()
+        public async Task<IEnumerable<WorkflowModel>> ListarAsync()
         {
             return await _context.Workflows
                 .AsNoTracking()
@@ -48,7 +48,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task RemoverAsync(WorkflowItem workflow)
+        public async Task RemoverAsync(WorkflowModel workflow)
         {    
             var workflowItem = await ConsultarAsync(workflow.IdWorkflow);            
 
@@ -56,7 +56,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflowAsync()
+        public async Task<IEnumerable<WorkflowModel>> ListarTarefasWorkflowAsync()
         {
             var listaWorkflow =  await _context.Workflows
                 .AsNoTracking()

@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Pages.Recurso
         public AlterarModel(IRecursoRepository recursoRepository) => _recursoRepository = recursoRepository;
 
         [BindProperty]
-        public RecursoItem Recurso { get; set; }
+        public RecursoModel Recurso { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idRecurso)
         {

@@ -16,9 +16,9 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
         public ListarModel(IImpedimentoTarefaRepository impedimentoTarefaRepository) => _impedimentoTarefaRepository = impedimentoTarefaRepository;
 
         [BindProperty]
-        public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
+        public ImpedimentoTarefaModel ImpedimentoTarefa { get; set; }
 
-        public IEnumerable<ImpedimentoTarefaItem> Lista { get; set; }
+        public IEnumerable<ImpedimentoTarefaModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {

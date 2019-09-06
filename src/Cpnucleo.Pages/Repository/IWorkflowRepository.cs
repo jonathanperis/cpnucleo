@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public interface IWorkflowRepository : IRepository<WorkflowItem>
+    public interface IWorkflowRepository : IRepository<WorkflowModel>
     {
-        Task<IEnumerable<WorkflowItem>> ListarTarefasWorkflowAsync();        
+        Task<IEnumerable<WorkflowModel>> ListarTarefasWorkflowAsync();        
     }
 }

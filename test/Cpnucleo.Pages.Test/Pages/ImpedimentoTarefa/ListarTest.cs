@@ -20,7 +20,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
         public async Task Test_OnGetAsync(int idTarefa)
         {
             // Arrange
-            var listaMock = new List<ImpedimentoTarefaItem> { };
+            var listaMock = new List<ImpedimentoTarefaModel> { };
 
             _impedimentoTarefaRepository.Setup(x => x.ListarPoridTarefaAsync(idTarefa)).ReturnsAsync(listaMock);
 

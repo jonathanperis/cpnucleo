@@ -11,13 +11,13 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
 {
     public class IncluirTest
     {
-        private readonly Mock<IRepository<ProjetoItem>> _projetoRepository;
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRepository<ProjetoModel>> _projetoRepository;
+        private readonly Mock<IRepository<SistemaModel>> _sistemaRepository;
 
         public IncluirTest()
         {
-            _projetoRepository = new Mock<IRepository<ProjetoItem>>();
-            _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+            _projetoRepository = new Mock<IRepository<ProjetoModel>>();
+            _sistemaRepository = new Mock<IRepository<SistemaModel>>();
         }
 
         [Theory]
@@ -25,8 +25,8 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
         public void Test_OnPostAsync(string nome, int idSistema)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { Nome = nome, IdSistema = idSistema };
-            var listaMock = new List<SistemaItem> { };
+            var projetoMock = new ProjetoModel { Nome = nome, IdSistema = idSistema };
+            var listaMock = new List<SistemaModel> { };
 
             _projetoRepository.Setup(x => x.IncluirAsync(projetoMock));
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);

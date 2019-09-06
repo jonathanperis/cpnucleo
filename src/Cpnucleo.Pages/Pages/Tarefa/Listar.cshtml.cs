@@ -15,9 +15,9 @@ namespace Cpnucleo.Pages.Pages.Tarefa
 
         public ListarModel(ITarefaRepository tarefaRepository) => _tarefaRepository = tarefaRepository;
 
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
-        public IEnumerable<TarefaItem> Lista { get; set; }
+        public IEnumerable<TarefaModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

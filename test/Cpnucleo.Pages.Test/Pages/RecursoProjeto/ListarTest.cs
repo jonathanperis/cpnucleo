@@ -20,7 +20,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
         public async Task Test_OnGetAsync(int idProjeto)
         {
             // Arrange
-            var listaMock = new List<RecursoProjetoItem> { };
+            var listaMock = new List<RecursoProjetoModel> { };
 
             _recursoProjetoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 

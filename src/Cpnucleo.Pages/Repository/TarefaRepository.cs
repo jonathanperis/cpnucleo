@@ -17,7 +17,7 @@ namespace Cpnucleo.Pages.Repository
             _context = context;
         }
 
-        public async Task IncluirAsync(TarefaItem tarefa)
+        public async Task IncluirAsync(TarefaModel tarefa)
         {
             tarefa.DataInclusao = DateTime.Now;
 
@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(TarefaItem tarefa)
+        public async Task AlterarAsync(TarefaModel tarefa)
         {
             var tarefaItem = await ConsultarAsync(tarefa.IdTarefa);
 
@@ -45,7 +45,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<TarefaItem> ConsultarAsync(int idTarefa)
+        public async Task<TarefaModel> ConsultarAsync(int idTarefa)
         {
             return await _context.Tarefas
                 .Include(x => x.Projeto)
@@ -56,7 +56,7 @@ namespace Cpnucleo.Pages.Repository
                 .SingleOrDefaultAsync(x => x.IdTarefa == idTarefa);
         }
 
-        public async Task<IEnumerable<TarefaItem>> ListarAsync()
+        public async Task<IEnumerable<TarefaModel>> ListarAsync()
         {
             return await _context.Tarefas
                 .AsNoTracking()
@@ -66,7 +66,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }     
 
-        public async Task RemoverAsync(TarefaItem tarefa)
+        public async Task RemoverAsync(TarefaModel tarefa)
         {    
             var tarefaItem = await ConsultarAsync(tarefa.IdTarefa);            
 

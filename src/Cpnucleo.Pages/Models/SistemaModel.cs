@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_SISTEMA")]
-    public class SistemaItem
+    public class SistemaModel
     {
         [Key]
         [Display(Name = "Código Sistema")]      

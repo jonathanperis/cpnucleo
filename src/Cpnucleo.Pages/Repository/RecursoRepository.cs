@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Repository
 
         public RecursoRepository(Context context) => _context = context;
 
-        public async Task IncluirAsync(RecursoItem recurso)
+        public async Task IncluirAsync(RecursoModel recurso)
         {
             CryptographyManager.CryptPbkdf2(recurso.Senha, out string itemCriptografado, out string salt);
 
@@ -27,7 +27,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(RecursoItem recurso)
+        public async Task AlterarAsync(RecursoModel recurso)
         {
             var recursoItem = await ConsultarAsync(recurso.IdRecurso);
 
@@ -43,13 +43,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RecursoItem> ConsultarAsync(int idRecurso)
+        public async Task<RecursoModel> ConsultarAsync(int idRecurso)
         {
             return await _context.Recursos
                 .SingleOrDefaultAsync(x => x.IdRecurso == idRecurso);
         }
 
-        public async Task<IEnumerable<RecursoItem>> ListarAsync()
+        public async Task<IEnumerable<RecursoModel>> ListarAsync()
         {
             return await _context.Recursos
                 .AsNoTracking()
@@ -57,7 +57,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task RemoverAsync(RecursoItem recurso)
+        public async Task RemoverAsync(RecursoModel recurso)
         {    
             var recursoItem = await ConsultarAsync(recurso.IdRecurso);            
 
@@ -65,7 +65,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public RecursoItem ValidarRecurso(string login, string senha, out bool valido)
+        public RecursoModel ValidarRecurso(string login, string senha, out bool valido)
         {
             valido = false;
 

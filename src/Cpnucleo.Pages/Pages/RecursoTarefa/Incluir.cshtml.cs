@@ -27,9 +27,9 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
         }
 
         [BindProperty]
-        public RecursoTarefaItem RecursoTarefa { get; set; }
+        public RecursoTarefaModel RecursoTarefa { get; set; }
 
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
         public SelectList SelectRecursos { get; set; }
 

@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
         public async Task Test_OnGetAsync(int idWorkflow)
         {
             // Arrange
-            var workflowMock = new WorkflowItem { };
+            var workflowMock = new WorkflowModel { };
 
             _workflowRepository.Setup(x => x.ConsultarAsync(idWorkflow)).ReturnsAsync(workflowMock);
 
@@ -39,7 +39,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
         public void Test_OnPostAsync(int idWorkflow, string nome, int ordem)
         {
             // Arrange
-            var workflowMock = new WorkflowItem { IdWorkflow = idWorkflow, Nome = nome, Ordem = ordem };
+            var workflowMock = new WorkflowModel { IdWorkflow = idWorkflow, Nome = nome, Ordem = ordem };
 
             _workflowRepository.Setup(x => x.AlterarAsync(workflowMock));
 

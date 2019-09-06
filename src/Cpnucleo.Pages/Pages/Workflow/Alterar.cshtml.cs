@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Pages.Workflow
         public AlterarModel(IWorkflowRepository workflowRepository) => _workflowRepository = workflowRepository;
 
         [BindProperty]
-        public WorkflowItem Workflow { get; set; }
+        public WorkflowModel Workflow { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idWorkflow)
         {

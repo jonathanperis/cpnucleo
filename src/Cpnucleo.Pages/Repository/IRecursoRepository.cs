@@ -2,8 +2,8 @@ using Cpnucleo.Pages.Models;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public interface IRecursoRepository : IRepository<RecursoItem>
+    public interface IRecursoRepository : IRepository<RecursoModel>
     {
-        RecursoItem ValidarRecurso(string usuario, string senha, out bool valido);
+        RecursoModel ValidarRecurso(string usuario, string senha, out bool valido);
     }
 }

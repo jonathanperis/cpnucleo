@@ -13,17 +13,17 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
     {
         private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
+        private readonly IRepository<ImpedimentoModel> _impedimentoRepository;
 
         public AlterarModel(IImpedimentoTarefaRepository impedimentoTarefaRepository,
-                                           IRepository<ImpedimentoItem> impedimentoRepository)
+                                           IRepository<ImpedimentoModel> impedimentoRepository)
         {
             _impedimentoTarefaRepository = impedimentoTarefaRepository;
             _impedimentoRepository = impedimentoRepository;
         }
 
         [BindProperty]
-        public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
+        public ImpedimentoTarefaModel ImpedimentoTarefa { get; set; }
 
         public SelectList SelectImpedimentos { get; set; }
 

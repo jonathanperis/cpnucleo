@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    class ImpedimentoRepository : IRepository<ImpedimentoItem>
+    class ImpedimentoRepository : IRepository<ImpedimentoModel>
     {
         private readonly Context _context;
 
         public ImpedimentoRepository(Context context) => _context = context;
 
-        public async Task IncluirAsync(ImpedimentoItem impedimento)
+        public async Task IncluirAsync(ImpedimentoModel impedimento)
         {
             impedimento.DataInclusao = DateTime.Now;
             
@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(ImpedimentoItem impedimento)
+        public async Task AlterarAsync(ImpedimentoModel impedimento)
         {
             var impedimentoItem = await ConsultarAsync(impedimento.IdImpedimento);
 
@@ -33,13 +33,13 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ImpedimentoItem> ConsultarAsync(int idImpedimento)
+        public async Task<ImpedimentoModel> ConsultarAsync(int idImpedimento)
         {
             return await _context.Impedimentos
                 .SingleOrDefaultAsync(x => x.IdImpedimento == idImpedimento);
         }
 
-        public async Task<IEnumerable<ImpedimentoItem>> ListarAsync()
+        public async Task<IEnumerable<ImpedimentoModel>> ListarAsync()
         {
             return await _context.Impedimentos
                 .AsNoTracking()
@@ -47,7 +47,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task RemoverAsync(ImpedimentoItem impedimento)
+        public async Task RemoverAsync(ImpedimentoModel impedimento)
         {    
             var impedimentoItem = await ConsultarAsync(impedimento.IdImpedimento);            
 

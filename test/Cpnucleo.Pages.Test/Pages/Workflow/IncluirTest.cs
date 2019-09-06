@@ -19,7 +19,7 @@ namespace Cpnucleo.Pages.Test.Pages.Workflow
         public void Test_OnPostAsync(string nome, int ordem)
         {
             // Arrange
-            var workflowMock = new WorkflowItem { Nome = nome, Ordem = ordem };
+            var workflowMock = new WorkflowModel { Nome = nome, Ordem = ordem };
 
             _workflowRepository.Setup(x => x.IncluirAsync(workflowMock));
 

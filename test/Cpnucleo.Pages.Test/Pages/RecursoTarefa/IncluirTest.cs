@@ -28,8 +28,8 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         public async Task Test_OnGetAsync(int idTarefa)
         {
             // Arrange
-            var listaMock = new List<RecursoProjetoItem> { };
-            var tarefaMock = new TarefaItem { };
+            var listaMock = new List<RecursoProjetoModel> { };
+            var tarefaMock = new TarefaModel { };
 
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
             _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idTarefa)).ReturnsAsync(listaMock);
@@ -48,9 +48,9 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         public async Task Test_OnPostAsync(int idTarefa, string nome, string descricao)
         {
             // Arrange
-            var listaMock = new List<RecursoProjetoItem> { };
-            var tarefaMock = new TarefaItem { };
-            var recursoTarefaMock = new RecursoTarefaItem { Tarefa = new TarefaItem() };
+            var listaMock = new List<RecursoProjetoModel> { };
+            var tarefaMock = new TarefaModel { };
+            var recursoTarefaMock = new RecursoTarefaModel { Tarefa = new TarefaModel() };
 
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
             _recursoProjetoRepository.Setup(x => x.ListarPoridProjetoAsync(idTarefa)).ReturnsAsync(listaMock);

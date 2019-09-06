@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_PROJETO")]
-    public class ProjetoItem
+    public class ProjetoModel
     {
         [Key]
         [Display(Name = "Código Projeto")]      
@@ -33,6 +33,6 @@ namespace Cpnucleo.Pages.Models
         [Column("SIS_ID", TypeName = "int")]
         public int IdSistema { get; set; }
 
-        public SistemaItem Sistema { get; set; }
+        public SistemaModel Sistema { get; set; }
     }
 }

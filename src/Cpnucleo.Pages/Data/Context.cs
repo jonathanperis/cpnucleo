@@ -9,16 +9,16 @@ namespace Cpnucleo.Pages.Data
             : base(options)
         { }
 
-        public DbSet<ApontamentoItem> Apontamentos { get; set; }
-        public DbSet<ImpedimentoItem> Impedimentos { get; set; }
-        public DbSet<ImpedimentoTarefaItem> ImpedimentoTarefas { get; set; }
-        public DbSet<ProjetoItem> Projetos { get; set; }
-        public DbSet<RecursoItem> Recursos { get; set; }
-        public DbSet<RecursoProjetoItem> RecursoProjetos { get; set; }
-        public DbSet<RecursoTarefaItem> RecursoTarefas { get; set; }
-        public DbSet<SistemaItem> Sistemas { get; set; }
-        public DbSet<TarefaItem> Tarefas { get; set; }
-        public DbSet<TipoTarefaItem> TipoTarefas { get; set; }
-        public DbSet<WorkflowItem> Workflows { get; set; }
+        public DbSet<ApontamentoModel> Apontamentos { get; set; }
+        public DbSet<ImpedimentoModel> Impedimentos { get; set; }
+        public DbSet<ImpedimentoTarefaModel> ImpedimentoTarefas { get; set; }
+        public DbSet<ProjetoModel> Projetos { get; set; }
+        public DbSet<RecursoModel> Recursos { get; set; }
+        public DbSet<RecursoProjetoModel> RecursoProjetos { get; set; }
+        public DbSet<RecursoTarefaModel> RecursoTarefas { get; set; }
+        public DbSet<SistemaModel> Sistemas { get; set; }
+        public DbSet<TarefaModel> Tarefas { get; set; }
+        public DbSet<TipoTarefaModel> TipoTarefas { get; set; }
+        public DbSet<WorkflowModel> Workflows { get; set; }
     }
 }

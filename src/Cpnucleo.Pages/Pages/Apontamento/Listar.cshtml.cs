@@ -8,17 +8,17 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Pages.Pages
+namespace Cpnucleo.Pages.Pages.Apontamento
 {
     [Authorize]
-    public class ApontamentoModel : PageModel
+    public class ListarModel : PageModel
     {
         private readonly IClaimsManager _claimsManager;
 
         private readonly IApontamentoRepository _apontamentoRepository;
         private readonly IRecursoTarefaRepository _recursoTarefaRepository;
 
-        public ApontamentoModel(IClaimsManager claimsManager,
+        public ListarModel(IClaimsManager claimsManager,
                                     IApontamentoRepository apontamentoRepository,
                                     IRecursoTarefaRepository recursoTarefaRepository)
         {
@@ -29,11 +29,11 @@ namespace Cpnucleo.Pages.Pages
         }
 
         [BindProperty]
-        public ApontamentoItem Apontamento { get; set; }
+        public ApontamentoModel Apontamento { get; set; }
 
-        public IEnumerable<ApontamentoItem> Lista { get; set; }
+        public IEnumerable<ApontamentoModel> Lista { get; set; }
 
-        public IEnumerable<RecursoTarefaItem> ListaRecursoTarefas { get; set; }
+        public IEnumerable<RecursoTarefaModel> ListaRecursoTarefas { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -52,7 +52,7 @@ namespace Cpnucleo.Pages.Pages
 
             await _apontamentoRepository.ApontarHorasAsync(Apontamento);
 
-            return RedirectToPage("Apontamento", new { idRecurso = Apontamento.IdRecurso });
+            return RedirectToPage("Listar");
         }
     }
 }

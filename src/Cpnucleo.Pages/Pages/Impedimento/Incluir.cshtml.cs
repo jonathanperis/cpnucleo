@@ -10,12 +10,12 @@ namespace Cpnucleo.Pages.Pages.Impedimento
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
+        private readonly IRepository<ImpedimentoModel> _impedimentoRepository;
 
-        public IncluirModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
+        public IncluirModel(IRepository<ImpedimentoModel> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
         [BindProperty]
-        public ImpedimentoItem Impedimento { get; set; }
+        public ImpedimentoModel Impedimento { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {

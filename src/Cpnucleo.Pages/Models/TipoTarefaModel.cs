@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_TIPO_TAREFA")]
-    public class TipoTarefaItem
+    public class TipoTarefaModel
     {
         [Key]
         [Display(Name = "Código Tipo Tarefa")]      

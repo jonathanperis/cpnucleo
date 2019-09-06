@@ -16,9 +16,9 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
         public ListarModel(IRecursoTarefaRepository recursoTarefaRepository) => _recursoTarefaRepository = recursoTarefaRepository;
 
         [BindProperty]
-        public RecursoTarefaItem RecursoTarefa { get; set; }
+        public RecursoTarefaModel RecursoTarefa { get; set; }
 
-        public IEnumerable<RecursoTarefaItem> Lista { get; set; }
+        public IEnumerable<RecursoTarefaModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idTarefa)
         {

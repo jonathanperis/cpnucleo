@@ -14,7 +14,7 @@ namespace Cpnucleo.Pages.Repository
 
         public ImpedimentoTarefaRepository(Context context) => _context = context;
 
-        public async Task IncluirAsync(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task IncluirAsync(ImpedimentoTarefaModel impedimentoTarefa)
         {
             impedimentoTarefa.DataInclusao = DateTime.Now;
             
@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task AlterarAsync(ImpedimentoTarefaModel impedimentoTarefa)
         {
             var impedimentoTarefaItem = await ConsultarAsync(impedimentoTarefa.IdImpedimentoTarefa);
 
@@ -35,7 +35,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ImpedimentoTarefaItem> ConsultarAsync(int idImpedimentoTarefa)
+        public async Task<ImpedimentoTarefaModel> ConsultarAsync(int idImpedimentoTarefa)
         {
             return await _context.ImpedimentoTarefas
                 .Include(x => x.Tarefa)
@@ -43,7 +43,7 @@ namespace Cpnucleo.Pages.Repository
                 .SingleOrDefaultAsync(x => x.IdImpedimentoTarefa == idImpedimentoTarefa);
         }
 
-        public async Task RemoverAsync(ImpedimentoTarefaItem impedimentoTarefa)
+        public async Task RemoverAsync(ImpedimentoTarefaModel impedimentoTarefa)
         {    
             var impedimentoTarefaItem = await ConsultarAsync(impedimentoTarefa.IdImpedimentoTarefa);            
 
@@ -51,12 +51,12 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<ImpedimentoTarefaItem>> ListarAsync()
+        public Task<IEnumerable<ImpedimentoTarefaModel>> ListarAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ImpedimentoTarefaItem>> ListarPoridTarefaAsync(int idTarefa)
+        public async Task<IEnumerable<ImpedimentoTarefaModel>> ListarPoridTarefaAsync(int idTarefa)
         {
             return await _context.ImpedimentoTarefas
                 .AsNoTracking()

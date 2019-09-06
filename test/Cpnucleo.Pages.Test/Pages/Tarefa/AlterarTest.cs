@@ -14,18 +14,18 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
     public class AlterarTest
     {
         private readonly Mock<ITarefaRepository> _tarefaRepository;
-        private readonly Mock<IRepository<ProjetoItem>> _projetoRepository;
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRepository<ProjetoModel>> _projetoRepository;
+        private readonly Mock<IRepository<SistemaModel>> _sistemaRepository;
         private readonly Mock<IWorkflowRepository> _workflowRepository;
-        private readonly Mock<IRepository<TipoTarefaItem>> _tipoTarefaRepository;
+        private readonly Mock<IRepository<TipoTarefaModel>> _tipoTarefaRepository;
 
         public AlterarTest()
         {
             _tarefaRepository = new Mock<ITarefaRepository>();
-            _projetoRepository = new Mock<IRepository<ProjetoItem>>();
-            _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+            _projetoRepository = new Mock<IRepository<ProjetoModel>>();
+            _sistemaRepository = new Mock<IRepository<SistemaModel>>();
             _workflowRepository = new Mock<IWorkflowRepository>();
-            _tipoTarefaRepository = new Mock<IRepository<TipoTarefaItem>>();
+            _tipoTarefaRepository = new Mock<IRepository<TipoTarefaModel>>();
         }
 
         [Theory]
@@ -33,11 +33,11 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         public async Task Test_OnGetAsync(int idTarefa)
         {
             // Arrange
-            var tarefaMock = new TarefaItem { };
-            var listaProjetosMock = new List<ProjetoItem> { };
-            var listaSistemasMock = new List<SistemaItem> { };
-            var listaWorkflowMock = new List<WorkflowItem> { };
-            var listaTipoTarefaMock = new List<TipoTarefaItem> { };
+            var tarefaMock = new TarefaModel { };
+            var listaProjetosMock = new List<ProjetoModel> { };
+            var listaSistemasMock = new List<SistemaModel> { };
+            var listaWorkflowMock = new List<WorkflowModel> { };
+            var listaTipoTarefaMock = new List<TipoTarefaModel> { };
 
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
             _projetoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaProjetosMock);
@@ -59,11 +59,11 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         public void Test_OnPostAsync(int idTarefa, string nome, int idProjeto)
         {
             // Arrange
-            var tarefaMock = new TarefaItem { IdTarefa = idTarefa, Nome = nome, IdProjeto = idProjeto };
-            var listaProjetosMock = new List<ProjetoItem> { };
-            var listaSistemasMock = new List<SistemaItem> { };
-            var listaWorkflowMock = new List<WorkflowItem> { };
-            var listaTipoTarefaMock = new List<TipoTarefaItem> { };
+            var tarefaMock = new TarefaModel { IdTarefa = idTarefa, Nome = nome, IdProjeto = idProjeto };
+            var listaProjetosMock = new List<ProjetoModel> { };
+            var listaSistemasMock = new List<SistemaModel> { };
+            var listaWorkflowMock = new List<WorkflowModel> { };
+            var listaTipoTarefaMock = new List<TipoTarefaModel> { };
 
             _tarefaRepository.Setup(x => x.AlterarAsync(tarefaMock));
             _projetoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaProjetosMock);

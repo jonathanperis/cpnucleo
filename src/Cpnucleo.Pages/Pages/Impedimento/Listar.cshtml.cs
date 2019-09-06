@@ -11,13 +11,13 @@ namespace Cpnucleo.Pages.Pages.Impedimento
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
+        private readonly IRepository<ImpedimentoModel> _impedimentoRepository;
 
-        public ListarModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
+        public ListarModel(IRepository<ImpedimentoModel> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
-        public ImpedimentoItem Impedimento { get; set; }
+        public ImpedimentoModel Impedimento { get; set; }
 
-        public IEnumerable<ImpedimentoItem> Lista { get; set; }
+        public IEnumerable<ImpedimentoModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

@@ -20,7 +20,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
         public async Task Test_OnGetAsync(int idImpedimentoTarefa)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaItem { };
+            var impedimentoTarefaMock = new ImpedimentoTarefaModel { };
 
             _impedimentoTarefaRepository.Setup(x => x.ConsultarAsync(idImpedimentoTarefa)).ReturnsAsync(impedimentoTarefaMock);
 
@@ -38,7 +38,7 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
         public async Task Test_OnPostAsync(int idImpedimentoTarefa, int idTarefa)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaItem { IdImpedimentoTarefa = idImpedimentoTarefa };
+            var impedimentoTarefaMock = new ImpedimentoTarefaModel { IdImpedimentoTarefa = idImpedimentoTarefa };
 
             _impedimentoTarefaRepository.Setup(x => x.RemoverAsync(impedimentoTarefaMock));
 

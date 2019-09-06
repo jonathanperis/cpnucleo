@@ -14,13 +14,13 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
     {
         private readonly Mock<IRecursoProjetoRepository> _recursoProjetoRepository;
         private readonly Mock<IRecursoRepository> _recursoRepository;
-        private readonly Mock<IRepository<ProjetoItem>> _projetoRepository;
+        private readonly Mock<IRepository<ProjetoModel>> _projetoRepository;
 
         public IncluirTest()
         {
             _recursoProjetoRepository = new Mock<IRecursoProjetoRepository>();
             _recursoRepository = new Mock<IRecursoRepository>();
-            _projetoRepository = new Mock<IRepository<ProjetoItem>>();
+            _projetoRepository = new Mock<IRepository<ProjetoModel>>();
         }
 
         [Theory]
@@ -28,8 +28,8 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
         public async Task Test_OnGetAsync(int idProjeto)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { };
-            var listaMock = new List<RecursoItem> { };
+            var projetoMock = new ProjetoModel { };
+            var listaMock = new List<RecursoModel> { };
 
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
@@ -48,9 +48,9 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
         public async Task Test_OnPostAsync(int idProjeto)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { };
-            var listaMock = new List<RecursoItem> { };
-            var recursoProjetoMock = new RecursoProjetoItem { };
+            var projetoMock = new ProjetoModel { };
+            var listaMock = new List<RecursoModel> { };
+            var recursoProjetoMock = new RecursoProjetoModel { };
 
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);

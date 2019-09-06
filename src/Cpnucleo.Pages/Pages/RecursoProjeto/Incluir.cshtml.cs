@@ -15,21 +15,21 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
 
         private readonly IRecursoRepository _recursoRepository;
 
-        private readonly IRepository<ProjetoItem> _projetoRepository;
+        private readonly IRepository<ProjetoModel> _projetoRepository;
 
         public IncluirModel(IRecursoProjetoRepository recursoProjetoRepository,
                                         IRecursoRepository recursoRepository,
-                                        IRepository<ProjetoItem> projetoRepository)
+                                        IRepository<ProjetoModel> projetoRepository)
         {
             _recursoProjetoRepository = recursoProjetoRepository;
             _recursoRepository = recursoRepository;
             _projetoRepository = projetoRepository;
         }
 
-        public RecursoProjetoItem RecursoProjeto { get; set; }
+        public RecursoProjetoModel RecursoProjeto { get; set; }
 
         [BindProperty]
-        public ProjetoItem Projeto { get; set; }
+        public ProjetoModel Projeto { get; set; }
 
         public SelectList SelectRecursos { get; set; }
 

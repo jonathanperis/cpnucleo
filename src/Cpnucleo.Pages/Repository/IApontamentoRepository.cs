@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public interface IApontamentoRepository : IRepository<ApontamentoItem>
+    public interface IApontamentoRepository : IRepository<ApontamentoModel>
     {
-        Task ApontarHorasAsync(ApontamentoItem apontamento);
+        Task ApontarHorasAsync(ApontamentoModel apontamento);
 
         Task<int> ObterTotalHorasPoridRecursoAsync(int idRecurso, int idTarefa);
 
-        Task<IEnumerable<ApontamentoItem>> ListarPoridRecursoAsync(int idRecurso);
+        Task<IEnumerable<ApontamentoModel>> ListarPoridRecursoAsync(int idRecurso);
     }
 }

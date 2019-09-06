@@ -12,16 +12,16 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 {
     public class RemoverTest
     {
-        private readonly Mock<IRepository<ImpedimentoItem>> _impedimentoRepository;
+        private readonly Mock<IRepository<ImpedimentoModel>> _impedimentoRepository;
 
-        public RemoverTest() => _impedimentoRepository = new Mock<IRepository<ImpedimentoItem>>();
+        public RemoverTest() => _impedimentoRepository = new Mock<IRepository<ImpedimentoModel>>();
 
         [Theory]
         [InlineData(1)]
         public async Task Test_OnGetAsync(int idImpedimento)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoItem { };
+            var impedimentoMock = new ImpedimentoModel { };
 
             _impedimentoRepository.Setup(x => x.ConsultarAsync(idImpedimento)).ReturnsAsync(impedimentoMock);
 
@@ -39,7 +39,7 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
         public void Test_OnPostAsync(int idImpedimento, string nome)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoItem { IdImpedimento = idImpedimento, Nome = nome };
+            var impedimentoMock = new ImpedimentoModel { IdImpedimento = idImpedimento, Nome = nome };
 
             _impedimentoRepository.Setup(x => x.RemoverAsync(impedimentoMock));
 

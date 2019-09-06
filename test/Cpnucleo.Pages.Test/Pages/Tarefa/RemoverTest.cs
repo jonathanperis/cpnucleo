@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         public async Task Test_OnGetAsync(int idTarefa)
         {
             // Arrange
-            var tarefaMock = new TarefaItem { };
+            var tarefaMock = new TarefaModel { };
 
             _tarefaRepository.Setup(x => x.ConsultarAsync(idTarefa)).ReturnsAsync(tarefaMock);
 
@@ -39,7 +39,7 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         public void Test_OnPostAsync(int idTarefa)
         {
             // Arrange
-            var tarefaMock = new TarefaItem { IdTarefa = idTarefa };
+            var tarefaMock = new TarefaModel { IdTarefa = idTarefa };
 
             _tarefaRepository.Setup(x => x.RemoverAsync(tarefaMock));
 

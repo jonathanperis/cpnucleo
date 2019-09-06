@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_WORKFLOW")]
-    public class WorkflowItem
+    public class WorkflowModel
     {
         [Key]
         [Display(Name = "Código Workflow")]      
@@ -34,6 +34,6 @@ namespace Cpnucleo.Pages.Models
         [Column("WOR_DATA_ALTERACAO", TypeName = "datetime")]
         public DateTime? DataAlteracao { get; set; }                
 
-        public List<TarefaItem> ListaTarefas { get; set; }
+        public List<TarefaModel> ListaTarefas { get; set; }
     }
 }

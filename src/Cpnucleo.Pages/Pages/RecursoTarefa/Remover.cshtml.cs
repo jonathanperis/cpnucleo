@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Pages.RecursoTarefa
         }
 
         [BindProperty]
-        public RecursoTarefaItem RecursoTarefa { get; set; }
+        public RecursoTarefaModel RecursoTarefa { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idRecursoTarefa)
         {

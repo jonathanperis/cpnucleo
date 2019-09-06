@@ -10,16 +10,16 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 {
     public class IncluirTest
     {
-        private readonly Mock<IRepository<ImpedimentoItem>> _impedimentoRepository;
+        private readonly Mock<IRepository<ImpedimentoModel>> _impedimentoRepository;
 
-        public IncluirTest() => _impedimentoRepository = new Mock<IRepository<ImpedimentoItem>>();
+        public IncluirTest() => _impedimentoRepository = new Mock<IRepository<ImpedimentoModel>>();
 
         [Theory]
         [InlineData("Impedimento de Teste")]
         public void Test_OnPostAsync(string nome)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoItem { Nome = nome };
+            var impedimentoMock = new ImpedimentoModel { Nome = nome };
 
             _impedimentoRepository.Setup(x => x.IncluirAsync(impedimentoMock));
 

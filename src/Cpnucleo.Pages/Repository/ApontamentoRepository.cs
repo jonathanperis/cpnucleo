@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Repository
             _tarefaRepository = tarefaRepository;
         }        
 
-        public async Task IncluirAsync(ApontamentoItem apontamento)
+        public async Task IncluirAsync(ApontamentoModel apontamento)
         {           
             apontamento.DataInclusao = DateTime.Now;
             
@@ -29,19 +29,19 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();          
         }
 
-        public Task AlterarAsync(ApontamentoItem apontamento)
+        public Task AlterarAsync(ApontamentoModel apontamento)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ApontamentoItem> ConsultarAsync(int idApontamento)
+        public async Task<ApontamentoModel> ConsultarAsync(int idApontamento)
         {
             return await _context.Apontamentos
                 .Include(x => x.Tarefa)
                 .SingleOrDefaultAsync(x => x.IdApontamento == idApontamento);
         }
 
-        public async Task<IEnumerable<ApontamentoItem>> ListarAsync()
+        public async Task<IEnumerable<ApontamentoModel>> ListarAsync()
         {
             return await _context.Apontamentos
                 .AsNoTracking()
@@ -50,7 +50,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }  
 
-        public async Task RemoverAsync(ApontamentoItem apontamento)
+        public async Task RemoverAsync(ApontamentoModel apontamento)
         {    
             var apontamentoItem = await ConsultarAsync(apontamento.IdApontamento);            
 
@@ -58,7 +58,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task ApontarHorasAsync(ApontamentoItem apontamento)
+        public async Task ApontarHorasAsync(ApontamentoModel apontamento)
         {
             await IncluirAsync(apontamento);
 
@@ -78,7 +78,7 @@ namespace Cpnucleo.Pages.Repository
                 .SumAsync(x => x.QtdHoras);
         }              
 
-        public async Task<IEnumerable<ApontamentoItem>> ListarPoridRecursoAsync(int idRecurso)
+        public async Task<IEnumerable<ApontamentoModel>> ListarPoridRecursoAsync(int idRecurso)
         {
             return await _context.Apontamentos
                 .AsNoTracking()

@@ -13,12 +13,12 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
     public class AlterarTest
     {
         private readonly Mock<IImpedimentoTarefaRepository> _impedimentoTarefaRepository;
-        private readonly Mock<IRepository<ImpedimentoItem>> _impedimentoRepository;
+        private readonly Mock<IRepository<ImpedimentoModel>> _impedimentoRepository;
 
         public AlterarTest()
         {
             _impedimentoTarefaRepository = new Mock<IImpedimentoTarefaRepository>();
-            _impedimentoRepository = new Mock<IRepository<ImpedimentoItem>>();
+            _impedimentoRepository = new Mock<IRepository<ImpedimentoModel>>();
         }
 
         [Theory]
@@ -26,8 +26,8 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
         public async Task Test_OnGetAsync(int idImpedimentoTarefa)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaItem { };
-            var listaMock = new List<ImpedimentoItem> { };
+            var impedimentoTarefaMock = new ImpedimentoTarefaModel { };
+            var listaMock = new List<ImpedimentoModel> { };
 
             _impedimentoTarefaRepository.Setup(x => x.ConsultarAsync(idImpedimentoTarefa)).ReturnsAsync(impedimentoTarefaMock);
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
@@ -46,8 +46,8 @@ namespace Cpnucleo.Pages.Test.Pages.ImpedimentoTarefa
         public async Task Test_OnPostAsync(int idImpedimentoTarefa, int idImpedimento, int idTarefa)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaItem { IdImpedimentoTarefa = idImpedimentoTarefa, IdImpedimento = idImpedimento, IdTarefa = idTarefa };
-            var listaMock = new List<ImpedimentoItem> { };
+            var impedimentoTarefaMock = new ImpedimentoTarefaModel { IdImpedimentoTarefa = idImpedimentoTarefa, IdImpedimento = idImpedimento, IdTarefa = idTarefa };
+            var listaMock = new List<ImpedimentoModel> { };
 
             _impedimentoTarefaRepository.Setup(x => x.AlterarAsync(impedimentoTarefaMock));
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);

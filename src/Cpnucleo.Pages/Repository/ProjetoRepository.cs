@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    class ProjetoRepository : IRepository<ProjetoItem>
+    class ProjetoRepository : IRepository<ProjetoModel>
     {
         private readonly Context _context;
 
         public ProjetoRepository(Context context) => _context = context;
 
-        public async Task IncluirAsync(ProjetoItem projeto)
+        public async Task IncluirAsync(ProjetoModel projeto)
         {
             projeto.DataInclusao = DateTime.Now;
             
@@ -22,7 +22,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(ProjetoItem projeto)
+        public async Task AlterarAsync(ProjetoModel projeto)
         {
             var projetoItem = await ConsultarAsync(projeto.IdProjeto);
 
@@ -34,14 +34,14 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ProjetoItem> ConsultarAsync(int idProjeto)
+        public async Task<ProjetoModel> ConsultarAsync(int idProjeto)
         {
             return await _context.Projetos
                 .Include(x => x.Sistema)
                 .SingleOrDefaultAsync(x => x.IdProjeto == idProjeto);
         }
 
-        public async Task<IEnumerable<ProjetoItem>> ListarAsync()
+        public async Task<IEnumerable<ProjetoModel>> ListarAsync()
         {
             return await _context.Projetos
                 .AsNoTracking()
@@ -50,7 +50,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task RemoverAsync(ProjetoItem projeto)
+        public async Task RemoverAsync(ProjetoModel projeto)
         {    
             var projetoItem = await ConsultarAsync(projeto.IdProjeto);            
 

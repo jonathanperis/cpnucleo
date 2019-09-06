@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_LANCAMENTO")]
-    public class ApontamentoItem
+    public class ApontamentoModel
     {
         [Key]
         [Display(Name = "Código Apontamento")]      
@@ -56,6 +56,6 @@ namespace Cpnucleo.Pages.Models
         [Column("REC_ID", TypeName = "int")]
         public int IdRecurso { get; set; }
 
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
     }
 }

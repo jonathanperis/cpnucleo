@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Pages.Repository
 {
-    public interface IRecursoTarefaRepository : IRepository<RecursoTarefaItem>
+    public interface IRecursoTarefaRepository : IRepository<RecursoTarefaModel>
     {
-        Task<IEnumerable<RecursoTarefaItem>> ListarPoridTarefaAsync(int idTarefa);
+        Task<IEnumerable<RecursoTarefaModel>> ListarPoridTarefaAsync(int idTarefa);
 
-        Task<IEnumerable<RecursoTarefaItem>> ListarPoridRecursoAsync(int idRecurso);
+        Task<IEnumerable<RecursoTarefaModel>> ListarPoridRecursoAsync(int idRecurso);
     }
 }

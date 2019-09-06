@@ -16,9 +16,9 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
         public ListarModel(IRecursoProjetoRepository recursoProjetoRepository) => _recursoProjetoRepository = recursoProjetoRepository;
 
         [BindProperty]
-        public RecursoProjetoItem RecursoProjeto { get; set; }
+        public RecursoProjetoModel RecursoProjeto { get; set; }
 
-        public IEnumerable<RecursoProjetoItem> Lista { get; set; }
+        public IEnumerable<RecursoProjetoModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idProjeto)
         {

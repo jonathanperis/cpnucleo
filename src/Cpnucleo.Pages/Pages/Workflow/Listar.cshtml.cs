@@ -15,9 +15,9 @@ namespace Cpnucleo.Pages.Pages.Workflow
 
         public ListarModel(IWorkflowRepository workflowRepository) => _workflowRepository = workflowRepository;
 
-        public WorkflowItem Workflow { get; set; }
+        public WorkflowModel Workflow { get; set; }
 
-        public IEnumerable<WorkflowItem> Lista { get; set; }
+        public IEnumerable<WorkflowModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

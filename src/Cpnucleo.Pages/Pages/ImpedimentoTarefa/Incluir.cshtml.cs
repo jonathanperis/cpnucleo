@@ -13,12 +13,12 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
     {
         private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
+        private readonly IRepository<ImpedimentoModel> _impedimentoRepository;
 
         private readonly ITarefaRepository _tarefaRepository;
 
         public IncluirModel(IImpedimentoTarefaRepository impedimentoTarefaRepository,
-                            IRepository<ImpedimentoItem> impedimentoRepository,
+                            IRepository<ImpedimentoModel> impedimentoRepository,
                             ITarefaRepository tarefaRepository)
         {
             _impedimentoTarefaRepository = impedimentoTarefaRepository;
@@ -27,9 +27,9 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
         }
 
         [BindProperty]
-        public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
+        public ImpedimentoTarefaModel ImpedimentoTarefa { get; set; }
 
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
         public SelectList SelectImpedimentos { get; set; }
 

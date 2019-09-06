@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Pages.ImpedimentoTarefa
         public RemoverModel(IImpedimentoTarefaRepository impedimentoTarefaRepository) => _impedimentoTarefaRepository = impedimentoTarefaRepository;
 
         [BindProperty]
-        public ImpedimentoTarefaItem ImpedimentoTarefa { get; set; }
+        public ImpedimentoTarefaModel ImpedimentoTarefa { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idImpedimentoTarefa)
         {

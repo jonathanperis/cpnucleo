@@ -10,12 +10,12 @@ namespace Cpnucleo.Pages.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IRepository<ImpedimentoItem> _impedimentoRepository;
+        private readonly IRepository<ImpedimentoModel> _impedimentoRepository;
 
-        public RemoverModel(IRepository<ImpedimentoItem> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
+        public RemoverModel(IRepository<ImpedimentoModel> impedimentoRepository) => _impedimentoRepository = impedimentoRepository;
 
         [BindProperty]
-        public ImpedimentoItem Impedimento { get; set; }
+        public ImpedimentoModel Impedimento { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idImpedimento)
         {

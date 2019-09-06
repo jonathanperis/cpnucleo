@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_IMPEDIMENTO")]
-    public class ImpedimentoItem
+    public class ImpedimentoModel
     {
         [Key]
         [Display(Name = "Código Impedimento")]      

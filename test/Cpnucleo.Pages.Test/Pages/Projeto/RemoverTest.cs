@@ -12,16 +12,16 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
 {
     public class RemoverTest
     {
-        private readonly Mock<IRepository<ProjetoItem>> _projetoRepository;
+        private readonly Mock<IRepository<ProjetoModel>> _projetoRepository;
 
-        public RemoverTest() => _projetoRepository = new Mock<IRepository<ProjetoItem>>();
+        public RemoverTest() => _projetoRepository = new Mock<IRepository<ProjetoModel>>();
 
         [Theory]
         [InlineData(1)]
         public async Task Test_OnGetAsync(int idProjeto)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { };
+            var projetoMock = new ProjetoModel { };
 
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
 
@@ -39,7 +39,7 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
         public void Test_OnPostAsync(int idProjeto, string nome, int idSistema)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { IdProjeto = idProjeto, Nome = nome, IdSistema = idSistema };
+            var projetoMock = new ProjetoModel { IdProjeto = idProjeto, Nome = nome, IdSistema = idSistema };
 
             _projetoRepository.Setup(x => x.RemoverAsync(projetoMock));
 

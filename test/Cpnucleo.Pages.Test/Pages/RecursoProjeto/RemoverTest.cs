@@ -20,7 +20,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
         public async Task Test_OnGetAsync(int idRecursoProjeto)
         {
             // Arrange
-            var recursoProjetoMock = new RecursoProjetoItem { };
+            var recursoProjetoMock = new RecursoProjetoModel { };
 
             _recursoProjetoRepository.Setup(x => x.ConsultarAsync(idRecursoProjeto)).ReturnsAsync(recursoProjetoMock);
 
@@ -38,7 +38,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoProjeto
         public async Task Test_OnPostAsync(int idProjeto)
         {
             // Arrange
-            var recursoProjetoMock = new RecursoProjetoItem { IdRecursoProjeto = idProjeto };
+            var recursoProjetoMock = new RecursoProjetoModel { IdRecursoProjeto = idProjeto };
 
             _recursoProjetoRepository.Setup(x => x.RemoverAsync(recursoProjetoMock));
 

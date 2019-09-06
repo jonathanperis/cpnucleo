@@ -10,15 +10,15 @@ namespace Cpnucleo.Pages.Test.Pages.Impedimento
 {
     public class ListarTest
     {
-        private readonly Mock<IRepository<ImpedimentoItem>> _impedimentoRepository;
+        private readonly Mock<IRepository<ImpedimentoModel>> _impedimentoRepository;
 
-        public ListarTest() => _impedimentoRepository = new Mock<IRepository<ImpedimentoItem>>();
+        public ListarTest() => _impedimentoRepository = new Mock<IRepository<ImpedimentoModel>>();
 
         [Fact]
         public void Test_OnGetAsync()
         {
             // Arrange
-            var listaMock = new List<ImpedimentoItem> { };
+            var listaMock = new List<ImpedimentoModel> { };
 
             _impedimentoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 

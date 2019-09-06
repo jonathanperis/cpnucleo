@@ -21,7 +21,7 @@ namespace Cpnucleo.Pages.Repository
             _apontamentoRepository = apontamentoRepository;
         }        
 
-        public async Task IncluirAsync(RecursoTarefaItem recursoTarefa)
+        public async Task IncluirAsync(RecursoTarefaModel recursoTarefa)
         {
             recursoTarefa.DataInclusao = DateTime.Now;
             
@@ -29,7 +29,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task AlterarAsync(RecursoTarefaItem recursoTarefa)
+        public async Task AlterarAsync(RecursoTarefaModel recursoTarefa)
         {
             var recursoTarefaItem = await ConsultarAsync(recursoTarefa.IdRecursoTarefa);
 
@@ -41,7 +41,7 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<RecursoTarefaItem> ConsultarAsync(int idRecursoTarefa)
+        public async Task<RecursoTarefaModel> ConsultarAsync(int idRecursoTarefa)
         {
             return await _context.RecursoTarefas
                 .Include(x => x.Tarefa)
@@ -49,7 +49,7 @@ namespace Cpnucleo.Pages.Repository
                 .SingleOrDefaultAsync(x => x.IdRecursoTarefa == idRecursoTarefa);
         }
 
-        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridTarefaAsync(int idTarefa)
+        public async Task<IEnumerable<RecursoTarefaModel>> ListarPoridTarefaAsync(int idTarefa)
         {
             return await _context.RecursoTarefas
                 .AsNoTracking()
@@ -60,7 +60,7 @@ namespace Cpnucleo.Pages.Repository
                 .ToListAsync();
         }
 
-        public async Task RemoverAsync(RecursoTarefaItem recursoTarefa)
+        public async Task RemoverAsync(RecursoTarefaModel recursoTarefa)
         {
             var recursoTarefaItem = await ConsultarAsync(recursoTarefa.IdRecursoTarefa);
 
@@ -68,12 +68,12 @@ namespace Cpnucleo.Pages.Repository
             await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<RecursoTarefaItem>> ListarAsync()
+        public Task<IEnumerable<RecursoTarefaModel>> ListarAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<RecursoTarefaItem>> ListarPoridRecursoAsync(int idRecurso)
+        public async Task<IEnumerable<RecursoTarefaModel>> ListarPoridRecursoAsync(int idRecurso)
         {
             var listaRecursoTarefa = await _context.RecursoTarefas
                 .AsNoTracking()

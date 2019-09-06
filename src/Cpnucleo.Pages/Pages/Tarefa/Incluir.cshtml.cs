@@ -12,16 +12,16 @@ namespace Cpnucleo.Pages.Pages.Tarefa
     public class IncluirModel : PageModel
     {
         private readonly ITarefaRepository _tarefaRepository;
-        private readonly IRepository<ProjetoItem> _projetoRepository;
-        private readonly IRepository<SistemaItem> _sistemaRepository;
+        private readonly IRepository<ProjetoModel> _projetoRepository;
+        private readonly IRepository<SistemaModel> _sistemaRepository;
         private readonly IWorkflowRepository _workflowRepository;
-        private readonly IRepository<TipoTarefaItem> _tipoTarefaRepository;
+        private readonly IRepository<TipoTarefaModel> _tipoTarefaRepository;
 
         public IncluirModel(ITarefaRepository tarefaRepository,
-                                IRepository<ProjetoItem> projetoRepository,
-                                IRepository<SistemaItem> sistemaRepository,
+                                IRepository<ProjetoModel> projetoRepository,
+                                IRepository<SistemaModel> sistemaRepository,
                                 IWorkflowRepository workflowRepository,
-                                IRepository<TipoTarefaItem> tipoTarefaRepository)
+                                IRepository<TipoTarefaModel> tipoTarefaRepository)
         {
             _tarefaRepository = tarefaRepository;
             _projetoRepository = projetoRepository;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Pages.Pages.Tarefa
         }
 
         [BindProperty]
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
         public SelectList SelectProjetos { get; set; }
 

@@ -25,7 +25,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         public async Task Test_OnGetAsync(int idRecursoTarefa)
         {
             // Arrange
-            var recursoTarefaMock = new RecursoTarefaItem { };
+            var recursoTarefaMock = new RecursoTarefaModel { };
 
             _recursoTarefaRepository.Setup(x => x.ConsultarAsync(idRecursoTarefa)).ReturnsAsync(recursoTarefaMock);
 
@@ -43,7 +43,7 @@ namespace Cpnucleo.Pages.Test.Pages.RecursoTarefa
         public async Task Test_OnPostAsync(int idTarefa)
         {
             // Arrange
-            var recursoTarefaMock = new RecursoTarefaItem { };
+            var recursoTarefaMock = new RecursoTarefaModel { };
 
             _recursoTarefaRepository.Setup(x => x.RemoverAsync(recursoTarefaMock));
 

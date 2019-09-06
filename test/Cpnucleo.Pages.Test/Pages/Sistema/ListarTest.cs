@@ -10,15 +10,15 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 {
     public class ListarTest
     {
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRepository<SistemaModel>> _sistemaRepository;
 
-        public ListarTest() => _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+        public ListarTest() => _sistemaRepository = new Mock<IRepository<SistemaModel>>();
 
         [Fact]
         public void Test_OnGetAsync()
         {
             // Arrange
-            var listaMock = new List<SistemaItem> { };
+            var listaMock = new List<SistemaModel> { };
 
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 

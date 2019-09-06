@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_RECURSO_TAREFA")]
-    public class RecursoTarefaItem
+    public class RecursoTarefaModel
     {
         [Key]
         [Display(Name = "Código Recurso Tarefa")]      
@@ -33,13 +33,13 @@ namespace Cpnucleo.Pages.Models
         [Column("REC_ID", TypeName = "int")]
         public int IdRecurso { get; set; }
 
-        public RecursoItem Recurso { get; set; }
+        public RecursoModel Recurso { get; set; }
 
         [Display(Name = "Tarefa")]      
         [Column("TAR_ID", TypeName = "int")]
         public int IdTarefa { get; set; }
 
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
         [NotMapped]
         public int HorasUtilizadas { get; set; }

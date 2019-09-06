@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Pages.Apontamento
         public RemoverModel(IApontamentoRepository apontamentoRepository) => _apontamentoRepository = apontamentoRepository;
 
         [BindProperty]
-        public ApontamentoItem Apontamento { get; set; }
+        public ApontamentoModel Apontamento { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idApontamento)
         {

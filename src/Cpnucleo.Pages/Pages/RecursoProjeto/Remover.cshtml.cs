@@ -15,7 +15,7 @@ namespace Cpnucleo.Pages.Pages.RecursoProjeto
         public RemoverModel(IRecursoProjetoRepository recursoProjetoRepository) => _recursoProjetoRepository = recursoProjetoRepository;
 
         [BindProperty]
-        public RecursoProjetoItem RecursoProjeto { get; set; }
+        public RecursoProjetoModel RecursoProjeto { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int idRecursoProjeto)
         {

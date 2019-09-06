@@ -29,9 +29,9 @@ namespace Cpnucleo.Pages.Pages
             _hubContext = hubContext;
         }
 
-        public WorkflowItem Workflow { get; set; }
+        public WorkflowModel Workflow { get; set; }
 
-        public IEnumerable<WorkflowItem> Lista { get; set; }
+        public IEnumerable<WorkflowModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

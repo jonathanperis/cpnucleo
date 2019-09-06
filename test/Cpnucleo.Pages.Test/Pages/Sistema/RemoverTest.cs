@@ -12,16 +12,16 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
 {
     public class RemoverTest
     {
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRepository<SistemaModel>> _sistemaRepository;
 
-        public RemoverTest() => _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+        public RemoverTest() => _sistemaRepository = new Mock<IRepository<SistemaModel>>();
 
         [Theory]
         [InlineData(1)]
         public async Task Test_OnGetAsync(int idSistema)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { };
+            var sistemaMock = new SistemaModel { };
 
             _sistemaRepository.Setup(x => x.ConsultarAsync(idSistema)).ReturnsAsync(sistemaMock);
 
@@ -39,7 +39,7 @@ namespace Cpnucleo.Pages.Test.Pages.Sistema
         public void Test_OnPostAsync(int idSistema, string nome, string descricao)
         {
             // Arrange
-            var sistemaMock = new SistemaItem { IdSistema = idSistema, Nome = nome, Descricao = descricao };
+            var sistemaMock = new SistemaModel { IdSistema = idSistema, Nome = nome, Descricao = descricao };
 
             _sistemaRepository.Setup(x => x.RemoverAsync(sistemaMock));
 

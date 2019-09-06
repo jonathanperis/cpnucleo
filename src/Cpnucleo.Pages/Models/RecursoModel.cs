@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_RECURSO")]
-    public class RecursoItem
+    public class RecursoModel
     {
-        public RecursoItem() => Ativo = true;
+        public RecursoModel() => Ativo = true;
 
         [Key]
         [Display(Name = "Código Recurso")]      

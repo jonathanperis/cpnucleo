@@ -18,7 +18,7 @@ namespace Cpnucleo.Pages.Test.Pages.Recurso
         public void Test_OnGetAsync()
         {
             // Arrange
-            var listaMock = new List<RecursoItem> { };
+            var listaMock = new List<RecursoModel> { };
 
             _recursoRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 

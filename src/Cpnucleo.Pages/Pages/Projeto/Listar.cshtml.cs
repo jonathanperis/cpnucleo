@@ -11,13 +11,13 @@ namespace Cpnucleo.Pages.Pages.Projeto
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IRepository<ProjetoItem> _projetoRepository;
+        private readonly IRepository<ProjetoModel> _projetoRepository;
 
-        public ListarModel(IRepository<ProjetoItem> projetoRepository) => _projetoRepository = projetoRepository;
+        public ListarModel(IRepository<ProjetoModel> projetoRepository) => _projetoRepository = projetoRepository;
 
-        public ProjetoItem Projeto { get; set; }
+        public ProjetoModel Projeto { get; set; }
 
-        public IEnumerable<ProjetoItem> Lista { get; set; }
+        public IEnumerable<ProjetoModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

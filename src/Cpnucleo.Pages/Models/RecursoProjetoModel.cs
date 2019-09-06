@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_RECURSO_PROJETO")]
-    public class RecursoProjetoItem
+    public class RecursoProjetoModel
     {
         [Key]
         [Display(Name = "Código Recurso Projeto")]      
@@ -27,8 +27,8 @@ namespace Cpnucleo.Pages.Models
         [Column("PROJ_ID", TypeName = "int")]
         public int IdProjeto { get; set; }
 
-        public RecursoItem Recurso { get; set; }
+        public RecursoModel Recurso { get; set; }
 
-        public ProjetoItem Projeto { get; set; }
+        public ProjetoModel Projeto { get; set; }
     }
 }

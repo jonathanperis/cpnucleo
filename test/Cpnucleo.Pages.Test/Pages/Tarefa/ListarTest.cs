@@ -18,7 +18,7 @@ namespace Cpnucleo.Pages.Test.Pages.Tarefa
         public void Test_OnGetAsync()
         {
             // Arrange
-            var listaMock = new List<TarefaItem> { };
+            var listaMock = new List<TarefaModel> { };
 
             _tarefaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
 

@@ -13,13 +13,13 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
 {
     public class AlterarTest
     {
-        private readonly Mock<IRepository<ProjetoItem>> _projetoRepository;
-        private readonly Mock<IRepository<SistemaItem>> _sistemaRepository;
+        private readonly Mock<IRepository<ProjetoModel>> _projetoRepository;
+        private readonly Mock<IRepository<SistemaModel>> _sistemaRepository;
 
         public AlterarTest()
         {
-            _projetoRepository = new Mock<IRepository<ProjetoItem>>();
-            _sistemaRepository = new Mock<IRepository<SistemaItem>>();
+            _projetoRepository = new Mock<IRepository<ProjetoModel>>();
+            _sistemaRepository = new Mock<IRepository<SistemaModel>>();
         }
 
         [Theory]
@@ -27,8 +27,8 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
         public async Task Test_OnGetAsync(int idProjeto)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { };
-            var listaMock = new List<SistemaItem> { };
+            var projetoMock = new ProjetoModel { };
+            var listaMock = new List<SistemaModel> { };
 
             _projetoRepository.Setup(x => x.ConsultarAsync(idProjeto)).ReturnsAsync(projetoMock);
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);
@@ -47,8 +47,8 @@ namespace Cpnucleo.Pages.Test.Pages.Projeto
         public void Test_OnPostAsync(int idProjeto, string nome, int idSistema)
         {
             // Arrange
-            var projetoMock = new ProjetoItem { IdProjeto = idProjeto, Nome = nome, IdSistema = idSistema };
-            var listaMock = new List<SistemaItem> { };
+            var projetoMock = new ProjetoModel { IdProjeto = idProjeto, Nome = nome, IdSistema = idSistema };
+            var listaMock = new List<SistemaModel> { };
 
             _projetoRepository.Setup(x => x.AlterarAsync(projetoMock));
             _sistemaRepository.Setup(x => x.ListarAsync()).ReturnsAsync(listaMock);

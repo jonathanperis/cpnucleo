@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Cpnucleo.Pages.Models
 {
     [Table("CPN_TB_TAREFA_IMPEDIMENTO")]
-    public class ImpedimentoTarefaItem
+    public class ImpedimentoTarefaModel
     {
         [Key]
         [Display(Name = "Código Impedimento Tarefa")]      
@@ -42,8 +42,8 @@ namespace Cpnucleo.Pages.Models
         [Column("IMP_ID", TypeName = "int")]
         public int IdImpedimento { get; set; }
 
-        public TarefaItem Tarefa { get; set; }
+        public TarefaModel Tarefa { get; set; }
 
-        public ImpedimentoItem Impedimento { get; set; }
+        public ImpedimentoModel Impedimento { get; set; }
     }
 }
