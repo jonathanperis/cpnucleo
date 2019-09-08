@@ -1,6 +1,6 @@
 ﻿@page
 
-@ViewModel FluxoTrabalhoModel
+@model FluxoTrabalhoModel
 @{
     ViewData["Title"] = "Fluxo de Trabalho";
 }
@@ -26,20 +26,20 @@
             <div class="col-lg-@ViewData["col-lg-*"]">
                 <div class="ibox">
                     <div class="ibox-content">
-                        <h3>@workflow.Nome <span id="workflow-animate-@workflow.IdWorkflow" class="animated"><span id="workflow-badge-@workflow.IdWorkflow" class="badge">@workflow.ListaTarefas.Count()</span></span></h3>
+                        <h3>@workflow.Nome <span id="workflow-animate-@workflow.Id" class="animated"><span id="workflow-badge-@workflow.Id" class="badge">@workflow.ListaTarefas.Count()</span></span></h3>
                         <p class="small"><i class="fa fa-hand-o-up"></i> Arraste a tarefa entre as listas</p>
-                        <ul class="sortable-list connectList agile-list ui-sortable" id="workflow-id-@workflow.IdWorkflow">
+                        <ul class="sortable-list connectList agile-list ui-sortable" id="workflow-id-@workflow.Id">
                             @foreach (var tarefa in workflow.ListaTarefas)
                             {
                                 if (DateTime.Now.Date >= tarefa.DataInicio && DateTime.Now.Date <= tarefa.DataTermino)
                                 {
                                     if (tarefa.IdTipoTarefa == 1)
                                     {
-                                        <li class="success-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-projeto.gif);">
+                                        <li class="success-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-projeto.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -65,11 +65,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 2)
                                     {
-                                        <li class="success-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-problema.gif);">
+                                        <li class="success-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-problema.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -95,11 +95,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 3)
                                     {
-                                        <li class="success-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-melhoria.gif);">
+                                        <li class="success-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-melhoria.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -125,11 +125,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 4)
                                     {
-                                        <li class="success-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-requisicao.gif);">
+                                        <li class="success-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-requisicao.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -153,11 +153,11 @@
                                             </div>
                                         </li>
                                     }
-                                    <!--<li class="success-element" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow">
+                                    <!--<li class="success-element" id="@tarefa.Id" data-idworkflow="@workflow.Id">
                                         @tarefa.Nome
                                         <div class="agile-detail">
                                             <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                             <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                             @if (@tarefa.HorasConsumidas != 0)
                                             {
@@ -185,11 +185,11 @@
                                 {
                                     if (tarefa.IdTipoTarefa == 1)
                                     {
-                                        <li class="warning-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-projeto.gif);">
+                                        <li class="warning-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-projeto.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -215,11 +215,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 2)
                                     {
-                                        <li class="warning-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-problema.gif);">
+                                        <li class="warning-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-problema.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -245,11 +245,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 3)
                                     {
-                                        <li class="warning-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-melhoria.gif);">
+                                        <li class="warning-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-melhoria.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -275,11 +275,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 4)
                                     {
-                                        <li class="warning-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-requisicao.gif);">
+                                        <li class="warning-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-requisicao.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -303,11 +303,11 @@
                                             </div>
                                         </li>
                                     }
-                                    <!--<li class="warning-element" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow">
+                                    <!--<li class="warning-element" id="@tarefa.Id" data-idworkflow="@workflow.Id">
                                         @tarefa.Nome
                                         <div class="agile-detail">
                                             <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                             <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                             @if (@tarefa.HorasConsumidas != 0)
                                             {
@@ -335,11 +335,11 @@
                                 {
                                     if (tarefa.IdTipoTarefa == 1)
                                     {
-                                        <li class="danger-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-projeto.gif);">
+                                        <li class="danger-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-projeto.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -365,11 +365,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 2)
                                     {
-                                        <li class="danger-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-problema.gif);">
+                                        <li class="danger-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-problema.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -395,11 +395,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 3)
                                     {
-                                        <li class="danger-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-melhoria.gif);">
+                                        <li class="danger-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-melhoria.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -425,11 +425,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 4)
                                     {
-                                        <li class="danger-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-requisicao.gif);">
+                                        <li class="danger-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-requisicao.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -453,11 +453,11 @@
                                             </div>
                                         </li>
                                     }
-                                    <!--<li class="danger-element" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow">
+                                    <!--<li class="danger-element" id="@tarefa.Id" data-idworkflow="@workflow.Id">
                                         @tarefa.Nome
                                         <div class="agile-detail">
                                             <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                             <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                             @if (@tarefa.HorasConsumidas != 0)
                                             {
@@ -485,11 +485,11 @@
                                 {
                                     if (tarefa.IdTipoTarefa == 1)
                                     {
-                                        <li class="info-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-projeto.gif);">
+                                        <li class="info-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-projeto.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -515,11 +515,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 2)
                                     {
-                                        <li class="info-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-problema.gif);">
+                                        <li class="info-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-problema.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -545,11 +545,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 3)
                                     {
-                                        <li class="info-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-melhoria.gif);">
+                                        <li class="info-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-melhoria.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -575,11 +575,11 @@
                                     }
                                     else if (tarefa.IdTipoTarefa == 4)
                                     {
-                                        <li class="info-element image-align" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow" style="background-image:url(../gif/gif-requisicao.gif);">
+                                        <li class="info-element image-align" id="@tarefa.Id" data-idworkflow="@workflow.Id" style="background-image:url(../gif/gif-requisicao.gif);">
                                             @tarefa.Nome
                                             <div class="agile-detail">
                                                 <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                                <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                                 <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                                 @if (@tarefa.HorasConsumidas != 0)
                                                 {
@@ -603,11 +603,11 @@
                                             </div>
                                         </li>
                                     }
-                                    <!--<li class="info-element" id="@tarefa.IdTarefa" data-idworkflow="@workflow.IdWorkflow">
+                                    <!--<li class="info-element" id="@tarefa.Id" data-idworkflow="@workflow.Id">
                                         @tarefa.Nome
                                         <div class="agile-detail">
                                             <i class="fa fa-clock-o"></i> @tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.IdTarefa criada por @tarefa.Recurso.Nome</div>
+                                            <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@tarefa.Id criada por @tarefa.Recurso.Nome</div>
                                             <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @tarefa.QtdHoras horas planejadas</font>
                                             @if (@tarefa.HorasConsumidas != 0)
                                             {
@@ -656,18 +656,18 @@
             <script>
                 $(document).ready(function(){
 
-                    $("#workflow-id-@workflow.IdWorkflow").sortable({
+                    $("#workflow-id-@workflow.Id").sortable({
                         connectWith: ".connectList",
                         update: function( event, ui ) {
 
-                            var idsTarefa = $("#workflow-id-@workflow.IdWorkflow").sortable("toArray");
+                            var idsTarefa = $("#workflow-id-@workflow.Id").sortable("toArray");
 
                             for (i = 0; i < idsTarefa.length; i++) {
 
                                 var idTarefa = idsTarefa[i];
 
                                 var idWorkflowTarefa = $("#" + idTarefa).data("idworkflow");
-                                var idWorkflowColuna = @workflow.IdWorkflow;
+                                var idWorkflowColuna = @workflow.Id;
 
                                 if (idWorkflowColuna != idWorkflowTarefa) {
 
@@ -691,12 +691,12 @@
 
                                             $("#" + idTarefa).data("idworkflow", idWorkflowColuna);
 
-                                            $("#workflow-animate-@workflow.IdWorkflow").removeAttr('class').attr('class', '');
-                                            $("#workflow-animate-@workflow.IdWorkflow").addClass('animated');
-                                            $("#workflow-animate-@workflow.IdWorkflow").addClass('flash');
+                                            $("#workflow-animate-@workflow.Id").removeAttr('class').attr('class', '');
+                                            $("#workflow-animate-@workflow.Id").addClass('animated');
+                                            $("#workflow-animate-@workflow.Id").addClass('flash');
 
-                                            $("#workflow-badge-@workflow.IdWorkflow").empty();
-                                            $("#workflow-badge-@workflow.IdWorkflow").append(idsTarefa.length);
+                                            $("#workflow-badge-@workflow.Id").empty();
+                                            $("#workflow-badge-@workflow.Id").append(idsTarefa.length);
 
                                             toastr.options = {
                                                 "closeButton": true,

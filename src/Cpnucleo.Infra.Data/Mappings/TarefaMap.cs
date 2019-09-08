@@ -43,19 +43,19 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.IdProjeto)
                 .HasColumnName("PROJ_ID")
-                .HasColumnType("int");
+                .HasColumnType("uniqueidentifier");
 
             builder.Property(c => c.IdWorkflow)
                 .HasColumnName("WOR_ID")
-                .HasColumnType("int");
+                .HasColumnType("uniqueidentifier");
 
             builder.Property(c => c.IdRecurso)
                 .HasColumnName("REC_ID")
-                .HasColumnType("int");
+                .HasColumnType("uniqueidentifier");
 
             builder.Property(c => c.IdTipoTarefa)
                 .HasColumnName("TIP_ID")
-                .HasColumnType("int");
+                .HasColumnType("uniqueidentifier");
 
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TAR_DATA_INCLUSAO")

@@ -1,6 +1,6 @@
-﻿@page "{idSistema:int}"
+﻿@page "{idSistema:Guid}"
 
-@ViewModel Sistema.RemoverModel
+@model Sistema.RemoverModel
 @{
     ViewData["Title"] = "Remoção de Sistema";
 }
@@ -18,10 +18,10 @@
         <div class="ibox-content">
             <form method="post" class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="Sistema.IdSistema"></label>
+                    <label class="col-sm-2 control-label" asp-for="Sistema.Id"></label>
                     <div class="col-sm-10">
-                        <input type="hidden" asp-for="Sistema.IdSistema">
-                        <p class="form-control-static">@Html.DisplayFor(x => x.Sistema.IdSistema)</p>
+                        <input type="hidden" asp-for="Sistema.Id">
+                        <p class="form-control-static">@Html.DisplayFor(x => x.Sistema.Id)</p>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>

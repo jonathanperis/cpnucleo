@@ -1,6 +1,6 @@
 ﻿@page
 
-@ViewModel Recurso.IncluirModel
+@model Recurso.IncluirModel
 @{
     ViewData["Title"] = "Inclusão de Recurso";
 }
@@ -147,5 +147,5 @@
         }
     </script>
     
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -13,12 +13,12 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.IdRecurso)
                 .HasColumnName("REC_ID")
-                .HasColumnType("int")
+                .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
             builder.Property(c => c.IdProjeto)
                 .HasColumnName("PROJ_ID")
-                .HasColumnType("int")
+                .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
             builder.Property(c => c.DataInclusao)

@@ -1,6 +1,6 @@
 ﻿@page
 
-@ViewModel Impedimento.IncluirModel
+@model Impedimento.IncluirModel
 @{
     ViewData["Title"] = "Inclusão de Impedimento";
 }
@@ -37,5 +37,5 @@
 </div>
 
 @section Scripts {
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

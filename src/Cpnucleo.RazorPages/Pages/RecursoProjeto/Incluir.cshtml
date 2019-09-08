@@ -1,6 +1,6 @@
-﻿@page "{idProjeto:int}"
+﻿@page "{idProjeto:Guid}"
 
-@ViewModel RecursoProjeto.IncluirModel
+@model RecursoProjeto.IncluirModel
 @{
     ViewData["Title"] = "Inclusão de Recurso (Projeto)";
 }
@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" asp-for="RecursoProjeto.IdProjeto"></label>
                     <div class="col-sm-10">
-                        <input type="hidden" asp-for="RecursoProjeto.IdProjeto" value="@Model.Projeto.IdProjeto">
+                        <input type="hidden" asp-for="RecursoProjeto.IdProjeto" value="Model.Projeto.IdProjeto">
                         <p class="form-control-static">@Html.DisplayFor(x => x.Projeto.Nome)</p>
                     </div>
                 </div>
@@ -28,13 +28,13 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" asp-for="RecursoProjeto.IdRecurso"></label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b" asp-for="RecursoProjeto.IdRecurso" asp-items="@Model.SelectRecursos"></select>
+                        <select class="form-control m-b" asp-for="RecursoProjeto.IdRecurso" asp-items="Model.SelectRecursos"></select>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <a class="btn btn-white" role="button" asp-page="Listar" asp-route-idProjeto="@Model.Projeto.IdProjeto">Voltar</a>
+                        <a class="btn btn-white" role="button" asp-page="Listar" asp-route-idProjeto="Model.Projeto.IdProjeto">Voltar</a>
                         <button class="btn btn-primary" type="submit">Incluir</button>
                     </div>
                 </div>
@@ -44,5 +44,5 @@
 </div>
 
 @section Scripts {
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

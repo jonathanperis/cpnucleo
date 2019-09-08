@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.RazorPages.Authentication;
 using Cpnucleo.RazorPages.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
@@ -30,7 +31,7 @@ namespace Cpnucleo.RazorPages.Pages
 
         public IActionResult OnGetLogout()
         {
-            HttpContext.SignOut();
+            HttpContext.SignOutAsync();
 
             return RedirectToPage("Login");
         }
@@ -52,7 +53,7 @@ namespace Cpnucleo.RazorPages.Pages
 
             ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recurso.Id.ToString());
 
-            HttpContext.SignIn(principal);
+            HttpContext.SignInAsync(principal);
 
             return RedirectToLocal(returnUrl);
         }

@@ -1,6 +1,6 @@
 ﻿@page
 
-@ViewModel Workflow.IncluirModel
+@model Workflow.IncluirModel
 @{
     ViewData["Title"] = "Inclusão de Workflow";
 }
@@ -62,5 +62,5 @@
         });
     </script>
     
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

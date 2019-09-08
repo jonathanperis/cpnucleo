@@ -19,7 +19,7 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.IdSistema)
                 .HasColumnName("SIS_ID")
-                .HasColumnType("int")
+                .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
             builder.Property(c => c.DataInclusao)

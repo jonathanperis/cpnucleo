@@ -23,12 +23,12 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.IdTarefa)
                 .HasColumnName("TAR_ID")
-                .HasColumnType("int")
+                .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
             builder.Property(c => c.IdImpedimento)
                 .HasColumnName("IMP_ID")
-                .HasColumnType("int")
+                .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
             builder.Property(c => c.DataInclusao)

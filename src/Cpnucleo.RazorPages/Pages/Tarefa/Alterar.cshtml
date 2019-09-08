@@ -1,6 +1,6 @@
-﻿@page "{idTarefa:int}"
+﻿@page "{idTarefa:Guid}"
 
-@ViewModel Tarefa.AlterarModel
+@model Tarefa.AlterarModel
 @{
     ViewData["Title"] = "Alteração de Tarefa";
 }
@@ -23,10 +23,10 @@
         <div class="ibox-content">
             <form method="post" class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="Tarefa.IdTarefa"></label>
+                    <label class="col-sm-2 control-label" asp-for="Tarefa.Id"></label>
                     <div class="col-sm-10">
-                        <input type="hidden" asp-for="Tarefa.IdTarefa">
-                        <p class="form-control-static">@Html.DisplayFor(x => x.Tarefa.IdTarefa)</p>
+                        <input type="hidden" asp-for="Tarefa.Id">
+                        <p class="form-control-static">@Html.DisplayFor(x => x.Tarefa.Id)</p>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" asp-for="Tarefa.IdProjeto"></label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b" asp-for="Tarefa.IdProjeto" asp-items="@Model.SelectProjetos"></select>
+                        <select class="form-control m-b" asp-for="Tarefa.IdProjeto" asp-items="Model.SelectProjetos"></select>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
@@ -87,14 +87,14 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" asp-for="Tarefa.IdTipoTarefa"></label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b" asp-for="Tarefa.IdTipoTarefa" asp-items="@Model.SelectTipoTarefas"></select>
+                        <select class="form-control m-b" asp-for="Tarefa.IdTipoTarefa" asp-items="Model.SelectTipoTarefas"></select>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label" asp-for="Tarefa.IdWorkflow"></label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b" asp-for="Tarefa.IdWorkflow" asp-items="@Model.SelectWorkflows"></select>
+                        <select class="form-control m-b" asp-for="Tarefa.IdWorkflow" asp-items="Model.SelectWorkflows"></select>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
@@ -154,5 +154,5 @@
         });
     </script>
     
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

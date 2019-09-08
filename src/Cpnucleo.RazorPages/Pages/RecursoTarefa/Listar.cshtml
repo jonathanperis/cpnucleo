@@ -1,6 +1,6 @@
-﻿@page "{idTarefa:int}"
+﻿@page "{idTarefa:Guid}"
 
-@ViewModel RecursoTarefa.ListarModel
+@model RecursoTarefa.ListarModel
 @{
     ViewData["Title"] = "Relação de Recursos (Tarefa)";
 }
@@ -29,7 +29,7 @@
                     <table class="table table-striped table-bordered table-hover table-datatable">
                         <thead>
                             <tr>
-                                <th>@Html.DisplayNameFor(x => x.RecursoTarefa.IdRecursoTarefa)</th>
+                                <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Tarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Recurso)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.PercentualTarefa)</th>
@@ -45,7 +45,7 @@
                             @foreach (var item in Model.Lista)
                             {
                                 <tr>
-                                    <td>@item.IdRecursoTarefa</td>
+                                    <td>@item.Id</td>
                                     <td>@item.Tarefa.Nome</td>
                                     <td>@item.Recurso.Nome</td>
                                     <td>@item.PercentualTarefa</td>
@@ -53,10 +53,10 @@
                                     @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idRecursoTarefa="@item.IdRecursoTarefa">Alterar</a>
+                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idRecursoTarefa="@item.Id">Alterar</a>
                                         </td>
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idRecursoTarefa="@item.IdRecursoTarefa">Remover</a>
+                                            <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idRecursoTarefa="@item.Id">Remover</a>
                                         </td>
                                     }
                                 </tr>
@@ -64,7 +64,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>@Html.DisplayNameFor(x => x.RecursoTarefa.IdRecursoTarefa)</th>
+                                <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Tarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Recurso)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.PercentualTarefa)</th>

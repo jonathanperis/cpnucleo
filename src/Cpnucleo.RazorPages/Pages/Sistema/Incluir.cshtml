@@ -1,6 +1,6 @@
 ﻿@page
 
-@ViewModel Sistema.IncluirModel
+@model Sistema.IncluirModel
 @{
     ViewData["Title"] = "Inclusão de Sistema";
 }
@@ -45,5 +45,5 @@
 </div>
 
 @section Scripts {
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

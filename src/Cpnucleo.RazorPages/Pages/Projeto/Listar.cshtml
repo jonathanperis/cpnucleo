@@ -1,6 +1,6 @@
 ﻿@page
 
-@ViewModel Projeto.ListarModel
+@model Projeto.ListarModel
 @{
     ViewData["Title"] = "Relação de Projetos";
 }
@@ -28,7 +28,7 @@
                     <table class="table table-striped table-bordered table-hover table-datatable">
                         <thead>
                             <tr>
-                                <th>@Html.DisplayNameFor(x => x.Projeto.IdProjeto)</th>
+                                <th>@Html.DisplayNameFor(x => x.Projeto.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.Projeto.Nome)</th>
                                 <th>@Html.DisplayNameFor(x => x.Projeto.Sistema)</th>
                                 <th>@Html.DisplayNameFor(x => x.Projeto.DataInclusao)</th>
@@ -44,20 +44,20 @@
                             @foreach (var item in Model.Lista)
                             {
                                 <tr>
-                                    <td>@item.IdProjeto</td>
+                                    <td>@item.Id</td>
                                     <td>@item.Nome</td>
                                     <td>@item.Sistema.Nome</td>
                                     <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idProjeto="@item.IdProjeto">Alterar</a>
+                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idProjeto="@item.Id">Alterar</a>
                                         </td>
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idProjeto="@item.IdProjeto">Remover</a>
+                                            <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idProjeto="@item.Id">Remover</a>
                                         </td>
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-info btn-xs" role="button" asp-page="/RecursoProjeto/Listar" asp-route-idProjeto="@item.IdProjeto">+ Recurso</a>
+                                            <a class="btn btn-outline btn-info btn-xs" role="button" asp-page="/RecursoProjeto/Listar" asp-route-idProjeto="@item.Id">+ Recurso</a>
                                         </td>
                                     }
                                 </tr>
@@ -65,7 +65,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>@Html.DisplayNameFor(x => x.Projeto.IdProjeto)</th>
+                                <th>@Html.DisplayNameFor(x => x.Projeto.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.Projeto.Nome)</th>
                                 <th>@Html.DisplayNameFor(x => x.Projeto.Sistema)</th>
                                 <th>@Html.DisplayNameFor(x => x.Projeto.DataInclusao)</th>

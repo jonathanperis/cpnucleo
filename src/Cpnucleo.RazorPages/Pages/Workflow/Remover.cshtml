@@ -1,6 +1,6 @@
-﻿@page "{idWorkflow:int}"
+﻿@page "{idWorkflow:Guid}"
 
-@ViewModel Workflow.RemoverModel
+@model Workflow.RemoverModel
 @{
     ViewData["Title"] = "Remoção de Workflow";
 }
@@ -18,10 +18,10 @@
         <div class="ibox-content">
             <form method="post" class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" asp-for="Workflow.IdWorkflow"></label>
+                    <label class="col-sm-2 control-label" asp-for="Workflow.Id"></label>
                     <div class="col-sm-10">
-                        <input type="hidden" asp-for="Workflow.IdWorkflow">
-                        <p class="form-control-static">@Html.DisplayFor(x => x.Workflow.IdWorkflow)</p>
+                        <input type="hidden" asp-for="Workflow.Id">
+                        <p class="form-control-static">@Html.DisplayFor(x => x.Workflow.Id)</p>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
