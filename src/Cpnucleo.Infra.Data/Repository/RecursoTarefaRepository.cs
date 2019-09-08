@@ -1,7 +1,9 @@
 ﻿using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
@@ -14,14 +16,28 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IQueryable<RecursoTarefa> ListarPoridRecurso(Guid idRecurso)
+        public IEnumerable<RecursoTarefa> ListarPoridRecurso(Guid idRecurso)
         {
-            throw new NotImplementedException();
+            return DbSet
+                .AsNoTracking()
+                .Include(x => x.Tarefa)
+                .Include(x => x.Tarefa.Workflow)
+                .Include(x => x.Tarefa.Recurso)
+                .Include(x => x.Tarefa.ListaImpedimentos)
+                .OrderBy(x => x.DataInclusao)
+                .Where(x => x.IdRecurso == idRecurso)
+                .ToList();
         }
 
-        public IQueryable<RecursoTarefa> ListarPoridTarefa(Guid idTarefa)
+        public IEnumerable<RecursoTarefa> ListarPoridTarefa(Guid idTarefa)
         {
-            throw new NotImplementedException();
+            return DbSet
+                .AsNoTracking()
+                .Include(x => x.Tarefa)
+                .Include(x => x.Recurso)
+                .OrderBy(x => x.DataInclusao)
+                .Where(x => x.IdTarefa == idTarefa)
+                .ToList();
         }
     }
 }

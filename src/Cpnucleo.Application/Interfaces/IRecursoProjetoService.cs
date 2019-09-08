@@ -1,11 +1,11 @@
 ﻿using Cpnucleo.Application.ViewModels;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
     public interface IRecursoProjetoAppService : IAppService<RecursoProjetoViewModel>
     {
-        IQueryable<RecursoProjetoViewModel> ListarPoridProjeto(Guid idProjeto);
+        IEnumerable<RecursoProjetoViewModel> ListarPoridProjeto(Guid idProjeto);
     }
 }

@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<RecursoTarefa> builder)
         {
+            builder.ToTable("CPN_TB_RECURSO_TAREFA");
+
             builder.Property(c => c.Id)
                 .HasColumnName("RTAR_ID");
 
@@ -33,6 +35,16 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataAlteracao)
                 .HasColumnName("RTAR_DATA_ALTERACAO")
                 .HasColumnType("datetime");
+
+            builder
+                .HasOne(p => p.Recurso)
+                .WithMany()
+                .HasForeignKey(f => f.IdRecurso);
+
+            builder
+                .HasOne(p => p.Tarefa)
+                .WithMany()
+                .HasForeignKey(f => f.IdTarefa);
         }
     }
 }

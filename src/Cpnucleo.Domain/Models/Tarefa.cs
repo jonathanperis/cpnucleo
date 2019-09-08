@@ -33,8 +33,8 @@ namespace Cpnucleo.Domain.Models
 
         public TipoTarefa TipoTarefa { get; set; }
 
-        public List<ImpedimentoTarefa> ListaImpedimentos { get; set; }
+        public IEnumerable<ImpedimentoTarefa> ListaImpedimentos { get; set; }
 
-        public List<Apontamento> ListaApontamentos { get; set; }
+        public IEnumerable<Apontamento> ListaApontamentos { get; set; }
     }
 }

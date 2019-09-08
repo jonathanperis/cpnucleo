@@ -1,7 +1,9 @@
 ﻿using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
@@ -14,9 +16,15 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IQueryable<RecursoProjeto> ListarPoridProjeto(Guid idProjeto)
+        public IEnumerable<RecursoProjeto> ListarPoridProjeto(Guid idProjeto)
         {
-            throw new NotImplementedException();
+            return DbSet
+                .AsNoTracking()
+                .Include(x => x.Projeto)
+                .Include(x => x.Recurso)
+                .OrderBy(x => x.DataInclusao)
+                .Where(x => x.IdProjeto == idProjeto)
+                .ToList();
         }
     }
 }

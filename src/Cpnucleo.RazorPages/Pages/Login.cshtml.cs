@@ -43,7 +43,7 @@ namespace Cpnucleo.RazorPages.Pages
                 return Page();
             }
 
-            var recurso = _recursoAppService.ValidarRecurso(Login.Usuario, Login.Senha, out bool valido);
+            var recurso = _recursoAppService.Consultar(Login.Usuario, Login.Senha, out bool valido);
 
             if (!valido)
             {
@@ -66,7 +66,7 @@ namespace Cpnucleo.RazorPages.Pages
             }
             else
             {
-                return RedirectToPage("Apontamento");
+                return RedirectToPage("Apontamento/Listar");
             }
         }
     }

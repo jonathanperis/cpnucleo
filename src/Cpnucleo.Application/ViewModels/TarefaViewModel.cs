@@ -44,10 +44,6 @@ namespace Cpnucleo.Application.ViewModels
         [Display(Name = "Tipo Tarefa")]      
         public Guid? IdTipoTarefa { get; set; }    
 
-        public int HorasConsumidas { get; set; }
-
-        public int HorasRestantes { get; set; }
-
         public ProjetoViewModel Projeto { get; set; }
 
         public WorkflowViewModel Workflow { get; set; }

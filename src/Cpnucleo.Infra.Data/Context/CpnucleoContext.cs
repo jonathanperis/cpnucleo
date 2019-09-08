@@ -26,18 +26,6 @@ namespace Cpnucleo.Infra.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Apontamento>().ToTable("CPN_TB_LANCAMENTO");
-            modelBuilder.Entity<Impedimento>().ToTable("CPN_TB_IMPEDIMENTO");
-            modelBuilder.Entity<ImpedimentoTarefa>().ToTable("CPN_TB_TAREFA_IMPEDIMENTO");
-            modelBuilder.Entity<Projeto>().ToTable("CPN_TB_PROJETO");
-            modelBuilder.Entity<Recurso>().ToTable("CPN_TB_RECURSO");
-            modelBuilder.Entity<RecursoProjeto>().ToTable("CPN_TB_RECURSO_PROJETO");
-            modelBuilder.Entity<RecursoTarefa>().ToTable("CPN_TB_RECURSO_TAREFA");
-            modelBuilder.Entity<Sistema>().ToTable("CPN_TB_SISTEMA");
-            modelBuilder.Entity<Tarefa>().ToTable("CPN_TB_TAREFA");
-            modelBuilder.Entity<TipoTarefa>().ToTable("CPN_TB_TIPO_TAREFA");
-            modelBuilder.Entity<Workflow>().ToTable("CPN_TB_WORKFLOW");
-
             modelBuilder.ApplyConfiguration(new ApontamentoMap());
             modelBuilder.ApplyConfiguration(new ImpedimentoMap());
             modelBuilder.ApplyConfiguration(new ImpedimentoTarefaMap());

@@ -31,11 +31,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public IActionResult OnPost()
         {
             _recursoTarefaAppService.Remover(RecursoTarefa.Id);
 
-            return RedirectToPage("Listar", new { idTarefa });
+            return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }
     }
 }

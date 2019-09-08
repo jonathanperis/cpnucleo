@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Recurso> builder)
         {
+            builder.ToTable("CPN_TB_RECURSO");
+
             builder.Property(c => c.Id)
                 .HasColumnName("REC_ID");
 

@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Sistema> builder)
         {
+            builder.ToTable("CPN_TB_SISTEMA");
+
             builder.Property(c => c.Id)
                 .HasColumnName("SIS_ID");
 

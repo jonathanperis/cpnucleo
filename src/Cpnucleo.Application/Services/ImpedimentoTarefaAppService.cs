@@ -4,21 +4,23 @@ using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
     public class ImpedimentoTarefaAppService : AppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>, IImpedimentoTarefaAppService
     {
-        public ImpedimentoTarefaAppService(IMapper mapper, IRepository<ImpedimentoTarefa> repository)
+        protected readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
+
+        public ImpedimentoTarefaAppService(IMapper mapper, IRepository<ImpedimentoTarefa> repository, IImpedimentoTarefaRepository impedimentoTarefaRepository)
             : base(mapper, repository)
         {
-
+            _impedimentoTarefaRepository = impedimentoTarefaRepository;
         }
 
-        public IQueryable<ImpedimentoTarefaViewModel> ListarPoridTarefa(Guid idTarefa)
+        public IEnumerable<ImpedimentoTarefaViewModel> ListarPoridTarefa(Guid idTarefa)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(_impedimentoTarefaRepository.ListarPoridTarefa(idTarefa));
         }
     }
 }

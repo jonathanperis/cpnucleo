@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Impedimento> builder)
         {
+            builder.ToTable("CPN_TB_IMPEDIMENTO");
+
             builder.Property(c => c.Id)
                 .HasColumnName("IMP_ID");
 

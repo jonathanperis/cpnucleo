@@ -1,11 +1,11 @@
 using Cpnucleo.Domain.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
     public interface IRecursoProjetoRepository : IRepository<RecursoProjeto>
     {
-        IQueryable<RecursoProjeto> ListarPoridProjeto(Guid idProjeto);
+        IEnumerable<RecursoProjeto> ListarPoridProjeto(Guid idProjeto);
     }
 }

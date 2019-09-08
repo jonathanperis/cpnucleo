@@ -6,7 +6,7 @@ namespace Cpnucleo.Application.ViewModels
     public abstract class BaseViewModel
     {
         [Key]
-        [Display(Name = "Código")]
+        [Display(Name = "Id")]
         public Guid Id { get; set; }
 
         [Display(Name = "Data de Inclusão")]

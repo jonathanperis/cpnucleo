@@ -1,6 +1,6 @@
 using Cpnucleo.Domain.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
@@ -10,6 +10,6 @@ namespace Cpnucleo.Domain.Interfaces
 
         int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa);
 
-        IQueryable<Apontamento> ListarPoridRecurso(Guid idRecurso);
+        IEnumerable<Apontamento> ListarPoridRecurso(Guid idRecurso);
     }
 }

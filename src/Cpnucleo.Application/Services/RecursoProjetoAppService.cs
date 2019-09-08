@@ -4,21 +4,23 @@ using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
     public class RecursoProjetoAppService : AppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
     {
-        public RecursoProjetoAppService(IMapper mapper, IRepository<RecursoProjeto> repository)
+        protected readonly IRecursoProjetoRepository _recursoProjetoRepository;
+
+        public RecursoProjetoAppService(IMapper mapper, IRepository<RecursoProjeto> repository, IRecursoProjetoRepository recursoProjetoRepository)
             : base(mapper, repository)
         {
-
+            _recursoProjetoRepository = recursoProjetoRepository;
         }
 
-        public IQueryable<RecursoProjetoViewModel> ListarPoridProjeto(Guid idProjeto)
+        public IEnumerable<RecursoProjetoViewModel> ListarPoridProjeto(Guid idProjeto)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(_recursoProjetoRepository.ListarPoridProjeto(idProjeto));
         }
     }
 }

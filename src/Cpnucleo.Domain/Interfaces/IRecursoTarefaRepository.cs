@@ -1,13 +1,13 @@
 using Cpnucleo.Domain.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
     public interface IRecursoTarefaRepository : IRepository<RecursoTarefa>
     {
-        IQueryable<RecursoTarefa> ListarPoridTarefa(Guid idTarefa);
+        IEnumerable<RecursoTarefa> ListarPoridTarefa(Guid idTarefa);
 
-        IQueryable<RecursoTarefa> ListarPoridRecurso(Guid idRecurso);
+        IEnumerable<RecursoTarefa> ListarPoridRecurso(Guid idRecurso);
     }
 }

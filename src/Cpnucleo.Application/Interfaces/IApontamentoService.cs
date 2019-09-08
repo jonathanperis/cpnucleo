@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Application.ViewModels;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
@@ -10,6 +10,6 @@ namespace Cpnucleo.Application.Interfaces
 
         int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa);
 
-        IQueryable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso);
+        IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso);
     }
 }

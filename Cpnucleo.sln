@@ -42,6 +42,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Infra.CrossCutting.Security", "src\Cpnucleo.Infra.CrossCutting.Security\Cpnucleo.Infra.CrossCutting.Security.csproj", "{E94229B5-5E9B-480F-A5FF-C840E82CF6B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{77247381-646D-419F-BD99-23351FF1431B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77247381-646D-419F-BD99-23351FF1431B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77247381-646D-419F-BD99-23351FF1431B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E94229B5-5E9B-480F-A5FF-C840E82CF6B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E94229B5-5E9B-480F-A5FF-C840E82CF6B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E94229B5-5E9B-480F-A5FF-C840E82CF6B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E94229B5-5E9B-480F-A5FF-C840E82CF6B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{7C55653A-5EE4-4769-AC83-4566297E5436} = {0707CB0C-0656-4903-9519-F4AE99B29934}
 		{C7034E0D-AC44-4A5C-8B84-4012F5CB62B6} = {FA653B6C-C948-4E9C-8DBE-B048C52C8D62}
 		{77247381-646D-419F-BD99-23351FF1431B} = {FA653B6C-C948-4E9C-8DBE-B048C52C8D62}
+		{E94229B5-5E9B-480F-A5FF-C840E82CF6B3} = {B3B86CDF-C291-4F42-AB04-8ADCC079032C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4FE8CCD-5BD5-4287-8B6D-F523698604BE}

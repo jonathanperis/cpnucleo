@@ -30,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         public IActionResult OnGet(Guid idImpedimentoTarefa)
         {
             ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(idImpedimentoTarefa);
-            SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "IdImpedimento", "Nome");
+            SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
 
             return Page();
         }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "IdImpedimento", "Nome");
+                SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
 
                 return Page();
             }

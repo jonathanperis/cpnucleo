@@ -1,11 +1,11 @@
 using Cpnucleo.Domain.Models;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
     public interface IImpedimentoTarefaRepository : IRepository<ImpedimentoTarefa>
     {
-        IQueryable<ImpedimentoTarefa> ListarPoridTarefa(Guid idTarefa);
+        IEnumerable<ImpedimentoTarefa> ListarPoridTarefa(Guid idTarefa);
     }
 }

@@ -1,19 +1,22 @@
-﻿using System;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
     public class ApontamentoAppService : AppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
     {
-        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository)
+        protected readonly IApontamentoRepository _apontamentoRepository;
+
+        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository, IApontamentoRepository apontamentoRepository)
             : base(mapper, repository)
         {
-
+            _apontamentoRepository = apontamentoRepository;
         }
 
         public void ApontarHoras(ApontamentoViewModel apontamento)
@@ -21,14 +24,14 @@ namespace Cpnucleo.Application.Services
             throw new System.NotImplementedException();
         }
 
-        public IQueryable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso)
+        public IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso)
         {
-            throw new System.NotImplementedException();
+            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(_apontamentoRepository.ListarPoridRecurso(idRecurso));
         }
 
         public int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa)
         {
-            throw new System.NotImplementedException();
+            return _apontamentoRepository.ObterTotalHorasPoridRecurso(idRecurso, idTarefa);
         }
     }
 }

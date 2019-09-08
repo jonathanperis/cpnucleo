@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
-using System;
+using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
@@ -13,9 +13,9 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public Recurso ValidarRecurso(string usuario, string senha, out bool valido)
+        public Recurso ValidarRecurso(string login)
         {
-            throw new NotImplementedException();
+            return DbSet.FirstOrDefault(x => x.Login == login);
         }
     }
 }

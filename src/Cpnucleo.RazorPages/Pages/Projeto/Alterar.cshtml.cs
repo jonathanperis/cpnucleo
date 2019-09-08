@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         public IActionResult OnGet(Guid idProjeto)
         {
             Projeto = _projetoAppService.Consultar(idProjeto);
-            SelectSistemas = new SelectList(_sistemaAppService.Listar(), "IdSistema", "Nome");
+            SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Nome");
 
             return Page();
         }
@@ -38,7 +38,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(_sistemaAppService.Listar(), "IdSistema", "Nome");
+                SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Nome");
 
                 return Page();
             }

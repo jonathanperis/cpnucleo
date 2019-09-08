@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Tarefa> builder)
         {
+            builder.ToTable("CPN_TB_TAREFA");
+
             builder.Property(c => c.Id)
                 .HasColumnName("TAR_ID");
 
@@ -64,6 +66,36 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataAlteracao)
                 .HasColumnName("TAR_DATA_ALTERACAO")
                 .HasColumnType("datetime");
+
+            builder
+                .HasOne(p => p.Projeto)
+                .WithMany()
+                .HasForeignKey(f => f.IdProjeto); 
+
+            builder
+                .HasOne(p => p.Workflow)
+                .WithMany(b => b.ListaTarefas)
+                .HasForeignKey(f => f.IdWorkflow);
+
+            builder
+                .HasOne(p => p.Recurso)
+                .WithMany()
+                .HasForeignKey(f => f.IdRecurso);
+
+            builder
+                .HasOne(p => p.TipoTarefa)
+                .WithMany()
+                .HasForeignKey(f => f.IdTipoTarefa);
+
+            builder
+                .HasMany(p => p.ListaImpedimentos)
+                .WithOne(c => c.Tarefa)
+                .HasForeignKey(f => f.IdImpedimento);
+
+            builder
+                .HasMany(p => p.ListaApontamentos)
+                .WithOne(c => c.Tarefa)
+                .HasForeignKey(f => f.IdTarefa);
         }
     }
 }

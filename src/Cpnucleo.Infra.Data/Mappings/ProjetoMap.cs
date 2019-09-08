@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Projeto> builder)
         {
+            builder.ToTable("CPN_TB_PROJETO");
+
             builder.Property(c => c.Id)
                 .HasColumnName("PROJ_ID");
 
@@ -29,6 +31,11 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataAlteracao)
                 .HasColumnName("PROJ_DATA_ALTERACAO")
                 .HasColumnType("datetime");
+
+            builder
+                .HasOne(p => p.Sistema)
+                .WithMany()
+                .HasForeignKey(f => f.IdSistema);
         }
     }
 }

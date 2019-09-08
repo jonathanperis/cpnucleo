@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Domain.Interfaces;
+using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -6,7 +7,7 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class Repository<TModel> : IRepository<TModel> where TModel : class
+    public class Repository<TModel> : IRepository<TModel> where TModel : BaseModel
     {
         protected readonly CpnucleoContext Db;
         protected readonly DbSet<TModel> DbSet;
@@ -25,7 +26,9 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public TModel Consultar(Guid id)
         {
-            return DbSet.Find(id);
+            return DbSet
+                .Include(Db.GetIncludePaths(typeof(TModel)))
+                .SingleOrDefault(x => x.Id == id);
         }
 
         public IQueryable<TModel> Listar()

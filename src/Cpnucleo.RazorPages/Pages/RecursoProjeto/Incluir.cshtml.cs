@@ -36,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         public IActionResult OnGet(Guid idProjeto)
         {
             Projeto = _projetoAppService.Consultar(idProjeto);
-            SelectRecursos = new SelectList(_recursoAppService.Listar(), "IdRecurso", "Nome");
+            SelectRecursos = new SelectList(_recursoAppService.Listar(), "Id", "Nome");
 
             return Page();
         }
@@ -46,7 +46,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             if (!ModelState.IsValid)
             {
                 Projeto = _projetoAppService.Consultar(idProjeto);
-                SelectRecursos = new SelectList(_recursoAppService.Listar(), "IdRecurso", "Nome");
+                SelectRecursos = new SelectList(_recursoAppService.Listar(), "Id", "Nome");
 
                 return Page();
             }

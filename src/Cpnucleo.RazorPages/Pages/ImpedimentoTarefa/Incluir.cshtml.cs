@@ -37,7 +37,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             Tarefa = _tarefaAppService.Consultar(idTarefa);
 
-            SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "IdImpedimento", "Nome");
+            SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
 
             return Page();
         }
@@ -48,7 +48,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 Tarefa = _tarefaAppService.Consultar(idTarefa);
 
-                SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "IdImpedimento", "Nome");
+                SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
 
                 return Page();
             }

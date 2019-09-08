@@ -4,6 +4,8 @@ using Cpnucleo.Application.Services;
 using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Security;
+using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.Repository;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,13 +22,13 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IAppService<ProjetoViewModel>, AppService<Projeto, ProjetoViewModel>>()
                 .AddScoped<IAppService<TarefaViewModel>, AppService<Tarefa, TarefaViewModel>>()
                 .AddScoped<IAppService<ApontamentoViewModel>, AppService<Apontamento, ApontamentoViewModel>>()
-                .AddScoped<IAppService<WorkflowViewModel>, AppService<WorkflowViewModel, WorkflowViewModel>>()
+                .AddScoped<IAppService<WorkflowViewModel>, AppService<Workflow, WorkflowViewModel>>()
                 .AddScoped<IAppService<RecursoViewModel>, AppService<Recurso, RecursoViewModel>>()
                 .AddScoped<IAppService<ImpedimentoViewModel>, AppService<Impedimento, ImpedimentoViewModel>>()
                 .AddScoped<IAppService<ImpedimentoTarefaViewModel>, AppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>>()
                 .AddScoped<IAppService<RecursoProjetoViewModel>, AppService<RecursoProjeto, RecursoProjetoViewModel>>()
                 .AddScoped<IAppService<RecursoTarefaViewModel>, AppService<RecursoTarefa, RecursoTarefaViewModel>>()
-                .AddScoped<IAppService<TipoTarefaViewModel>, AppService<TipoTarefaViewModel, TipoTarefaViewModel>>();
+                .AddScoped<IAppService<TipoTarefaViewModel>, AppService<TipoTarefa, TipoTarefaViewModel>>();
 
             services
                 .AddScoped<ITarefaAppService, TarefaAppService>()
@@ -63,6 +65,9 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>();
 
             services.AddScoped<CpnucleoContext>();
+
+            // Infra - CrossCutting - Security
+            services.AddScoped<ICryptographyManager, CryptographyManager>();
 
             return services;
         }

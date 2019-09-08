@@ -24,11 +24,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             return Page();
         }
 
-        public IActionResult OnPost(Guid idProjeto)
+        public IActionResult OnPost()
         {
             _recursoProjetoAppService.Remover(RecursoProjeto.Id);
 
-            return RedirectToPage("Listar", new { idProjeto });
+            return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }
     }
 }

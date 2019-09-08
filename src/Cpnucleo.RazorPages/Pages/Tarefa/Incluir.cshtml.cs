@@ -42,10 +42,10 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public IActionResult OnGet()
         {
-            SelectProjetos = new SelectList(_projetoAppService.Listar(), "IdProjeto", "Nome");
-            SelectSistemas = new SelectList(_sistemaAppService.Listar(), "IdSistema", "Descricao");
-            SelectWorkflows = new SelectList(_workflowAppService.Listar(), "IdWorkflow", "Nome");
-            SelectTipoTarefas = new SelectList(_tipoTarefaAppService.Listar(), "IdTipoTarefa", "Nome");
+            SelectProjetos = new SelectList(_projetoAppService.Listar(), "Id", "Nome");
+            SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Descricao");
+            SelectWorkflows = new SelectList(_workflowAppService.Listar(), "Id", "Nome");
+            SelectTipoTarefas = new SelectList(_tipoTarefaAppService.Listar(), "Id", "Nome");
 
             return Page();
         }
@@ -54,10 +54,10 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectProjetos = new SelectList(_projetoAppService.Listar(), "IdProjeto", "Nome");
-                SelectSistemas = new SelectList(_sistemaAppService.Listar(), "IdSistema", "Descricao");
-                SelectWorkflows = new SelectList(_workflowAppService.Listar(), "IdWorkflow", "Nome");
-                SelectTipoTarefas = new SelectList(_tipoTarefaAppService.Listar(), "IdTipoTarefa", "Nome");
+                SelectProjetos = new SelectList(_projetoAppService.Listar(), "Id", "Nome");
+                SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Descricao");
+                SelectWorkflows = new SelectList(_workflowAppService.Listar(), "Id", "Nome");
+                SelectTipoTarefas = new SelectList(_tipoTarefaAppService.Listar(), "Id", "Nome");
 
                 return Page();
             }

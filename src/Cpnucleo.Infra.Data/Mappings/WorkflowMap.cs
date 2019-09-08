@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Workflow> builder)
         {
+            builder.ToTable("CPN_TB_WORKFLOW");
+
             builder.Property(c => c.Id)
                 .HasColumnName("WOR_ID");
 
@@ -29,6 +31,11 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataAlteracao)
                 .HasColumnName("WOR_DATA_ALTERACAO")
                 .HasColumnType("datetime");
+
+            builder
+                .HasMany(c => c.ListaTarefas)
+                .WithOne(c => c.Workflow)
+                .HasForeignKey(f => f.IdWorkflow);
         }
     }
 }

@@ -8,6 +8,6 @@ namespace Cpnucleo.Domain.Models
 
         public int? Ordem { get; set; }
 
-        public List<Tarefa> ListaTarefas { get; set; }
+        public IEnumerable<Tarefa> ListaTarefas { get; set; }
     }
 }

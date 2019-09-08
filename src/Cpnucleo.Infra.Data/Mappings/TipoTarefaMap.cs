@@ -8,6 +8,8 @@ namespace Cpnucleo.Infra.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<TipoTarefa> builder)
         {
+            builder.ToTable("CPN_TB_TIPO_TAREFA");
+
             builder.Property(c => c.Id)
                 .HasColumnName("TIP_ID");
 
