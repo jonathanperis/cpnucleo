@@ -5,23 +5,29 @@ using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
     public class ApontamentoAppService : AppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
     {
         protected readonly IApontamentoRepository _apontamentoRepository;
+        protected readonly ITarefaRepository _tarefaRepository;
 
-        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository, IApontamentoRepository apontamentoRepository)
+        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository, IApontamentoRepository apontamentoRepository, ITarefaRepository tarefaRepository)
             : base(mapper, repository)
         {
             _apontamentoRepository = apontamentoRepository;
+            _tarefaRepository = tarefaRepository;
         }
 
         public void ApontarHoras(ApontamentoViewModel apontamento)
         {
-            throw new System.NotImplementedException();
+            Incluir(apontamento);
+
+            var tarefa = _mapper.Map<TarefaViewModel>(_tarefaRepository.Consultar(apontamento.IdTarefa));
+            tarefa.PercentualConcluido = apontamento.PercentualConcluido;
+
+            _tarefaRepository.Alterar(_mapper.Map<Tarefa>(tarefa));
         }
 
         public IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso)
