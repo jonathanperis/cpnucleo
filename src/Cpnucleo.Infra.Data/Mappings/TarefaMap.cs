@@ -90,7 +90,7 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasMany(p => p.ListaImpedimentos)
                 .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdImpedimento);
+                .HasForeignKey(f => f.IdTarefa);
 
             builder
                 .HasMany(p => p.ListaApontamentos)

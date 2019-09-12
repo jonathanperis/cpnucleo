@@ -18,15 +18,13 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public IEnumerable<ImpedimentoTarefa> ListarPoridTarefa(Guid idTarefa)
         {
-            var a = DbSet
+            return DbSet
                 .AsNoTracking()
                 .Include(x => x.Tarefa)
                 .Include(x => x.Impedimento)
                 .OrderBy(x => x.DataInclusao)
                 .Where(x => x.IdTarefa == idTarefa)
                 .ToList();
-
-            return a;
         }
     }
 }

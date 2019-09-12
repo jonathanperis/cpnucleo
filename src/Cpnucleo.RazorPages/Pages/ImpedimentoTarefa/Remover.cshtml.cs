@@ -24,11 +24,11 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public IActionResult OnPost()
         {
             _impedimentoTarefaAppService.Remover(ImpedimentoTarefa.Id);
 
-            return RedirectToPage("Listar", new { idTarefa });
+            return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }
     }
 }

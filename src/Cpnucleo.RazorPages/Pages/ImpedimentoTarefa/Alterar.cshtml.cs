@@ -35,7 +35,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -46,7 +46,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
             _impedimentoTarefaAppService.Alterar(ImpedimentoTarefa);
 
-            return RedirectToPage("Listar", new { idTarefa });
+            return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }
     }
 }
