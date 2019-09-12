@@ -16,11 +16,6 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public void ApontarHoras(Apontamento apontamento)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<Apontamento> ListarPoridRecurso(Guid idRecurso)
         {
             return DbSet

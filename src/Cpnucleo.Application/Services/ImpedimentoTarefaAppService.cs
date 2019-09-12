@@ -12,8 +12,8 @@ namespace Cpnucleo.Application.Services
     {
         protected readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        public ImpedimentoTarefaAppService(IMapper mapper, IRepository<ImpedimentoTarefa> repository, IImpedimentoTarefaRepository impedimentoTarefaRepository)
-            : base(mapper, repository)
+        public ImpedimentoTarefaAppService(IMapper mapper, IRepository<ImpedimentoTarefa> repository, IUnitOfWork unitOfWork, IImpedimentoTarefaRepository impedimentoTarefaRepository)
+            : base(mapper, repository, unitOfWork)
         {
             _impedimentoTarefaRepository = impedimentoTarefaRepository;
         }

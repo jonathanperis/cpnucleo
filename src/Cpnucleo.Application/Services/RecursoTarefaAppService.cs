@@ -11,13 +11,13 @@ namespace Cpnucleo.Application.Services
     public class RecursoTarefaAppService : AppService<RecursoTarefa, RecursoTarefaViewModel>, IRecursoTarefaAppService
     {
         protected readonly IRecursoTarefaRepository _recursoTarefaRepository;
-        protected readonly IApontamentoRepository _apontamentoRepository;
+        protected readonly IApontamentoAppService _apontamentoAppService;
 
-        public RecursoTarefaAppService(IMapper mapper, IRepository<RecursoTarefa> repository, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoRepository apontamentoRepository)
-            : base(mapper, repository)
+        public RecursoTarefaAppService(IMapper mapper, IRepository<RecursoTarefa> repository, IUnitOfWork unitOfWork, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoAppService apontamentoAppService)
+            : base(mapper, repository, unitOfWork)
         {
             _recursoTarefaRepository = recursoTarefaRepository;
-            _apontamentoRepository = apontamentoRepository;
+            _apontamentoAppService = apontamentoAppService;
         }
 
         public IEnumerable<RecursoTarefaViewModel> ListarPoridRecurso(Guid idRecurso)
@@ -26,7 +26,7 @@ namespace Cpnucleo.Application.Services
 
             foreach (var item in listaRecursoTarefa)
             {
-                item.HorasUtilizadas = _apontamentoRepository.ObterTotalHorasPoridRecurso(item.IdRecurso, item.IdTarefa);
+                item.HorasUtilizadas = _apontamentoAppService.ObterTotalHorasPoridRecurso(item.IdRecurso, item.IdTarefa);
 
                 if (item.PercentualTarefa != null)
                 {

@@ -11,23 +11,25 @@ namespace Cpnucleo.Application.Services
     public class ApontamentoAppService : AppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
     {
         protected readonly IApontamentoRepository _apontamentoRepository;
-        protected readonly ITarefaRepository _tarefaRepository;
+        protected readonly ITarefaAppService _tarefaAppService;
 
-        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository, IApontamentoRepository apontamentoRepository, ITarefaRepository tarefaRepository)
-            : base(mapper, repository)
+        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository, IUnitOfWork unitOfWork, IApontamentoRepository apontamentoRepository, ITarefaAppService tarefaAppService)
+            : base(mapper, repository, unitOfWork)
         {
             _apontamentoRepository = apontamentoRepository;
-            _tarefaRepository = tarefaRepository;
+            _tarefaAppService = tarefaAppService;
         }
 
         public void ApontarHoras(ApontamentoViewModel apontamento)
         {
             Incluir(apontamento);
 
-            var tarefa = _mapper.Map<TarefaViewModel>(_tarefaRepository.Consultar(apontamento.IdTarefa));
+            var tarefa = _tarefaAppService.Consultar(apontamento.IdTarefa);
             tarefa.PercentualConcluido = apontamento.PercentualConcluido;
 
-            _tarefaRepository.Alterar(_mapper.Map<Tarefa>(tarefa));
+            _tarefaAppService.Alterar(tarefa);
+
+            //_unitOfWork.Commit();
         }
 
         public IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso)

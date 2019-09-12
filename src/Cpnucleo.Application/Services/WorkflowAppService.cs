@@ -10,8 +10,8 @@ namespace Cpnucleo.Application.Services
 {
     public class WorkflowAppService : AppService<Workflow, WorkflowViewModel>, IWorkflowAppService
     {
-        public WorkflowAppService(IMapper mapper, IRepository<Workflow> repository)
-            : base(mapper, repository)
+        public WorkflowAppService(IMapper mapper, IRepository<Workflow> repository, IUnitOfWork unitOfWork)
+            : base(mapper, repository, unitOfWork)
         {
 
         }

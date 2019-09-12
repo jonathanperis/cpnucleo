@@ -12,11 +12,13 @@ namespace Cpnucleo.Application.Services
     {
         protected readonly IMapper _mapper;
         protected readonly IRepository<TModel> _repository;
+        protected readonly IUnitOfWork _unitOfWork;
 
-        public AppService(IMapper mapper, IRepository<TModel> repository)
+        public AppService(IMapper mapper, IRepository<TModel> repository, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         public void Incluir(TViewModel obj)

@@ -8,6 +8,7 @@ using Cpnucleo.Infra.CrossCutting.Security;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.Repository;
+using Cpnucleo.Infra.Data.UoW;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Infra.CrossCutting.IoC
@@ -64,6 +65,7 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IRecursoProjetoRepository, RecursoProjetoRepository>()
                 .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CpnucleoContext>();
 
             // Infra - CrossCutting - Security

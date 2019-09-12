@@ -12,8 +12,8 @@ namespace Cpnucleo.Application.Services
         protected readonly IRecursoRepository _recursoRepository;
         protected readonly ICryptographyManager _cryptographyManager;
 
-        public RecursoAppService(IMapper mapper, IRepository<Recurso> repository, IRecursoRepository recursoRepository, ICryptographyManager cryptographyManager)
-            : base(mapper, repository)
+        public RecursoAppService(IMapper mapper, IRepository<Recurso> repository, IUnitOfWork unitOfWork, IRecursoRepository recursoRepository, ICryptographyManager cryptographyManager)
+            : base(mapper, repository, unitOfWork)
         {
             _recursoRepository = recursoRepository;
             _cryptographyManager = cryptographyManager;
