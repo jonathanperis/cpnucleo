@@ -50,7 +50,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         {
             if (!ModelState.IsValid) return Page();
 
-            _apontamentoAppService.ApontarHoras(Apontamento);
+            _apontamentoAppService.Incluir(Apontamento);
 
             return RedirectToPage("Listar");
         }

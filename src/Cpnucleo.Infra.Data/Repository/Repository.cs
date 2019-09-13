@@ -21,7 +21,6 @@ namespace Cpnucleo.Infra.Data.Repository
         public void Incluir(TModel obj)
         {
             DbSet.Add(obj);
-            Db.SaveChanges();
         }
 
         public TModel Consultar(Guid id)
@@ -39,13 +38,11 @@ namespace Cpnucleo.Infra.Data.Repository
         public void Alterar(TModel obj)
         {
             DbSet.Update(obj);
-            Db.SaveChanges();
         }
 
         public void Remover(Guid id)
         {
             DbSet.Remove(DbSet.Find(id));
-            Db.SaveChanges();
         }
 
         public void Dispose()

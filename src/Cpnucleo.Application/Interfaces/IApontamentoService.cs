@@ -6,7 +6,7 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IApontamentoAppService : IAppService<ApontamentoViewModel>
     {
-        void ApontarHoras(ApontamentoViewModel apontamento);
+        new bool Incluir(ApontamentoViewModel apontamento);
 
         int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa);
 

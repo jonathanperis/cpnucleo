@@ -4,9 +4,9 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IRecursoAppService : IAppService<RecursoViewModel>
     {
-        new void Incluir(RecursoViewModel recurso);
+        new bool Incluir(RecursoViewModel recurso);
 
-        new void Alterar(RecursoViewModel recurso);
+        new bool Alterar(RecursoViewModel recurso);
 
         RecursoViewModel Consultar(string login, string senha, out bool valido);
     }

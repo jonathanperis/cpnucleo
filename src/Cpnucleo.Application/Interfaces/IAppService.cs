@@ -5,14 +5,14 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IAppService<TViewModel>
     {
-        void Incluir(TViewModel obj);
+        bool Incluir(TViewModel obj);
 
         TViewModel Consultar(Guid id);
 
         IQueryable<TViewModel> Listar();
 
-        void Alterar(TViewModel obj);
+        bool Alterar(TViewModel obj);
 
-        void Remover(Guid id);
+        bool Remover(Guid id);
     }
 }

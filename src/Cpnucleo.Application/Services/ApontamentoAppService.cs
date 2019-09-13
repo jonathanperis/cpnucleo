@@ -20,16 +20,14 @@ namespace Cpnucleo.Application.Services
             _tarefaAppService = tarefaAppService;
         }
 
-        public void ApontarHoras(ApontamentoViewModel apontamento)
+        public new bool Incluir(ApontamentoViewModel apontamento)
         {
-            Incluir(apontamento);
+            apontamento.Id = new Guid();
+            apontamento.DataInclusao = DateTime.Now;
 
-            var tarefa = _tarefaAppService.Consultar(apontamento.IdTarefa);
-            tarefa.PercentualConcluido = apontamento.PercentualConcluido;
+            _repository.Incluir(_mapper.Map<Apontamento>(apontamento));
 
-            _tarefaAppService.Alterar(tarefa);
-
-            //_unitOfWork.Commit();
+            return _tarefaAppService.AlterarPorApontamento(apontamento.IdTarefa, apontamento.PercentualConcluido);
         }
 
         public IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso)

@@ -19,24 +19,24 @@ namespace Cpnucleo.Application.Services
             _cryptographyManager = cryptographyManager;
         }
 
-        public new void Incluir(RecursoViewModel recurso)
+        public new bool Incluir(RecursoViewModel recurso)
         {
             _cryptographyManager.CryptPbkdf2(recurso.Senha, out string senhaCrypt, out string salt);
 
             recurso.Senha = senhaCrypt;
             recurso.Salt = salt;
 
-            base.Incluir(recurso);
+            return base.Incluir(recurso);
         }
 
-        public new void Alterar(RecursoViewModel recurso)
+        public new bool Alterar(RecursoViewModel recurso)
         {
             _cryptographyManager.CryptPbkdf2(recurso.Senha, out string senhaCrypt, out string salt);
 
             recurso.Senha = senhaCrypt;
             recurso.Salt = salt;
 
-            base.Alterar(recurso);
+            return base.Alterar(recurso);
         }
 
         public RecursoViewModel Consultar(string login, string senha, out bool valido)

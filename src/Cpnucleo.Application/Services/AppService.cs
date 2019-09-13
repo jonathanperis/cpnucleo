@@ -21,17 +21,14 @@ namespace Cpnucleo.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public void Incluir(TViewModel obj)
+        public bool Incluir(TViewModel obj)
         {
             obj.Id = new Guid();
             obj.DataInclusao = DateTime.Now;
 
             _repository.Incluir(_mapper.Map<TModel>(obj));
-        }
 
-        public void Dispose()
-        {
-            _repository.Dispose();
+            return _unitOfWork.Commit();
         }
 
         public IQueryable<TViewModel> Listar()
@@ -44,16 +41,20 @@ namespace Cpnucleo.Application.Services
             return _mapper.Map<TViewModel>(_repository.Consultar(id));
         }
 
-        public void Remover(Guid id)
+        public bool Remover(Guid id)
         {
             _repository.Remover(id);
+
+            return _unitOfWork.Commit();
         }
 
-        public void Alterar(TViewModel obj)
+        public bool Alterar(TViewModel obj)
         {
             obj.DataAlteracao = DateTime.Now;
 
             _repository.Alterar(_mapper.Map<TModel>(obj));
+
+            return _unitOfWork.Commit();
         }
     }
 }

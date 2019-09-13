@@ -15,6 +15,14 @@ namespace Cpnucleo.Application.Services
 
         }
 
+        public bool AlterarPorApontamento(Guid idTarefa, int? percentualConcluido)
+        {
+            var tarefa = Consultar(idTarefa);
+            tarefa.PercentualConcluido = percentualConcluido;
+
+            return Alterar(tarefa);
+        }
+
         public void AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow)
         {
             throw new NotImplementedException();
