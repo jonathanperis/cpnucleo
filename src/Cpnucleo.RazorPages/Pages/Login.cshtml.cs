@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.RazorPages.Authentication;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.RazorPages.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;

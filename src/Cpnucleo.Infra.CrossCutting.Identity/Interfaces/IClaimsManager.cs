@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Cpnucleo.RazorPages.Authentication
+namespace Cpnucleo.Infra.CrossCutting.Identity.Interfaces
 {
     public interface IClaimsManager
     {

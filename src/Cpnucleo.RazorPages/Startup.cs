@@ -1,5 +1,4 @@
 using Cpnucleo.Infra.CrossCutting.IoC;
-using Cpnucleo.RazorPages.Authentication;
 using Cpnucleo.RazorPages.Configuration;
 using Cpnucleo.RazorPages.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,9 +24,6 @@ namespace Cpnucleo.RazorPages
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddSingleton<IClaimsManager, ClaimsManager>();
-
             services.AddCpnucleoSetup();
 
             services.Configure<CookiePolicyOptions>(options =>

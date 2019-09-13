@@ -1,8 +1,9 @@
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Cpnucleo.RazorPages.Authentication
+namespace Cpnucleo.Infra.CrossCutting.Identity
 {
     public class ClaimsManager : IClaimsManager
     {

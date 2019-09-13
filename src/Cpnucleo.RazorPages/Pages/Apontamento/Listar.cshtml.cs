@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.ViewModels;
-using Cpnucleo.RazorPages.Authentication;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

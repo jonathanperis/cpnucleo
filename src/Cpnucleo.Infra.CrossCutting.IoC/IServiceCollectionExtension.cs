@@ -4,6 +4,8 @@ using Cpnucleo.Application.Services;
 using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Identity;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Security;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.Data.Context;
@@ -70,6 +72,9 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - CrossCutting - Security
             services.AddScoped<ICryptographyManager, CryptographyManager>();
+
+            // Infra - CrossCutting - Identity
+            services.AddScoped<IClaimsManager, ClaimsManager>();
 
             return services;
         }
