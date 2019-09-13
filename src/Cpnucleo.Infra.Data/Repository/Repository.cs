@@ -26,13 +26,14 @@ namespace Cpnucleo.Infra.Data.Repository
         public TModel Consultar(Guid id)
         {
             return DbSet
+                .AsNoTracking()
                 .Include(Db.GetIncludePaths(typeof(TModel)))
                 .SingleOrDefault(x => x.Id == id);
         }
 
         public IQueryable<TModel> Listar()
         {
-            return DbSet;
+            return DbSet.AsNoTracking();
         }
 
         public void Alterar(TModel obj)

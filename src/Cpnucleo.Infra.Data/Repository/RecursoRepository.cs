@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
@@ -15,7 +16,9 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public Recurso ValidarRecurso(string login)
         {
-            return DbSet.FirstOrDefault(x => x.Login == login);
+            return DbSet
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Login == login);
         }
     }
 }
