@@ -70,7 +70,7 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasOne(p => p.Projeto)
                 .WithMany()
-                .HasForeignKey(f => f.IdProjeto); 
+                .HasForeignKey(f => f.IdProjeto);
 
             builder
                 .HasOne(p => p.Workflow)

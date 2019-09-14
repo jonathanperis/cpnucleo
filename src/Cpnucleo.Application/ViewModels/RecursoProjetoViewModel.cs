@@ -5,7 +5,7 @@ namespace Cpnucleo.Application.ViewModels
 {
     public class RecursoProjetoViewModel : BaseViewModel
     {
-        [Display(Name = "Recurso")]      
+        [Display(Name = "Recurso")]
         [Required(ErrorMessage = "Necessário informar o {0}.")]
         public Guid IdRecurso { get; set; }
 

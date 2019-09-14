@@ -5,6 +5,6 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IWorkflowRepository : IRepository<Workflow>
     {
-        IEnumerable<Workflow> ListarPorTarefa();        
+        IEnumerable<Workflow> ListarPorTarefa();
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
-using Cpnucleo.MVC.Models;
+using System.Diagnostics;
 
 namespace Cpnucleo.MVC.Controllers
 {

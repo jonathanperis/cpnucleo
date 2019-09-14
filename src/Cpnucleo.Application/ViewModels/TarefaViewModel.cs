@@ -6,9 +6,9 @@ namespace Cpnucleo.Application.ViewModels
 {
     public class TarefaViewModel : BaseViewModel //:IValidatableObject
     {
-        [Display(Name = "Nome")]  
+        [Display(Name = "Nome")]
         [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
-        [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]    
+        [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
         public string Nome { get; set; }
 
         [Display(Name = "Data de Início")]
@@ -23,32 +23,32 @@ namespace Cpnucleo.Application.ViewModels
         [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
         public DateTime? DataTermino { get; set; }
 
-        [Display(Name = "Tempo Estimado")]      
+        [Display(Name = "Tempo Estimado")]
         [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
-        public int QtdHoras { get; set; }        
+        public int QtdHoras { get; set; }
 
-        [Display(Name = "Detalhe")]     
-        [MaxLength(1000, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")] 
-        public string Detalhe { get; set; }        
+        [Display(Name = "Detalhe")]
+        [MaxLength(1000, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
+        public string Detalhe { get; set; }
 
-        [Display(Name = "Percentual Concluído")]      
+        [Display(Name = "Percentual Concluído")]
         public int? PercentualConcluido { get; set; }
 
         public int HorasConsumidas { get; set; }
 
         public int HorasRestantes { get; set; }
 
-        [Display(Name = "Projeto")]      
+        [Display(Name = "Projeto")]
         public Guid IdProjeto { get; set; }
 
-        [Display(Name = "Workflow")]      
-        public Guid? IdWorkflow { get; set; } 
+        [Display(Name = "Workflow")]
+        public Guid? IdWorkflow { get; set; }
 
-        [Display(Name = "Recurso")]      
-        public Guid? IdRecurso { get; set; }         
+        [Display(Name = "Recurso")]
+        public Guid? IdRecurso { get; set; }
 
-        [Display(Name = "Tipo Tarefa")]      
-        public Guid? IdTipoTarefa { get; set; }    
+        [Display(Name = "Tipo Tarefa")]
+        public Guid? IdTipoTarefa { get; set; }
 
         public ProjetoViewModel Projeto { get; set; }
 

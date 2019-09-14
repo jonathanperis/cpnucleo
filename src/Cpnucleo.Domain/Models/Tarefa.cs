@@ -11,11 +11,11 @@ namespace Cpnucleo.Domain.Models
 
         public DateTime? DataTermino { get; set; }
 
-        public int QtdHoras { get; set; }        
+        public int QtdHoras { get; set; }
 
-        public string Detalhe { get; set; }        
+        public string Detalhe { get; set; }
 
-        public int? PercentualConcluido { get; set; }         
+        public int? PercentualConcluido { get; set; }
 
         public Guid IdProjeto { get; set; }
 

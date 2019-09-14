@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Recurso
 {
-    [Authorize]    
+    [Authorize]
     public class ListarModel : PageModel
     {
         private readonly IRecursoAppService _recursoAppService;

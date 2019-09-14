@@ -16,16 +16,16 @@ namespace Cpnucleo.Infra.CrossCutting.Identity
         }
 
         public string ReadClaimsPrincipal(ClaimsPrincipal principal, string type)
-        {          
+        {
             return principal.Claims.SingleOrDefault(x => x.Type == type)?.Value;
         }
 
         private static IEnumerable<Claim> CreateClaims(string type, string value)
         {
-            return new []
+            return new[]
             {
                 new Claim(type, value)
             };
-        }              
+        }
     }
 }

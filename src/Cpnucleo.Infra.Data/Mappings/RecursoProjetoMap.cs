@@ -32,7 +32,7 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
-                .HasForeignKey(f => f.IdRecurso); 
+                .HasForeignKey(f => f.IdRecurso);
 
             builder
                 .HasOne(p => p.Projeto)
