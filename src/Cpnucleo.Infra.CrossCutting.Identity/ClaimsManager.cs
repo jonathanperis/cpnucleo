@@ -11,7 +11,7 @@ namespace Cpnucleo.Infra.CrossCutting.Identity
         {
             IEnumerable<Claim> claims = CreateClaims(type, value);
 
-            var identities = new ClaimsIdentity(claims, "Dummy");
+            ClaimsIdentity identities = new ClaimsIdentity(claims, "Dummy");
             return new ClaimsPrincipal(new[] { identities });
         }
 

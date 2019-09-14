@@ -4,7 +4,7 @@ using Cpnucleo.Domain.Models;
 
 namespace Cpnucleo.Application.AutoMapper
 {
-    class DomainToViewModelMappingProfile : Profile
+    internal class DomainToViewModelMappingProfile : Profile
     {
         public DomainToViewModelMappingProfile()
         {

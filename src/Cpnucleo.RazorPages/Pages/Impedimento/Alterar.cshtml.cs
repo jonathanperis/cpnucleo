@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     {
         private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public AlterarModel(IAppService<ImpedimentoViewModel> impedimentoAppService) => _impedimentoAppService = impedimentoAppService;
+        public AlterarModel(IAppService<ImpedimentoViewModel> impedimentoAppService)
+        {
+            _impedimentoAppService = impedimentoAppService;
+        }
 
         [BindProperty]
         public ImpedimentoViewModel Impedimento { get; set; }
@@ -26,7 +29,10 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             _impedimentoAppService.Alterar(Impedimento);
 

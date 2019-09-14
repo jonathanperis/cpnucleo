@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     {
         private readonly IAppService<ProjetoViewModel> _projetoAppService;
 
-        public RemoverModel(IAppService<ProjetoViewModel> projetoAppService) => _projetoAppService = projetoAppService;
+        public RemoverModel(IAppService<ProjetoViewModel> projetoAppService)
+        {
+            _projetoAppService = projetoAppService;
+        }
 
         [BindProperty]
         public ProjetoViewModel Projeto { get; set; }

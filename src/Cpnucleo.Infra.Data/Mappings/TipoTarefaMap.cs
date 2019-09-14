@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
+    internal class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
     {
         public void Configure(EntityTypeBuilder<TipoTarefa> builder)
         {

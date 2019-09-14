@@ -17,7 +17,7 @@ namespace Cpnucleo.Application.Services
 
         public bool AlterarPorApontamento(Guid idTarefa, int? percentualConcluido)
         {
-            var tarefa = Consultar(idTarefa);
+            TarefaViewModel tarefa = Consultar(idTarefa);
             tarefa.PercentualConcluido = percentualConcluido;
 
             return Alterar(tarefa);
@@ -27,7 +27,7 @@ namespace Cpnucleo.Application.Services
         {
             lock (this)
             {
-                var tarefa = Consultar(idTarefa);
+                TarefaViewModel tarefa = Consultar(idTarefa);
                 tarefa.IdWorkflow = idWorkflow;
 
                 return Alterar(tarefa);

@@ -9,7 +9,7 @@ namespace Cpnucleo.Infra.CrossCutting.Security
     {
         public void CryptPbkdf2(string item, out string itemCrypt, out string salt)
         {
-            using (var deriveBytes = new Rfc2898DeriveBytes(item, 48))
+            using (Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(item, 48))
             {
                 byte[] saltBytes = deriveBytes.Salt;
                 byte[] itemBytes = deriveBytes.GetBytes(48);
@@ -24,11 +24,14 @@ namespace Cpnucleo.Infra.CrossCutting.Security
             byte[] saltBytes = Convert.FromBase64String(salt);
             byte[] itemBytes = Convert.FromBase64String(itemCrypt);
 
-            using (var deriveBytes = new Rfc2898DeriveBytes(item, saltBytes))
+            using (Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(item, saltBytes))
             {
                 byte[] newItem = deriveBytes.GetBytes(48);
 
-                if (!newItem.SequenceEqual(itemBytes)) return false;
+                if (!newItem.SequenceEqual(itemBytes))
+                {
+                    return false;
+                }
             }
 
             return true;

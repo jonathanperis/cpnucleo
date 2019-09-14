@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class WorkflowMap : IEntityTypeConfiguration<Workflow>
+    internal class WorkflowMap : IEntityTypeConfiguration<Workflow>
     {
         public void Configure(EntityTypeBuilder<Workflow> builder)
         {

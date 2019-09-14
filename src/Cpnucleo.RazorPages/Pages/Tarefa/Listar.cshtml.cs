@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     {
         private readonly ITarefaAppService _tarefaAppService;
 
-        public ListarModel(ITarefaAppService tarefaAppService) => _tarefaAppService = tarefaAppService;
+        public ListarModel(ITarefaAppService tarefaAppService)
+        {
+            _tarefaAppService = tarefaAppService;
+        }
 
         public TarefaViewModel Tarefa { get; set; }
 

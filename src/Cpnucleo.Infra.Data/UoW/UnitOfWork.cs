@@ -8,7 +8,10 @@ namespace Cpnucleo.Infra.Data.UoW
     {
         protected readonly CpnucleoContext Db;
 
-        public UnitOfWork(CpnucleoContext context) => Db = context;
+        public UnitOfWork(CpnucleoContext context)
+        {
+            Db = context;
+        }
 
         public bool Commit()
         {

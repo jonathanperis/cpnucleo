@@ -11,14 +11,20 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     {
         private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public IncluirModel(IAppService<ImpedimentoViewModel> impedimentoAppService) => _impedimentoAppService = impedimentoAppService;
+        public IncluirModel(IAppService<ImpedimentoViewModel> impedimentoAppService)
+        {
+            _impedimentoAppService = impedimentoAppService;
+        }
 
         [BindProperty]
         public ImpedimentoViewModel Impedimento { get; set; }
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             _impedimentoAppService.Incluir(Impedimento);
 

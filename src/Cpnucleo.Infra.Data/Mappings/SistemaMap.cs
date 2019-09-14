@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class SistemaMap : IEntityTypeConfiguration<Sistema>
+    internal class SistemaMap : IEntityTypeConfiguration<Sistema>
     {
         public void Configure(EntityTypeBuilder<Sistema> builder)
         {

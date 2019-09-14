@@ -21,11 +21,11 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<WorkflowViewModel> ListarPorTarefa()
         {
-            var listaWorkflow = _mapper.Map<IEnumerable<WorkflowViewModel>>(_workflowRepository.ListarPorTarefa());
+            IEnumerable<WorkflowViewModel> listaWorkflow = _mapper.Map<IEnumerable<WorkflowViewModel>>(_workflowRepository.ListarPorTarefa());
 
-            foreach (var item in listaWorkflow)
+            foreach (WorkflowViewModel item in listaWorkflow)
             {
-                foreach (var tarefa in item.ListaTarefas)
+                foreach (TarefaViewModel tarefa in item.ListaTarefas)
                 {
                     tarefa.HorasConsumidas = tarefa.ListaApontamentos.Sum(x => x.QtdHoras);
                     tarefa.HorasRestantes = tarefa.QtdHoras - tarefa.HorasConsumidas;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
+    internal class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
     {
         public void Configure(EntityTypeBuilder<Impedimento> builder)
         {

@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     {
         private readonly IWorkflowAppService _workflowAppService;
 
-        public RemoverModel(IWorkflowAppService workflowAppService) => _workflowAppService = workflowAppService;
+        public RemoverModel(IWorkflowAppService workflowAppService)
+        {
+            _workflowAppService = workflowAppService;
+        }
 
         [BindProperty]
         public WorkflowViewModel Workflow { get; set; }

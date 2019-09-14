@@ -10,7 +10,10 @@ namespace Cpnucleo.Infra.Data.Context
     {
         private readonly IHostingEnvironment _env;
 
-        public CpnucleoContext(IHostingEnvironment env) => _env = env;
+        public CpnucleoContext(IHostingEnvironment env)
+        {
+            _env = env;
+        }
 
         public DbSet<Apontamento> Apontamentos { get; set; }
         public DbSet<Impedimento> Impedimentos { get; set; }
@@ -44,7 +47,7 @@ namespace Cpnucleo.Infra.Data.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // get the configuration from the app settings
-            var config = new ConfigurationBuilder()
+            IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(_env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .Build();

@@ -5,7 +5,10 @@ namespace Cpnucleo.Application.ViewModels
 {
     public class RecursoViewModel : BaseViewModel
     {
-        public RecursoViewModel() => Ativo = true;
+        public RecursoViewModel()
+        {
+            Ativo = true;
+        }
 
         [Display(Name = "Nome")]
         [Required(ErrorMessage = "Necessário informar o {0} do Recurso.")]

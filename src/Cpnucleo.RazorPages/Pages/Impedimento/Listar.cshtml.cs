@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     {
         private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public ListarModel(IAppService<ImpedimentoViewModel> impedimentoAppService) => _impedimentoAppService = impedimentoAppService;
+        public ListarModel(IAppService<ImpedimentoViewModel> impedimentoAppService)
+        {
+            _impedimentoAppService = impedimentoAppService;
+        }
 
         public ImpedimentoViewModel Impedimento { get; set; }
 

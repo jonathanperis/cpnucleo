@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     {
         private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public RemoverModel(IAppService<ImpedimentoViewModel> impedimentoAppService) => _impedimentoAppService = impedimentoAppService;
+        public RemoverModel(IAppService<ImpedimentoViewModel> impedimentoAppService)
+        {
+            _impedimentoAppService = impedimentoAppService;
+        }
 
         [BindProperty]
         public ImpedimentoViewModel Impedimento { get; set; }

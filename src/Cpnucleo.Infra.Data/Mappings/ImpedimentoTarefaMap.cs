@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa>
+    internal class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa>
     {
         public void Configure(EntityTypeBuilder<ImpedimentoTarefa> builder)
         {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class ProjetoMap : IEntityTypeConfiguration<Projeto>
+    internal class ProjetoMap : IEntityTypeConfiguration<Projeto>
     {
         public void Configure(EntityTypeBuilder<Projeto> builder)
         {

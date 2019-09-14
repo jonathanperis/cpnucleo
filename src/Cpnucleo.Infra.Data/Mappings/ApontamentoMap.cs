@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
+    internal class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
     {
         public void Configure(EntityTypeBuilder<Apontamento> builder)
         {

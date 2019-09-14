@@ -11,7 +11,10 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     {
         private readonly IRecursoAppService _recursoAppService;
 
-        public IncluirModel(IRecursoAppService recursoAppService) => _recursoAppService = recursoAppService;
+        public IncluirModel(IRecursoAppService recursoAppService)
+        {
+            _recursoAppService = recursoAppService;
+        }
 
         [BindProperty]
         public RecursoViewModel Recurso { get; set; }

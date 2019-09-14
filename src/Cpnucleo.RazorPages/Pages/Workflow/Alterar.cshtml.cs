@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     {
         private readonly IWorkflowAppService _workflowAppService;
 
-        public AlterarModel(IWorkflowAppService workflowAppService) => _workflowAppService = workflowAppService;
+        public AlterarModel(IWorkflowAppService workflowAppService)
+        {
+            _workflowAppService = workflowAppService;
+        }
 
         [BindProperty]
         public WorkflowViewModel Workflow { get; set; }
@@ -26,7 +29,10 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             _workflowAppService.Alterar(Workflow);
 

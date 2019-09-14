@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     {
         private readonly ITarefaAppService _tarefaAppService;
 
-        public RemoverModel(ITarefaAppService tarefaAppService) => _tarefaAppService = tarefaAppService;
+        public RemoverModel(ITarefaAppService tarefaAppService)
+        {
+            _tarefaAppService = tarefaAppService;
+        }
 
         [BindProperty]
         public TarefaViewModel Tarefa { get; set; }

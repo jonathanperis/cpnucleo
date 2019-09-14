@@ -2,7 +2,10 @@ namespace Cpnucleo.Domain.Models
 {
     public class Recurso : BaseModel
     {
-        public Recurso() => Ativo = true;
+        public Recurso()
+        {
+            Ativo = true;
+        }
 
         public string Nome { get; set; }
 

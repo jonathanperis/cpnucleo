@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     {
         private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
 
-        public RemoverModel(IImpedimentoTarefaAppService impedimentoTarefaAppService) => _impedimentoTarefaAppService = impedimentoTarefaAppService;
+        public RemoverModel(IImpedimentoTarefaAppService impedimentoTarefaAppService)
+        {
+            _impedimentoTarefaAppService = impedimentoTarefaAppService;
+        }
 
         [BindProperty]
         public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }

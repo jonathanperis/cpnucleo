@@ -11,14 +11,20 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     {
         private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
-        public IncluirModel(IAppService<SistemaViewModel> sistemaAppService) => _sistemaAppService = sistemaAppService;
+        public IncluirModel(IAppService<SistemaViewModel> sistemaAppService)
+        {
+            _sistemaAppService = sistemaAppService;
+        }
 
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             _sistemaAppService.Incluir(Sistema);
 

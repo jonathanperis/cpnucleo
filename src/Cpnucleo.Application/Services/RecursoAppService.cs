@@ -43,11 +43,17 @@ namespace Cpnucleo.Application.Services
         {
             valido = false;
 
-            var recurso = _mapper.Map<RecursoViewModel>(_recursoRepository.ConsultarPorLogin(login));
+            RecursoViewModel recurso = _mapper.Map<RecursoViewModel>(_recursoRepository.ConsultarPorLogin(login));
 
-            if (recurso == null) return null;
+            if (recurso == null)
+            {
+                return null;
+            }
 
-            if (!recurso.Ativo) return null;
+            if (!recurso.Ativo)
+            {
+                return null;
+            }
 
             valido = _cryptographyManager.VerifyPbkdf2(senha, recurso.Senha, recurso.Salt);
 

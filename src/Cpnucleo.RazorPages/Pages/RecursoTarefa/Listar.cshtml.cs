@@ -13,7 +13,10 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     {
         private readonly IRecursoTarefaAppService _recursoTarefaAppService;
 
-        public ListarModel(IRecursoTarefaAppService recursoTarefaAppService) => _recursoTarefaAppService = recursoTarefaAppService;
+        public ListarModel(IRecursoTarefaAppService recursoTarefaAppService)
+        {
+            _recursoTarefaAppService = recursoTarefaAppService;
+        }
 
         [BindProperty]
         public RecursoTarefaViewModel RecursoTarefa { get; set; }

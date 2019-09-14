@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     {
         private readonly IAppService<ProjetoViewModel> _projetoAppService;
 
-        public ListarModel(IAppService<ProjetoViewModel> projetoAppService) => _projetoAppService = projetoAppService;
+        public ListarModel(IAppService<ProjetoViewModel> projetoAppService)
+        {
+            _projetoAppService = projetoAppService;
+        }
 
         public ProjetoViewModel Projeto { get; set; }
 

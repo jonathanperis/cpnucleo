@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
-    class RecursoMap : IEntityTypeConfiguration<Recurso>
+    internal class RecursoMap : IEntityTypeConfiguration<Recurso>
     {
         public void Configure(EntityTypeBuilder<Recurso> builder)
         {

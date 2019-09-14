@@ -22,9 +22,9 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            var listaRecursoTarefa = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPorRecurso(idRecurso));
+            IEnumerable<RecursoTarefaViewModel> listaRecursoTarefa = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPorRecurso(idRecurso));
 
-            foreach (var item in listaRecursoTarefa)
+            foreach (RecursoTarefaViewModel item in listaRecursoTarefa)
             {
                 item.HorasUtilizadas = _apontamentoAppService.ObterTotalHorasPorRecurso(item.IdRecurso, item.IdTarefa);
 

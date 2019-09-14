@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     {
         private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
-        public RemoverModel(IAppService<SistemaViewModel> sistemaAppService) => _sistemaAppService = sistemaAppService;
+        public RemoverModel(IAppService<SistemaViewModel> sistemaAppService)
+        {
+            _sistemaAppService = sistemaAppService;
+        }
 
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }

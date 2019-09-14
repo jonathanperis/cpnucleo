@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     {
         private readonly IApontamentoAppService _apontamentoAppService;
 
-        public RemoverModel(IApontamentoAppService apontamentoAppService) => _apontamentoAppService = apontamentoAppService;
+        public RemoverModel(IApontamentoAppService apontamentoAppService)
+        {
+            _apontamentoAppService = apontamentoAppService;
+        }
 
         [BindProperty]
         public ApontamentoViewModel Apontamento { get; set; }

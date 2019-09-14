@@ -12,7 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     {
         private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
-        public AlterarModel(IAppService<SistemaViewModel> sistemaAppService) => _sistemaAppService = sistemaAppService;
+        public AlterarModel(IAppService<SistemaViewModel> sistemaAppService)
+        {
+            _sistemaAppService = sistemaAppService;
+        }
 
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
@@ -26,7 +29,10 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             _sistemaAppService.Alterar(Sistema);
 
