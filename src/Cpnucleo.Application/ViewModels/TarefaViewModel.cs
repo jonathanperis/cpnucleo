@@ -11,13 +11,15 @@ namespace Cpnucleo.Application.ViewModels
         [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]    
         public string Nome { get; set; }
 
-        [Display(Name = "Data de Início")]      
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]        
+        [Display(Name = "Data de Início")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
         [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
         public DateTime? DataInicio { get; set; }
 
-        [Display(Name = "Data de Término")]      
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name = "Data de Término")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
         [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
         public DateTime? DataTermino { get; set; }
 

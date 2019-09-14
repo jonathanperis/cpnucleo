@@ -48,7 +48,16 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public IActionResult OnPost()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+            {
+                string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+                Guid idRecurso = new Guid(retorno);
+
+                Lista = _apontamentoAppService.ListarPoridRecurso(idRecurso);
+                ListaRecursoTarefas = _recursoTarefaAppService.ListarPoridRecurso(idRecurso);
+
+                return Page();
+            }
 
             _apontamentoAppService.Incluir(Apontamento);
 

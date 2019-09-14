@@ -10,8 +10,9 @@ namespace Cpnucleo.Application.ViewModels
         [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
         public string Descricao { get; set; }
 
-        [Display(Name = "Data de Apontamento")]      
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name = "Data de Apontamento")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
         [Required(ErrorMessage = "Necessário informar a {0}.")]     
         public DateTime? DataApontamento { get; set; }
 
