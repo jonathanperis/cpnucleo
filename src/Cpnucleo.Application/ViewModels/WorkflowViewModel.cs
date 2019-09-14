@@ -14,6 +14,9 @@ namespace Cpnucleo.Application.ViewModels
         [Required(ErrorMessage = "Necessário informar a {0} do Workflow.")]
         public int? Ordem { get; set; }
 
+        [Display(Name = "Tamanho Coluna")]
+        public int? TamanhoColuna { get; set; }
+
         public List<TarefaViewModel> ListaTarefas { get; set; }
     }
 }

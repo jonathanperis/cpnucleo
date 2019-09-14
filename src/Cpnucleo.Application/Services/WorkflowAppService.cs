@@ -25,6 +25,12 @@ namespace Cpnucleo.Application.Services
 
             foreach (WorkflowViewModel item in listaWorkflow)
             {
+                int qtdLista = listaWorkflow.Count();
+                qtdLista = qtdLista == 1 ? 2 : qtdLista;
+
+                int i = 12 / qtdLista;
+                item.TamanhoColuna = i;
+
                 foreach (TarefaViewModel tarefa in item.ListaTarefas)
                 {
                     tarefa.HorasConsumidas = tarefa.ListaApontamentos.Sum(x => x.QtdHoras);

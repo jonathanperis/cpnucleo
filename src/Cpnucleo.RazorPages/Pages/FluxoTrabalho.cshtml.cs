@@ -35,12 +35,6 @@ namespace Cpnucleo.RazorPages.Pages
         {
             Lista = _workflowAppService.ListarPorTarefa();
 
-            int qtdLista = Lista.Count();
-            qtdLista = qtdLista == 1 ? 2 : qtdLista;
-
-            int i = 12 / qtdLista;
-            ViewData["col-lg-*"] = i;
-
             return Page();
         }
 

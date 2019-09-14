@@ -23,7 +23,7 @@
 
         foreach (var workflow in Model.Lista)
         {
-            <div class="col-lg-@ViewData["col-lg-*"]">
+            <div class="col-lg-@workflow.TamanhoColuna">
                 <div class="ibox">
                     <div class="ibox-content">
                         <h3>@workflow.Nome <span id="workflow-animate-@workflow.Id" class="animated"><span id="workflow-badge-@workflow.Id" class="badge">@workflow.ListaTarefas.Count()</span></span></h3>
