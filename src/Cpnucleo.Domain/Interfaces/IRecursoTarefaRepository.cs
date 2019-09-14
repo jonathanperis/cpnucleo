@@ -6,8 +6,8 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IRecursoTarefaRepository : IRepository<RecursoTarefa>
     {
-        IEnumerable<RecursoTarefa> ListarPoridTarefa(Guid idTarefa);
+        IEnumerable<RecursoTarefa> ListarPorTarefa(Guid idTarefa);
 
-        IEnumerable<RecursoTarefa> ListarPoridRecurso(Guid idRecurso);
+        IEnumerable<RecursoTarefa> ListarPorRecurso(Guid idRecurso);
     }
 }

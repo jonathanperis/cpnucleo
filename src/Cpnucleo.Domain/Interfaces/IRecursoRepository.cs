@@ -4,6 +4,6 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IRecursoRepository : IRepository<Recurso>
     {
-        Recurso ValidarRecurso(string login);
+        Recurso ConsultarPorLogin(string login);
     }
 }

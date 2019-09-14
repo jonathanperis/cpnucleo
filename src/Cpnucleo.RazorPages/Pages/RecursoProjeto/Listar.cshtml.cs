@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public IActionResult OnGet(Guid idProjeto)
         {
-            Lista = _recursoProjetoAppService.ListarPoridProjeto(idProjeto);
+            Lista = _recursoProjetoAppService.ListarPorProjeto(idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 

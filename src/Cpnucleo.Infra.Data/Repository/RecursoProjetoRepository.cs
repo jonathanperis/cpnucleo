@@ -16,7 +16,7 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IEnumerable<RecursoProjeto> ListarPoridProjeto(Guid idProjeto)
+        public IEnumerable<RecursoProjeto> ListarPorProjeto(Guid idProjeto)
         {
             return DbSet
                 .AsNoTracking()

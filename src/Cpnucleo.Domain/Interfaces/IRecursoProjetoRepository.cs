@@ -6,6 +6,6 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IRecursoProjetoRepository : IRepository<RecursoProjeto>
     {
-        IEnumerable<RecursoProjeto> ListarPoridProjeto(Guid idProjeto);
+        IEnumerable<RecursoProjeto> ListarPorProjeto(Guid idProjeto);
     }
 }

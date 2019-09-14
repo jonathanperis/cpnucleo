@@ -14,7 +14,7 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public Recurso ValidarRecurso(string login)
+        public Recurso ConsultarPorLogin(string login)
         {
             return DbSet
                 .AsNoTracking()

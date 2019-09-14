@@ -20,13 +20,13 @@ namespace Cpnucleo.Application.Services
             _apontamentoAppService = apontamentoAppService;
         }
 
-        public IEnumerable<RecursoTarefaViewModel> ListarPoridRecurso(Guid idRecurso)
+        public IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            var listaRecursoTarefa = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPoridRecurso(idRecurso));
+            var listaRecursoTarefa = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPorRecurso(idRecurso));
 
             foreach (var item in listaRecursoTarefa)
             {
-                item.HorasUtilizadas = _apontamentoAppService.ObterTotalHorasPoridRecurso(item.IdRecurso, item.IdTarefa);
+                item.HorasUtilizadas = _apontamentoAppService.ObterTotalHorasPorRecurso(item.IdRecurso, item.IdTarefa);
 
                 if (item.PercentualTarefa != null)
                 {
@@ -38,9 +38,9 @@ namespace Cpnucleo.Application.Services
             return listaRecursoTarefa;
         }
 
-        public IEnumerable<RecursoTarefaViewModel> ListarPoridTarefa(Guid idTarefa)
+        public IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPoridTarefa(idTarefa));
+            return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPorTarefa(idTarefa));
         }
     }
 }

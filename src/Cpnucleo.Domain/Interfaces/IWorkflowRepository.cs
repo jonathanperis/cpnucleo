@@ -1,10 +1,10 @@
 using Cpnucleo.Domain.Models;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
     public interface IWorkflowRepository : IRepository<Workflow>
     {
-        IQueryable<Workflow> ListarTarefasWorkflow();        
+        IEnumerable<Workflow> ListarPorTarefa();        
     }
 }

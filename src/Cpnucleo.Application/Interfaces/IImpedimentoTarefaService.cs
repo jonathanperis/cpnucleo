@@ -6,6 +6,6 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IImpedimentoTarefaAppService : IAppService<ImpedimentoTarefaViewModel>
     {
-        IEnumerable<ImpedimentoTarefaViewModel> ListarPoridTarefa(Guid idTarefa);
+        IEnumerable<ImpedimentoTarefaViewModel> ListarPorTarefa(Guid idTarefa);
     }
 }

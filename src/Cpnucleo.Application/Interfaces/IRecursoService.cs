@@ -8,6 +8,6 @@ namespace Cpnucleo.Application.Interfaces
 
         new bool Alterar(RecursoViewModel recurso);
 
-        RecursoViewModel Consultar(string login, string senha, out bool valido);
+        RecursoViewModel ConsultarPorLogin(string login, string senha, out bool valido);
     }
 }

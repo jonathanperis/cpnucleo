@@ -7,6 +7,6 @@ namespace Cpnucleo.Application.Interfaces
     {
         bool AlterarPorApontamento(Guid idTarefa, int? percentualConcluido);
 
-        void AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow);
+        bool AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow);
     }
 }

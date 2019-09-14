@@ -29,13 +29,11 @@ namespace Cpnucleo.RazorPages.Pages
             _hubContext = hubContext;
         }
 
-        public WorkflowViewModel Workflow { get; set; }
-
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
 
         public IActionResult OnGet()
         {
-            Lista = _workflowAppService.ListarTarefasWorkflow();
+            Lista = _workflowAppService.ListarPorTarefa();
 
             int qtdLista = Lista.Count();
             qtdLista = qtdLista == 1 ? 2 : qtdLista;

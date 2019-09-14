@@ -32,7 +32,11 @@ namespace Cpnucleo.Application.ViewModels
         public string Detalhe { get; set; }        
 
         [Display(Name = "Percentual Concluído")]      
-        public int? PercentualConcluido { get; set; }         
+        public int? PercentualConcluido { get; set; }
+
+        public int HorasConsumidas { get; set; }
+
+        public int HorasRestantes { get; set; }
 
         [Display(Name = "Projeto")]      
         public Guid IdProjeto { get; set; }

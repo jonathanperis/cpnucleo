@@ -18,9 +18,9 @@ namespace Cpnucleo.Application.Services
             _recursoProjetoRepository = recursoProjetoRepository;
         }
 
-        public IEnumerable<RecursoProjetoViewModel> ListarPoridProjeto(Guid idProjeto)
+        public IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(Guid idProjeto)
         {
-            return _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(_recursoProjetoRepository.ListarPoridProjeto(idProjeto));
+            return _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(_recursoProjetoRepository.ListarPorProjeto(idProjeto));
         }
     }
 }

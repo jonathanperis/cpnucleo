@@ -8,8 +8,8 @@ namespace Cpnucleo.Application.Interfaces
     {
         new bool Incluir(ApontamentoViewModel apontamento);
 
-        int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa);
+        int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa);
 
-        IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso);
+        IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso);
     }
 }

@@ -16,7 +16,7 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IEnumerable<Apontamento> ListarPoridRecurso(Guid idRecurso)
+        public IEnumerable<Apontamento> ListarPorRecurso(Guid idRecurso)
         {
             return DbSet
                     .AsNoTracking()
@@ -26,7 +26,7 @@ namespace Cpnucleo.Infra.Data.Repository
                     .ToList();
         }
 
-        public int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa)
+        public int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa)
         {
             return DbSet
                 .AsNoTracking()

@@ -59,6 +59,7 @@ CREATE TABLE [dbo].[CPN_TB_IMPEDIMENTO] (
 CREATE TABLE [dbo].[CPN_TB_TIPO_TAREFA] (
   [TIP_ID] uniqueidentifier NOT NULL PRIMARY KEY default newid(),
   [TIP_NOME] varchar(50) NOT NULL,
+  [TIP_IMAGE_CARD] varchar(100) NOT NULL,
   [TIP_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [TIP_DATA_ALTERACAO] datetime NULL
 );

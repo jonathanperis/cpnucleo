@@ -18,9 +18,9 @@ namespace Cpnucleo.Application.Services
             _impedimentoTarefaRepository = impedimentoTarefaRepository;
         }
 
-        public IEnumerable<ImpedimentoTarefaViewModel> ListarPoridTarefa(Guid idTarefa)
+        public IEnumerable<ImpedimentoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(_impedimentoTarefaRepository.ListarPoridTarefa(idTarefa));
+            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(_impedimentoTarefaRepository.ListarPorTarefa(idTarefa));
         }
     }
 }

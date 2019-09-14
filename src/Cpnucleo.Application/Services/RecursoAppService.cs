@@ -39,11 +39,11 @@ namespace Cpnucleo.Application.Services
             return base.Alterar(recurso);
         }
 
-        public RecursoViewModel Consultar(string login, string senha, out bool valido)
+        public RecursoViewModel ConsultarPorLogin(string login, string senha, out bool valido)
         {
             valido = false;
 
-            var recurso = _mapper.Map<RecursoViewModel>(_recursoRepository.ValidarRecurso(login));
+            var recurso = _mapper.Map<RecursoViewModel>(_recursoRepository.ConsultarPorLogin(login));
 
             if (recurso == null) return null;
 

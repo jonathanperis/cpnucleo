@@ -16,7 +16,7 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IEnumerable<RecursoTarefa> ListarPoridRecurso(Guid idRecurso)
+        public IEnumerable<RecursoTarefa> ListarPorRecurso(Guid idRecurso)
         {
             return DbSet
                 .AsNoTracking()
@@ -29,7 +29,7 @@ namespace Cpnucleo.Infra.Data.Repository
                 .ToList();
         }
 
-        public IEnumerable<RecursoTarefa> ListarPoridTarefa(Guid idTarefa)
+        public IEnumerable<RecursoTarefa> ListarPorTarefa(Guid idTarefa)
         {
             return DbSet
                 .AsNoTracking()

@@ -9,7 +9,7 @@ namespace Cpnucleo.Infra.Data.Repository
 {
     public class Repository<TModel> : IRepository<TModel> where TModel : BaseModel
     {
-        protected readonly CpnucleoContext Db;
+        private readonly CpnucleoContext Db;
         protected readonly DbSet<TModel> DbSet;
 
         public Repository(CpnucleoContext context)

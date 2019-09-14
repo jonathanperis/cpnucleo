@@ -16,7 +16,7 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IEnumerable<ImpedimentoTarefa> ListarPoridTarefa(Guid idTarefa)
+        public IEnumerable<ImpedimentoTarefa> ListarPorTarefa(Guid idTarefa)
         {
             return DbSet
                 .AsNoTracking()

@@ -6,6 +6,6 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IRecursoProjetoAppService : IAppService<RecursoProjetoViewModel>
     {
-        IEnumerable<RecursoProjetoViewModel> ListarPoridProjeto(Guid idProjeto);
+        IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(Guid idProjeto);
     }
 }

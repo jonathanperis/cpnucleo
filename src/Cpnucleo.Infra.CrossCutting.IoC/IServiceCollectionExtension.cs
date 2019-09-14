@@ -59,7 +59,6 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IRepository<TipoTarefa>, Repository<TipoTarefa>>();
 
             services
-                .AddScoped<ITarefaRepository, TarefaRepository>()
                 .AddScoped<IApontamentoRepository, ApontamentoRepository>()
                 .AddScoped<IWorkflowRepository, WorkflowRepository>()
                 .AddScoped<IRecursoRepository, RecursoRepository>()

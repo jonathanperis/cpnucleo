@@ -6,8 +6,8 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IApontamentoRepository : IRepository<Apontamento>
     {
-        int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa);
+        int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa);
 
-        IEnumerable<Apontamento> ListarPoridRecurso(Guid idRecurso);
+        IEnumerable<Apontamento> ListarPorRecurso(Guid idRecurso);
     }
 }

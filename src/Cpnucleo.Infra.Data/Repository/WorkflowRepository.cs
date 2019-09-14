@@ -1,7 +1,8 @@
 ﻿using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
-using System;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
@@ -14,9 +15,21 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IQueryable<Workflow> ListarTarefasWorkflow()
+        public IEnumerable<Workflow> ListarPorTarefa()
         {
-            throw new NotImplementedException();
+            return DbSet
+                .AsNoTracking()
+                .Include(x => x.ListaTarefas)
+                    .ThenInclude(x => x.Recurso)
+                .Include(x => x.ListaTarefas)
+                    .ThenInclude(x => x.TipoTarefa)
+                .Include(x => x.ListaTarefas)
+                    .ThenInclude(x => x.ListaApontamentos)
+                .Include(x => x.ListaTarefas)
+                    .ThenInclude(x => x.ListaImpedimentos)
+                .OrderBy(x => x.Ordem)
+                .Take(4) //@@JONATHAN - 22/02/2017 - TRAVA TEMPORÁRIA.
+                .ToList();
         }
     }
 }

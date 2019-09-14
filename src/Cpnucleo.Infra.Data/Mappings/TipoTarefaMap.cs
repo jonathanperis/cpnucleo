@@ -19,6 +19,12 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasMaxLength(50)
                 .IsRequired();
 
+            builder.Property(c => c.Image)
+                .HasColumnName("TIP_IMAGE_CARD")
+                .HasColumnType("varchar(100)")
+                .HasMaxLength(50)
+                .IsRequired();
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TIP_DATA_INCLUSAO")
                 .HasColumnType("datetime");

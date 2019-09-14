@@ -30,14 +30,14 @@ namespace Cpnucleo.Application.Services
             return _tarefaAppService.AlterarPorApontamento(apontamento.IdTarefa, apontamento.PercentualConcluido);
         }
 
-        public IEnumerable<ApontamentoViewModel> ListarPoridRecurso(Guid idRecurso)
+        public IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(_apontamentoRepository.ListarPoridRecurso(idRecurso));
+            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(_apontamentoRepository.ListarPorRecurso(idRecurso));
         }
 
-        public int ObterTotalHorasPoridRecurso(Guid idRecurso, Guid idTarefa)
+        public int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa)
         {
-            return _apontamentoRepository.ObterTotalHorasPoridRecurso(idRecurso, idTarefa);
+            return _apontamentoRepository.ObterTotalHorasPorRecurso(idRecurso, idTarefa);
         }
     }
 }

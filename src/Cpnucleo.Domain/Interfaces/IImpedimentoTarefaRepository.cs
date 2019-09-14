@@ -6,6 +6,6 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IImpedimentoTarefaRepository : IRepository<ImpedimentoTarefa>
     {
-        IEnumerable<ImpedimentoTarefa> ListarPoridTarefa(Guid idTarefa);
+        IEnumerable<ImpedimentoTarefa> ListarPorTarefa(Guid idTarefa);
     }
 }

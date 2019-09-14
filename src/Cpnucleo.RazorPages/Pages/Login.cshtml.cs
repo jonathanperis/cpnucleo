@@ -43,7 +43,7 @@ namespace Cpnucleo.RazorPages.Pages
                 return Page();
             }
 
-            var recurso = _recursoAppService.Consultar(Login.Usuario, Login.Senha, out bool valido);
+            var recurso = _recursoAppService.ConsultarPorLogin(Login.Usuario, Login.Senha, out bool valido);
 
             if (!valido)
             {

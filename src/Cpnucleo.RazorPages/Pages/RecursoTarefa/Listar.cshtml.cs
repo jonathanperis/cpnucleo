@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public IActionResult OnGet(Guid idTarefa)
         {
-            Lista = _recursoTarefaAppService.ListarPoridTarefa(idTarefa);
+            Lista = _recursoTarefaAppService.ListarPorTarefa(idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 

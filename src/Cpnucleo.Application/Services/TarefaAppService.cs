@@ -23,9 +23,15 @@ namespace Cpnucleo.Application.Services
             return Alterar(tarefa);
         }
 
-        public void AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow)
+        public bool AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow)
         {
-            throw new NotImplementedException();
+            lock (this)
+            {
+                var tarefa = Consultar(idTarefa);
+                tarefa.IdWorkflow = idWorkflow;
+
+                return Alterar(tarefa);
+            }
         }
     }
 }

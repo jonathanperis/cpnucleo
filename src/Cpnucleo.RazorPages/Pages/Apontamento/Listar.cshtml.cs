@@ -40,8 +40,8 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
             string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
 
-            Lista = _apontamentoAppService.ListarPoridRecurso(idRecurso);
-            ListaRecursoTarefas = _recursoTarefaAppService.ListarPoridRecurso(idRecurso);
+            Lista = _apontamentoAppService.ListarPorRecurso(idRecurso);
+            ListaRecursoTarefas = _recursoTarefaAppService.ListarPorRecurso(idRecurso);
 
             return Page();
         }
@@ -53,8 +53,8 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = _apontamentoAppService.ListarPoridRecurso(idRecurso);
-                ListaRecursoTarefas = _recursoTarefaAppService.ListarPoridRecurso(idRecurso);
+                Lista = _apontamentoAppService.ListarPorRecurso(idRecurso);
+                ListaRecursoTarefas = _recursoTarefaAppService.ListarPorRecurso(idRecurso);
 
                 return Page();
             }

@@ -36,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         public IActionResult OnGet(Guid idRecursoTarefa)
         {
             RecursoTarefa = _recursoTarefaAppService.Consultar(idRecursoTarefa);
-            SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPoridProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+            SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPorProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
             return Page();
         }
@@ -46,7 +46,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             if (!ModelState.IsValid)
             {
                 Tarefa = _tarefaAppService.Consultar(RecursoTarefa.IdTarefa);
-                SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPoridProjeto(Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPorProjeto(Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }

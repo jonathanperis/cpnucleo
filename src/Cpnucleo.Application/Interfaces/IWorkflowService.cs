@@ -1,10 +1,10 @@
 ﻿using Cpnucleo.Application.ViewModels;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
     public interface IWorkflowAppService : IAppService<WorkflowViewModel>
     {
-        IQueryable<WorkflowViewModel> ListarTarefasWorkflow();
+        IEnumerable<WorkflowViewModel> ListarPorTarefa();
     }
 }
