@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Pages", "src\Cpnucleo.Pages\Cpnucleo.Pages.csproj", "{16F63568-86D3-4476-AD3A-7C602C806FDD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Pages.Test", "test\Cpnucleo.Pages.Test\Cpnucleo.Pages.Test.csproj", "{212A6602-44A4-4281-823E-09D85893F9AD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1754EB6E-EE09-461B-8A2C-ED41EC36C315}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{27FF6EAC-9984-4184-98BB-995B54A81B29}"
@@ -44,7 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.CrossCutting.Security", "src\Cpnucleo.Infra.CrossCutting.Security\Cpnucleo.Infra.CrossCutting.Security.csproj", "{E94229B5-5E9B-480F-A5FF-C840E82CF6B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Infra.CrossCutting.Identity", "src\Cpnucleo.Infra.CrossCutting.Identity\Cpnucleo.Infra.CrossCutting.Identity.csproj", "{11D89DA9-2D7B-4F9E-A6DA-5C87F18A2616}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.CrossCutting.Identity", "src\Cpnucleo.Infra.CrossCutting.Identity\Cpnucleo.Infra.CrossCutting.Identity.csproj", "{11D89DA9-2D7B-4F9E-A6DA-5C87F18A2616}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,14 +48,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{16F63568-86D3-4476-AD3A-7C602C806FDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16F63568-86D3-4476-AD3A-7C602C806FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16F63568-86D3-4476-AD3A-7C602C806FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16F63568-86D3-4476-AD3A-7C602C806FDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{212A6602-44A4-4281-823E-09D85893F9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{212A6602-44A4-4281-823E-09D85893F9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{212A6602-44A4-4281-823E-09D85893F9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{212A6602-44A4-4281-823E-09D85893F9AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CD89D48D-F8A9-41FD-9EAB-55BF909B04D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CD89D48D-F8A9-41FD-9EAB-55BF909B04D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD89D48D-F8A9-41FD-9EAB-55BF909B04D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -97,8 +85,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{16F63568-86D3-4476-AD3A-7C602C806FDD} = {1754EB6E-EE09-461B-8A2C-ED41EC36C315}
-		{212A6602-44A4-4281-823E-09D85893F9AD} = {27FF6EAC-9984-4184-98BB-995B54A81B29}
 		{FA653B6C-C948-4E9C-8DBE-B048C52C8D62} = {1754EB6E-EE09-461B-8A2C-ED41EC36C315}
 		{FD9D98D7-C717-4637-B5F3-AC4CD169B354} = {1754EB6E-EE09-461B-8A2C-ED41EC36C315}
 		{0707CB0C-0656-4903-9519-F4AE99B29934} = {1754EB6E-EE09-461B-8A2C-ED41EC36C315}
