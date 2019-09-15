@@ -11,7 +11,6 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     public class IncluirModel : PageModel
     {
         private readonly IAppService<ProjetoViewModel> _projetoAppService;
-
         private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
         public IncluirModel(IAppService<ProjetoViewModel> projetoAppService, IAppService<SistemaViewModel> sistemaAppService)

@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
     {
         private readonly Mock<IRecursoAppService> _recursoAppService;
 
-        public RemoverTest() => _recursoAppService = new Mock<IRecursoAppService>();
+        public RemoverTest()
+        {
+            _recursoAppService = new Mock<IRecursoAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var recursoMock = new RecursoViewModel { };
+            RecursoViewModel recursoMock = new RecursoViewModel { };
 
             _recursoAppService.Setup(x => x.Consultar(id)).Returns(recursoMock);
 
-            var pageModel = new RemoverModel(_recursoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_recursoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -35,17 +37,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
                 .TestPage();
         }
 
-        [Fact]
-        public void Test_OnPost()
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var recursoMock = new RecursoViewModel { };
+            _recursoAppService.Setup(x => x.Remover(id));
 
-            _recursoAppService.Setup(x => x.Remover(recursoMock));
-
-            var pageModel = new RemoverModel(_recursoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_recursoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

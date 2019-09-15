@@ -13,23 +13,26 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
     {
         private readonly Mock<IRecursoProjetoAppService> _recursoProjetoAppService;
 
-        public ListarTest() => _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
+        public ListarTest()
+        {
+            _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid idProjeto)
         {
             // Arrange
-            var listaMock = new List<RecursoProjetoViewModel> { };
+            List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
 
             _recursoProjetoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new ListarModel(_recursoProjetoAppService.Object)
+            ListarModel pageModel = new ListarModel(_recursoProjetoAppService.Object)
             {
                 PageContext = PageContextManager.CreatePageContext()
             };
 
-            var pageTester = new PageModelTester<ListarModel>(pageModel);
+            PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act
             pageTester

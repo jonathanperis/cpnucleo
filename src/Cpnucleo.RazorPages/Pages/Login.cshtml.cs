@@ -11,13 +11,11 @@ namespace Cpnucleo.RazorPages.Pages
     public class LoginModel : PageModel
     {
         private readonly IClaimsManager _claimsManager;
-
         private readonly IRecursoAppService _recursoAppService;
 
         public LoginModel(IClaimsManager claimsManager, IRecursoAppService recursoAppService)
         {
             _claimsManager = claimsManager;
-
             _recursoAppService = recursoAppService;
         }
 

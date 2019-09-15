@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Workflow;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using System.Collections.Generic;
@@ -12,19 +12,21 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
     {
         private readonly Mock<IWorkflowAppService> _workflowAppService;
 
-        public ListarTest() => _workflowAppService = new Mock<IWorkflowAppService>();
+        public ListarTest()
+        {
+            _workflowAppService = new Mock<IWorkflowAppService>();
+        }
 
         [Fact]
         public void Test_OnGet()
         {
             // Arrange
-            var listaMock = new List<WorkflowViewModel> { };
+            List<WorkflowViewModel> listaMock = new List<WorkflowViewModel> { };
 
             _workflowAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new ListarModel(_workflowAppService.Object);
-
-            var pageTester = new PageModelTester<ListarModel>(pageModel);
+            ListarModel pageModel = new ListarModel(_workflowAppService.Object);
+            PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act
             pageTester

@@ -12,24 +12,26 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
     {
         private readonly Mock<IRecursoProjetoAppService> _recursoProjetoAppService;
 
-        public RemoverTest() => _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
+        public RemoverTest()
+        {
+            _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
-        public void Test_OnGet(Guid idRecursoProjeto)
+        public void Test_OnGet(Guid id)
         {
             // Arrange
-            var recursoProjetoMock = new RecursoProjetoViewModel { };
+            RecursoProjetoViewModel recursoProjetoMock = new RecursoProjetoViewModel { };
 
-            _recursoProjetoAppService.Setup(x => x.Consultar(idRecursoProjeto)).Returns(recursoProjetoMock);
+            _recursoProjetoAppService.Setup(x => x.Consultar(id)).Returns(recursoProjetoMock);
 
-            var pageModel = new RemoverModel(_recursoProjetoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_recursoProjetoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnGet(idRecursoProjeto))
+                .Action(x => () => x.OnGet(id))
 
                 // Assert
                 .TestPage();
@@ -37,16 +39,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
 
         [Theory]
         [InlineData(1)]
-        public void Test_OnPost(Guid idProjeto)
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var recursoProjetoMock = new RecursoProjetoViewModel { };
+            _recursoProjetoAppService.Setup(x => x.Remover(id));
 
-            _recursoProjetoAppService.Setup(x => x.Remover(recursoProjetoMock));
-
-            var pageModel = new RemoverModel(_recursoProjetoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_recursoProjetoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

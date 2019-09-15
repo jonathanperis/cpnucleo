@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Impedimento;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
     {
         private readonly Mock<IAppService<ImpedimentoViewModel>> _impedimentoAppService;
 
-        public IncluirTest() => _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+        public IncluirTest()
+        {
+            _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+        }
 
         [Theory]
         [InlineData("Impedimento de Teste")]
         public void Test_OnPost(string nome)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoViewModel { Nome = nome };
+            ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { Nome = nome };
 
             _impedimentoAppService.Setup(x => x.Incluir(impedimentoMock));
 
-            var pageModel = new IncluirModel(_impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+            IncluirModel pageModel = new IncluirModel(_impedimentoAppService.Object);
+            PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
             pageTester

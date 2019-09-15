@@ -12,21 +12,17 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     {
         private readonly IRecursoTarefaAppService _recursoTarefaAppService;
 
-        private readonly ITarefaAppService _tarefaAppService;
-
-        public RemoverModel(IRecursoTarefaAppService recursoTarefaAppService,
-                                       ITarefaAppService tarefaAppService)
+        public RemoverModel(IRecursoTarefaAppService recursoTarefaAppService)
         {
             _recursoTarefaAppService = recursoTarefaAppService;
-            _tarefaAppService = tarefaAppService;
         }
 
         [BindProperty]
         public RecursoTarefaViewModel RecursoTarefa { get; set; }
 
-        public IActionResult OnGet(Guid idRecursoTarefa)
+        public IActionResult OnGet(Guid id)
         {
-            RecursoTarefa = _recursoTarefaAppService.Consultar(idRecursoTarefa);
+            RecursoTarefa = _recursoTarefaAppService.Consultar(id);
 
             return Page();
         }

@@ -55,7 +55,8 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasOne(p => p.Tarefa)
                 .WithMany(b => b.ListaApontamentos)
-                .HasForeignKey(f => f.IdTarefa);
+                .HasForeignKey(f => f.IdTarefa)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
     {
         private readonly Mock<IApontamentoAppService> _apontamentoAppService;
 
-        public RemoverTest() => _apontamentoAppService = new Mock<IApontamentoAppService>();
+        public RemoverTest()
+        {
+            _apontamentoAppService = new Mock<IApontamentoAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var apontamentoMock = new ApontamentoViewModel { };
+            ApontamentoViewModel apontamentoMock = new ApontamentoViewModel { };
 
             _apontamentoAppService.Setup(x => x.Consultar(id)).Returns(apontamentoMock);
 
-            var pageModel = new RemoverModel(_apontamentoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_apontamentoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -35,17 +37,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
                 .TestPage();
         }
 
-        [Fact]
-        public void Test_OnPost()
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var apontamentoMock = new ApontamentoViewModel { };
+            _apontamentoAppService.Setup(x => x.Remover(id));
 
-            _apontamentoAppService.Setup(x => x.Remover(apontamentoMock));
-
-            var pageModel = new RemoverModel(_apontamentoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_apontamentoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

@@ -1,12 +1,12 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Projeto;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using Xunit;
-using System;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 {
@@ -26,15 +26,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var projetoMock = new ProjetoViewModel { };
-            var listaMock = new List<SistemaViewModel> { };
+            ProjetoViewModel projetoMock = new ProjetoViewModel { };
+            List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
             _projetoAppService.Setup(x => x.Consultar(id)).Returns(projetoMock);
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
@@ -49,15 +48,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         public void Test_OnPost(Guid id, string nome, Guid idSistema)
         {
             // Arrange
-            var projetoMock = new ProjetoViewModel { Id = id, Nome = nome, IdSistema = idSistema };
-            var listaMock = new List<SistemaViewModel> { };
+            ProjetoViewModel projetoMock = new ProjetoViewModel { Id = id, Nome = nome, IdSistema = idSistema };
+            List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
             _projetoAppService.Setup(x => x.Alterar(projetoMock));
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

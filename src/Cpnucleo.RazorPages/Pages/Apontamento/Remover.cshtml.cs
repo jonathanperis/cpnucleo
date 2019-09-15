@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         [BindProperty]
         public ApontamentoViewModel Apontamento { get; set; }
 
-        public IActionResult OnGet(Guid idApontamento)
+        public IActionResult OnGet(Guid id)
         {
-            Apontamento = _apontamentoAppService.Consultar(idApontamento);
+            Apontamento = _apontamentoAppService.Consultar(id);
 
             return Page();
         }

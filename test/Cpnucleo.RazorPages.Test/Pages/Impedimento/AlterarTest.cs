@@ -1,11 +1,11 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Impedimento;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
-using Xunit;
 using System;
+using Xunit;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
 {
@@ -13,20 +13,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
     {
         private readonly Mock<IAppService<ImpedimentoViewModel>> _impedimentoAppService;
 
-        public AlterarTest() => _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+        public AlterarTest()
+        {
+            _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoViewModel { };
+            ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
             _impedimentoAppService.Setup(x => x.Consultar(id)).Returns(impedimentoMock);
 
-            var pageModel = new AlterarModel(_impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_impedimentoAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
@@ -41,13 +43,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
         public void Test_OnPost(Guid id, string nome)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoViewModel { Id = id, Nome = nome };
+            ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { Id = id, Nome = nome };
 
             _impedimentoAppService.Setup(x => x.Alterar(impedimentoMock));
 
-            var pageModel = new AlterarModel(_impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_impedimentoAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

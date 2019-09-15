@@ -7,16 +7,16 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Cpnucleo.RazorPages.Test.Pages
 {
-    class PageContextManager
+    internal class PageContextManager
     {
         public static PageContext CreatePageContext()
         {
-            var httpContext = new DefaultHttpContext();
-            var modelState = new ModelStateDictionary();
-            var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
-            var modelMetadataProvider = new EmptyModelMetadataProvider();
-            var viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
-            var pageContext = new PageContext(actionContext)
+            DefaultHttpContext httpContext = new DefaultHttpContext();
+            ModelStateDictionary modelState = new ModelStateDictionary();
+            ActionContext actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+            EmptyModelMetadataProvider modelMetadataProvider = new EmptyModelMetadataProvider();
+            ViewDataDictionary viewData = new ViewDataDictionary(modelMetadataProvider, modelState);
+            PageContext pageContext = new PageContext(actionContext)
             {
                 ViewData = viewData
             };

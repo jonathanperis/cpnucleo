@@ -31,19 +31,18 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnGet()
         {
             // Arrange
-            var listaProjetosMock = new List<ProjetoViewModel> { };
-            var listaSistemasMock = new List<SistemaViewModel> { };
-            var listaWorkflowMock = new List<WorkflowViewModel> { };
-            var listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
+            List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
+            List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
+            List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };
+            List<TipoTarefaViewModel> listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
 
             _projetoAppService.Setup(x => x.Listar()).Returns(listaProjetosMock);
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaSistemasMock);
             _workflowAppService.Setup(x => x.Listar()).Returns(listaWorkflowMock);
             _tipoTarefaAppService.Setup(x => x.Listar()).Returns(listaTipoTarefaMock);
 
-            var pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
-
-            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+            IncluirModel pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
+            PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
             pageTester
@@ -58,13 +57,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnPost(string nome, Guid idProjeto)
         {
             // Arrange
-            var tarefaMock = new TarefaViewModel { Nome = nome, IdProjeto = idProjeto };
+            TarefaViewModel tarefaMock = new TarefaViewModel { Nome = nome, IdProjeto = idProjeto };
 
             _tarefaAppService.Setup(x => x.Incluir(tarefaMock));
 
-            var pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
-
-            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+            IncluirModel pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
+            PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
             pageTester

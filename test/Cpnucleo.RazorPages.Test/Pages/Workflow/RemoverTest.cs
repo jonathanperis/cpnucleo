@@ -1,11 +1,10 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Workflow;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
-using SparkyTestHelpers.DataAnnotations;
-using Xunit;
 using System;
+using Xunit;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 {
@@ -13,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
     {
         private readonly Mock<IWorkflowAppService> _workflowAppService;
 
-        public RemoverTest() => _workflowAppService = new Mock<IWorkflowAppService>();
+        public RemoverTest()
+        {
+            _workflowAppService = new Mock<IWorkflowAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var workflowMock = new WorkflowViewModel { };
+            WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
 
-            var pageModel = new RemoverModel(_workflowAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_workflowAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -36,17 +37,17 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
                 .TestPage();
         }
 
-        [Fact]
-        public void Test_OnPost()
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var workflowMock = new WorkflowViewModel { };
+            WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
-            _workflowAppService.Setup(x => x.Remover(workflowMock));
+            _workflowAppService.Setup(x => x.Remover(id));
 
-            var pageModel = new RemoverModel(_workflowAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_workflowAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

@@ -1,11 +1,10 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Sistema;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
-using SparkyTestHelpers.DataAnnotations;
-using Xunit;
 using System;
+using Xunit;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 {
@@ -13,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
     {
         private readonly Mock<IAppService<SistemaViewModel>> _sistemaAppService;
 
-        public RemoverTest() => _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+        public RemoverTest()
+        {
+            _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var sistemaMock = new SistemaViewModel { };
+            SistemaViewModel sistemaMock = new SistemaViewModel { };
 
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
 
-            var pageModel = new RemoverModel(_sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -36,17 +37,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
                 .TestPage();
         }
 
-        [Fact]
-        public void Test_OnPost()
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var sistemaMock = new SistemaViewModel { };
+            _sistemaAppService.Setup(x => x.Remover(id));
 
-            _sistemaAppService.Setup(x => x.Remover(sistemaMock));
-
-            var pageModel = new RemoverModel(_sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

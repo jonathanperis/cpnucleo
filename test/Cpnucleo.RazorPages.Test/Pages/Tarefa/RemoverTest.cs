@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
     {
         private readonly Mock<ITarefaAppService> _tarefaAppService;
 
-        public RemoverTest() => _tarefaAppService = new Mock<ITarefaAppService>();
+        public RemoverTest()
+        {
+            _tarefaAppService = new Mock<ITarefaAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var tarefaMock = new TarefaViewModel { };
+            TarefaViewModel tarefaMock = new TarefaViewModel { };
 
             _tarefaAppService.Setup(x => x.Consultar(id)).Returns(tarefaMock);
 
-            var pageModel = new RemoverModel(_tarefaAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_tarefaAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -35,17 +37,17 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
                 .TestPage();
         }
 
-        [Fact]
-        public void Test_OnPost()
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var tarefaMock = new TarefaViewModel { };
+            TarefaViewModel tarefaMock = new TarefaViewModel { };
 
-            _tarefaAppService.Setup(x => x.Remover(tarefaMock));
+            _tarefaAppService.Setup(x => x.Remover(id));
 
-            var pageModel = new RemoverModel(_tarefaAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_tarefaAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

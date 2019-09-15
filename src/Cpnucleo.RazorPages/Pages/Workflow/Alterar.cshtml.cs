@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         [BindProperty]
         public WorkflowViewModel Workflow { get; set; }
 
-        public IActionResult OnGet(Guid idWorkflow)
+        public IActionResult OnGet(Guid id)
         {
-            Workflow = _workflowAppService.Consultar(idWorkflow);
+            Workflow = _workflowAppService.Consultar(id);
 
             return Page();
         }

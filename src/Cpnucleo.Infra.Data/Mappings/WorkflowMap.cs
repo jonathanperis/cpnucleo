@@ -35,7 +35,8 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasMany(c => c.ListaTarefas)
                 .WithOne(c => c.Workflow)
-                .HasForeignKey(f => f.IdWorkflow);
+                .HasForeignKey(f => f.IdWorkflow)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

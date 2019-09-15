@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Recurso;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
     {
         private readonly Mock<IRecursoAppService> _recursoAppService;
 
-        public IncluirTest() => _recursoAppService = new Mock<IRecursoAppService>();
+        public IncluirTest()
+        {
+            _recursoAppService = new Mock<IRecursoAppService>();
+        }
 
         [Theory]
         [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
         public void Test_OnPost(string nome, string login, string senha, string confirmarSenha, bool ativo)
         {
             // Arrange
-            var recursoMock = new RecursoViewModel { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
+            RecursoViewModel recursoMock = new RecursoViewModel { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
             _recursoAppService.Setup(x => x.Incluir(recursoMock));
 
-            var pageModel = new IncluirModel(_recursoAppService.Object);
-
-            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+            IncluirModel pageModel = new IncluirModel(_recursoAppService.Object);
+            PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
             pageTester

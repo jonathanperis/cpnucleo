@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
     {
         private readonly Mock<IImpedimentoTarefaAppService> _impedimentoTarefaAppService;
 
-        public RemoverTest() => _impedimentoTarefaAppService = new Mock<IImpedimentoTarefaAppService>();
+        public RemoverTest()
+        {
+            _impedimentoTarefaAppService = new Mock<IImpedimentoTarefaAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
+            ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
 
             _impedimentoTarefaAppService.Setup(x => x.Consultar(id)).Returns(impedimentoTarefaMock);
 
-            var pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -37,16 +39,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
 
         [Theory]
         [InlineData(1)]
-        public void Test_OnPost(Guid idTarefa)
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
+            _impedimentoTarefaAppService.Setup(x => x.Remover(id));
 
-            _impedimentoTarefaAppService.Setup(x => x.Remover(impedimentoTarefaMock));
-
-            var pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
