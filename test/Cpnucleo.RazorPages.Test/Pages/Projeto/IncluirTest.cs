@@ -1,12 +1,12 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Projeto;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using Xunit;
-using System;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 {
@@ -26,15 +26,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         public void Test_OnPost(string nome, Guid idSistema)
         {
             // Arrange
-            var projetoMock = new ProjetoViewModel { Nome = nome, IdSistema = idSistema };
-            var listaMock = new List<SistemaViewModel> { };
+            ProjetoViewModel projetoMock = new ProjetoViewModel { Nome = nome, IdSistema = idSistema };
+            List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
             _projetoAppService.Setup(x => x.Incluir(projetoMock));
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new IncluirModel(_projetoAppService.Object, _sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+            IncluirModel pageModel = new IncluirModel(_projetoAppService.Object, _sistemaAppService.Object);
+            PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
             pageTester

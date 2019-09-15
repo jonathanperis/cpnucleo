@@ -1,12 +1,12 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.RecursoTarefa;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using Xunit;
-using System;
 
 namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
 {
@@ -25,43 +25,41 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
 
         [Theory]
         [InlineData(1, 1)]
-        public void Test_OnGet(Guid idRecursoTarefa, Guid idProjeto)
+        public void Test_OnGet(Guid id, Guid idProjeto)
         {
             // Arrange
-            var recursoTarefaMock = new RecursoTarefaViewModel { Tarefa = new TarefaViewModel { } };
-            var listaRecursoProjetoMock = new List<RecursoProjetoViewModel> { };
+            RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { Tarefa = new TarefaViewModel { } };
+            List<RecursoProjetoViewModel> listaRecursoProjetoMock = new List<RecursoProjetoViewModel> { };
 
-            _recursoTarefaAppService.Setup(x => x.Consultar(idRecursoTarefa)).Returns(recursoTarefaMock);
+            _recursoTarefaAppService.Setup(x => x.Consultar(id)).Returns(recursoTarefaMock);
             _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaRecursoProjetoMock);
 
-            var pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnGet(idRecursoTarefa))
+                .Action(x => () => x.OnGet(id))
 
                 // Assert
                 .TestPage();
         }
 
         [Theory]
-        [InlineData(1, 56)]
-        public void Test_OnPost(Guid idTarefa, int percentualTarefa)
+        [InlineData(1, 1, 56)]
+        public void Test_OnPost(Guid idTarefa, Guid idProjeto, int percentualTarefa)
         {
             // Arrange
-            var listaMock = new List<RecursoProjetoViewModel> { };
-            var tarefaMock = new TarefaViewModel { };
-            var recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaModel() };
+            List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
+            TarefaViewModel tarefaMock = new TarefaViewModel { };
+            RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaViewModel() };
 
             _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
-            _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idTarefa)).Returns(listaMock);
+            _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaMock);
             _recursoTarefaAppService.Setup(x => x.Incluir(recursoTarefaMock));
 
-            var pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

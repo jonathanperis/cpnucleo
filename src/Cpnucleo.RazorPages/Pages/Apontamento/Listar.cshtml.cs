@@ -14,7 +14,6 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     public class ListarModel : PageModel
     {
         private readonly IClaimsManager _claimsManager;
-
         private readonly IApontamentoAppService _apontamentoAppService;
         private readonly IRecursoTarefaAppService _recursoTarefaAppService;
 
@@ -23,7 +22,6 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                                     IRecursoTarefaAppService recursoTarefaAppService)
         {
             _claimsManager = claimsManager;
-
             _apontamentoAppService = apontamentoAppService;
             _recursoTarefaAppService = recursoTarefaAppService;
         }

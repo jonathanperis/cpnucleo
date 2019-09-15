@@ -32,11 +32,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var tarefaMock = new TarefaViewModel { };
-            var listaProjetosMock = new List<ProjetoViewModel> { };
-            var listaSistemasMock = new List<SistemaViewModel> { };
-            var listaWorkflowMock = new List<WorkflowViewModel> { };
-            var listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
+            TarefaViewModel tarefaMock = new TarefaViewModel { };
+            List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
+            List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
+            List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };
+            List<TipoTarefaViewModel> listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
 
             _tarefaAppService.Setup(x => x.Consultar(id)).Returns(tarefaMock);
             _projetoAppService.Setup(x => x.Listar()).Returns(listaProjetosMock);
@@ -44,9 +44,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             _workflowAppService.Setup(x => x.Listar()).Returns(listaWorkflowMock);
             _tipoTarefaAppService.Setup(x => x.Listar()).Returns(listaTipoTarefaMock);
 
-            var pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
@@ -61,11 +60,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnPost(Guid id, string nome, Guid idProjeto)
         {
             // Arrange
-            var tarefaMock = new TarefaViewModel { Id = id, Nome = nome, IdProjeto = idProjeto };
-            var listaProjetosMock = new List<ProjetoViewModel> { };
-            var listaSistemasMock = new List<SistemaViewModel> { };
-            var listaWorkflowMock = new List<WorkflowViewModel> { };
-            var listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
+            TarefaViewModel tarefaMock = new TarefaViewModel { Id = id, Nome = nome, IdProjeto = idProjeto };
+            List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
+            List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
+            List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };
+            List<TipoTarefaViewModel> listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
 
             _tarefaAppService.Setup(x => x.Alterar(tarefaMock));
             _projetoAppService.Setup(x => x.Listar()).Returns(listaProjetosMock);
@@ -73,9 +72,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             _workflowAppService.Setup(x => x.Listar()).Returns(listaWorkflowMock);
             _tipoTarefaAppService.Setup(x => x.Listar()).Returns(listaTipoTarefaMock);
 
-            var pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

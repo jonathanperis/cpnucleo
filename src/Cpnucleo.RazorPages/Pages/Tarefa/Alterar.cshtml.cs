@@ -12,13 +12,9 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     public class AlterarModel : PageModel
     {
         private readonly ITarefaAppService _tarefaAppService;
-
         private readonly IAppService<ProjetoViewModel> _projetoAppService;
-
         private readonly IAppService<SistemaViewModel> _sistemaAppService;
-
         private readonly IWorkflowAppService _workflowAppService;
-
         private readonly IAppService<TipoTarefaViewModel> _tipoTarefaAppService;
 
         public AlterarModel(ITarefaAppService tarefaAppService,
@@ -45,9 +41,9 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public IActionResult OnGet(Guid id)
         {
-            Tarefa = _tarefaAppService.Consultar(idTarefa);
+            Tarefa = _tarefaAppService.Consultar(id);
             SelectProjetos = new SelectList(_projetoAppService.Listar(), "Id", "Nome");
             SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Descricao");
             SelectWorkflows = new SelectList(_workflowAppService.Listar(), "Id", "Nome");

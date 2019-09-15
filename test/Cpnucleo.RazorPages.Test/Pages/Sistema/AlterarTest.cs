@@ -1,11 +1,11 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Sistema;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
-using Xunit;
 using System;
+using Xunit;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 {
@@ -13,20 +13,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
     {
         private readonly Mock<IAppService<SistemaViewModel>> _sistemaAppService;
 
-        public AlterarTest() => _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+        public AlterarTest()
+        {
+            _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var sistemaMock = new SistemaViewModel { };
+            SistemaViewModel sistemaMock = new SistemaViewModel { };
 
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
 
-            var pageModel = new AlterarModel(_sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_sistemaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
@@ -41,13 +43,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
         public void Test_OnPost(Guid id, string nome, string descricao)
         {
             // Arrange
-            var sistemaMock = new SistemaViewModel { Id = id, Nome = nome, Descricao = descricao };
+            SistemaViewModel sistemaMock = new SistemaViewModel { Id = id, Nome = nome, Descricao = descricao };
 
             _sistemaAppService.Setup(x => x.Alterar(sistemaMock));
 
-            var pageModel = new AlterarModel(_sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_sistemaAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

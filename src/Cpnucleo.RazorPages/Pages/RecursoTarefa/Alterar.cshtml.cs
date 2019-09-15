@@ -12,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     public class AlterarModel : PageModel
     {
         private readonly IRecursoTarefaAppService _recursoTarefaAppService;
-
         private readonly IRecursoProjetoAppService _recursoProjetoAppService;
-
         private readonly ITarefaAppService _tarefaAppService;
 
         public AlterarModel(IRecursoTarefaAppService recursoTarefaAppService,
@@ -33,9 +31,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public SelectList SelectRecursos { get; set; }
 
-        public IActionResult OnGet(Guid idRecursoTarefa)
+        public IActionResult OnGet(Guid id)
         {
-            RecursoTarefa = _recursoTarefaAppService.Consultar(idRecursoTarefa);
+            RecursoTarefa = _recursoTarefaAppService.Consultar(id);
             SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPorProjeto(RecursoTarefa.Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
             return Page();

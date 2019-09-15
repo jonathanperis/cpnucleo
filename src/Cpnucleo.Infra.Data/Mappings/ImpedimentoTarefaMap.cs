@@ -44,12 +44,14 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasOne(p => p.Tarefa)
                 .WithMany(b => b.ListaImpedimentos)
-                .HasForeignKey(f => f.IdTarefa);
+                .HasForeignKey(f => f.IdTarefa)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasOne(p => p.Impedimento)
                 .WithMany()
-                .HasForeignKey(f => f.IdImpedimento);
+                .HasForeignKey(f => f.IdImpedimento)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

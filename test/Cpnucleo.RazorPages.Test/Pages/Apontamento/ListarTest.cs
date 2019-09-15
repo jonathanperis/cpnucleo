@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
+﻿namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
 {
-    class ListarTest
+    internal class ListarTest
     {
     }
 }

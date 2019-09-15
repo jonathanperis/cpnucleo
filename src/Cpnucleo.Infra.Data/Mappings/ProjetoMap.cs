@@ -35,7 +35,8 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasOne(p => p.Sistema)
                 .WithMany()
-                .HasForeignKey(f => f.IdSistema);
+                .HasForeignKey(f => f.IdSistema)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

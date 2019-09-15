@@ -12,7 +12,6 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     public class AlterarModel : PageModel
     {
         private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
-
         private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
 
         public AlterarModel(IImpedimentoTarefaAppService impedimentoTarefaAppService,
@@ -27,9 +26,9 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public SelectList SelectImpedimentos { get; set; }
 
-        public IActionResult OnGet(Guid idImpedimentoTarefa)
+        public IActionResult OnGet(Guid id)
         {
-            ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(idImpedimentoTarefa);
+            ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
             SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
 
             return Page();

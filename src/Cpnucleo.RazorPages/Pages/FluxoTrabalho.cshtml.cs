@@ -14,9 +14,7 @@ namespace Cpnucleo.RazorPages.Pages
     public class FluxoTrabalhoModel : PageModel
     {
         private readonly IWorkflowAppService _workflowAppService;
-
         private readonly ITarefaAppService _tarefaAppService;
-
         private readonly IHubContext<FluxoTrabalhoHub> _hubContext;
 
         public FluxoTrabalhoModel(IWorkflowAppService workflowAppService,

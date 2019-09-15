@@ -1,12 +1,12 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using Xunit;
-using System;
 
 namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
 {
@@ -26,15 +26,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
-            var listaMock = new List<ImpedimentoViewModel> { };
+            ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
+            List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
             _impedimentoTarefaAppService.Setup(x => x.Consultar(id)).Returns(impedimentoTarefaMock);
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
@@ -49,15 +48,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnPost(Guid id, Guid idImpedimento, Guid idTarefa, string descricao)
         {
             // Arrange
-            var impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdImpedimento = idImpedimento, IdTarefa = idTarefa, Descricao = descricao };
-            var listaMock = new List<ImpedimentoViewModel> { };
+            ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdImpedimento = idImpedimento, IdTarefa = idTarefa, Descricao = descricao };
+            List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
             _impedimentoTarefaAppService.Setup(x => x.Alterar(impedimentoTarefaMock));
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            var pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

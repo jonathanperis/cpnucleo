@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         [BindProperty]
         public RecursoProjetoViewModel RecursoProjeto { get; set; }
 
-        public IActionResult OnGet(Guid idRecursoProjeto)
+        public IActionResult OnGet(Guid id)
         {
-            RecursoProjeto = _recursoProjetoAppService.Consultar(idRecursoProjeto);
+            RecursoProjeto = _recursoProjetoAppService.Consultar(id);
 
             return Page();
         }

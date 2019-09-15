@@ -1,11 +1,11 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Workflow;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
-using Xunit;
 using System;
+using Xunit;
 
 namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 {
@@ -13,20 +13,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
     {
         private readonly Mock<IWorkflowAppService> _workflowAppService;
 
-        public AlterarTest() => _workflowAppService = new Mock<IWorkflowAppService>();
+        public AlterarTest()
+        {
+            _workflowAppService = new Mock<IWorkflowAppService>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var workflowMock = new WorkflowViewModel { };
+            WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
 
-            var pageModel = new AlterarModel(_workflowAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_workflowAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
@@ -37,17 +39,16 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         }
 
         [Theory]
-        [InlineData(129, "Workflow de Teste", 3)]
+        [InlineData(1, "Workflow de Teste", 3)]
         public void Test_OnPost(Guid id, string nome, int ordem)
         {
             // Arrange
-            var workflowMock = new WorkflowViewModel { Id = id, Nome = nome, Ordem = ordem };
+            WorkflowViewModel workflowMock = new WorkflowViewModel { Id = id, Nome = nome, Ordem = ordem };
 
             _workflowAppService.Setup(x => x.Alterar(workflowMock));
 
-            var pageModel = new AlterarModel(_workflowAppService.Object);
-
-            var pageTester = new PageModelTester<AlterarModel>(pageModel);
+            AlterarModel pageModel = new AlterarModel(_workflowAppService.Object);
+            PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester

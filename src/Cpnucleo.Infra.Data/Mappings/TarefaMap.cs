@@ -70,32 +70,38 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .HasOne(p => p.Projeto)
                 .WithMany()
-                .HasForeignKey(f => f.IdProjeto);
+                .HasForeignKey(f => f.IdProjeto)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasOne(p => p.Workflow)
                 .WithMany(b => b.ListaTarefas)
-                .HasForeignKey(f => f.IdWorkflow);
+                .HasForeignKey(f => f.IdWorkflow)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
-                .HasForeignKey(f => f.IdRecurso);
+                .HasForeignKey(f => f.IdRecurso)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasOne(p => p.TipoTarefa)
                 .WithMany()
-                .HasForeignKey(f => f.IdTipoTarefa);
+                .HasForeignKey(f => f.IdTipoTarefa)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasMany(p => p.ListaImpedimentos)
                 .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa);
+                .HasForeignKey(f => f.IdTarefa)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasMany(p => p.ListaApontamentos)
                 .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa);
+                .HasForeignKey(f => f.IdTarefa)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

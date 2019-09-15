@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public IActionResult OnGet(Guid idSistema)
+        public IActionResult OnGet(Guid id)
         {
-            Sistema = _sistemaAppService.Consultar(idSistema);
+            Sistema = _sistemaAppService.Consultar(id);
 
             return Page();
         }

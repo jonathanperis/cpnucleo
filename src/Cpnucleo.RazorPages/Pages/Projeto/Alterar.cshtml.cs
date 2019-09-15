@@ -12,7 +12,6 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     public class AlterarModel : PageModel
     {
         private readonly IAppService<ProjetoViewModel> _projetoAppService;
-
         private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
         public AlterarModel(IAppService<ProjetoViewModel> projetoAppService, IAppService<SistemaViewModel> sistemaAppService)
@@ -26,9 +25,9 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public IActionResult OnGet(Guid idProjeto)
+        public IActionResult OnGet(Guid id)
         {
-            Projeto = _projetoAppService.Consultar(idProjeto);
+            Projeto = _projetoAppService.Consultar(id);
             SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Nome");
 
             return Page();

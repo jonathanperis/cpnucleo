@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
     {
         private readonly Mock<IAppService<ImpedimentoViewModel>> _impedimentoAppService;
 
-        public RemoverTest() => _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+        public RemoverTest()
+        {
+            _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+        }
 
         [Theory]
         [InlineData(1)]
         public void Test_OnGet(Guid id)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoViewModel { };
+            ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
             _impedimentoAppService.Setup(x => x.Consultar(id)).Returns(impedimentoMock);
 
-            var pageModel = new RemoverModel(_impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
@@ -35,17 +37,17 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
                 .TestPage();
         }
 
-        [Fact]
-        public void Test_OnPost()
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnPost(Guid id)
         {
             // Arrange
-            var impedimentoMock = new ImpedimentoViewModel { };
+            ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
-            _impedimentoAppService.Setup(x => x.Remover(impedimentoMock));
+            _impedimentoAppService.Setup(x => x.Remover(id));
 
-            var pageModel = new RemoverModel(_impedimentoAppService.Object);
-
-            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+            RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object);
+            PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester

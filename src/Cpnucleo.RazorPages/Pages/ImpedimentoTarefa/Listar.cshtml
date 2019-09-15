@@ -55,10 +55,10 @@
                                     @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-idImpedimentoTarefa="@item.Id">Alterar</a>
+                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-id="@item.Id">Alterar</a>
                                         </td>
                                         <td style="text-align: center">
-                                            <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-idImpedimentoTarefa="@item.Id">Remover</a>
+                                            <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-id="@item.Id">Remover</a>
                                         </td>
                                     }
                                 </tr>

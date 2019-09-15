@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         [BindProperty]
         public TarefaViewModel Tarefa { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public IActionResult OnGet(Guid id)
         {
-            Tarefa = _tarefaAppService.Consultar(idTarefa);
+            Tarefa = _tarefaAppService.Consultar(id);
 
             return Page();
         }

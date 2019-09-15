@@ -12,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     public class IncluirModel : PageModel
     {
         private readonly IRecursoTarefaAppService _recursoTarefaAppService;
-
         private readonly IRecursoProjetoAppService _recursoProjetoAppService;
-
         private readonly ITarefaAppService _tarefaAppService;
 
         public IncluirModel(IRecursoTarefaAppService recursoTarefaAppService,

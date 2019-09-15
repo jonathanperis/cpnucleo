@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         [BindProperty]
         public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
 
-        public IActionResult OnGet(Guid idImpedimentoTarefa)
+        public IActionResult OnGet(Guid id)
         {
-            ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(idImpedimentoTarefa);
+            ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
 
             return Page();
         }

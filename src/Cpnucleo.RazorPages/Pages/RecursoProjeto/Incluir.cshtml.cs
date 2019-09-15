@@ -12,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     public class IncluirModel : PageModel
     {
         private readonly IRecursoProjetoAppService _recursoProjetoAppService;
-
         private readonly IRecursoAppService _recursoAppService;
-
         private readonly IAppService<ProjetoViewModel> _projetoAppService;
 
         public IncluirModel(IRecursoProjetoAppService recursoProjetoAppService,

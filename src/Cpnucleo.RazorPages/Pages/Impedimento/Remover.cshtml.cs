@@ -20,9 +20,9 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         [BindProperty]
         public ImpedimentoViewModel Impedimento { get; set; }
 
-        public IActionResult OnGet(Guid idImpedimento)
+        public IActionResult OnGet(Guid id)
         {
-            Impedimento = _impedimentoAppService.Consultar(idImpedimento);
+            Impedimento = _impedimentoAppService.Consultar(id);
 
             return Page();
         }

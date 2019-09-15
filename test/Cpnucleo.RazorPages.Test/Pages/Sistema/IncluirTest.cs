@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
 using Cpnucleo.RazorPages.Pages.Sistema;
-using Cpnucleo.Application.Interfaces;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;
 using SparkyTestHelpers.DataAnnotations;
@@ -12,20 +12,22 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
     {
         private readonly Mock<IAppService<SistemaViewModel>> _sistemaAppService;
 
-        public IncluirTest() => _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+        public IncluirTest()
+        {
+            _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+        }
 
         [Theory]
         [InlineData("Sistema de Teste", "Descrição de Teste")]
         public void Test_OnPost(string nome, string descricao)
         {
             // Arrange
-            var sistemaMock = new SistemaViewModel { Nome = nome, Descricao = descricao };
+            SistemaViewModel sistemaMock = new SistemaViewModel { Nome = nome, Descricao = descricao };
 
             _sistemaAppService.Setup(x => x.Incluir(sistemaMock));
 
-            var pageModel = new IncluirModel(_sistemaAppService.Object);
-
-            var pageTester = new PageModelTester<IncluirModel>(pageModel);
+            IncluirModel pageModel = new IncluirModel(_sistemaAppService.Object);
+            PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
             pageTester
