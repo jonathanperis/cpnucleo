@@ -1,0 +1,58 @@
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Application.ViewModels;
+using Cpnucleo.RazorPages.Pages.Apontamento;
+using Moq;
+using SparkyTestHelpers.AspNetMvc.Core;
+using System;
+using Xunit;
+
+namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
+{
+    public class RemoverTest
+    {
+        private readonly Mock<IApontamentoAppService> _apontamentoAppService;
+
+        public RemoverTest() => _apontamentoAppService = new Mock<IApontamentoAppService>();
+
+        [Theory]
+        [InlineData(1)]
+        public void Test_OnGet(Guid id)
+        {
+            // Arrange
+            var apontamentoMock = new ApontamentoViewModel { };
+
+            _apontamentoAppService.Setup(x => x.Consultar(id)).Returns(apontamentoMock);
+
+            var pageModel = new RemoverModel(_apontamentoAppService.Object);
+
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+
+            // Act
+            pageTester
+                .Action(x => () => x.OnGet(id))
+
+                // Assert
+                .TestPage();
+        }
+
+        [Fact]
+        public void Test_OnPost()
+        {
+            // Arrange
+            var apontamentoMock = new ApontamentoViewModel { };
+
+            _apontamentoAppService.Setup(x => x.Remover(apontamentoMock));
+
+            var pageModel = new RemoverModel(_apontamentoAppService.Object);
+
+            var pageTester = new PageModelTester<RemoverModel>(pageModel);
+
+            // Act
+            pageTester
+                .Action(x => x.OnPost)
+
+                // Assert
+                .TestRedirectToPage("Listar");
+        }
+    }
+}
