@@ -4,7 +4,7 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Services
             return _unitOfWork.Commit();
         }
 
-        public IQueryable<TViewModel> Listar()
+        public IEnumerable<TViewModel> Listar()
         {
             return _repository.Listar().ProjectTo<TViewModel>(_mapper.ConfigurationProvider);
         }

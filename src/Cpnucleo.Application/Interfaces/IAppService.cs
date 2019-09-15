@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
@@ -9,7 +9,7 @@ namespace Cpnucleo.Application.Interfaces
 
         TViewModel Consultar(Guid id);
 
-        IQueryable<TViewModel> Listar();
+        IEnumerable<TViewModel> Listar();
 
         bool Alterar(TViewModel obj);
 

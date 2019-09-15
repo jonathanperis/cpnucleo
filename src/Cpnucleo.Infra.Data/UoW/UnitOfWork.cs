@@ -6,7 +6,7 @@ namespace Cpnucleo.Infra.Data.UoW
 {
     public class UnitOfWork : IUnitOfWork
     {
-        protected readonly CpnucleoContext Db;
+        private readonly CpnucleoContext Db;
 
         public UnitOfWork(CpnucleoContext context)
         {
