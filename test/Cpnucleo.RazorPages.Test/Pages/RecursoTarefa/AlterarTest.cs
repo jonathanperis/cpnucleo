@@ -23,11 +23,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             _tarefaAppService = new Mock<ITarefaAppService>();
         }
 
-        [Theory]
-        [InlineData(1, 1)]
-        public void Test_OnGet(Guid id, Guid idProjeto)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
+            Guid idProjeto = new Guid();
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { Tarefa = new TarefaViewModel { } };
             List<RecursoProjetoViewModel> listaRecursoProjetoMock = new List<RecursoProjetoViewModel> { };
 
@@ -46,10 +47,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         }
 
         [Theory]
-        [InlineData(1, 1, 56)]
-        public void Test_OnPost(Guid idTarefa, Guid idProjeto, int percentualTarefa)
+        [InlineData(56)]
+        public void Test_OnPost(int percentualTarefa)
         {
             // Arrange
+            Guid idTarefa = new Guid();
+            Guid idProjeto = new Guid();
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaViewModel() };

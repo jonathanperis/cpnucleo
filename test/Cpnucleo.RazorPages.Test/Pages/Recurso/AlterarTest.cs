@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
             _recursoAppService = new Mock<IRecursoAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             RecursoViewModel recursoMock = new RecursoViewModel { };
 
             _recursoAppService.Setup(x => x.Consultar(id)).Returns(recursoMock);
@@ -39,10 +39,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
         }
 
         [Theory]
-        [InlineData(1, "Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
-        public void Test_OnPost(Guid id, string nome, string login, string senha, string confirmarSenha, bool ativo)
+        [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
+        public void Test_OnPost(string nome, string login, string senha, string confirmarSenha, bool ativo)
         {
             // Arrange
+            Guid id = new Guid();
             RecursoViewModel recursoMock = new RecursoViewModel { Id = id, Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
             _recursoAppService.Setup(x => x.Alterar(recursoMock));

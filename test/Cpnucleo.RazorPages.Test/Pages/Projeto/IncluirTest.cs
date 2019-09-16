@@ -22,10 +22,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         }
 
         [Theory]
-        [InlineData("Projeto de Teste", 1)]
-        public void Test_OnPost(string nome, Guid idSistema)
+        [InlineData("Projeto de Teste")]
+        public void Test_OnPost(string nome)
         {
             // Arrange
+            Guid idSistema = new Guid();
             ProjetoViewModel projetoMock = new ProjetoViewModel { Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 

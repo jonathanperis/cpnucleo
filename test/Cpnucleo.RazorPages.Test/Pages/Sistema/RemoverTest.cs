@@ -17,11 +17,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
             _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             SistemaViewModel sistemaMock = new SistemaViewModel { };
 
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
@@ -37,11 +37,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
                 .TestPage();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnPost(Guid id)
+        [Fact]
+        public void Test_OnPost()
         {
             // Arrange
+            Guid id = new Guid();
             _sistemaAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object);

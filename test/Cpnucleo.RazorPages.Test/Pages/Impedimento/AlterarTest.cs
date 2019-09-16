@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
             _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
             _impedimentoAppService.Setup(x => x.Consultar(id)).Returns(impedimentoMock);
@@ -39,10 +39,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
         }
 
         [Theory]
-        [InlineData(1, "Impedimento de Teste")]
-        public void Test_OnPost(Guid id, string nome)
+        [InlineData("Impedimento de Teste")]
+        public void Test_OnPost(string nome)
         {
             // Arrange
+            Guid id = new Guid();
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { Id = id, Nome = nome };
 
             _impedimentoAppService.Setup(x => x.Alterar(impedimentoMock));

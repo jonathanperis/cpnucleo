@@ -17,11 +17,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             _recursoTarefaAppService = new Mock<IRecursoTarefaAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { };
 
             _recursoTarefaAppService.Setup(x => x.Consultar(id)).Returns(recursoTarefaMock);
@@ -37,11 +37,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
                 .TestPage();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnPost(Guid id)
+        [Fact]
+        public void Test_OnPost()
         {
             // Arrange
+            Guid id = new Guid();
             _recursoTarefaAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object);

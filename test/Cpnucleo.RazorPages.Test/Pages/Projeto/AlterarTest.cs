@@ -21,11 +21,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
             _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
@@ -44,10 +44,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         }
 
         [Theory]
-        [InlineData(1, "Projeto de Teste", 1)]
-        public void Test_OnPost(Guid id, string nome, Guid idSistema)
+        [InlineData("Projeto de Teste")]
+        public void Test_OnPost(string nome)
         {
             // Arrange
+            Guid id = new Guid();
+            Guid idSistema = new Guid();
             ProjetoViewModel projetoMock = new ProjetoViewModel { Id = id, Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 

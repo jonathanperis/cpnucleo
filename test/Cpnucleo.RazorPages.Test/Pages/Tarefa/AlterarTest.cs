@@ -27,11 +27,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             _tipoTarefaAppService = new Mock<IAppService<TipoTarefaViewModel>>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
             List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
@@ -56,10 +56,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         }
 
         [Theory]
-        [InlineData(1, "Tarefa de Teste", 1)]
-        public void Test_OnPost(Guid id, string nome, Guid idProjeto)
+        [InlineData("Tarefa de Teste")]
+        public void Test_OnPost(string nome)
         {
             // Arrange
+            Guid id = new Guid();
+            Guid idProjeto = new Guid();
             TarefaViewModel tarefaMock = new TarefaViewModel { Id = id, Nome = nome, IdProjeto = idProjeto };
             List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
             List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };

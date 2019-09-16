@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
             _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid idProjeto)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid idProjeto = new Guid();
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
 
             _recursoProjetoAppService.Setup(x => x.Listar()).Returns(listaMock);

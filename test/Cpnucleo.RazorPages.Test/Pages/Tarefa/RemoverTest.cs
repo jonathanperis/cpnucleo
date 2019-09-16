@@ -17,11 +17,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             _tarefaAppService = new Mock<ITarefaAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
             _tarefaAppService.Setup(x => x.Consultar(id)).Returns(tarefaMock);
@@ -37,11 +37,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
                 .TestPage();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnPost(Guid id)
+        [Fact]
+        public void Test_OnPost()
         {
             // Arrange
+            Guid id = new Guid();
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
             _tarefaAppService.Setup(x => x.Remover(id));
