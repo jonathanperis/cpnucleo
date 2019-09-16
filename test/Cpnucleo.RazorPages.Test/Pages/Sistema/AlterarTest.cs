@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
             _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             SistemaViewModel sistemaMock = new SistemaViewModel { };
 
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
@@ -39,10 +39,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
         }
 
         [Theory]
-        [InlineData(1, "Sistema de Teste", "Descrição de Teste")]
-        public void Test_OnPost(Guid id, string nome, string descricao)
+        [InlineData("Sistema de Teste", "Descrição de Teste")]
+        public void Test_OnPost(string nome, string descricao)
         {
             // Arrange
+            Guid id = new Guid();
             SistemaViewModel sistemaMock = new SistemaViewModel { Id = id, Nome = nome, Descricao = descricao };
 
             _sistemaAppService.Setup(x => x.Alterar(sistemaMock));

@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             _impedimentoTarefaAppService = new Mock<IImpedimentoTarefaAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid idTarefa)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid idTarefa = new Guid();
             List<ImpedimentoTarefaViewModel> listaMock = new List<ImpedimentoTarefaViewModel> { };
 
             _impedimentoTarefaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);

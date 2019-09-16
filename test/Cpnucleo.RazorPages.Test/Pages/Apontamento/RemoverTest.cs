@@ -17,11 +17,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
             _apontamentoAppService = new Mock<IApontamentoAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             ApontamentoViewModel apontamentoMock = new ApontamentoViewModel { };
 
             _apontamentoAppService.Setup(x => x.Consultar(id)).Returns(apontamentoMock);
@@ -37,11 +37,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
                 .TestPage();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnPost(Guid id)
+        [Fact]
+        public void Test_OnPost()
         {
             // Arrange
+            Guid id = new Guid();
             _apontamentoAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_apontamentoAppService.Object);

@@ -17,11 +17,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
             _workflowAppService = new Mock<IWorkflowAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
@@ -37,11 +37,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
                 .TestPage();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnPost(Guid id)
+        [Fact]
+        public void Test_OnPost()
         {
             // Arrange
+            Guid id = new Guid();
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Remover(id));

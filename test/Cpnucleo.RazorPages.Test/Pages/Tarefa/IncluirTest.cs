@@ -53,10 +53,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         }
 
         [Theory]
-        [InlineData("Tarefa de Teste", 1)]
-        public void Test_OnPost(string nome, Guid idProjeto)
+        [InlineData("Tarefa de Teste")]
+        public void Test_OnPost(string nome)
         {
             // Arrange
+            Guid idProjeto = new Guid();
             TarefaViewModel tarefaMock = new TarefaViewModel { Nome = nome, IdProjeto = idProjeto };
 
             _tarefaAppService.Setup(x => x.Incluir(tarefaMock));

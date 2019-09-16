@@ -23,11 +23,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             _tarefaAppService = new Mock<ITarefaAppService>();
         }
 
-        [Theory]
-        [InlineData(1, 1)]
-        public void Test_OnGet(Guid id, Guid idTarefa)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
+            Guid idTarefa = new Guid();
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
@@ -48,10 +49,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         }
 
         [Theory]
-        [InlineData(1, 1, "Descrição do Impedimento")]
-        public void Test_OnPost(Guid id, Guid idTarefa, string descricao)
+        [InlineData("Descrição do Impedimento")]
+        public void Test_OnPost(string descricao)
         {
             // Arrange
+            Guid id = new Guid();
+            Guid idTarefa = new Guid();
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa, Descricao = descricao };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };

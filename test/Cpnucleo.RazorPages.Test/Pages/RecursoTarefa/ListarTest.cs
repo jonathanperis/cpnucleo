@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             _sistemaAppService = new Mock<IRecursoTarefaAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid idTarefa)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid idTarefa = new Guid();
             List<RecursoTarefaViewModel> listaMock = new List<RecursoTarefaViewModel> { };
 
             _sistemaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);

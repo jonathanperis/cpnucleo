@@ -17,11 +17,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
             _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnGet(Guid id)
+        [Fact]
+        public void Test_OnGet()
         {
             // Arrange
+            Guid id = new Guid();
             RecursoProjetoViewModel recursoProjetoMock = new RecursoProjetoViewModel { };
 
             _recursoProjetoAppService.Setup(x => x.Consultar(id)).Returns(recursoProjetoMock);
@@ -37,11 +37,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
                 .TestPage();
         }
 
-        [Theory]
-        [InlineData(1)]
-        public void Test_OnPost(Guid id)
+        [Fact]
+        public void Test_OnPost()
         {
             // Arrange
+            Guid id = new Guid();
             _recursoProjetoAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_recursoProjetoAppService.Object);
