@@ -12,9 +12,6 @@ namespace Cpnucleo.Infra.CrossCutting.Configuration
             _configuration = configuration;
         }
 
-        /// <summary>
-        /// Connection to the Azure Database.
-        /// </summary>
         public string ConnectionString
         {
             get
