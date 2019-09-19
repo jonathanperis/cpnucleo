@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         {
             // Arrange
             Guid idTarefa = new Guid();
+
             List<RecursoTarefaViewModel> listaMock = new List<RecursoTarefaViewModel> { };
 
             _sistemaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);

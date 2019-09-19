@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         {
             // Arrange
             Guid id = new Guid();
+
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
@@ -44,6 +45,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         {
             // Arrange
             Guid id = new Guid();
+
             WorkflowViewModel workflowMock = new WorkflowViewModel { Id = id, Nome = nome, Ordem = ordem };
 
             _workflowAppService.Setup(x => x.Alterar(workflowMock));

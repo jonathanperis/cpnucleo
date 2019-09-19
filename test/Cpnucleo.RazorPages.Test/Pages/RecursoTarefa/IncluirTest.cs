@@ -29,6 +29,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             // Arrange
             Guid idTarefa = new Guid();
             Guid idProjeto = new Guid();
+
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
@@ -53,6 +54,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             // Arrange
             Guid idTarefa = new Guid();
             Guid idProjeto = new Guid();
+
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaViewModel() };

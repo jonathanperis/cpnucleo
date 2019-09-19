@@ -22,6 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         {
             // Arrange
             Guid id = new Guid();
+
             RecursoProjetoViewModel recursoProjetoMock = new RecursoProjetoViewModel { };
 
             _recursoProjetoAppService.Setup(x => x.Consultar(id)).Returns(recursoProjetoMock);
@@ -42,14 +43,17 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         {
             // Arrange
             Guid id = new Guid();
+
             _recursoProjetoAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_recursoProjetoAppService.Object);
+            pageModel.RecursoProjeto = new RecursoProjetoViewModel { Id = id };
+
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .TestRedirectToPage("Listar");

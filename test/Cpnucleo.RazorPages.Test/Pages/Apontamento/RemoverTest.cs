@@ -22,6 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
         {
             // Arrange
             Guid id = new Guid();
+
             ApontamentoViewModel apontamentoMock = new ApontamentoViewModel { };
 
             _apontamentoAppService.Setup(x => x.Consultar(id)).Returns(apontamentoMock);
@@ -42,9 +43,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
         {
             // Arrange
             Guid id = new Guid();
+
             _apontamentoAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_apontamentoAppService.Object);
+            pageModel.Apontamento = new ApontamentoViewModel { Id = id };
+
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act

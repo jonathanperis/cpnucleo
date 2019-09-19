@@ -22,6 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         {
             // Arrange
             Guid id = new Guid();
+
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
 
             _impedimentoTarefaAppService.Setup(x => x.Consultar(id)).Returns(impedimentoTarefaMock);
@@ -42,14 +43,18 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         {
             // Arrange
             Guid id = new Guid();
+            Guid idTarefa = new Guid();
+
             _impedimentoTarefaAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
+            pageModel.ImpedimentoTarefa = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa };
+
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .TestRedirectToPage("Listar");
