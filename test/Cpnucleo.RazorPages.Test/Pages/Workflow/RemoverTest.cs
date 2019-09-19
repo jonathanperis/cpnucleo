@@ -48,8 +48,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 
             _workflowAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_workflowAppService.Object);
-            pageModel.Workflow = new WorkflowViewModel { Id = id };
+            RemoverModel pageModel = new RemoverModel(_workflowAppService.Object)
+            {
+                Workflow = new WorkflowViewModel { Id = id }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

@@ -63,9 +63,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaMock);
             _recursoTarefaAppService.Setup(x => x.Incluir(recursoTarefaMock));
 
-            AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
-            pageModel.RecursoTarefa = new RecursoTarefaViewModel { IdTarefa = idTarefa };
-            pageModel.Tarefa = new TarefaViewModel { IdProjeto = idProjeto };
+            AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object)
+            {
+                RecursoTarefa = new RecursoTarefaViewModel { IdTarefa = idTarefa },
+                Tarefa = new TarefaViewModel { IdProjeto = idProjeto }
+            };
 
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 

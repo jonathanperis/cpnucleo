@@ -59,8 +59,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             _impedimentoTarefaAppService.Setup(x => x.Alterar(impedimentoTarefaMock));
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
-            pageModel.ImpedimentoTarefa = new ImpedimentoTarefaViewModel { IdTarefa = idTarefa };
+            AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object)
+            {
+                ImpedimentoTarefa = new ImpedimentoTarefaViewModel { IdTarefa = idTarefa }
+            };
 
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 

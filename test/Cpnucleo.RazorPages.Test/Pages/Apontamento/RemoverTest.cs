@@ -46,8 +46,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
 
             _apontamentoAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_apontamentoAppService.Object);
-            pageModel.Apontamento = new ApontamentoViewModel { Id = id };
+            RemoverModel pageModel = new RemoverModel(_apontamentoAppService.Object)
+            {
+                Apontamento = new ApontamentoViewModel { Id = id }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

@@ -46,8 +46,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
 
             _recursoProjetoAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_recursoProjetoAppService.Object);
-            pageModel.RecursoProjeto = new RecursoProjetoViewModel { Id = id };
+            RemoverModel pageModel = new RemoverModel(_recursoProjetoAppService.Object)
+            {
+                RecursoProjeto = new RecursoProjetoViewModel { Id = id }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

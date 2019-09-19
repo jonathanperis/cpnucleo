@@ -47,8 +47,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
 
             _impedimentoTarefaAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
-            pageModel.ImpedimentoTarefa = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa };
+            RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object)
+            {
+                ImpedimentoTarefa = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
