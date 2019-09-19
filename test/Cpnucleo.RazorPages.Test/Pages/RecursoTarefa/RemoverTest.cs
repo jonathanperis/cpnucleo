@@ -47,8 +47,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
 
             _recursoTarefaAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object);
-            pageModel.RecursoTarefa = new RecursoTarefaViewModel { Id = id, IdTarefa = idTarefa };
+            RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object)
+            {
+                RecursoTarefa = new RecursoTarefaViewModel { Id = id, IdTarefa = idTarefa }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

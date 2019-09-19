@@ -48,8 +48,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
 
             _impedimentoAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object);
-            pageModel.Impedimento = new ImpedimentoViewModel { Id = id };
+            RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object)
+            {
+                Impedimento = new ImpedimentoViewModel { Id = id }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

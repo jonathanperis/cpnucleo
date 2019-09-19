@@ -46,8 +46,10 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 
             _sistemaAppService.Setup(x => x.Remover(id));
 
-            RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object);
-            pageModel.Sistema = new SistemaViewModel { Id = id };
+            RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object)
+            {
+                Sistema = new SistemaViewModel { Id = id }
+            };
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
