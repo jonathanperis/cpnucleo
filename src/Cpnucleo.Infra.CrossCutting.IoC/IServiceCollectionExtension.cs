@@ -73,7 +73,6 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - CrossCutting - Configuration
             services.AddScoped<ISystemConfiguration, SystemConfiguration>();
-            services.AddScoped<IApplicationConfiguration, ApplicationConfiguration>();
 
             // Infra - CrossCutting - Security
             services.AddScoped<ICryptographyManager, CryptographyManager>();

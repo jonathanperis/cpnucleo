@@ -19,7 +19,9 @@ namespace Cpnucleo.Infra.CrossCutting.Configuration
                 string value = _configuration.GetConnectionString("DefaultConnection");
 
                 if (value != null)
+                {
                     return value;
+                }
 
                 return string.Empty;
             }
