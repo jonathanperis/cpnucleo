@@ -4,6 +4,8 @@ using Cpnucleo.Application.Services;
 using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Configuration;
+using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Security;
@@ -68,6 +70,10 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CpnucleoContext>();
+
+            // Infra - CrossCutting - Configuration
+            services.AddScoped<ISystemConfiguration, SystemConfiguration>();
+            services.AddScoped<IApplicationConfiguration, ApplicationConfiguration>();
 
             // Infra - CrossCutting - Security
             services.AddScoped<ICryptographyManager, CryptographyManager>();
