@@ -17,4 +17,19 @@
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.IoC\Cpnucleo.Infra.CrossCutting.IoC.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Views\Apontamento\" />
+    <Folder Include="Views\Home\" />
+    <Folder Include="Views\ImpedimentoTarefa\" />
+    <Folder Include="Views\Impedimento\" />
+    <Folder Include="Views\Projeto\" />
+    <Folder Include="Views\RecursoProjeto\" />
+    <Folder Include="Views\RecursoTarefa\" />
+    <Folder Include="Views\Recurso\" />
+    <Folder Include="Views\Sistema\" />
+    <Folder Include="Views\Tarefa\" />
+    <Folder Include="Views\Workflow\" />
+  </ItemGroup>
+
 </Project>
