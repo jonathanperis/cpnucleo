@@ -27,6 +27,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         {
             // Arrange
             Guid idSistema = new Guid();
+
             ProjetoViewModel projetoMock = new ProjetoViewModel { Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 

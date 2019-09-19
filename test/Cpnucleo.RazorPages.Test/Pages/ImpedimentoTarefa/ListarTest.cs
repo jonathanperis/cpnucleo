@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         {
             // Arrange
             Guid idTarefa = new Guid();
+
             List<ImpedimentoTarefaViewModel> listaMock = new List<ImpedimentoTarefaViewModel> { };
 
             _impedimentoTarefaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);

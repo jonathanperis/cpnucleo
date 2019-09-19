@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         {
             // Arrange
             Guid idProjeto = new Guid();
+
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
 
             _recursoProjetoAppService.Setup(x => x.Listar()).Returns(listaMock);

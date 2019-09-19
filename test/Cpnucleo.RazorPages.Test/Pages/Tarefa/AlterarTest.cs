@@ -32,6 +32,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         {
             // Arrange
             Guid id = new Guid();
+
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
             List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
@@ -62,7 +63,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             // Arrange
             Guid id = new Guid();
             Guid idProjeto = new Guid();
-            TarefaViewModel tarefaMock = new TarefaViewModel { Id = id, Nome = nome, IdProjeto = idProjeto };
+
+            DateTime dataInicio = DateTime.Now;
+            DateTime dataTermino = DateTime.Now.AddDays(5);
+
+            TarefaViewModel tarefaMock = new TarefaViewModel { Id = id, Nome = nome, IdProjeto = idProjeto, DataInicio = dataInicio, DataTermino = dataTermino };
             List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
             List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
             List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };

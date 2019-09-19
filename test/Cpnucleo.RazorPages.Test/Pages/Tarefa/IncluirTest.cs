@@ -58,7 +58,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         {
             // Arrange
             Guid idProjeto = new Guid();
-            TarefaViewModel tarefaMock = new TarefaViewModel { Nome = nome, IdProjeto = idProjeto };
+
+            DateTime dataInicio = DateTime.Now;
+            DateTime dataTermino = DateTime.Now.AddDays(5);
+
+            TarefaViewModel tarefaMock = new TarefaViewModel { Nome = nome, IdProjeto = idProjeto, DataInicio = dataInicio, DataTermino = dataTermino };
 
             _tarefaAppService.Setup(x => x.Incluir(tarefaMock));
 

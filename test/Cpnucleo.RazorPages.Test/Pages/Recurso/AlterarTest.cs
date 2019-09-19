@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
         {
             // Arrange
             Guid id = new Guid();
+
             RecursoViewModel recursoMock = new RecursoViewModel { };
 
             _recursoAppService.Setup(x => x.Consultar(id)).Returns(recursoMock);
@@ -44,6 +45,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
         {
             // Arrange
             Guid id = new Guid();
+
             RecursoViewModel recursoMock = new RecursoViewModel { Id = id, Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
             _recursoAppService.Setup(x => x.Alterar(recursoMock));

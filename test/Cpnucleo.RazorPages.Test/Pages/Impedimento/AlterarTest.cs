@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
         {
             // Arrange
             Guid id = new Guid();
+
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
             _impedimentoAppService.Setup(x => x.Consultar(id)).Returns(impedimentoMock);
@@ -44,6 +45,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
         {
             // Arrange
             Guid id = new Guid();
+
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { Id = id, Nome = nome };
 
             _impedimentoAppService.Setup(x => x.Alterar(impedimentoMock));

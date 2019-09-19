@@ -29,6 +29,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             // Arrange
             Guid id = new Guid();
             Guid idProjeto = new Guid();
+
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { Tarefa = new TarefaViewModel { } };
             List<RecursoProjetoViewModel> listaRecursoProjetoMock = new List<RecursoProjetoViewModel> { };
 
@@ -53,6 +54,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             // Arrange
             Guid idTarefa = new Guid();
             Guid idProjeto = new Guid();
+
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaViewModel() };
@@ -62,11 +64,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             _recursoTarefaAppService.Setup(x => x.Incluir(recursoTarefaMock));
 
             AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
+            pageModel.RecursoTarefa = new RecursoTarefaViewModel { IdTarefa = idTarefa };
+            pageModel.Tarefa = new TarefaViewModel { IdProjeto = idProjeto };
+
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .WhenModelStateIsValidEquals(false)
@@ -74,7 +79,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .WhenModelStateIsValidEquals(true)

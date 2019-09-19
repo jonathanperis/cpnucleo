@@ -23,6 +23,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
         {
             // Arrange
             Guid id = new Guid();
+
             SistemaViewModel sistemaMock = new SistemaViewModel { };
 
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
@@ -44,6 +45,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
         {
             // Arrange
             Guid id = new Guid();
+
             SistemaViewModel sistemaMock = new SistemaViewModel { Id = id, Nome = nome, Descricao = descricao };
 
             _sistemaAppService.Setup(x => x.Alterar(sistemaMock));

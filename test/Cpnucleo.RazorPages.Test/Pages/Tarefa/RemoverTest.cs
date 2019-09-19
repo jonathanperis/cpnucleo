@@ -22,6 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         {
             // Arrange
             Guid id = new Guid();
+
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
             _tarefaAppService.Setup(x => x.Consultar(id)).Returns(tarefaMock);
@@ -42,11 +43,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         {
             // Arrange
             Guid id = new Guid();
+
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
             _tarefaAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_tarefaAppService.Object);
+            pageModel.Tarefa = new TarefaViewModel { Id = id };
+
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act

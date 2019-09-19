@@ -26,6 +26,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         {
             // Arrange
             Guid id = new Guid();
+
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
@@ -51,6 +52,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             Guid id = new Guid();
             Guid idImpedimento = new Guid();
             Guid idTarefa = new Guid();
+
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdImpedimento = idImpedimento, IdTarefa = idTarefa, Descricao = descricao };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
@@ -58,11 +60,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
             AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
+            pageModel.ImpedimentoTarefa = new ImpedimentoTarefaViewModel { IdTarefa = idTarefa };
+
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .WhenModelStateIsValidEquals(false)
@@ -70,7 +74,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .WhenModelStateIsValidEquals(true)

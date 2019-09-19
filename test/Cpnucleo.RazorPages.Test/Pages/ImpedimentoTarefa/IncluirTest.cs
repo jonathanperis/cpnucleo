@@ -29,6 +29,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             // Arrange
             Guid id = new Guid();
             Guid idTarefa = new Guid();
+
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
@@ -55,6 +56,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             // Arrange
             Guid id = new Guid();
             Guid idTarefa = new Guid();
+
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa, Descricao = descricao };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };

@@ -28,6 +28,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         {
             // Arrange
             Guid idProjeto = new Guid();
+
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<RecursoViewModel> listaMock = new List<RecursoViewModel> { };
 
@@ -50,6 +51,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         {
             // Arrange
             Guid idProjeto = new Guid();
+
             RecursoProjetoViewModel recursoProjetoMock = new RecursoProjetoViewModel { IdProjeto = idProjeto };
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<RecursoViewModel> listaMock = new List<RecursoViewModel> { };

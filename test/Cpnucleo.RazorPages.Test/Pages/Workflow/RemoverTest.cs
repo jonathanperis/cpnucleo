@@ -22,6 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         {
             // Arrange
             Guid id = new Guid();
+
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
@@ -42,11 +43,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         {
             // Arrange
             Guid id = new Guid();
+
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
             _workflowAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_workflowAppService.Object);
+            pageModel.Workflow = new WorkflowViewModel { Id = id };
+
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act

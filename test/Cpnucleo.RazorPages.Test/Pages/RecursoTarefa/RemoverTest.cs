@@ -22,6 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         {
             // Arrange
             Guid id = new Guid();
+
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { };
 
             _recursoTarefaAppService.Setup(x => x.Consultar(id)).Returns(recursoTarefaMock);
@@ -42,14 +43,18 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         {
             // Arrange
             Guid id = new Guid();
+            Guid idTarefa = new Guid();
+
             _recursoTarefaAppService.Setup(x => x.Remover(id));
 
             RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object);
+            pageModel.RecursoTarefa = new RecursoTarefaViewModel { Id = id, IdTarefa = idTarefa };
+
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
             pageTester
-                .Action(x => () => x.OnPost())
+                .Action(x => x.OnPost)
 
                 // Assert
                 .TestRedirectToPage("Listar");
