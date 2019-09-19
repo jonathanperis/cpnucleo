@@ -1,18 +1,17 @@
 ﻿using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
 using Cpnucleo.Infra.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 
 namespace Cpnucleo.Infra.Data.Context
 {
     public class CpnucleoContext : DbContext
     {
-        private readonly IHostingEnvironment _env;
+        private readonly ISystemConfiguration _configuration;
 
-        public CpnucleoContext(IHostingEnvironment env)
+        public CpnucleoContext(ISystemConfiguration configuration)
         {
-            _env = env;
+            _configuration = configuration;
         }
 
         public DbSet<Apontamento> Apontamentos { get; set; }
@@ -46,14 +45,8 @@ namespace Cpnucleo.Infra.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // get the configuration from the app settings
-            IConfigurationRoot config = new ConfigurationBuilder()
-                .SetBasePath(_env.ContentRootPath)
-                .AddJsonFile("appsettings.json")
-                .Build();
-
             // define the database to use
-            optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseSqlServer(_configuration.ConnectionString);
         }
     }
 }
