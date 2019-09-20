@@ -26,5 +26,21 @@ namespace Cpnucleo.Infra.CrossCutting.Configuration
                 return string.Empty;
             }
         }
+
+        /// <summary>
+        /// Barea - Jwt key
+        /// </summary>
+        public string JwtKey
+        {
+            get
+            {
+                string value = _configuration.GetSection("Jwt")["Key"];
+
+                if (value != null)
+                    return value;
+
+                return string.Empty;
+            }
+        }
     }
 }

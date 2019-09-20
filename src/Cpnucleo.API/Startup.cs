@@ -1,13 +1,15 @@
-﻿using Cpnucleo.Infra.CrossCutting.IoC;
+﻿using Cpnucleo.API.Configuration;
+using Cpnucleo.API.Filters;
+using Cpnucleo.API.Utils;
+using Cpnucleo.Infra.CrossCutting.IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
-using System;
-using System.IO;
-using System.Reflection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Cpnucleo.API
 {
@@ -24,31 +26,35 @@ namespace Cpnucleo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCpnucleoSetup();
+            services.AddSwaggerConfig();
+            services.AddVersionConfig();
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "Cpnucleo API",
-                    Description = "Cpnucleo example ASP.NET Core Web API",
-                    Contact = new Contact
-                    {
-                        Name = "Jonathan Peris",
-                        Email = "jperis.silva@gmail.com",
-                        Url = "https://jonathanperis.github.io",
-                    },
-                    License = new License
-                    {
-                        Name = "Use under MIT",
-                        Url = "https://en.wikipedia.org/wiki/MIT_License",
-                    }
-                });
+            services.AddScoped<AuthorizerActionFilter>();
+            services.AddScoped<IJwtManager, JwtManager>();
 
-                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-            });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //       .AddJwtBearer(options =>
+            //       {
+            //           options.TokenValidationParameters = new TokenValidationParameters
+            //           {
+            //               ValidateIssuer = true,
+            //               ValidateAudience = true,
+            //               ValidateLifetime = true,
+            //               ValidateIssuerSigningKey = true,
+            //               ValidIssuer = Configuration["Jwt:Issuer"],
+            //               ValidAudience = Configuration["Jwt:Issuer"],
+            //               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            //           };
+            //       });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                   .AddJwtBearer(options =>
+                   {
+                       options.TokenValidationParameters = new TokenValidationParameters
+                       {
+                           ValidateLifetime = true
+                       };
+                   });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -56,12 +62,7 @@ namespace Cpnucleo.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cpnucleo V1");
-            });
+            app.UseSwaggerUIConfig();
 
             if (env.IsDevelopment())
             {
