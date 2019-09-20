@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -46,7 +47,7 @@ namespace Cpnucleo.API.Controllers
                 return NotFound();
             }
 
-            return sistema;
+            return Ok(sistema);
         }
 
         /// <summary>
@@ -63,12 +64,35 @@ namespace Cpnucleo.API.Controllers
         ///
         /// </remarks>
         /// <param name="obj">sistema</param>        
-        /// <response code="201">Retorna um novo sistema</response>
+        /// <response code="201">Sistema cadastrado com sucesso</response>
+        /// <response code="400">Objetos não preenchidos corretamente</response>
+        /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(409)]
         public ActionResult<SistemaViewModel> Post([FromBody]SistemaViewModel obj)
         {
-            _sistemaAppService.Incluir(obj);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                _sistemaAppService.Incluir(obj);
+            }
+            catch (DbUpdateException)
+            {
+                if (ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return CreatedAtAction(nameof(Get), new { id = obj.Id }, obj);
         }
@@ -96,12 +120,31 @@ namespace Cpnucleo.API.Controllers
         [ProducesResponseType(400)]
         public IActionResult Put(Guid id, [FromBody]SistemaViewModel obj)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            _sistemaAppService.Alterar(obj);
+            try
+            {
+                _sistemaAppService.Alterar(obj);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return NoContent();
         }
@@ -127,6 +170,11 @@ namespace Cpnucleo.API.Controllers
             _sistemaAppService.Remover(id);
 
             return NoContent();
+        }
+
+        private bool ObjExists(Guid id)
+        {
+            return _sistemaAppService.Consultar(id) != null;
         }
     }
 }

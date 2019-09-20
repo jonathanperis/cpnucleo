@@ -23,7 +23,11 @@ namespace Cpnucleo.Application.Services
 
         public bool Incluir(TViewModel obj)
         {
-            obj.Id = new Guid();
+            if (obj.Id != null)
+            {
+                obj.Id = new Guid(); 
+            }
+
             obj.DataInclusao = DateTime.Now;
 
             _repository.Incluir(_mapper.Map<TModel>(obj));
