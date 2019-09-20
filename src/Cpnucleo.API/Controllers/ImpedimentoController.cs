@@ -9,69 +9,68 @@ namespace Cpnucleo.API.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
-    public class SistemaController : Controller
+    public class ImpedimentoController : Controller
     {
-        private readonly IAppService<SistemaViewModel> _sistemaAppService;
+        private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public SistemaController(IAppService<SistemaViewModel> sistemaAppService)
+        public ImpedimentoController(IAppService<ImpedimentoViewModel> impedimentoAppService)
         {
-            _sistemaAppService = sistemaAppService;
+            _impedimentoAppService = impedimentoAppService;
         }
 
         /// <summary>
-        /// Listar sistemas
+        /// Listar impedimentos
         /// </summary>
-        /// <response code="200">Retorna uma lista de sistemas</response>
+        /// <response code="200">Retorna uma lista de impedimentos</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<SistemaViewModel> Get()
+        public IEnumerable<ImpedimentoViewModel> Get()
         {
-            return _sistemaAppService.Listar();
+            return _impedimentoAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar sistema
+        /// Consultar impedimento
         /// </summary>
-        /// <param name="id">Id do sistema</param>        
-        /// <response code="200">Retorna um sistema</response>
-        /// <response code="404">Sistema não encontrado</response>
+        /// <param name="id">Id do impedimento</param>        
+        /// <response code="200">Retorna um impedimento</response>
+        /// <response code="404">Impedimento não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<SistemaViewModel> Get(Guid id)
+        public ActionResult<ImpedimentoViewModel> Get(Guid id)
         {
-            SistemaViewModel sistema = _sistemaAppService.Consultar(id);
+            ImpedimentoViewModel impedimento = _impedimentoAppService.Consultar(id);
 
-            if (sistema == null)
+            if (impedimento == null)
             {
                 return NotFound();
             }
 
-            return Ok(sistema);
+            return Ok(impedimento);
         }
 
         /// <summary>
-        /// Incluir sistema
+        /// Incluir impedimento
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST /sistema
+        ///     POST /impedimento
         ///     {
-        ///        "nome": "Novo sistema",
-        ///        "descricao": "Descrição do novo sistema"
+        ///        "nome": "Novo impedimento"
         ///     }
         ///
         /// </remarks>
-        /// <param name="obj">sistema</param>        
-        /// <response code="201">Sistema cadastrado com sucesso</response>
+        /// <param name="obj">impedimento</param>        
+        /// <response code="201">Impedimento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<SistemaViewModel> Post([FromBody]SistemaViewModel obj)
+        public ActionResult<ImpedimentoViewModel> Post([FromBody]ImpedimentoViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -80,7 +79,7 @@ namespace Cpnucleo.API.Controllers
 
             try
             {
-                _sistemaAppService.Incluir(obj);
+                _impedimentoAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -98,27 +97,26 @@ namespace Cpnucleo.API.Controllers
         }
 
         /// <summary>
-        /// Alterar sistema
+        /// Alterar impedimento
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///
-        ///     PUT /sistema
+        ///     PUT /impedimento
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo sistema - alterado",
-        ///        "descricao": "Descrição do novo sistema - alterado"
+        ///        "nome": "Novo impedimento - alterado"
         ///     }
         ///
         /// </remarks>
-        /// <param name="id">Id do sistema</param>        
-        /// <param name="obj">sistema</param>        
-        /// <response code="204">Sistema alterado com sucesso</response>
+        /// <param name="id">Id do impedimento</param>        
+        /// <param name="obj">impedimento</param>        
+        /// <response code="204">Impedimento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]SistemaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]ImpedimentoViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -132,7 +130,7 @@ namespace Cpnucleo.API.Controllers
 
             try
             {
-                _sistemaAppService.Alterar(obj);
+                _impedimentoAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -150,31 +148,31 @@ namespace Cpnucleo.API.Controllers
         }
 
         /// <summary>
-        /// Remover sistema
+        /// Remover impedimento
         /// </summary>
-        /// <param name="id">Id do sistema</param>        
-        /// <response code="204">Sistema removido com sucesso</response>
-        /// <response code="404">Sistema não encontrado</response>
+        /// <param name="id">Id do impedimento</param>        
+        /// <response code="204">Impedimento removido com sucesso</response>
+        /// <response code="404">Impedimento não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            SistemaViewModel obj = _sistemaAppService.Consultar(id);
+            ImpedimentoViewModel obj = _impedimentoAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _sistemaAppService.Remover(id);
+            _impedimentoAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _sistemaAppService.Consultar(id) != null;
+            return _impedimentoAppService.Consultar(id) != null;
         }
     }
 }
