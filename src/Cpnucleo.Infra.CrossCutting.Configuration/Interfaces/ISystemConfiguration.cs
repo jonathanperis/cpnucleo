@@ -6,5 +6,10 @@
         /// Connection to the Azure Database.
         /// </summary>
         string ConnectionString { get; }
+
+        /// <summary>
+        /// JWT key for token auth.
+        /// </summary>
+        string JwtKey { get; }
     }
 }
