@@ -21,6 +21,7 @@ namespace Cpnucleo.Infra.Data.Repository
             return DbSet
                 .AsNoTracking()
                 .Include(x => x.Tarefa)
+                    .ThenInclude(x => x.TipoTarefa)
                 .Include(x => x.Tarefa.Workflow)
                 .Include(x => x.Tarefa.Recurso)
                 .Include(x => x.Tarefa.ListaImpedimentos)
