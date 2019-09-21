@@ -126,7 +126,8 @@ namespace Cpnucleo.API.V1.Controllers
         ///     PUT /impedimento
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo impedimento - alterado"
+        ///        "nome": "Novo impedimento - alterado",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
         /// <param name="id">Id do impedimento</param>        

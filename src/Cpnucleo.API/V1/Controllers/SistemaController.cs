@@ -128,7 +128,8 @@ namespace Cpnucleo.API.V1.Controllers
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "nome": "Novo sistema - alterado",
-        ///        "descricao": "Descrição do novo sistema - alterado"
+        ///        "descricao": "Descrição do novo sistema - alterado",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
         /// <param name="id">Id do sistema</param>        

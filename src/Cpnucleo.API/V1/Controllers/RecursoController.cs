@@ -134,7 +134,8 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "ativo": false,
         ///        "login": "usuario.teste",
         ///        "senha": "12345678",
-        ///        "confirmarSenha": "12345678"
+        ///        "confirmarSenha": "12345678",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
         /// <param name="id">Id do recurso</param>        

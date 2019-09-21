@@ -22,7 +22,11 @@ namespace Cpnucleo.Application.Services
 
         public new bool Incluir(ApontamentoViewModel apontamento)
         {
-            apontamento.Id = new Guid();
+            if (apontamento.Id == Guid.Empty)
+            {
+                apontamento.Id = Guid.NewGuid();
+            }
+
             apontamento.DataInclusao = DateTime.Now;
 
             _repository.Incluir(_mapper.Map<Apontamento>(apontamento));

@@ -136,7 +136,8 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "qtdHoras": 6,
         ///        "percentualConcluido": 10,
         ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
         /// <param name="id">Id do apontamento</param>        
