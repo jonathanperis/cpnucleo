@@ -25,6 +25,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Listar workflows
         /// </summary>
+        /// <remarks>
+        /// # Listar workflows
+        /// 
+        /// Lista workflows na base de dados.
+        /// </remarks>
         /// <response code="200">Retorna uma lista de workflows (não retorna os objetos aninhados)</response>
         [HttpGet]
         [ProducesResponseType(200)]
@@ -36,6 +41,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Consultar workflow
         /// </summary>
+        /// <remarks>
+        /// # Consultar workflow
+        /// 
+        /// Consulta um workflow na base de dados.
+        /// </remarks>
         /// <param name="id">Id do workflow</param>        
         /// <response code="200">Retorna um workflow (retorna os objetos aninhados)</response>
         /// <response code="404">Workflow não encontrado</response>
@@ -58,14 +68,17 @@ namespace Cpnucleo.API.V1.Controllers
         /// Incluir workflow
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Incluir workflow
+        /// 
+        /// Inclui um workflow na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     POST /workflow
         ///     {
         ///        "nome": "Novo workflow",
         ///        "ordem": "3"
         ///     }
-        ///
         /// </remarks>
         /// <param name="obj">workflow</param>        
         /// <response code="201">Workflow cadastrado com sucesso</response>
@@ -105,7 +118,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// Alterar workflow
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Alterar workflow
+        /// 
+        /// Altera um workflow na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     PUT /workflow
         ///     {
@@ -113,7 +130,6 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "nome": "Novo workflow - alterado",
         ///        "ordem": "3
         ///     }
-        ///
         /// </remarks>
         /// <param name="id">Id do workflow</param>        
         /// <param name="obj">workflow</param>        
@@ -156,6 +172,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Remover workflow
         /// </summary>
+        /// <remarks>
+        /// # Remover workflow
+        /// 
+        /// Remove um workflow na base de dados.
+        /// </remarks>
         /// <param name="id">Id do workflow</param>        
         /// <response code="204">Workflow removido com sucesso</response>
         /// <response code="404">Workflow não encontrado</response>

@@ -26,6 +26,7 @@ namespace Cpnucleo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCpnucleoSetup();
+
             services.AddSwaggerConfig();
             services.AddVersionConfig();
 

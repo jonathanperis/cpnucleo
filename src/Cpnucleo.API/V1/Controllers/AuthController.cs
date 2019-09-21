@@ -25,10 +25,10 @@ namespace Cpnucleo.API.V1.Controllers
         /// <remarks>
         /// # Obter Token
         /// 
-        /// Obtém um token para utilização na API por 60 minutos.
+        /// Obtém um token válido por 60 minutos para utilização na API.
         /// </remarks>
-        /// <param name="user">Usuário</param>
-        /// <param name="pass">Senha</param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
         /// <response code="200">Retorna um token válido por 60 minutos</response>
         /// <response code="400">Usuário ou senha inválidos</response>
         [HttpGet]

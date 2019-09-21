@@ -7,9 +7,6 @@ using System.Security.Claims;
 
 namespace Cpnucleo.API.Utils
 {
-    /// <summary>
-    /// Classe para gerenciamento de token jwt.
-    /// </summary>
     public class JwtManager : IJwtManager
     {
         private readonly ISystemConfiguration _systemConfiguration;
@@ -19,13 +16,6 @@ namespace Cpnucleo.API.Utils
             _systemConfiguration = systemConfiguration;
         }
 
-        /// <summary>
-        /// Create user token.
-        /// </summary>
-        /// <param name="usuario">User system.</param>
-        /// <param name="tempoExpiracao">Time of existence of token.</param>
-        /// <param name="claims">User claims.</param>
-        /// <returns>Token generated.</returns>
         public string GenerateToken(string usuario, int tempoExpiracao)
         {
             var chaveSimetrica = Convert.FromBase64String(_systemConfiguration.JwtKey);

@@ -25,6 +25,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Listar impedimentos
         /// </summary>
+        /// <remarks>
+        /// # Listar impedimentos
+        /// 
+        /// Lista impedimentos na base de dados.
+        /// </remarks>
         /// <response code="200">Retorna uma lista de impedimentos</response>
         [HttpGet]
         [ProducesResponseType(200)]
@@ -36,6 +41,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Consultar impedimento
         /// </summary>
+        /// <remarks>
+        /// # Consultar impedimento
+        /// 
+        /// Consulta um impedimento na base de dados.
+        /// </remarks>
         /// <param name="id">Id do impedimento</param>        
         /// <response code="200">Retorna um impedimento</response>
         /// <response code="404">Impedimento não encontrado</response>
@@ -58,13 +68,16 @@ namespace Cpnucleo.API.V1.Controllers
         /// Incluir impedimento
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Incluir impedimento
+        /// 
+        /// Inclui um impedimento na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     POST /impedimento
         ///     {
         ///        "nome": "Novo impedimento"
         ///     }
-        ///
         /// </remarks>
         /// <param name="obj">impedimento</param>        
         /// <response code="201">Impedimento cadastrado com sucesso</response>
@@ -104,14 +117,17 @@ namespace Cpnucleo.API.V1.Controllers
         /// Alterar impedimento
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Alterar impedimento
+        /// 
+        /// Altera um impedimento na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     PUT /impedimento
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "nome": "Novo impedimento - alterado"
         ///     }
-        ///
         /// </remarks>
         /// <param name="id">Id do impedimento</param>        
         /// <param name="obj">impedimento</param>        
@@ -154,6 +170,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Remover impedimento
         /// </summary>
+        /// <remarks>
+        /// # Remover impedimento
+        /// 
+        /// Remove um impedimento na base de dados.
+        /// </remarks>
         /// <param name="id">Id do impedimento</param>        
         /// <response code="204">Impedimento removido com sucesso</response>
         /// <response code="404">Impedimento não encontrado</response>

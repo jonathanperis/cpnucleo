@@ -25,6 +25,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Listar projetos
         /// </summary>
+        /// <remarks>
+        /// # Listar projetos
+        /// 
+        /// Lista projetos na base de dados.
+        /// </remarks>
         /// <response code="200">Retorna uma lista de projetos (não retorna os objetos aninhados)</response>
         [HttpGet]
         [ProducesResponseType(200)]
@@ -36,6 +41,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Consultar projeto
         /// </summary>
+        /// <remarks>
+        /// # Consultar projeto
+        /// 
+        /// Consulta um projeto na base de dados.
+        /// </remarks>
         /// <param name="id">Id do projeto</param>        
         /// <response code="200">Retorna um projeto (retorna os objetos aninhados)</response>
         /// <response code="404">Projeto não encontrado</response>
@@ -58,14 +68,17 @@ namespace Cpnucleo.API.V1.Controllers
         /// Incluir projeto
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Incluir projeto
+        /// 
+        /// Inclui um projeto na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     POST /projeto
         ///     {
         ///        "nome": "Novo projeto",
         ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
-        ///
         /// </remarks>
         /// <param name="obj">projeto</param>        
         /// <response code="201">Projeto cadastrado com sucesso</response>
@@ -105,7 +118,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// Alterar projeto
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Alterar projeto
+        /// 
+        /// Altera um projeto na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     PUT /projeto
         ///     {
@@ -113,7 +130,6 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "nome": "Novo projeto - alterado",
         ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
-        ///
         /// </remarks>
         /// <param name="id">Id do projeto</param>        
         /// <param name="obj">projeto</param>        
@@ -156,6 +172,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Remover projeto
         /// </summary>
+        /// <remarks>
+        /// # Remover projeto
+        /// 
+        /// Remove um projeto na base de dados.
+        /// </remarks>
         /// <param name="id">Id do projeto</param>        
         /// <response code="204">Projeto removido com sucesso</response>
         /// <response code="404">Projeto não encontrado</response>
