@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -17,6 +18,24 @@ namespace Cpnucleo.API.Configuration
                 config.SwaggerDoc("v1", new Info
                 {
                     Version = "v1",
+                    Title = "Cpnucleo API",
+                    Description = "Cpnucleo example ASP.NET Core Web API (deprecated)",
+                    Contact = new Contact
+                    {
+                        Name = "Jonathan Peris",
+                        Email = "jperis.silva@gmail.com",
+                        Url = "https://jonathanperis.github.io",
+                    },
+                    License = new License
+                    {
+                        Name = "Use under MIT",
+                        Url = "https://en.wikipedia.org/wiki/MIT_License",
+                    }
+                });
+
+                config.SwaggerDoc("v2", new Info
+                {
+                    Version = "v2",
                     Title = "Cpnucleo API",
                     Description = "Cpnucleo example ASP.NET Core Web API",
                     Contact = new Contact
@@ -53,20 +72,18 @@ namespace Cpnucleo.API.Configuration
             });
         }
 
-        public static void UseSwaggerUIConfig(this IApplicationBuilder application)
+        public static void UseSwaggerUIConfig(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
-            application.UseSwagger();
+            app.UseSwagger();
 
-            application.UseSwagger(swag =>
+            app.UseSwaggerUI(c =>
             {
-                swag.RouteTemplate = "swagger/{documentName}/swagger.json";
-            });
-
-            application.UseSwaggerUI(c =>
-            {
-                string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
-                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "Cpnucleo V1");
-                c.RoutePrefix = "swagger";
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+                    c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    c.RoutePrefix = "swagger";
+                }
             });
         }
     }

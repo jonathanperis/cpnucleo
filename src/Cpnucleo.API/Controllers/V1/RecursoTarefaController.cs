@@ -6,89 +6,90 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V1
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("1", Deprecated = true)]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class WorkflowController : ControllerBase
+    public class RecursoTarefaController : ControllerBase
     {
-        private readonly IAppService<WorkflowViewModel> _workflowAppService;
+        private readonly IAppService<RecursoTarefaViewModel> _recursoTarefaAppService;
 
-        public WorkflowController(IAppService<WorkflowViewModel> workflowAppService)
+        public RecursoTarefaController(IAppService<RecursoTarefaViewModel> recursoTarefaAppService)
         {
-            _workflowAppService = workflowAppService;
+            _recursoTarefaAppService = recursoTarefaAppService;
         }
 
         /// <summary>
-        /// Listar workflows
+        /// Listar recursos de tarefa
         /// </summary>
         /// <remarks>
-        /// # Listar workflows
+        /// # Listar recursos de tarefa
         /// 
-        /// Lista workflows na base de dados.
+        /// Lista recursos de tarefa na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de workflows</response>
+        /// <response code="200">Retorna uma lista de recursos de tarefa</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<WorkflowViewModel> Get()
+        public IEnumerable<RecursoTarefaViewModel> Get()
         {
-            return _workflowAppService.Listar();
+            return _recursoTarefaAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar workflow
+        /// Consultar recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Consultar workflow
+        /// # Consultar recurso de tarefa
         /// 
-        /// Consulta um workflow na base de dados.
+        /// Consulta um recurso de tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do workflow</param>        
-        /// <response code="200">Retorna um workflow</response>
-        /// <response code="404">Workflow não encontrado</response>
+        /// <param name="id">Id do recurso de tarefa</param>        
+        /// <response code="200">Retorna um recurso de tarefa</response>
+        /// <response code="404">Recurso de tarefa não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<WorkflowViewModel> Get(Guid id)
+        public ActionResult<RecursoTarefaViewModel> Get(Guid id)
         {
-            WorkflowViewModel workflow = _workflowAppService.Consultar(id);
+            RecursoTarefaViewModel recursoTarefa = _recursoTarefaAppService.Consultar(id);
 
-            if (workflow == null)
+            if (recursoTarefa == null)
             {
                 return NotFound();
             }
 
-            return Ok(workflow);
+            return Ok(recursoTarefa);
         }
 
         /// <summary>
-        /// Incluir workflow
+        /// Incluir recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Incluir workflow
+        /// # Incluir recurso de tarefa
         /// 
-        /// Inclui um workflow na base de dados.
+        /// Inclui um recurso de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /workflow
+        ///     POST /recursoTarefa
         ///     {
-        ///        "nome": "Novo workflow",
-        ///        "ordem": "3"
+        ///        "percentualTarefa": 15,
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">workflow</param>        
-        /// <response code="201">Workflow cadastrado com sucesso</response>
+        /// <param name="obj">Recurso de tarefa</param>        
+        /// <response code="201">Recurso de tarefa cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<WorkflowViewModel> Post([FromBody]WorkflowViewModel obj)
+        public ActionResult<RecursoTarefaViewModel> Post([FromBody]RecursoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +98,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _workflowAppService.Incluir(obj);
+                _recursoTarefaAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -115,31 +116,32 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar workflow
+        /// Alterar recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Alterar workflow
+        /// # Alterar recurso de tarefa
         /// 
-        /// Altera um workflow na base de dados.
+        /// Altera um recurso de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /workflow
+        ///     PUT /recursoTarefa
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo workflow - alterado",
-        ///        "ordem": "3,
+        ///        "percentualTarefa": 15,
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do workflow</param>        
-        /// <param name="obj">workflow</param>        
-        /// <response code="204">Workflow alterado com sucesso</response>
+        /// <param name="id">Id do recurso de tarefa</param>        
+        /// <param name="obj">Recurso de tarefa</param>        
+        /// <response code="204">Recurso de tarefa alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]WorkflowViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]RecursoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -153,7 +155,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _workflowAppService.Alterar(obj);
+                _recursoTarefaAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -171,36 +173,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover workflow
+        /// Remover recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Remover workflow
+        /// # Remover recurso de tarefa
         /// 
-        /// Remove um workflow na base de dados.
+        /// Remove um recurso de tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do workflow</param>        
-        /// <response code="204">Workflow removido com sucesso</response>
-        /// <response code="404">Workflow não encontrado</response>
+        /// <param name="id">Id do recurso de tarefa</param>        
+        /// <response code="204">Recurso de tarefa removido com sucesso</response>
+        /// <response code="404">Recurso de tarefa não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            WorkflowViewModel obj = _workflowAppService.Consultar(id);
+            RecursoTarefaViewModel obj = _recursoTarefaAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _workflowAppService.Remover(id);
+            _recursoTarefaAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _workflowAppService.Consultar(id) != null;
+            return _recursoTarefaAppService.Consultar(id) != null;
         }
     }
 }

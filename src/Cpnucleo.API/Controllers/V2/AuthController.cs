@@ -1,12 +1,12 @@
 ﻿using Cpnucleo.API.Utils;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V2
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("2")]
     public class AuthController : ControllerBase
     {
         private const string userT = "USERBOLADAO";

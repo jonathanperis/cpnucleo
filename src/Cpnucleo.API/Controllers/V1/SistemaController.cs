@@ -6,92 +6,89 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V1
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("1", Deprecated = true)]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class RecursoController : ControllerBase
+    public class SistemaController : ControllerBase
     {
-        private readonly IAppService<RecursoViewModel> _recursoAppService;
+        private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
-        public RecursoController(IAppService<RecursoViewModel> recursoAppService)
+        public SistemaController(IAppService<SistemaViewModel> sistemaAppService)
         {
-            _recursoAppService = recursoAppService;
+            _sistemaAppService = sistemaAppService;
         }
 
         /// <summary>
-        /// Listar recursos
+        /// Listar sistemas
         /// </summary>
         /// <remarks>
-        /// # Listar recursos
+        /// # Listar sistemas
         /// 
-        /// Lista recursos na base de dados.
+        /// Lista sistemas na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de recursos</response>
+        /// <response code="200">Retorna uma lista de sistemas</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<RecursoViewModel> Get()
+        public IEnumerable<SistemaViewModel> Get()
         {
-            return _recursoAppService.Listar();
+            return _sistemaAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar recurso
+        /// Consultar sistema
         /// </summary>
         /// <remarks>
-        /// # Consultar recurso
+        /// # Consultar sistema
         /// 
-        /// Consulta um recurso na base de dados.
+        /// Consulta um sistema na base de dados.
         /// </remarks>
-        /// <param name="id">Id do recurso</param>        
-        /// <response code="200">Retorna um recurso</response>
-        /// <response code="404">Recurso não encontrado</response>
+        /// <param name="id">Id do sistema</param>        
+        /// <response code="200">Retorna um sistema</response>
+        /// <response code="404">Sistema não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<RecursoViewModel> Get(Guid id)
+        public ActionResult<SistemaViewModel> Get(Guid id)
         {
-            RecursoViewModel recurso = _recursoAppService.Consultar(id);
+            SistemaViewModel sistema = _sistemaAppService.Consultar(id);
 
-            if (recurso == null)
+            if (sistema == null)
             {
                 return NotFound();
             }
 
-            return Ok(recurso);
+            return Ok(sistema);
         }
 
         /// <summary>
-        /// Incluir recurso
+        /// Incluir sistema
         /// </summary>
         /// <remarks>
-        /// # Incluir recurso
+        /// # Incluir sistema
         /// 
-        /// Inclui um recurso na base de dados.
+        /// Inclui um sistema na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /recurso
+        ///     POST /sistema
         ///     {
-        ///        "nome": "Novo recurso",
-        ///        "ativo": true,
-        ///        "login": "usuario.teste",
-        ///        "senha": "12345678",
-        ///        "confirmarSenha": "12345678"
+        ///        "nome": "Novo sistema",
+        ///        "descricao": "Descrição do novo sistema"
         ///     }
         /// </remarks>
-        /// <param name="obj">recurso</param>        
-        /// <response code="201">Recurso cadastrado com sucesso</response>
+        /// <param name="obj">sistema</param>        
+        /// <response code="201">Sistema cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<RecursoViewModel> Post([FromBody]RecursoViewModel obj)
+        public ActionResult<SistemaViewModel> Post([FromBody]SistemaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -100,7 +97,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _recursoAppService.Incluir(obj);
+                _sistemaAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -118,34 +115,31 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar recurso
+        /// Alterar sistema
         /// </summary>
         /// <remarks>
-        /// # Alterar recurso
+        /// # Alterar sistema
         /// 
-        /// Altera um recurso na base de dados.
+        /// Altera um sistema na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /recurso
+        ///     PUT /sistema
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo recurso - alterado",
-        ///        "ativo": false,
-        ///        "login": "usuario.teste",
-        ///        "senha": "12345678",
-        ///        "confirmarSenha": "12345678",
+        ///        "nome": "Novo sistema - alterado",
+        ///        "descricao": "Descrição do novo sistema - alterado",
         ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do recurso</param>        
-        /// <param name="obj">recurso</param>        
-        /// <response code="204">Recurso alterado com sucesso</response>
+        /// <param name="id">Id do sistema</param>        
+        /// <param name="obj">sistema</param>        
+        /// <response code="204">Sistema alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]RecursoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]SistemaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -159,7 +153,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _recursoAppService.Alterar(obj);
+                _sistemaAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -177,36 +171,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover recurso
+        /// Remover sistema
         /// </summary>
         /// <remarks>
-        /// # Remover recurso
+        /// # Remover sistema
         /// 
-        /// Remove um recurso na base de dados.
+        /// Remove um sistema na base de dados.
         /// </remarks>
-        /// <param name="id">Id do recurso</param>        
-        /// <response code="204">Recurso removido com sucesso</response>
-        /// <response code="404">Recurso não encontrado</response>
+        /// <param name="id">Id do sistema</param>        
+        /// <response code="204">Sistema removido com sucesso</response>
+        /// <response code="404">Sistema não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            RecursoViewModel obj = _recursoAppService.Consultar(id);
+            SistemaViewModel obj = _sistemaAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _recursoAppService.Remover(id);
+            _sistemaAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _recursoAppService.Consultar(id) != null;
+            return _sistemaAppService.Consultar(id) != null;
         }
     }
 }
