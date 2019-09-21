@@ -11,6 +11,7 @@ namespace Cpnucleo.Application.ViewModels
         public string Descricao { get; set; }
 
         [Display(Name = "Ativo")]
+        [Required(ErrorMessage = "Necessário informar a {0} do Impedimento.")]
         public bool Ativo { get; set; }
 
         [Required]

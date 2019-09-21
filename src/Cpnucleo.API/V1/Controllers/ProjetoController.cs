@@ -30,7 +30,7 @@ namespace Cpnucleo.API.V1.Controllers
         /// 
         /// Lista projetos na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de projetos (não retorna os objetos aninhados)</response>
+        /// <response code="200">Retorna uma lista de projetos</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<ProjetoViewModel> Get()
@@ -47,7 +47,7 @@ namespace Cpnucleo.API.V1.Controllers
         /// Consulta um projeto na base de dados.
         /// </remarks>
         /// <param name="id">Id do projeto</param>        
-        /// <response code="200">Retorna um projeto (retorna os objetos aninhados)</response>
+        /// <response code="200">Retorna um projeto</response>
         /// <response code="404">Projeto não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]

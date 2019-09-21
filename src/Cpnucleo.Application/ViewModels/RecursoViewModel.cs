@@ -16,7 +16,7 @@ namespace Cpnucleo.Application.ViewModels
         public string Nome { get; set; }
 
         [Display(Name = "Ativo")]
-        [Column("REC_ATIVO", TypeName = "bit")]
+        [Required(ErrorMessage = "Necessário informar o {0} do Recurso.")]
         public bool Ativo { get; set; }
 
         [Display(Name = "Login")]
