@@ -9,7 +9,7 @@
     <!-- TouchSpin -->
     <link href="~/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
     <!-- DatePicker -->
-    <link href="~/css/plugins/datepicker/datepicker3.css" rel="stylesheet">    
+    <link href="~/css/plugins/datepicker/datepicker3.css" rel="stylesheet">
     <!-- DataTables -->
     <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 }
@@ -98,78 +98,7 @@
 
                         @foreach (var item in lista)
                         {
-                            if (DateTime.Now.Date >= item.Tarefa.DataInicio && DateTime.Now.Date <= item.Tarefa.DataTermino)
-                            {
-                                <li class="success-element" data-toggle="modal" data-target="#modal-apontamento"
-                                    data-nome-tarefa="@item.Tarefa.Nome" data-id-tarefa="@item.Tarefa.Id" data-id-recurso="@item.IdRecurso">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
-                            else if (item.Tarefa.ListaImpedimentos.Count(x => x.Ativo) > 0)
-                            {
-                                <li class="warning-element" data-toggle="modal" data-target="#modal-apontamento"
-                                    data-nome-tarefa="@item.Tarefa.Nome" data-id-tarefa="@item.Tarefa.Id" data-id-recurso="@item.IdRecurso">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
-                            else if (DateTime.Now.Date > item.Tarefa.DataTermino && item.Tarefa.PercentualConcluido != 100)
-                            {
-                                <li class="danger-element" data-toggle="modal" data-target="#modal-apontamento"
-                                    data-nome-tarefa="@item.Tarefa.Nome" data-id-tarefa="@item.Tarefa.Id" data-id-recurso="@item.IdRecurso">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
+                            await Html.RenderPartialAsync("_CardApontamentoPartial", item);
                         }
 
                     </ul>
@@ -189,78 +118,7 @@
 
                         @foreach (var item in lista)
                         {
-                            if (DateTime.Now.Date >= item.Tarefa.DataInicio && DateTime.Now.Date <= item.Tarefa.DataTermino)
-                            {
-                                <li class="success-element" data-toggle="modal" data-target="#modal-apontamento"
-                                    data-nome-tarefa="@item.Tarefa.Nome" data-id-tarefa="@item.Tarefa.Id" data-id-recurso="@item.IdRecurso">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
-                            else if (item.Tarefa.ListaImpedimentos.Count(x => x.Ativo) > 0)
-                            {
-                                <li class="warning-element" data-toggle="modal" data-target="#modal-apontamento"
-                                    data-nome-tarefa="@item.Tarefa.Nome" data-id-tarefa="@item.Tarefa.Id" data-id-recurso="@item.IdRecurso">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
-                            else if (DateTime.Now.Date > item.Tarefa.DataTermino && item.Tarefa.PercentualConcluido != 100)
-                            {
-                                <li class="danger-element" data-toggle="modal" data-target="#modal-apontamento"
-                                    data-nome-tarefa="@item.Tarefa.Nome" data-id-tarefa="@item.Tarefa.Id" data-id-recurso="@item.IdRecurso">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
+                            await Html.RenderPartialAsync("_CardApontamentoPartial", item);
                         }
 
                     </ul>
@@ -280,53 +138,9 @@
 
                         @foreach (var item in lista)
                         {
-                            if (item.Tarefa.ListaImpedimentos.Count(x => x.Ativo) > 0)
-                            {
-                                <li class="warning-element">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="info-element">
-                                    @item.Tarefa.Nome
-                                    <div class="agile-detail">
-                                        <i class="fa fa-clock-o"></i> @item.Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
-                                        <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@item.Tarefa.Id criada por @item.Tarefa.Recurso.Nome</div>
-                                        @if (@item.HorasDisponiveis >= 0)
-                                        {
-                                            <text>
-                                                <i class="fa fa-smile-o"></i> <font color="1ab394"> @item.HorasDisponiveis horas restantes</font>
-                                            </text>
-                                        }
-                                        else
-                                        {
-                                            <text>
-                                                <i class="fa fa-frown-o"></i><font color="ed5565"> @item.HorasDisponiveis.ToString().Replace("-", "") horas excedidas</font>
-                                            </text>
-                                        }
-                                        <a href="#" class="pull-right btn btn-xs btn-white"> @item.Tarefa.Workflow.Nome</a>
-                                    </div>
-                                </li>
-                            }
+                            await Html.RenderPartialAsync("_CardApontamentoFinalizadoPartial", item);
                         }
+
                     </ul>
                 }
             </div>

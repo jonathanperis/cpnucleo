@@ -5,6 +5,7 @@ using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -32,6 +33,23 @@ namespace Cpnucleo.Application.Services
                 {
                     double horasFracionadas = ((item.Tarefa.QtdHoras / 100.0) * item.PercentualTarefa.Value);
                     item.HorasDisponiveis = (int)(horasFracionadas - item.HorasUtilizadas);
+                }
+
+                if (item.Tarefa.ListaImpedimentos.Count(x => x.Ativo) > 0)
+                {
+                    item.Tarefa.TipoTarefa.Element = "warning-element";
+                }
+                else if (DateTime.Now.Date >= item.Tarefa.DataInicio && DateTime.Now.Date <= item.Tarefa.DataTermino)
+                {
+                    item.Tarefa.TipoTarefa.Element = "success-element";
+                }
+                else if (DateTime.Now.Date > item.Tarefa.DataTermino && item.Tarefa.PercentualConcluido != 100)
+                {
+                    item.Tarefa.TipoTarefa.Element = "danger-element";
+                }
+                else
+                {
+                    item.Tarefa.TipoTarefa.Element = "info-element";
                 }
             }
 
