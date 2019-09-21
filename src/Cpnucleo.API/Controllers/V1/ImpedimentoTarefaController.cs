@@ -6,93 +6,91 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V1
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("1", Deprecated = true)]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class ApontamentoController : ControllerBase
+    public class ImpedimentoTarefaController : ControllerBase
     {
-        private readonly IAppService<ApontamentoViewModel> _apontamentoAppService;
+        private readonly IAppService<ImpedimentoTarefaViewModel> _impedimentoTarefaAppService;
 
-        public ApontamentoController(IAppService<ApontamentoViewModel> apontamentoAppService)
+        public ImpedimentoTarefaController(IAppService<ImpedimentoTarefaViewModel> impedimentoTarefaAppService)
         {
-            _apontamentoAppService = apontamentoAppService;
+            _impedimentoTarefaAppService = impedimentoTarefaAppService;
         }
 
         /// <summary>
-        /// Listar apontamentos
+        /// Listar impedimentos de tarefa
         /// </summary>
         /// <remarks>
-        /// # Listar apontamentos
+        /// # Listar impedimentos de tarefa
         /// 
-        /// Lista apontamentos na base de dados.
+        /// Lista impedimentos de tarefa na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de apontamentos</response>
+        /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ApontamentoViewModel> Get()
+        public IEnumerable<ImpedimentoTarefaViewModel> Get()
         {
-            return _apontamentoAppService.Listar();
+            return _impedimentoTarefaAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar apontamento
+        /// Consultar impedimento de tarefa
         /// </summary>
         /// <remarks>
-        /// # Consultar apontamento
+        /// # Consultar impedimento de tarefa
         /// 
-        /// Consulta um apontamento na base de dados.
+        /// Consulta um impedimento de tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do apontamento</param>        
-        /// <response code="200">Retorna um apontamento</response>
-        /// <response code="404">Apontamento não encontrado</response>
+        /// <param name="id">Id do impedimento de tarefa</param>        
+        /// <response code="200">Retorna um impedimento de tarefa</response>
+        /// <response code="404">Impedimento de tarefa não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ApontamentoViewModel> Get(Guid id)
+        public ActionResult<ImpedimentoTarefaViewModel> Get(Guid id)
         {
-            ApontamentoViewModel apontamento = _apontamentoAppService.Consultar(id);
+            ImpedimentoTarefaViewModel impedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
 
-            if (apontamento == null)
+            if (impedimentoTarefa == null)
             {
                 return NotFound();
             }
 
-            return Ok(apontamento);
+            return Ok(impedimentoTarefa);
         }
 
         /// <summary>
-        /// Incluir apontamento
+        /// Incluir impedimento de tarefa
         /// </summary>
         /// <remarks>
-        /// # Incluir apontamento
+        /// # Incluir impedimento de tarefa
         /// 
-        /// Inclui um apontamento na base de dados.
+        /// Inclui um impedimento de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /apontamento
+        ///     POST /impedimentoTarefa
         ///     {
-        ///        "descricao": "Descrição do novo apontamento",
-        ///        "dataApontamento": "2019-09-21T15:56:00.503Z",
-        ///        "qtdHoras": 6,
-        ///        "percentualConcluido": 10,
+        ///        "descricao": "Descrição do novo impedimento de tarefa",
+        ///        "ativo": true,
         ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "idImpedimento": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">apontamento</param>        
-        /// <response code="201">Apontamento cadastrado com sucesso</response>
+        /// <param name="obj">Impedimento de tarefa</param>        
+        /// <response code="201">Impedimento de tarefa cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ApontamentoViewModel> Post([FromBody]ApontamentoViewModel obj)
+        public ActionResult<ImpedimentoTarefaViewModel> Post([FromBody]ImpedimentoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -101,7 +99,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _apontamentoAppService.Incluir(obj);
+                _impedimentoTarefaAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -119,35 +117,33 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar apontamento
+        /// Alterar impedimento de tarefa
         /// </summary>
         /// <remarks>
-        /// # Alterar apontamento
+        /// # Alterar impedimento de tarefa
         /// 
-        /// Altera um apontamento na base de dados.
+        /// Altera um impedimento de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /apontamento
+        ///     PUT /impedimentoTarefa
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "descricao": "Descrição do novo apontamento - alterado",
-        ///        "dataApontamento": "2019-09-21T15:56:00.503Z",
-        ///        "qtdHoras": 6,
-        ///        "percentualConcluido": 10,
+        ///        "descricao": "Descrição do novo impedimento de tarefa - alterado",
+        ///        "ativo": false,
         ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idImpedimento": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do apontamento</param>        
-        /// <param name="obj">apontamento</param>        
-        /// <response code="204">Apontamento alterado com sucesso</response>
+        /// <param name="id">Id do impedimento de tarefa</param>        
+        /// <param name="obj">Impedimento de tarefa</param>        
+        /// <response code="204">Impedimento de tarefa alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ApontamentoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]ImpedimentoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -161,7 +157,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _apontamentoAppService.Alterar(obj);
+                _impedimentoTarefaAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -179,36 +175,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover apontamento
+        /// Remover impedimento de tarefa
         /// </summary>
         /// <remarks>
-        /// # Remover apontamento
+        /// # Remover impedimento de tarefa
         /// 
-        /// Remove um apontamento na base de dados.
+        /// Remove um impedimento de tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do apontamento</param>        
-        /// <response code="204">Apontamento removido com sucesso</response>
-        /// <response code="404">Apontamento não encontrado</response>
+        /// <param name="id">Id do impedimento de tarefa</param>        
+        /// <response code="204">Impedimento de tarefa removido com sucesso</response>
+        /// <response code="404">Impedimento de tarefa não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ApontamentoViewModel obj = _apontamentoAppService.Consultar(id);
+            ImpedimentoTarefaViewModel obj = _impedimentoTarefaAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _apontamentoAppService.Remover(id);
+            _impedimentoTarefaAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _apontamentoAppService.Consultar(id) != null;
+            return _impedimentoTarefaAppService.Consultar(id) != null;
         }
     }
 }

@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V2
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("2")]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class ImpedimentoTarefaController : ControllerBase
     {

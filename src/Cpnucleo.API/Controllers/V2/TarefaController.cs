@@ -6,89 +6,95 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V2
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("2")]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class RecursoProjetoController : ControllerBase
+    public class TarefaController : ControllerBase
     {
-        private readonly IAppService<RecursoProjetoViewModel> _recursoProjetoAppService;
+        private readonly IAppService<TarefaViewModel> _tarefaAppService;
 
-        public RecursoProjetoController(IAppService<RecursoProjetoViewModel> recursoProjetoAppService)
+        public TarefaController(IAppService<TarefaViewModel> tarefaAppService)
         {
-            _recursoProjetoAppService = recursoProjetoAppService;
+            _tarefaAppService = tarefaAppService;
         }
 
         /// <summary>
-        /// Listar recursos de projeto
+        /// Listar tarefas
         /// </summary>
         /// <remarks>
-        /// # Listar recursos de projeto
+        /// # Listar tarefas
         /// 
-        /// Lista recursos de projeto na base de dados.
+        /// Lista tarefas na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de recursos de projeto</response>
+        /// <response code="200">Retorna uma lista de tarefas</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<RecursoProjetoViewModel> Get()
+        public IEnumerable<TarefaViewModel> Get()
         {
-            return _recursoProjetoAppService.Listar();
+            return _tarefaAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar recurso de projeto
+        /// Consultar tarefa
         /// </summary>
         /// <remarks>
-        /// # Consultar recurso de projeto
+        /// # Consultar tarefa
         /// 
-        /// Consulta um recurso de projeto na base de dados.
+        /// Consulta uma tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do recurso de projeto</param>        
-        /// <response code="200">Retorna um recurso de projeto</response>
-        /// <response code="404">Recurso de projeto não encontrado</response>
+        /// <param name="id">Id do tarefa</param>        
+        /// <response code="200">Retorna uma tarefa</response>
+        /// <response code="404">Tarefa não encontrada</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<RecursoProjetoViewModel> Get(Guid id)
+        public ActionResult<TarefaViewModel> Get(Guid id)
         {
-            RecursoProjetoViewModel recursoProjeto = _recursoProjetoAppService.Consultar(id);
+            TarefaViewModel tarefa = _tarefaAppService.Consultar(id);
 
-            if (recursoProjeto == null)
+            if (tarefa == null)
             {
                 return NotFound();
             }
 
-            return Ok(recursoProjeto);
+            return Ok(tarefa);
         }
 
         /// <summary>
-        /// Incluir recurso de projeto
+        /// Incluir tarefa
         /// </summary>
         /// <remarks>
-        /// # Incluir recurso de projeto
+        /// # Incluir tarefa
         /// 
-        /// Inclui um recurso de projeto na base de dados.
+        /// Inclui uma tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /recursoProjeto
+        ///     POST /tarefa
         ///     {
+        ///        "nome": "Nova tarefa",
+        ///        "dataInicio": "2019-09-21T15:24:35.117Z",
+        ///        "dataTermino": "2019-09-21T15:24:35.117Z",
+        ///        "qtdHoras": 8,
+        ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idWorkflow": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "idTipoTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">Recurso de projeto</param>        
-        /// <response code="201">Recurso de projeto cadastrado com sucesso</response>
+        /// <param name="obj">tarefa</param>        
+        /// <response code="201">Tarefa cadastrada com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<RecursoProjetoViewModel> Post([FromBody]RecursoProjetoViewModel obj)
+        public ActionResult<TarefaViewModel> Post([FromBody]TarefaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +103,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _recursoProjetoAppService.Incluir(obj);
+                _tarefaAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -115,31 +121,37 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar recurso de projeto
+        /// Alterar tarefa
         /// </summary>
         /// <remarks>
-        /// # Alterar recurso de projeto
+        /// # Alterar tarefa
         /// 
-        /// Altera um recurso de projeto na base de dados.
+        /// Altera uma tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /recursoProjeto
+        ///     PUT /tarefa
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Nova tarefa - alterada",
+        ///        "dataInicio": "2019-09-21T15:24:35.117Z",
+        ///        "dataTermino": "2019-09-21T15:24:35.117Z",
+        ///        "qtdHoras": 8,
         ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idWorkflow": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idTipoTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do recurso de projeto</param>        
-        /// <param name="obj">Recurso de projeto</param>        
-        /// <response code="204">Recurso de projeto alterado com sucesso</response>
+        /// <param name="id">Id da tarefa</param>        
+        /// <param name="obj">tarefa</param>        
+        /// <response code="204">Tarefa alterada com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]RecursoProjetoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]TarefaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -153,7 +165,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _recursoProjetoAppService.Alterar(obj);
+                _tarefaAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -171,36 +183,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover recurso de projeto
+        /// Remover tarefa
         /// </summary>
         /// <remarks>
-        /// # Remover recurso de projeto
+        /// # Remover tarefa
         /// 
-        /// Remove um recurso de projeto na base de dados.
+        /// Remove uma tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do recurso de projeto</param>        
-        /// <response code="204">Recurso de projeto removido com sucesso</response>
-        /// <response code="404">Recurso de projeto não encontrado</response>
+        /// <param name="id">Id da tarefa</param>        
+        /// <response code="204">Tarefa removida com sucesso</response>
+        /// <response code="404">Tarefa não encontrada</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            RecursoProjetoViewModel obj = _recursoProjetoAppService.Consultar(id);
+            TarefaViewModel obj = _tarefaAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _recursoProjetoAppService.Remover(id);
+            _tarefaAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _recursoProjetoAppService.Consultar(id) != null;
+            return _tarefaAppService.Consultar(id) != null;
         }
     }
 }

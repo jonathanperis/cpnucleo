@@ -6,89 +6,89 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.API.V1.Controllers
+namespace Cpnucleo.API.Controllers.V2
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("2")]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class ProjetoController : ControllerBase
+    public class SistemaController : ControllerBase
     {
-        private readonly IAppService<ProjetoViewModel> _projetoAppService;
+        private readonly IAppService<SistemaViewModel> _sistemaAppService;
 
-        public ProjetoController(IAppService<ProjetoViewModel> projetoAppService)
+        public SistemaController(IAppService<SistemaViewModel> sistemaAppService)
         {
-            _projetoAppService = projetoAppService;
+            _sistemaAppService = sistemaAppService;
         }
 
         /// <summary>
-        /// Listar projetos
+        /// Listar sistemas
         /// </summary>
         /// <remarks>
-        /// # Listar projetos
+        /// # Listar sistemas
         /// 
-        /// Lista projetos na base de dados.
+        /// Lista sistemas na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de projetos</response>
+        /// <response code="200">Retorna uma lista de sistemas</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ProjetoViewModel> Get()
+        public IEnumerable<SistemaViewModel> Get()
         {
-            return _projetoAppService.Listar();
+            return _sistemaAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar projeto
+        /// Consultar sistema
         /// </summary>
         /// <remarks>
-        /// # Consultar projeto
+        /// # Consultar sistema
         /// 
-        /// Consulta um projeto na base de dados.
+        /// Consulta um sistema na base de dados.
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <response code="200">Retorna um projeto</response>
-        /// <response code="404">Projeto não encontrado</response>
+        /// <param name="id">Id do sistema</param>        
+        /// <response code="200">Retorna um sistema</response>
+        /// <response code="404">Sistema não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ProjetoViewModel> Get(Guid id)
+        public ActionResult<SistemaViewModel> Get(Guid id)
         {
-            ProjetoViewModel projeto = _projetoAppService.Consultar(id);
+            SistemaViewModel sistema = _sistemaAppService.Consultar(id);
 
-            if (projeto == null)
+            if (sistema == null)
             {
                 return NotFound();
             }
 
-            return Ok(projeto);
+            return Ok(sistema);
         }
 
         /// <summary>
-        /// Incluir projeto
+        /// Incluir sistema
         /// </summary>
         /// <remarks>
-        /// # Incluir projeto
+        /// # Incluir sistema
         /// 
-        /// Inclui um projeto na base de dados.
+        /// Inclui um sistema na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /projeto
+        ///     POST /sistema
         ///     {
-        ///        "nome": "Novo projeto",
-        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "nome": "Novo sistema",
+        ///        "descricao": "Descrição do novo sistema"
         ///     }
         /// </remarks>
-        /// <param name="obj">projeto</param>        
-        /// <response code="201">Projeto cadastrado com sucesso</response>
+        /// <param name="obj">sistema</param>        
+        /// <response code="201">Sistema cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ProjetoViewModel> Post([FromBody]ProjetoViewModel obj)
+        public ActionResult<SistemaViewModel> Post([FromBody]SistemaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _projetoAppService.Incluir(obj);
+                _sistemaAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -115,31 +115,31 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar projeto
+        /// Alterar sistema
         /// </summary>
         /// <remarks>
-        /// # Alterar projeto
+        /// # Alterar sistema
         /// 
-        /// Altera um projeto na base de dados.
+        /// Altera um sistema na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /projeto
+        ///     PUT /sistema
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo projeto - alterado",
-        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Novo sistema - alterado",
+        ///        "descricao": "Descrição do novo sistema - alterado",
         ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <param name="obj">projeto</param>        
-        /// <response code="204">Projeto alterado com sucesso</response>
+        /// <param name="id">Id do sistema</param>        
+        /// <param name="obj">sistema</param>        
+        /// <response code="204">Sistema alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ProjetoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]SistemaViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -153,7 +153,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _projetoAppService.Alterar(obj);
+                _sistemaAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -171,36 +171,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover projeto
+        /// Remover sistema
         /// </summary>
         /// <remarks>
-        /// # Remover projeto
+        /// # Remover sistema
         /// 
-        /// Remove um projeto na base de dados.
+        /// Remove um sistema na base de dados.
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <response code="204">Projeto removido com sucesso</response>
-        /// <response code="404">Projeto não encontrado</response>
+        /// <param name="id">Id do sistema</param>        
+        /// <response code="204">Sistema removido com sucesso</response>
+        /// <response code="404">Sistema não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ProjetoViewModel obj = _projetoAppService.Consultar(id);
+            SistemaViewModel obj = _sistemaAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _projetoAppService.Remover(id);
+            _sistemaAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _projetoAppService.Consultar(id) != null;
+            return _sistemaAppService.Consultar(id) != null;
         }
     }
 }

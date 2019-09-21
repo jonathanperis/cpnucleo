@@ -37,5 +37,7 @@ namespace Cpnucleo.Application.ViewModels
         public string ConfirmarSenha { get; set; }
 
         public string Salt { get; set; }
+
+        public string Token { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -60,9 +61,9 @@ namespace Cpnucleo.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApiVersionDescriptionProvider provider)
         {
-            app.UseSwaggerUIConfig();
+            app.UseSwaggerUIConfig(provider);
 
             if (env.IsDevelopment())
             {
@@ -75,7 +76,10 @@ namespace Cpnucleo.API
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseMvc()
+                .UseApiVersioning()
+                .UseMvcWithDefaultRoute();
         }
     }
 }
