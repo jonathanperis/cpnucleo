@@ -9,8 +9,8 @@ namespace Cpnucleo.API.V1.Controllers
     [ApiVersion("1.0")]
     public class AuthController : ControllerBase
     {
-        const string userT = "USERBOLADAO";
-        const string passT = "SENHABOLADONA";
+        private const string userT = "USERBOLADAO";
+        private const string passT = "SENHABOLADONA";
 
         private readonly IJwtManager _jwtManager;
 

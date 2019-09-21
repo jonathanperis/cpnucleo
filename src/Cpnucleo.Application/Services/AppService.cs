@@ -25,7 +25,7 @@ namespace Cpnucleo.Application.Services
         {
             if (obj.Id != null)
             {
-                obj.Id = new Guid(); 
+                obj.Id = new Guid();
             }
 
             obj.DataInclusao = DateTime.Now;

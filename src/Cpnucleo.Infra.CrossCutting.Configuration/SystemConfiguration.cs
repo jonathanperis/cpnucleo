@@ -37,7 +37,9 @@ namespace Cpnucleo.Infra.CrossCutting.Configuration
                 string value = _configuration.GetSection("Jwt")["Key"];
 
                 if (value != null)
+                {
                     return value;
+                }
 
                 return string.Empty;
             }

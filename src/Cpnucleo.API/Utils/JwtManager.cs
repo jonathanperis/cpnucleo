@@ -18,23 +18,25 @@ namespace Cpnucleo.API.Utils
 
         public string GenerateToken(string usuario, int tempoExpiracao)
         {
-            var chaveSimetrica = Convert.FromBase64String(_systemConfiguration.JwtKey);
-            var tokenHandler = new JwtSecurityTokenHandler();
+            byte[] chaveSimetrica = Convert.FromBase64String(_systemConfiguration.JwtKey);
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
-            var now = DateTime.UtcNow;
+            DateTime now = DateTime.UtcNow;
 
-            List<Claim> claimsTemp = new List<Claim>();
-            claimsTemp.Add(new Claim(ClaimTypes.Name, usuario));
+            List<Claim> claimsTemp = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, usuario)
+            };
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claimsTemp),
                 Expires = now.AddMinutes(Convert.ToInt32(tempoExpiracao)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(chaveSimetrica), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var stoken = tokenHandler.CreateToken(tokenDescriptor);
-            var token = tokenHandler.WriteToken(stoken);
+            SecurityToken stoken = tokenHandler.CreateToken(tokenDescriptor);
+            string token = tokenHandler.WriteToken(stoken);
 
             return token;
         }

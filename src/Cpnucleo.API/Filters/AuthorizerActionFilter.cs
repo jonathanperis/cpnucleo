@@ -38,7 +38,7 @@ namespace Cpnucleo.API.Filters
                 JwtBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
                 JwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
 
-                var json = decoder.Decode(authorizationToken.ToString(), _systemConfiguration.JwtKey, verify: false);
+                string json = decoder.Decode(authorizationToken.ToString(), _systemConfiguration.JwtKey, verify: false);
 
                 JObject Json = JsonConvert.DeserializeObject<JObject>(json);
 
