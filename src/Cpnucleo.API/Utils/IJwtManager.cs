@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Cpnucleo.API.Utils
+﻿namespace Cpnucleo.API.Utils
 {
     public interface IJwtManager
     {

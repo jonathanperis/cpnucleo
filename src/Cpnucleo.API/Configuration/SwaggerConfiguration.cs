@@ -32,7 +32,7 @@ namespace Cpnucleo.API.Configuration
                     }
                 });
 
-                var security = new Dictionary<string, IEnumerable<string>>
+                Dictionary<string, IEnumerable<string>> security = new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[] { }},
                 };
@@ -47,8 +47,8 @@ namespace Cpnucleo.API.Configuration
 
                 config.AddSecurityRequirement(security);
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 config.IncludeXmlComments(xmlPath);
             });
         }
