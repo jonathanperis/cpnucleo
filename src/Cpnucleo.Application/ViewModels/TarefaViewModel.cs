@@ -39,15 +39,19 @@ namespace Cpnucleo.Application.ViewModels
         public int HorasRestantes { get; set; }
 
         [Display(Name = "Projeto")]
+        [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
         public Guid IdProjeto { get; set; }
 
         [Display(Name = "Workflow")]
+        [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
         public Guid? IdWorkflow { get; set; }
 
         [Display(Name = "Recurso")]
+        [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
         public Guid? IdRecurso { get; set; }
 
         [Display(Name = "Tipo Tarefa")]
+        [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
         public Guid? IdTipoTarefa { get; set; }
 
         public ProjetoViewModel Projeto { get; set; }

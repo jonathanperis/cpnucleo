@@ -13,82 +13,82 @@ namespace Cpnucleo.API.V1.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class ProjetoController : ControllerBase
+    public class RecursoProjetoController : ControllerBase
     {
-        private readonly IAppService<ProjetoViewModel> _projetoAppService;
+        private readonly IAppService<RecursoProjetoViewModel> _recursoProjetoAppService;
 
-        public ProjetoController(IAppService<ProjetoViewModel> projetoAppService)
+        public RecursoProjetoController(IAppService<RecursoProjetoViewModel> recursoProjetoAppService)
         {
-            _projetoAppService = projetoAppService;
+            _recursoProjetoAppService = recursoProjetoAppService;
         }
 
         /// <summary>
-        /// Listar projetos
+        /// Listar recursos de projeto
         /// </summary>
         /// <remarks>
-        /// # Listar projetos
+        /// # Listar recursos de projeto
         /// 
-        /// Lista projetos na base de dados.
+        /// Lista recursos de projeto na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de projetos</response>
+        /// <response code="200">Retorna uma lista de recursos de projeto</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ProjetoViewModel> Get()
+        public IEnumerable<RecursoProjetoViewModel> Get()
         {
-            return _projetoAppService.Listar();
+            return _recursoProjetoAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar projeto
+        /// Consultar recurso de projeto
         /// </summary>
         /// <remarks>
-        /// # Consultar projeto
+        /// # Consultar recurso de projeto
         /// 
-        /// Consulta um projeto na base de dados.
+        /// Consulta um recurso de projeto na base de dados.
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <response code="200">Retorna um projeto</response>
-        /// <response code="404">Projeto não encontrado</response>
+        /// <param name="id">Id do recurso de projeto</param>        
+        /// <response code="200">Retorna um recurso de projeto</response>
+        /// <response code="404">Recurso de projeto não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ProjetoViewModel> Get(Guid id)
+        public ActionResult<RecursoProjetoViewModel> Get(Guid id)
         {
-            ProjetoViewModel projeto = _projetoAppService.Consultar(id);
+            RecursoProjetoViewModel recursoProjeto = _recursoProjetoAppService.Consultar(id);
 
-            if (projeto == null)
+            if (recursoProjeto == null)
             {
                 return NotFound();
             }
 
-            return Ok(projeto);
+            return Ok(recursoProjeto);
         }
 
         /// <summary>
-        /// Incluir projeto
+        /// Incluir recurso de projeto
         /// </summary>
         /// <remarks>
-        /// # Incluir projeto
+        /// # Incluir recurso de projeto
         /// 
-        /// Inclui um projeto na base de dados.
+        /// Inclui um recurso de projeto na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /projeto
+        ///     POST /recursoProjeto
         ///     {
-        ///        "nome": "Novo projeto",
-        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">projeto</param>        
-        /// <response code="201">Projeto cadastrado com sucesso</response>
+        /// <param name="obj">Recurso de projeto</param>        
+        /// <response code="201">Recurso de projeto cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ProjetoViewModel> Post([FromBody]ProjetoViewModel obj)
+        public ActionResult<RecursoProjetoViewModel> Post([FromBody]RecursoProjetoViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _projetoAppService.Incluir(obj);
+                _recursoProjetoAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -115,30 +115,30 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar projeto
+        /// Alterar recurso de projeto
         /// </summary>
         /// <remarks>
-        /// # Alterar projeto
+        /// # Alterar recurso de projeto
         /// 
-        /// Altera um projeto na base de dados.
+        /// Altera um recurso de projeto na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /projeto
+        ///     PUT /recursoProjeto
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo projeto - alterado",
-        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <param name="obj">projeto</param>        
-        /// <response code="204">Projeto alterado com sucesso</response>
+        /// <param name="id">Id do recurso de projeto</param>        
+        /// <param name="obj">Recurso de projeto</param>        
+        /// <response code="204">Recurso de projeto alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ProjetoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]RecursoProjetoViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -152,7 +152,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _projetoAppService.Alterar(obj);
+                _recursoProjetoAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -170,36 +170,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover projeto
+        /// Remover recurso de projeto
         /// </summary>
         /// <remarks>
-        /// # Remover projeto
+        /// # Remover recurso de projeto
         /// 
-        /// Remove um projeto na base de dados.
+        /// Remove um recurso de projeto na base de dados.
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <response code="204">Projeto removido com sucesso</response>
-        /// <response code="404">Projeto não encontrado</response>
+        /// <param name="id">Id do recurso de projeto</param>        
+        /// <response code="204">Recurso de projeto removido com sucesso</response>
+        /// <response code="404">Recurso de projeto não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ProjetoViewModel obj = _projetoAppService.Consultar(id);
+            RecursoProjetoViewModel obj = _recursoProjetoAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _projetoAppService.Remover(id);
+            _recursoProjetoAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _projetoAppService.Consultar(id) != null;
+            return _recursoProjetoAppService.Consultar(id) != null;
         }
     }
 }

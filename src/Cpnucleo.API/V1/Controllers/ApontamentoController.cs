@@ -13,82 +13,86 @@ namespace Cpnucleo.API.V1.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
-    public class ProjetoController : ControllerBase
+    public class ApontamentoController : ControllerBase
     {
-        private readonly IAppService<ProjetoViewModel> _projetoAppService;
+        private readonly IAppService<ApontamentoViewModel> _apontamentoAppService;
 
-        public ProjetoController(IAppService<ProjetoViewModel> projetoAppService)
+        public ApontamentoController(IAppService<ApontamentoViewModel> apontamentoAppService)
         {
-            _projetoAppService = projetoAppService;
+            _apontamentoAppService = apontamentoAppService;
         }
 
         /// <summary>
-        /// Listar projetos
+        /// Listar apontamentos
         /// </summary>
         /// <remarks>
-        /// # Listar projetos
+        /// # Listar apontamentos
         /// 
-        /// Lista projetos na base de dados.
+        /// Lista apontamentos na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de projetos</response>
+        /// <response code="200">Retorna uma lista de apontamentos</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ProjetoViewModel> Get()
+        public IEnumerable<ApontamentoViewModel> Get()
         {
-            return _projetoAppService.Listar();
+            return _apontamentoAppService.Listar();
         }
 
         /// <summary>
-        /// Consultar projeto
+        /// Consultar apontamento
         /// </summary>
         /// <remarks>
-        /// # Consultar projeto
+        /// # Consultar apontamento
         /// 
-        /// Consulta um projeto na base de dados.
+        /// Consulta um apontamento na base de dados.
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <response code="200">Retorna um projeto</response>
-        /// <response code="404">Projeto não encontrado</response>
+        /// <param name="id">Id do apontamento</param>        
+        /// <response code="200">Retorna um apontamento</response>
+        /// <response code="404">Apontamento não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ProjetoViewModel> Get(Guid id)
+        public ActionResult<ApontamentoViewModel> Get(Guid id)
         {
-            ProjetoViewModel projeto = _projetoAppService.Consultar(id);
+            ApontamentoViewModel apontamento = _apontamentoAppService.Consultar(id);
 
-            if (projeto == null)
+            if (apontamento == null)
             {
                 return NotFound();
             }
 
-            return Ok(projeto);
+            return Ok(apontamento);
         }
 
         /// <summary>
-        /// Incluir projeto
+        /// Incluir apontamento
         /// </summary>
         /// <remarks>
-        /// # Incluir projeto
+        /// # Incluir apontamento
         /// 
-        /// Inclui um projeto na base de dados.
+        /// Inclui um apontamento na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /projeto
+        ///     POST /apontamento
         ///     {
-        ///        "nome": "Novo projeto",
-        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "descricao": "Descrição do novo apontamento",
+        ///        "dataApontamento": "2019-09-21T15:56:00.503Z",
+        ///        "qtdHoras": 6,
+        ///        "percentualConcluido": 10,
+        ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">projeto</param>        
-        /// <response code="201">Projeto cadastrado com sucesso</response>
+        /// <param name="obj">apontamento</param>        
+        /// <response code="201">Apontamento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ProjetoViewModel> Post([FromBody]ProjetoViewModel obj)
+        public ActionResult<ApontamentoViewModel> Post([FromBody]ApontamentoViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -97,7 +101,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _projetoAppService.Incluir(obj);
+                _apontamentoAppService.Incluir(obj);
             }
             catch (DbUpdateException)
             {
@@ -115,30 +119,34 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Alterar projeto
+        /// Alterar apontamento
         /// </summary>
         /// <remarks>
-        /// # Alterar projeto
+        /// # Alterar apontamento
         /// 
-        /// Altera um projeto na base de dados.
+        /// Altera um apontamento na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /projeto
+        ///     PUT /apontamento
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "nome": "Novo projeto - alterado",
-        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "descricao": "Descrição do novo apontamento - alterado",
+        ///        "dataApontamento": "2019-09-21T15:56:00.503Z",
+        ///        "qtdHoras": 6,
+        ///        "percentualConcluido": 10,
+        ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <param name="obj">projeto</param>        
-        /// <response code="204">Projeto alterado com sucesso</response>
+        /// <param name="id">Id do apontamento</param>        
+        /// <param name="obj">apontamento</param>        
+        /// <response code="204">Apontamento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ProjetoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]ApontamentoViewModel obj)
         {
             if (!ModelState.IsValid)
             {
@@ -152,7 +160,7 @@ namespace Cpnucleo.API.V1.Controllers
 
             try
             {
-                _projetoAppService.Alterar(obj);
+                _apontamentoAppService.Alterar(obj);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -170,36 +178,36 @@ namespace Cpnucleo.API.V1.Controllers
         }
 
         /// <summary>
-        /// Remover projeto
+        /// Remover apontamento
         /// </summary>
         /// <remarks>
-        /// # Remover projeto
+        /// # Remover apontamento
         /// 
-        /// Remove um projeto na base de dados.
+        /// Remove um apontamento na base de dados.
         /// </remarks>
-        /// <param name="id">Id do projeto</param>        
-        /// <response code="204">Projeto removido com sucesso</response>
-        /// <response code="404">Projeto não encontrado</response>
+        /// <param name="id">Id do apontamento</param>        
+        /// <response code="204">Apontamento removido com sucesso</response>
+        /// <response code="404">Apontamento não encontrado</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ProjetoViewModel obj = _projetoAppService.Consultar(id);
+            ApontamentoViewModel obj = _apontamentoAppService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _projetoAppService.Remover(id);
+            _apontamentoAppService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _projetoAppService.Consultar(id) != null;
+            return _apontamentoAppService.Consultar(id) != null;
         }
     }
 }

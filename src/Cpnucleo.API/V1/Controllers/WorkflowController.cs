@@ -30,7 +30,7 @@ namespace Cpnucleo.API.V1.Controllers
         /// 
         /// Lista workflows na base de dados.
         /// </remarks>
-        /// <response code="200">Retorna uma lista de workflows (não retorna os objetos aninhados)</response>
+        /// <response code="200">Retorna uma lista de workflows</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<WorkflowViewModel> Get()
@@ -47,7 +47,7 @@ namespace Cpnucleo.API.V1.Controllers
         /// Consulta um workflow na base de dados.
         /// </remarks>
         /// <param name="id">Id do workflow</param>        
-        /// <response code="200">Retorna um workflow (retorna os objetos aninhados)</response>
+        /// <response code="200">Retorna um workflow</response>
         /// <response code="404">Workflow não encontrado</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]

@@ -15,6 +15,7 @@ namespace Cpnucleo.Application.ViewModels
         public Guid IdRecurso { get; set; }
 
         [Display(Name = "Tarefa")]
+        [Required(ErrorMessage = "Necessário informar o {0}.")]
         public Guid IdTarefa { get; set; }
 
         public RecursoViewModel Recurso { get; set; }
