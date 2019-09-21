@@ -14,7 +14,23 @@ namespace Cpnucleo.API.Configuration
         {
             services.AddSwaggerGen(config =>
             {
-                config.SwaggerDoc("v1", new Info { Title = "Cpnucleo", Version = "v1" });
+                config.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Cpnucleo API",
+                    Description = "Cpnucleo example ASP.NET Core Web API",
+                    Contact = new Contact
+                    {
+                        Name = "Jonathan Peris",
+                        Email = "jperis.silva@gmail.com",
+                        Url = "https://jonathanperis.github.io",
+                    },
+                    License = new License
+                    {
+                        Name = "Use under MIT",
+                        Url = "https://en.wikipedia.org/wiki/MIT_License",
+                    }
+                });
 
                 var security = new Dictionary<string, IEnumerable<string>>
                 {
@@ -49,7 +65,7 @@ namespace Cpnucleo.API.Configuration
             application.UseSwaggerUI(c =>
             {
                 string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
-                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "Miniload");
+                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "Cpnucleo V1");
                 c.RoutePrefix = "swagger";
             });
         }

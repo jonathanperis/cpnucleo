@@ -25,6 +25,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Listar sistemas
         /// </summary>
+        /// <remarks>
+        /// # Listar sistemas
+        /// 
+        /// Lista sistemas na base de dados.
+        /// </remarks>
         /// <response code="200">Retorna uma lista de sistemas</response>
         [HttpGet]
         [ProducesResponseType(200)]
@@ -36,6 +41,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Consultar sistema
         /// </summary>
+        /// <remarks>
+        /// # Consultar sistema
+        /// 
+        /// Consulta um sistema na base de dados.
+        /// </remarks>
         /// <param name="id">Id do sistema</param>        
         /// <response code="200">Retorna um sistema</response>
         /// <response code="404">Sistema não encontrado</response>
@@ -58,9 +68,9 @@ namespace Cpnucleo.API.V1.Controllers
         /// Incluir sistema
         /// </summary>
         /// <remarks>
-        /// # Cadastrar Sistema
+        /// # Incluir sistema
         /// 
-        /// Cadastra um novo sistema na base de dados.
+        /// Inclui um sistema na base de dados.
         /// 
         /// # Sample request:
         ///
@@ -69,7 +79,6 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "nome": "Novo sistema",
         ///        "descricao": "Descrição do novo sistema"
         ///     }
-        ///
         /// </remarks>
         /// <param name="obj">sistema</param>        
         /// <response code="201">Sistema cadastrado com sucesso</response>
@@ -109,7 +118,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// Alterar sistema
         /// </summary>
         /// <remarks>
-        /// Sample request:
+        /// # Alterar sistema
+        /// 
+        /// Altera um sistema na base de dados.
+        /// 
+        /// # Sample request:
         ///
         ///     PUT /sistema
         ///     {
@@ -117,7 +130,6 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "nome": "Novo sistema - alterado",
         ///        "descricao": "Descrição do novo sistema - alterado"
         ///     }
-        ///
         /// </remarks>
         /// <param name="id">Id do sistema</param>        
         /// <param name="obj">sistema</param>        
@@ -160,6 +172,11 @@ namespace Cpnucleo.API.V1.Controllers
         /// <summary>
         /// Remover sistema
         /// </summary>
+        /// <remarks>
+        /// # Remover sistema
+        /// 
+        /// Remove um sistema na base de dados.
+        /// </remarks>
         /// <param name="id">Id do sistema</param>        
         /// <response code="204">Sistema removido com sucesso</response>
         /// <response code="404">Sistema não encontrado</response>

@@ -26,17 +26,17 @@ namespace Cpnucleo.API.Filters
 
             if (!hasHeaderAuthorization)
             {
-                throw new UnauthorizedAccessException("Acesso não Autorizado, Token não encontrado");
+                throw new UnauthorizedAccessException("Acesso não autorizado, token não encontrado");
             }
 
             try
             {
-                IJsonSerializer serializer = new JsonNetSerializer();
-                IDateTimeProvider provider = new UtcDateTimeProvider();
-                IJwtValidator validator = new JwtValidator(serializer, provider);
+                JsonNetSerializer serializer = new JsonNetSerializer();
+                UtcDateTimeProvider provider = new UtcDateTimeProvider();
+                JwtValidator validator = new JwtValidator(serializer, provider);
 
-                IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-                IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
+                JwtBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+                JwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
 
                 var json = decoder.Decode(authorizationToken.ToString(), _systemConfiguration.JwtKey, verify: false);
 
