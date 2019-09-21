@@ -132,7 +132,8 @@ namespace Cpnucleo.API.V1.Controllers
         ///        "descricao": "Descrição do novo impedimento de tarefa - alterado",
         ///        "ativo": false,
         ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-        ///        "idImpedimento": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///        "idImpedimento": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
         /// <param name="id">Id do impedimento de tarefa</param>        

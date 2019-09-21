@@ -23,9 +23,9 @@ namespace Cpnucleo.Application.Services
 
         public bool Incluir(TViewModel obj)
         {
-            if (obj.Id != null)
+            if (obj.Id == Guid.Empty)
             {
-                obj.Id = new Guid();
+                obj.Id = Guid.NewGuid();
             }
 
             obj.DataInclusao = DateTime.Now;
