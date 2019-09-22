@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar workflows
         /// 
-        /// Lista workflows na base de dados.
+        /// Lista workflows da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de workflows</response>
         [HttpGet]
@@ -80,7 +80,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///        "ordem": "3"
         ///     }
         /// </remarks>
-        /// <param name="obj">workflow</param>        
+        /// <param name="obj">Workflow</param>        
         /// <response code="201">Workflow cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -133,7 +133,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///     }
         /// </remarks>
         /// <param name="id">Id do workflow</param>        
-        /// <param name="obj">workflow</param>        
+        /// <param name="obj">Workflow</param>        
         /// <response code="204">Workflow alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -176,7 +176,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover workflow
         /// 
-        /// Remove um workflow na base de dados.
+        /// Remove um workflow da base de dados.
         /// </remarks>
         /// <param name="id">Id do workflow</param>        
         /// <response code="204">Workflow removido com sucesso</response>

@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar sistemas
         /// 
-        /// Lista sistemas na base de dados.
+        /// Lista sistemas da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de sistemas</response>
         [HttpGet]
@@ -80,7 +80,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///        "descricao": "Descrição do novo sistema"
         ///     }
         /// </remarks>
-        /// <param name="obj">sistema</param>        
+        /// <param name="obj">Sistema</param>        
         /// <response code="201">Sistema cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -133,7 +133,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///     }
         /// </remarks>
         /// <param name="id">Id do sistema</param>        
-        /// <param name="obj">sistema</param>        
+        /// <param name="obj">Sistema</param>        
         /// <response code="204">Sistema alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -176,7 +176,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover sistema
         /// 
-        /// Remove um sistema na base de dados.
+        /// Remove um sistema da base de dados.
         /// </remarks>
         /// <param name="id">Id do sistema</param>        
         /// <response code="204">Sistema removido com sucesso</response>

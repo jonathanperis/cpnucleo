@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar recursos
         /// 
-        /// Lista recursos na base de dados.
+        /// Lista recursos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de recursos</response>
         [HttpGet]
@@ -83,7 +83,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///        "confirmarSenha": "12345678"
         ///     }
         /// </remarks>
-        /// <param name="obj">recurso</param>        
+        /// <param name="obj">Recurso</param>        
         /// <response code="201">Recurso cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -139,7 +139,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///     }
         /// </remarks>
         /// <param name="id">Id do recurso</param>        
-        /// <param name="obj">recurso</param>        
+        /// <param name="obj">Recurso</param>        
         /// <response code="204">Recurso alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -182,7 +182,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover recurso
         /// 
-        /// Remove um recurso na base de dados.
+        /// Remove um recurso da base de dados.
         /// </remarks>
         /// <param name="id">Id do recurso</param>        
         /// <response code="204">Recurso removido com sucesso</response>

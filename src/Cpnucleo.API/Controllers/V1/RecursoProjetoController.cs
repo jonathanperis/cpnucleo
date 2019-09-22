@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar recursos de projeto
         /// 
-        /// Lista recursos de projeto na base de dados.
+        /// Lista recursos de projeto da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de recursos de projeto</response>
         [HttpGet]
@@ -176,7 +176,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover recurso de projeto
         /// 
-        /// Remove um recurso de projeto na base de dados.
+        /// Remove um recurso de projeto da base de dados.
         /// </remarks>
         /// <param name="id">Id do recurso de projeto</param>        
         /// <response code="204">Recurso de projeto removido com sucesso</response>
