@@ -21,7 +21,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
@@ -42,7 +42,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnPost()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 

@@ -21,7 +21,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             SistemaViewModel sistemaMock = new SistemaViewModel { };
 
@@ -42,7 +42,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
         public void Test_OnPost()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             _sistemaAppService.Setup(x => x.Remover(id));
 

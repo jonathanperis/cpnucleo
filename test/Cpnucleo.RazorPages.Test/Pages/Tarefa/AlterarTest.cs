@@ -31,7 +31,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
@@ -61,13 +61,27 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnPost(string nome)
         {
             // Arrange
-            Guid id = new Guid();
-            Guid idProjeto = new Guid();
+            Guid id = Guid.NewGuid();
+            Guid idProjeto = Guid.NewGuid();
+            Guid IdWorkflow = Guid.NewGuid();
+            Guid IdRecurso = Guid.NewGuid();
+            Guid IdTipoTarefa = Guid.NewGuid();
 
             DateTime dataInicio = DateTime.Now;
             DateTime dataTermino = DateTime.Now.AddDays(5);
 
-            TarefaViewModel tarefaMock = new TarefaViewModel { Id = id, Nome = nome, IdProjeto = idProjeto, DataInicio = dataInicio, DataTermino = dataTermino };
+            TarefaViewModel tarefaMock = new TarefaViewModel
+            {
+                Id = id,
+                Nome = nome,
+                IdProjeto = idProjeto,
+                DataInicio = dataInicio,
+                DataTermino = dataTermino,
+                IdWorkflow = IdWorkflow,
+                IdRecurso = IdRecurso,
+                IdTipoTarefa = IdTipoTarefa
+            };
+
             List<ProjetoViewModel> listaProjetosMock = new List<ProjetoViewModel> { };
             List<SistemaViewModel> listaSistemasMock = new List<SistemaViewModel> { };
             List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };

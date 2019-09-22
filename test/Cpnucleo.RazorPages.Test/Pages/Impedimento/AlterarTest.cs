@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
         public void Test_OnPost(string nome)
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { Id = id, Nome = nome };
 

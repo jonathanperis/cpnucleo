@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         public void Test_OnPost(string nome)
         {
             // Arrange
-            Guid idSistema = new Guid();
+            Guid idSistema = Guid.NewGuid();
 
             ProjetoViewModel projetoMock = new ProjetoViewModel { Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };

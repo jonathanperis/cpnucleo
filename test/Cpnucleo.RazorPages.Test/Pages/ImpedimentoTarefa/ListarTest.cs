@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid idTarefa = new Guid();
+            Guid idTarefa = Guid.NewGuid();
 
             List<ImpedimentoTarefaViewModel> listaMock = new List<ImpedimentoTarefaViewModel> { };
 

@@ -21,7 +21,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
 
@@ -42,8 +42,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnPost()
         {
             // Arrange
-            Guid id = new Guid();
-            Guid idTarefa = new Guid();
+            Guid id = Guid.NewGuid();
+            Guid idTarefa = Guid.NewGuid();
 
             _impedimentoTarefaAppService.Setup(x => x.Remover(id));
 

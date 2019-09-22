@@ -25,7 +25,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
@@ -49,8 +49,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
         public void Test_OnPost(string nome)
         {
             // Arrange
-            Guid id = new Guid();
-            Guid idSistema = new Guid();
+            Guid id = Guid.NewGuid();
+            Guid idSistema = Guid.NewGuid();
 
             ProjetoViewModel projetoMock = new ProjetoViewModel { Id = id, Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
