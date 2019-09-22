@@ -27,9 +27,6 @@ namespace Cpnucleo.Infra.CrossCutting.Configuration
             }
         }
 
-        /// <summary>
-        /// Barea - Jwt key
-        /// </summary>
         public string JwtKey
         {
             get
@@ -42,6 +39,16 @@ namespace Cpnucleo.Infra.CrossCutting.Configuration
                 }
 
                 return string.Empty;
+            }
+        }
+
+        public int JwtExpirationDate
+        {
+            get
+            {
+                int.TryParse(_configuration.GetSection("Jwt")["ExpirationDate"], out int value);
+
+                return value;
             }
         }
     }

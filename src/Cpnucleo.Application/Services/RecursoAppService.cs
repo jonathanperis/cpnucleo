@@ -39,7 +39,7 @@ namespace Cpnucleo.Application.Services
             return base.Alterar(recurso);
         }
 
-        public RecursoViewModel ConsultarPorLogin(string login, string senha, out bool valido)
+        public RecursoViewModel Autenticar(string login, string senha, out bool valido)
         {
             valido = false;
 

@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Services
 
             _repository.Incluir(_mapper.Map<Apontamento>(apontamento));
 
-            return _tarefaAppService.AlterarPorApontamento(apontamento.IdTarefa, apontamento.PercentualConcluido);
+            return _tarefaAppService.AlterarPorPercentualConcluido(apontamento.IdTarefa, apontamento.PercentualConcluido);
         }
 
         public IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso)

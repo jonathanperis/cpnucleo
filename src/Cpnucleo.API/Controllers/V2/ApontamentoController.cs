@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class ApontamentoController : ControllerBase
     {
-        private readonly IAppService<ApontamentoViewModel> _apontamentoAppService;
+        private readonly IApontamentoAppService _apontamentoAppService;
 
-        public ApontamentoController(IAppService<ApontamentoViewModel> apontamentoAppService)
+        public ApontamentoController(IApontamentoAppService apontamentoAppService)
         {
             _apontamentoAppService = apontamentoAppService;
         }
@@ -36,6 +36,23 @@ namespace Cpnucleo.API.Controllers.V2
         public IEnumerable<ApontamentoViewModel> Get()
         {
             return _apontamentoAppService.Listar();
+        }
+
+        /// <summary>
+        /// Listar apontamentos por id recurso
+        /// </summary>
+        /// <remarks>
+        /// # Listar apontamentos por id recurso
+        /// 
+        /// Lista apontamentos por id recurso na base de dados.
+        /// </remarks>
+        /// <param name="idRecurso">Id do recurso</param>        
+        /// <response code="200">Retorna uma lista de apontamentos</response>
+        [HttpGet("GetByRecurso/{idRecurso}")]
+        [ProducesResponseType(200)]
+        public IEnumerable<ApontamentoViewModel> GetByRecurso(Guid idRecurso)
+        {
+            return _apontamentoAppService.ListarPorRecurso(idRecurso);
         }
 
         /// <summary>

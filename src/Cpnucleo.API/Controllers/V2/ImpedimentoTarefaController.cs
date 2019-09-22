@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class ImpedimentoTarefaController : ControllerBase
     {
-        private readonly IAppService<ImpedimentoTarefaViewModel> _impedimentoTarefaAppService;
+        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
 
-        public ImpedimentoTarefaController(IAppService<ImpedimentoTarefaViewModel> impedimentoTarefaAppService)
+        public ImpedimentoTarefaController(IImpedimentoTarefaAppService impedimentoTarefaAppService)
         {
             _impedimentoTarefaAppService = impedimentoTarefaAppService;
         }
@@ -36,6 +36,23 @@ namespace Cpnucleo.API.Controllers.V2
         public IEnumerable<ImpedimentoTarefaViewModel> Get()
         {
             return _impedimentoTarefaAppService.Listar();
+        }
+
+        /// <summary>
+        /// Listar impedimentos de tarefa por id tarefa
+        /// </summary>
+        /// <remarks>
+        /// # Listar impedimentos de tarefa por id tarefa
+        /// 
+        /// Lista impedimentos de tarefa por id tarefa na base de dados.
+        /// </remarks>
+        /// <param name="idTarefa">Id da tarefa</param>        
+        /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
+        [HttpGet("GetByTarefa/{idTarefa}")]
+        [ProducesResponseType(200)]
+        public IEnumerable<ImpedimentoTarefaViewModel> GetByTarefa(Guid idTarefa)
+        {
+            return _impedimentoTarefaAppService.ListarPorTarefa(idTarefa);
         }
 
         /// <summary>
