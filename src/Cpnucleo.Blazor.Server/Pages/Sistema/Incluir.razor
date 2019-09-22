@@ -1,0 +1,63 @@
+﻿@page "/sistema/incluir"
+
+@inject IAppService<SistemaViewModel> SistemaAppService
+
+<div class="col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Inclusão de Sistema</h5>
+            <div class="ibox-tools">
+                <a class="fullscreen-link">
+                    <i class="fa fa-expand"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <EditForm Model="@model" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nome</label>
+                    <div class="col-sm-10">
+                        <InputText class="form-control" @bind-Value="@model.Nome" placeholder="Nome" />
+                        <ValidationMessage For="@(() => model.Nome)" />
+                        @*<input type="text" class="form-control" asp-for="Sistema.Nome" placeholder="@Html.DisplayNameFor(x => x.Sistema.Nome)">*@
+                        @*<span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Sistema.Nome)</span>*@
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Descrição</label>
+                    <div class="col-sm-10">
+                        <InputText class="form-control" @bind-Value="@model.Descricao" placeholder="Descrição" />
+                        <ValidationMessage For="@(() => model.Descricao)" />
+                        @*<input type="text" class="form-control" asp-for="Sistema.Descricao" placeholder="@Html.DisplayNameFor(x => x.Sistema.Descricao)">*@
+                        @*<span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Sistema.Descricao)</span>*@
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-2">
+                        <NavLink class="btn btn-white" href="/sistema/listar">Voltar</NavLink>
+                        <button class="btn btn-primary" type="submit">Incluir</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+<p>Validation result: @validationStatus</p>
+
+@code {
+    SistemaViewModel model = new SistemaViewModel();
+    string validationStatus = "";
+
+    void OnValidSubmit()
+    {
+        validationStatus = "Success!";
+    }
+
+    void OnInvalidSubmit()
+    {
+        validationStatus = "Failed!";
+    }
+}

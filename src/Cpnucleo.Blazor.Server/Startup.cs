@@ -1,15 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Cpnucleo.Blazor.Server.Configuration;
+using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Cpnucleo.Blazor.Server.Data;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Cpnucleo.Blazor.Server
 {
@@ -26,9 +24,13 @@ namespace Cpnucleo.Blazor.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCpnucleoSetup();
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+
+            services.Configure<ApplicationConfigurations>(
+                Configuration.GetSection("ApplicationConfigurations"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +47,14 @@ namespace Cpnucleo.Blazor.Server
                 app.UseHsts();
             }
 
+            RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
+                SupportedUICultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
+                DefaultRequestCulture = new RequestCulture("pt-BR")
+            };
+
+            app.UseRequestLocalization(localizationOptions);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
