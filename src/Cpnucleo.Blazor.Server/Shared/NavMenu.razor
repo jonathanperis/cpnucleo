@@ -1,37 +1,64 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Cpnucleo.Blazor.Server</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
+﻿<div class="navbar-collapse collapse" id="navbar">
+    <ul class="nav navbar-nav">
+        <li>
+            <NavLink href="/apontamento/listar" Match="NavLinkMatch.All">Apontamentos</NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
+        <li>
+            <NavLink href="/fluxotrabalho">Fluxo de Trabalho</NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
+        <li class="dropdown">
+            <a aria-expanded="false" role="button" class="dropdown-toggle" data-toggle="dropdown"> Gerenciar <span class="caret"></span></a>
+            <ul role="menu" class="dropdown-menu">
+                <li><NavLink href="/sistema/listar">Relação de Sistemas</NavLink></li>
+                <li><NavLink href="/impedimento/listar">Relação de Impedimentos</NavLink></li>
+                <li><NavLink href="/recurso/listar">Relação de Recursos</NavLink></li>
+                <li><NavLink href="/projeto/listar">Relação de Projetos</NavLink></li>
+                <li><NavLink href="/workflow/listar">Relação de Workflow</NavLink></li>
+                <li><NavLink href="/tarefa/listar">Relação de Tarefas</NavLink></li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="nav navbar-top-links navbar-right">
+        <li>
+            <NavLink href="/login"><i class="fa fa-sign-out"></i> Sair</NavLink>
         </li>
     </ul>
 </div>
 
-@code {
-    bool collapseNavMenu = true;
+@*<div class="top-row pl-4 navbar navbar-dark">
+            <a class="navbar-brand" href="">Cpnucleo.Blazor.Server</a>
+            <button class="navbar-toggler" @onclick="ToggleNavMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
 
-    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <ul class="nav flex-column">
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="counter">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="fetchdata">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
 
-    void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+    @code {
+        bool collapseNavMenu = true;
+
+        string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+        void ToggleNavMenu()
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
+    }*@

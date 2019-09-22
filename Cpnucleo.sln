@@ -46,11 +46,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.CrossCutting
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.API", "src\Cpnucleo.API\Cpnucleo.API.csproj", "{F6059E13-AAF3-4768-B5B0-391FA9E8E6BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.GRPC", "src\Cpnucleo.GRPC\Cpnucleo.GRPC.csproj", "{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.GRPC", "src\Cpnucleo.GRPC\Cpnucleo.GRPC.csproj", "{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Blazor.Server", "src\Cpnucleo.Blazor.Server\Cpnucleo.Blazor.Server.csproj", "{2BC043BB-1937-4B2C-9F12-36B352D2D89D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Blazor.Server", "src\Cpnucleo.Blazor.Server\Cpnucleo.Blazor.Server.csproj", "{2BC043BB-1937-4B2C-9F12-36B352D2D89D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.GRPC.Client", "src\Cpnucleo.GRPC.Client\Cpnucleo.GRPC.Client.csproj", "{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.GRPC.Client", "src\Cpnucleo.GRPC.Client\Cpnucleo.GRPC.Client.csproj", "{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

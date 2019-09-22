@@ -1,0 +1,88 @@
+﻿@page "/sistema/listar"
+
+@inject IAppService<SistemaViewModel> SistemaAppService
+
+@if (lista == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Relação de Sistemas</h5>
+                    <div class="ibox-tools">
+                        <a class="fullscreen-link">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <NavLink class="btn btn-primary btn-sm" href="/sistema/incluir">+ Sistema</NavLink>
+                    <br /><br />
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover table-datatable">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Data de Inclusão</th>
+                                    @if (lista.Count() > 0)
+                                    {
+                                        <th class="no-sort"></th>
+                                        <th class="no-sort"></th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in lista)
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Nome</td>
+                                        <td>@item.Descricao</td>
+                                        <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
+                                        @if (lista.Count() > 0)
+                                        {
+                                            <td style="text-align: center">
+                                                <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-id="@item.Id">Alterar</a>
+                                            </td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-id="@item.Id">Remover</a>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Data de Inclusão</th>
+                                    @if (lista.Count() > 0)
+                                    {
+                                        <th></th>
+                                        <th></th>
+                                    }
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    IEnumerable<SistemaViewModel> lista;
+
+    protected override async Task OnInitializedAsync()
+    {
+        lista = await Task.Run(() => SistemaAppService.Listar());
+    }
+}
