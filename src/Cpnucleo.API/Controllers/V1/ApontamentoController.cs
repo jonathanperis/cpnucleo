@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar apontamentos
         /// 
-        /// Lista apontamentos na base de dados.
+        /// Lista apontamentos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de apontamentos</response>
         [HttpGet]
@@ -84,7 +84,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">apontamento</param>        
+        /// <param name="obj">Apontamento</param>        
         /// <response code="201">Apontamento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -141,7 +141,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///     }
         /// </remarks>
         /// <param name="id">Id do apontamento</param>        
-        /// <param name="obj">apontamento</param>        
+        /// <param name="obj">Apontamento</param>        
         /// <response code="204">Apontamento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -184,7 +184,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover apontamento
         /// 
-        /// Remove um apontamento na base de dados.
+        /// Remove um apontamento da base de dados.
         /// </remarks>
         /// <param name="id">Id do apontamento</param>        
         /// <response code="204">Apontamento removido com sucesso</response>

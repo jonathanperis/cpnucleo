@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar tarefas
         /// 
-        /// Lista tarefas na base de dados.
+        /// Lista tarefas da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de tarefas</response>
         [HttpGet]
@@ -86,7 +86,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///        "idTipoTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">tarefa</param>        
+        /// <param name="obj">Tarefa</param>        
         /// <response code="201">Tarefa cadastrada com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -145,7 +145,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///     }
         /// </remarks>
         /// <param name="id">Id da tarefa</param>        
-        /// <param name="obj">tarefa</param>        
+        /// <param name="obj">Tarefa</param>        
         /// <response code="204">Tarefa alterada com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -188,7 +188,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover tarefa
         /// 
-        /// Remove uma tarefa na base de dados.
+        /// Remove uma tarefa da base de dados.
         /// </remarks>
         /// <param name="id">Id da tarefa</param>        
         /// <response code="204">Tarefa removida com sucesso</response>

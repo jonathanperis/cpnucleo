@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar impedimentos
         /// 
-        /// Lista impedimentos na base de dados.
+        /// Lista impedimentos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de impedimentos</response>
         [HttpGet]
@@ -79,7 +79,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///        "nome": "Novo impedimento"
         ///     }
         /// </remarks>
-        /// <param name="obj">impedimento</param>        
+        /// <param name="obj">Impedimento</param>        
         /// <response code="201">Impedimento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -131,7 +131,7 @@ namespace Cpnucleo.API.Controllers.V1
         ///     }
         /// </remarks>
         /// <param name="id">Id do impedimento</param>        
-        /// <param name="obj">impedimento</param>        
+        /// <param name="obj">Impedimento</param>        
         /// <response code="204">Impedimento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -174,7 +174,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover impedimento
         /// 
-        /// Remove um impedimento na base de dados.
+        /// Remove um impedimento da base de dados.
         /// </remarks>
         /// <param name="id">Id do impedimento</param>        
         /// <response code="204">Impedimento removido com sucesso</response>

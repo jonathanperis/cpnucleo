@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <remarks>
         /// # Listar projetos
         /// 
-        /// Lista projetos na base de dados.
+        /// Lista projetos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de projetos</response>
         [HttpGet]
@@ -80,7 +80,7 @@ namespace Cpnucleo.API.Controllers.V2
         ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="obj">projeto</param>        
+        /// <param name="obj">Projeto</param>        
         /// <response code="201">Projeto cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -133,7 +133,7 @@ namespace Cpnucleo.API.Controllers.V2
         ///     }
         /// </remarks>
         /// <param name="id">Id do projeto</param>        
-        /// <param name="obj">projeto</param>        
+        /// <param name="obj">Projeto</param>        
         /// <response code="204">Projeto alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         [HttpPut("{id}")]
@@ -176,7 +176,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <remarks>
         /// # Remover projeto
         /// 
-        /// Remove um projeto na base de dados.
+        /// Remove um projeto da base de dados.
         /// </remarks>
         /// <param name="id">Id do projeto</param>        
         /// <response code="204">Projeto removido com sucesso</response>

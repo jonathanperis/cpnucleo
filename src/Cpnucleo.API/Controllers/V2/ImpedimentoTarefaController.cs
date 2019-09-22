@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <remarks>
         /// # Listar impedimentos de tarefa
         /// 
-        /// Lista impedimentos de tarefa na base de dados.
+        /// Lista impedimentos de tarefa da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
         [HttpGet]
@@ -197,7 +197,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <remarks>
         /// # Remover impedimento de tarefa
         /// 
-        /// Remove um impedimento de tarefa na base de dados.
+        /// Remove um impedimento de tarefa da base de dados.
         /// </remarks>
         /// <param name="id">Id do impedimento de tarefa</param>        
         /// <response code="204">Impedimento de tarefa removido com sucesso</response>

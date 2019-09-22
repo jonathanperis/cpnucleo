@@ -28,7 +28,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Listar recursos de tarefa
         /// 
-        /// Lista recursos de tarefa na base de dados.
+        /// Lista recursos de tarefa da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de recursos de tarefa</response>
         [HttpGet]
@@ -178,7 +178,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <remarks>
         /// # Remover recurso de tarefa
         /// 
-        /// Remove um recurso de tarefa na base de dados.
+        /// Remove um recurso de tarefa da base de dados.
         /// </remarks>
         /// <param name="id">Id do recurso de tarefa</param>        
         /// <response code="204">Recurso de tarefa removido com sucesso</response>
