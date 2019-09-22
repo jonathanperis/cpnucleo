@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.GRPC", "src\Cpnucl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Blazor.Server", "src\Cpnucleo.Blazor.Server\Cpnucleo.Blazor.Server.csproj", "{2BC043BB-1937-4B2C-9F12-36B352D2D89D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.GRPC.Client", "src\Cpnucleo.GRPC.Client\Cpnucleo.GRPC.Client.csproj", "{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{F6059E13-AAF3-4768-B5B0-391FA9E8E6BE} = {FD9D98D7-C717-4637-B5F3-AC4CD169B354}
 		{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3} = {FD9D98D7-C717-4637-B5F3-AC4CD169B354}
 		{2BC043BB-1937-4B2C-9F12-36B352D2D89D} = {FA653B6C-C948-4E9C-8DBE-B048C52C8D62}
+		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125} = {FA653B6C-C948-4E9C-8DBE-B048C52C8D62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4FE8CCD-5BD5-4287-8B6D-F523698604BE}
