@@ -21,7 +21,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { };
 
@@ -42,8 +42,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         public void Test_OnPost()
         {
             // Arrange
-            Guid id = new Guid();
-            Guid idTarefa = new Guid();
+            Guid id = Guid.NewGuid();
+            Guid idTarefa = Guid.NewGuid();
 
             _recursoTarefaAppService.Setup(x => x.Remover(id));
 

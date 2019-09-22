@@ -57,12 +57,24 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
         public void Test_OnPost(string nome)
         {
             // Arrange
-            Guid idProjeto = new Guid();
+            Guid idProjeto = Guid.NewGuid();
+            Guid IdWorkflow = Guid.NewGuid();
+            Guid IdRecurso = Guid.NewGuid();
+            Guid IdTipoTarefa = Guid.NewGuid();
 
             DateTime dataInicio = DateTime.Now;
             DateTime dataTermino = DateTime.Now.AddDays(5);
 
-            TarefaViewModel tarefaMock = new TarefaViewModel { Nome = nome, IdProjeto = idProjeto, DataInicio = dataInicio, DataTermino = dataTermino };
+            TarefaViewModel tarefaMock = new TarefaViewModel
+            {
+                Nome = nome,
+                IdProjeto = idProjeto,
+                DataInicio = dataInicio,
+                DataTermino = dataTermino,
+                IdWorkflow = IdWorkflow,
+                IdRecurso = IdRecurso,
+                IdTipoTarefa = IdTipoTarefa
+            };
 
             _tarefaAppService.Setup(x => x.Incluir(tarefaMock));
 

@@ -27,8 +27,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
-            Guid idTarefa = new Guid();
+            Guid id = Guid.NewGuid();
+            Guid idTarefa = Guid.NewGuid();
 
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
@@ -54,8 +54,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
         public void Test_OnPost(string descricao)
         {
             // Arrange
-            Guid id = new Guid();
-            Guid idTarefa = new Guid();
+            Guid id = Guid.NewGuid();
+            Guid idTarefa = Guid.NewGuid();
 
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa, Descricao = descricao };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };

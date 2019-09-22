@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
         public void Test_OnPost(string nome, int ordem)
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             WorkflowViewModel workflowMock = new WorkflowViewModel { Id = id, Nome = nome, Ordem = ordem };
 

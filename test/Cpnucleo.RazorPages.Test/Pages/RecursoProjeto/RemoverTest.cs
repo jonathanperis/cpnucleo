@@ -21,7 +21,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         public void Test_OnGet()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             RecursoProjetoViewModel recursoProjetoMock = new RecursoProjetoViewModel { };
 
@@ -42,7 +42,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         public void Test_OnPost()
         {
             // Arrange
-            Guid id = new Guid();
+            Guid id = Guid.NewGuid();
 
             _recursoProjetoAppService.Setup(x => x.Remover(id));
 

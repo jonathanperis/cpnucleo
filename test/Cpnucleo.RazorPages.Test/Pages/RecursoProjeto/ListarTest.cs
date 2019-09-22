@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
         public void Test_OnGet()
         {
             // Arrange
-            Guid idProjeto = new Guid();
+            Guid idProjeto = Guid.NewGuid();
 
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
 

@@ -27,8 +27,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         public void Test_OnGet()
         {
             // Arrange
-            Guid idTarefa = new Guid();
-            Guid idProjeto = new Guid();
+            Guid idTarefa = Guid.NewGuid();
+            Guid idProjeto = Guid.NewGuid();
 
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
@@ -52,8 +52,8 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
         public void Test_OnPost(int percentualTarefa)
         {
             // Arrange
-            Guid idTarefa = new Guid();
-            Guid idProjeto = new Guid();
+            Guid idTarefa = Guid.NewGuid();
+            Guid idProjeto = Guid.NewGuid();
 
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
