@@ -37,7 +37,7 @@ namespace Cpnucleo.RazorPages.Pages
 
         public IActionResult OnPost(Guid idTarefa, Guid idWorkflow)
         {
-            _tarefaAppService.AlterarPorFluxoTrabalho(idTarefa, idWorkflow);
+            _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow);
 
             _hubContext.Clients.All.SendAsync("send", "-> Lorem Ipsum");
 

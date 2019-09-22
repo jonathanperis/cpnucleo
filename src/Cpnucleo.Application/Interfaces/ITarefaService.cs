@@ -5,8 +5,8 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface ITarefaAppService : IAppService<TarefaViewModel>
     {
-        bool AlterarPorApontamento(Guid idTarefa, int? percentualConcluido);
+        bool AlterarPorPercentualConcluido(Guid idTarefa, int? percentualConcluido);
 
-        bool AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow);
+        bool AlterarPorWorkflow(Guid idTarefa, Guid idWorkflow);
     }
 }

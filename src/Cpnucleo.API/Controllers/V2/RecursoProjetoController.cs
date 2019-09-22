@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class RecursoProjetoController : ControllerBase
     {
-        private readonly IAppService<RecursoProjetoViewModel> _recursoProjetoAppService;
+        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
 
-        public RecursoProjetoController(IAppService<RecursoProjetoViewModel> recursoProjetoAppService)
+        public RecursoProjetoController(IRecursoProjetoAppService recursoProjetoAppService)
         {
             _recursoProjetoAppService = recursoProjetoAppService;
         }
@@ -36,6 +36,23 @@ namespace Cpnucleo.API.Controllers.V2
         public IEnumerable<RecursoProjetoViewModel> Get()
         {
             return _recursoProjetoAppService.Listar();
+        }
+
+        /// <summary>
+        /// Listar recursos de projeto por id recurso
+        /// </summary>
+        /// <remarks>
+        /// # Listar recursos de projeto por id recurso
+        /// 
+        /// Lista recursos de projeto por id recurso na base de dados.
+        /// </remarks>
+        /// <param name="idRecurso">Id do recurso</param>        
+        /// <response code="200">Retorna uma lista de recursos de projeto</response>
+        [HttpGet("GetByProjeto/{idRecurso}")]
+        [ProducesResponseType(200)]
+        public IEnumerable<RecursoProjetoViewModel> GetByProjeto(Guid idRecurso)
+        {
+            return _recursoProjetoAppService.ListarPorProjeto(idRecurso);
         }
 
         /// <summary>

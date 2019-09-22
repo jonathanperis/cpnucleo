@@ -9,8 +9,8 @@ namespace Cpnucleo.API.Controllers.V1
     [ApiVersion("1", Deprecated = true)]
     public class AuthController : ControllerBase
     {
-        private const string userT = "USERBOLADAO";
-        private const string passT = "SENHABOLADONA";
+        private const string userT = "USERTESTE";
+        private const string passT = "SENHATESTE";
 
         private readonly IJwtManager _jwtManager;
 
@@ -27,8 +27,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// 
         /// Obtém um token válido por 60 minutos para utilização na API.
         /// </remarks>
-        /// <param name="user"></param>
-        /// <param name="pass"></param>
+        /// <param name="user">Usuário padrão: USERTESTE</param>
+        /// <param name="pass">Senha padrão: SENHATESTE</param>
         /// <response code="200">Retorna um token válido por 60 minutos</response>
         /// <response code="400">Usuário ou senha inválidos</response>
         [HttpGet]

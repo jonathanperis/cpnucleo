@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class TarefaController : ControllerBase
     {
-        private readonly IAppService<TarefaViewModel> _tarefaAppService;
+        private readonly ITarefaAppService _tarefaAppService;
 
-        public TarefaController(IAppService<TarefaViewModel> tarefaAppService)
+        public TarefaController(ITarefaAppService tarefaAppService)
         {
             _tarefaAppService = tarefaAppService;
         }
@@ -170,6 +170,54 @@ namespace Cpnucleo.API.Controllers.V2
             catch (DbUpdateConcurrencyException)
             {
                 if (!ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Alterar tarefa por id workflow
+        /// </summary>
+        /// <remarks>
+        /// # Alterar tarefa por id workflow
+        /// 
+        /// Altera uma tarefa por id workflow na base de dados.
+        /// 
+        /// # Sample request:
+        ///
+        ///     PUT /tarefa/putbyworkflow
+        ///     {
+        ///        "idWorkflow": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
+        ///     }
+        /// </remarks>
+        /// <param name="idTarefa">Id da tarefa</param>        
+        /// <param name="idWorkflow">Id do workflow</param>        
+        /// <response code="204">Tarefa alterada com sucesso</response>
+        /// <response code="400">ID informado não é válido</response>
+        [HttpPut("PutByWorkflow/{idTarefa}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult PutByWorkflow(Guid idTarefa, [FromBody]Guid idWorkflow)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ObjExists(idTarefa))
                 {
                     return NotFound();
                 }

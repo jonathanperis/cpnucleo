@@ -41,7 +41,7 @@ namespace Cpnucleo.RazorPages.Pages
                 return Page();
             }
 
-            Application.ViewModels.RecursoViewModel recurso = _recursoAppService.ConsultarPorLogin(Login.Usuario, Login.Senha, out bool valido);
+            Application.ViewModels.RecursoViewModel recurso = _recursoAppService.Autenticar(Login.Usuario, Login.Senha, out bool valido);
 
             if (!valido)
             {

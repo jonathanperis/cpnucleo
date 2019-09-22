@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -15,11 +14,11 @@ namespace Cpnucleo.API.Configuration
         {
             services.AddSwaggerGen(config =>
             {
-                config.SwaggerDoc("v1", new Info
+                config.SwaggerDoc("v2", new Info
                 {
-                    Version = "v1",
+                    Version = "v2",
                     Title = "Cpnucleo API",
-                    Description = "Cpnucleo example ASP.NET Core Web API (deprecated)",
+                    Description = "Cpnucleo example ASP.NET Core Web API",
                     Contact = new Contact
                     {
                         Name = "Jonathan Peris",
@@ -33,11 +32,11 @@ namespace Cpnucleo.API.Configuration
                     }
                 });
 
-                config.SwaggerDoc("v2", new Info
+                config.SwaggerDoc("v1", new Info
                 {
-                    Version = "v2",
+                    Version = "v1",
                     Title = "Cpnucleo API",
-                    Description = "Cpnucleo example ASP.NET Core Web API",
+                    Description = "Cpnucleo example ASP.NET Core Web API (deprecated)",
                     Contact = new Contact
                     {
                         Name = "Jonathan Peris",
@@ -72,18 +71,18 @@ namespace Cpnucleo.API.Configuration
             });
         }
 
-        public static void UseSwaggerUIConfig(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
+        public static void UseSwaggerUIConfig(this IApplicationBuilder app)
         {
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
-                    c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                    c.RoutePrefix = "swagger";
-                }
+                string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+
+                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v2/swagger.json", "V2");
+                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "V1");
+
+                c.RoutePrefix = "swagger";
             });
         }
     }

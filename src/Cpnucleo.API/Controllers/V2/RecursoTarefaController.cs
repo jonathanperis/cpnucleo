@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class RecursoTarefaController : ControllerBase
     {
-        private readonly IAppService<RecursoTarefaViewModel> _recursoTarefaAppService;
+        private readonly IRecursoTarefaAppService _recursoTarefaAppService;
 
-        public RecursoTarefaController(IAppService<RecursoTarefaViewModel> recursoTarefaAppService)
+        public RecursoTarefaController(IRecursoTarefaAppService recursoTarefaAppService)
         {
             _recursoTarefaAppService = recursoTarefaAppService;
         }
@@ -36,6 +36,40 @@ namespace Cpnucleo.API.Controllers.V2
         public IEnumerable<RecursoTarefaViewModel> Get()
         {
             return _recursoTarefaAppService.Listar();
+        }
+
+        /// <summary>
+        /// Listar recursos de tarefa por id recurso
+        /// </summary>
+        /// <remarks>
+        /// # Listar recursos de tarefa id recurso
+        /// 
+        /// Lista recursos de tarefa id recurso na base de dados.
+        /// </remarks>
+        /// <param name="idRecurso">Id do recurso</param>        
+        /// <response code="200">Retorna uma lista de recursos de tarefa</response>
+        [HttpGet("GetByRecurso/{idRecurso}")]
+        [ProducesResponseType(200)]
+        public IEnumerable<RecursoTarefaViewModel> GetByRecurso(Guid idRecurso)
+        {
+            return _recursoTarefaAppService.ListarPorRecurso(idRecurso);
+        }
+
+        /// <summary>
+        /// Listar recursos de tarefa por id tarefa
+        /// </summary>
+        /// <remarks>
+        /// # Listar recursos de tarefa id tarefa
+        /// 
+        /// Lista recursos de tarefa id tarefa na base de dados.
+        /// </remarks>
+        /// <param name="idTarefa">Id da tarefa</param>        
+        /// <response code="200">Retorna uma lista de recursos de tarefa</response>
+        [HttpGet("GetByTarefa/{idTarefa}")]
+        [ProducesResponseType(200)]
+        public IEnumerable<RecursoTarefaViewModel> GetByTarefa(Guid idTarefa)
+        {
+            return _recursoTarefaAppService.ListarPorTarefa(idTarefa);
         }
 
         /// <summary>

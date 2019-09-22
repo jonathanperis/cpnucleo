@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class WorkflowController : ControllerBase
     {
-        private readonly IAppService<WorkflowViewModel> _workflowAppService;
+        private readonly IWorkflowAppService _workflowAppService;
 
-        public WorkflowController(IAppService<WorkflowViewModel> workflowAppService)
+        public WorkflowController(IWorkflowAppService workflowAppService)
         {
             _workflowAppService = workflowAppService;
         }
@@ -36,6 +36,22 @@ namespace Cpnucleo.API.Controllers.V2
         public IEnumerable<WorkflowViewModel> Get()
         {
             return _workflowAppService.Listar();
+        }
+
+        /// <summary>
+        /// Listar workflows por tarefa
+        /// </summary>
+        /// <remarks>
+        /// # Listar workflows por tarefa
+        /// 
+        /// Lista workflows por tarefa na base de dados.
+        /// </remarks>
+        /// <response code="200">Retorna uma lista de workflows</response>
+        [HttpGet("GetByTarefa")]
+        [ProducesResponseType(200)]
+        public IEnumerable<WorkflowViewModel> GetByTarefa()
+        {
+            return _workflowAppService.ListarPorTarefa();
         }
 
         /// <summary>

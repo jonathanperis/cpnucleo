@@ -15,7 +15,7 @@ namespace Cpnucleo.Application.Services
 
         }
 
-        public bool AlterarPorApontamento(Guid idTarefa, int? percentualConcluido)
+        public bool AlterarPorPercentualConcluido(Guid idTarefa, int? percentualConcluido)
         {
             TarefaViewModel tarefa = Consultar(idTarefa);
             tarefa.PercentualConcluido = percentualConcluido;
@@ -23,7 +23,7 @@ namespace Cpnucleo.Application.Services
             return Alterar(tarefa);
         }
 
-        public bool AlterarPorFluxoTrabalho(Guid idTarefa, Guid idWorkflow)
+        public bool AlterarPorWorkflow(Guid idTarefa, Guid idWorkflow)
         {
             lock (this)
             {
