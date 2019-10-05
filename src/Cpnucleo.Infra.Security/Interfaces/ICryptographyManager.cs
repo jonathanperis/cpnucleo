@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Security.Interfaces
+﻿namespace Cpnucleo.Infra.Security.Interfaces
 {
     public interface ICryptographyManager
     {

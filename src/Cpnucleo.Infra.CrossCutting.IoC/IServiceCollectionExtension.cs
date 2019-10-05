@@ -8,11 +8,11 @@ using Cpnucleo.Infra.CrossCutting.Configuration;
 using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Security;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.Repository;
 using Cpnucleo.Infra.Data.UoW;
+using Cpnucleo.Infra.Security;
+using Cpnucleo.Infra.Security.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Infra.CrossCutting.IoC
