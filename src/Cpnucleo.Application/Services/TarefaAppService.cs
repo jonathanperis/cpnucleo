@@ -7,9 +7,9 @@ using System;
 
 namespace Cpnucleo.Application.Services
 {
-    public class TarefaAppService : AppService<Tarefa, TarefaViewModel>, ITarefaAppService
+    public class TarefaAppService : CrudAppService<Tarefa, TarefaViewModel>, ITarefaAppService
     {
-        public TarefaAppService(IMapper mapper, IRepository<Tarefa> repository, IUnitOfWork unitOfWork)
+        public TarefaAppService(IMapper mapper, ICrudRepository<Tarefa> repository, IUnitOfWork unitOfWork)
             : base(mapper, repository, unitOfWork)
         {
 

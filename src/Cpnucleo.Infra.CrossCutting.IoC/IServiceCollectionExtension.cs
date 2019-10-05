@@ -23,17 +23,17 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
         {
             // Application
             services
-                .AddScoped<IAppService<SistemaViewModel>, AppService<Sistema, SistemaViewModel>>()
-                .AddScoped<IAppService<ProjetoViewModel>, AppService<Projeto, ProjetoViewModel>>()
-                .AddScoped<IAppService<TarefaViewModel>, AppService<Tarefa, TarefaViewModel>>()
-                .AddScoped<IAppService<ApontamentoViewModel>, AppService<Apontamento, ApontamentoViewModel>>()
-                .AddScoped<IAppService<WorkflowViewModel>, AppService<Workflow, WorkflowViewModel>>()
-                .AddScoped<IAppService<RecursoViewModel>, AppService<Recurso, RecursoViewModel>>()
-                .AddScoped<IAppService<ImpedimentoViewModel>, AppService<Impedimento, ImpedimentoViewModel>>()
-                .AddScoped<IAppService<ImpedimentoTarefaViewModel>, AppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>>()
-                .AddScoped<IAppService<RecursoProjetoViewModel>, AppService<RecursoProjeto, RecursoProjetoViewModel>>()
-                .AddScoped<IAppService<RecursoTarefaViewModel>, AppService<RecursoTarefa, RecursoTarefaViewModel>>()
-                .AddScoped<IAppService<TipoTarefaViewModel>, AppService<TipoTarefa, TipoTarefaViewModel>>();
+                .AddScoped<ICrudAppService<SistemaViewModel>, CrudAppService<Sistema, SistemaViewModel>>()
+                .AddScoped<ICrudAppService<ProjetoViewModel>, CrudAppService<Projeto, ProjetoViewModel>>()
+                .AddScoped<ICrudAppService<TarefaViewModel>, CrudAppService<Tarefa, TarefaViewModel>>()
+                .AddScoped<ICrudAppService<ApontamentoViewModel>, CrudAppService<Apontamento, ApontamentoViewModel>>()
+                .AddScoped<ICrudAppService<WorkflowViewModel>, CrudAppService<Workflow, WorkflowViewModel>>()
+                .AddScoped<ICrudAppService<RecursoViewModel>, CrudAppService<Recurso, RecursoViewModel>>()
+                .AddScoped<ICrudAppService<ImpedimentoViewModel>, CrudAppService<Impedimento, ImpedimentoViewModel>>()
+                .AddScoped<ICrudAppService<ImpedimentoTarefaViewModel>, CrudAppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>>()
+                .AddScoped<ICrudAppService<RecursoProjetoViewModel>, CrudAppService<RecursoProjeto, RecursoProjetoViewModel>>()
+                .AddScoped<ICrudAppService<RecursoTarefaViewModel>, CrudAppService<RecursoTarefa, RecursoTarefaViewModel>>()
+                .AddScoped<ICrudAppService<TipoTarefaViewModel>, CrudAppService<TipoTarefa, TipoTarefaViewModel>>();
 
             services
                 .AddScoped<ITarefaAppService, TarefaAppService>()
@@ -48,17 +48,17 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - Data
             services
-                .AddScoped<IRepository<Sistema>, Repository<Sistema>>()
-                .AddScoped<IRepository<Projeto>, Repository<Projeto>>()
-                .AddScoped<IRepository<Tarefa>, Repository<Tarefa>>()
-                .AddScoped<IRepository<Apontamento>, Repository<Apontamento>>()
-                .AddScoped<IRepository<Workflow>, Repository<Workflow>>()
-                .AddScoped<IRepository<Recurso>, Repository<Recurso>>()
-                .AddScoped<IRepository<Impedimento>, Repository<Impedimento>>()
-                .AddScoped<IRepository<ImpedimentoTarefa>, Repository<ImpedimentoTarefa>>()
-                .AddScoped<IRepository<RecursoProjeto>, Repository<RecursoProjeto>>()
-                .AddScoped<IRepository<RecursoTarefa>, Repository<RecursoTarefa>>()
-                .AddScoped<IRepository<TipoTarefa>, Repository<TipoTarefa>>();
+                .AddScoped<ICrudRepository<Sistema>, CrudRepository<Sistema>>()
+                .AddScoped<ICrudRepository<Projeto>, CrudRepository<Projeto>>()
+                .AddScoped<ICrudRepository<Tarefa>, CrudRepository<Tarefa>>()
+                .AddScoped<ICrudRepository<Apontamento>, CrudRepository<Apontamento>>()
+                .AddScoped<ICrudRepository<Workflow>, CrudRepository<Workflow>>()
+                .AddScoped<ICrudRepository<Recurso>, CrudRepository<Recurso>>()
+                .AddScoped<ICrudRepository<Impedimento>, CrudRepository<Impedimento>>()
+                .AddScoped<ICrudRepository<ImpedimentoTarefa>, CrudRepository<ImpedimentoTarefa>>()
+                .AddScoped<ICrudRepository<RecursoProjeto>, CrudRepository<RecursoProjeto>>()
+                .AddScoped<ICrudRepository<RecursoTarefa>, CrudRepository<RecursoTarefa>>()
+                .AddScoped<ICrudRepository<TipoTarefa>, CrudRepository<TipoTarefa>>();
 
             services
                 .AddScoped<IApontamentoRepository, ApontamentoRepository>()

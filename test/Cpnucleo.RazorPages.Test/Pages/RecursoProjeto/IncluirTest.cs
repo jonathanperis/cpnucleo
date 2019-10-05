@@ -14,13 +14,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
     {
         private readonly Mock<IRecursoProjetoAppService> _recursoProjetoAppService;
         private readonly Mock<IRecursoAppService> _recursoAppService;
-        private readonly Mock<IAppService<ProjetoViewModel>> _projetoAppService;
+        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
 
         public IncluirTest()
         {
             _recursoProjetoAppService = new Mock<IRecursoProjetoAppService>();
             _recursoAppService = new Mock<IRecursoAppService>();
-            _projetoAppService = new Mock<IAppService<ProjetoViewModel>>();
+            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
         }
 
         [Fact]

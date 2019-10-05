@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
-    public class ImpedimentoTarefaAppService : AppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>, IImpedimentoTarefaAppService
+    public class ImpedimentoTarefaAppService : CrudAppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>, IImpedimentoTarefaAppService
     {
         protected readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
-        public ImpedimentoTarefaAppService(IMapper mapper, IRepository<ImpedimentoTarefa> repository, IUnitOfWork unitOfWork, IImpedimentoTarefaRepository impedimentoTarefaRepository)
+        public ImpedimentoTarefaAppService(IMapper mapper, ICrudRepository<ImpedimentoTarefa> repository, IUnitOfWork unitOfWork, IImpedimentoTarefaRepository impedimentoTarefaRepository)
             : base(mapper, repository, unitOfWork)
         {
             _impedimentoTarefaRepository = impedimentoTarefaRepository;

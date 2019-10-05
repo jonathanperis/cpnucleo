@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class RecursoRepository : Repository<Recurso>, IRecursoRepository
+    public class RecursoRepository : CrudRepository<Recurso>, IRecursoRepository
     {
         public RecursoRepository(CpnucleoContext context)
             : base(context)

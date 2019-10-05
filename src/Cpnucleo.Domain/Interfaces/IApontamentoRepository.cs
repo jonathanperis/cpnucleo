@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
-    public interface IApontamentoRepository : IRepository<Apontamento>
+    public interface IApontamentoRepository : ICrudRepository<Apontamento>
     {
         int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa);
 

@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
-    public class RecursoProjetoAppService : AppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
+    public class RecursoProjetoAppService : CrudAppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
     {
         protected readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        public RecursoProjetoAppService(IMapper mapper, IRepository<RecursoProjeto> repository, IUnitOfWork unitOfWork, IRecursoProjetoRepository recursoProjetoRepository)
+        public RecursoProjetoAppService(IMapper mapper, ICrudRepository<RecursoProjeto> repository, IUnitOfWork unitOfWork, IRecursoProjetoRepository recursoProjetoRepository)
             : base(mapper, repository, unitOfWork)
         {
             _recursoProjetoRepository = recursoProjetoRepository;

@@ -8,13 +8,13 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
-    public class AppService<TModel, TViewModel> : IAppService<TViewModel> where TViewModel : BaseViewModel
+    public class CrudAppService<TModel, TViewModel> : ICrudAppService<TViewModel> where TViewModel : BaseViewModel
     {
         protected readonly IMapper _mapper;
-        protected readonly IRepository<TModel> _repository;
+        protected readonly ICrudRepository<TModel> _repository;
         protected readonly IUnitOfWork _unitOfWork;
 
-        public AppService(IMapper mapper, IRepository<TModel> repository, IUnitOfWork unitOfWork)
+        public CrudAppService(IMapper mapper, ICrudRepository<TModel> repository, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _repository = repository;

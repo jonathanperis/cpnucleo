@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IAppService<ProjetoViewModel> _projetoAppService;
+        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
 
-        public RemoverModel(IAppService<ProjetoViewModel> projetoAppService)
+        public RemoverModel(ICrudAppService<ProjetoViewModel> projetoAppService)
         {
             _projetoAppService = projetoAppService;
         }

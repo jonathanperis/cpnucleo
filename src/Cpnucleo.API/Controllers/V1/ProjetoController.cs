@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V1
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class ProjetoController : ControllerBase
     {
-        private readonly IAppService<ProjetoViewModel> _projetoAppService;
+        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
 
-        public ProjetoController(IAppService<ProjetoViewModel> projetoAppService)
+        public ProjetoController(ICrudAppService<ProjetoViewModel> projetoAppService)
         {
             _projetoAppService = projetoAppService;
         }

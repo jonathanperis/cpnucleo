@@ -13,13 +13,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
     public class IncluirTest
     {
         private readonly Mock<IImpedimentoTarefaAppService> _impedimentoTarefaAppService;
-        private readonly Mock<IAppService<ImpedimentoViewModel>> _impedimentoAppService;
+        private readonly Mock<ICrudAppService<ImpedimentoViewModel>> _impedimentoAppService;
         private readonly Mock<ITarefaAppService> _tarefaAppService;
 
         public IncluirTest()
         {
             _impedimentoTarefaAppService = new Mock<IImpedimentoTarefaAppService>();
-            _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+            _impedimentoAppService = new Mock<ICrudAppService<ImpedimentoViewModel>>();
             _tarefaAppService = new Mock<ITarefaAppService>();
         }
 

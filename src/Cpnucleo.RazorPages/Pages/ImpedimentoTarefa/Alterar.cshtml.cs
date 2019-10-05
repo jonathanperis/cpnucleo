@@ -12,10 +12,10 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     public class AlterarModel : PageModel
     {
         private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
-        private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
 
         public AlterarModel(IImpedimentoTarefaAppService impedimentoTarefaAppService,
-                                           IAppService<ImpedimentoViewModel> impedimentoAppService)
+                                           ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
         {
             _impedimentoTarefaAppService = impedimentoTarefaAppService;
             _impedimentoAppService = impedimentoAppService;

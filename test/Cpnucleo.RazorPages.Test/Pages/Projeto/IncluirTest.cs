@@ -12,13 +12,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 {
     public class IncluirTest
     {
-        private readonly Mock<IAppService<ProjetoViewModel>> _projetoAppService;
-        private readonly Mock<IAppService<SistemaViewModel>> _sistemaAppService;
+        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
+        private readonly Mock<ICrudAppService<SistemaViewModel>> _sistemaAppService;
 
         public IncluirTest()
         {
-            _projetoAppService = new Mock<IAppService<ProjetoViewModel>>();
-            _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
+            _sistemaAppService = new Mock<ICrudAppService<SistemaViewModel>>();
         }
 
         [Theory]

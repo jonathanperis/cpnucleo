@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class WorkflowRepository : Repository<Workflow>, IWorkflowRepository
+    public class WorkflowRepository : CrudRepository<Workflow>, IWorkflowRepository
     {
         public WorkflowRepository(CpnucleoContext context)
             : base(context)

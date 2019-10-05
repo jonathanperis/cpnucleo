@@ -9,12 +9,12 @@ using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    public class RecursoTarefaAppService : AppService<RecursoTarefa, RecursoTarefaViewModel>, IRecursoTarefaAppService
+    public class RecursoTarefaAppService : CrudAppService<RecursoTarefa, RecursoTarefaViewModel>, IRecursoTarefaAppService
     {
         protected readonly IRecursoTarefaRepository _recursoTarefaRepository;
         protected readonly IApontamentoAppService _apontamentoAppService;
 
-        public RecursoTarefaAppService(IMapper mapper, IRepository<RecursoTarefa> repository, IUnitOfWork unitOfWork, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoAppService apontamentoAppService)
+        public RecursoTarefaAppService(IMapper mapper, ICrudRepository<RecursoTarefa> repository, IUnitOfWork unitOfWork, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoAppService apontamentoAppService)
             : base(mapper, repository, unitOfWork)
         {
             _recursoTarefaRepository = recursoTarefaRepository;

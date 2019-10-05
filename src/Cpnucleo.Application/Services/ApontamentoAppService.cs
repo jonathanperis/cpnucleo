@@ -8,12 +8,12 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Services
 {
-    public class ApontamentoAppService : AppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
+    public class ApontamentoAppService : CrudAppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
     {
         protected readonly IApontamentoRepository _apontamentoRepository;
         protected readonly ITarefaAppService _tarefaAppService;
 
-        public ApontamentoAppService(IMapper mapper, IRepository<Apontamento> repository, IUnitOfWork unitOfWork, IApontamentoRepository apontamentoRepository, ITarefaAppService tarefaAppService)
+        public ApontamentoAppService(IMapper mapper, ICrudRepository<Apontamento> repository, IUnitOfWork unitOfWork, IApontamentoRepository apontamentoRepository, ITarefaAppService tarefaAppService)
             : base(mapper, repository, unitOfWork)
         {
             _apontamentoRepository = apontamentoRepository;

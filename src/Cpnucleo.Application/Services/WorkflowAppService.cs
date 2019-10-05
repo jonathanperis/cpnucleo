@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    public class WorkflowAppService : AppService<Workflow, WorkflowViewModel>, IWorkflowAppService
+    public class WorkflowAppService : CrudAppService<Workflow, WorkflowViewModel>, IWorkflowAppService
     {
         protected readonly IWorkflowRepository _workflowRepository;
 
-        public WorkflowAppService(IMapper mapper, IRepository<Workflow> repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
+        public WorkflowAppService(IMapper mapper, ICrudRepository<Workflow> repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
             : base(mapper, repository, unitOfWork)
         {
             _workflowRepository = workflowRepository;

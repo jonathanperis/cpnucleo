@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface IRecursoAppService : IAppService<RecursoViewModel>
+    public interface IRecursoAppService : ICrudAppService<RecursoViewModel>
     {
         new bool Incluir(RecursoViewModel recurso);
 

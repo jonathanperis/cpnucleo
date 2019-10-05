@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
-    public interface IImpedimentoTarefaRepository : IRepository<ImpedimentoTarefa>
+    public interface IImpedimentoTarefaRepository : ICrudRepository<ImpedimentoTarefa>
     {
         IEnumerable<ImpedimentoTarefa> ListarPorTarefa(Guid idTarefa);
     }
