@@ -3,7 +3,7 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+using Cpnucleo.Infra.Security.Interfaces;
 
 namespace Cpnucleo.Application.Services
 {

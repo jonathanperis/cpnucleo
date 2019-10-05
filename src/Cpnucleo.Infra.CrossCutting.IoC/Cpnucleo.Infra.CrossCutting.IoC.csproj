@@ -13,7 +13,7 @@
     <ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Configuration\Cpnucleo.Infra.CrossCutting.Configuration.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Identity\Cpnucleo.Infra.CrossCutting.Identity.csproj" />
-    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Security\Cpnucleo.Infra.CrossCutting.Security.csproj" />
+    <ProjectReference Include="..\Cpnucleo.Infra.Security\Cpnucleo.Infra.Security.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.Data\Cpnucleo.Infra.Data.csproj" />
   </ItemGroup>
 
