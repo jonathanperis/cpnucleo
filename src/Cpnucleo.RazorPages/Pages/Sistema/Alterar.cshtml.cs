@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IAppService<SistemaViewModel> _sistemaAppService;
+        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
 
-        public AlterarModel(IAppService<SistemaViewModel> sistemaAppService)
+        public AlterarModel(ICrudAppService<SistemaViewModel> sistemaAppService)
         {
             _sistemaAppService = sistemaAppService;
         }

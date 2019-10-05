@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface IRecursoProjetoAppService : IAppService<RecursoProjetoViewModel>
+    public interface IRecursoProjetoAppService : ICrudAppService<RecursoProjetoViewModel>
     {
         IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(Guid idProjeto);
     }

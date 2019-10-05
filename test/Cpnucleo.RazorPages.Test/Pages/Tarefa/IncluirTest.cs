@@ -13,18 +13,18 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
     public class IncluirTest
     {
         private readonly Mock<ITarefaAppService> _tarefaAppService;
-        private readonly Mock<IAppService<ProjetoViewModel>> _projetoAppService;
-        private readonly Mock<IAppService<SistemaViewModel>> _sistemaAppService;
+        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
+        private readonly Mock<ICrudAppService<SistemaViewModel>> _sistemaAppService;
         private readonly Mock<IWorkflowAppService> _workflowAppService;
-        private readonly Mock<IAppService<TipoTarefaViewModel>> _tipoTarefaAppService;
+        private readonly Mock<ICrudAppService<TipoTarefaViewModel>> _tipoTarefaAppService;
 
         public IncluirTest()
         {
             _tarefaAppService = new Mock<ITarefaAppService>();
-            _projetoAppService = new Mock<IAppService<ProjetoViewModel>>();
-            _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
+            _sistemaAppService = new Mock<ICrudAppService<SistemaViewModel>>();
             _workflowAppService = new Mock<IWorkflowAppService>();
-            _tipoTarefaAppService = new Mock<IAppService<TipoTarefaViewModel>>();
+            _tipoTarefaAppService = new Mock<ICrudAppService<TipoTarefaViewModel>>();
         }
 
         [Fact]

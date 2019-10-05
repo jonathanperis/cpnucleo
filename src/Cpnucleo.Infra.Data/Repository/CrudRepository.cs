@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class Repository<TModel> : IRepository<TModel> where TModel : BaseModel
+    public class CrudRepository<TModel> : ICrudRepository<TModel> where TModel : BaseModel
     {
         private readonly CpnucleoContext Db;
         protected readonly DbSet<TModel> DbSet;
 
-        public Repository(CpnucleoContext context)
+        public CrudRepository(CpnucleoContext context)
         {
             Db = context;
             DbSet = Db.Set<TModel>();

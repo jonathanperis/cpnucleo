@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface IApontamentoAppService : IAppService<ApontamentoViewModel>
+    public interface IApontamentoAppService : ICrudAppService<ApontamentoViewModel>
     {
         new bool Incluir(ApontamentoViewModel apontamento);
 

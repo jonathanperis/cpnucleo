@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V1
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class WorkflowController : ControllerBase
     {
-        private readonly IAppService<WorkflowViewModel> _workflowAppService;
+        private readonly ICrudAppService<WorkflowViewModel> _workflowAppService;
 
-        public WorkflowController(IAppService<WorkflowViewModel> workflowAppService)
+        public WorkflowController(ICrudAppService<WorkflowViewModel> workflowAppService)
         {
             _workflowAppService = workflowAppService;
         }

@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
 {
     public class IncluirTest
     {
-        private readonly Mock<IAppService<ImpedimentoViewModel>> _impedimentoAppService;
+        private readonly Mock<ICrudAppService<ImpedimentoViewModel>> _impedimentoAppService;
 
         public IncluirTest()
         {
-            _impedimentoAppService = new Mock<IAppService<ImpedimentoViewModel>>();
+            _impedimentoAppService = new Mock<ICrudAppService<ImpedimentoViewModel>>();
         }
 
         [Theory]

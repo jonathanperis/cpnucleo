@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces
 {
-    public interface IRecursoProjetoRepository : IRepository<RecursoProjeto>
+    public interface IRecursoProjetoRepository : ICrudRepository<RecursoProjeto>
     {
         IEnumerable<RecursoProjeto> ListarPorProjeto(Guid idProjeto);
     }

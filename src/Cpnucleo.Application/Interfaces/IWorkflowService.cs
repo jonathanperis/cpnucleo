@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface IWorkflowAppService : IAppService<WorkflowViewModel>
+    public interface IWorkflowAppService : ICrudAppService<WorkflowViewModel>
     {
         IEnumerable<WorkflowViewModel> ListarPorTarefa();
     }

@@ -7,12 +7,12 @@ using Cpnucleo.Infra.Security.Interfaces;
 
 namespace Cpnucleo.Application.Services
 {
-    public class RecursoAppService : AppService<Recurso, RecursoViewModel>, IRecursoAppService
+    public class RecursoAppService : CrudAppService<Recurso, RecursoViewModel>, IRecursoAppService
     {
         protected readonly IRecursoRepository _recursoRepository;
         protected readonly ICryptographyManager _cryptographyManager;
 
-        public RecursoAppService(IMapper mapper, IRepository<Recurso> repository, IUnitOfWork unitOfWork, IRecursoRepository recursoRepository, ICryptographyManager cryptographyManager)
+        public RecursoAppService(IMapper mapper, ICrudRepository<Recurso> repository, IUnitOfWork unitOfWork, IRecursoRepository recursoRepository, ICryptographyManager cryptographyManager)
             : base(mapper, repository, unitOfWork)
         {
             _recursoRepository = recursoRepository;

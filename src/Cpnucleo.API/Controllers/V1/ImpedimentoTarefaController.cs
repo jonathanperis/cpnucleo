@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V1
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class ImpedimentoTarefaController : ControllerBase
     {
-        private readonly IAppService<ImpedimentoTarefaViewModel> _impedimentoTarefaAppService;
+        private readonly ICrudAppService<ImpedimentoTarefaViewModel> _impedimentoTarefaAppService;
 
-        public ImpedimentoTarefaController(IAppService<ImpedimentoTarefaViewModel> impedimentoTarefaAppService)
+        public ImpedimentoTarefaController(ICrudAppService<ImpedimentoTarefaViewModel> impedimentoTarefaAppService)
         {
             _impedimentoTarefaAppService = impedimentoTarefaAppService;
         }

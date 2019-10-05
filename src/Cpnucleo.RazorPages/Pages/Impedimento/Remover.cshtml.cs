@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public RemoverModel(IAppService<ImpedimentoViewModel> impedimentoAppService)
+        public RemoverModel(ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
         {
             _impedimentoAppService = impedimentoAppService;
         }

@@ -1,7 +1,7 @@
 ﻿@page "/sistema/listar"
 
 @inject NavigationManager NavigationManager
-@inject IAppService<SistemaViewModel> SistemaAppService
+@inject ICrudAppService<SistemaViewModel> SistemaAppService
 
 @if (lista == null)
 {

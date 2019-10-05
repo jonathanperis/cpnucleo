@@ -3,7 +3,7 @@ using System;
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface ITarefaAppService : IAppService<TarefaViewModel>
+    public interface ITarefaAppService : ICrudAppService<TarefaViewModel>
     {
         bool AlterarPorPercentualConcluido(Guid idTarefa, int? percentualConcluido);
 

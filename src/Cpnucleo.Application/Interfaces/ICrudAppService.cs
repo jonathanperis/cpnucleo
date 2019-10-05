@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface IAppService<TViewModel>
+    public interface ICrudAppService<TViewModel>
     {
         bool Incluir(TViewModel obj);
 

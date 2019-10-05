@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
-    public interface IRecursoTarefaAppService : IAppService<RecursoTarefaViewModel>
+    public interface IRecursoTarefaAppService : ICrudAppService<RecursoTarefaViewModel>
     {
         IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(Guid idTarefa);
 

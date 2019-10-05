@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class ApontamentoRepository : Repository<Apontamento>, IApontamentoRepository
+    public class ApontamentoRepository : CrudRepository<Apontamento>, IApontamentoRepository
     {
         public ApontamentoRepository(CpnucleoContext context)
             : base(context)

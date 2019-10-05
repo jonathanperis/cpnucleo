@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 {
     public class RemoverTest
     {
-        private readonly Mock<IAppService<SistemaViewModel>> _sistemaAppService;
+        private readonly Mock<ICrudAppService<SistemaViewModel>> _sistemaAppService;
 
         public RemoverTest()
         {
-            _sistemaAppService = new Mock<IAppService<SistemaViewModel>>();
+            _sistemaAppService = new Mock<ICrudAppService<SistemaViewModel>>();
         }
 
         [Fact]

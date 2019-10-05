@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     public class IncluirModel : PageModel
     {
         private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
-        private readonly IAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
         private readonly ITarefaAppService _tarefaAppService;
 
         public IncluirModel(IImpedimentoTarefaAppService impedimentoTarefaAppService,
-                            IAppService<ImpedimentoViewModel> impedimentoAppService,
+                            ICrudAppService<ImpedimentoViewModel> impedimentoAppService,
                             ITarefaAppService tarefaAppService)
         {
             _impedimentoTarefaAppService = impedimentoTarefaAppService;

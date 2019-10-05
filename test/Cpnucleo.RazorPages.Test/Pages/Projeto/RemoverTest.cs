@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 {
     public class RemoverTest
     {
-        private readonly Mock<IAppService<ProjetoViewModel>> _projetoAppService;
+        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
 
         public RemoverTest()
         {
-            _projetoAppService = new Mock<IAppService<ProjetoViewModel>>();
+            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
         }
 
         [Fact]

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Cpnucleo.Domain.Interfaces
 {
-    public interface IRepository<TModel> : IDisposable
+    public interface ICrudRepository<TModel> : IDisposable
     {
         void Incluir(TModel obj);
 

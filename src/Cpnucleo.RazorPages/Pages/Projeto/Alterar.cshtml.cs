@@ -11,10 +11,10 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IAppService<ProjetoViewModel> _projetoAppService;
-        private readonly IAppService<SistemaViewModel> _sistemaAppService;
+        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
+        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
 
-        public AlterarModel(IAppService<ProjetoViewModel> projetoAppService, IAppService<SistemaViewModel> sistemaAppService)
+        public AlterarModel(ICrudAppService<ProjetoViewModel> projetoAppService, ICrudAppService<SistemaViewModel> sistemaAppService)
         {
             _projetoAppService = projetoAppService;
             _sistemaAppService = sistemaAppService;
