@@ -1,5 +1,6 @@
 ﻿@page "/sistema/listar"
 
+@inject NavigationManager NavigationManager
 @inject IAppService<SistemaViewModel> SistemaAppService
 
 @if (lista == null)
@@ -20,7 +21,7 @@ else
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <NavLink class="btn btn-primary btn-sm" href="/sistema/incluir">+ Sistema</NavLink>
+                    <NavLink class="btn btn-primary btn-sm" role="button" href="/sistema/incluir">+ Sistema</NavLink>
                     <br /><br />
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover table-datatable">
@@ -48,10 +49,14 @@ else
                                         @if (lista.Count() > 0)
                                         {
                                             <td style="text-align: center">
-                                                <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-id="@item.Id">Alterar</a>
+                                                <button class="btn btn-outline btn-warning btn-xs" @onclick="@(() => NavigationManager.NavigateTo($"/sistema/alterar/{item.Id.ToString()}"))">Alterar</button>
+                                                @*<a class="btn btn-outline btn-warning btn-xs" role="button" @oncl onclick="@AlterarSistema(item.Id)">Alterar</a>*@
+                                                @*<NavLink class="btn btn-outline btn-warning btn-xs" role="button" @onclick="@(() => AlterarSistema(item.Id))">Alterar</NavLink>*@
                                             </td>
                                             <td style="text-align: center">
-                                                <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-id="@item.Id">Remover</a>
+                                                <button class="btn btn-outline btn-danger btn-xs" @onclick="@(() => NavigationManager.NavigateTo($"/sistema/remover/{item.Id.ToString()}"))">Remover</button>
+                                                @*<a class="btn btn-outline btn-danger btn-xs" role="button" href="/sistema/remover/@item.Id">Remover</a>*@
+                                                @*<NavLink class="btn btn-outline btn-danger btn-xs" role="button" @onclick="RemoverSistema">Remover</NavLink>*@
                                             </td>
                                         }
                                     </tr>
