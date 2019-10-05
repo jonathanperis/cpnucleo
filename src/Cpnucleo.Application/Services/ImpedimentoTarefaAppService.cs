@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
 

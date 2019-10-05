@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.AutoMapper
 {

@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.API.Filters;
 using Cpnucleo.API.Utils;
 using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Application.ViewModels;
-using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

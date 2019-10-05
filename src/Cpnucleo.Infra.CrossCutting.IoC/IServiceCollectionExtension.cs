@@ -1,13 +1,13 @@
 ﻿using Cpnucleo.Application.AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
-using Cpnucleo.Application.ViewModels;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
-using Cpnucleo.Infra.CrossCutting.Configuration;
-using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.Repository;
 using Cpnucleo.Infra.Data.UoW;

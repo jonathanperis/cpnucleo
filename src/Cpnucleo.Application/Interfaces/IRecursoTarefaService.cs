@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
 
