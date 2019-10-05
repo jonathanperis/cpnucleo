@@ -23,16 +23,18 @@ namespace Cpnucleo.RazorPages.Pages
         [BindProperty]
         public LoginViewModel Login { get; set; }
 
-        public void OnGet(string returnUrl = null)
+        public IActionResult OnGet(string returnUrl = null, bool logout = false)
         {
+            if (logout)
+            {
+                HttpContext.SignOutAsync();
+
+                return RedirectToPage("Login");
+            }
+
             ViewData["ReturnUrl"] = returnUrl;
-        }
 
-        public IActionResult OnGetLogout()
-        {
-            HttpContext.SignOutAsync();
-
-            return RedirectToPage("Login");
+            return Page();
         }
 
         public IActionResult OnPost(string returnUrl = null)
