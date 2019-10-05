@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Application.ViewModels;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.Pages.Sistema;
 using Moq;
 using SparkyTestHelpers.AspNetMvc.Core;

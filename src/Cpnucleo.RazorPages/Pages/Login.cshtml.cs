@@ -1,5 +1,6 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ namespace Cpnucleo.RazorPages.Pages
                 return Page();
             }
 
-            Application.ViewModels.RecursoViewModel recurso = _recursoAppService.Autenticar(Login.Usuario, Login.Senha, out bool valido);
+            RecursoViewModel recurso = _recursoAppService.Autenticar(Login.Usuario, Login.Senha, out bool valido);
 
             if (!valido)
             {

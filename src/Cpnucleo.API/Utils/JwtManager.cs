@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;

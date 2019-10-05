@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Domain.Models;
-using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.Data.Mappings;
 using Microsoft.EntityFrameworkCore;
 

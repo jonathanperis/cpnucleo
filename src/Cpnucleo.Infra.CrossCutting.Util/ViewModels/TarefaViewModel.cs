@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cpnucleo.Application.ViewModels
+namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     public class TarefaViewModel : BaseViewModel //:IValidatableObject
     {

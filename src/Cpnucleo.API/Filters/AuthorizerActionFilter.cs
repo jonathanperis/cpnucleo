@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Configuration.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using JWT;
 using JWT.Serializers;
 using Microsoft.AspNetCore.Mvc.Filters;

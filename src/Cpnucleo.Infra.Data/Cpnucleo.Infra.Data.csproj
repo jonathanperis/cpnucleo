@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
-    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Configuration\Cpnucleo.Infra.CrossCutting.Configuration.csproj" />
+    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
   </ItemGroup>
 
   <ItemGroup>

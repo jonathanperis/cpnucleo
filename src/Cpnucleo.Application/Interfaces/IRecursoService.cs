@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.ViewModels;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Interfaces
 {

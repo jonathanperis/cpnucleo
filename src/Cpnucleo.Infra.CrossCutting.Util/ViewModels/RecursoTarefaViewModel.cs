@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cpnucleo.Application.ViewModels
+namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     public class RecursoTarefaViewModel : BaseViewModel
     {
