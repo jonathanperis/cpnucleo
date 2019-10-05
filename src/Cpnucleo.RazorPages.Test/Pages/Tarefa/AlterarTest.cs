@@ -13,18 +13,18 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
     public class AlterarTest
     {
         private readonly Mock<ITarefaAppService> _tarefaAppService;
-        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
-        private readonly Mock<ICrudAppService<SistemaViewModel>> _sistemaAppService;
+        private readonly Mock<IProjetoAppService> _projetoAppService;
+        private readonly Mock<ISistemaAppService> _sistemaAppService;
         private readonly Mock<IWorkflowAppService> _workflowAppService;
-        private readonly Mock<ICrudAppService<TipoTarefaViewModel>> _tipoTarefaAppService;
+        private readonly Mock<ITipoTarefaAppService> _tipoTarefaAppService;
 
         public AlterarTest()
         {
             _tarefaAppService = new Mock<ITarefaAppService>();
-            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
-            _sistemaAppService = new Mock<ICrudAppService<SistemaViewModel>>();
+            _projetoAppService = new Mock<IProjetoAppService>();
+            _sistemaAppService = new Mock<ISistemaAppService>();
             _workflowAppService = new Mock<IWorkflowAppService>();
-            _tipoTarefaAppService = new Mock<ICrudAppService<TipoTarefaViewModel>>();
+            _tipoTarefaAppService = new Mock<ITipoTarefaAppService>();
         }
 
         [Fact]

@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V1
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class ApontamentoController : ControllerBase
     {
-        private readonly ICrudAppService<ApontamentoViewModel> _apontamentoAppService;
+        private readonly IApontamentoAppService _apontamentoAppService;
 
-        public ApontamentoController(ICrudAppService<ApontamentoViewModel> apontamentoAppService)
+        public ApontamentoController(IApontamentoAppService apontamentoAppService)
         {
             _apontamentoAppService = apontamentoAppService;
         }

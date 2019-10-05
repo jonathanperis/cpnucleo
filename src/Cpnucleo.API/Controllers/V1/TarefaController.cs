@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V1
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class TarefaController : ControllerBase
     {
-        private readonly ICrudAppService<TarefaViewModel> _tarefaAppService;
+        private readonly ITarefaAppService _tarefaAppService;
 
-        public TarefaController(ICrudAppService<TarefaViewModel> tarefaAppService)
+        public TarefaController(ITarefaAppService tarefaAppService)
         {
             _tarefaAppService = tarefaAppService;
         }

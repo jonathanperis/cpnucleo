@@ -13,11 +13,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     {
         private readonly IRecursoProjetoAppService _recursoProjetoAppService;
         private readonly IRecursoAppService _recursoAppService;
-        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
+        private readonly IProjetoAppService _projetoAppService;
 
         public IncluirModel(IRecursoProjetoAppService recursoProjetoAppService,
                                         IRecursoAppService recursoAppService,
-                                        ICrudAppService<ProjetoViewModel> projetoAppService)
+                                        IProjetoAppService projetoAppService)
         {
             _recursoProjetoAppService = recursoProjetoAppService;
             _recursoAppService = recursoAppService;

@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 {
     public class AlterarTest
     {
-        private readonly Mock<ICrudAppService<SistemaViewModel>> _sistemaAppService;
+        private readonly Mock<ISistemaAppService> _sistemaAppService;
 
         public AlterarTest()
         {
-            _sistemaAppService = new Mock<ICrudAppService<SistemaViewModel>>();
+            _sistemaAppService = new Mock<ISistemaAppService>();
         }
 
         [Fact]

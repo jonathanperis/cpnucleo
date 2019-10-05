@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
+        private readonly ISistemaAppService _sistemaAppService;
 
-        public RemoverModel(ICrudAppService<SistemaViewModel> sistemaAppService)
+        public RemoverModel(ISistemaAppService sistemaAppService)
         {
             _sistemaAppService = sistemaAppService;
         }
