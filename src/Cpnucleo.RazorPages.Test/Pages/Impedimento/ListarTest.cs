@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
 {
     public class ListarTest
     {
-        private readonly Mock<ICrudAppService<ImpedimentoViewModel>> _impedimentoAppService;
+        private readonly Mock<IImpedimentoAppService> _impedimentoAppService;
 
         public ListarTest()
         {
-            _impedimentoAppService = new Mock<ICrudAppService<ImpedimentoViewModel>>();
+            _impedimentoAppService = new Mock<IImpedimentoAppService>();
         }
 
         [Fact]

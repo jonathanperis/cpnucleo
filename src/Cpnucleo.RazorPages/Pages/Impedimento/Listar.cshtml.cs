@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly IImpedimentoAppService _impedimentoAppService;
 
-        public ListarModel(ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
+        public ListarModel(IImpedimentoAppService impedimentoAppService)
         {
             _impedimentoAppService = impedimentoAppService;
         }

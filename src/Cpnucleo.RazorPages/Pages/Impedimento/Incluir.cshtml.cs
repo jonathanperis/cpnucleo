@@ -9,9 +9,9 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly IImpedimentoAppService _impedimentoAppService;
 
-        public IncluirModel(ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
+        public IncluirModel(IImpedimentoAppService impedimentoAppService)
         {
             _impedimentoAppService = impedimentoAppService;
         }

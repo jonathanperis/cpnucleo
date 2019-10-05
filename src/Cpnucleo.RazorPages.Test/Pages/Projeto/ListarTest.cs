@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 {
     public class ListarTest
     {
-        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
+        private readonly Mock<IProjetoAppService> _projetoAppService;
 
         public ListarTest()
         {
-            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
+            _projetoAppService = new Mock<IProjetoAppService>();
         }
 
         [Fact]

@@ -12,13 +12,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 {
     public class AlterarTest
     {
-        private readonly Mock<ICrudAppService<ProjetoViewModel>> _projetoAppService;
-        private readonly Mock<ICrudAppService<SistemaViewModel>> _sistemaAppService;
+        private readonly Mock<IProjetoAppService> _projetoAppService;
+        private readonly Mock<ISistemaAppService> _sistemaAppService;
 
         public AlterarTest()
         {
-            _projetoAppService = new Mock<ICrudAppService<ProjetoViewModel>>();
-            _sistemaAppService = new Mock<ICrudAppService<SistemaViewModel>>();
+            _projetoAppService = new Mock<IProjetoAppService>();
+            _sistemaAppService = new Mock<ISistemaAppService>();
         }
 
         [Fact]

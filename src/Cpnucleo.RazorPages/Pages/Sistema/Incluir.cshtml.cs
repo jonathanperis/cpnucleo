@@ -9,9 +9,9 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
+        private readonly ISistemaAppService _sistemaAppService;
 
-        public IncluirModel(ICrudAppService<SistemaViewModel> sistemaAppService)
+        public IncluirModel(ISistemaAppService sistemaAppService)
         {
             _sistemaAppService = sistemaAppService;
         }

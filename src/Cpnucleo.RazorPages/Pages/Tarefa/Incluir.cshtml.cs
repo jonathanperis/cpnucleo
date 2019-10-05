@@ -11,16 +11,16 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     public class IncluirModel : PageModel
     {
         private readonly ITarefaAppService _tarefaAppService;
-        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
-        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
+        private readonly IProjetoAppService _projetoAppService;
+        private readonly ISistemaAppService _sistemaAppService;
         private readonly IWorkflowAppService _workflowAppService;
-        private readonly ICrudAppService<TipoTarefaViewModel> _tipoTarefaAppService;
+        private readonly ITipoTarefaAppService _tipoTarefaAppService;
 
         public IncluirModel(ITarefaAppService tarefaAppService,
-                                ICrudAppService<ProjetoViewModel> projetoAppService,
-                                ICrudAppService<SistemaViewModel> sistemaAppService,
+                                IProjetoAppService projetoAppService,
+                                ISistemaAppService sistemaAppService,
                                 IWorkflowAppService workflowAppService,
-                                ICrudAppService<TipoTarefaViewModel> tipoTarefaAppService)
+                                ITipoTarefaAppService tipoTarefaAppService)
         {
             _tarefaAppService = tarefaAppService;
             _projetoAppService = projetoAppService;

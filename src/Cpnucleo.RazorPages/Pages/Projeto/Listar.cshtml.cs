@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
+        private readonly IProjetoAppService _projetoAppService;
 
-        public ListarModel(ICrudAppService<ProjetoViewModel> projetoAppService)
+        public ListarModel(IProjetoAppService projetoAppService)
         {
             _projetoAppService = projetoAppService;
         }

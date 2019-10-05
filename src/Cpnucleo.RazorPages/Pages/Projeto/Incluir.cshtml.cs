@@ -10,10 +10,10 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
-        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
+        private readonly IProjetoAppService _projetoAppService;
+        private readonly ISistemaAppService _sistemaAppService;
 
-        public IncluirModel(ICrudAppService<ProjetoViewModel> projetoAppService, ICrudAppService<SistemaViewModel> sistemaAppService)
+        public IncluirModel(IProjetoAppService projetoAppService, ISistemaAppService sistemaAppService)
         {
             _projetoAppService = projetoAppService;
             _sistemaAppService = sistemaAppService;
