@@ -26,9 +26,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
 
             RecursoViewModel recursoMock = new RecursoViewModel { };
 
+            AlterarModel pageModel = new AlterarModel(_recursoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoAppService.Setup(x => x.Consultar(id)).Returns(recursoMock);
 
-            AlterarModel pageModel = new AlterarModel(_recursoAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -48,9 +52,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
 
             RecursoViewModel recursoMock = new RecursoViewModel { Id = id, Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
+            AlterarModel pageModel = new AlterarModel(_recursoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoAppService.Setup(x => x.Alterar(recursoMock));
 
-            AlterarModel pageModel = new AlterarModel(_recursoAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act

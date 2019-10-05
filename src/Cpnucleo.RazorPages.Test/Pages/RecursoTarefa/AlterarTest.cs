@@ -33,10 +33,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { Tarefa = new TarefaViewModel { } };
             List<RecursoProjetoViewModel> listaRecursoProjetoMock = new List<RecursoProjetoViewModel> { };
 
+            AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoTarefaAppService.Setup(x => x.Consultar(id)).Returns(recursoTarefaMock);
             _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaRecursoProjetoMock);
 
-            AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -59,15 +63,16 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaViewModel() };
 
-            _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
-            _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaMock);
-            _recursoTarefaAppService.Setup(x => x.Incluir(recursoTarefaMock));
-
             AlterarModel pageModel = new AlterarModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object)
             {
                 RecursoTarefa = new RecursoTarefaViewModel { IdTarefa = idTarefa },
-                Tarefa = new TarefaViewModel { IdProjeto = idProjeto }
+                Tarefa = new TarefaViewModel { IdProjeto = idProjeto },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
+            _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaMock);
+            _recursoTarefaAppService.Setup(x => x.Incluir(recursoTarefaMock));
 
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 

@@ -24,9 +24,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
             // Arrange
             WorkflowViewModel workflowMock = new WorkflowViewModel { Nome = nome, Ordem = ordem };
 
+            IncluirModel pageModel = new IncluirModel(_workflowAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _workflowAppService.Setup(x => x.Incluir(workflowMock));
 
-            IncluirModel pageModel = new IncluirModel(_workflowAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

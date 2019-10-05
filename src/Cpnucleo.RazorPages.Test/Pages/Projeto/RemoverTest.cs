@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_projetoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _projetoAppService.Setup(x => x.Consultar(id)).Returns(projetoMock);
 
-            RemoverModel pageModel = new RemoverModel(_projetoAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -46,12 +50,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
 
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
 
-            _projetoAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_projetoAppService.Object)
             {
-                Projeto = new ProjetoViewModel { Id = id }
+                Projeto = new ProjetoViewModel { Id = id },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _projetoAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

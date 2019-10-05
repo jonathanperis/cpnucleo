@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
 
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Consultar(id)).Returns(tarefaMock);
 
-            RemoverModel pageModel = new RemoverModel(_tarefaAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -46,12 +50,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
 
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
-            _tarefaAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_tarefaAppService.Object)
             {
-                Tarefa = new TarefaViewModel { Id = id }
+                Tarefa = new TarefaViewModel { Id = id },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _tarefaAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
 
             RecursoViewModel recursoMock = new RecursoViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_recursoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoAppService.Setup(x => x.Consultar(id)).Returns(recursoMock);
 
-            RemoverModel pageModel = new RemoverModel(_recursoAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -44,12 +48,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
             // Arrange
             Guid id = Guid.NewGuid();
 
-            _recursoAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_recursoAppService.Object)
             {
-                Recurso = new RecursoViewModel { Id = id }
+                Recurso = new RecursoViewModel { Id = id },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _recursoAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

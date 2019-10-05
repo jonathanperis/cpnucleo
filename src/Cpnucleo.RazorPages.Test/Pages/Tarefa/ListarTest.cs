@@ -23,9 +23,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             // Arrange
             List<TarefaViewModel> listaMock = new List<TarefaViewModel> { };
 
+            ListarModel pageModel = new ListarModel(_tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            ListarModel pageModel = new ListarModel(_tarefaAppService.Object);
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act

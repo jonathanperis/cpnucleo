@@ -31,10 +31,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
             ProjetoViewModel projetoMock = new ProjetoViewModel { Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
+            IncluirModel pageModel = new IncluirModel(_projetoAppService.Object, _sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _projetoAppService.Setup(x => x.Incluir(projetoMock));
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            IncluirModel pageModel = new IncluirModel(_projetoAppService.Object, _sistemaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_workflowAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
 
-            RemoverModel pageModel = new RemoverModel(_workflowAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -46,12 +50,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
-            _workflowAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_workflowAppService.Object)
             {
-                Workflow = new WorkflowViewModel { Id = id }
+                Workflow = new WorkflowViewModel { Id = id },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _workflowAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

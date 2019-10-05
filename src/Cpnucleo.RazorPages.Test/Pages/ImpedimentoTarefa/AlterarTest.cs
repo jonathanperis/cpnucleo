@@ -30,10 +30,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
+            AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoTarefaAppService.Setup(x => x.Consultar(id)).Returns(impedimentoTarefaMock);
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -56,13 +60,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { Id = id, IdImpedimento = idImpedimento, IdTarefa = idTarefa, Descricao = descricao };
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
-            _impedimentoTarefaAppService.Setup(x => x.Alterar(impedimentoTarefaMock));
-            _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
-
             AlterarModel pageModel = new AlterarModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object)
             {
-                ImpedimentoTarefa = new ImpedimentoTarefaViewModel { IdTarefa = idTarefa }
+                ImpedimentoTarefa = new ImpedimentoTarefaViewModel { IdTarefa = idTarefa },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _impedimentoTarefaAppService.Setup(x => x.Alterar(impedimentoTarefaMock));
+            _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 

@@ -26,12 +26,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
 
             List<RecursoTarefaViewModel> listaMock = new List<RecursoTarefaViewModel> { };
 
-            _sistemaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);
-
             ListarModel pageModel = new ListarModel(_sistemaAppService.Object)
             {
                 PageContext = PageContextManager.CreatePageContext()
             };
+
+            _sistemaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);
 
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 

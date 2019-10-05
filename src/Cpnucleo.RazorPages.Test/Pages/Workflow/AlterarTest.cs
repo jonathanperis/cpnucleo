@@ -26,9 +26,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 
             WorkflowViewModel workflowMock = new WorkflowViewModel { };
 
+            AlterarModel pageModel = new AlterarModel(_workflowAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _workflowAppService.Setup(x => x.Consultar(id)).Returns(workflowMock);
 
-            AlterarModel pageModel = new AlterarModel(_workflowAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -48,9 +52,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
 
             WorkflowViewModel workflowMock = new WorkflowViewModel { Id = id, Nome = nome, Ordem = ordem };
 
+            AlterarModel pageModel = new AlterarModel(_workflowAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _workflowAppService.Setup(x => x.Alterar(workflowMock));
 
-            AlterarModel pageModel = new AlterarModel(_workflowAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act

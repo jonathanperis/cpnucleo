@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
 
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoAppService.Setup(x => x.Consultar(id)).Returns(impedimentoMock);
 
-            RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -46,12 +50,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
 
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { };
 
-            _impedimentoAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_impedimentoAppService.Object)
             {
-                Impedimento = new ImpedimentoViewModel { Id = id }
+                Impedimento = new ImpedimentoViewModel { Id = id },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _impedimentoAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

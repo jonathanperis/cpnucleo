@@ -23,9 +23,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
             // Arrange
             List<RecursoViewModel> listaMock = new List<RecursoViewModel> { };
 
+            ListarModel pageModel = new ListarModel(_recursoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            ListarModel pageModel = new ListarModel(_recursoAppService.Object);
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act
