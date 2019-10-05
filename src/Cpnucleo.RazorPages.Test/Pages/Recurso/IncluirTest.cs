@@ -24,9 +24,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
             // Arrange
             RecursoViewModel recursoMock = new RecursoViewModel { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
 
+            IncluirModel pageModel = new IncluirModel(_recursoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoAppService.Setup(x => x.Incluir(recursoMock));
 
-            IncluirModel pageModel = new IncluirModel(_recursoAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

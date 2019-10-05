@@ -32,10 +32,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<RecursoViewModel> listaMock = new List<RecursoViewModel> { };
 
+            IncluirModel pageModel = new IncluirModel(_recursoProjetoAppService.Object, _recursoAppService.Object, _projetoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _projetoAppService.Setup(x => x.Consultar(idProjeto)).Returns(projetoMock);
             _recursoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            IncluirModel pageModel = new IncluirModel(_recursoProjetoAppService.Object, _recursoAppService.Object, _projetoAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
@@ -56,11 +60,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<RecursoViewModel> listaMock = new List<RecursoViewModel> { };
 
+            IncluirModel pageModel = new IncluirModel(_recursoProjetoAppService.Object, _recursoAppService.Object, _projetoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoProjetoAppService.Setup(x => x.Incluir(recursoProjetoMock));
             _projetoAppService.Setup(x => x.Consultar(idProjeto)).Returns(projetoMock);
             _recursoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            IncluirModel pageModel = new IncluirModel(_recursoProjetoAppService.Object, _recursoAppService.Object, _projetoAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

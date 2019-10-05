@@ -33,10 +33,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
+            IncluirModel pageModel = new IncluirModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
             _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaMock);
 
-            IncluirModel pageModel = new IncluirModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
@@ -59,11 +63,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             TarefaViewModel tarefaMock = new TarefaViewModel { };
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { IdTarefa = idTarefa, PercentualTarefa = percentualTarefa, Tarefa = new TarefaViewModel() };
 
+            IncluirModel pageModel = new IncluirModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
             _recursoProjetoAppService.Setup(x => x.ListarPorProjeto(idProjeto)).Returns(listaMock);
             _recursoTarefaAppService.Setup(x => x.Incluir(recursoTarefaMock));
 
-            IncluirModel pageModel = new IncluirModel(_recursoTarefaAppService.Object, _recursoProjetoAppService.Object, _tarefaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

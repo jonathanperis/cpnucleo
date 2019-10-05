@@ -23,9 +23,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
             // Arrange
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
+            ListarModel pageModel = new ListarModel(_sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            ListarModel pageModel = new ListarModel(_sistemaAppService.Object);
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act

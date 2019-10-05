@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
 
             ImpedimentoTarefaViewModel impedimentoTarefaMock = new ImpedimentoTarefaViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoTarefaAppService.Setup(x => x.Consultar(id)).Returns(impedimentoTarefaMock);
 
-            RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -45,12 +49,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             Guid id = Guid.NewGuid();
             Guid idTarefa = Guid.NewGuid();
 
-            _impedimentoTarefaAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_impedimentoTarefaAppService.Object)
             {
-                ImpedimentoTarefa = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa }
+                ImpedimentoTarefa = new ImpedimentoTarefaViewModel { Id = id, IdTarefa = idTarefa },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _impedimentoTarefaAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

@@ -34,11 +34,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
+            IncluirModel pageModel = new IncluirModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object, _tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoTarefaAppService.Setup(x => x.Consultar(id)).Returns(impedimentoTarefaMock);
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
             _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
 
-            IncluirModel pageModel = new IncluirModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object, _tarefaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
@@ -61,11 +65,15 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
             TarefaViewModel tarefaMock = new TarefaViewModel { };
 
+            IncluirModel pageModel = new IncluirModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object, _tarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoTarefaAppService.Setup(x => x.Incluir(impedimentoTarefaMock));
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
             _tarefaAppService.Setup(x => x.Consultar(idTarefa)).Returns(tarefaMock);
 
-            IncluirModel pageModel = new IncluirModel(_impedimentoTarefaAppService.Object, _impedimentoAppService.Object, _tarefaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

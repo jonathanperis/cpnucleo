@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 
             SistemaViewModel sistemaMock = new SistemaViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
 
-            RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -44,12 +48,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
             // Arrange
             Guid id = Guid.NewGuid();
 
-            _sistemaAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_sistemaAppService.Object)
             {
-                Sistema = new SistemaViewModel { Id = id }
+                Sistema = new SistemaViewModel { Id = id },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _sistemaAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

@@ -39,13 +39,17 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };
             List<TipoTarefaViewModel> listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
 
+            AlterarModel pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Consultar(id)).Returns(tarefaMock);
             _projetoAppService.Setup(x => x.Listar()).Returns(listaProjetosMock);
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaSistemasMock);
             _workflowAppService.Setup(x => x.Listar()).Returns(listaWorkflowMock);
             _tipoTarefaAppService.Setup(x => x.Listar()).Returns(listaTipoTarefaMock);
 
-            AlterarModel pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -87,13 +91,17 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };
             List<TipoTarefaViewModel> listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
 
+            AlterarModel pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Alterar(tarefaMock));
             _projetoAppService.Setup(x => x.Listar()).Returns(listaProjetosMock);
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaSistemasMock);
             _workflowAppService.Setup(x => x.Listar()).Returns(listaWorkflowMock);
             _tipoTarefaAppService.Setup(x => x.Listar()).Returns(listaTipoTarefaMock);
 
-            AlterarModel pageModel = new AlterarModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act

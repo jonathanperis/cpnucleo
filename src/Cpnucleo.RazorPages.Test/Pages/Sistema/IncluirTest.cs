@@ -24,9 +24,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
             // Arrange
             SistemaViewModel sistemaMock = new SistemaViewModel { Nome = nome, Descricao = descricao };
 
+            IncluirModel pageModel = new IncluirModel(_sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _sistemaAppService.Setup(x => x.Incluir(sistemaMock));
 
-            IncluirModel pageModel = new IncluirModel(_sistemaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

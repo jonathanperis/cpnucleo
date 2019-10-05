@@ -25,9 +25,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
 
             RecursoTarefaViewModel recursoTarefaMock = new RecursoTarefaViewModel { };
 
+            RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _recursoTarefaAppService.Setup(x => x.Consultar(id)).Returns(recursoTarefaMock);
 
-            RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object);
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 
             // Act
@@ -45,12 +49,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoTarefa
             Guid id = Guid.NewGuid();
             Guid idTarefa = Guid.NewGuid();
 
-            _recursoTarefaAppService.Setup(x => x.Remover(id));
-
             RemoverModel pageModel = new RemoverModel(_recursoTarefaAppService.Object)
             {
-                RecursoTarefa = new RecursoTarefaViewModel { Id = id, IdTarefa = idTarefa }
+                RecursoTarefa = new RecursoTarefaViewModel { Id = id, IdTarefa = idTarefa },
+                PageContext = PageContextManager.CreatePageContext()
             };
+
+            _recursoTarefaAppService.Setup(x => x.Remover(id));
 
             PageModelTester<RemoverModel> pageTester = new PageModelTester<RemoverModel>(pageModel);
 

@@ -23,9 +23,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Workflow
             // Arrange
             List<WorkflowViewModel> listaMock = new List<WorkflowViewModel> { };
 
+            ListarModel pageModel = new ListarModel(_workflowAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _workflowAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            ListarModel pageModel = new ListarModel(_workflowAppService.Object);
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act

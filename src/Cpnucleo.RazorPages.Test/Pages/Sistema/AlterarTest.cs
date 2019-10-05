@@ -26,9 +26,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 
             SistemaViewModel sistemaMock = new SistemaViewModel { };
 
+            AlterarModel pageModel = new AlterarModel(_sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _sistemaAppService.Setup(x => x.Consultar(id)).Returns(sistemaMock);
 
-            AlterarModel pageModel = new AlterarModel(_sistemaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -48,9 +52,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Sistema
 
             SistemaViewModel sistemaMock = new SistemaViewModel { Id = id, Nome = nome, Descricao = descricao };
 
+            AlterarModel pageModel = new AlterarModel(_sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _sistemaAppService.Setup(x => x.Alterar(sistemaMock));
 
-            AlterarModel pageModel = new AlterarModel(_sistemaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act

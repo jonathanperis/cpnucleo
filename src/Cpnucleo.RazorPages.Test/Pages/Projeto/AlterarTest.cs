@@ -30,10 +30,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
             ProjetoViewModel projetoMock = new ProjetoViewModel { };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
+            AlterarModel pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _projetoAppService.Setup(x => x.Consultar(id)).Returns(projetoMock);
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            AlterarModel pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act
@@ -55,10 +59,14 @@ namespace Cpnucleo.RazorPages.Test.Pages.Projeto
             ProjetoViewModel projetoMock = new ProjetoViewModel { Id = id, Nome = nome, IdSistema = idSistema };
             List<SistemaViewModel> listaMock = new List<SistemaViewModel> { };
 
+            AlterarModel pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _projetoAppService.Setup(x => x.Alterar(projetoMock));
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            AlterarModel pageModel = new AlterarModel(_projetoAppService.Object, _sistemaAppService.Object);
             PageModelTester<AlterarModel> pageTester = new PageModelTester<AlterarModel>(pageModel);
 
             // Act

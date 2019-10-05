@@ -26,12 +26,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.RecursoProjeto
 
             List<RecursoProjetoViewModel> listaMock = new List<RecursoProjetoViewModel> { };
 
-            _recursoProjetoAppService.Setup(x => x.Listar()).Returns(listaMock);
-
             ListarModel pageModel = new ListarModel(_recursoProjetoAppService.Object)
             {
                 PageContext = PageContextManager.CreatePageContext()
             };
+
+            _recursoProjetoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 

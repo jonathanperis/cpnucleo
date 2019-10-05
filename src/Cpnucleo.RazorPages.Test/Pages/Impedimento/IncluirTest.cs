@@ -24,9 +24,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
             // Arrange
             ImpedimentoViewModel impedimentoMock = new ImpedimentoViewModel { Nome = nome };
 
+            IncluirModel pageModel = new IncluirModel(_impedimentoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoAppService.Setup(x => x.Incluir(impedimentoMock));
 
-            IncluirModel pageModel = new IncluirModel(_impedimentoAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act

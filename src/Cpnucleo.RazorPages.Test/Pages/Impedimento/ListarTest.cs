@@ -23,9 +23,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Impedimento
             // Arrange
             List<ImpedimentoViewModel> listaMock = new List<ImpedimentoViewModel> { };
 
+            ListarModel pageModel = new ListarModel(_impedimentoAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _impedimentoAppService.Setup(x => x.Listar()).Returns(listaMock);
 
-            ListarModel pageModel = new ListarModel(_impedimentoAppService.Object);
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act

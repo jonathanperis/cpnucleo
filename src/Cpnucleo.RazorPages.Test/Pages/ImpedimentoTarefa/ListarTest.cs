@@ -26,12 +26,12 @@ namespace Cpnucleo.RazorPages.Test.Pages.ImpedimentoTarefa
 
             List<ImpedimentoTarefaViewModel> listaMock = new List<ImpedimentoTarefaViewModel> { };
 
-            _impedimentoTarefaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);
-
             ListarModel pageModel = new ListarModel(_impedimentoTarefaAppService.Object)
             {
                 PageContext = PageContextManager.CreatePageContext()
             };
+
+            _impedimentoTarefaAppService.Setup(x => x.ListarPorTarefa(idTarefa)).Returns(listaMock);
 
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 

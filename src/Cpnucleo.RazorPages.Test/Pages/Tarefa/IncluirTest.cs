@@ -36,12 +36,16 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
             List<WorkflowViewModel> listaWorkflowMock = new List<WorkflowViewModel> { };
             List<TipoTarefaViewModel> listaTipoTarefaMock = new List<TipoTarefaViewModel> { };
 
+            IncluirModel pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _projetoAppService.Setup(x => x.Listar()).Returns(listaProjetosMock);
             _sistemaAppService.Setup(x => x.Listar()).Returns(listaSistemasMock);
             _workflowAppService.Setup(x => x.Listar()).Returns(listaWorkflowMock);
             _tipoTarefaAppService.Setup(x => x.Listar()).Returns(listaTipoTarefaMock);
 
-            IncluirModel pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
@@ -76,9 +80,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Tarefa
                 IdTipoTarefa = IdTipoTarefa
             };
 
+            IncluirModel pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object)
+            {
+                PageContext = PageContextManager.CreatePageContext()
+            };
+
             _tarefaAppService.Setup(x => x.Incluir(tarefaMock));
 
-            IncluirModel pageModel = new IncluirModel(_tarefaAppService.Object, _projetoAppService.Object, _sistemaAppService.Object, _workflowAppService.Object, _tipoTarefaAppService.Object);
             PageModelTester<IncluirModel> pageTester = new PageModelTester<IncluirModel>(pageModel);
 
             // Act
