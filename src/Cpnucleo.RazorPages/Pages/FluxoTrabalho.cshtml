@@ -81,7 +81,7 @@
                                             xhr.setRequestHeader("XSRF-TOKEN",
                                                 $('input:hidden[name="__RequestVerificationToken"]').val());
                                         },
-                                        success: function (response) {
+                                        success: function () {
 
                                             $("#workflow-animate-" + idWorkflowTarefa).removeAttr('class').attr('class', '');
                                             $("#workflow-animate-" + idWorkflowTarefa).addClass('animated');
