@@ -1,11 +1,9 @@
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Cpnucleo.RazorPages.Configuration;
-using Cpnucleo.RazorPages.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -61,8 +59,6 @@ namespace Cpnucleo.RazorPages
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
-
-            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,14 +86,6 @@ namespace Cpnucleo.RazorPages
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
-
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<FluxoTrabalhoHub>("/hubs/fluxoTrabalhoHub", options =>
-                {
-                    options.Transports = HttpTransportType.ServerSentEvents;
-                });
-            });
 
             app.UseMvc();
         }
