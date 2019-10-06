@@ -43,7 +43,7 @@ namespace Cpnucleo.RazorPages.Test.Pages.Apontamento
             _claimsManager.Setup(x => x.ReadClaimsPrincipal(pageModel.HttpContext.User, ClaimTypes.PrimarySid)).Returns(retorno);
             _apontamentoAppService.Setup(x => x.ListarPorRecurso(idRecurso)).Returns(listaMock);
             _recursoTarefaAppService.Setup(x => x.ListarPorRecurso(idRecurso)).Returns(listaRecursoTarefaMock);
-            
+
             PageModelTester<ListarModel> pageTester = new PageModelTester<ListarModel>(pageModel);
 
             // Act
