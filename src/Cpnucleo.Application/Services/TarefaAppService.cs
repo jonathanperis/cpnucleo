@@ -9,10 +9,12 @@ namespace Cpnucleo.Application.Services
 {
     public class TarefaAppService : CrudAppService<Tarefa, TarefaViewModel>, ITarefaAppService
     {
-        public TarefaAppService(IMapper mapper, ICrudRepository<Tarefa> repository, IUnitOfWork unitOfWork)
+        protected readonly IWorkflowAppService _workflowAppService;
+
+        public TarefaAppService(IMapper mapper, ICrudRepository<Tarefa> repository, IUnitOfWork unitOfWork, IWorkflowAppService workflowAppService)
             : base(mapper, repository, unitOfWork)
         {
-
+            _workflowAppService = workflowAppService;
         }
 
         public bool AlterarPorPercentualConcluido(Guid idTarefa, int? percentualConcluido)
@@ -28,7 +30,10 @@ namespace Cpnucleo.Application.Services
             lock (this)
             {
                 TarefaViewModel tarefa = Consultar(idTarefa);
+                WorkflowViewModel workflow = _workflowAppService.Consultar(idWorkflow);
+
                 tarefa.IdWorkflow = idWorkflow;
+                tarefa.Workflow = workflow;
 
                 return Alterar(tarefa);
             }
