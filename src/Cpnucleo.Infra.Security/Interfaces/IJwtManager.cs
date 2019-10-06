@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.API.Utils
+﻿namespace Cpnucleo.Infra.Security.Interfaces
 {
     public interface IJwtManager
     {
