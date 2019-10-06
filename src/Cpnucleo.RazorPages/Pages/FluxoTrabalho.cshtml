@@ -48,8 +48,6 @@
     <script src="~/js/plugins/touchpunch/jquery.ui.touch-punch.min.js"></script>
     <!-- Toastr script -->
     <script src="~/js/plugins/toastr/toastr.min.js"></script>
-    <!-- SignalR -->
-    <script src="~/lib/signalr/signalr.min.js"></script>
     @if (Model.Lista != null)
     {
         foreach (var workflow in Model.Lista)
@@ -132,15 +130,4 @@
             </script>
         }
     }
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/hubs/fluxoTrabalhoHub")
-            .build();
-
-        connection.on('send', data => {
-            console.log(data);
-        });
-
-        connection.start().catch(err => console.error(err.toString()));
-    </script>
 }

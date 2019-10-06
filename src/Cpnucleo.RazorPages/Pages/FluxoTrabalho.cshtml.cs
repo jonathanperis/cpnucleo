@@ -1,10 +1,8 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 
@@ -15,15 +13,12 @@ namespace Cpnucleo.RazorPages.Pages
     {
         private readonly IWorkflowAppService _workflowAppService;
         private readonly ITarefaAppService _tarefaAppService;
-        private readonly IHubContext<FluxoTrabalhoHub> _hubContext;
 
         public FluxoTrabalhoModel(IWorkflowAppService workflowAppService,
-                                  ITarefaAppService tarefaAppService,
-                                  IHubContext<FluxoTrabalhoHub> hubContext)
+                                  ITarefaAppService tarefaAppService)
         {
             _workflowAppService = workflowAppService;
             _tarefaAppService = tarefaAppService;
-            _hubContext = hubContext;
         }
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
@@ -38,8 +33,6 @@ namespace Cpnucleo.RazorPages.Pages
         public IActionResult OnPost(Guid idTarefa, Guid idWorkflow)
         {
             _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow);
-
-            _hubContext.Clients.All.SendAsync("send", "-> Lorem Ipsum");
 
             return Page();
         }
