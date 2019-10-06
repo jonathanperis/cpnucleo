@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.RazorPages.Test.Pages
 {
-    internal class Login
+    internal class LoginTest
     {
     }
 }
