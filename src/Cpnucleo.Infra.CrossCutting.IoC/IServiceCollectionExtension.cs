@@ -82,10 +82,13 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - Security
             services.AddScoped<ICryptographyManager, CryptographyManager>();
-            services.AddScoped<ISystemConfiguration, SystemConfiguration>();
+            services.AddScoped<IJwtManager, JwtManager>();
 
             // Infra - CrossCutting - Identity
             services.AddScoped<IClaimsManager, ClaimsManager>();
+
+            // Infra - CrossCutting - Util
+            services.AddScoped<ISystemConfiguration, SystemConfiguration>();
 
             return services;
         }

@@ -1,11 +1,12 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Cpnucleo.Infra.Security.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Cpnucleo.API.Utils
+namespace Cpnucleo.Infra.Security
 {
     public class JwtManager : IJwtManager
     {

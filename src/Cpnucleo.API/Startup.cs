@@ -1,6 +1,5 @@
 ﻿using Cpnucleo.API.Configuration;
 using Cpnucleo.API.Filters;
-using Cpnucleo.API.Utils;
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +29,6 @@ namespace Cpnucleo.API
             services.AddVersionConfig();
 
             services.AddScoped<AuthorizerActionFilter>();
-            services.AddScoped<IJwtManager, JwtManager>();
 
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //       .AddJwtBearer(options =>
