@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
@@ -11,12 +12,25 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.ToTable("CPN_TB_RECURSO_TAREFA");
 
             builder.Property(c => c.Id)
-                .HasColumnName("RTAR_ID");
+                .HasColumnName("RTAR_ID")
+                .HasColumnType("uniqueidentifier")
+                .HasDefaultValue(Guid.NewGuid())
+                .IsRequired();
 
             builder.Property(c => c.PercentualTarefa)
                 .HasColumnName("RTAR_PERCENTUAL")
                 .HasColumnType("int")
                 .IsRequired();
+
+            builder.Property(c => c.DataInclusao)
+                .HasColumnName("RTAR_DATA_INCLUSAO")
+                .HasColumnType("datetime")
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
+
+            builder.Property(c => c.DataAlteracao)
+                .HasColumnName("RTAR_DATA_ALTERACAO")
+                .HasColumnType("datetime");
 
             builder.Property(c => c.IdRecurso)
                 .HasColumnName("REC_ID")
@@ -28,13 +42,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
-            builder.Property(c => c.DataInclusao)
-                .HasColumnName("RTAR_DATA_INCLUSAO")
-                .HasColumnType("datetime");
-
-            builder.Property(c => c.DataAlteracao)
-                .HasColumnName("RTAR_DATA_ALTERACAO")
-                .HasColumnType("datetime");
+            builder.Property(c => c.Ativo)
+                .HasColumnName("RTAR_ATIVO")
+                .HasColumnType("bit")
+                .HasDefaultValue(true)
+                .IsRequired();
 
             builder
                 .HasOne(p => p.Recurso)

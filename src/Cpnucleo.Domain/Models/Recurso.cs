@@ -9,8 +9,6 @@ namespace Cpnucleo.Domain.Models
 
         public string Nome { get; set; }
 
-        public bool Ativo { get; set; }
-
         public string Login { get; set; }
 
         public string Senha { get; set; }
