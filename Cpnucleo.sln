@@ -40,8 +40,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.API", "src\Cpnucle
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.GRPC", "src\Cpnucleo.GRPC\Cpnucleo.GRPC.csproj", "{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Blazor.Server", "src\Cpnucleo.Blazor.Server\Cpnucleo.Blazor.Server.csproj", "{2BC043BB-1937-4B2C-9F12-36B352D2D89D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.GRPC.Client", "src\Cpnucleo.GRPC.Client\Cpnucleo.GRPC.Client.csproj", "{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.3 - Security", "5.3 - Security", "{004490E7-2AF2-4350-9D63-24753FFEE154}"
@@ -68,11 +66,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.4.3.1 - Data", "5.4.3.1 -
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.4.3.2 - Security", "5.4.3.2 - Security", "{25280165-5949-48B8-99D1-A1EBBA8ADB73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Application.Test", "src\Cpnucleo.Application.Test\Cpnucleo.Application.Test.csproj", "{59107C8F-458E-42C9-9A01-9EE3A755B9E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Application.Test", "src\Cpnucleo.Application.Test\Cpnucleo.Application.Test.csproj", "{59107C8F-458E-42C9-9A01-9EE3A755B9E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Infra.Data.Test", "src\Cpnucleo.Infra.Data.Test\Cpnucleo.Infra.Data.Test.csproj", "{8EA1B5FB-91B8-4BC3-A6BE-1CB7242E0FD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.Data.Test", "src\Cpnucleo.Infra.Data.Test\Cpnucleo.Infra.Data.Test.csproj", "{8EA1B5FB-91B8-4BC3-A6BE-1CB7242E0FD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Infra.Security.Test", "src\Cpnucleo.Infra.Security.Test\Cpnucleo.Infra.Security.Test.csproj", "{BD11E842-3F35-4B1F-BC4F-6275A9A20581}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.Security.Test", "src\Cpnucleo.Infra.Security.Test\Cpnucleo.Infra.Security.Test.csproj", "{BD11E842-3F35-4B1F-BC4F-6275A9A20581}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -112,10 +110,6 @@ Global
 		{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BC043BB-1937-4B2C-9F12-36B352D2D89D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -164,7 +158,6 @@ Global
 		{11D89DA9-2D7B-4F9E-A6DA-5C87F18A2616} = {B3B86CDF-C291-4F42-AB04-8ADCC079032C}
 		{F6059E13-AAF3-4768-B5B0-391FA9E8E6BE} = {FD9D98D7-C717-4637-B5F3-AC4CD169B354}
 		{84E732B5-2A7E-4DF9-A6E6-E89B0634E1A3} = {FD9D98D7-C717-4637-B5F3-AC4CD169B354}
-		{2BC043BB-1937-4B2C-9F12-36B352D2D89D} = {DA52F0C0-E107-407A-AC3B-91D3F520397D}
 		{6BC6AA4C-F0D3-4BDD-9AA4-AA527D832125} = {7227B2B8-2BED-4862-B427-B6F2005E6244}
 		{004490E7-2AF2-4350-9D63-24753FFEE154} = {EBCC6CC9-C39F-4506-A744-80C3CC24C788}
 		{AC3755C2-999D-4947-9A60-A9F89F06ED2F} = {004490E7-2AF2-4350-9D63-24753FFEE154}
