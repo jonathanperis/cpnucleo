@@ -33,7 +33,9 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public IQueryable<TModel> Listar()
         {
-            return DbSet.AsNoTracking();
+            return DbSet
+                .AsNoTracking()
+                .Where(x => x.Ativo == false);
         }
 
         public void Alterar(TModel obj)
@@ -43,7 +45,10 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public void Remover(Guid id)
         {
-            DbSet.Remove(DbSet.Find(id));
+            TModel obj = Consultar(id);
+            obj.Ativo = false;
+
+            Alterar(obj);
         }
 
         public void Dispose()
