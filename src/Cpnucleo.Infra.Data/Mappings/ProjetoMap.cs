@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
@@ -11,26 +12,37 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.ToTable("CPN_TB_PROJETO");
 
             builder.Property(c => c.Id)
-                .HasColumnName("PROJ_ID");
+                .HasColumnName("PROJ_ID")
+                .HasColumnType("uniqueidentifier")
+                .HasDefaultValue(Guid.NewGuid())
+                .IsRequired();
 
             builder.Property(c => c.Nome)
                 .HasColumnName("PROJ_NOME")
-                .HasColumnType("varchar(80)")
-                .HasMaxLength(80)
+                .HasColumnType("varchar(50)")
+                .HasMaxLength(50)
                 .IsRequired();
+
+            builder.Property(c => c.DataInclusao)
+                .HasColumnName("PROJ_DATA_INCLUSAO")
+                .HasColumnType("datetime")
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
+
+            builder.Property(c => c.DataAlteracao)
+                .HasColumnName("PROJ_DATA_ALTERACAO")
+                .HasColumnType("datetime");
 
             builder.Property(c => c.IdSistema)
                 .HasColumnName("SIS_ID")
                 .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
-            builder.Property(c => c.DataInclusao)
-                .HasColumnName("PROJ_DATA_INCLUSAO")
-                .HasColumnType("datetime");
-
-            builder.Property(c => c.DataAlteracao)
-                .HasColumnName("PROJ_DATA_ALTERACAO")
-                .HasColumnType("datetime");
+            builder.Property(c => c.Ativo)
+                .HasColumnName("PROJ_ATIVO")
+                .HasColumnType("bit")
+                .HasDefaultValue(true)
+                .IsRequired();
 
             builder
                 .HasOne(p => p.Sistema)

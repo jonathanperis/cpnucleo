@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
@@ -11,7 +12,10 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.ToTable("CPN_TB_SISTEMA");
 
             builder.Property(c => c.Id)
-                .HasColumnName("SIS_ID");
+                .HasColumnName("SIS_ID")
+                .HasColumnType("uniqueidentifier")
+                .HasDefaultValue(Guid.NewGuid())
+                .IsRequired();
 
             builder.Property(c => c.Nome)
                 .HasColumnName("SIS_NOME")
@@ -27,11 +31,19 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("SIS_DATA_INCLUSAO")
-                .HasColumnType("datetime");
+                .HasColumnType("datetime")
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
 
             builder.Property(c => c.DataAlteracao)
                 .HasColumnName("SIS_DATA_ALTERACAO")
                 .HasColumnType("datetime");
+
+            builder.Property(c => c.Ativo)
+                .HasColumnName("SIS_ATIVO")
+                .HasColumnType("bit")
+                .HasDefaultValue(true)
+                .IsRequired();
         }
     }
 }

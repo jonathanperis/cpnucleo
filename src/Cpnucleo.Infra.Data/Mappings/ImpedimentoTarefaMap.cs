@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
@@ -11,7 +12,10 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.ToTable("CPN_TB_TAREFA_IMPEDIMENTO");
 
             builder.Property(c => c.Id)
-                .HasColumnName("ITAR_ID");
+                .HasColumnName("ITAR_ID")
+                .HasColumnType("uniqueidentifier")
+                .HasDefaultValue(Guid.NewGuid())
+                .IsRequired();
 
             builder.Property(c => c.Descricao)
                 .HasColumnName("ITAR_DESCRICAO")
@@ -19,9 +23,15 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasMaxLength(450)
                 .IsRequired();
 
-            builder.Property(c => c.Ativo)
-                .HasColumnName("ITAR_ATIVO")
-                .HasColumnType("bit");
+            builder.Property(c => c.DataInclusao)
+                .HasColumnName("ITAR_DATA_INCLUSAO")
+                .HasColumnType("datetime")
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
+
+            builder.Property(c => c.DataAlteracao)
+                .HasColumnName("ITAR_DATA_ALTERACAO")
+                .HasColumnType("datetime");
 
             builder.Property(c => c.IdTarefa)
                 .HasColumnName("TAR_ID")
@@ -33,13 +43,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
-            builder.Property(c => c.DataInclusao)
-                .HasColumnName("ITAR_DATA_INCLUSAO")
-                .HasColumnType("datetime");
-
-            builder.Property(c => c.DataAlteracao)
-                .HasColumnName("ITAR_DATA_ALTERACAO")
-                .HasColumnType("datetime");
+            builder.Property(c => c.Ativo)
+                .HasColumnName("ITAR_ATIVO")
+                .HasColumnType("bit")
+                .HasDefaultValue(true)
+                .IsRequired();
 
             builder
                 .HasOne(p => p.Tarefa)

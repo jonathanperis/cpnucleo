@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
@@ -11,7 +12,19 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.ToTable("CPN_TB_RECURSO_PROJETO");
 
             builder.Property(c => c.Id)
-                .HasColumnName("RPROJ_ID");
+                .HasColumnName("RPROJ_ID")
+                .HasColumnType("uniqueidentifier")
+                .HasDefaultValue(Guid.NewGuid())
+                .IsRequired();
+
+            builder.Property(c => c.DataInclusao)
+                .HasColumnName("RPROJ_DATA_INCLUSAO")
+                .HasColumnType("datetime")
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
+
+            builder
+                .Ignore(c => c.DataAlteracao);
 
             builder.Property(c => c.IdRecurso)
                 .HasColumnName("REC_ID")
@@ -23,11 +36,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("uniqueidentifier")
                 .IsRequired();
 
-            builder.Property(c => c.DataInclusao)
-                .HasColumnName("RPROJ_DATA_INCLUSAO")
-                .HasColumnType("datetime");
-
-            builder.Ignore(c => c.DataAlteracao);
+            builder.Property(c => c.Ativo)
+                .HasColumnName("PROJ_ATIVO")
+                .HasColumnType("bit")
+                .HasDefaultValue(true)
+                .IsRequired();
 
             builder
                 .HasOne(p => p.Recurso)

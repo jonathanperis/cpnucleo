@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {
@@ -11,7 +12,10 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.ToTable("CPN_TB_TAREFA");
 
             builder.Property(c => c.Id)
-                .HasColumnName("TAR_ID");
+                .HasColumnName("TAR_ID")
+                .HasColumnType("uniqueidentifier")
+                .HasDefaultValue(Guid.NewGuid())
+                .IsRequired();
 
             builder.Property(c => c.Nome)
                 .HasColumnName("TAR_NOME")
@@ -36,12 +40,21 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.Detalhe)
                 .HasColumnName("TAR_DETALHE")
-                .HasColumnType("varchar(1000)")
-                .IsRequired();
+                .HasColumnType("varchar(1000)");
 
             builder.Property(c => c.PercentualConcluido)
                 .HasColumnName("TAR_PERCENTUAL_CONCLUIDO")
                 .HasColumnType("int");
+
+            builder.Property(c => c.DataInclusao)
+                .HasColumnName("TAR_DATA_INCLUSAO")
+                .HasColumnType("datetime")
+                .HasDefaultValue(DateTime.Now)
+                .IsRequired();
+
+            builder.Property(c => c.DataAlteracao)
+                .HasColumnName("TAR_DATA_ALTERACAO")
+                .HasColumnType("datetime");
 
             builder.Property(c => c.IdProjeto)
                 .HasColumnName("PROJ_ID")
@@ -59,13 +72,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("TIP_ID")
                 .HasColumnType("uniqueidentifier");
 
-            builder.Property(c => c.DataInclusao)
-                .HasColumnName("TAR_DATA_INCLUSAO")
-                .HasColumnType("datetime");
-
-            builder.Property(c => c.DataAlteracao)
-                .HasColumnName("TAR_DATA_ALTERACAO")
-                .HasColumnType("datetime");
+            builder.Property(c => c.Ativo)
+                .HasColumnName("TAR_ATIVO")
+                .HasColumnType("bit")
+                .HasDefaultValue(true)
+                .IsRequired();
 
             builder
                 .HasOne(p => p.Projeto)
