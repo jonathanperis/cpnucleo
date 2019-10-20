@@ -6,6 +6,7 @@ using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -30,7 +31,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            return _apontamentoRepository.ListarPorRecurso(idRecurso).ProjectTo<ApontamentoViewModel>(_mapper.ConfigurationProvider);
+            return _apontamentoRepository.ListarPorRecurso(idRecurso).ProjectTo<ApontamentoViewModel>(_mapper.ConfigurationProvider).ToList();
         }
 
         public int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa)

@@ -14,11 +14,11 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public Recurso ConsultarPorLogin(string login)
+        public IQueryable<Recurso> ConsultarPorLogin(string login)
         {
             return _dbSet
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Login == login && x.Ativo);
+                .Where(x => x.Login == login && x.Ativo);
         }
     }
 }

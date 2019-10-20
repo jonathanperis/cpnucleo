@@ -46,6 +46,26 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("TAR_PERCENTUAL_CONCLUIDO")
                 .HasColumnType("int");
 
+            builder.Property(c => c.IdProjeto)
+                .HasColumnName("PROJ_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
+            builder.Property(c => c.IdWorkflow)
+                .HasColumnName("WOR_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
+            builder.Property(c => c.IdRecurso)
+                .HasColumnName("REC_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
+            builder.Property(c => c.IdTipoTarefa)
+                .HasColumnName("TIP_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired(); 
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TAR_DATA_INCLUSAO")
                 .HasColumnType("datetime")
@@ -59,22 +79,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataExclusao)
                 .HasColumnName("TAR_DATA_EXCLUSAO")
                 .HasColumnType("datetime");
-
-            builder.Property(c => c.IdProjeto)
-                .HasColumnName("PROJ_ID")
-                .HasColumnType("uniqueidentifier");
-
-            builder.Property(c => c.IdWorkflow)
-                .HasColumnName("WOR_ID")
-                .HasColumnType("uniqueidentifier");
-
-            builder.Property(c => c.IdRecurso)
-                .HasColumnName("REC_ID")
-                .HasColumnType("uniqueidentifier");
-
-            builder.Property(c => c.IdTipoTarefa)
-                .HasColumnName("TIP_ID")
-                .HasColumnType("uniqueidentifier");
 
             builder.Property(c => c.Ativo)
                 .HasColumnName("TAR_ATIVO")

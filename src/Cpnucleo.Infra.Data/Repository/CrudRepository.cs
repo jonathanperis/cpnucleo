@@ -23,12 +23,11 @@ namespace Cpnucleo.Infra.Data.Repository
             _dbSet.Add(obj);
         }
 
-        public TModel Consultar(Guid id)
+        public IQueryable<TModel> Consultar(Guid id)
         {
             return _dbSet
                 .AsNoTracking()
-                .Include(_context.GetIncludePaths(typeof(TModel)))
-                .FirstOrDefault(x => x.Id == id && x.Ativo);
+                .Where(x => x.Id == id && x.Ativo);
         }
 
         public IQueryable<TModel> Listar()
@@ -41,7 +40,6 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public void Alterar(TModel obj)
         {
-            obj.Ativo = true;
             obj.DataAlteracao = DateTime.Now;
 
             _dbSet.Update(obj);

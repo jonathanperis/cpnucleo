@@ -7,9 +7,9 @@ namespace Cpnucleo.Domain.Models
     {
         public string Nome { get; set; }
 
-        public DateTime? DataInicio { get; set; }
+        public DateTime DataInicio { get; set; }
 
-        public DateTime? DataTermino { get; set; }
+        public DateTime DataTermino { get; set; }
 
         public int QtdHoras { get; set; }
 

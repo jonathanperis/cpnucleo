@@ -6,6 +6,7 @@ using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -21,7 +22,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(Guid idProjeto)
         {
-            return _recursoProjetoRepository.ListarPorProjeto(idProjeto).ProjectTo<RecursoProjetoViewModel>(_mapper.ConfigurationProvider);
+            return _recursoProjetoRepository.ListarPorProjeto(idProjeto).ProjectTo<RecursoProjetoViewModel>(_mapper.ConfigurationProvider).ToList();
         }
     }
 }

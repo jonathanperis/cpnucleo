@@ -7,7 +7,7 @@ namespace Cpnucleo.Domain.Interfaces
     {
         void Incluir(TModel obj);
 
-        TModel Consultar(Guid id);
+        IQueryable<TModel> Consultar(Guid id);
 
         IQueryable<TModel> Listar();
 

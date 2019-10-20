@@ -5,6 +5,7 @@ using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -30,12 +31,12 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<TViewModel> Listar()
         {
-            return _repository.Listar().ProjectTo<TViewModel>(_mapper.ConfigurationProvider);
+            return _repository.Listar().ProjectTo<TViewModel>(_mapper.ConfigurationProvider).ToList();
         }
 
         public TViewModel Consultar(Guid id)
         {
-            return _mapper.Map<TViewModel>(_repository.Consultar(id));
+            return _repository.Consultar(id).ProjectTo<TViewModel>(_mapper.ConfigurationProvider).FirstOrDefault();
         }
 
         public bool Remover(Guid id)

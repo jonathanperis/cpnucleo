@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.Infra.Security.Interfaces;
+using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -43,7 +45,7 @@ namespace Cpnucleo.Application.Services
         {
             valido = false;
 
-            RecursoViewModel recurso = _mapper.Map<RecursoViewModel>(_recursoRepository.ConsultarPorLogin(login));
+            RecursoViewModel recurso = _recursoRepository.ConsultarPorLogin(login).ProjectTo<RecursoViewModel>(_mapper.ConfigurationProvider).FirstOrDefault();
 
             if (recurso == null)
             {

@@ -15,7 +15,7 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         public int? Ordem { get; set; }
 
         [Display(Name = "Tamanho Coluna")]
-        public int? TamanhoColuna { get; set; }
+        public string TamanhoColuna { get; set; }
 
         public List<TarefaViewModel> ListaTarefas { get; set; }
     }
