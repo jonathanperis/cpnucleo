@@ -84,7 +84,6 @@ namespace Cpnucleo.API.Controllers.V2
         ///     POST /recurso
         ///     {
         ///        "nome": "Novo recurso",
-        ///        "ativo": true,
         ///        "login": "usuario.teste",
         ///        "senha": "12345678",
         ///        "confirmarSenha": "12345678"
@@ -173,7 +172,6 @@ namespace Cpnucleo.API.Controllers.V2
         ///     {
         ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
         ///        "nome": "Novo recurso - alterado",
-        ///        "ativo": false,
         ///        "login": "usuario.teste",
         ///        "senha": "12345678",
         ///        "confirmarSenha": "12345678",
