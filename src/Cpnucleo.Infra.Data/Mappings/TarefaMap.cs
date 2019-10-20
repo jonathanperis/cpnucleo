@@ -64,7 +64,7 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.IdTipoTarefa)
                 .HasColumnName("TIP_ID")
                 .HasColumnType("uniqueidentifier")
-                .IsRequired(); 
+                .IsRequired();
 
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TAR_DATA_INCLUSAO")
