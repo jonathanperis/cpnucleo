@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cpnucleo.RazorPages.Material.Pages.Sistema
 {
-    [Authorize]
+    //[Authorize]
     public class IncluirModel : PageModel
     {
         private readonly ISistemaAppService _sistemaAppService;

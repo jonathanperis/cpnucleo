@@ -38,7 +38,7 @@ namespace Cpnucleo.RazorPages.Material
 
             services.AddMvc().AddRazorPagesOptions(options =>
             {
-                options.Conventions.AddPageRoute("/Login", "");
+                options.Conventions.AddPageRoute("/Sistema/Incluir", "");
             });
 
             services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
