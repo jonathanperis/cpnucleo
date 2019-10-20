@@ -29,6 +29,7 @@ namespace Cpnucleo.Infra.Data.Repository
                     .ThenInclude(x => x.ListaImpedimentos)
                 .OrderBy(x => x.Ordem)
                 .Take(4) //@@JONATHAN - 22/02/2017 - TRAVA TEMPORÁRIA.
+                .Where(x => x.Ativo)
                 .ToList();
         }
     }

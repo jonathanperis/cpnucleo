@@ -18,7 +18,7 @@ namespace Cpnucleo.Infra.Data.Repository
         {
             return DbSet
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Login == login);
+                .FirstOrDefault(x => x.Login == login && x.Ativo);
         }
     }
 }

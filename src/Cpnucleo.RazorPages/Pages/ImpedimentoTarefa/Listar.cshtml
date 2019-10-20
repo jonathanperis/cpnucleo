@@ -33,7 +33,6 @@
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Descricao)</th>
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Tarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Impedimento)</th>
-                                <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Ativo)</th>
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.DataInclusao)</th>
                                 @if (Model.Lista.Count() > 0)
                                 {
@@ -50,7 +49,6 @@
                                     <td>@item.Descricao</td>
                                     <td>@item.Tarefa.Nome</td>
                                     <td>@item.Impedimento.Nome</td>
-                                    <td>@(item.Ativo ? "Sim" : "Não")</td>
                                     <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)
                                     {
@@ -70,7 +68,6 @@
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Descricao)</th>
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Tarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Impedimento)</th>
-                                <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.Ativo)</th>
                                 <th>@Html.DisplayNameFor(x => x.ImpedimentoTarefa.DataInclusao)</th>
                                 @if (Model.Lista.Count() > 0)
                                 {

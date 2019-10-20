@@ -33,6 +33,10 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("IMP_DATA_ALTERACAO")
                 .HasColumnType("datetime");
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("IMP_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.Ativo)
                 .HasColumnName("IMP_ATIVO")
                 .HasColumnType("bit")

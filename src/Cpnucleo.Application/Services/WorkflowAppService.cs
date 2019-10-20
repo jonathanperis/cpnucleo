@@ -40,7 +40,7 @@ namespace Cpnucleo.Application.Services
                     {
                         tarefa.TipoTarefa.Element = "success-element";
                     }
-                    else if (tarefa.ListaImpedimentos.Count(x => x.Ativo) > 0)
+                    else if (tarefa.ListaImpedimentos.Count() > 0)
                     {
                         tarefa.TipoTarefa.Element = "warning-element";
                     }

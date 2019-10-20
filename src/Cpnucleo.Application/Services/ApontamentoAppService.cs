@@ -22,13 +22,6 @@ namespace Cpnucleo.Application.Services
 
         public new bool Incluir(ApontamentoViewModel apontamento)
         {
-            if (apontamento.Id == Guid.Empty)
-            {
-                apontamento.Id = Guid.NewGuid();
-            }
-
-            apontamento.DataInclusao = DateTime.Now;
-
             _repository.Incluir(_mapper.Map<Apontamento>(apontamento));
 
             return _tarefaAppService.AlterarPorPercentualConcluido(apontamento.IdTarefa, apontamento.PercentualConcluido);

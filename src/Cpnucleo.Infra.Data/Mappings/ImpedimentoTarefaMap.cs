@@ -33,6 +33,10 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("ITAR_DATA_ALTERACAO")
                 .HasColumnType("datetime");
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("ITAR_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.IdTarefa)
                 .HasColumnName("TAR_ID")
                 .HasColumnType("uniqueidentifier")

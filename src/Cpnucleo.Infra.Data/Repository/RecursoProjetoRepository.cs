@@ -23,7 +23,7 @@ namespace Cpnucleo.Infra.Data.Repository
                 .Include(x => x.Projeto)
                 .Include(x => x.Recurso)
                 .OrderBy(x => x.DataInclusao)
-                .Where(x => x.IdProjeto == idProjeto)
+                .Where(x => x.IdProjeto == idProjeto && x.Ativo)
                 .ToList();
         }
     }

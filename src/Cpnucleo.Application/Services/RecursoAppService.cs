@@ -50,11 +50,6 @@ namespace Cpnucleo.Application.Services
                 return null;
             }
 
-            if (!recurso.Ativo)
-            {
-                return null;
-            }
-
             valido = _cryptographyManager.VerifyPbkdf2(senha, recurso.Senha, recurso.Salt);
 
             return recurso;

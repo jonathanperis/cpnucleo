@@ -18,11 +18,11 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
         }
 
         [Theory]
-        [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
-        public void Test_OnPost(string nome, string login, string senha, string confirmarSenha, bool ativo)
+        [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678")]
+        public void Test_OnPost(string nome, string login, string senha, string confirmarSenha)
         {
             // Arrange
-            RecursoViewModel recursoMock = new RecursoViewModel { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
+            RecursoViewModel recursoMock = new RecursoViewModel { Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha };
 
             IncluirModel pageModel = new IncluirModel(_recursoAppService.Object)
             {

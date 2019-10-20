@@ -13,6 +13,7 @@ CREATE TABLE [dbo].[CPN_TB_SISTEMA] (
   [SIS_DESCRICAO] varchar(450) NOT NULL,
   [SIS_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [SIS_DATA_ALTERACAO] datetime NULL,
+  [SIS_DATA_EXCLUSAO] datetime NULL,
   [SIS_ATIVO] bit NOT NULL default 1
 );
 
@@ -21,6 +22,7 @@ CREATE TABLE [dbo].[CPN_TB_PROJETO] (
   [PROJ_NOME] varchar(50) NOT NULL,
   [PROJ_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [PROJ_DATA_ALTERACAO] datetime NULL,
+  [PROJ_DATA_EXCLUSAO] datetime NULL,  
   [SIS_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_SISTEMA (SIS_ID),
   [PROJ_ATIVO] bit NOT NULL default 1
 );
@@ -33,12 +35,14 @@ CREATE TABLE [dbo].[CPN_TB_RECURSO] (
   [REC_SENHA_SALT] varchar(64) NOT NULL,
   [REC_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [REC_DATA_ALTERACAO] datetime NULL,
+  [REC_DATA_EXCLUSAO] datetime NULL,  
   [REC_ATIVO] bit NOT NULL default 1
 );
 
 CREATE TABLE [dbo].[CPN_TB_RECURSO_PROJETO] (
   [RPROJ_ID] uniqueidentifier NOT NULL PRIMARY KEY default newid(),
   [RPROJ_DATA_INCLUSAO] datetime NOT NULL default getdate(),
+  [RPROJ_DATA_EXCLUSAO] datetime NULL,  
   [REC_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_RECURSO (REC_ID),
   [PROJ_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_PROJETO (PROJ_ID),
   [RPROJ_ATIVO] bit NOT NULL default 1
@@ -50,6 +54,7 @@ CREATE TABLE [dbo].[CPN_TB_WORKFLOW] (
   [WOR_ORDEM] int NOT NULL,
   [WOR_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [WOR_DATA_ALTERACAO] datetime NULL,
+  [WOR_DATA_EXCLUSAO] datetime NULL,  
   [WOR_ATIVO] bit NOT NULL default 1  
 );
 
@@ -58,6 +63,7 @@ CREATE TABLE [dbo].[CPN_TB_IMPEDIMENTO] (
   [IMP_NOME] varchar(50) NOT NULL,
   [IMP_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [IMP_DATA_ALTERACAO] datetime NULL,
+  [IMP_DATA_EXCLUSAO] datetime NULL,  
   [IMP_ATIVO] bit NOT NULL default 1
 );
 
@@ -67,6 +73,7 @@ CREATE TABLE [dbo].[CPN_TB_TIPO_TAREFA] (
   [TIP_IMAGE_CARD] varchar(100) NOT NULL,
   [TIP_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [TIP_DATA_ALTERACAO] datetime NULL,
+  [TIP_DATA_EXCLUSAO] datetime NULL,  
   [TIP_ATIVO] bit NOT NULL default 1
 );
 
@@ -80,6 +87,7 @@ CREATE TABLE [dbo].[CPN_TB_TAREFA] (
   [TAR_PERCENTUAL_CONCLUIDO] int NULL,
   [TAR_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [TAR_DATA_ALTERACAO] datetime NULL,
+  [TAR_DATA_EXCLUSAO] datetime NULL,  
   [PROJ_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_PROJETO (PROJ_ID),
   [WOR_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_WORKFLOW (WOR_ID),
   [REC_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_RECURSO (REC_ID),
@@ -92,6 +100,7 @@ CREATE TABLE [dbo].[CPN_TB_RECURSO_TAREFA] (
   [RTAR_PERCENTUAL] int NOT NULL,
   [RTAR_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [RTAR_DATA_ALTERACAO] datetime NULL,
+  [RTAR_DATA_EXCLUSAO] datetime NULL,  
   [REC_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_RECURSO (REC_ID),
   [TAR_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_TAREFA (TAR_ID),
   [RTAR_ATIVO] bit NOT NULL default 1
@@ -102,6 +111,7 @@ CREATE TABLE [dbo].[CPN_TB_TAREFA_IMPEDIMENTO] (
   [ITAR_DESCRICAO] varchar(450) NOT NULL,
   [ITAR_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [ITAR_DATA_ALTERACAO] datetime NULL,
+  [ITAR_DATA_EXCLUSAO] datetime NULL,  
   [TAR_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_TAREFA (TAR_ID),  
   [IMP_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_IMPEDIMENTO (IMP_ID),
   [ITAR_ATIVO] bit NOT NULL default 1
@@ -115,6 +125,7 @@ CREATE TABLE [dbo].[CPN_TB_LANCAMENTO] (
   [LANC_PERCENTUAL_CONCLUIDO] int NOT NULL,
   [LANC_DATA_INCLUSAO] datetime NOT NULL default getdate(),
   [LANC_DATA_ALTERACAO] datetime NULL,
+  [LANC_DATA_EXCLUSAO] datetime NULL,  
   [TAR_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_TAREFA (TAR_ID),  
   [REC_ID] uniqueidentifier NOT NULL FOREIGN KEY REFERENCES CPN_TB_RECURSO (REC_ID),
   [LANC_ATIVO] bit NOT NULL default 1

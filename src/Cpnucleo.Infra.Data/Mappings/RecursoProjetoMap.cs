@@ -26,6 +26,10 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder
                 .Ignore(c => c.DataAlteracao);
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("RPROJ_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.IdRecurso)
                 .HasColumnName("REC_ID")
                 .HasColumnType("uniqueidentifier")

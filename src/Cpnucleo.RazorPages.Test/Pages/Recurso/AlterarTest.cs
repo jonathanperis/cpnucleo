@@ -44,13 +44,13 @@ namespace Cpnucleo.RazorPages.Test.Pages.Recurso
         }
 
         [Theory]
-        [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678", true)]
-        public void Test_OnPost(string nome, string login, string senha, string confirmarSenha, bool ativo)
+        [InlineData("Recurso de Teste", "recurso.teste", "12345678", "12345678")]
+        public void Test_OnPost(string nome, string login, string senha, string confirmarSenha)
         {
             // Arrange
             Guid id = Guid.NewGuid();
 
-            RecursoViewModel recursoMock = new RecursoViewModel { Id = id, Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha, Ativo = ativo };
+            RecursoViewModel recursoMock = new RecursoViewModel { Id = id, Nome = nome, Login = login, Senha = senha, ConfirmarSenha = confirmarSenha };
 
             AlterarModel pageModel = new AlterarModel(_recursoAppService.Object)
             {

@@ -22,7 +22,7 @@ namespace Cpnucleo.Infra.Data.Repository
                     .AsNoTracking()
                     .Include(x => x.Tarefa)
                     .OrderBy(x => x.DataInclusao)
-                    .Where(x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30))
+                    .Where(x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30) && x.Ativo)
                     .ToList();
         }
 
@@ -32,7 +32,7 @@ namespace Cpnucleo.Infra.Data.Repository
                 .AsNoTracking()
                 .Include(x => x.Tarefa)
                 .OrderBy(x => x.DataInclusao)
-                .Where(x => x.IdRecurso == idRecurso && x.IdTarefa == idTarefa)
+                .Where(x => x.IdRecurso == idRecurso && x.IdTarefa == idTarefa && x.Ativo)
                 .Sum(x => x.QtdHoras);
         }
     }

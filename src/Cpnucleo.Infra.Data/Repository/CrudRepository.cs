@@ -28,27 +28,31 @@ namespace Cpnucleo.Infra.Data.Repository
             return DbSet
                 .AsNoTracking()
                 .Include(Db.GetIncludePaths(typeof(TModel)))
-                .SingleOrDefault(x => x.Id == id);
+                .FirstOrDefault(x => x.Id == id && x.Ativo);
         }
 
         public IQueryable<TModel> Listar()
         {
             return DbSet
                 .AsNoTracking()
-                .Where(x => x.Ativo == false);
+                .Where(x => x.Ativo);
         }
 
         public void Alterar(TModel obj)
         {
+            obj.Ativo = true;
+            obj.DataAlteracao = DateTime.Now;
+
             DbSet.Update(obj);
         }
 
         public void Remover(Guid id)
         {
-            TModel obj = Consultar(id);
+            TModel obj = DbSet.Find(id);
             obj.Ativo = false;
+            obj.DataExclusao = DateTime.Now;
 
-            Alterar(obj);
+            DbSet.Update(obj);
         }
 
         public void Dispose()
