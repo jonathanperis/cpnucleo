@@ -4,19 +4,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     public class RecursoViewModel : BaseViewModel
     {
-        public RecursoViewModel()
-        {
-            Ativo = true;
-        }
-
         [Display(Name = "Nome")]
         [Required(ErrorMessage = "Necessário informar o {0} do Recurso.")]
         [MaxLength(50, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
         public string Nome { get; set; }
-
-        [Display(Name = "Ativo")]
-        [Required(ErrorMessage = "Necessário informar o {0} do Recurso.")]
-        public bool Ativo { get; set; }
 
         [Display(Name = "Login")]
         [Required(ErrorMessage = "Necessário informar o {0} do Recurso.")]

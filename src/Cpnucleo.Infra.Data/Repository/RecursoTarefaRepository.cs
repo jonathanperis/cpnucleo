@@ -26,7 +26,7 @@ namespace Cpnucleo.Infra.Data.Repository
                 .Include(x => x.Tarefa.Recurso)
                 .Include(x => x.Tarefa.ListaImpedimentos)
                 .OrderBy(x => x.DataInclusao)
-                .Where(x => x.IdRecurso == idRecurso)
+                .Where(x => x.IdRecurso == idRecurso && x.Ativo)
                 .ToList();
         }
 
@@ -37,7 +37,7 @@ namespace Cpnucleo.Infra.Data.Repository
                 .Include(x => x.Tarefa)
                 .Include(x => x.Recurso)
                 .OrderBy(x => x.DataInclusao)
-                .Where(x => x.IdTarefa == idTarefa)
+                .Where(x => x.IdTarefa == idTarefa && x.Ativo)
                 .ToList();
         }
     }

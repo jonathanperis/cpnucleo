@@ -39,6 +39,10 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("TIP_DATA_ALTERACAO")
                 .HasColumnType("datetime");
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("TIP_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.Ativo)
                 .HasColumnName("TIP_ATIVO")
                 .HasColumnType("bit")

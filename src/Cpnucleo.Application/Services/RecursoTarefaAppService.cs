@@ -35,7 +35,7 @@ namespace Cpnucleo.Application.Services
                     item.HorasDisponiveis = (int)(horasFracionadas - item.HorasUtilizadas);
                 }
 
-                if (item.Tarefa.ListaImpedimentos.Count(x => x.Ativo) > 0)
+                if (item.Tarefa.ListaImpedimentos.Count() > 0)
                 {
                     item.Tarefa.TipoTarefa.Element = "warning-element";
                 }

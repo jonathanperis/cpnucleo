@@ -51,6 +51,10 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("REC_DATA_ALTERACAO")
                 .HasColumnType("datetime");
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("REC_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.Ativo)
                 .HasColumnName("REC_ATIVO")
                 .HasColumnType("bit")

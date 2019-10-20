@@ -23,13 +23,6 @@ namespace Cpnucleo.Application.Services
 
         public bool Incluir(TViewModel obj)
         {
-            if (obj.Id == Guid.Empty)
-            {
-                obj.Id = Guid.NewGuid();
-            }
-
-            obj.DataInclusao = DateTime.Now;
-
             _repository.Incluir(_mapper.Map<TModel>(obj));
 
             return _unitOfWork.Commit();
@@ -54,8 +47,6 @@ namespace Cpnucleo.Application.Services
 
         public bool Alterar(TViewModel obj)
         {
-            obj.DataAlteracao = DateTime.Now;
-
             _repository.Alterar(_mapper.Map<TModel>(obj));
 
             return _unitOfWork.Commit();

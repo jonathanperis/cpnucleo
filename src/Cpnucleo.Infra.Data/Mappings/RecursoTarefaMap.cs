@@ -32,6 +32,10 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("RTAR_DATA_ALTERACAO")
                 .HasColumnType("datetime");
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("RTAR_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.IdRecurso)
                 .HasColumnName("REC_ID")
                 .HasColumnType("uniqueidentifier")

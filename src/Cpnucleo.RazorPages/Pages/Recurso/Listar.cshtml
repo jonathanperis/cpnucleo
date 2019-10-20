@@ -30,7 +30,6 @@
                             <tr>
                                 <th>@Html.DisplayNameFor(x => x.Recurso.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.Recurso.Nome)</th>
-                                <th>@Html.DisplayNameFor(x => x.Recurso.Ativo)</th>
                                 <th>@Html.DisplayNameFor(x => x.Recurso.DataInclusao)</th>
                                 @if (Model.Lista.Count() > 0)
                                 {
@@ -45,7 +44,6 @@
                                 <tr>
                                     <td>@item.Id</td>
                                     <td>@item.Nome</td>
-                                    <td>@(item.Ativo ? "Sim" : "Não")</td>
                                     <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)
                                     {
@@ -63,7 +61,6 @@
                             <tr>
                                 <th>@Html.DisplayNameFor(x => x.Recurso.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.Recurso.Nome)</th>
-                                <th>@Html.DisplayNameFor(x => x.Recurso.Ativo)</th>
                                 <th>@Html.DisplayNameFor(x => x.Recurso.DataInclusao)</th>
                                 @if (Model.Lista.Count() > 0)
                                 {

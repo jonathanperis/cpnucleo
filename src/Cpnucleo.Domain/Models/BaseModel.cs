@@ -10,6 +10,8 @@ namespace Cpnucleo.Domain.Models
 
         public DateTime? DataAlteracao { get; set; }
 
+        public DateTime? DataExclusao { get; set; }
+
         public bool Ativo { get; set; }
     }
 }

@@ -33,6 +33,10 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("PROJ_DATA_ALTERACAO")
                 .HasColumnType("datetime");
 
+            builder.Property(c => c.DataExclusao)
+                .HasColumnName("PROJ_DATA_EXCLUSAO")
+                .HasColumnType("datetime");
+
             builder.Property(c => c.IdSistema)
                 .HasColumnName("SIS_ID")
                 .HasColumnType("uniqueidentifier")
