@@ -6,21 +6,21 @@ namespace Cpnucleo.Infra.Data.UoW
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly CpnucleoContext Db;
+        private readonly CpnucleoContext _context;
 
         public UnitOfWork(CpnucleoContext context)
         {
-            Db = context;
+            _context = context;
         }
 
         public bool Commit()
         {
-            return Db.SaveChanges() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public void Dispose()
         {
-            Db.Dispose();
+            _context.Dispose();
             GC.SuppressFinalize(this);
         }
     }
