@@ -17,6 +17,16 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasDefaultValue(Guid.NewGuid())
                 .IsRequired();
 
+            builder.Property(c => c.IdRecurso)
+                .HasColumnName("REC_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
+            builder.Property(c => c.IdProjeto)
+                .HasColumnName("PROJ_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("RPROJ_DATA_INCLUSAO")
                 .HasColumnType("datetime")
@@ -29,16 +39,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataExclusao)
                 .HasColumnName("RPROJ_DATA_EXCLUSAO")
                 .HasColumnType("datetime");
-
-            builder.Property(c => c.IdRecurso)
-                .HasColumnName("REC_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
-
-            builder.Property(c => c.IdProjeto)
-                .HasColumnName("PROJ_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
 
             builder.Property(c => c.Ativo)
                 .HasColumnName("RPROJ_ATIVO")

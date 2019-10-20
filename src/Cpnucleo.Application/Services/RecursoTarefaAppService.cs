@@ -24,7 +24,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            IEnumerable<RecursoTarefaViewModel> listaRecursoTarefa = _recursoTarefaRepository.ListarPorRecurso(idRecurso).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider);
+            IEnumerable<RecursoTarefaViewModel> listaRecursoTarefa = _recursoTarefaRepository.ListarPorRecurso(idRecurso).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
 
             foreach (RecursoTarefaViewModel item in listaRecursoTarefa)
             {
@@ -59,7 +59,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _recursoTarefaRepository.ListarPorTarefa(idTarefa).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider);
+            return _recursoTarefaRepository.ListarPorTarefa(idTarefa).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
         }
     }
 }

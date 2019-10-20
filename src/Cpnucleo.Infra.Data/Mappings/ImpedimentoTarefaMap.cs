@@ -23,6 +23,16 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasMaxLength(450)
                 .IsRequired();
 
+            builder.Property(c => c.IdTarefa)
+                .HasColumnName("TAR_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
+            builder.Property(c => c.IdImpedimento)
+                .HasColumnName("IMP_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("ITAR_DATA_INCLUSAO")
                 .HasColumnType("datetime")
@@ -36,16 +46,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataExclusao)
                 .HasColumnName("ITAR_DATA_EXCLUSAO")
                 .HasColumnType("datetime");
-
-            builder.Property(c => c.IdTarefa)
-                .HasColumnName("TAR_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
-
-            builder.Property(c => c.IdImpedimento)
-                .HasColumnName("IMP_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
 
             builder.Property(c => c.Ativo)
                 .HasColumnName("ITAR_ATIVO")

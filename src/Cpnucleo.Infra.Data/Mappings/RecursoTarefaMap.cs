@@ -22,6 +22,16 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("int")
                 .IsRequired();
 
+            builder.Property(c => c.IdRecurso)
+                .HasColumnName("REC_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
+            builder.Property(c => c.IdTarefa)
+                .HasColumnName("TAR_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("RTAR_DATA_INCLUSAO")
                 .HasColumnType("datetime")
@@ -35,16 +45,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataExclusao)
                 .HasColumnName("RTAR_DATA_EXCLUSAO")
                 .HasColumnType("datetime");
-
-            builder.Property(c => c.IdRecurso)
-                .HasColumnName("REC_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
-
-            builder.Property(c => c.IdTarefa)
-                .HasColumnName("TAR_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
 
             builder.Property(c => c.Ativo)
                 .HasColumnName("RTAR_ATIVO")

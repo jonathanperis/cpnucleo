@@ -22,7 +22,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<WorkflowViewModel> ListarPorTarefa()
         {
-            IEnumerable<WorkflowViewModel> listaWorkflow = _workflowRepository.ListarPorTarefa().ProjectTo<WorkflowViewModel>(_mapper.ConfigurationProvider);
+            IEnumerable<WorkflowViewModel> listaWorkflow = _workflowRepository.ListarPorTarefa().ProjectTo<WorkflowViewModel>(_mapper.ConfigurationProvider).ToList();
 
             foreach (WorkflowViewModel item in listaWorkflow)
             {
@@ -30,20 +30,20 @@ namespace Cpnucleo.Application.Services
                 qtdLista = qtdLista == 1 ? 2 : qtdLista;
 
                 int i = 12 / qtdLista;
-                item.TamanhoColuna = i;
+                item.TamanhoColuna = i.ToString();
 
                 foreach (TarefaViewModel tarefa in item.ListaTarefas)
                 {
                     tarefa.HorasConsumidas = tarefa.ListaApontamentos.Sum(x => x.QtdHoras);
                     tarefa.HorasRestantes = tarefa.QtdHoras - tarefa.HorasConsumidas;
 
-                    if (DateTime.Now.Date >= tarefa.DataInicio && DateTime.Now.Date <= tarefa.DataTermino)
-                    {
-                        tarefa.TipoTarefa.Element = "success-element";
-                    }
-                    else if (tarefa.ListaImpedimentos.Count() > 0)
+                    if (tarefa.ListaImpedimentos.Count() > 0)
                     {
                         tarefa.TipoTarefa.Element = "warning-element";
+                    }
+                    else if (DateTime.Now.Date >= tarefa.DataInicio && DateTime.Now.Date <= tarefa.DataTermino)
+                    {
+                        tarefa.TipoTarefa.Element = "success-element";
                     }
                     else if (DateTime.Now.Date > tarefa.DataTermino && tarefa.PercentualConcluido != 100)
                     {

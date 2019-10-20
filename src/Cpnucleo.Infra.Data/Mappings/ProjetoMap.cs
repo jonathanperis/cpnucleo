@@ -23,6 +23,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasMaxLength(50)
                 .IsRequired();
 
+            builder.Property(c => c.IdSistema)
+                .HasColumnName("SIS_ID")
+                .HasColumnType("uniqueidentifier")
+                .IsRequired();
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("PROJ_DATA_INCLUSAO")
                 .HasColumnType("datetime")
@@ -36,11 +41,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataExclusao)
                 .HasColumnName("PROJ_DATA_EXCLUSAO")
                 .HasColumnType("datetime");
-
-            builder.Property(c => c.IdSistema)
-                .HasColumnName("SIS_ID")
-                .HasColumnType("uniqueidentifier")
-                .IsRequired();
 
             builder.Property(c => c.Ativo)
                 .HasColumnName("PROJ_ATIVO")
