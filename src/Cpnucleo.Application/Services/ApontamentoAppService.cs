@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
@@ -29,7 +30,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(_apontamentoRepository.ListarPorRecurso(idRecurso));
+            return _apontamentoRepository.ListarPorRecurso(idRecurso).ProjectTo<ApontamentoViewModel>(_mapper.ConfigurationProvider);
         }
 
         public int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa)

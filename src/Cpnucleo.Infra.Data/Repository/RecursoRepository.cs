@@ -16,7 +16,7 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public Recurso ConsultarPorLogin(string login)
         {
-            return DbSet
+            return _dbSet
                 .AsNoTracking()
                 .FirstOrDefault(x => x.Login == login && x.Ativo);
         }

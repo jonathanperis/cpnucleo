@@ -1,8 +1,6 @@
 ﻿using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
@@ -15,22 +13,11 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IEnumerable<Workflow> ListarPorTarefa()
+        public IQueryable<Workflow> ListarPorTarefa()
         {
-            return DbSet
-                .AsNoTracking()
-                .Include(x => x.ListaTarefas)
-                    .ThenInclude(x => x.Recurso)
-                .Include(x => x.ListaTarefas)
-                    .ThenInclude(x => x.TipoTarefa)
-                .Include(x => x.ListaTarefas)
-                    .ThenInclude(x => x.ListaApontamentos)
-                .Include(x => x.ListaTarefas)
-                    .ThenInclude(x => x.ListaImpedimentos)
+            return Listar()
                 .OrderBy(x => x.Ordem)
-                .Take(4) //@@JONATHAN - 22/02/2017 - TRAVA TEMPORÁRIA.
-                .Where(x => x.Ativo)
-                .ToList();
+                .Take(4); //@@JONATHAN - 22/02/2017 - TRAVA TEMPORÁRIA.
         }
     }
 }

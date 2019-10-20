@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
@@ -23,7 +24,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            IEnumerable<RecursoTarefaViewModel> listaRecursoTarefa = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPorRecurso(idRecurso));
+            IEnumerable<RecursoTarefaViewModel> listaRecursoTarefa = _recursoTarefaRepository.ListarPorRecurso(idRecurso).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider);
 
             foreach (RecursoTarefaViewModel item in listaRecursoTarefa)
             {
@@ -58,7 +59,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(_recursoTarefaRepository.ListarPorTarefa(idTarefa));
+            return _recursoTarefaRepository.ListarPorTarefa(idTarefa).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider);
         }
     }
 }
