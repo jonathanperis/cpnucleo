@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
@@ -20,7 +21,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(Guid idProjeto)
         {
-            return _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(_recursoProjetoRepository.ListarPorProjeto(idProjeto));
+            return _recursoProjetoRepository.ListarPorProjeto(idProjeto).ProjectTo<RecursoProjetoViewModel>(_mapper.ConfigurationProvider);
         }
     }
 }

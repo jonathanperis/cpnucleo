@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
@@ -20,7 +21,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<ImpedimentoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(_impedimentoTarefaRepository.ListarPorTarefa(idTarefa));
+            return _impedimentoTarefaRepository.ListarPorTarefa(idTarefa).ProjectTo<ImpedimentoTarefaViewModel>(_mapper.ConfigurationProvider);
         }
     }
 }

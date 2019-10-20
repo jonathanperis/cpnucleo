@@ -32,7 +32,6 @@ namespace Cpnucleo.Infra.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // define the database to use
             optionsBuilder.UseSqlServer(_configuration.ConnectionString);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
@@ -21,7 +22,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<WorkflowViewModel> ListarPorTarefa()
         {
-            IEnumerable<WorkflowViewModel> listaWorkflow = _mapper.Map<IEnumerable<WorkflowViewModel>>(_workflowRepository.ListarPorTarefa());
+            IEnumerable<WorkflowViewModel> listaWorkflow = _workflowRepository.ListarPorTarefa().ProjectTo<WorkflowViewModel>(_mapper.ConfigurationProvider);
 
             foreach (WorkflowViewModel item in listaWorkflow)
             {

@@ -41,7 +41,7 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .IsRequired();
 
             builder.Property(c => c.Ativo)
-                .HasColumnName("PROJ_ATIVO")
+                .HasColumnName("RPROJ_ATIVO")
                 .HasColumnType("bit")
                 .HasDefaultValue(true)
                 .IsRequired();
