@@ -9,7 +9,7 @@ namespace Cpnucleo.Application.Services
 {
     public class TarefaAppService : CrudAppService<Tarefa, TarefaViewModel>, ITarefaAppService
     {
-        protected readonly IWorkflowAppService _workflowAppService;
+        private readonly IWorkflowAppService _workflowAppService;
 
         public TarefaAppService(IMapper mapper, ICrudRepository<Tarefa> repository, IUnitOfWork unitOfWork, IWorkflowAppService workflowAppService)
             : base(mapper, repository, unitOfWork)

@@ -12,7 +12,7 @@ namespace Cpnucleo.Application.Services
 {
     public class ImpedimentoTarefaAppService : CrudAppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>, IImpedimentoTarefaAppService
     {
-        protected readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
+        private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
 
         public ImpedimentoTarefaAppService(IMapper mapper, ICrudRepository<ImpedimentoTarefa> repository, IUnitOfWork unitOfWork, IImpedimentoTarefaRepository impedimentoTarefaRepository)
             : base(mapper, repository, unitOfWork)

@@ -4,5 +4,6 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IImpedimentoAppService : ICrudAppService<ImpedimentoViewModel>
     {
+
     }
 }

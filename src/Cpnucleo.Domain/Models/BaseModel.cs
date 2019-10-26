@@ -9,7 +9,7 @@ namespace Cpnucleo.Domain.Models
             Ativo = true;
         }
 
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; }
 
         public DateTime DataInclusao { get; set; }
 

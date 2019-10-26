@@ -12,7 +12,7 @@ namespace Cpnucleo.Application.Services
 {
     public class WorkflowAppService : CrudAppService<Workflow, WorkflowViewModel>, IWorkflowAppService
     {
-        protected readonly IWorkflowRepository _workflowRepository;
+        private readonly IWorkflowRepository _workflowRepository;
 
         public WorkflowAppService(IMapper mapper, ICrudRepository<Workflow> repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
             : base(mapper, repository, unitOfWork)
