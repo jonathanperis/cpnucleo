@@ -72,8 +72,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.Data.Test", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.Security.Test", "src\Cpnucleo.Infra.Security.Test\Cpnucleo.Infra.Security.Test.csproj", "{BD11E842-3F35-4B1F-BC4F-6275A9A20581}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.RazorPages.Material", "src\Cpnucleo.RazorPages.Material\Cpnucleo.RazorPages.Material.csproj", "{7BDE4C34-B915-47D3-9325-C26D606AFD1B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,10 +138,6 @@ Global
 		{BD11E842-3F35-4B1F-BC4F-6275A9A20581}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD11E842-3F35-4B1F-BC4F-6275A9A20581}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD11E842-3F35-4B1F-BC4F-6275A9A20581}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BDE4C34-B915-47D3-9325-C26D606AFD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BDE4C34-B915-47D3-9325-C26D606AFD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BDE4C34-B915-47D3-9325-C26D606AFD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BDE4C34-B915-47D3-9325-C26D606AFD1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -180,7 +174,6 @@ Global
 		{59107C8F-458E-42C9-9A01-9EE3A755B9E1} = {26380897-9FDC-4D74-A678-8781A39C87CB}
 		{8EA1B5FB-91B8-4BC3-A6BE-1CB7242E0FD8} = {20104031-7043-4E0A-A1F0-8A61262162B9}
 		{BD11E842-3F35-4B1F-BC4F-6275A9A20581} = {25280165-5949-48B8-99D1-A1EBBA8ADB73}
-		{7BDE4C34-B915-47D3-9325-C26D606AFD1B} = {DA52F0C0-E107-407A-AC3B-91D3F520397D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4FE8CCD-5BD5-4287-8B6D-F523698604BE}

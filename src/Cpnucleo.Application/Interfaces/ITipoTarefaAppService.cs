@@ -4,5 +4,6 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface ITipoTarefaAppService : ICrudAppService<TipoTarefaViewModel>
     {
+
     }
 }

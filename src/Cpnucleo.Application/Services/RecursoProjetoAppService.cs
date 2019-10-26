@@ -12,7 +12,7 @@ namespace Cpnucleo.Application.Services
 {
     public class RecursoProjetoAppService : CrudAppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
     {
-        protected readonly IRecursoProjetoRepository _recursoProjetoRepository;
+        private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
         public RecursoProjetoAppService(IMapper mapper, ICrudRepository<RecursoProjeto> repository, IUnitOfWork unitOfWork, IRecursoProjetoRepository recursoProjetoRepository)
             : base(mapper, repository, unitOfWork)
