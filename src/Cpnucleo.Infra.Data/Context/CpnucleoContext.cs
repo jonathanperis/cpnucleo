@@ -32,7 +32,9 @@ namespace Cpnucleo.Infra.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_configuration.ConnectionString);
+            optionsBuilder
+                .UseSqlServer(_configuration.ConnectionString)
+                .EnableSensitiveDataLogging();
         }
     }
 }
