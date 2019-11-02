@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Luna.Services.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 
-namespace Cpnucleo.RazorPages.Luna.Services.Api
+namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 {
     public class WorkflowApiService : CrudApiService<WorkflowViewModel>, IWorkflowApiService
     {
