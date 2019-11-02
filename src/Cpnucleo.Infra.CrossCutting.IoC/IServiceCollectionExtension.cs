@@ -3,6 +3,8 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Communication.Services;
 using Cpnucleo.Infra.CrossCutting.Identity;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util;
@@ -89,6 +91,32 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - CrossCutting - Util
             services.AddScoped<ISystemConfiguration, SystemConfiguration>();
+
+            // Infra - CrossCutting - Communication
+            services
+                .AddScoped<ICrudApiService<SistemaViewModel>, CrudApiService<SistemaViewModel>>()
+                .AddScoped<ICrudApiService<ProjetoViewModel>, CrudApiService<ProjetoViewModel>>()
+                .AddScoped<ICrudApiService<TarefaViewModel>, CrudApiService<TarefaViewModel>>()
+                .AddScoped<ICrudApiService<ApontamentoViewModel>, CrudApiService<ApontamentoViewModel>>()
+                .AddScoped<ICrudApiService<WorkflowViewModel>, CrudApiService<WorkflowViewModel>>()
+                .AddScoped<ICrudApiService<RecursoViewModel>, CrudApiService<RecursoViewModel>>()
+                .AddScoped<ICrudApiService<ImpedimentoViewModel>, CrudApiService<ImpedimentoViewModel>>()
+                .AddScoped<ICrudApiService<ImpedimentoTarefaViewModel>, CrudApiService<ImpedimentoTarefaViewModel>>()
+                .AddScoped<ICrudApiService<RecursoProjetoViewModel>, CrudApiService<RecursoProjetoViewModel>>()
+                .AddScoped<ICrudApiService<RecursoTarefaViewModel>, CrudApiService<RecursoTarefaViewModel>>()
+                .AddScoped<ICrudApiService<TipoTarefaViewModel>, CrudApiService<TipoTarefaViewModel>>();
+
+            services
+                .AddScoped<ISistemaApiService, SistemaApiService>()
+                .AddScoped<IProjetoApiService, ProjetoApiService>()
+                .AddScoped<ITarefaApiService, TarefaApiService>()
+                .AddScoped<IApontamentoApiService, ApontamentoApiService>()
+                .AddScoped<IWorkflowApiService, WorkflowApiService>()
+                .AddScoped<IRecursoApiService, RecursoApiService>()
+                .AddScoped<IImpedimentoApiService, ImpedimentoApiService>()
+                .AddScoped<IImpedimentoTarefaApiService, ImpedimentoTarefaApiService>()
+                .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
+                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>();
 
             return services;
         }

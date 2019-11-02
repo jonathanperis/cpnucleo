@@ -1,10 +1,10 @@
-﻿using Cpnucleo.RazorPages.Luna.Services.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.RazorPages.Luna.Services.Api
+namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 {
     public class CrudApiService<TViewModel> : ICrudApiService<TViewModel>
     {

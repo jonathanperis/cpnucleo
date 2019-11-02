@@ -1,6 +1,4 @@
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Luna.Services.Api;
-using Cpnucleo.RazorPages.Luna.Services.Interfaces;
+using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,30 +20,7 @@ namespace Cpnucleo.RazorPages.Luna
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddScoped<ICrudApiService<SistemaViewModel>, CrudApiService<SistemaViewModel>>()
-                .AddScoped<ICrudApiService<ProjetoViewModel>, CrudApiService<ProjetoViewModel>>()
-                .AddScoped<ICrudApiService<TarefaViewModel>, CrudApiService<TarefaViewModel>>()
-                .AddScoped<ICrudApiService<ApontamentoViewModel>, CrudApiService<ApontamentoViewModel>>()
-                .AddScoped<ICrudApiService<WorkflowViewModel>, CrudApiService<WorkflowViewModel>>()
-                .AddScoped<ICrudApiService<RecursoViewModel>, CrudApiService<RecursoViewModel>>()
-                .AddScoped<ICrudApiService<ImpedimentoViewModel>, CrudApiService<ImpedimentoViewModel>>()
-                .AddScoped<ICrudApiService<ImpedimentoTarefaViewModel>, CrudApiService<ImpedimentoTarefaViewModel>>()
-                .AddScoped<ICrudApiService<RecursoProjetoViewModel>, CrudApiService<RecursoProjetoViewModel>>()
-                .AddScoped<ICrudApiService<RecursoTarefaViewModel>, CrudApiService<RecursoTarefaViewModel>>()
-                .AddScoped<ICrudApiService<TipoTarefaViewModel>, CrudApiService<TipoTarefaViewModel>>();
-
-            services
-                .AddScoped<ISistemaApiService, SistemaApiService>()
-                .AddScoped<IProjetoApiService, ProjetoApiService>()
-                .AddScoped<ITarefaApiService, TarefaApiService>()
-                .AddScoped<IApontamentoApiService, ApontamentoApiService>()
-                .AddScoped<IWorkflowApiService, WorkflowApiService>()
-                .AddScoped<IRecursoApiService, RecursoApiService>()
-                .AddScoped<IImpedimentoApiService, ImpedimentoApiService>()
-                .AddScoped<IImpedimentoTarefaApiService, ImpedimentoTarefaApiService>()
-                .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
-                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>();
+            services.AddCpnucleoSetup();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
