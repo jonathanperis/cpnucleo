@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.Interfaces
 {
     public interface ICrudApiService<TViewModel>
     {
-        IEnumerable<TViewModel> Get(string actionRoute);
+        IEnumerable<TViewModel> Get(string token, string actionRoute);
 
-        TViewModel Get(string actionRoute, string parameter);
+        TViewModel Get(string token, string actionRoute, Guid id);
 
-        void Post(string actionRoute, TViewModel obj);
+        void Post(string token, string actionRoute, TViewModel obj);
 
-        void Put(string actionRoute, string parameter, TViewModel obj);
+        void Put(string token, string actionRoute, Guid id, TViewModel obj);
 
-        void Delete(string actionRoute, string parameter);
+        void Delete(string token, string actionRoute, Guid id);
     }
 }

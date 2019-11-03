@@ -15,11 +15,12 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             _client = new RestClient("https://cpnucleo-api.azurewebsites.net/");
         }
 
-        public IEnumerable<TViewModel> Get(string actionRoute)
+        public virtual IEnumerable<TViewModel> Get(string token, string actionRoute)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.GET);
+                request.AddHeader("Authorization", token);
 
                 return JsonConvert.DeserializeObject<IEnumerable<TViewModel>>(_client.Execute(request).Content.ToString());
             }
@@ -29,12 +30,13 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public TViewModel Get(string actionRoute, string parameter)
+        public virtual TViewModel Get(string token, string actionRoute, Guid id)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.GET);
-                request.AddQueryParameter("id", parameter);
+                request.AddHeader("Authorization", token);
+                request.AddQueryParameter("id", id.ToString());
 
                 return JsonConvert.DeserializeObject<TViewModel>(_client.Execute(request).Content.ToString());
             }
@@ -44,11 +46,12 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public void Post(string actionRoute, TViewModel obj)
+        public virtual void Post(string token, string actionRoute, TViewModel obj)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.POST);
+                request.AddHeader("Authorization", token);
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
                 _client.Execute(request);
@@ -59,12 +62,13 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public void Put(string actionRoute, string parameter, TViewModel obj)
+        public virtual void Put(string token, string actionRoute, Guid id, TViewModel obj)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.PUT);
-                request.AddQueryParameter("id", parameter);
+                request.AddHeader("Authorization", token);
+                request.AddQueryParameter("id", id.ToString());
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
                 _client.Execute(request);
@@ -75,12 +79,13 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public void Delete(string actionRoute, string parameter)
+        public virtual void Delete(string token, string actionRoute, Guid id)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.DELETE);
-                request.AddQueryParameter("id", parameter);
+                request.AddHeader("Authorization", token);
+                request.AddQueryParameter("id", id.ToString());
 
                 _client.Execute(request);
             }
