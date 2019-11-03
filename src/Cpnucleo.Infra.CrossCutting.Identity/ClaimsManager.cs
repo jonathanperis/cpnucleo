@@ -7,6 +7,12 @@ namespace Cpnucleo.Infra.CrossCutting.Identity
 {
     public class ClaimsManager : IClaimsManager
     {
+        public ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
+        {
+            ClaimsIdentity identities = new ClaimsIdentity(claims, "Dummy");
+            return new ClaimsPrincipal(new[] { identities });
+        }
+
         public ClaimsPrincipal CreateClaimsPrincipal(string type, string value)
         {
             IEnumerable<Claim> claims = CreateClaims(type, value);

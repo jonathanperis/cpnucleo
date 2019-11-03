@@ -1,10 +1,12 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.Luna.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Luna.Pages
@@ -12,12 +14,12 @@ namespace Cpnucleo.RazorPages.Luna.Pages
     public class LoginModel : PageModel
     {
         private readonly IClaimsManager _claimsManager;
-        private readonly IRecursoAppService _recursoAppService;
+        private readonly IRecursoApiService _recursoApiService;
 
-        public LoginModel(IClaimsManager claimsManager, IRecursoAppService recursoAppService)
+        public LoginModel(IClaimsManager claimsManager, IRecursoApiService recursoApiService)
         {
             _claimsManager = claimsManager;
-            _recursoAppService = recursoAppService;
+            _recursoApiService = recursoApiService;
         }
 
         [BindProperty]
@@ -44,15 +46,21 @@ namespace Cpnucleo.RazorPages.Luna.Pages
                 return Page();
             }
 
-            RecursoViewModel recurso = _recursoAppService.Autenticar(Login.Usuario, Login.Senha, out bool valido);
+            RecursoViewModel recurso = _recursoApiService.Autenticar(Login.Usuario, Login.Senha);
 
-            if (!valido)
+            if (recurso.Id == Guid.Empty)
             {
                 ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return Page();
             }
 
-            ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(ClaimTypes.PrimarySid, recurso.Id.ToString());
+            IEnumerable<Claim> claims = new[]
+            {
+                new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString()),
+                new Claim(ClaimTypes.Hash, recurso.Token)
+            };
+
+            ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(claims);
 
             HttpContext.SignInAsync(principal);
 
