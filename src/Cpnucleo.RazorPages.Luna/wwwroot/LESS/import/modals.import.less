@@ -1,0 +1,42 @@
+.modal-content {
+
+  background-color: darken(@background-color, 6%);
+
+  .modal-title {
+    font-size: 22px;
+  }
+
+  .modal-header {
+    border-color: @border-color;
+    background-color: darken(@background-color, 8%);
+    padding: 25px 20px;
+    display: block;
+
+    .close {
+      color: #ffffff;
+      text-shadow: none;
+      filter: alpha(opacity=20);
+      opacity: .2;
+    }
+
+  }
+
+  .modal-body {
+    padding: 40px;
+  }
+
+  .modal-footer {
+    border-color: @border-color;
+    background-color: darken(@background-color, 8%);
+    padding: 20px;
+  }
+
+
+
+}
+
+.modal-backdrop.in {
+  filter: alpha(opacity=10);
+  opacity: .1;
+}
+
