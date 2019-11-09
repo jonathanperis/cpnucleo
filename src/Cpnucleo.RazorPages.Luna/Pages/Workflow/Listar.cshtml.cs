@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Luna.Pages.Workflow
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IWorkflowAppService _workflowAppService;
+        private readonly IWorkflowApiService _workflowApiService;
 
-        public ListarModel(IWorkflowAppService workflowAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IWorkflowApiService workflowApiService)
+            : base(claimsManager)
         {
-            _workflowAppService = workflowAppService;
+            _workflowApiService = workflowApiService;
         }
 
         public WorkflowViewModel Workflow { get; set; }
@@ -23,7 +25,7 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Workflow
 
         public IActionResult OnGet()
         {
-            Lista = _workflowAppService.Listar();
+            Lista = _workflowApiService.Listar(Token);
 
             return Page();
         }

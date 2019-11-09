@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -11,19 +10,20 @@ using System.Security.Claims;
 namespace Cpnucleo.RazorPages.Luna.Pages.Apontamento
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
         private readonly IClaimsManager _claimsManager;
-        private readonly IApontamentoAppService _apontamentoAppService;
-        private readonly IRecursoTarefaAppService _recursoTarefaAppService;
+        private readonly IApontamentoApiService _apontamentoApiService;
+        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
 
         public ListarModel(IClaimsManager claimsManager,
-                                    IApontamentoAppService apontamentoAppService,
-                                    IRecursoTarefaAppService recursoTarefaAppService)
+                                    IApontamentoApiService apontamentoApiService,
+                                    IRecursoTarefaApiService recursoTarefaApiService)
+            : base(claimsManager)
         {
             _claimsManager = claimsManager;
-            _apontamentoAppService = apontamentoAppService;
-            _recursoTarefaAppService = recursoTarefaAppService;
+            _apontamentoApiService = apontamentoApiService;
+            _recursoTarefaApiService = recursoTarefaApiService;
         }
 
         [BindProperty]
@@ -38,8 +38,8 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Apontamento
             string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
 
-            Lista = _apontamentoAppService.ListarPorRecurso(idRecurso);
-            ListaRecursoTarefas = _recursoTarefaAppService.ListarPorRecurso(idRecurso);
+            Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
+            ListaRecursoTarefas = _recursoTarefaApiService.ListarPorRecurso(Token, idRecurso);
 
             return Page();
         }
@@ -51,13 +51,13 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Apontamento
                 string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = _apontamentoAppService.ListarPorRecurso(idRecurso);
-                ListaRecursoTarefas = _recursoTarefaAppService.ListarPorRecurso(idRecurso);
+                Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
+                ListaRecursoTarefas = _recursoTarefaApiService.ListarPorRecurso(Token, idRecurso);
 
                 return Page();
             }
 
-            _apontamentoAppService.Incluir(Apontamento);
+            _apontamentoApiService.Incluir(Token, Apontamento);
 
             return RedirectToPage("Listar");
         }

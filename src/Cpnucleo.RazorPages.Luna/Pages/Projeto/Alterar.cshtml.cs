@@ -1,23 +1,26 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace Cpnucleo.RazorPages.Luna.Pages.Projeto
 {
     [Authorize]
-    public class AlterarModel : PageModel
+    public class AlterarModel : PageBase
     {
-        private readonly IProjetoAppService _projetoAppService;
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly IProjetoApiService _projetoApiService;
+        private readonly ISistemaApiService _sistemaApiService;
 
-        public AlterarModel(IProjetoAppService projetoAppService, ISistemaAppService sistemaAppService)
+        public AlterarModel(IClaimsManager claimsManager,
+                                    IProjetoApiService projetoApiService,
+                                    ISistemaApiService sistemaApiService)
+            : base(claimsManager)
         {
-            _projetoAppService = projetoAppService;
-            _sistemaAppService = sistemaAppService;
+            _projetoApiService = projetoApiService;
+            _sistemaApiService = sistemaApiService;
         }
 
         [BindProperty]
@@ -27,8 +30,8 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Projeto
 
         public IActionResult OnGet(Guid id)
         {
-            Projeto = _projetoAppService.Consultar(id);
-            SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Nome");
+            Projeto = _projetoApiService.Consultar(Token, id);
+            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
 
             return Page();
         }
@@ -37,12 +40,12 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Projeto
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Nome");
+                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _projetoAppService.Alterar(Projeto);
+            _projetoApiService.Alterar(Token, Projeto);
 
             return RedirectToPage("Listar");
         }

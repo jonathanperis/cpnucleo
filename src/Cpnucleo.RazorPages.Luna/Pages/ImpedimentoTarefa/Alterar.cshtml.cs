@@ -1,24 +1,26 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace Cpnucleo.RazorPages.Luna.Pages.ImpedimentoTarefa
 {
     [Authorize]
-    public class AlterarModel : PageModel
+    public class AlterarModel : PageBase
     {
-        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
+        private readonly IImpedimentoApiService _impedimentoApiService;
 
-        public AlterarModel(IImpedimentoTarefaAppService impedimentoTarefaAppService,
-                                           IImpedimentoAppService impedimentoAppService)
+        public AlterarModel(IClaimsManager claimsManager,
+                                    IImpedimentoTarefaApiService impedimentoTarefaApiService,
+                                    IImpedimentoApiService impedimentoApiService)
+            : base(claimsManager)
         {
-            _impedimentoTarefaAppService = impedimentoTarefaAppService;
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoTarefaApiService = impedimentoTarefaApiService;
+            _impedimentoApiService = impedimentoApiService;
         }
 
         [BindProperty]
@@ -28,8 +30,8 @@ namespace Cpnucleo.RazorPages.Luna.Pages.ImpedimentoTarefa
 
         public IActionResult OnGet(Guid id)
         {
-            ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
-            SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
+            ImpedimentoTarefa = _impedimentoTarefaApiService.Consultar(Token, id);
+            SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
 
             return Page();
         }
@@ -38,12 +40,12 @@ namespace Cpnucleo.RazorPages.Luna.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectImpedimentos = new SelectList(_impedimentoAppService.Listar(), "Id", "Nome");
+                SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _impedimentoTarefaAppService.Alterar(ImpedimentoTarefa);
+            _impedimentoTarefaApiService.Alterar(Token, ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }

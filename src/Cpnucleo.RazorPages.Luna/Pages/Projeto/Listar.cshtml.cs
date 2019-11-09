@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Luna.Pages.Projeto
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IProjetoAppService _projetoAppService;
+        private readonly IProjetoApiService _projetoApiService;
 
-        public ListarModel(IProjetoAppService projetoAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IProjetoApiService projetoApiService)
+            : base(claimsManager)
         {
-            _projetoAppService = projetoAppService;
+            _projetoApiService = projetoApiService;
         }
 
         public ProjetoViewModel Projeto { get; set; }
@@ -23,7 +25,7 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Projeto
 
         public IActionResult OnGet()
         {
-            Lista = _projetoAppService.Listar();
+            Lista = _projetoApiService.Listar(Token);
 
             return Page();
         }

@@ -5,14 +5,14 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Interfaces
 {
     public interface ICrudApiService<TViewModel>
     {
-        IEnumerable<TViewModel> Get(string token, string actionRoute);
+        bool Incluir(string token, TViewModel obj);
 
-        TViewModel Get(string token, string actionRoute, Guid id);
+        TViewModel Consultar(string token, Guid id);
 
-        void Post(string token, string actionRoute, TViewModel obj);
+        IEnumerable<TViewModel> Listar(string token);
 
-        void Put(string token, string actionRoute, Guid id, TViewModel obj);
+        bool Alterar(string token, TViewModel obj);
 
-        void Delete(string token, string actionRoute, Guid id);
+        bool Remover(string token, Guid id);
     }
 }

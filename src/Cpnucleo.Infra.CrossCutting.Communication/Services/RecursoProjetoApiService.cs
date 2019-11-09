@@ -1,27 +1,42 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
-using RestSharp;
-using Newtonsoft.Json;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 {
-    public class RecursoApiService : CrudApiService<RecursoViewModel>, IRecursoApiService
+    public class RecursoProjetoApiService : CrudApiService<RecursoProjetoViewModel>, IRecursoProjetoApiService
     {
-        public RecursoViewModel Autenticar(string login, string senha)
-        {
-            try
-            {
-                RestRequest request = new RestRequest($"api/v2/recurso/autenticar", Method.GET);
-                request.AddQueryParameter("login", login);
-                request.AddQueryParameter("senha", senha);
+        private const string actionRoute = "recursoProjeto";
 
-                return JsonConvert.DeserializeObject<RecursoViewModel>(_client.Execute(request).Content.ToString());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+        public bool Incluir(string token, RecursoProjetoViewModel obj)
+        {
+            return Post(token, actionRoute, obj);
+        }
+
+        public IEnumerable<RecursoProjetoViewModel> Listar(string token)
+        {
+            return Get(token, actionRoute);
+        }
+
+        public RecursoProjetoViewModel Consultar(string token, Guid id)
+        {
+            return Get(token, actionRoute, id);
+        }
+
+        public bool Remover(string token, Guid id)
+        {
+            return Delete(token, actionRoute, id);
+        }
+
+        public bool Alterar(string token, RecursoProjetoViewModel obj)
+        {
+            return Put(token, actionRoute, obj.Id, obj);
+        }
+
+        public IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(string token, Guid idProjeto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
