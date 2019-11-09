@@ -1,19 +1,21 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cpnucleo.RazorPages.Luna.Pages.Impedimento
 {
     [Authorize]
-    public class IncluirModel : PageModel
+    public class IncluirModel : PageBase
     {
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly IImpedimentoApiService _impedimentoApiService;
 
-        public IncluirModel(IImpedimentoAppService impedimentoAppService)
+        public IncluirModel(IClaimsManager claimsManager,
+                                    IImpedimentoApiService impedimentoApiService)
+            : base(claimsManager)
         {
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoApiService = impedimentoApiService;
         }
 
         [BindProperty]
@@ -26,7 +28,7 @@ namespace Cpnucleo.RazorPages.Luna.Pages.Impedimento
                 return Page();
             }
 
-            _impedimentoAppService.Incluir(Impedimento);
+            _impedimentoApiService.Incluir(Token, Impedimento);
 
             return RedirectToPage("Listar");
         }

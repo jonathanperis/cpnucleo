@@ -13,12 +13,6 @@ namespace Cpnucleo.RazorPages.Luna.Pages
             _claimsManager = claimsManager;
         }
 
-        public string Token
-        {
-            get
-            {
-                return _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.Hash);
-            }
-        }
+        public string Token => _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.Hash);
     }
 }

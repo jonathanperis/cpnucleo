@@ -1,21 +1,23 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Luna.Pages.ImpedimentoTarefa
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
+        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
 
-        public ListarModel(IImpedimentoTarefaAppService impedimentoTarefaAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IImpedimentoTarefaApiService impedimentoTarefaApiService)
+            : base(claimsManager)
         {
-            _impedimentoTarefaAppService = impedimentoTarefaAppService;
+            _impedimentoTarefaApiService = impedimentoTarefaApiService;
         }
 
         [BindProperty]
@@ -25,7 +27,7 @@ namespace Cpnucleo.RazorPages.Luna.Pages.ImpedimentoTarefa
 
         public IActionResult OnGet(Guid idTarefa)
         {
-            Lista = _impedimentoTarefaAppService.ListarPorTarefa(idTarefa);
+            Lista = _impedimentoTarefaApiService.ListarPorTarefa(Token, idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 

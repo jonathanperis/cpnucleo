@@ -4,19 +4,20 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.Luna.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Luna.Pages
 {
-    public class LoginModel : PageModel
+    public class LoginModel : PageBase
     {
         private readonly IClaimsManager _claimsManager;
         private readonly IRecursoApiService _recursoApiService;
 
-        public LoginModel(IClaimsManager claimsManager, IRecursoApiService recursoApiService)
+        public LoginModel(IClaimsManager claimsManager,
+                                    IRecursoApiService recursoApiService)
+            : base(claimsManager)
         {
             _claimsManager = claimsManager;
             _recursoApiService = recursoApiService;

@@ -94,19 +94,6 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - CrossCutting - Communication
             services
-                .AddScoped<ICrudApiService<SistemaViewModel>, CrudApiService<SistemaViewModel>>()
-                .AddScoped<ICrudApiService<ProjetoViewModel>, CrudApiService<ProjetoViewModel>>()
-                .AddScoped<ICrudApiService<TarefaViewModel>, CrudApiService<TarefaViewModel>>()
-                .AddScoped<ICrudApiService<ApontamentoViewModel>, CrudApiService<ApontamentoViewModel>>()
-                .AddScoped<ICrudApiService<WorkflowViewModel>, CrudApiService<WorkflowViewModel>>()
-                .AddScoped<ICrudApiService<RecursoViewModel>, CrudApiService<RecursoViewModel>>()
-                .AddScoped<ICrudApiService<ImpedimentoViewModel>, CrudApiService<ImpedimentoViewModel>>()
-                .AddScoped<ICrudApiService<ImpedimentoTarefaViewModel>, CrudApiService<ImpedimentoTarefaViewModel>>()
-                .AddScoped<ICrudApiService<RecursoProjetoViewModel>, CrudApiService<RecursoProjetoViewModel>>()
-                .AddScoped<ICrudApiService<RecursoTarefaViewModel>, CrudApiService<RecursoTarefaViewModel>>()
-                .AddScoped<ICrudApiService<TipoTarefaViewModel>, CrudApiService<TipoTarefaViewModel>>();
-
-            services
                 .AddScoped<ISistemaApiService, SistemaApiService>()
                 .AddScoped<IProjetoApiService, ProjetoApiService>()
                 .AddScoped<ITarefaApiService, TarefaApiService>()

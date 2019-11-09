@@ -1,12 +1,12 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 {
-    public class CrudApiService<TViewModel> : ICrudApiService<TViewModel>
+    public class CrudApiService<TViewModel>
     {
         protected readonly RestClient _client;
 
@@ -15,7 +15,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             _client = new RestClient("https://cpnucleo-api.azurewebsites.net/");
         }
 
-        public virtual IEnumerable<TViewModel> Get(string token, string actionRoute)
+        protected IEnumerable<TViewModel> Get(string token, string actionRoute)
         {
             try
             {
@@ -30,13 +30,12 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public virtual TViewModel Get(string token, string actionRoute, Guid id)
+        protected TViewModel Get(string token, string actionRoute, Guid id)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.GET);
                 request.AddHeader("Authorization", token);
-                request.AddQueryParameter("id", id.ToString());
 
                 return JsonConvert.DeserializeObject<TViewModel>(_client.Execute(request).Content.ToString());
             }
@@ -46,7 +45,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public virtual void Post(string token, string actionRoute, TViewModel obj)
+        protected bool Post(string token, string actionRoute, TViewModel obj)
         {
             try
             {
@@ -54,7 +53,9 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
-                _client.Execute(request);
+                var response = _client.Execute(request);
+
+                return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
             catch (Exception)
             {
@@ -62,16 +63,17 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public virtual void Put(string token, string actionRoute, Guid id, TViewModel obj)
+        protected bool Put(string token, string actionRoute, Guid id, TViewModel obj)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.PUT);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.PUT);
                 request.AddHeader("Authorization", token);
-                request.AddQueryParameter("id", id.ToString());
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
-                _client.Execute(request);
+                var response = _client.Execute(request);
+
+                return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
             catch (Exception)
             {
@@ -79,15 +81,16 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
             }
         }
 
-        public virtual void Delete(string token, string actionRoute, Guid id)
+        protected bool Delete(string token, string actionRoute, Guid id)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.DELETE);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.DELETE);
                 request.AddHeader("Authorization", token);
-                request.AddQueryParameter("id", id.ToString());
 
-                _client.Execute(request);
+                var response = _client.Execute(request);
+
+                return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
             catch (Exception)
             {
