@@ -1,7 +1,9 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 {
@@ -41,7 +43,20 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 
         public bool AlterarPorWorkflow(string token, Guid idTarefa, Guid idWorkflow)
         {
-            throw new NotImplementedException();
+            try
+            {
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/putbyworkflow/{idTarefa.ToString()}", Method.PUT);
+                request.AddHeader("Authorization", token);
+                request.AddJsonBody(idWorkflow);
+
+                var response = _client.Execute(request);
+
+                return response.StatusCode == HttpStatusCode.OK ? true : false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

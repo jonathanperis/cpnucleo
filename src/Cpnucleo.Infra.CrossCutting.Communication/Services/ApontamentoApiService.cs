@@ -40,7 +40,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/apontamento/getbyrecurso/{id.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{id.ToString()}", Method.GET);
                 request.AddHeader("Authorization", token);
 
                 var a = _client.Execute(request);
