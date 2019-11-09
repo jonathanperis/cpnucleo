@@ -1,5 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 
@@ -36,12 +38,32 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(string token, Guid idTarefa)
         {
-            throw new NotImplementedException();
+            try
+            {
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa.ToString()}", Method.GET);
+                request.AddHeader("Authorization", token);
+
+                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(_client.Execute(request).Content.ToString());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(string token, Guid idRecurso)
         {
-            throw new NotImplementedException();
+            try
+            {
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso.ToString()}", Method.GET);
+                request.AddHeader("Authorization", token);
+
+                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(_client.Execute(request).Content.ToString());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
