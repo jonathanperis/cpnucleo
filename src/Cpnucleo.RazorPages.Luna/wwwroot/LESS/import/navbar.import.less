@@ -1,0 +1,150 @@
+.navbar {
+  min-height: 60px;
+  padding: 0;
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-brand:focus {
+  width: @navigation-width;
+  background-color: @color-accent;
+  height: 60px;
+  padding: 17px 25px;
+  font-weight: 400;
+  letter-spacing: 10px;
+  color: #FFFFFF;
+  font-size: 1.12rem;
+
+}
+
+.navbar-default .navbar-brand {
+  color: #FFFFFF;
+}
+
+.navbar-default .navbar-brand:hover {
+  color: #FFFFFF;
+  background-color: darken(@color-accent, 3%);
+}
+
+.navbar-brand span {
+  letter-spacing: normal;
+  float: right;
+  font-size: 12px;
+  margin-left: -15px;
+  color: lighten(@color-accent, 30%);
+
+}
+
+.navbar-default {
+  border-bottom: none;
+  background-color: #FFFFFF;
+  box-shadow: 0px 0px 21px #161616;
+}
+
+.left-nav-toggle {
+  float: left;
+  //padding: 9px 10px 8px 25px;
+
+  &:hover a {
+    color: @color-accent;
+  }
+}
+
+.left-nav-toggle a {
+  font-size: 30px;
+  color: @color-font;
+  margin-left: 10px;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: darken(@color-font,16%);
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: darken(@color-font,36%);
+}
+
+.left-nav-toggle a:hover,
+.left-nav-toggle a:focus {
+  text-decoration: none;
+}
+
+.navbar-form {
+  padding: 0;
+  margin-left: 10px;
+}
+
+.navbar-form input.form-control {
+  border: none;
+  box-shadow: none;
+  color: @color-font;
+}
+
+.navbar-form input.form-control::-webkit-input-placeholder {
+  color: @color-placeholder;
+}
+
+.navbar-form input.form-control:-moz-placeholder {
+  color: @color-placeholder;
+}
+
+.navbar-form input.form-control::-moz-placeholder {
+  color: @color-placeholder;
+}
+
+.navbar-form input.form-control:-ms-input-placeholder {
+  color: @color-placeholder;
+}
+
+
+
+.navbar-nav > li > a {
+  //padding: 20px 15px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.navbar-nav > li:first-child > a {
+  padding-left: 0;
+}
+
+.navbar-nav > li:last-child > a {
+  padding-right:25px;
+}
+
+.navbar-nav a .label {
+  margin: -5px 0 0 5px;
+}
+
+.profil-link img {
+  height: 40px;
+  margin-left: 10px;
+}
+
+.profil-link .profile-address {
+  text-transform: lowercase;
+}
+
+.uppercase-link {
+  margin-top: 2px;
+  margin-right: 10px;
+  font-size: 0.84rem;
+}
+
+#mobile-menu {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  #mobile-menu {
+    display: block;
+  }
+}
+
+#mobile-menu {
+
+  float: right;
+
+  .left-nav-toggle {
+    padding-top: 8px;
+  }
+}

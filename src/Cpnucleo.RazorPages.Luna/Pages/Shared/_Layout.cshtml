@@ -14,76 +14,102 @@
     </script>
 
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900' rel='stylesheet' type='text/css'>
+
+    <!-- Page title -->
     <title>@OptionsApplicationConfiguration.Value.NomeSistema - @ViewData["Title"]</title>
+
+    <!-- Vendor styles -->
+    <link rel="stylesheet" href="~/vendor/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/vendor/animate.css/animate.css" />
+    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.css" />
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="~/styles/pe-icons/pe-icon-7-stroke.css" />
+    <link rel="stylesheet" href="~/styles/pe-icons/helper.css" />
+    <link rel="stylesheet" href="~/styles/stroke-icons/style.css" />
+    <link rel="stylesheet" href="~/styles/style.css">
     @RenderSection("styles", required: false)
-    <!-- Mainly links -->
-    <link href="~/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/animate.css" rel="stylesheet">
-    <link href="~/css/style.css" rel="stylesheet">
-    <link href="~/font-awesome/css/font-awesome.css" rel="stylesheet">
 </head>
-<body class="top-navigation">
-    <div id="wrapper">
-        <div id="page-wrapper" class="gray-bg">
-            <div class="row border-bottom white-bg">
-                <nav class="navbar navbar-static-top" role="navigation">
-                    <div class="navbar-header">
-                        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
-                            <i class="fa fa-reorder"></i>
-                        </button>
-                        <div class="navbar-brand">@OptionsApplicationConfiguration.Value.NomeSistema - Razor Pages</div>
+<body>
+
+    <!-- Wrapper-->
+    <div class="wrapper">
+
+        <!-- Header-->
+        <nav class="navbar navbar-expand-md navbar-default fixed-top">
+            <div class="navbar-header">
+                <div id="mobile-menu">
+                    <div class="left-nav-toggle">
+                        <a href="#">
+                            <i class="stroke-hamburgermenu"></i>
+                        </a>
                     </div>
-                    <div class="navbar-collapse collapse" id="navbar">
-                        <ul class="nav navbar-nav">
-                            <li>
-                                <a aria-expanded="false" role="button" asp-page="/Apontamento/Listar">Apontamentos</a>
-                            </li>
-                            <li>
-                                <a aria-expanded="false" role="button" asp-page="/FluxoTrabalho">Fluxo de Trabalho</a>
-                            </li>
-                            <li class="dropdown">
-                                <a aria-expanded="false" role="button" href="#" class="dropdown-toggle" data-toggle="dropdown"> Gerenciar <span class="caret"></span></a>
-                                <ul role="menu" class="dropdown-menu">
-                                    <li><a asp-page="/Sistema/Listar">Relação de Sistemas</a></li>
-                                    <li><a asp-page="/Impedimento/Listar">Relação de Impedimentos</a></li>
-                                    <li><a asp-page="/Recurso/Listar">Relação de Recursos</a></li>
-                                    <li><a asp-page="/Projeto/Listar">Relação de Projetos</a></li>
-                                    <li><a asp-page="/Workflow/Listar">Relação de Workflow</a></li>
-                                    <li><a asp-page="/Tarefa/Listar">Relação de Tarefas</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <ul class="nav navbar-top-links navbar-right">
-                            <li>
-                                <a asp-page="/Login" asp-route-logout="true">
-                                    <i class="fa fa-sign-out"></i> Sair
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
+                </div>
+                <a class="navbar-brand" href="#">
+                    CPN
+                    <span>v.1.0</span>
+                </a>
             </div>
-            <div class="wrapper wrapper-content">
-                <div class="container">
-                    @RenderBody()
+            <div id="navbar" class="navbar-collapse collapse">
+                <div class="left-nav-toggle">
+                    <a href="">
+                        <i class="stroke-hamburgermenu"></i>
+                    </a>
                 </div>
             </div>
-            <div class="footer">
-                <div>
-                    <strong>Copyright</strong> &copy; 2016 - @DateTime.Now.Year <a href="http://jonathanperis.github.io" target="_blank">Jonathan Peris</a>, todos os direitos Reservados.
-                </div>
+        </nav>
+        <!-- End header-->
+        <!-- Navigation-->
+        <aside class="navigation">
+            <nav>
+                <ul class="nav luna-nav">
+                    <li>
+                        <a asp-page="/Apontamento/Listar">Apontamentos</a>
+                    </li>
+
+                    <li>
+                        <a asp-page="/FluxoTrabalho">Fluxo de Trabalho</a>
+                    </li>
+
+                    <li>
+                        <a href="#manage" data-toggle="collapse" aria-expanded="false">
+                            Gerenciar<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+                        </a>
+                        <ul id="manage" class="nav nav-second collapse">
+                            <li><a asp-page="/Sistema/Listar">Sistemas</a></li>
+                            <li><a asp-page="/Impedimento/Listar">Impedimentos</a></li>
+                            <li><a asp-page="/Recurso/Listar">Recursos</a></li>
+                            <li><a asp-page="/Projeto/Listar">Projetos</a></li>
+                            <li><a asp-page="/Workflow/Listar">Workflow</a></li>
+                            <li><a asp-page="/Tarefa/Listar">Tarefas</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <!-- End navigation-->
+        <!-- Main content-->
+        <section class="content">
+            <div class="container-fluid">
+
+                @RenderBody()
+
             </div>
-        </div>
+        </section>
+        <!-- End main content-->
+
     </div>
-    <!-- Mainly scripts -->
-    <script src="~/js/jquery-3.1.1.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <script src="~/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="~/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- Custom and plugin javascript -->
-    <script src="~/js/inspinia.js"></script>
-    <script src="~/js/plugins/pace/pace.min.js"></script>
+    <!-- Vendor scripts -->
+    <script src="~/vendor/pacejs/pace.min.js"></script>
+    <script src="~/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- App scripts -->
+    <script src="~/scripts/luna.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,71 @@
+.form-control {
+
+  color: @color-font;
+  border: none;
+  border-radius: 4px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  -webkit-transition: none;
+  -o-transition: none;
+  transition: none;
+  background-color: lighten(@background-light-color, 2%);
+  font-size: 0.88rem;
+
+  &:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-color: lighten(@background-light-color, 6%);
+    color: @color-font;
+  }
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  background-color: darken(@background-light-color, 10%);
+  opacity: 1;
+}
+
+.navbar-form .form-control {
+  background-color: #ffffff;
+}
+
+
+.has-success .checkbox, .has-success .checkbox-inline, .has-success .col-form-label, .has-success .form-text, .has-success .radio, .has-success .radio-inline, .has-success.form-check label, .has-success.checkbox-inline label, .has-success.form-check label, .has-success.radio-inline label {
+  color: darken(@color-success, 10%);
+}
+
+.has-warning .checkbox, .has-warning .checkbox-inline, .has-warning .col-form-label, .has-warning .form-text, .has-warning .radio, .has-warning .radio-inline, .has-warning.form-check label, .has-warning.checkbox-inline label, .has-warning.form-check label, .has-warning.radio-inline label {
+  color: darken(@color-warning, 10%);
+}
+
+.has-error .checkbox, .has-error .checkbox-inline, .has-error .col-form-label, .has-error .form-text, .has-error .radio, .has-error .radio-inline, .has-error.form-check label, .has-error.checkbox-inline label, .has-error.form-check label, .has-error.radio-inline label {
+  color: darken(@color-danger, 10%);
+}
+
+.has-success .form-control {
+  border-color: darken(@color-success, 10%);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.has-warning .form-control {
+  border-color: darken(@color-warning, 10%);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.has-error .form-control {
+  border-color: darken(@color-danger, 10%);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group > .btn, .input-group-btn:last-child > .dropdown-toggle, .input-group-btn:first-child > .btn:not(:first-child), .input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
+  border-color: transparent;
+  background-color: lighten(@background-light-color, 6%);
+}

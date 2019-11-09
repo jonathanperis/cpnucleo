@@ -1,0 +1,126 @@
+.btn {
+  color: inherit;
+  background-color: transparent;
+  font-size: 0.9rem;
+
+}
+
+.buttons-margin .btn {
+  margin-bottom: 5px;
+}
+
+.btn-default {
+  border-color: lighten(@background-color, 18%);
+
+}
+
+.btn {
+
+  &.btn-w-sm {
+    min-width: 80px;
+  }
+
+  &.btn-w-md {
+    min-width: 120px;
+  }
+
+  &.btn-w-lg {
+    min-width: 160px;
+  }
+
+  &.btn-rounded {
+    border-radius: 50px;
+  }
+
+  &.btn-squared {
+    border-radius: 0;
+  }
+
+}
+
+.btn-accent {
+  .button-variant(@color-font; transparent; @color-accent);
+}
+.btn-default {
+  .button-variant(@color-font; transparent; lighten(@background-color, 22%));
+}
+.btn-primary {
+  .button-variant(@color-font; transparent; @color-primary);
+}
+.btn-success {
+  .button-variant(@color-font; transparent; @color-success);
+}
+.btn-info {
+  .button-variant(@color-font; transparent; @color-info);
+}
+.btn-warning {
+  .button-variant(@color-font; transparent; @color-warning);
+}
+.btn-danger {
+  .button-variant(@color-font; transparent; @color-danger);
+}
+
+.btn-default:hover, .btn-default:active,.btn-default:active:focus, .btn-default:focus, .btn-default.active {
+  background-color: lighten(@background-color, 6%);
+}
+
+.btn-link:hover, .btn-link:active,.btn-link:active:focus, .btn-link:focus, .btn-link.active {
+  color: @color-accent;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):not(.disabled):active:focus, .btn:not(:disabled):not(.disabled).active:focus, .show > .btn.dropdown-toggle:focus {
+  box-shadow: none !important;
+}
+
+.dropdown-item {
+  padding: 3px 20px;
+  font-size: 0.86rem;
+}
+
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f5f5;
+  outline: 0;
+}
+
+.typeahead.dropdown-menu li.active a strong {
+  color: @color-accent;
+}
+
+.input-group-prepend .btn, .input-group-append .btn {
+  position: relative;
+  z-index: 2;
+  border: none;
+  background-color: lighten(@background-color, 2%);
+
+  &:focus {
+    box-shadow: none;
+  }
+
+  &:active {
+    background-color: lighten(@background-color, 4%) !important;
+}
+
+}
+
+
+/* Bootstrap 3x support */
+
+.btn-xs, .btn-group-xs > .btn {
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+.btn-light {
+  border-color: lighten(@border-color, 5%);
+}
+
+.btn-sm, .btn-group-sm > .btn {
+  font-size: 0.8rem;
+}
