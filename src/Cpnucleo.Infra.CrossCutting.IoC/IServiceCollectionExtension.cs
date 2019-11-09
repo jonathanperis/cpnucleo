@@ -103,7 +103,8 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IImpedimentoApiService, ImpedimentoApiService>()
                 .AddScoped<IImpedimentoTarefaApiService, ImpedimentoTarefaApiService>()
                 .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
-                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>();
+                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>()
+                .AddScoped<ITipoTarefaApiService, TipoTarefaApiService>();
 
             return services;
         }
