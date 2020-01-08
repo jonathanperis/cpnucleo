@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Infra.CrossCutting.IoC
 {
-    public static class IServiceCollectionExtension
+    public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddCpnucleoSetup(this IServiceCollection services)
         {
