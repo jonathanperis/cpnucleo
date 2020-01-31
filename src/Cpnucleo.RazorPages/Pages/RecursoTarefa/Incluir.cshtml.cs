@@ -1,27 +1,29 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 {
     [Authorize]
-    public class IncluirModel : PageModel
+    public class IncluirModel : PageBase
     {
-        private readonly IRecursoTarefaAppService _recursoTarefaAppService;
-        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
+        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
+        private readonly ITarefaApiService _tarefaApiService;
 
-        public IncluirModel(IRecursoTarefaAppService recursoTarefaAppService,
-                                       IRecursoProjetoAppService recursoProjetoAppService,
-                                       ITarefaAppService tarefaAppService)
+        public IncluirModel(IClaimsManager claimsManager,
+                                    IRecursoTarefaApiService recursoTarefaApiService,
+                                    IRecursoProjetoApiService recursoProjetoApiService,
+                                    ITarefaApiService tarefaApiService)
+            : base(claimsManager)
         {
-            _recursoTarefaAppService = recursoTarefaAppService;
-            _recursoProjetoAppService = recursoProjetoAppService;
-            _tarefaAppService = tarefaAppService;
+            _recursoTarefaApiService = recursoTarefaApiService;
+            _recursoProjetoApiService = recursoProjetoApiService;
+            _tarefaApiService = tarefaApiService;
         }
 
         [BindProperty]
@@ -33,9 +35,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public IActionResult OnGet(Guid idTarefa)
         {
-            Tarefa = _tarefaAppService.Consultar(idTarefa);
+            Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
 
-            SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPorProjeto(Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+            SelectRecursos = new SelectList(_recursoProjetoApiService.ListarPorProjeto(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
             return Page();
         }
@@ -44,13 +46,13 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = _tarefaAppService.Consultar(idTarefa);
-                SelectRecursos = new SelectList(_recursoProjetoAppService.ListarPorProjeto(Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+                SelectRecursos = new SelectList(_recursoProjetoApiService.ListarPorProjeto(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
 
-            _recursoTarefaAppService.Incluir(RecursoTarefa);
+            _recursoTarefaApiService.Incluir(Token, RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });
         }

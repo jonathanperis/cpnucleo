@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ISistemaApiService _sistemaApiService;
 
-        public RemoverModel(ISistemaAppService sistemaAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    ISistemaApiService sistemaApiService)
+            : base(claimsManager)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaApiService = sistemaApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
 
         public IActionResult OnGet(Guid id)
         {
-            Sistema = _sistemaAppService.Consultar(id);
+            Sistema = _sistemaApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _sistemaAppService.Remover(Sistema.Id);
+            _sistemaApiService.Remover(Token, Sistema.Id);
 
             return RedirectToPage("Listar");
         }

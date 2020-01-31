@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Apontamento
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly IApontamentoAppService _apontamentoAppService;
+        private readonly IApontamentoApiService _apontamentoApiService;
 
-        public RemoverModel(IApontamentoAppService apontamentoAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    IApontamentoApiService apontamentoApiService)
+            : base(claimsManager)
         {
-            _apontamentoAppService = apontamentoAppService;
+            _apontamentoApiService = apontamentoApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public IActionResult OnGet(Guid id)
         {
-            Apontamento = _apontamentoAppService.Consultar(id);
+            Apontamento = _apontamentoApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _apontamentoAppService.Remover(Apontamento.Id);
+            _apontamentoApiService.Remover(Token, Apontamento.Id);
 
             return RedirectToPage("Listar");
         }

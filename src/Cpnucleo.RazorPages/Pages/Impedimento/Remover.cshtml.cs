@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Impedimento
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly IImpedimentoApiService _impedimentoApiService;
 
-        public RemoverModel(IImpedimentoAppService impedimentoAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    IImpedimentoApiService impedimentoApiService)
+            : base(claimsManager)
         {
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoApiService = impedimentoApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
 
         public IActionResult OnGet(Guid id)
         {
-            Impedimento = _impedimentoAppService.Consultar(id);
+            Impedimento = _impedimentoApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _impedimentoAppService.Remover(Impedimento.Id);
+            _impedimentoApiService.Remover(Token, Impedimento.Id);
 
             return RedirectToPage("Listar");
         }

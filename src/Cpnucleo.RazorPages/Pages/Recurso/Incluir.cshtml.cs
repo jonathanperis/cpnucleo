@@ -1,19 +1,21 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cpnucleo.RazorPages.Pages.Recurso
 {
     [Authorize]
-    public class IncluirModel : PageModel
+    public class IncluirModel : PageBase
     {
-        private readonly IRecursoAppService _recursoAppService;
+        private readonly IRecursoApiService _recursoApiService;
 
-        public IncluirModel(IRecursoAppService recursoAppService)
+        public IncluirModel(IClaimsManager claimsManager,
+                                    IRecursoApiService recursoApiService)
+            : base(claimsManager)
         {
-            _recursoAppService = recursoAppService;
+            _recursoApiService = recursoApiService;
         }
 
         [BindProperty]
@@ -26,7 +28,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
                 return Page();
             }
 
-            _recursoAppService.Incluir(Recurso);
+            _recursoApiService.Incluir(Token, Recurso);
 
             return RedirectToPage("Listar");
         }

@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly ITarefaApiService _tarefaApiService;
 
-        public ListarModel(ITarefaAppService tarefaAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    ITarefaApiService tarefaApiService)
+            : base(claimsManager)
         {
-            _tarefaAppService = tarefaAppService;
+            _tarefaApiService = tarefaApiService;
         }
 
         public TarefaViewModel Tarefa { get; set; }
@@ -23,7 +25,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public IActionResult OnGet()
         {
-            Lista = _tarefaAppService.Listar();
+            Lista = _tarefaApiService.Listar(Token);
 
             return Page();
         }
