@@ -55,7 +55,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 
                 var response = _client.Execute(request);
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                return response.StatusCode == HttpStatusCode.Created ? true : false;
             }
             catch (Exception)
             {

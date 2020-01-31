@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Impedimento
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly IImpedimentoApiService _impedimentoApiService;
 
-        public ListarModel(IImpedimentoAppService impedimentoAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IImpedimentoApiService impedimentoApiService)
+            : base(claimsManager)
         {
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoApiService = impedimentoApiService;
         }
 
         public ImpedimentoViewModel Impedimento { get; set; }
@@ -23,7 +25,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
 
         public IActionResult OnGet()
         {
-            Lista = _impedimentoAppService.Listar();
+            Lista = _impedimentoApiService.Listar(Token);
 
             return Page();
         }

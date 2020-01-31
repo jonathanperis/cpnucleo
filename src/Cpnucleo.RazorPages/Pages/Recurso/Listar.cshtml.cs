@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Recurso
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IRecursoAppService _recursoAppService;
+        private readonly IRecursoApiService _recursoApiService;
 
-        public ListarModel(IRecursoAppService recursoAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IRecursoApiService recursoApiService)
+            : base(claimsManager)
         {
-            _recursoAppService = recursoAppService;
+            _recursoApiService = recursoApiService;
         }
 
         public RecursoViewModel Recurso { get; set; }
@@ -23,7 +25,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
 
         public IActionResult OnGet()
         {
-            Lista = _recursoAppService.Listar();
+            Lista = _recursoApiService.Listar(Token);
 
             return Page();
         }

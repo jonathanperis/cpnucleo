@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ISistemaApiService _sistemaApiService;
 
-        public ListarModel(ISistemaAppService sistemaAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    ISistemaApiService sistemaApiService)
+            : base(claimsManager)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaApiService = sistemaApiService;
         }
 
         public SistemaViewModel Sistema { get; set; }
@@ -23,7 +25,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
 
         public IActionResult OnGet()
         {
-            Lista = _sistemaAppService.Listar();
+            Lista = _sistemaApiService.Listar(Token);
 
             return Page();
         }

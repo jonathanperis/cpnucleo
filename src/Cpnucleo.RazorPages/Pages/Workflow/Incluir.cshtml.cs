@@ -1,19 +1,21 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cpnucleo.RazorPages.Pages.Workflow
 {
     [Authorize]
-    public class IncluirModel : PageModel
+    public class IncluirModel : PageBase
     {
-        private readonly IWorkflowAppService _workflowAppService;
+        private readonly IWorkflowApiService _workflowApiService;
 
-        public IncluirModel(IWorkflowAppService workflowAppService)
+        public IncluirModel(IClaimsManager claimsManager,
+                                    IWorkflowApiService workflowApiService)
+            : base(claimsManager)
         {
-            _workflowAppService = workflowAppService;
+            _workflowApiService = workflowApiService;
         }
 
         [BindProperty]
@@ -26,7 +28,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                 return Page();
             }
 
-            _workflowAppService.Incluir(Workflow);
+            _workflowApiService.Incluir(Token, Workflow);
 
             return RedirectToPage("Listar");
         }

@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Workflow
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly IWorkflowAppService _workflowAppService;
+        private readonly IWorkflowApiService _workflowApiService;
 
-        public RemoverModel(IWorkflowAppService workflowAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    IWorkflowApiService workflowApiService)
+            : base(claimsManager)
         {
-            _workflowAppService = workflowAppService;
+            _workflowApiService = workflowApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
 
         public IActionResult OnGet(Guid id)
         {
-            Workflow = _workflowAppService.Consultar(id);
+            Workflow = _workflowApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _workflowAppService.Remover(Workflow.Id);
+            _workflowApiService.Remover(Token, Workflow.Id);
 
             return RedirectToPage("Listar");
         }
