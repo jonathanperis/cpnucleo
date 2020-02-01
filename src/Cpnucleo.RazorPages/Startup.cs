@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Profiling.Storage;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -59,6 +61,22 @@ namespace Cpnucleo.RazorPages
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
+
+            services.AddMiniProfiler(options =>
+            {
+                // All of this is optional. You can simply call .AddMiniProfiler() for all defaults
+
+                // (Optional) Path to use for profiler URLs, default is /mini-profiler-resources
+                options.RouteBasePath = "/profiler";
+
+                // (Optional) Control storage
+                // (default is 30 minutes in MemoryCacheStorage)
+                (options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+
+                // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
+                // (defaults to true, and connection opening/closing is tracked)
+                options.TrackConnectionOpenClose = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +84,7 @@ namespace Cpnucleo.RazorPages
         {
             if (env.IsDevelopment())
             {
+                app.UseMiniProfiler();
                 app.UseDeveloperExceptionPage();
             }
             else
