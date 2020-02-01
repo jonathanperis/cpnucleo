@@ -49,7 +49,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(idWorkflow);
 
-                var response = _client.Execute(request);
+                IRestResponse response = _client.Execute(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
             }

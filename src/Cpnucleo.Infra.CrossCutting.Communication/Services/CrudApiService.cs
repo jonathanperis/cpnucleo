@@ -53,7 +53,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
-                var response = _client.Execute(request);
+                IRestResponse response = _client.Execute(request);
 
                 return response.StatusCode == HttpStatusCode.Created ? true : false;
             }
@@ -71,7 +71,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
-                var response = _client.Execute(request);
+                IRestResponse response = _client.Execute(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
@@ -88,7 +88,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.DELETE);
                 request.AddHeader("Authorization", token);
 
-                var response = _client.Execute(request);
+                IRestResponse response = _client.Execute(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
