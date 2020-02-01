@@ -18,7 +18,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
 
         public IEnumerable<ApontamentoViewModel> Listar(string token)
         {
-            return Get(token, actionRoute); 
+            return Get(token, actionRoute);
         }
 
         public ApontamentoViewModel Consultar(string token, Guid id)
@@ -43,19 +43,12 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Services
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{id.ToString()}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                var a = _client.Execute(request);
-
                 return JsonConvert.DeserializeObject<IEnumerable<ApontamentoViewModel>>(_client.Execute(request).Content.ToString());
             }
             catch (Exception)
             {
                 throw;
             }
-        }
-
-        public int ObterTotalHorasPorRecurso(string token, Guid idRecurso, Guid idTarefa)
-        {
-            throw new NotImplementedException();
         }
     }
 }
