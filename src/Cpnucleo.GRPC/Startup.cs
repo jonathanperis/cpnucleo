@@ -28,10 +28,12 @@ namespace Cpnucleo.GRPC
             }
 
             app.UseRouting();
+            //app.UseGrpcWeb();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<SistemaService>();
+                //endpoints.MapGrpcService<SistemaService>().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
                 {

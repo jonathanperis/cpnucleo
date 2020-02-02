@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using System.Net.Http;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
@@ -12,6 +14,12 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         {
             _mapper = mapper;
             _channel = GrpcChannel.ForAddress("https://localhost:5001");
+
+            //GrpcWebHandler handler = new GrpcWebHandler(GrpcWebMode.GrpcWebText, new HttpClientHandler());
+            //_channel = GrpcChannel.ForAddress("https://cpnucleo-grpc.azurewebsites.net", new GrpcChannelOptions
+            //{
+            //    HttpClient = new HttpClient(handler)
+            //});
         }
     }
 }

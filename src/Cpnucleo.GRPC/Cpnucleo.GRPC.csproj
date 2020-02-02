@@ -12,7 +12,8 @@
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />    
     
-    <PackageReference Include="Grpc.AspNetCore" Version="2.24.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.24.0" />    
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.27.0-pre1" />
   </ItemGroup>
 
   <ItemGroup>
