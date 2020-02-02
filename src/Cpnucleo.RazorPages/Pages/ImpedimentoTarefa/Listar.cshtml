@@ -49,7 +49,7 @@
                                     <td>@item.Descricao</td>
                                     <td>@item.Tarefa.Nome</td>
                                     <td>@item.Impedimento.Nome</td>
-                                    <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">

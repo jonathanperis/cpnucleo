@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AutoMapper\**" />
+    <Content Remove="AutoMapper\**" />
+    <EmbeddedResource Remove="AutoMapper\**" />
+    <None Remove="AutoMapper\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Protobuf Include="Protos\sistema.proto" GrpcServices="Server" />
   </ItemGroup>
 

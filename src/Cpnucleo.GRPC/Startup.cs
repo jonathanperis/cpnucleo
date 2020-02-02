@@ -1,5 +1,4 @@
-﻿using Cpnucleo.GRPC.AutoMapper;
-using Cpnucleo.Infra.CrossCutting.IoC;
+﻿using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +14,6 @@ namespace Cpnucleo.GRPC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCpnucleoSetup();
-            services.AddAutoMapperGrpcServerSetup();
             services.AddGrpc();
         }
 

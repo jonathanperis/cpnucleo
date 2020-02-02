@@ -3,6 +3,7 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -63,7 +64,7 @@ namespace Cpnucleo.GRPC
         }
 
         //TViewModel Consultar(Guid id);
-        public override Task<SistemaModel> Consultar(BaseRequest request, ServerCallContext context)
+        public override async Task<SistemaModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             //SistemaViewModel sistema = _sistemaAppService.Consultar(id);
 
@@ -74,11 +75,14 @@ namespace Cpnucleo.GRPC
 
             //return Ok(sistema);
 
-            return base.Consultar(request, context);
+            Guid id = new Guid(request.Id);
+            SistemaModel result = _mapper.Map<SistemaModel>(_sistemaAppService.Consultar(id));
+
+            return await Task.FromResult(result);
         }
 
         //bool Alterar(TViewModel obj);
-        public override Task<BaseReply> Alterar(SistemaModel request, ServerCallContext context)
+        public override async Task<BaseReply> Alterar(SistemaModel request, ServerCallContext context)
         {
             //if (!ModelState.IsValid)
             //{
@@ -108,11 +112,14 @@ namespace Cpnucleo.GRPC
 
             //return NoContent();
 
-            return base.Alterar(request, context);
+            return await Task.FromResult(new BaseReply
+            {
+                Sucesso = _sistemaAppService.Alterar(_mapper.Map<SistemaViewModel>(request))
+            });
         }
 
         //bool Remover(Guid id);
-        public override Task<BaseReply> Remover(BaseRequest request, ServerCallContext context)
+        public override async Task<BaseReply> Remover(BaseRequest request, ServerCallContext context)
         {
             //SistemaViewModel obj = _sistemaAppService.Consultar(id);
 
@@ -125,7 +132,10 @@ namespace Cpnucleo.GRPC
 
             //return NoContent();
 
-            return base.Remover(request, context);
+            return await Task.FromResult(new BaseReply
+            {
+                Sucesso = _sistemaAppService.Remover(new Guid(request.Id))
+            });
         }
     }
 }

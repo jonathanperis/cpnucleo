@@ -21,7 +21,6 @@ message SistemaModel {
 	string Nome = 2;
 	string Descricao = 3;
 	string DataInclusao = 4;
-	string DataAlteracao = 5;
 }
 
 message BaseRequest{

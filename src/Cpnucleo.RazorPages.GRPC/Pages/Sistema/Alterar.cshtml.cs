@@ -1,42 +1,41 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
 {
     [Authorize]
-    public class AlterarModel : PageBase
+    public class AlterarModel : PageModel
     {
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    ISistemaApiService sistemaApiService)
-            : base(claimsManager)
+        public AlterarModel(ISistemaGrpcService sistemaGrpcService)
         {
-            _sistemaApiService = sistemaApiService;
+            _sistemaGrpcService = sistemaGrpcService;
         }
 
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Sistema = _sistemaApiService.Consultar(Token, id);
+            Sistema = await _sistemaGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _sistemaApiService.Alterar(Token, Sistema);
+            await _sistemaGrpcService.AlterarAsync(Sistema);
 
             return RedirectToPage("Listar");
         }

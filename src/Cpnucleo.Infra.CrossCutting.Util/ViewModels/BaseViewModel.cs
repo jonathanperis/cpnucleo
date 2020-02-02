@@ -11,10 +11,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 
         [Display(Name = "Data de Inclusão")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime? DataInclusao { get; set; }
-
-        [Display(Name = "Data de Alteração")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime? DataAlteracao { get; set; }
+        public DateTime DataInclusao { get; set; }
     }
 }
