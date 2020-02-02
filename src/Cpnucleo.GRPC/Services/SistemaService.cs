@@ -3,7 +3,6 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

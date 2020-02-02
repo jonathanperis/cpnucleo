@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using Grpc.Net.Client;
-using Grpc.Net.Client.Web;
-using System.Net.Http;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
