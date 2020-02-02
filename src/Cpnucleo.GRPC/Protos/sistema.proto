@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option csharp_namespace = "Cpnucleo.GRPC";
+
+package sistema;
+
+service Sistema {
+
+	rpc Incluir (SistemaModel) returns (IncluirReply);
+	rpc Listar (ListarRequest) returns (stream SistemaModel);
+}
+
+message SistemaModel {
+	string Id = 1;
+	string Nome = 2;
+	string Descricao = 3;
+	string DataInclusao = 4;
+	string DataAlteracao = 5;
+}
+
+message IncluirReply{
+	bool Sucesso = 1;
+}
+
+message ListarRequest {
+
+}
