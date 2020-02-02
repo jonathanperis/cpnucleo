@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>c5e436f5-f49b-4e9d-afe8-229a01afa884</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +16,8 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />    
     
     <PackageReference Include="Grpc.AspNetCore" Version="2.24.0" />    
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.27.0-pre1" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.27.0-pre1" />    
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
   </ItemGroup>
 
   <ItemGroup>
