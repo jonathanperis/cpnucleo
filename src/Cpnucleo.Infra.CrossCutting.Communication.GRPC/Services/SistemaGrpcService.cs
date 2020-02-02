@@ -2,6 +2,7 @@
 using Cpnucleo.GRPC;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             //    }
             //}
 
-            using (AsyncServerStreamingCall<SistemaModel> reply = _client.Listar(new ListarRequest()))
+            using (AsyncServerStreamingCall<SistemaModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())
                 {
