@@ -21,7 +21,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<bool> IncluirAsync(SistemaViewModel obj)
         {
-            IncluirReply result = await _client.IncluirAsync(_mapper.Map<SistemaModel>(obj));
+            BaseReply result = await _client.IncluirAsync(_mapper.Map<SistemaModel>(obj));
 
             return result.Sucesso;
         }

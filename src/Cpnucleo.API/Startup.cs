@@ -1,7 +1,6 @@
 ﻿using Cpnucleo.API.Configuration;
 using Cpnucleo.API.Filters;
 using Cpnucleo.Infra.CrossCutting.IoC;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
