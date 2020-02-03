@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace Cpnucleo.Infra.CrossCutting.Communication.Services
+namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
     public class CrudApiService<TViewModel>
     {

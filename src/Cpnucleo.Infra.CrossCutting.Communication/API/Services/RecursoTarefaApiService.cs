@@ -1,11 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.Infra.CrossCutting.Communication.Services
+namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
     public class RecursoTarefaApiService : CrudApiService<RecursoTarefaViewModel>, IRecursoTarefaApiService
     {
