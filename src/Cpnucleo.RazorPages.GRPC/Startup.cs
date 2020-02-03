@@ -1,5 +1,4 @@
 using Cpnucleo.Infra.CrossCutting.IoC;
-using Cpnucleo.Infra.CrossCutting.IoC.GRPC;
 using Cpnucleo.RazorPages.GRPC.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +28,6 @@ namespace Cpnucleo.RazorPages.GRPC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCpnucleoSetup();
-            services.AddCpnucleoGrpcSetup();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
