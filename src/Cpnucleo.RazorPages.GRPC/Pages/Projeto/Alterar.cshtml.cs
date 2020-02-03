@@ -1,26 +1,25 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
 {
     [Authorize]
-    public class AlterarModel : PageBase
+    public class AlterarModel : PageModel
     {
-        private readonly IProjetoApiService _projetoApiService;
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    IProjetoApiService projetoApiService,
-                                    ISistemaApiService sistemaApiService)
-            : base(claimsManager)
+        public AlterarModel(IProjetoGrpcService projetoGrpcService,
+                            ISistemaGrpcService sistemaGrpcService)
         {
-            _projetoApiService = projetoApiService;
-            _sistemaApiService = sistemaApiService;
+            _projetoGrpcService = projetoGrpcService;
+            _sistemaGrpcService = sistemaGrpcService;
         }
 
         [BindProperty]
@@ -28,24 +27,24 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Projeto = _projetoApiService.Consultar(Token, id);
-            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+            Projeto = await _projetoGrpcService.ConsultarAsync(id);
+            SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Nome");
 
                 return Page();
             }
 
-            _projetoApiService.Alterar(Token, Projeto);
+            await _projetoGrpcService.AlterarAsync(Projeto);
 
             return RedirectToPage("Listar");
         }

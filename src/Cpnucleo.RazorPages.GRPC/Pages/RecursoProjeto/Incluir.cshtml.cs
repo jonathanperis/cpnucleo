@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 {
@@ -33,7 +34,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 
         public SelectList SelectRecursos { get; set; }
 
-        public IActionResult OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGet(Guid idProjeto)
         {
             Projeto = _projetoApiService.Consultar(Token, idProjeto);
             SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
@@ -41,7 +42,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
             return Page();
         }
 
-        public IActionResult OnPost(Guid idProjeto)
+        public async Task<IActionResult> OnPost(Guid idProjeto)
         {
             if (!ModelState.IsValid)
             {

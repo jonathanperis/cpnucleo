@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 {
@@ -33,7 +34,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 
         public IEnumerable<RecursoTarefaViewModel> ListaRecursoTarefas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
             string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
@@ -44,7 +45,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
