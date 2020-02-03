@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "Protos/base.proto";
+import "GRPC/Protos/base.proto";
 import "google/protobuf/empty.proto";
 
 option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
