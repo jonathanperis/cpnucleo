@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 
-namespace Cpnucleo.Infra.CrossCutting.Communication.Interfaces
+namespace Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces
 {
     public interface ITarefaApiService : ICrudApiService<TarefaViewModel>
     {

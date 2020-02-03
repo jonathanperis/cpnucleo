@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -7,10 +7,24 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="RestSharp" Version="106.6.10" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.27.0-pre1" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.27.0-pre1" />
+    <PackageReference Include="Google.Protobuf" Version="3.11.2" />
+    <PackageReference Include="Grpc.Tools" Version="2.27.0-pre1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\base.proto" GrpcServices="Both" />
+    <Protobuf Include="Protos\sistema.proto" GrpcServices="Both" />
+    <Protobuf Include="Protos\projeto.proto" GrpcServices="Both" />
   </ItemGroup>
 
 </Project>

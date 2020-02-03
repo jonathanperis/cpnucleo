@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cpnucleo.Infra.CrossCutting.Communication.Interfaces
+namespace Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces
 {
     public interface ICrudApiService<TViewModel>
     {
