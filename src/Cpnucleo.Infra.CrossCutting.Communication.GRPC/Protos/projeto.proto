@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "Protos/base.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package projeto;
+
+service Projeto {
+
+	rpc Incluir (ProjetoModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream ProjetoModel);
+	rpc Consultar (base.BaseRequest) returns (ProjetoModel);
+	rpc Alterar (ProjetoModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message ProjetoModel {
+
+	string Id = 1;
+	string Nome = 2;
+	string Descricao = 3;
+	string DataInclusao = 4;
+}

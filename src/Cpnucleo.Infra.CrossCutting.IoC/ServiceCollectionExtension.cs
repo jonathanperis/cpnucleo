@@ -3,6 +3,8 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services;
 using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.Services;
 using Cpnucleo.Infra.CrossCutting.Identity;
@@ -105,6 +107,10 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
                 .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>()
                 .AddScoped<ITipoTarefaApiService, TipoTarefaApiService>();
+
+            // Infra - CrossCutting - Communication - GRPC
+            services
+                .AddScoped<ISistemaGrpcService, SistemaGrpcService>();
 
             return services;
         }
