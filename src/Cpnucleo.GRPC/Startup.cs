@@ -31,6 +31,7 @@ namespace Cpnucleo.GRPC
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<SistemaService>();
+                endpoints.MapGrpcService<ProjetoService>();
                 //endpoints.MapGrpcService<SistemaService>().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
