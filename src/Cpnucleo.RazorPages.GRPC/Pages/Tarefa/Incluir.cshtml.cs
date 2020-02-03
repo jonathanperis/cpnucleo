@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
 {
@@ -42,7 +43,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
             SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
             SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
@@ -52,7 +53,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {

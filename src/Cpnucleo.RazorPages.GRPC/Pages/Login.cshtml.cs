@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages
 {
@@ -26,7 +27,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
         [BindProperty]
         public LoginViewModel Login { get; set; }
 
-        public IActionResult OnGet(string returnUrl = null, bool logout = false)
+        public async Task<IActionResult> OnGet(string returnUrl = null, bool logout = false)
         {
             if (logout)
             {
@@ -40,7 +41,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
             return Page();
         }
 
-        public IActionResult OnPost(string returnUrl = null)
+        public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {

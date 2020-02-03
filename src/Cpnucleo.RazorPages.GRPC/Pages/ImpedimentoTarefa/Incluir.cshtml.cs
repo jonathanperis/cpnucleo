@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 {
@@ -33,7 +34,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 
         public SelectList SelectImpedimentos { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGet(Guid idTarefa)
         {
             Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
 
@@ -42,7 +43,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public async Task<IActionResult> OnPost(Guid idTarefa)
         {
             if (!ModelState.IsValid)
             {

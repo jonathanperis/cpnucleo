@@ -1,25 +1,24 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IProjetoApiService _projetoApiService;
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IProjetoApiService projetoApiService,
-                                    ISistemaApiService sistemaApiService)
-            : base(claimsManager)
+        public IncluirModel(IProjetoGrpcService projetoGrpcService,
+                            ISistemaGrpcService sistemaGrpcService)
         {
-            _projetoApiService = projetoApiService;
-            _sistemaApiService = sistemaApiService;
+            _projetoGrpcService = projetoGrpcService;
+            _sistemaGrpcService = sistemaGrpcService;
         }
 
         [BindProperty]
@@ -27,23 +26,23 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+            SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Nome");
 
                 return Page();
             }
 
-            _projetoApiService.Incluir(Token, Projeto);
+            await _projetoGrpcService.IncluirAsync(Projeto);
 
             return RedirectToPage("Listar");
         }

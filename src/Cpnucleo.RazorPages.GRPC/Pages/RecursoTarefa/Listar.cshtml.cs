@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
 {
@@ -25,7 +26,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
 
         public IEnumerable<RecursoTarefaViewModel> Lista { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGet(Guid idTarefa)
         {
             Lista = _recursoTarefaApiService.ListarPorTarefa(Token, idTarefa);
 

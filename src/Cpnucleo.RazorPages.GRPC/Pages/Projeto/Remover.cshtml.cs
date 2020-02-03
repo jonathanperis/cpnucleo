@@ -1,37 +1,36 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
 {
     [Authorize]
-    public class RemoverModel : PageBase
+    public class RemoverModel : PageModel
     {
-        private readonly IProjetoApiService _projetoApiService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    IProjetoApiService projetoApiService)
-            : base(claimsManager)
+        public RemoverModel(IProjetoGrpcService projetoGrpcService)
         {
-            _projetoApiService = projetoApiService;
+            _projetoGrpcService = projetoGrpcService;
         }
 
         [BindProperty]
         public ProjetoViewModel Projeto { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Projeto = _projetoApiService.Consultar(Token, id);
+            Projeto = await _projetoGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            _projetoApiService.Remover(Token, Projeto.Id);
+            await _projetoGrpcService.RemoverAsync(Projeto.Id);
 
             return RedirectToPage("Listar");
         }

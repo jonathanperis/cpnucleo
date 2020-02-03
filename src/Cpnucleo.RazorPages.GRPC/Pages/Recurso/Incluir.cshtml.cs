@@ -3,6 +3,7 @@ using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
 {
@@ -21,7 +22,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
         [BindProperty]
         public RecursoViewModel Recurso { get; set; }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {

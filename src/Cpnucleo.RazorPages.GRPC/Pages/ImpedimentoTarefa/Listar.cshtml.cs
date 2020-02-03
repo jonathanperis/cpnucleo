@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 {
@@ -25,7 +26,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 
         public IEnumerable<ImpedimentoTarefaViewModel> Lista { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGet(Guid idTarefa)
         {
             Lista = _impedimentoTarefaApiService.ListarPorTarefa(Token, idTarefa);
 

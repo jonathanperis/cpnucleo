@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
 {
@@ -33,7 +34,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
 
         public SelectList SelectRecursos { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGet(Guid idTarefa)
         {
             Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
 
@@ -42,7 +43,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public async Task<IActionResult> OnPost(Guid idTarefa)
         {
             if (!ModelState.IsValid)
             {
