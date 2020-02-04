@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "GRPC/Protos/base.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package tipoTarefa;
+
+service TipoTarefa {
+
+	rpc Incluir (TipoTarefaModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream TipoTarefaModel);
+	rpc Consultar (base.BaseRequest) returns (TipoTarefaModel);
+	rpc Alterar (TipoTarefaModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message TipoTarefaModel {
+
+	string Id = 1;
+	string Nome = 2;
+	string Element = 3;
+	string Image = 4;
+	string DataInclusao = 5;
+}
