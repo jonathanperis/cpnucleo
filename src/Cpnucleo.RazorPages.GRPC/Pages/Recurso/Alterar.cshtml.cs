@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
 {
     [Authorize]
-    public class AlterarModel : PageBase
+    public class AlterarModel : PageModel
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    IRecursoApiService recursoApiService)
-            : base(claimsManager)
+        public AlterarModel(IRecursoGrpcService recursoGrpcService)
         {
-            _recursoApiService = recursoApiService;
+            _recursoGrpcService = recursoGrpcService;
         }
 
         [BindProperty]
@@ -25,7 +23,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Recurso = _recursoApiService.Consultar(Token, id);
+            Recurso = await _recursoGrpcService.ConsultarAsync(id);
 
             return Page();
         }
@@ -37,7 +35,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
                 return Page();
             }
 
-            _recursoApiService.Alterar(Token, Recurso);
+            await _recursoGrpcService.AlterarAsync(Recurso);
 
             return RedirectToPage("Listar");
         }

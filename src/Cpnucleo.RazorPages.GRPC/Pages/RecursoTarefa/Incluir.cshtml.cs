@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
@@ -10,21 +10,19 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
-        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IRecursoTarefaGrpcService _recursoTarefaGrpcService;
+        private readonly IRecursoProjetoGrpcService _recursoProjetoGrpcService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IRecursoTarefaApiService recursoTarefaApiService,
-                                    IRecursoProjetoApiService recursoProjetoApiService,
-                                    ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public IncluirModel(IRecursoTarefaGrpcService recursoTarefaGrpcService,
+                                    IRecursoProjetoGrpcService recursoProjetoGrpcService,
+                                    ITarefaGrpcService tarefaGrpcService)
         {
-            _recursoTarefaApiService = recursoTarefaApiService;
-            _recursoProjetoApiService = recursoProjetoApiService;
-            _tarefaApiService = tarefaApiService;
+            _recursoTarefaGrpcService = recursoTarefaGrpcService;
+            _recursoProjetoGrpcService = recursoProjetoGrpcService;
+            _tarefaGrpcService = tarefaGrpcService;
         }
 
         [BindProperty]
@@ -36,9 +34,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGet(Guid idTarefa)
         {
-            Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+            Tarefa = await _tarefaGrpcService.ConsultarAsync(idTarefa);
 
-            SelectRecursos = new SelectList(_recursoProjetoApiService.ListarPorProjeto(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+            SelectRecursos = new SelectList(await _recursoProjetoGrpcService.ListarPorProjetoAsync(Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
             return Page();
         }
@@ -47,13 +45,13 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
-                SelectRecursos = new SelectList(_recursoProjetoApiService.ListarPorProjeto(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                Tarefa = await _tarefaGrpcService.ConsultarAsync(idTarefa);
+                SelectRecursos = new SelectList(await _recursoProjetoGrpcService.ListarPorProjetoAsync(Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
 
-            _recursoTarefaApiService.Incluir(Token, RecursoTarefa);
+            await _recursoTarefaGrpcService.IncluirAsync(RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });
         }

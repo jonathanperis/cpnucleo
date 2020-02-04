@@ -70,5 +70,15 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
             return reply.Sucesso;
         }
+
+        public Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<RecursoTarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

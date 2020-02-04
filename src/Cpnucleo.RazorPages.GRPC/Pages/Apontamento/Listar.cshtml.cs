@@ -1,8 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -11,20 +12,19 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 {
     [Authorize]
-    public class ListarModel : PageBase
+    public class ListarModel : PageModel
     {
         private readonly IClaimsManager _claimsManager;
-        private readonly IApontamentoApiService _apontamentoApiService;
-        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
+        private readonly IApontamentoGrpcService _apontamentoGrpcService;
+        private readonly IRecursoTarefaGrpcService _recursoTarefaGrpcService;
 
         public ListarModel(IClaimsManager claimsManager,
-                                    IApontamentoApiService apontamentoApiService,
-                                    IRecursoTarefaApiService recursoTarefaApiService)
-            : base(claimsManager)
+                                IApontamentoGrpcService apontamentoGrpcService,
+                                IRecursoTarefaGrpcService recursoTarefaGrpcService)
         {
             _claimsManager = claimsManager;
-            _apontamentoApiService = apontamentoApiService;
-            _recursoTarefaApiService = recursoTarefaApiService;
+            _apontamentoGrpcService = apontamentoGrpcService;
+            _recursoTarefaGrpcService = recursoTarefaGrpcService;
         }
 
         [BindProperty]
@@ -39,8 +39,8 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
             string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
 
-            Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-            ListaRecursoTarefas = _recursoTarefaApiService.ListarPorRecurso(Token, idRecurso);
+            Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);
+            ListaRecursoTarefas = await _recursoTarefaGrpcService.ListarPorRecursoAsync(idRecurso);
 
             return Page();
         }
@@ -52,13 +52,13 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
                 string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-                ListaRecursoTarefas = _recursoTarefaApiService.ListarPorRecurso(Token, idRecurso);
+                Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);
+                ListaRecursoTarefas = await _recursoTarefaGrpcService.ListarPorRecursoAsync(idRecurso);
 
                 return Page();
             }
 
-            _apontamentoApiService.Incluir(Token, Apontamento);
+            await _apontamentoGrpcService.IncluirAsync(Apontamento);
 
             return RedirectToPage("Listar");
         }

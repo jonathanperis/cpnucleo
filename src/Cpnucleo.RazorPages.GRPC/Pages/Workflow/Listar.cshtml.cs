@@ -1,23 +1,22 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 {
     [Authorize]
-    public class ListarModel : PageBase
+    public class ListarModel : PageModel
     {
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    IWorkflowApiService workflowApiService)
-            : base(claimsManager)
+        public ListarModel(IWorkflowGrpcService workflowGrpcService)
+            
         {
-            _workflowApiService = workflowApiService;
+            _workflowGrpcService = workflowGrpcService;
         }
 
         public WorkflowViewModel Workflow { get; set; }
@@ -26,7 +25,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 
         public async Task<IActionResult> OnGet()
         {
-            Lista = _workflowApiService.Listar(Token);
+            Lista = await _workflowGrpcService.ListarAsync();
 
             return Page();
         }

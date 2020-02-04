@@ -1,9 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.GRPC.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -11,17 +12,16 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages
 {
-    public class LoginModel : PageBase
+    public class LoginModel : PageModel
     {
         private readonly IClaimsManager _claimsManager;
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
 
         public LoginModel(IClaimsManager claimsManager,
-                                    IRecursoApiService recursoApiService)
-            : base(claimsManager)
+                            IRecursoGrpcService recursoGrpcService)
         {
             _claimsManager = claimsManager;
-            _recursoApiService = recursoApiService;
+            _recursoGrpcService = recursoGrpcService;
         }
 
         [BindProperty]
@@ -31,7 +31,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
         {
             if (logout)
             {
-                HttpContext.SignOutAsync();
+                await HttpContext.SignOutAsync();
 
                 return RedirectToPage("Login");
             }
@@ -48,7 +48,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
                 return Page();
             }
 
-            RecursoViewModel recurso = _recursoApiService.Autenticar(Login.Usuario, Login.Senha);
+            RecursoViewModel recurso = await _recursoGrpcService.AutenticarAsync(Login.Usuario, Login.Senha);
 
             if (recurso.Id == Guid.Empty)
             {
@@ -64,7 +64,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
 
             ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(claims);
 
-            HttpContext.SignInAsync(principal);
+            await HttpContext.SignInAsync(principal);
 
             return RedirectToLocal(returnUrl);
         }

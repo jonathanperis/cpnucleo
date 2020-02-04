@@ -78,5 +78,15 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
             return reply.Sucesso;
         }
+
+        public Task<bool> AlterarPorPercentualConcluidoAsync(Guid idTarefa, int? percentualConcluido)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AlterarPorWorkflowAsync(Guid idTarefa, Guid idWorkflow)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

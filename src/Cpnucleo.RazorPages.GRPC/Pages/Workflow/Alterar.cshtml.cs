@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 {
     [Authorize]
-    public class AlterarModel : PageBase
+    public class AlterarModel : PageModel
     {
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    IWorkflowApiService workflowApiService)
-            : base(claimsManager)
+        public AlterarModel(IWorkflowGrpcService workflowGrpcService)
         {
-            _workflowApiService = workflowApiService;
+            _workflowGrpcService = workflowGrpcService;
         }
 
         [BindProperty]
@@ -25,7 +23,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Workflow = _workflowApiService.Consultar(Token, id);
+            Workflow = await _workflowGrpcService.ConsultarAsync(id);
 
             return Page();
         }
@@ -37,7 +35,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
                 return Page();
             }
 
-            _workflowApiService.Alterar(Token, Workflow);
+            await _workflowGrpcService.AlterarAsync(Workflow);
 
             return RedirectToPage("Listar");
         }

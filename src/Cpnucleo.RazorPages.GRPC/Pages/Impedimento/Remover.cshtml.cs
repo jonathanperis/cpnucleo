@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
 {
     [Authorize]
-    public class RemoverModel : PageBase
+    public class RemoverModel : PageModel
     {
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    IImpedimentoApiService impedimentoApiService)
-            : base(claimsManager)
+        public RemoverModel(IImpedimentoGrpcService impedimentoGrpcService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoGrpcService = impedimentoGrpcService;
         }
 
         [BindProperty]
@@ -25,14 +23,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Impedimento = _impedimentoApiService.Consultar(Token, id);
+            Impedimento = await _impedimentoGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPost()
         {
-            _impedimentoApiService.Remover(Token, Impedimento.Id);
+            await _impedimentoGrpcService.RemoverAsync(Impedimento.Id);
 
             return RedirectToPage("Listar");
         }

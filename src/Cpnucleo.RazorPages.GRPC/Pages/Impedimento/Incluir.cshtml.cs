@@ -1,22 +1,20 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IImpedimentoApiService impedimentoApiService)
-            : base(claimsManager)
+        public IncluirModel(IImpedimentoGrpcService impedimentoGrpcService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoGrpcService = impedimentoGrpcService;
         }
 
         [BindProperty]
@@ -29,7 +27,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
                 return Page();
             }
 
-            _impedimentoApiService.Incluir(Token, Impedimento);
+            await _impedimentoGrpcService.IncluirAsync(Impedimento);
 
             return RedirectToPage("Listar");
         }

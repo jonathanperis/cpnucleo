@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
@@ -10,21 +10,19 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
-        private readonly IImpedimentoApiService _impedimentoApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
+        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IImpedimentoTarefaApiService impedimentoTarefaApiService,
-                                    IImpedimentoApiService impedimentoApiService,
-                                    ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public IncluirModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService,
+                                    IImpedimentoGrpcService impedimentoGrpcService,
+                                    ITarefaGrpcService tarefaGrpcService)   
         {
-            _impedimentoTarefaApiService = impedimentoTarefaApiService;
-            _impedimentoApiService = impedimentoApiService;
-            _tarefaApiService = tarefaApiService;
+            _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;
+            _impedimentoGrpcService = impedimentoGrpcService;
+            _tarefaGrpcService = tarefaGrpcService;
         }
 
         [BindProperty]
@@ -36,9 +34,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGet(Guid idTarefa)
         {
-            Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+            Tarefa = await _tarefaGrpcService.ConsultarAsync(idTarefa);
 
-            SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
+            SelectImpedimentos = new SelectList(await _impedimentoGrpcService.ListarAsync(), "Id", "Nome");
 
             return Page();
         }
@@ -47,14 +45,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+                Tarefa = await _tarefaGrpcService.ConsultarAsync(idTarefa);
 
-                SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoGrpcService.ListarAsync(), "Id", "Nome");
 
                 return Page();
             }
 
-            _impedimentoTarefaApiService.Incluir(Token, ImpedimentoTarefa);
+            await _impedimentoTarefaGrpcService.IncluirAsync(ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });
         }

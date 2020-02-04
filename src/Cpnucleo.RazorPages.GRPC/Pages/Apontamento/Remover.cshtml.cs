@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 {
     [Authorize]
-    public class RemoverModel : PageBase
+    public class RemoverModel : PageModel
     {
-        private readonly IApontamentoApiService _apontamentoApiService;
+        private readonly IApontamentoGrpcService _apontamentoGrpcService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    IApontamentoApiService apontamentoApiService)
-            : base(claimsManager)
+        public RemoverModel(IApontamentoGrpcService apontamentoGrpcService)
         {
-            _apontamentoApiService = apontamentoApiService;
+            _apontamentoGrpcService = apontamentoGrpcService;
         }
 
         [BindProperty]
@@ -25,14 +23,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Apontamento = _apontamentoApiService.Consultar(Token, id);
+            Apontamento = await _apontamentoGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPost()
         {
-            _apontamentoApiService.Remover(Token, Apontamento.Id);
+            await _apontamentoGrpcService.RemoverAsync(Apontamento.Id);
 
             return RedirectToPage("Listar");
         }

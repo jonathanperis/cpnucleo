@@ -70,5 +70,10 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
             return reply.Sucesso;
         }
+
+        public Task<IEnumerable<RecursoProjetoViewModel>> ListarPorProjetoAsync(Guid idProjeto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
