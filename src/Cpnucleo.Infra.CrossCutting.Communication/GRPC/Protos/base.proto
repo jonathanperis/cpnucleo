@@ -4,12 +4,12 @@ option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos
 
 package base;
 
-message BaseRequest{
+message BaseRequest {
 
 	string Id = 1;
 }
 
-message BaseReply{
+message BaseReply {
 
 	bool Sucesso = 1;
 }

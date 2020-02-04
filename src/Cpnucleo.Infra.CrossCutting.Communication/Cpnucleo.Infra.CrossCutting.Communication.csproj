@@ -23,6 +23,15 @@
 
   <ItemGroup>
     <Protobuf Include="GRPC\Protos\base.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\apontamento.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\impedimentoTarefa.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\recursoTarefa.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\recursoProjeto.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\recurso.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\impedimento.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\workflow.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\tarefa.proto" GrpcServices="Both" />
+    <Protobuf Include="GRPC\Protos\tipoTarefa.proto" GrpcServices="Both" />
     <Protobuf Include="GRPC\Protos\sistema.proto" GrpcServices="Both" />
     <Protobuf Include="GRPC\Protos\projeto.proto" GrpcServices="Both" />
   </ItemGroup>
