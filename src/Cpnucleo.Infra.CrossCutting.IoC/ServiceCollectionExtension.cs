@@ -111,7 +111,16 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
             // Infra - CrossCutting - Communication - GRPC
             services
                 .AddScoped<ISistemaGrpcService, SistemaGrpcService>()
-                .AddScoped<IProjetoGrpcService, ProjetoGrpcService>();
+                .AddScoped<IProjetoGrpcService, ProjetoGrpcService>()
+                .AddScoped<ITarefaGrpcService, TarefaGrpcService>()
+                .AddScoped<IApontamentoGrpcService, ApontamentoGrpcService>()
+                .AddScoped<IWorkflowGrpcService, WorkflowGrpcService>()
+                .AddScoped<IRecursoGrpcService, RecursoGrpcService>()
+                .AddScoped<IImpedimentoGrpcService, ImpedimentoGrpcService>()
+                .AddScoped<IImpedimentoTarefaGrpcService, ImpedimentoTarefaGrpcService>()
+                .AddScoped<IRecursoProjetoGrpcService, RecursoProjetoGrpcService>()
+                .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>()
+                .AddScoped<ITipoTarefaGrpcService, TipoTarefaGrpcService>();
 
             return services;
         }
