@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 {
     [Authorize]
-    public class RemoverModel : PageBase
+    public class RemoverModel : PageModel
     {
-        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
+        private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    IImpedimentoTarefaApiService impedimentoTarefaApiService)
-            : base(claimsManager)
+        public RemoverModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService)    
         {
-            _impedimentoTarefaApiService = impedimentoTarefaApiService;
+            _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;
         }
 
         [BindProperty]
@@ -25,14 +23,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            ImpedimentoTarefa = _impedimentoTarefaApiService.Consultar(Token, id);
+            ImpedimentoTarefa = await _impedimentoTarefaGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPost()
         {
-            _impedimentoTarefaApiService.Remover(Token, ImpedimentoTarefa.Id);
+            await _impedimentoTarefaGrpcService.RemoverAsync(ImpedimentoTarefa.Id);
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }

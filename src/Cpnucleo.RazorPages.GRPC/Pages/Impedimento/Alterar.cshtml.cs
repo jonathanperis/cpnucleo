@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
 {
     [Authorize]
-    public class AlterarModel : PageBase
+    public class AlterarModel : PageModel
     {
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    IImpedimentoApiService impedimentoApiService)
-            : base(claimsManager)
+        public AlterarModel(IImpedimentoGrpcService impedimentoGrpcService)   
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoGrpcService = impedimentoGrpcService;
         }
 
         [BindProperty]
@@ -25,7 +23,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Impedimento = _impedimentoApiService.Consultar(Token, id);
+            Impedimento = await _impedimentoGrpcService.ConsultarAsync(id);
 
             return Page();
         }
@@ -37,7 +35,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
                 return Page();
             }
 
-            _impedimentoApiService.Alterar(Token, Impedimento);
+            await _impedimentoGrpcService.AlterarAsync(Impedimento);
 
             return RedirectToPage("Listar");
         }

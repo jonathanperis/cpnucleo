@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,15 +10,13 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 {
     [Authorize]
-    public class ListarModel : PageBase
+    public class ListarModel : PageModel
     {
-        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
+        private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    IImpedimentoTarefaApiService impedimentoTarefaApiService)
-            : base(claimsManager)
+        public ListarModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService)
         {
-            _impedimentoTarefaApiService = impedimentoTarefaApiService;
+            _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;
         }
 
         [BindProperty]
@@ -28,7 +26,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGet(Guid idTarefa)
         {
-            Lista = _impedimentoTarefaApiService.ListarPorTarefa(Token, idTarefa);
+            Lista = await _impedimentoTarefaGrpcService.ListarPorTarefaAsync(idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 

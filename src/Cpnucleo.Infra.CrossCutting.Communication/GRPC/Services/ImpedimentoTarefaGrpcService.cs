@@ -78,5 +78,10 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
             return reply.Sucesso;
         }
+
+        public Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

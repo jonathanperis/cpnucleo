@@ -1,22 +1,20 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IRecursoApiService recursoApiService)
-            : base(claimsManager)
+        public IncluirModel(IRecursoGrpcService recursoGrpcService)
         {
-            _recursoApiService = recursoApiService;
+            _recursoGrpcService = recursoGrpcService;
         }
 
         [BindProperty]
@@ -29,7 +27,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
                 return Page();
             }
 
-            _recursoApiService.Incluir(Token, Recurso);
+            await _recursoGrpcService.IncluirAsync(Recurso);
 
             return RedirectToPage("Listar");
         }

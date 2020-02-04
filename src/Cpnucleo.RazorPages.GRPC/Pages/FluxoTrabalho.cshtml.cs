@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,32 +10,30 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages
 {
     [Authorize]
-    public class FluxoTrabalhoModel : PageBase
+    public class FluxoTrabalhoModel : PageModel
     {
-        private readonly IWorkflowApiService _workflowApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
 
-        public FluxoTrabalhoModel(IClaimsManager claimsManager,
-                                        IWorkflowApiService workflowApiService,
-                                        ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public FluxoTrabalhoModel(IWorkflowGrpcService workflowGrpcService,
+                                        ITarefaGrpcService tarefaGrpcService)
         {
-            _workflowApiService = workflowApiService;
-            _tarefaApiService = tarefaApiService;
+            _workflowGrpcService = workflowGrpcService;
+            _tarefaGrpcService = tarefaGrpcService;
         }
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
-            Lista = _workflowApiService.ListarPorTarefa(Token);
+            Lista = await _workflowGrpcService.ListarPorTarefaAsync();
 
             return Page();
         }
 
         public async Task<IActionResult> OnPost(Guid idTarefa, Guid idWorkflow)
         {
-            _tarefaApiService.AlterarPorWorkflow(Token, idTarefa, idWorkflow);
+            await _tarefaGrpcService.AlterarPorWorkflowAsync(idTarefa, idWorkflow);
 
             return Page();
         }

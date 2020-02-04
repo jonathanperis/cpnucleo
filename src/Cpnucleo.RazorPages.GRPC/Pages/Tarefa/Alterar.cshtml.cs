@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
@@ -10,27 +10,25 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
 {
     [Authorize]
-    public class AlterarModel : PageBase
+    public class AlterarModel : PageModel
     {
-        private readonly ITarefaApiService _tarefaApiService;
-        private readonly IProjetoApiService _projetoApiService;
-        private readonly ISistemaApiService _sistemaApiService;
-        private readonly IWorkflowApiService _workflowApiService;
-        private readonly ITipoTarefaApiService _tipoTarefaApiService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ITipoTarefaGrpcService _tipoTarefaGrpcService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    ITarefaApiService tarefaApiService,
-                                    IProjetoApiService projetoApiService,
-                                    ISistemaApiService sistemaApiService,
-                                    IWorkflowApiService workflowApiService,
-                                    ITipoTarefaApiService tipoTarefaApiService)
-            : base(claimsManager)
+        public AlterarModel(ITarefaGrpcService tarefaGrpcService,
+                                    IProjetoGrpcService projetoGrpcService,
+                                    ISistemaGrpcService sistemaGrpcService,
+                                    IWorkflowGrpcService workflowGrpcService,
+                                    ITipoTarefaGrpcService tipoTarefaGrpcService)
         {
-            _tarefaApiService = tarefaApiService;
-            _projetoApiService = projetoApiService;
-            _sistemaApiService = sistemaApiService;
-            _workflowApiService = workflowApiService;
-            _tipoTarefaApiService = tipoTarefaApiService;
+            _tarefaGrpcService = tarefaGrpcService;
+            _projetoGrpcService = projetoGrpcService;
+            _sistemaGrpcService = sistemaGrpcService;
+            _workflowGrpcService = workflowGrpcService;
+            _tipoTarefaGrpcService = tipoTarefaGrpcService;
         }
 
         [BindProperty]
@@ -46,11 +44,11 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Tarefa = _tarefaApiService.Consultar(Token, id);
-            SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
-            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
-            SelectWorkflows = new SelectList(_workflowApiService.Listar(Token), "Id", "Nome");
-            SelectTipoTarefas = new SelectList(_tipoTarefaApiService.Listar(Token), "Id", "Nome");
+            Tarefa = await _tarefaGrpcService.ConsultarAsync(id);
+            SelectProjetos = new SelectList(await _projetoGrpcService.ListarAsync(), "Id", "Nome");
+            SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Descricao");
+            SelectWorkflows = new SelectList(await _workflowGrpcService.ListarAsync(), "Id", "Nome");
+            SelectTipoTarefas = new SelectList(await _tipoTarefaGrpcService.ListarAsync(), "Id", "Nome");
 
             return Page();
         }
@@ -59,15 +57,15 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
-                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
-                SelectWorkflows = new SelectList(_workflowApiService.Listar(Token), "Id", "Nome");
-                SelectTipoTarefas = new SelectList(_tipoTarefaApiService.Listar(Token), "Id", "Nome");
+                SelectProjetos = new SelectList(await _projetoGrpcService.ListarAsync(), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Descricao");
+                SelectWorkflows = new SelectList(await _workflowGrpcService.ListarAsync(), "Id", "Nome");
+                SelectTipoTarefas = new SelectList(await _tipoTarefaGrpcService.ListarAsync(), "Id", "Nome");
 
                 return Page();
             }
 
-            _tarefaApiService.Alterar(Token, Tarefa);
+            await _tarefaGrpcService.AlterarAsync(Tarefa);
 
             return RedirectToPage("Listar");
         }

@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,15 +10,13 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 {
     [Authorize]
-    public class ListarModel : PageBase
+    public class ListarModel : PageModel
     {
-        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
+        private readonly IRecursoProjetoGrpcService _recursoProjetoGrpcService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    IRecursoProjetoApiService recursoProjetoApiService)
-            : base(claimsManager)
+        public ListarModel(IRecursoProjetoGrpcService recursoProjetoGrpcService)
         {
-            _recursoProjetoApiService = recursoProjetoApiService;
+            _recursoProjetoGrpcService = recursoProjetoGrpcService;
         }
 
         [BindProperty]
@@ -28,7 +26,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGet(Guid idProjeto)
         {
-            Lista = _recursoProjetoApiService.ListarPorProjeto(Token, idProjeto);
+            Lista = await _recursoProjetoGrpcService.ListarPorProjetoAsync(idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 

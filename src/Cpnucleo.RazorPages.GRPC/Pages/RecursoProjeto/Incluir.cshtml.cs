@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
@@ -10,21 +10,19 @@ using System.Threading.Tasks;
 namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
-        private readonly IRecursoApiService _recursoApiService;
-        private readonly IProjetoApiService _projetoApiService;
+        private readonly IRecursoProjetoGrpcService _recursoProjetoGrpcService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IRecursoProjetoApiService recursoProjetoApiService,
-                                    IRecursoApiService recursoApiService,
-                                    IProjetoApiService projetoApiService)
-            : base(claimsManager)
+        public IncluirModel(IRecursoProjetoGrpcService recursoProjetoGrpcService,
+                                    IRecursoGrpcService recursoGrpcService,
+                                    IProjetoGrpcService projetoGrpcService)
         {
-            _recursoProjetoApiService = recursoProjetoApiService;
-            _recursoApiService = recursoApiService;
-            _projetoApiService = projetoApiService;
+            _recursoProjetoGrpcService = recursoProjetoGrpcService;
+            _recursoGrpcService = recursoGrpcService;
+            _projetoGrpcService = projetoGrpcService;
         }
 
         [BindProperty]
@@ -36,8 +34,8 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGet(Guid idProjeto)
         {
-            Projeto = _projetoApiService.Consultar(Token, idProjeto);
-            SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
+            Projeto = await _projetoGrpcService.ConsultarAsync(idProjeto);
+            SelectRecursos = new SelectList(await _recursoGrpcService.ListarAsync(), "Id", "Nome");
 
             return Page();
         }
@@ -46,13 +44,13 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                Projeto = _projetoApiService.Consultar(Token, idProjeto);
-                SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
+                Projeto = await _projetoGrpcService.ConsultarAsync(idProjeto);
+                SelectRecursos = new SelectList(await _recursoGrpcService.ListarAsync(), "Id", "Nome");
 
                 return Page();
             }
 
-            _recursoProjetoApiService.Incluir(Token, RecursoProjeto);
+            await _recursoProjetoGrpcService.IncluirAsync(RecursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto });
         }

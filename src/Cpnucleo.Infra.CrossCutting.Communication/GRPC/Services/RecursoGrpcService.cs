@@ -70,5 +70,10 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
             return reply.Sucesso;
         }
+
+        public Task<RecursoViewModel> AutenticarAsync(string login, string senha)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

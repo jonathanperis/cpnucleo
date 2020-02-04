@@ -1,23 +1,22 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 {
     [Authorize]
-    public class RemoverModel : PageBase
+    public class RemoverModel : PageModel
     {
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    IWorkflowApiService workflowApiService)
-            : base(claimsManager)
+        public RemoverModel(IWorkflowGrpcService workflowGrpcService)
+            
         {
-            _workflowApiService = workflowApiService;
+            _workflowGrpcService = workflowGrpcService;
         }
 
         [BindProperty]
@@ -25,14 +24,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 
         public async Task<IActionResult> OnGet(Guid id)
         {
-            Workflow = _workflowApiService.Consultar(Token, id);
+            Workflow = await _workflowGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
         public async Task<IActionResult> OnPost()
         {
-            _workflowApiService.Remover(Token, Workflow.Id);
+            await _workflowGrpcService.RemoverAsync(Workflow.Id);
 
             return RedirectToPage("Listar");
         }

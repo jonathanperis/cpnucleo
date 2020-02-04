@@ -1,22 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
 {
     [Authorize]
-    public class IncluirModel : PageBase
+    public class IncluirModel : PageModel
     {
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IWorkflowApiService workflowApiService)
-            : base(claimsManager)
+        public IncluirModel(IWorkflowGrpcService workflowGrpcService)
+            
         {
-            _workflowApiService = workflowApiService;
+            _workflowGrpcService = workflowGrpcService;
         }
 
         [BindProperty]
@@ -29,7 +28,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
                 return Page();
             }
 
-            _workflowApiService.Incluir(Token, Workflow);
+            await _workflowGrpcService.IncluirAsync(Workflow);
 
             return RedirectToPage("Listar");
         }

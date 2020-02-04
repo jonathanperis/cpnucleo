@@ -1,23 +1,21 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
 {
     [Authorize]
-    public class ListarModel : PageBase
+    public class ListarModel : PageModel
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    IRecursoApiService recursoApiService)
-            : base(claimsManager)
+        public ListarModel(IRecursoGrpcService recursoGrpcService)
         {
-            _recursoApiService = recursoApiService;
+            _recursoGrpcService = recursoGrpcService;
         }
 
         public RecursoViewModel Recurso { get; set; }
@@ -26,7 +24,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
 
         public async Task<IActionResult> OnGet()
         {
-            Lista = _recursoApiService.Listar(Token);
+            Lista = await _recursoGrpcService.ListarAsync();
 
             return Page();
         }
