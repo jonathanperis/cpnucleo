@@ -81,7 +81,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public Task<IEnumerable<ApontamentoViewModel>> ListarPorRecursoAsync(Guid id)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }
