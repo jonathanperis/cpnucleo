@@ -14,7 +14,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
         private readonly IWorkflowGrpcService _workflowGrpcService;
 
         public RemoverModel(IWorkflowGrpcService workflowGrpcService)
-            
+
         {
             _workflowGrpcService = workflowGrpcService;
         }

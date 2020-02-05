@@ -40,17 +40,13 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<ICrudAppService<TipoTarefaViewModel>, CrudAppService<TipoTarefa, TipoTarefaViewModel>>();
 
             services
-                .AddScoped<ISistemaAppService, SistemaAppService>()
-                .AddScoped<IProjetoAppService, ProjetoAppService>()
                 .AddScoped<ITarefaAppService, TarefaAppService>()
                 .AddScoped<IApontamentoAppService, ApontamentoAppService>()
                 .AddScoped<IWorkflowAppService, WorkflowAppService>()
                 .AddScoped<IRecursoAppService, RecursoAppService>()
-                .AddScoped<IImpedimentoAppService, ImpedimentoAppService>()
                 .AddScoped<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
                 .AddScoped<IRecursoProjetoAppService, RecursoProjetoAppService>()
-                .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>()
-                .AddScoped<ITipoTarefaAppService, TipoTarefaAppService>();
+                .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>();
 
             services.AddAutoMapperSetup();
 
@@ -69,17 +65,12 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<ICrudRepository<TipoTarefa>, CrudRepository<TipoTarefa>>();
 
             services
-                .AddScoped<ISistemaRepository, SistemaRepository>()
-                .AddScoped<IProjetoRepository, ProjetoRepository>()
-                .AddScoped<ITarefaRepository, TarefaRepository>()
                 .AddScoped<IApontamentoRepository, ApontamentoRepository>()
                 .AddScoped<IWorkflowRepository, WorkflowRepository>()
                 .AddScoped<IRecursoRepository, RecursoRepository>()
-                .AddScoped<IImpedimentoRepository, ImpedimentoRepository>()
                 .AddScoped<IImpedimentoTarefaRepository, ImpedimentoTarefaRepository>()
                 .AddScoped<IRecursoProjetoRepository, RecursoProjetoRepository>()
-                .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>()
-                .AddScoped<ITipoTarefaRepository, TipoTarefaRepository>();
+                .AddScoped<IRecursoTarefaRepository, RecursoTarefaRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CpnucleoContext>();

@@ -13,9 +13,9 @@ namespace Cpnucleo.GRPC
     public class SistemaService : Sistema.SistemaBase
     {
         private readonly IMapper _mapper;
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
 
-        public SistemaService(IMapper mapper, ISistemaAppService sistemaAppService)
+        public SistemaService(IMapper mapper, ICrudAppService<SistemaViewModel> sistemaAppService)
         {
             _mapper = mapper;
             _sistemaAppService = sistemaAppService;

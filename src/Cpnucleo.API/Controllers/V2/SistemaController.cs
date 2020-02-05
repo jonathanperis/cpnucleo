@@ -15,9 +15,9 @@ namespace Cpnucleo.API.Controllers.V2
     [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
     public class SistemaController : ControllerBase
     {
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
 
-        public SistemaController(ISistemaAppService sistemaAppService)
+        public SistemaController(ICrudAppService<SistemaViewModel> sistemaAppService)
         {
             _sistemaAppService = sistemaAppService;
         }

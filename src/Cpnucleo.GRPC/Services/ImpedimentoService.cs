@@ -13,9 +13,9 @@ namespace Cpnucleo.GRPC
     public class ImpedimentoService : Impedimento.ImpedimentoBase
     {
         private readonly IMapper _mapper;
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
 
-        public ImpedimentoService(IMapper mapper, IImpedimentoAppService impedimentoAppService)
+        public ImpedimentoService(IMapper mapper, ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
         {
             _mapper = mapper;
             _impedimentoAppService = impedimentoAppService;

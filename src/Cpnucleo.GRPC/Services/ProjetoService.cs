@@ -13,9 +13,9 @@ namespace Cpnucleo.GRPC
     public class ProjetoService : Projeto.ProjetoBase
     {
         private readonly IMapper _mapper;
-        private readonly IProjetoAppService _projetoAppService;
+        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
 
-        public ProjetoService(IMapper mapper, IProjetoAppService projetoAppService)
+        public ProjetoService(IMapper mapper, ICrudAppService<ProjetoViewModel> projetoAppService)
         {
             _mapper = mapper;
             _projetoAppService = projetoAppService;
