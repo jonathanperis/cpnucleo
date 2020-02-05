@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using StackExchange.Profiling.Storage;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -34,9 +36,7 @@ namespace Cpnucleo.RazorPages
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddMvc().AddRazorPagesOptions(options =>
+            services.AddRazorPages().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Login", "");
             });
@@ -59,13 +59,30 @@ namespace Cpnucleo.RazorPages
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
+
+            services.AddMiniProfiler(options =>
+            {
+                // All of this is optional. You can simply call .AddMiniProfiler() for all defaults
+
+                // (Optional) Path to use for profiler URLs, default is /mini-profiler-resources
+                options.RouteBasePath = "/profiler";
+
+                // (Optional) Control storage
+                // (default is 30 minutes in MemoryCacheStorage)
+                (options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+
+                // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
+                // (defaults to true, and connection opening/closing is tracked)
+                options.TrackConnectionOpenClose = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
+                app.UseMiniProfiler();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -85,9 +102,15 @@ namespace Cpnucleo.RazorPages
             app.UseRequestLocalization(localizationOptions);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseAuthentication();
 
-            app.UseMvc();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
         }
     }
 }

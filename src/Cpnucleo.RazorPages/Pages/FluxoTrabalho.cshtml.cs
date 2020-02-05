@@ -1,38 +1,40 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages
 {
     [Authorize]
-    public class FluxoTrabalhoModel : PageModel
+    public class FluxoTrabalhoModel : PageBase
     {
-        private readonly IWorkflowAppService _workflowAppService;
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly IWorkflowApiService _workflowApiService;
+        private readonly ITarefaApiService _tarefaApiService;
 
-        public FluxoTrabalhoModel(IWorkflowAppService workflowAppService,
-                                  ITarefaAppService tarefaAppService)
+        public FluxoTrabalhoModel(IClaimsManager claimsManager,
+                                        IWorkflowApiService workflowApiService,
+                                        ITarefaApiService tarefaApiService)
+            : base(claimsManager)
         {
-            _workflowAppService = workflowAppService;
-            _tarefaAppService = tarefaAppService;
+            _workflowApiService = workflowApiService;
+            _tarefaApiService = tarefaApiService;
         }
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
 
         public IActionResult OnGet()
         {
-            Lista = _workflowAppService.ListarPorTarefa();
+            Lista = _workflowApiService.ListarPorTarefa(Token);
 
             return Page();
         }
 
         public IActionResult OnPost(Guid idTarefa, Guid idWorkflow)
         {
-            _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow);
+            _tarefaApiService.AlterarPorWorkflow(Token, idTarefa, idWorkflow);
 
             return Page();
         }

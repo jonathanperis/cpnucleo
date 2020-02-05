@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Workflow
 {
     [Authorize]
-    public class AlterarModel : PageModel
+    public class AlterarModel : PageBase
     {
-        private readonly IWorkflowAppService _workflowAppService;
+        private readonly IWorkflowApiService _workflowApiService;
 
-        public AlterarModel(IWorkflowAppService workflowAppService)
+        public AlterarModel(IClaimsManager claimsManager,
+                                    IWorkflowApiService workflowApiService)
+            : base(claimsManager)
         {
-            _workflowAppService = workflowAppService;
+            _workflowApiService = workflowApiService;
         }
 
         [BindProperty]
@@ -22,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
 
         public IActionResult OnGet(Guid id)
         {
-            Workflow = _workflowAppService.Consultar(id);
+            Workflow = _workflowApiService.Consultar(Token, id);
 
             return Page();
         }
@@ -34,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                 return Page();
             }
 
-            _workflowAppService.Alterar(Workflow);
+            _workflowApiService.Alterar(Token, Workflow);
 
             return RedirectToPage("Listar");
         }

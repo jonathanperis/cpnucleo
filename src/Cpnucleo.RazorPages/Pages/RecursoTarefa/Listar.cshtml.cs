@@ -1,21 +1,23 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IRecursoTarefaAppService _recursoTarefaAppService;
+        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
 
-        public ListarModel(IRecursoTarefaAppService recursoTarefaAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IRecursoTarefaApiService recursoTarefaApiService)
+            : base(claimsManager)
         {
-            _recursoTarefaAppService = recursoTarefaAppService;
+            _recursoTarefaApiService = recursoTarefaApiService;
         }
 
         [BindProperty]
@@ -25,7 +27,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public IActionResult OnGet(Guid idTarefa)
         {
-            Lista = _recursoTarefaAppService.ListarPorTarefa(idTarefa);
+            Lista = _recursoTarefaApiService.ListarPorTarefa(Token, idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 

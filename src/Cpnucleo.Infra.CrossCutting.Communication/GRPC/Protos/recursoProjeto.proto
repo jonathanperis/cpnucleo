@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "GRPC/Protos/base.proto";
+import "GRPC/Protos/recurso.proto";
+import "GRPC/Protos/projeto.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package recursoProjeto;
+
+service RecursoProjeto {
+
+	rpc Incluir (RecursoProjetoModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream RecursoProjetoModel);
+	rpc Consultar (base.BaseRequest) returns (RecursoProjetoModel);
+	rpc Alterar (RecursoProjetoModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message RecursoProjetoModel {
+
+	string Id = 1;
+	string IdRecurso = 2;
+	string IdProjeto = 3;
+	string DataInclusao = 4;
+	recurso.RecursoModel Recurso = 5;
+	projeto.ProjetoModel Projeto = 6;
+}

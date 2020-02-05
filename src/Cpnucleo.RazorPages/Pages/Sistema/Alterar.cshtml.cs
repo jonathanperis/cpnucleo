@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
     [Authorize]
-    public class AlterarModel : PageModel
+    public class AlterarModel : PageBase
     {
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ISistemaApiService _sistemaApiService;
 
-        public AlterarModel(ISistemaAppService sistemaAppService)
+        public AlterarModel(IClaimsManager claimsManager,
+                                    ISistemaApiService sistemaApiService)
+            : base(claimsManager)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaApiService = sistemaApiService;
         }
 
         [BindProperty]
@@ -22,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
 
         public IActionResult OnGet(Guid id)
         {
-            Sistema = _sistemaAppService.Consultar(id);
+            Sistema = _sistemaApiService.Consultar(Token, id);
 
             return Page();
         }
@@ -34,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
                 return Page();
             }
 
-            _sistemaAppService.Alterar(Sistema);
+            _sistemaApiService.Alterar(Token, Sistema);
 
             return RedirectToPage("Listar");
         }

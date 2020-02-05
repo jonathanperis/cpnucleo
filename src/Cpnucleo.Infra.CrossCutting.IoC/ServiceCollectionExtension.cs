@@ -3,8 +3,10 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
-using Cpnucleo.Infra.CrossCutting.Communication.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Communication.Services;
+using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Communication.API.Services;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services;
 using Cpnucleo.Infra.CrossCutting.Identity;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util;
@@ -105,6 +107,20 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
                 .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>()
                 .AddScoped<ITipoTarefaApiService, TipoTarefaApiService>();
+
+            // Infra - CrossCutting - Communication - GRPC
+            services
+                .AddScoped<ISistemaGrpcService, SistemaGrpcService>()
+                .AddScoped<IProjetoGrpcService, ProjetoGrpcService>()
+                .AddScoped<ITarefaGrpcService, TarefaGrpcService>()
+                .AddScoped<IApontamentoGrpcService, ApontamentoGrpcService>()
+                .AddScoped<IWorkflowGrpcService, WorkflowGrpcService>()
+                .AddScoped<IRecursoGrpcService, RecursoGrpcService>()
+                .AddScoped<IImpedimentoGrpcService, ImpedimentoGrpcService>()
+                .AddScoped<IImpedimentoTarefaGrpcService, ImpedimentoTarefaGrpcService>()
+                .AddScoped<IRecursoProjetoGrpcService, RecursoProjetoGrpcService>()
+                .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>()
+                .AddScoped<ITipoTarefaGrpcService, TipoTarefaGrpcService>();
 
             return services;
         }

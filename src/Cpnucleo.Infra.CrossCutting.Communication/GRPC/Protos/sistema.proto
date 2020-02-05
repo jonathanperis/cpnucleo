@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "GRPC/Protos/base.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package sistema;
+
+service Sistema {
+
+	rpc Incluir (SistemaModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream SistemaModel);
+	rpc Consultar (base.BaseRequest) returns (SistemaModel);
+	rpc Alterar (SistemaModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message SistemaModel {
+
+	string Id = 1;
+	string Nome = 2;
+	string Descricao = 3;
+	string DataInclusao = 4;
+}

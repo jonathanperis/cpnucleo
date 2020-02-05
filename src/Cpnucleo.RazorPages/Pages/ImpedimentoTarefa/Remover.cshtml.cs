@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
+        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
 
-        public RemoverModel(IImpedimentoTarefaAppService impedimentoTarefaAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    IImpedimentoTarefaApiService impedimentoTarefaApiService)
+            : base(claimsManager)
         {
-            _impedimentoTarefaAppService = impedimentoTarefaAppService;
+            _impedimentoTarefaApiService = impedimentoTarefaApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public IActionResult OnGet(Guid id)
         {
-            ImpedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
+            ImpedimentoTarefa = _impedimentoTarefaApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _impedimentoTarefaAppService.Remover(ImpedimentoTarefa.Id);
+            _impedimentoTarefaApiService.Remover(Token, ImpedimentoTarefa.Id);
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }

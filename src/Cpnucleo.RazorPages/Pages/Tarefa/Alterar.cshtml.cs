@@ -1,33 +1,35 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa
 {
     [Authorize]
-    public class AlterarModel : PageModel
+    public class AlterarModel : PageBase
     {
-        private readonly ITarefaAppService _tarefaAppService;
-        private readonly IProjetoAppService _projetoAppService;
-        private readonly ISistemaAppService _sistemaAppService;
-        private readonly IWorkflowAppService _workflowAppService;
-        private readonly ITipoTarefaAppService _tipoTarefaAppService;
+        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IProjetoApiService _projetoApiService;
+        private readonly ISistemaApiService _sistemaApiService;
+        private readonly IWorkflowApiService _workflowApiService;
+        private readonly ITipoTarefaApiService _tipoTarefaApiService;
 
-        public AlterarModel(ITarefaAppService tarefaAppService,
-                                IProjetoAppService projetoAppService,
-                                ISistemaAppService sistemaAppService,
-                                IWorkflowAppService workflowAppService,
-                                ITipoTarefaAppService tipoTarefaAppService)
+        public AlterarModel(IClaimsManager claimsManager,
+                                    ITarefaApiService tarefaApiService,
+                                    IProjetoApiService projetoApiService,
+                                    ISistemaApiService sistemaApiService,
+                                    IWorkflowApiService workflowApiService,
+                                    ITipoTarefaApiService tipoTarefaApiService)
+            : base(claimsManager)
         {
-            _tarefaAppService = tarefaAppService;
-            _projetoAppService = projetoAppService;
-            _sistemaAppService = sistemaAppService;
-            _workflowAppService = workflowAppService;
-            _tipoTarefaAppService = tipoTarefaAppService;
+            _tarefaApiService = tarefaApiService;
+            _projetoApiService = projetoApiService;
+            _sistemaApiService = sistemaApiService;
+            _workflowApiService = workflowApiService;
+            _tipoTarefaApiService = tipoTarefaApiService;
         }
 
         [BindProperty]
@@ -43,11 +45,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public IActionResult OnGet(Guid id)
         {
-            Tarefa = _tarefaAppService.Consultar(id);
-            SelectProjetos = new SelectList(_projetoAppService.Listar(), "Id", "Nome");
-            SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Descricao");
-            SelectWorkflows = new SelectList(_workflowAppService.Listar(), "Id", "Nome");
-            SelectTipoTarefas = new SelectList(_tipoTarefaAppService.Listar(), "Id", "Nome");
+            Tarefa = _tarefaApiService.Consultar(Token, id);
+            SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
+            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
+            SelectWorkflows = new SelectList(_workflowApiService.Listar(Token), "Id", "Nome");
+            SelectTipoTarefas = new SelectList(_tipoTarefaApiService.Listar(Token), "Id", "Nome");
 
             return Page();
         }
@@ -56,15 +58,15 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             if (!ModelState.IsValid)
             {
-                SelectProjetos = new SelectList(_projetoAppService.Listar(), "Id", "Nome");
-                SelectSistemas = new SelectList(_sistemaAppService.Listar(), "Id", "Descricao");
-                SelectWorkflows = new SelectList(_workflowAppService.Listar(), "Id", "Nome");
-                SelectTipoTarefas = new SelectList(_tipoTarefaAppService.Listar(), "Id", "Nome");
+                SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
+                SelectWorkflows = new SelectList(_workflowApiService.Listar(Token), "Id", "Nome");
+                SelectTipoTarefas = new SelectList(_tipoTarefaApiService.Listar(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _tarefaAppService.Alterar(Tarefa);
+            _tarefaApiService.Alterar(Token, Tarefa);
 
             return RedirectToPage("Listar");
         }

@@ -20,6 +20,14 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public void Incluir(TModel obj)
         {
+            if (obj.Id == Guid.Empty)
+            {
+                obj.Id = Guid.NewGuid();
+            }
+
+            obj.Ativo = true;
+            obj.DataInclusao = DateTime.Now;
+
             _dbSet.Add(obj);
         }
 
@@ -48,6 +56,7 @@ namespace Cpnucleo.Infra.Data.Repository
         public void Remover(Guid id)
         {
             TModel obj = _dbSet.Find(id);
+
             obj.Ativo = false;
             obj.DataExclusao = DateTime.Now;
 

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "GRPC/Protos/base.proto";
+import "GRPC/Protos/tarefa.proto";
+import "GRPC/Protos/impedimento.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package impedimentoTarefa;
+
+service ImpedimentoTarefa {
+
+	rpc Incluir (ImpedimentoTarefaModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream ImpedimentoTarefaModel);
+	rpc Consultar (base.BaseRequest) returns (ImpedimentoTarefaModel);
+	rpc Alterar (ImpedimentoTarefaModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message ImpedimentoTarefaModel {
+
+	string Id = 1;
+	string Nome = 2;
+	string Descricao = 3;
+	string IdTarefa = 4;
+	string IdImpedimento = 5;
+	string DataInclusao = 6;
+	tarefa.TarefaModel Tarefa = 7;
+	impedimento.ImpedimentoModel Impedimento = 8;
+}

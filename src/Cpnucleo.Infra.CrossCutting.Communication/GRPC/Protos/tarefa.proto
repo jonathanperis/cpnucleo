@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+import "GRPC/Protos/base.proto";
+import "GRPC/Protos/projeto.proto";
+import "GRPC/Protos/workflow.proto";
+import "GRPC/Protos/recurso.proto";
+import "GRPC/Protos/tipoTarefa.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package tarefa;
+
+service Tarefa {
+
+	rpc Incluir (TarefaModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream TarefaModel);
+	rpc Consultar (base.BaseRequest) returns (TarefaModel);
+	rpc Alterar (TarefaModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message TarefaModel {
+
+	string Id = 1;
+	string Nome = 2;
+	string DataInicio = 3;
+	string DataTermino = 4;
+	int32 QtdHoras = 5;
+	string Detalhe = 6;
+	int32 PercentualConcluido = 7;
+	int32 HorasConsumidas = 8;
+	int32 HorasRestantes = 9;
+	string IdProjeto = 10;
+	string IdWorkflow = 11;
+	string IdRecurso = 12;
+	string IdTipoTarefa = 13;
+	projeto.ProjetoModel Projeto = 14;
+	workflow.WorkflowModel Workflow = 15;
+	recurso.RecursoModel Recurso = 16;
+	tipoTarefa.TipoTarefaModel TipoTarefa = 17;
+}

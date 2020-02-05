@@ -1,21 +1,23 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
     [Authorize]
-    public class ListarModel : PageModel
+    public class ListarModel : PageBase
     {
-        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
+        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
 
-        public ListarModel(IRecursoProjetoAppService recursoProjetoAppService)
+        public ListarModel(IClaimsManager claimsManager,
+                                    IRecursoProjetoApiService recursoProjetoApiService)
+            : base(claimsManager)
         {
-            _recursoProjetoAppService = recursoProjetoAppService;
+            _recursoProjetoApiService = recursoProjetoApiService;
         }
 
         [BindProperty]
@@ -25,7 +27,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public IActionResult OnGet(Guid idProjeto)
         {
-            Lista = _recursoProjetoAppService.ListarPorProjeto(idProjeto);
+            Lista = _recursoProjetoApiService.ListarPorProjeto(Token, idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 
