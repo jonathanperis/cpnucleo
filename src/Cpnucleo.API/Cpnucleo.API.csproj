@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
+ 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <UserSecretsId>3c4dd0ac-77b6-4b67-90c7-64d5d086a534</UserSecretsId>
   </PropertyGroup>
-
+ 
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.0" />
     <PackageReference Include="JWT" Version="5.2.3" />
@@ -14,16 +15,16 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
-
+ 
   <ItemGroup>
     <ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.IoC\Cpnucleo.Infra.CrossCutting.IoC.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
   </ItemGroup>
-
+  
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
-
+  
 </Project>
