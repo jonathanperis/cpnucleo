@@ -1,27 +1,29 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
     [Authorize]
-    public class IncluirModel : PageModel
+    public class IncluirModel : PageBase
     {
-        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
-        private readonly IRecursoAppService _recursoAppService;
-        private readonly IProjetoAppService _projetoAppService;
+        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
+        private readonly IRecursoApiService _recursoApiService;
+        private readonly IProjetoApiService _projetoApiService;
 
-        public IncluirModel(IRecursoProjetoAppService recursoProjetoAppService,
-                                        IRecursoAppService recursoAppService,
-                                        IProjetoAppService projetoAppService)
+        public IncluirModel(IClaimsManager claimsManager,
+                                    IRecursoProjetoApiService recursoProjetoApiService,
+                                    IRecursoApiService recursoApiService,
+                                    IProjetoApiService projetoApiService)
+            : base(claimsManager)
         {
-            _recursoProjetoAppService = recursoProjetoAppService;
-            _recursoAppService = recursoAppService;
-            _projetoAppService = projetoAppService;
+            _recursoProjetoApiService = recursoProjetoApiService;
+            _recursoApiService = recursoApiService;
+            _projetoApiService = projetoApiService;
         }
 
         [BindProperty]
@@ -33,8 +35,8 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public IActionResult OnGet(Guid idProjeto)
         {
-            Projeto = _projetoAppService.Consultar(idProjeto);
-            SelectRecursos = new SelectList(_recursoAppService.Listar(), "Id", "Nome");
+            Projeto = _projetoApiService.Consultar(Token, idProjeto);
+            SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
 
             return Page();
         }
@@ -43,13 +45,13 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             if (!ModelState.IsValid)
             {
-                Projeto = _projetoAppService.Consultar(idProjeto);
-                SelectRecursos = new SelectList(_recursoAppService.Listar(), "Id", "Nome");
+                Projeto = _projetoApiService.Consultar(Token, idProjeto);
+                SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _recursoProjetoAppService.Incluir(RecursoProjeto);
+            _recursoProjetoApiService.Incluir(Token, RecursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto });
         }

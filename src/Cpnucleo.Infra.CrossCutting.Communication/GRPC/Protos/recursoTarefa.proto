@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "GRPC/Protos/base.proto";
+import "GRPC/Protos/recurso.proto";
+import "GRPC/Protos/tarefa.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+
+package recursoTarefa;
+
+service RecursoTarefa {
+
+	rpc Incluir (RecursoTarefaModel) returns (base.BaseReply);
+	rpc Listar (google.protobuf.Empty) returns (stream RecursoTarefaModel);
+	rpc Consultar (base.BaseRequest) returns (RecursoTarefaModel);
+	rpc Alterar (RecursoTarefaModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message RecursoTarefaModel {
+
+	string Id = 1;
+	int32 PercentualTarefa = 2;
+	string IdRecurso = 3;
+	string IdTarefa = 4;
+	int32 HorasUtilizadas = 5;
+	int32 HorasDisponiveis = 6;
+	string DataInclusao = 7;
+	recurso.RecursoModel Recurso = 8;
+	tarefa.TarefaModel Tarefa = 9;
+}

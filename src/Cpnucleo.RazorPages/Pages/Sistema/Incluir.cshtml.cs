@@ -1,19 +1,21 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
     [Authorize]
-    public class IncluirModel : PageModel
+    public class IncluirModel : PageBase
     {
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ISistemaApiService _sistemaApiService;
 
-        public IncluirModel(ISistemaAppService sistemaAppService)
+        public IncluirModel(IClaimsManager claimsManager,
+                                    ISistemaApiService sistemaApiService)
+            : base(claimsManager)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaApiService = sistemaApiService;
         }
 
         [BindProperty]
@@ -26,7 +28,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
                 return Page();
             }
 
-            _sistemaAppService.Incluir(Sistema);
+            _sistemaApiService.Incluir(Token, Sistema);
 
             return RedirectToPage("Listar");
         }

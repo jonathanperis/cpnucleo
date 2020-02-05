@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Recurso
 {
     [Authorize]
-    public class AlterarModel : PageModel
+    public class AlterarModel : PageBase
     {
-        private readonly IRecursoAppService _recursoAppService;
+        private readonly IRecursoApiService _recursoApiService;
 
-        public AlterarModel(IRecursoAppService recursoAppService)
+        public AlterarModel(IClaimsManager claimsManager,
+                                    IRecursoApiService recursoApiService)
+            : base(claimsManager)
         {
-            _recursoAppService = recursoAppService;
+            _recursoApiService = recursoApiService;
         }
 
         [BindProperty]
@@ -22,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
 
         public IActionResult OnGet(Guid id)
         {
-            Recurso = _recursoAppService.Consultar(id);
+            Recurso = _recursoApiService.Consultar(Token, id);
 
             return Page();
         }
@@ -34,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
                 return Page();
             }
 
-            _recursoAppService.Alterar(Recurso);
+            _recursoApiService.Alterar(Token, Recurso);
 
             return RedirectToPage("Listar");
         }

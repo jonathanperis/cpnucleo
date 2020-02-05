@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
+        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
 
-        public RemoverModel(IRecursoProjetoAppService recursoProjetoAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    IRecursoProjetoApiService recursoProjetoApiService)
+            : base(claimsManager)
         {
-            _recursoProjetoAppService = recursoProjetoAppService;
+            _recursoProjetoApiService = recursoProjetoApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public IActionResult OnGet(Guid id)
         {
-            RecursoProjeto = _recursoProjetoAppService.Consultar(id);
+            RecursoProjeto = _recursoProjetoApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _recursoProjetoAppService.Remover(RecursoProjeto.Id);
+            _recursoProjetoApiService.Remover(Token, RecursoProjeto.Id);
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }

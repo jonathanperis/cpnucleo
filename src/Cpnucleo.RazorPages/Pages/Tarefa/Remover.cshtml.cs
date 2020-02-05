@@ -1,20 +1,22 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa
 {
     [Authorize]
-    public class RemoverModel : PageModel
+    public class RemoverModel : PageBase
     {
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly ITarefaApiService _tarefaApiService;
 
-        public RemoverModel(ITarefaAppService tarefaAppService)
+        public RemoverModel(IClaimsManager claimsManager,
+                                    ITarefaApiService tarefaApiService)
+            : base(claimsManager)
         {
-            _tarefaAppService = tarefaAppService;
+            _tarefaApiService = tarefaApiService;
         }
 
         [BindProperty]
@@ -22,14 +24,14 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public IActionResult OnGet(Guid id)
         {
-            Tarefa = _tarefaAppService.Consultar(id);
+            Tarefa = _tarefaApiService.Consultar(Token, id);
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            _tarefaAppService.Remover(Tarefa.Id);
+            _tarefaApiService.Remover(Token, Tarefa.Id);
 
             return RedirectToPage("Listar");
         }

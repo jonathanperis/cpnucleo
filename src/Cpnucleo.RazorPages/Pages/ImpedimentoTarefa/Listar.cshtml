@@ -7,7 +7,7 @@
 
 @section Styles {
     <!-- DataTables -->
-    <link href="~/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <link href="https://cpnucleo-assets.azurewebsites.net/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 }
 
 <div class="row">
@@ -49,7 +49,7 @@
                                     <td>@item.Descricao</td>
                                     <td>@item.Tarefa.Nome</td>
                                     <td>@item.Impedimento.Nome</td>
-                                    <td>@item.DataInclusao.Value.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)
                                     {
                                         <td style="text-align: center">
@@ -85,7 +85,7 @@
 
 @section Scripts {
     <!-- DataTables -->
-    <script src="~/js/plugins/dataTables/datatables.min.js"></script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/dataTables/datatables.min.js"></script>
     <script>
         $(document).ready(function () {
             $('.table-datatable').DataTable({
