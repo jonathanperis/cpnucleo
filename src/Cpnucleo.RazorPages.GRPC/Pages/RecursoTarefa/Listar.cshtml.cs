@@ -14,7 +14,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoTarefa
     {
         private readonly IRecursoTarefaGrpcService _recursoTarefaGrpcService;
 
-        public ListarModel(IRecursoTarefaGrpcService recursoTarefaGrpcService)   
+        public ListarModel(IRecursoTarefaGrpcService recursoTarefaGrpcService)
         {
             _recursoTarefaGrpcService = recursoTarefaGrpcService;
         }

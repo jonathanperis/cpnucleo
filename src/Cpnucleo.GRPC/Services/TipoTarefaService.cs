@@ -13,9 +13,9 @@ namespace Cpnucleo.GRPC
     public class TipoTarefaService : TipoTarefa.TipoTarefaBase
     {
         private readonly IMapper _mapper;
-        private readonly ITipoTarefaAppService _tipoTarefaAppService;
+        private readonly ICrudAppService<TipoTarefaViewModel> _tipoTarefaAppService;
 
-        public TipoTarefaService(IMapper mapper, ITipoTarefaAppService tipoTarefaAppService)
+        public TipoTarefaService(IMapper mapper, ICrudAppService<TipoTarefaViewModel> tipoTarefaAppService)
         {
             _mapper = mapper;
             _tipoTarefaAppService = tipoTarefaAppService;

@@ -13,7 +13,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
     {
         private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
-        public AlterarModel(IImpedimentoGrpcService impedimentoGrpcService)   
+        public AlterarModel(IImpedimentoGrpcService impedimentoGrpcService)
         {
             _impedimentoGrpcService = impedimentoGrpcService;
         }

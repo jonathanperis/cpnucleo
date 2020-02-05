@@ -13,7 +13,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
     {
         private readonly ITarefaGrpcService _tarefaGrpcService;
 
-        public ListarModel(ITarefaGrpcService tarefaGrpcService)    
+        public ListarModel(ITarefaGrpcService tarefaGrpcService)
         {
             _tarefaGrpcService = tarefaGrpcService;
         }

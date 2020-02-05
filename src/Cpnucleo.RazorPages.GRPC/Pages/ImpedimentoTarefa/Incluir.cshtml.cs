@@ -18,7 +18,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
 
         public IncluirModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService,
                                     IImpedimentoGrpcService impedimentoGrpcService,
-                                    ITarefaGrpcService tarefaGrpcService)   
+                                    ITarefaGrpcService tarefaGrpcService)
         {
             _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;
             _impedimentoGrpcService = impedimentoGrpcService;

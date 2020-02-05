@@ -13,7 +13,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
     {
         private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
 
-        public RemoverModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService)    
+        public RemoverModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService)
         {
             _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;
         }
