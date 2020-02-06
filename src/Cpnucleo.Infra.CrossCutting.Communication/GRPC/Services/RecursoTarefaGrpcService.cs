@@ -71,14 +71,44 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
         {
-            throw new NotImplementedException();
+            BaseRequest request = new BaseRequest
+            {
+                Id = idTarefa.ToString()
+            };
+
+            List<RecursoTarefaViewModel> result = new List<RecursoTarefaViewModel>();
+
+            using (AsyncServerStreamingCall<RecursoTarefaModel> reply = _client.ListarPorTarefa(request))
+            {
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    result.Add(_mapper.Map<RecursoTarefaViewModel>(reply.ResponseStream.Current));
+                }
+            }
+
+            return result;
         }
 
-        public Task<IEnumerable<RecursoTarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso)
         {
-            throw new NotImplementedException();
+            BaseRequest request = new BaseRequest
+            {
+                Id = idRecurso.ToString()
+            };
+
+            List<RecursoTarefaViewModel> result = new List<RecursoTarefaViewModel>();
+
+            using (AsyncServerStreamingCall<RecursoTarefaModel> reply = _client.ListarPorRecurso(request))
+            {
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    result.Add(_mapper.Map<RecursoTarefaViewModel>(reply.ResponseStream.Current));
+                }
+            }
+
+            return result;
         }
     }
 }

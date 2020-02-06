@@ -16,6 +16,7 @@ service RecursoProjeto {
 	rpc Consultar (base.BaseRequest) returns (RecursoProjetoModel);
 	rpc Alterar (RecursoProjetoModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorProjeto (base.BaseRequest) returns (stream RecursoProjetoModel);
 }
 
 message RecursoProjetoModel {

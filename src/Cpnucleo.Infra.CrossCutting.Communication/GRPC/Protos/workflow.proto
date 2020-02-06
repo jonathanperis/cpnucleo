@@ -14,6 +14,7 @@ service Workflow {
 	rpc Consultar (base.BaseRequest) returns (WorkflowModel);
 	rpc Alterar (WorkflowModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorTarefa (google.protobuf.Empty) returns (stream WorkflowModel);
 }
 
 message WorkflowModel {

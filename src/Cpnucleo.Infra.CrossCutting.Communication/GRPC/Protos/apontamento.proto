@@ -15,6 +15,7 @@ service Apontamento {
 	rpc Consultar (base.BaseRequest) returns (ApontamentoModel);
 	rpc Alterar (ApontamentoModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorRecurso (base.BaseRequest) returns (stream ApontamentoModel);
 }
 
 message ApontamentoModel {

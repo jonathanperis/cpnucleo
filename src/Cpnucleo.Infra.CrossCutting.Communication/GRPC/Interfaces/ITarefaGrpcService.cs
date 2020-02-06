@@ -6,8 +6,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces
 {
     public interface ITarefaGrpcService : ICrudGrpcService<TarefaViewModel>
     {
-        Task<bool> AlterarPorPercentualConcluidoAsync(Guid idTarefa, int? percentualConcluido);
-
         Task<bool> AlterarPorWorkflowAsync(Guid idTarefa, Guid idWorkflow);
     }
 }

@@ -41,14 +41,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         {
             List<ImpedimentoViewModel> result = new List<ImpedimentoViewModel>();
 
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<ImpedimentoViewModel>(item));
-            //    }
-            //}
-
             using (AsyncServerStreamingCall<ImpedimentoModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())

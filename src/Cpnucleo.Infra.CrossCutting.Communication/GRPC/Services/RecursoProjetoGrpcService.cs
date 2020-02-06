@@ -71,9 +71,24 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<RecursoProjetoViewModel>> ListarPorProjetoAsync(Guid idProjeto)
+        public async Task<IEnumerable<RecursoProjetoViewModel>> ListarPorProjetoAsync(Guid idProjeto)
         {
-            throw new NotImplementedException();
+            BaseRequest request = new BaseRequest
+            {
+                Id = idProjeto.ToString()
+            };
+
+            List<RecursoProjetoViewModel> result = new List<RecursoProjetoViewModel>();
+
+            using (AsyncServerStreamingCall<RecursoProjetoModel> reply = _client.ListarPorProjeto(request))
+            {
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    result.Add(_mapper.Map<RecursoProjetoViewModel>(reply.ResponseStream.Current));
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -60,5 +60,21 @@ namespace Cpnucleo.GRPC
                 Sucesso = _recursoTarefaAppService.Remover(new Guid(request.Id))
             });
         }
+
+        public override async Task ListarPorTarefa(BaseRequest request, IServerStreamWriter<RecursoTarefaModel> responseStream, ServerCallContext context)
+        {
+            foreach (RecursoTarefaModel item in _mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorTarefa(new Guid(request.Id))))
+            {
+                await responseStream.WriteAsync(item);
+            }
+        }
+
+        public override async Task ListarPorRecurso(BaseRequest request, IServerStreamWriter<RecursoTarefaModel> responseStream, ServerCallContext context)
+        {
+            foreach (RecursoTarefaModel item in _mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorRecurso(new Guid(request.Id))))
+            {
+                await responseStream.WriteAsync(item);
+            }
+        }
     }
 }

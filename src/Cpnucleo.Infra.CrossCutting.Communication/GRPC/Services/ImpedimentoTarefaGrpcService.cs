@@ -41,14 +41,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         {
             List<ImpedimentoTarefaViewModel> result = new List<ImpedimentoTarefaViewModel>();
 
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<ImpedimentoTarefaViewModel>(item));
-            //    }
-            //}
-
             using (AsyncServerStreamingCall<ImpedimentoTarefaModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())
@@ -79,9 +71,24 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
+        public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
         {
-            throw new NotImplementedException();
+            BaseRequest request = new BaseRequest
+            {
+                Id = idTarefa.ToString()
+            };
+
+            List<ImpedimentoTarefaViewModel> result = new List<ImpedimentoTarefaViewModel>();
+
+            using (AsyncServerStreamingCall<ImpedimentoTarefaModel> reply = _client.ListarPorTarefa(request))
+            {
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    result.Add(_mapper.Map<ImpedimentoTarefaViewModel>(reply.ResponseStream.Current));
+                }
+            }
+
+            return result;
         }
     }
 }

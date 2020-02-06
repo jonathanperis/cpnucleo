@@ -10,59 +10,51 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class TarefaGrpcService : BaseGrpcService, ITarefaGrpcService
+    public class TipoTarefaGrpcService : BaseGrpcService, ITipoTarefaGrpcService
     {
-        private readonly Tarefa.TarefaClient _client;
+        private readonly TipoTarefa.TipoTarefaClient _client;
 
-        public TarefaGrpcService(IMapper mapper)
+        public TipoTarefaGrpcService(IMapper mapper)
             : base(mapper)
         {
-            _client = new Tarefa.TarefaClient(_channel);
+            _client = new TipoTarefa.TipoTarefaClient(_channel);
         }
 
-        public async Task<bool> IncluirAsync(TarefaViewModel obj)
+        public async Task<bool> IncluirAsync(TipoTarefaViewModel obj)
         {
-            BaseReply reply = await _client.IncluirAsync(_mapper.Map<TarefaModel>(obj));
+            BaseReply reply = await _client.IncluirAsync(_mapper.Map<TipoTarefaModel>(obj));
 
             return reply.Sucesso;
         }
 
-        public async Task<TarefaViewModel> ConsultarAsync(Guid id)
+        public async Task<TipoTarefaViewModel> ConsultarAsync(Guid id)
         {
             BaseRequest request = new BaseRequest
             {
                 Id = id.ToString()
             };
 
-            return _mapper.Map<TarefaViewModel>(await _client.ConsultarAsync(request));
+            return _mapper.Map<TipoTarefaViewModel>(await _client.ConsultarAsync(request));
         }
 
-        public async Task<IEnumerable<TarefaViewModel>> ListarAsync()
+        public async Task<IEnumerable<TipoTarefaViewModel>> ListarAsync()
         {
-            List<TarefaViewModel> result = new List<TarefaViewModel>();
+            List<TipoTarefaViewModel> result = new List<TipoTarefaViewModel>();
 
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<TarefaViewModel>(item));
-            //    }
-            //}
-
-            using (AsyncServerStreamingCall<TarefaModel> reply = _client.Listar(new Empty()))
+            using (AsyncServerStreamingCall<TipoTarefaModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())
                 {
-                    result.Add(_mapper.Map<TarefaViewModel>(reply.ResponseStream.Current));
+                    result.Add(_mapper.Map<TipoTarefaViewModel>(reply.ResponseStream.Current));
                 }
             }
 
             return result;
         }
 
-        public async Task<bool> AlterarAsync(TarefaViewModel obj)
+        public async Task<bool> AlterarAsync(TipoTarefaViewModel obj)
         {
-            BaseReply reply = await _client.AlterarAsync(_mapper.Map<TarefaModel>(obj));
+            BaseReply reply = await _client.AlterarAsync(_mapper.Map<TipoTarefaModel>(obj));
 
             return reply.Sucesso;
         }
@@ -77,16 +69,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             BaseReply reply = await _client.RemoverAsync(request);
 
             return reply.Sucesso;
-        }
-
-        public Task<bool> AlterarPorPercentualConcluidoAsync(Guid idTarefa, int? percentualConcluido)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> AlterarPorWorkflowAsync(Guid idTarefa, Guid idWorkflow)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -41,14 +41,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         {
             List<ApontamentoViewModel> result = new List<ApontamentoViewModel>();
 
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<ApontamentoViewModel>(item));
-            //    }
-            //}
-
             using (AsyncServerStreamingCall<ApontamentoModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())
@@ -79,9 +71,24 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<ApontamentoViewModel>> ListarPorRecursoAsync(Guid id)
+        public async Task<IEnumerable<ApontamentoViewModel>> ListarPorRecursoAsync(Guid id)
         {
-            return null;
+            BaseRequest request = new BaseRequest
+            {
+                Id = id.ToString()
+            };
+
+            List<ApontamentoViewModel> result = new List<ApontamentoViewModel>();
+
+            using (AsyncServerStreamingCall<ApontamentoModel> reply = _client.ListarPorRecurso(request))
+            {
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    result.Add(_mapper.Map<ApontamentoViewModel>(reply.ResponseStream.Current));
+                }
+            }
+
+            return result;
         }
     }
 }
