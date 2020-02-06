@@ -14,6 +14,7 @@ service Recurso {
 	rpc Consultar (base.BaseRequest) returns (RecursoModel);
 	rpc Alterar (RecursoModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc Autenticar (AutenticarRequest) returns (RecursoModel);
 }
 
 message RecursoModel {
@@ -26,4 +27,10 @@ message RecursoModel {
 	string Salt = 6;
 	string Token = 7;
 	string DataInclusao = 8;
+}
+
+message AutenticarRequest {
+
+	string Login = 3;
+	string Senha = 4;
 }

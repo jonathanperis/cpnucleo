@@ -14,7 +14,7 @@ namespace Cpnucleo.Application.Services
     {
         private readonly IWorkflowRepository _workflowRepository;
 
-        public WorkflowAppService(IMapper mapper, ICrudRepository<Workflow> repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
+        public WorkflowAppService(IMapper mapper, IWorkflowRepository repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
             : base(mapper, repository, unitOfWork)
         {
             _workflowRepository = workflowRepository;

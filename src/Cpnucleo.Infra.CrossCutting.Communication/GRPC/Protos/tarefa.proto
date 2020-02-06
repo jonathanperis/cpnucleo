@@ -18,6 +18,7 @@ service Tarefa {
 	rpc Consultar (base.BaseRequest) returns (TarefaModel);
 	rpc Alterar (TarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc AlterarPorWorkflow (AlterarPorWorkflowRequest) returns (base.BaseReply);
 }
 
 message TarefaModel {
@@ -40,3 +41,9 @@ message TarefaModel {
 	recurso.RecursoModel Recurso = 16;
 	tipoTarefa.TipoTarefaModel TipoTarefa = 17;
 }
+
+message AlterarPorWorkflowRequest {
+
+	string idTarefa = 1;
+	string idWorkflow = 2;
+} 
