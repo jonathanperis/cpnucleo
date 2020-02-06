@@ -13,12 +13,12 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     {
         private readonly IRecursoProjetoApiService _recursoProjetoApiService;
         private readonly IRecursoApiService _recursoApiService;
-        private readonly IProjetoApiService _projetoApiService;
+        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
 
         public IncluirModel(IClaimsManager claimsManager,
                                     IRecursoProjetoApiService recursoProjetoApiService,
                                     IRecursoApiService recursoApiService,
-                                    IProjetoApiService projetoApiService)
+                                    ICrudApiService<ProjetoViewModel> projetoApiService)
             : base(claimsManager)
         {
             _recursoProjetoApiService = recursoProjetoApiService;

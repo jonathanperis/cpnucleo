@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
+        private readonly ICrudGrpcService<ImpedimentoViewModel> _impedimentoGrpcService;
 
-        public RemoverModel(IImpedimentoGrpcService impedimentoGrpcService)
+        public RemoverModel(ICrudGrpcService<ImpedimentoViewModel> impedimentoGrpcService)
         {
             _impedimentoGrpcService = impedimentoGrpcService;
         }

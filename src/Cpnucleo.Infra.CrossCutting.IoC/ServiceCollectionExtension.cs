@@ -87,31 +87,35 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - CrossCutting - Communication
             services
-                .AddScoped<ISistemaApiService, SistemaApiService>()
-                .AddScoped<IProjetoApiService, ProjetoApiService>()
+                .AddScoped<ICrudApiService<SistemaViewModel>, SistemaApiService>()
+                .AddScoped<ICrudApiService<ProjetoViewModel>, ProjetoApiService>()
+                .AddScoped<ICrudApiService<ImpedimentoViewModel>, ImpedimentoApiService>()
+                .AddScoped<ICrudApiService<TipoTarefaViewModel>, TipoTarefaApiService>();
+
+            services
                 .AddScoped<ITarefaApiService, TarefaApiService>()
                 .AddScoped<IApontamentoApiService, ApontamentoApiService>()
                 .AddScoped<IWorkflowApiService, WorkflowApiService>()
                 .AddScoped<IRecursoApiService, RecursoApiService>()
-                .AddScoped<IImpedimentoApiService, ImpedimentoApiService>()
                 .AddScoped<IImpedimentoTarefaApiService, ImpedimentoTarefaApiService>()
                 .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
-                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>()
-                .AddScoped<ITipoTarefaApiService, TipoTarefaApiService>();
+                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>();
 
             // Infra - CrossCutting - Communication - GRPC
             services
-                .AddScoped<ISistemaGrpcService, SistemaGrpcService>()
-                .AddScoped<IProjetoGrpcService, ProjetoGrpcService>()
+                .AddScoped<ICrudGrpcService<SistemaViewModel>, SistemaGrpcService>()
+                .AddScoped<ICrudGrpcService<ProjetoViewModel>, ProjetoGrpcService>()
+                .AddScoped<ICrudGrpcService<ImpedimentoViewModel>, ImpedimentoGrpcService>()
+                .AddScoped<ICrudGrpcService<TipoTarefaViewModel>, TipoTarefaGrpcService>();
+
+            services
                 .AddScoped<ITarefaGrpcService, TarefaGrpcService>()
                 .AddScoped<IApontamentoGrpcService, ApontamentoGrpcService>()
                 .AddScoped<IWorkflowGrpcService, WorkflowGrpcService>()
                 .AddScoped<IRecursoGrpcService, RecursoGrpcService>()
-                .AddScoped<IImpedimentoGrpcService, ImpedimentoGrpcService>()
                 .AddScoped<IImpedimentoTarefaGrpcService, ImpedimentoTarefaGrpcService>()
                 .AddScoped<IRecursoProjetoGrpcService, RecursoProjetoGrpcService>()
-                .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>()
-                .AddScoped<ITipoTarefaGrpcService, TipoTarefaGrpcService>();
+                .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>();
 
             return services;
         }

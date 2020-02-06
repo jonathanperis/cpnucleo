@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class TipoTarefaApiService : CrudApiService<TipoTarefaViewModel>, ITipoTarefaApiService
+    public class TipoTarefaApiService : CrudApiService<TipoTarefaViewModel>, ICrudApiService<TipoTarefaViewModel>
     {
         private const string actionRoute = "tipoTarefa";
 

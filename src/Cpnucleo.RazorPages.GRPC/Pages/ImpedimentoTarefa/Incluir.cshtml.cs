@@ -13,11 +13,11 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
     public class IncluirModel : PageModel
     {
         private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
-        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
+        private readonly ICrudGrpcService<ImpedimentoViewModel> _impedimentoGrpcService;
         private readonly ITarefaGrpcService _tarefaGrpcService;
 
         public IncluirModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService,
-                                    IImpedimentoGrpcService impedimentoGrpcService,
+                                    ICrudGrpcService<ImpedimentoViewModel> impedimentoGrpcService,
                                     ITarefaGrpcService tarefaGrpcService)
         {
             _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;

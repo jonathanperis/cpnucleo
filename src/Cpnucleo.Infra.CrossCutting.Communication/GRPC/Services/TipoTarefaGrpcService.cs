@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class TipoTarefaGrpcService : BaseGrpcService, ITipoTarefaGrpcService
+    public class TipoTarefaGrpcService : BaseGrpcService, ICrudGrpcService<TipoTarefaViewModel>
     {
         private readonly TipoTarefa.TipoTarefaClient _client;
 

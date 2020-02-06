@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ICrudGrpcService<ProjetoViewModel> _projetoGrpcService;
 
-        public RemoverModel(IProjetoGrpcService projetoGrpcService)
+        public RemoverModel(ICrudGrpcService<ProjetoViewModel> projetoGrpcService)
         {
             _projetoGrpcService = projetoGrpcService;
         }

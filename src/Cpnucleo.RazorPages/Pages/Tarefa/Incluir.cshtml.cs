@@ -11,17 +11,17 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     public class IncluirModel : PageBase
     {
         private readonly ITarefaApiService _tarefaApiService;
-        private readonly IProjetoApiService _projetoApiService;
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
+        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
         private readonly IWorkflowApiService _workflowApiService;
-        private readonly ITipoTarefaApiService _tipoTarefaApiService;
+        private readonly ICrudApiService<TipoTarefaViewModel> _tipoTarefaApiService;
 
         public IncluirModel(IClaimsManager claimsManager,
                                     ITarefaApiService tarefaApiService,
-                                    IProjetoApiService projetoApiService,
-                                    ISistemaApiService sistemaApiService,
+                                    ICrudApiService<ProjetoViewModel> projetoApiService,
+                                    ICrudApiService<SistemaViewModel> sistemaApiService,
                                     IWorkflowApiService workflowApiService,
-                                    ITipoTarefaApiService tipoTarefaApiService)
+                                    ICrudApiService<TipoTarefaViewModel> tipoTarefaApiService)
             : base(claimsManager)
         {
             _tarefaApiService = tarefaApiService;

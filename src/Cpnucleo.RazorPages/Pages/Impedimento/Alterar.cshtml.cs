@@ -10,10 +10,10 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
 
         public AlterarModel(IClaimsManager claimsManager,
-                                    IImpedimentoApiService impedimentoApiService)
+                                    ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
             : base(claimsManager)
         {
             _impedimentoApiService = impedimentoApiService;

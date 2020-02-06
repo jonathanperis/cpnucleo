@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
 
-        public ListarModel(ISistemaGrpcService sistemaGrpcService)
+        public ListarModel(ICrudGrpcService<SistemaViewModel> sistemaGrpcService)
         {
             _sistemaGrpcService = sistemaGrpcService;
         }
