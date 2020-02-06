@@ -60,5 +60,12 @@ namespace Cpnucleo.GRPC
                 Sucesso = _recursoAppService.Remover(new Guid(request.Id))
             });
         }
+
+        public override async Task<RecursoModel> Autenticar(AutenticarRequest request, ServerCallContext context)
+        {
+            RecursoModel result = _mapper.Map<RecursoModel>(_recursoAppService.Autenticar(request.Login, request.Senha, out _));
+
+            return await Task.FromResult(result);
+        }
     }
 }

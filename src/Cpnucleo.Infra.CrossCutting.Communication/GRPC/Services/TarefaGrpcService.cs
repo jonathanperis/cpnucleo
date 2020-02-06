@@ -71,9 +71,17 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<bool> AlterarPorWorkflowAsync(Guid idTarefa, Guid idWorkflow)
+        public async Task<bool> AlterarPorWorkflowAsync(Guid idTarefa, Guid idWorkflow)
         {
-            throw new NotImplementedException();
+            AlterarPorWorkflowRequest request = new AlterarPorWorkflowRequest
+            {
+                IdTarefa = idTarefa.ToString(),
+                IdWorkflow = idWorkflow.ToString()
+            };
+
+            BaseReply reply = await _client.AlterarPorWorkflowAsync(request);
+
+            return reply.Sucesso;
         }
     }
 }

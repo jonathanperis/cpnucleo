@@ -60,5 +60,16 @@ namespace Cpnucleo.GRPC
                 Sucesso = _tarefaAppService.Remover(new Guid(request.Id))
             });
         }
+
+        public override async Task<BaseReply> AlterarPorWorkflow(AlterarPorWorkflowRequest request, ServerCallContext context)
+        {
+            Guid idTarefa = new Guid(request.IdTarefa);
+            Guid idWorkflow = new Guid(request.IdWorkflow);
+
+            return await Task.FromResult(new BaseReply
+            {
+                Sucesso = _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow)
+            });
+        }
     }
 }

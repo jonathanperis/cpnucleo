@@ -15,7 +15,7 @@ namespace Cpnucleo.Application.Services
         private readonly IRecursoTarefaRepository _recursoTarefaRepository;
         private readonly IApontamentoAppService _apontamentoAppService;
 
-        public RecursoTarefaAppService(IMapper mapper, ICrudRepository<RecursoTarefa> repository, IUnitOfWork unitOfWork, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoAppService apontamentoAppService)
+        public RecursoTarefaAppService(IMapper mapper, IRecursoTarefaRepository repository, IUnitOfWork unitOfWork, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoAppService apontamentoAppService)
             : base(mapper, repository, unitOfWork)
         {
             _recursoTarefaRepository = recursoTarefaRepository;
