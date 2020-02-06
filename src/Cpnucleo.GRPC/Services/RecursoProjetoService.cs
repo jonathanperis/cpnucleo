@@ -60,5 +60,13 @@ namespace Cpnucleo.GRPC
                 Sucesso = _recursoProjetoAppService.Remover(new Guid(request.Id))
             });
         }
+
+        public override async Task ListarPorProjeto(BaseRequest request, IServerStreamWriter<RecursoProjetoModel> responseStream, ServerCallContext context)
+        {
+            foreach (RecursoProjetoModel item in _mapper.Map<IEnumerable<RecursoProjetoModel>>(_recursoProjetoAppService.ListarPorProjeto(new Guid(request.Id))))
+            {
+                await responseStream.WriteAsync(item);
+            }
+        }
     }
 }

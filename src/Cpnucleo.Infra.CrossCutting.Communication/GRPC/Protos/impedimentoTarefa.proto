@@ -16,6 +16,7 @@ service ImpedimentoTarefa {
 	rpc Consultar (base.BaseRequest) returns (ImpedimentoTarefaModel);
 	rpc Alterar (ImpedimentoTarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorTarefa (base.BaseRequest) returns (stream ImpedimentoTarefaModel);
 }
 
 message ImpedimentoTarefaModel {

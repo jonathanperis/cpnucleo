@@ -41,14 +41,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         {
             List<WorkflowViewModel> result = new List<WorkflowViewModel>();
 
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<WorkflowViewModel>(item));
-            //    }
-            //}
-
             using (AsyncServerStreamingCall<WorkflowModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())
@@ -79,9 +71,19 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<WorkflowViewModel>> ListarPorTarefaAsync()
+        public async Task<IEnumerable<WorkflowViewModel>> ListarPorTarefaAsync()
         {
-            throw new NotImplementedException();
+            List<WorkflowViewModel> result = new List<WorkflowViewModel>();
+
+            using (AsyncServerStreamingCall<WorkflowModel> reply = _client.ListarPorTarefa(new Empty()))
+            {
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    result.Add(_mapper.Map<WorkflowViewModel>(reply.ResponseStream.Current));
+                }
+            }
+
+            return result;
         }
     }
 }

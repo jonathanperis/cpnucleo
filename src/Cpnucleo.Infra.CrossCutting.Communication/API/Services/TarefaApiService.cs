@@ -36,11 +36,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             return Put(token, actionRoute, obj.Id, obj);
         }
 
-        public bool AlterarPorPercentualConcluido(string token, Guid idTarefa, int? percentualConcluido)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool AlterarPorWorkflow(string token, Guid idTarefa, Guid idWorkflow)
         {
             try

@@ -60,5 +60,13 @@ namespace Cpnucleo.GRPC
                 Sucesso = _apontamentoAppService.Remover(new Guid(request.Id))
             });
         }
+
+        public override async Task ListarPorRecurso(BaseRequest request, IServerStreamWriter<ApontamentoModel> responseStream, ServerCallContext context)
+        {
+            foreach (ApontamentoModel item in _mapper.Map<IEnumerable<ApontamentoModel>>(_apontamentoAppService.ListarPorRecurso(new Guid(request.Id))))
+            {
+                await responseStream.WriteAsync(item);
+            }
+        }
     }
 }
