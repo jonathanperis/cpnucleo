@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
 
-        public IncluirModel(ISistemaGrpcService sistemaGrpcService)
+        public IncluirModel(ICrudGrpcService<SistemaViewModel> sistemaGrpcService)
         {
             _sistemaGrpcService = sistemaGrpcService;
         }

@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
 
-        public AlterarModel(ISistemaGrpcService sistemaGrpcService)
+        public AlterarModel(ICrudGrpcService<SistemaViewModel> sistemaGrpcService)
         {
             _sistemaGrpcService = sistemaGrpcService;
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class SistemaGrpcService : BaseGrpcService, ISistemaGrpcService
+    public class SistemaGrpcService : BaseGrpcService, ICrudGrpcService<SistemaViewModel>
     {
         private readonly Sistema.SistemaClient _client;
 

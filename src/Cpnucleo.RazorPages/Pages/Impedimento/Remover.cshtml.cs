@@ -10,10 +10,10 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
 
         public RemoverModel(IClaimsManager claimsManager,
-                                    IImpedimentoApiService impedimentoApiService)
+                                    ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
             : base(claimsManager)
         {
             _impedimentoApiService = impedimentoApiService;

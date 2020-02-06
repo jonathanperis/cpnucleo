@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class SistemaApiService : CrudApiService<SistemaViewModel>, ISistemaApiService
+    public class SistemaApiService : CrudApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
     {
         private const string actionRoute = "sistema";
 

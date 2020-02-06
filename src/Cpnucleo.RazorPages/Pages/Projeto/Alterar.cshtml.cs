@@ -11,12 +11,12 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IProjetoApiService _projetoApiService;
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
+        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
 
         public AlterarModel(IClaimsManager claimsManager,
-                                    IProjetoApiService projetoApiService,
-                                    ISistemaApiService sistemaApiService)
+                                    ICrudApiService<ProjetoViewModel> projetoApiService,
+                                    ICrudApiService<SistemaViewModel> sistemaApiService)
             : base(claimsManager)
         {
             _projetoApiService = projetoApiService;
