@@ -3,8 +3,8 @@ using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.Infra.Security.Interfaces;
 using System.Linq;
 
 namespace Cpnucleo.Application.Services
