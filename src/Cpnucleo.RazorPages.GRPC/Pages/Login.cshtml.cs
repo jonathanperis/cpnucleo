@@ -58,8 +58,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
 
             IEnumerable<Claim> claims = new[]
             {
-                new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString()),
-                new Claim(ClaimTypes.Hash, recurso.Token)
+                new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString())
             };
 
             ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(claims);
