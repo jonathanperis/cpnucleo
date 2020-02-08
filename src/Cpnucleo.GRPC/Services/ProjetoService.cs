@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Projeto;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -29,12 +30,12 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task Listar(Empty request, IServerStreamWriter<ProjetoModel> responseStream, ServerCallContext context)
+        public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
-            foreach (ProjetoModel item in _mapper.Map<IEnumerable<ProjetoModel>>(_projetoAppService.Listar()))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            ListarReply result = new ListarReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<ProjetoModel>>(_projetoAppService.Listar()));
+
+            return await Task.FromResult(result);
         }
 
         public override async Task<ProjetoModel> Consultar(BaseRequest request, ServerCallContext context)

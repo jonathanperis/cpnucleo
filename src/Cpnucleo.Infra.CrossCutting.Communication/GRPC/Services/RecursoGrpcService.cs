@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -40,6 +41,14 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         public async Task<IEnumerable<RecursoViewModel>> ListarAsync()
         {
             List<RecursoViewModel> result = new List<RecursoViewModel>();
+
+            //using (AsyncServerStreamingCall<RecursoModel> reply = _client.Listar(new Empty()))
+            //{
+            //    await foreach (RecursoModel item in reply.ResponseStream.ReadAllAsync())
+            //    {
+            //        result.Add(_mapper.Map<RecursoViewModel>(item));
+            //    }
+            //}
 
             using (AsyncServerStreamingCall<RecursoModel> reply = _client.Listar(new Empty()))
             {

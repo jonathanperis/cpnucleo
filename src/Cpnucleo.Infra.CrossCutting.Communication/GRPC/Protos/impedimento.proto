@@ -3,14 +3,14 @@ syntax = "proto3";
 import "GRPC/Protos/base.proto";
 import "google/protobuf/empty.proto";
 
-option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Impedimento";
 
 package impedimento;
 
 service Impedimento {
 
 	rpc Incluir (ImpedimentoModel) returns (base.BaseReply);
-	rpc Listar (google.protobuf.Empty) returns (stream ImpedimentoModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
 	rpc Consultar (base.BaseRequest) returns (ImpedimentoModel);
 	rpc Alterar (ImpedimentoModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
@@ -21,4 +21,9 @@ message ImpedimentoModel {
 	string Id = 1;
 	string Nome = 2;
 	string DataInclusao = 3;
+}
+
+message ListarReply {
+
+    repeated ImpedimentoModel Lista = 1;
 }

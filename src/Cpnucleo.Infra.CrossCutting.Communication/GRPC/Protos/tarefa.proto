@@ -7,14 +7,14 @@ import "GRPC/Protos/recurso.proto";
 import "GRPC/Protos/tipoTarefa.proto";
 import "google/protobuf/empty.proto";
 
-option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Tarefa";
 
 package tarefa;
 
 service Tarefa {
 
 	rpc Incluir (TarefaModel) returns (base.BaseReply);
-	rpc Listar (google.protobuf.Empty) returns (stream TarefaModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
 	rpc Consultar (base.BaseRequest) returns (TarefaModel);
 	rpc Alterar (TarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
@@ -47,3 +47,8 @@ message AlterarPorWorkflowRequest {
 	string idTarefa = 1;
 	string idWorkflow = 2;
 } 
+
+message ListarReply {
+
+    repeated TarefaModel Lista = 1;
+}

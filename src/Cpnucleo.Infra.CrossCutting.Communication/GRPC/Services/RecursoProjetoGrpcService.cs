@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.RecursoProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,17 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<RecursoProjetoViewModel>> ListarAsync()
         {
-            List<RecursoProjetoViewModel> result = new List<RecursoProjetoViewModel>();
-
-            using (AsyncServerStreamingCall<RecursoProjetoModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<RecursoProjetoViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(RecursoProjetoViewModel obj)
@@ -78,17 +69,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
                 Id = idProjeto.ToString()
             };
 
-            List<RecursoProjetoViewModel> result = new List<RecursoProjetoViewModel>();
-
-            using (AsyncServerStreamingCall<RecursoProjetoModel> reply = _client.ListarPorProjeto(request))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<RecursoProjetoViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarPorProjetoReply response = await _client.ListarPorProjetoAsync(request);
+            return _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(response.Lista);
         }
     }
 }

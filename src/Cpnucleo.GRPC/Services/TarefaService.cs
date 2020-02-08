@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Tarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -29,12 +30,12 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task Listar(Empty request, IServerStreamWriter<TarefaModel> responseStream, ServerCallContext context)
+        public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
-            foreach (TarefaModel item in _mapper.Map<IEnumerable<TarefaModel>>(_tarefaAppService.Listar()))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            ListarReply result = new ListarReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<TarefaModel>>(_tarefaAppService.Listar()));
+
+            return await Task.FromResult(result);
         }
 
         public override async Task<TarefaModel> Consultar(BaseRequest request, ServerCallContext context)

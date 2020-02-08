@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Workflow;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -29,12 +30,12 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task Listar(Empty request, IServerStreamWriter<WorkflowModel> responseStream, ServerCallContext context)
+        public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
-            foreach (WorkflowModel item in _mapper.Map<IEnumerable<WorkflowModel>>(_workflowAppService.Listar()))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            ListarReply result = new ListarReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<WorkflowModel>>(_workflowAppService.Listar()));
+
+            return await Task.FromResult(result);
         }
 
         public override async Task<WorkflowModel> Consultar(BaseRequest request, ServerCallContext context)
@@ -61,12 +62,12 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task ListarPorTarefa(Empty request, IServerStreamWriter<WorkflowModel> responseStream, ServerCallContext context)
+        public override async Task<ListarPorTarefaReply> ListarPorTarefa(Empty request, ServerCallContext context)
         {
-            foreach (WorkflowModel item in _mapper.Map<IEnumerable<WorkflowModel>>(_workflowAppService.ListarPorTarefa()))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            ListarPorTarefaReply result = new ListarPorTarefaReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<WorkflowModel>>(_workflowAppService.ListarPorTarefa()));
+
+            return await Task.FromResult(result);
         }
     }
 }
