@@ -5,18 +5,18 @@ import "GRPC/Protos/tarefa.proto";
 import "GRPC/Protos/impedimento.proto";
 import "google/protobuf/empty.proto";
 
-option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.ImpedimentoTarefa";
 
 package impedimentoTarefa;
 
 service ImpedimentoTarefa {
 
 	rpc Incluir (ImpedimentoTarefaModel) returns (base.BaseReply);
-	rpc Listar (google.protobuf.Empty) returns (stream ImpedimentoTarefaModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
 	rpc Consultar (base.BaseRequest) returns (ImpedimentoTarefaModel);
 	rpc Alterar (ImpedimentoTarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
-	rpc ListarPorTarefa (base.BaseRequest) returns (stream ImpedimentoTarefaModel);
+	rpc ListarPorTarefa (base.BaseRequest) returns (ListarPorTarefaReply);
 }
 
 message ImpedimentoTarefaModel {
@@ -29,4 +29,14 @@ message ImpedimentoTarefaModel {
 	string DataInclusao = 6;
 	tarefa.TarefaModel Tarefa = 7;
 	impedimento.ImpedimentoModel Impedimento = 8;
+}
+
+message ListarReply {
+
+    repeated ImpedimentoTarefaModel Lista = 1;
+}
+
+message ListarPorTarefaReply {
+
+    repeated ImpedimentoTarefaModel Lista = 1;
 }

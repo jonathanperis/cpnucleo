@@ -5,19 +5,19 @@ import "GRPC/Protos/recurso.proto";
 import "GRPC/Protos/tarefa.proto";
 import "google/protobuf/empty.proto";
 
-option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.RecursoTarefa";
 
 package recursoTarefa;
 
 service RecursoTarefa {
 
 	rpc Incluir (RecursoTarefaModel) returns (base.BaseReply);
-	rpc Listar (google.protobuf.Empty) returns (stream RecursoTarefaModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
 	rpc Consultar (base.BaseRequest) returns (RecursoTarefaModel);
 	rpc Alterar (RecursoTarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
-	rpc ListarPorTarefa (base.BaseRequest) returns (stream RecursoTarefaModel);
-	rpc ListarPorRecurso (base.BaseRequest) returns (stream RecursoTarefaModel);
+	rpc ListarPorTarefa (base.BaseRequest) returns (ListarPorTarefaReply);
+	rpc ListarPorRecurso (base.BaseRequest) returns (ListarPorRecursoReply);
 }
 
 message RecursoTarefaModel {
@@ -31,4 +31,19 @@ message RecursoTarefaModel {
 	string DataInclusao = 7;
 	recurso.RecursoModel Recurso = 8;
 	tarefa.TarefaModel Tarefa = 9;
+}
+
+message ListarReply {
+
+    repeated RecursoTarefaModel Lista = 1;
+}
+
+message ListarPorTarefaReply {
+
+    repeated RecursoTarefaModel Lista = 1;
+}
+
+message ListarPorRecursoReply {
+
+    repeated RecursoTarefaModel Lista = 1;
 }

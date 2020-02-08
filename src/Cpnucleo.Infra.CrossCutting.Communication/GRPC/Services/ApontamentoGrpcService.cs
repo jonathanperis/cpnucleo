@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Apontamento;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,17 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<ApontamentoViewModel>> ListarAsync()
         {
-            List<ApontamentoViewModel> result = new List<ApontamentoViewModel>();
-
-            using (AsyncServerStreamingCall<ApontamentoModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<ApontamentoViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(ApontamentoViewModel obj)
@@ -78,17 +69,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
                 Id = id.ToString()
             };
 
-            List<ApontamentoViewModel> result = new List<ApontamentoViewModel>();
-
-            using (AsyncServerStreamingCall<ApontamentoModel> reply = _client.ListarPorRecurso(request))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<ApontamentoViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarPorRecursoReply response = await _client.ListarPorRecursoAsync(request);
+            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(response.Lista);
         }
     }
 }

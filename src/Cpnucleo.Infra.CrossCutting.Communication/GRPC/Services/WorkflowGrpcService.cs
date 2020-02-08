@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Workflow;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,17 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<WorkflowViewModel>> ListarAsync()
         {
-            List<WorkflowViewModel> result = new List<WorkflowViewModel>();
-
-            using (AsyncServerStreamingCall<WorkflowModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<WorkflowViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<WorkflowViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(WorkflowViewModel obj)
@@ -73,17 +64,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<WorkflowViewModel>> ListarPorTarefaAsync()
         {
-            List<WorkflowViewModel> result = new List<WorkflowViewModel>();
-
-            using (AsyncServerStreamingCall<WorkflowModel> reply = _client.ListarPorTarefa(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<WorkflowViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarPorTarefaReply response = await _client.ListarPorTarefaAsync(new Empty());
+            return _mapper.Map<IEnumerable<WorkflowViewModel>>(response.Lista);
         }
     }
 }

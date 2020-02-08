@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.RecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -29,12 +30,12 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task Listar(Empty request, IServerStreamWriter<RecursoTarefaModel> responseStream, ServerCallContext context)
+        public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
-            foreach (RecursoTarefaModel item in _mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.Listar()))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            ListarReply result = new ListarReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.Listar()));
+
+            return await Task.FromResult(result);
         }
 
         public override async Task<RecursoTarefaModel> Consultar(BaseRequest request, ServerCallContext context)
@@ -61,20 +62,22 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task ListarPorTarefa(BaseRequest request, IServerStreamWriter<RecursoTarefaModel> responseStream, ServerCallContext context)
+        public override async Task<ListarPorTarefaReply> ListarPorTarefa(BaseRequest request, ServerCallContext context)
         {
-            foreach (RecursoTarefaModel item in _mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorTarefa(new Guid(request.Id))))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            Guid id = new Guid(request.Id);
+            ListarPorTarefaReply result = new ListarPorTarefaReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorTarefa(id)));
+
+            return await Task.FromResult(result);
         }
 
-        public override async Task ListarPorRecurso(BaseRequest request, IServerStreamWriter<RecursoTarefaModel> responseStream, ServerCallContext context)
+        public override async Task<ListarPorRecursoReply> ListarPorRecurso(BaseRequest request, ServerCallContext context)
         {
-            foreach (RecursoTarefaModel item in _mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorRecurso(new Guid(request.Id))))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            Guid id = new Guid(request.Id);
+            ListarPorRecursoReply result = new ListarPorRecursoReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorRecurso(id)));
+
+            return await Task.FromResult(result);
         }
     }
 }
