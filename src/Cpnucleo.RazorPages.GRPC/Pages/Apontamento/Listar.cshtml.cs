@@ -16,15 +16,15 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
     {
         private readonly IClaimsManager _claimsManager;
         private readonly IApontamentoGrpcService _apontamentoGrpcService;
-        private readonly IRecursoTarefaGrpcService _recursoTarefaGrpcService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
 
         public ListarModel(IClaimsManager claimsManager,
                                 IApontamentoGrpcService apontamentoGrpcService,
-                                IRecursoTarefaGrpcService recursoTarefaGrpcService)
+                                ITarefaGrpcService tarefaGrpcService)
         {
             _claimsManager = claimsManager;
             _apontamentoGrpcService = apontamentoGrpcService;
-            _recursoTarefaGrpcService = recursoTarefaGrpcService;
+            _tarefaGrpcService = tarefaGrpcService;
         }
 
         [BindProperty]
@@ -32,7 +32,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 
         public IEnumerable<ApontamentoViewModel> Lista { get; set; }
 
-        public IEnumerable<RecursoTarefaViewModel> ListaRecursoTarefas { get; set; }
+        public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
 
         public async Task<IActionResult> OnGet()
         {
@@ -40,7 +40,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
             Guid idRecurso = new Guid(retorno);
 
             Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);
-            ListaRecursoTarefas = await _recursoTarefaGrpcService.ListarPorRecursoAsync(idRecurso);
+            ListaTarefas = await _tarefaGrpcService.ListarPorRecursoAsync(idRecurso);
 
             return Page();
         }
@@ -53,7 +53,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
                 Guid idRecurso = new Guid(retorno);
 
                 Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);
-                ListaRecursoTarefas = await _recursoTarefaGrpcService.ListarPorRecursoAsync(idRecurso);
+                ListaTarefas = await _tarefaGrpcService.ListarPorRecursoAsync(idRecurso);
 
                 return Page();
             }

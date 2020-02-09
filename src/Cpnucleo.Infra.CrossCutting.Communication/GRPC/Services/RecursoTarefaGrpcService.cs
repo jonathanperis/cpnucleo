@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.RecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,17 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<RecursoTarefaViewModel>> ListarAsync()
         {
-            List<RecursoTarefaViewModel> result = new List<RecursoTarefaViewModel>();
-
-            using (AsyncServerStreamingCall<RecursoTarefaModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<RecursoTarefaViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(RecursoTarefaViewModel obj)
@@ -71,14 +62,15 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
         {
-            throw new NotImplementedException();
-        }
+            BaseRequest request = new BaseRequest
+            {
+                Id = idTarefa.ToString()
+            };
 
-        public Task<IEnumerable<RecursoTarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso)
-        {
-            throw new NotImplementedException();
+            ListarPorTarefaReply response = await _client.ListarPorTarefaAsync(request);
+            return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(response.Lista);
         }
     }
 }

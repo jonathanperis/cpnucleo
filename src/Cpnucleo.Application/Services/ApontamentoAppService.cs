@@ -13,20 +13,11 @@ namespace Cpnucleo.Application.Services
     public class ApontamentoAppService : CrudAppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
     {
         private readonly IApontamentoRepository _apontamentoRepository;
-        private readonly ITarefaAppService _tarefaAppService;
 
-        public ApontamentoAppService(IMapper mapper, ICrudRepository<Apontamento> repository, IUnitOfWork unitOfWork, IApontamentoRepository apontamentoRepository, ITarefaAppService tarefaAppService)
+        public ApontamentoAppService(IMapper mapper, IApontamentoRepository repository, IUnitOfWork unitOfWork, IApontamentoRepository apontamentoRepository)
             : base(mapper, repository, unitOfWork)
         {
             _apontamentoRepository = apontamentoRepository;
-            _tarefaAppService = tarefaAppService;
-        }
-
-        public new bool Incluir(ApontamentoViewModel apontamento)
-        {
-            _repository.Incluir(_mapper.Map<Apontamento>(apontamento));
-
-            return _tarefaAppService.AlterarPorPercentualConcluido(apontamento.IdTarefa, apontamento.PercentualConcluido);
         }
 
         public IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso)

@@ -9,14 +9,14 @@ using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services;
 using Cpnucleo.Infra.CrossCutting.Identity;
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Security;
+using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.Repository;
 using Cpnucleo.Infra.Data.UoW;
-using Cpnucleo.Infra.Security;
-using Cpnucleo.Infra.Security.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Infra.CrossCutting.IoC
@@ -29,14 +29,7 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
             services
                 .AddScoped<ICrudAppService<SistemaViewModel>, CrudAppService<Sistema, SistemaViewModel>>()
                 .AddScoped<ICrudAppService<ProjetoViewModel>, CrudAppService<Projeto, ProjetoViewModel>>()
-                .AddScoped<ICrudAppService<TarefaViewModel>, CrudAppService<Tarefa, TarefaViewModel>>()
-                .AddScoped<ICrudAppService<ApontamentoViewModel>, CrudAppService<Apontamento, ApontamentoViewModel>>()
-                .AddScoped<ICrudAppService<WorkflowViewModel>, CrudAppService<Workflow, WorkflowViewModel>>()
-                .AddScoped<ICrudAppService<RecursoViewModel>, CrudAppService<Recurso, RecursoViewModel>>()
                 .AddScoped<ICrudAppService<ImpedimentoViewModel>, CrudAppService<Impedimento, ImpedimentoViewModel>>()
-                .AddScoped<ICrudAppService<ImpedimentoTarefaViewModel>, CrudAppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>>()
-                .AddScoped<ICrudAppService<RecursoProjetoViewModel>, CrudAppService<RecursoProjeto, RecursoProjetoViewModel>>()
-                .AddScoped<ICrudAppService<RecursoTarefaViewModel>, CrudAppService<RecursoTarefa, RecursoTarefaViewModel>>()
                 .AddScoped<ICrudAppService<TipoTarefaViewModel>, CrudAppService<TipoTarefa, TipoTarefaViewModel>>();
 
             services
@@ -54,19 +47,13 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
             services
                 .AddScoped<ICrudRepository<Sistema>, CrudRepository<Sistema>>()
                 .AddScoped<ICrudRepository<Projeto>, CrudRepository<Projeto>>()
-                .AddScoped<ICrudRepository<Tarefa>, CrudRepository<Tarefa>>()
-                .AddScoped<ICrudRepository<Apontamento>, CrudRepository<Apontamento>>()
-                .AddScoped<ICrudRepository<Workflow>, CrudRepository<Workflow>>()
-                .AddScoped<ICrudRepository<Recurso>, CrudRepository<Recurso>>()
                 .AddScoped<ICrudRepository<Impedimento>, CrudRepository<Impedimento>>()
-                .AddScoped<ICrudRepository<ImpedimentoTarefa>, CrudRepository<ImpedimentoTarefa>>()
-                .AddScoped<ICrudRepository<RecursoProjeto>, CrudRepository<RecursoProjeto>>()
-                .AddScoped<ICrudRepository<RecursoTarefa>, CrudRepository<RecursoTarefa>>()
-                .AddScoped<ICrudRepository<TipoTarefa>, CrudRepository<TipoTarefa>>();
+                .AddScoped<ICrudRepository<TipoTarefa>, CrudRepository<TipoTarefa>>()
+                .AddScoped<ICrudRepository<Workflow>, CrudRepository<Workflow>>();
 
             services
+                .AddScoped<ITarefaRepository, TarefaRepository>()
                 .AddScoped<IApontamentoRepository, ApontamentoRepository>()
-                .AddScoped<IWorkflowRepository, WorkflowRepository>()
                 .AddScoped<IRecursoRepository, RecursoRepository>()
                 .AddScoped<IImpedimentoTarefaRepository, ImpedimentoTarefaRepository>()
                 .AddScoped<IRecursoProjetoRepository, RecursoProjetoRepository>()
@@ -87,31 +74,35 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
             // Infra - CrossCutting - Communication
             services
-                .AddScoped<ISistemaApiService, SistemaApiService>()
-                .AddScoped<IProjetoApiService, ProjetoApiService>()
+                .AddScoped<ICrudApiService<SistemaViewModel>, SistemaApiService>()
+                .AddScoped<ICrudApiService<ProjetoViewModel>, ProjetoApiService>()
+                .AddScoped<ICrudApiService<ImpedimentoViewModel>, ImpedimentoApiService>()
+                .AddScoped<ICrudApiService<TipoTarefaViewModel>, TipoTarefaApiService>()
+                .AddScoped<ICrudApiService<WorkflowViewModel>, WorkflowApiService>();
+
+            services
                 .AddScoped<ITarefaApiService, TarefaApiService>()
                 .AddScoped<IApontamentoApiService, ApontamentoApiService>()
-                .AddScoped<IWorkflowApiService, WorkflowApiService>()
                 .AddScoped<IRecursoApiService, RecursoApiService>()
-                .AddScoped<IImpedimentoApiService, ImpedimentoApiService>()
                 .AddScoped<IImpedimentoTarefaApiService, ImpedimentoTarefaApiService>()
                 .AddScoped<IRecursoProjetoApiService, RecursoProjetoApiService>()
-                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>()
-                .AddScoped<ITipoTarefaApiService, TipoTarefaApiService>();
+                .AddScoped<IRecursoTarefaApiService, RecursoTarefaApiService>();
 
             // Infra - CrossCutting - Communication - GRPC
             services
-                .AddScoped<ISistemaGrpcService, SistemaGrpcService>()
-                .AddScoped<IProjetoGrpcService, ProjetoGrpcService>()
+                .AddScoped<ICrudGrpcService<SistemaViewModel>, SistemaGrpcService>()
+                .AddScoped<ICrudGrpcService<ProjetoViewModel>, ProjetoGrpcService>()
+                .AddScoped<ICrudGrpcService<ImpedimentoViewModel>, ImpedimentoGrpcService>()
+                .AddScoped<ICrudGrpcService<TipoTarefaViewModel>, TipoTarefaGrpcService>()
+                .AddScoped<ICrudGrpcService<WorkflowViewModel>, WorkflowGrpcService>();
+
+            services
                 .AddScoped<ITarefaGrpcService, TarefaGrpcService>()
                 .AddScoped<IApontamentoGrpcService, ApontamentoGrpcService>()
-                .AddScoped<IWorkflowGrpcService, WorkflowGrpcService>()
                 .AddScoped<IRecursoGrpcService, RecursoGrpcService>()
-                .AddScoped<IImpedimentoGrpcService, ImpedimentoGrpcService>()
                 .AddScoped<IImpedimentoTarefaGrpcService, ImpedimentoTarefaGrpcService>()
                 .AddScoped<IRecursoProjetoGrpcService, RecursoProjetoGrpcService>()
-                .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>()
-                .AddScoped<ITipoTarefaGrpcService, TipoTarefaGrpcService>();
+                .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>();
 
             return services;
         }

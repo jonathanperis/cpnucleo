@@ -9,10 +9,10 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
 
         public IncluirModel(IClaimsManager claimsManager,
-                                    ISistemaApiService sistemaApiService)
+                                    ICrudApiService<SistemaViewModel> sistemaApiService)
             : base(claimsManager)
         {
             _sistemaApiService = sistemaApiService;

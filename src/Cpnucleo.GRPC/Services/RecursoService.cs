@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -59,6 +60,18 @@ namespace Cpnucleo.GRPC
             {
                 Sucesso = _recursoAppService.Remover(new Guid(request.Id))
             });
+        }
+
+        public override async Task<RecursoModel> Autenticar(AutenticarRequest request, ServerCallContext context)
+        {
+            RecursoModel result = _mapper.Map<RecursoModel>(_recursoAppService.Autenticar(request.Login, request.Senha, out bool valido));
+
+            if (!valido)
+            {
+                //@@JONATHAN - ESTUDAR UMA MANEIRA DE DEVOLVER UM VALOR NULO VÁLIDO ATRAVÉS DO GRPC.
+            }
+
+            return await Task.FromResult(result);
         }
     }
 }

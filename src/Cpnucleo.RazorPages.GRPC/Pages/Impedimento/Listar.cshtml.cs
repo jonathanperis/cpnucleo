@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
+        private readonly ICrudGrpcService<ImpedimentoViewModel> _impedimentoGrpcService;
 
-        public ListarModel(IImpedimentoGrpcService impedimentoGrpcService)
+        public ListarModel(ICrudGrpcService<ImpedimentoViewModel> impedimentoGrpcService)
         {
             _impedimentoGrpcService = impedimentoGrpcService;
         }

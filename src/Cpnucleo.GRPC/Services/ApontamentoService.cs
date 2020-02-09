@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Apontamento;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -29,12 +30,12 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        public override async Task Listar(Empty request, IServerStreamWriter<ApontamentoModel> responseStream, ServerCallContext context)
+        public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
-            foreach (ApontamentoModel item in _mapper.Map<IEnumerable<ApontamentoModel>>(_apontamentoAppService.Listar()))
-            {
-                await responseStream.WriteAsync(item);
-            }
+            ListarReply result = new ListarReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<ApontamentoModel>>(_apontamentoAppService.Listar()));
+
+            return await Task.FromResult(result);
         }
 
         public override async Task<ApontamentoModel> Consultar(BaseRequest request, ServerCallContext context)
@@ -59,6 +60,14 @@ namespace Cpnucleo.GRPC
             {
                 Sucesso = _apontamentoAppService.Remover(new Guid(request.Id))
             });
+        }
+
+        public override async Task<ListarPorRecursoReply> ListarPorRecurso(BaseRequest request, ServerCallContext context)
+        {
+            ListarPorRecursoReply result = new ListarPorRecursoReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<ApontamentoModel>>(_apontamentoAppService.ListarPorRecurso(new Guid(request.Id))));
+
+            return await Task.FromResult(result);
         }
     }
 }

@@ -8,7 +8,5 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces
     public interface IRecursoTarefaGrpcService : ICrudGrpcService<RecursoTarefaViewModel>
     {
         Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa);
-
-        Task<IEnumerable<RecursoTarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso);
     }
 }

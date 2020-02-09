@@ -10,10 +10,10 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
 
         public ListarModel(IClaimsManager claimsManager,
-                                    IWorkflowApiService workflowApiService)
+                                    ICrudApiService<WorkflowViewModel> workflowApiService)
             : base(claimsManager)
         {
             _workflowApiService = workflowApiService;

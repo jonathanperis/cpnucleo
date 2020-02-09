@@ -7,7 +7,5 @@ namespace Cpnucleo.Application.Interfaces
     public interface IRecursoTarefaAppService : ICrudAppService<RecursoTarefaViewModel>
     {
         IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(Guid idTarefa);
-
-        IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(Guid idRecurso);
     }
 }

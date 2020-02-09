@@ -65,6 +65,23 @@ namespace Cpnucleo.API.Controllers.V2
         }
 
         /// <summary>
+        /// Consultar tarefa por id recurso
+        /// </summary>
+        /// <remarks>
+        /// # Consultar tarefa por id recurso
+        /// 
+        /// Consulta uma tarefa por id recurso na base de dados.
+        /// </remarks>
+        /// <param name="id">Id do Recurso</param>        
+        /// <response code="200">Retorna uma tarefa</response>
+        [HttpGet("GetByRecurso/{id}")]
+        [ProducesResponseType(200)]
+        public IEnumerable<TarefaViewModel> GetByRecurso(Guid id)
+        {
+            return _tarefaAppService.ListarPorRecurso(id);
+        }
+
+        /// <summary>
         /// Incluir tarefa
         /// </summary>
         /// <remarks>

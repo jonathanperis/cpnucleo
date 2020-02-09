@@ -14,16 +14,16 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     {
         private readonly IClaimsManager _claimsManager;
         private readonly IApontamentoApiService _apontamentoApiService;
-        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
+        private readonly ITarefaApiService _tarefaApiService;
 
         public ListarModel(IClaimsManager claimsManager,
                                     IApontamentoApiService apontamentoApiService,
-                                    IRecursoTarefaApiService recursoTarefaApiService)
+                                    ITarefaApiService tarefaApiService)
             : base(claimsManager)
         {
             _claimsManager = claimsManager;
             _apontamentoApiService = apontamentoApiService;
-            _recursoTarefaApiService = recursoTarefaApiService;
+            _tarefaApiService = tarefaApiService;
         }
 
         [BindProperty]
@@ -31,7 +31,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public IEnumerable<ApontamentoViewModel> Lista { get; set; }
 
-        public IEnumerable<RecursoTarefaViewModel> ListaRecursoTarefas { get; set; }
+        public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
 
         public IActionResult OnGet()
         {
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
             Guid idRecurso = new Guid(retorno);
 
             Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-            ListaRecursoTarefas = _recursoTarefaApiService.ListarPorRecurso(Token, idRecurso);
+            ListaTarefas = _tarefaApiService.ListarPorRecurso(Token, idRecurso);
 
             return Page();
         }
@@ -52,7 +52,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 Guid idRecurso = new Guid(retorno);
 
                 Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-                ListaRecursoTarefas = _recursoTarefaApiService.ListarPorRecurso(Token, idRecurso);
+                ListaTarefas = _tarefaApiService.ListarPorRecurso(Token, idRecurso);
 
                 return Page();
             }

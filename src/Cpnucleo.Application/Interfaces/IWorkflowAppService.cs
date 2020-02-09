@@ -1,10 +1,11 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Collections.Generic;
 
 namespace Cpnucleo.Application.Interfaces
 {
     public interface IWorkflowAppService : ICrudAppService<WorkflowViewModel>
     {
-        IEnumerable<WorkflowViewModel> ListarPorTarefa();
+        int ObterQuantidadeColunas();
+
+        string ObterTamanhoColuna(int quantidadeColunas);
     }
 }

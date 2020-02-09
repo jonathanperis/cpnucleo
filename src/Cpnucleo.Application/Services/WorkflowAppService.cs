@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
@@ -12,51 +11,48 @@ namespace Cpnucleo.Application.Services
 {
     public class WorkflowAppService : CrudAppService<Workflow, WorkflowViewModel>, IWorkflowAppService
     {
-        private readonly IWorkflowRepository _workflowRepository;
-
-        public WorkflowAppService(IMapper mapper, ICrudRepository<Workflow> repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
+        public WorkflowAppService(IMapper mapper, ICrudRepository<Workflow> repository, IUnitOfWork unitOfWork)
             : base(mapper, repository, unitOfWork)
         {
-            _workflowRepository = workflowRepository;
+
         }
 
-        public IEnumerable<WorkflowViewModel> ListarPorTarefa()
+        public new WorkflowViewModel Consultar(Guid id)
         {
-            IEnumerable<WorkflowViewModel> listaWorkflow = _workflowRepository.ListarPorTarefa().ProjectTo<WorkflowViewModel>(_mapper.ConfigurationProvider).ToList();
+            WorkflowViewModel result = base.Consultar(id);
 
-            foreach (WorkflowViewModel item in listaWorkflow)
+            int quantidadeColunas = ObterQuantidadeColunas();
+
+            result.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
+
+            return result;
+        }
+
+        public new IEnumerable<WorkflowViewModel> Listar()
+        {
+            IEnumerable<WorkflowViewModel> result = base.Listar();
+            
+            int quantidadeColunas = ObterQuantidadeColunas();
+            
+            foreach (WorkflowViewModel item in result)
             {
-                int qtdLista = listaWorkflow.Count();
-                qtdLista = qtdLista == 1 ? 2 : qtdLista;
-
-                int i = 12 / qtdLista;
-                item.TamanhoColuna = i.ToString();
-
-                foreach (TarefaViewModel tarefa in item.ListaTarefas)
-                {
-                    tarefa.HorasConsumidas = tarefa.ListaApontamentos.Sum(x => x.QtdHoras);
-                    tarefa.HorasRestantes = tarefa.QtdHoras - tarefa.HorasConsumidas;
-
-                    if (tarefa.ListaImpedimentos.Count() > 0)
-                    {
-                        tarefa.TipoTarefa.Element = "warning-element";
-                    }
-                    else if (DateTime.Now.Date >= tarefa.DataInicio && DateTime.Now.Date <= tarefa.DataTermino)
-                    {
-                        tarefa.TipoTarefa.Element = "success-element";
-                    }
-                    else if (DateTime.Now.Date > tarefa.DataTermino && tarefa.PercentualConcluido != 100)
-                    {
-                        tarefa.TipoTarefa.Element = "danger-element";
-                    }
-                    else
-                    {
-                        tarefa.TipoTarefa.Element = "info-element";
-                    }
-                }
+                item.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
             }
 
-            return listaWorkflow;
+            return result;
+        }
+
+        public int ObterQuantidadeColunas()
+        {
+            return base.Listar().Count();
+        }
+
+        public string ObterTamanhoColuna(int quantidadeColunas)
+        {
+            quantidadeColunas = quantidadeColunas == 1 ? 2 : quantidadeColunas;
+
+            int i = 12 / quantidadeColunas;
+            return i.ToString();
         }
     }
 }

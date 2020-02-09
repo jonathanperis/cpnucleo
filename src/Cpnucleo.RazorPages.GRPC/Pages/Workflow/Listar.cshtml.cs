@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ICrudGrpcService<WorkflowViewModel> _workflowGrpcService;
 
-        public ListarModel(IWorkflowGrpcService workflowGrpcService)
+        public ListarModel(ICrudGrpcService<WorkflowViewModel> workflowGrpcService)
         {
             _workflowGrpcService = workflowGrpcService;
         }

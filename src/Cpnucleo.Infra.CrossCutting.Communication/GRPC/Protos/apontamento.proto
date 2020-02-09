@@ -4,17 +4,18 @@ import "GRPC/Protos/base.proto";
 import "GRPC/Protos/tarefa.proto";
 import "google/protobuf/empty.proto";
 
-option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos";
+option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Apontamento";
 
 package apontamento;
 
 service Apontamento {
 
 	rpc Incluir (ApontamentoModel) returns (base.BaseReply);
-	rpc Listar (google.protobuf.Empty) returns (stream ApontamentoModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
 	rpc Consultar (base.BaseRequest) returns (ApontamentoModel);
 	rpc Alterar (ApontamentoModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorRecurso (base.BaseRequest) returns (ListarPorRecursoReply);
 }
 
 message ApontamentoModel {
@@ -23,9 +24,18 @@ message ApontamentoModel {
 	string Descricao = 2;
 	string DataApontamento = 3;
 	int32 QtdHoras = 4;
-	int32 PercentualConcluido = 5;
-	string IdTarefa = 6;
-	string IdRecurso = 7;
-	string DataInclusao = 8;
-	tarefa.TarefaModel Tarefa = 9;
+	string IdTarefa = 5;
+	string IdRecurso = 6;
+	string DataInclusao = 7;
+	tarefa.TarefaModel Tarefa = 8;
+}
+
+message ListarReply {
+
+    repeated ApontamentoModel Lista = 1;
+}
+
+message ListarPorRecursoReply {
+
+    repeated ApontamentoModel Lista = 1;
 }

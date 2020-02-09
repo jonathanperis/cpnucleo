@@ -1,13 +1,11 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class WorkflowApiService : CrudApiService<WorkflowViewModel>, IWorkflowApiService
+    public class WorkflowApiService : CrudApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
     {
         private const string actionRoute = "workflow";
 
@@ -34,21 +32,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
         public bool Alterar(string token, WorkflowViewModel obj)
         {
             return Put(token, actionRoute, obj.Id, obj);
-        }
-
-        public IEnumerable<WorkflowViewModel> ListarPorTarefa(string token)
-        {
-            try
-            {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa", Method.GET);
-                request.AddHeader("Authorization", token);
-
-                return JsonConvert.DeserializeObject<IEnumerable<WorkflowViewModel>>(_client.Execute(request).Content.ToString());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
     }
 }

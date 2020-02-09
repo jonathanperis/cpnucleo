@@ -13,16 +13,16 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
     public class AlterarModel : PageModel
     {
         private readonly ITarefaGrpcService _tarefaGrpcService;
-        private readonly IProjetoGrpcService _projetoGrpcService;
-        private readonly ISistemaGrpcService _sistemaGrpcService;
-        private readonly IWorkflowGrpcService _workflowGrpcService;
-        private readonly ITipoTarefaGrpcService _tipoTarefaGrpcService;
+        private readonly ICrudGrpcService<ProjetoViewModel> _projetoGrpcService;
+        private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
+        private readonly ICrudGrpcService<WorkflowViewModel> _workflowGrpcService;
+        private readonly ICrudGrpcService<TipoTarefaViewModel> _tipoTarefaGrpcService;
 
         public AlterarModel(ITarefaGrpcService tarefaGrpcService,
-                                    IProjetoGrpcService projetoGrpcService,
-                                    ISistemaGrpcService sistemaGrpcService,
-                                    IWorkflowGrpcService workflowGrpcService,
-                                    ITipoTarefaGrpcService tipoTarefaGrpcService)
+                                    ICrudGrpcService<ProjetoViewModel> projetoGrpcService,
+                                    ICrudGrpcService<SistemaViewModel> sistemaGrpcService,
+                                    ICrudGrpcService<WorkflowViewModel> workflowGrpcService,
+                                    ICrudGrpcService<TipoTarefaViewModel> tipoTarefaGrpcService)
         {
             _tarefaGrpcService = tarefaGrpcService;
             _projetoGrpcService = projetoGrpcService;

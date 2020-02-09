@@ -14,11 +14,11 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
     {
         private readonly IRecursoProjetoGrpcService _recursoProjetoGrpcService;
         private readonly IRecursoGrpcService _recursoGrpcService;
-        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ICrudGrpcService<ProjetoViewModel> _projetoGrpcService;
 
         public IncluirModel(IRecursoProjetoGrpcService recursoProjetoGrpcService,
                                     IRecursoGrpcService recursoGrpcService,
-                                    IProjetoGrpcService projetoGrpcService)
+                                    ICrudGrpcService<ProjetoViewModel> projetoGrpcService)
         {
             _recursoProjetoGrpcService = recursoProjetoGrpcService;
             _recursoGrpcService = recursoGrpcService;

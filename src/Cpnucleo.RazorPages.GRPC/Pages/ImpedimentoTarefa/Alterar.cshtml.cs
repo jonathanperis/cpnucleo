@@ -13,10 +13,10 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.ImpedimentoTarefa
     public class AlterarModel : PageModel
     {
         private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
-        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
+        private readonly ICrudGrpcService<ImpedimentoViewModel> _impedimentoGrpcService;
 
         public AlterarModel(IImpedimentoTarefaGrpcService impedimentoTarefaGrpcService,
-                                    IImpedimentoGrpcService impedimentoGrpcService)
+                                    ICrudGrpcService<ImpedimentoViewModel> impedimentoGrpcService)
         {
             _impedimentoTarefaGrpcService = impedimentoTarefaGrpcService;
             _impedimentoGrpcService = impedimentoGrpcService;

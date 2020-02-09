@@ -32,11 +32,9 @@
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Tarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Recurso)</th>
-                                <th>@Html.DisplayNameFor(x => x.RecursoTarefa.PercentualTarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.DataInclusao)</th>
                                 @if (Model.Lista.Count() > 0)
                                 {
-                                    <th class="no-sort"></th>
                                     <th class="no-sort"></th>
                                 }
                             </tr>
@@ -48,13 +46,9 @@
                                     <td>@item.Id</td>
                                     <td>@item.Tarefa.Nome</td>
                                     <td>@item.Recurso.Nome</td>
-                                    <td>@item.PercentualTarefa</td>
                                     <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)
                                     {
-                                        <td style="text-align: center">
-                                            <a class="btn btn-outline btn-warning btn-xs" role="button" asp-page="Alterar" asp-route-id="@item.Id">Alterar</a>
-                                        </td>
                                         <td style="text-align: center">
                                             <a class="btn btn-outline btn-danger btn-xs" role="button" asp-page="Remover" asp-route-id="@item.Id">Remover</a>
                                         </td>
@@ -67,11 +61,9 @@
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Id)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Tarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.Recurso)</th>
-                                <th>@Html.DisplayNameFor(x => x.RecursoTarefa.PercentualTarefa)</th>
                                 <th>@Html.DisplayNameFor(x => x.RecursoTarefa.DataInclusao)</th>
                                 @if (Model.Lista.Count() > 0)
                                 {
-                                    <th></th>
                                     <th></th>
                                 }
                             </tr>
