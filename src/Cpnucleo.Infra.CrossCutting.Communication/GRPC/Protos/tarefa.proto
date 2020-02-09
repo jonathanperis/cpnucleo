@@ -19,6 +19,7 @@ service Tarefa {
 	rpc Consultar (base.BaseRequest) returns (TarefaModel);
 	rpc Alterar (TarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorRecurso (base.BaseRequest) returns (ListarPorRecursoReply);
 	rpc AlterarPorWorkflow (AlterarPorWorkflowRequest) returns (base.BaseReply);
 }
 
@@ -50,6 +51,11 @@ message AlterarPorWorkflowRequest {
 } 
 
 message ListarReply {
+
+    repeated TarefaModel Lista = 1;
+}
+
+message ListarPorRecursoReply {
 
     repeated TarefaModel Lista = 1;
 }

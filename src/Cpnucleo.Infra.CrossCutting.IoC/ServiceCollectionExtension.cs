@@ -47,12 +47,12 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
             services
                 .AddScoped<ICrudRepository<Sistema>, CrudRepository<Sistema>>()
                 .AddScoped<ICrudRepository<Projeto>, CrudRepository<Projeto>>()
-                .AddScoped<ICrudRepository<Tarefa>, CrudRepository<Tarefa>>()
                 .AddScoped<ICrudRepository<Impedimento>, CrudRepository<Impedimento>>()
                 .AddScoped<ICrudRepository<TipoTarefa>, CrudRepository<TipoTarefa>>()
                 .AddScoped<ICrudRepository<Workflow>, CrudRepository<Workflow>>();
 
             services
+                .AddScoped<ITarefaRepository, TarefaRepository>()
                 .AddScoped<IApontamentoRepository, ApontamentoRepository>()
                 .AddScoped<IRecursoRepository, RecursoRepository>()
                 .AddScoped<IImpedimentoTarefaRepository, ImpedimentoTarefaRepository>()

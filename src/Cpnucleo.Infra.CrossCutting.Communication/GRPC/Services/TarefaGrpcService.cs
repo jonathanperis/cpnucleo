@@ -62,6 +62,17 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
+        public async Task<IEnumerable<TarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso)
+        {
+            BaseRequest request = new BaseRequest
+            {
+                Id = idRecurso.ToString()
+            };
+
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<TarefaViewModel>>(response.Lista);
+        }
+
         public async Task<bool> AlterarPorWorkflowAsync(Guid idTarefa, Guid idWorkflow)
         {
             AlterarPorWorkflowRequest request = new AlterarPorWorkflowRequest

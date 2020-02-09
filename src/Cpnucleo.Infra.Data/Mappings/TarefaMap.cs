@@ -117,6 +117,12 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .WithOne(c => c.Tarefa)
                 .HasForeignKey(f => f.IdTarefa)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder
+                .HasMany(p => p.ListaRecursoTarefas)
+                .WithOne(c => c.Tarefa)
+                .HasForeignKey(f => f.IdTarefa)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

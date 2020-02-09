@@ -3,6 +3,8 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Application.Services
@@ -15,12 +17,41 @@ namespace Cpnucleo.Application.Services
 
         }
 
-        public string ObterTamanhoColuna()
+        public new WorkflowViewModel Consultar(Guid id)
         {
-            int qtdLista = Listar().Count();
-            qtdLista = qtdLista == 1 ? 2 : qtdLista;
+            WorkflowViewModel result = base.Consultar(id);
 
-            int i = 12 / qtdLista;
+            int quantidadeColunas = ObterQuantidadeColunas();
+
+            result.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
+
+            return result;
+        }
+
+        public new IEnumerable<WorkflowViewModel> Listar()
+        {
+            IEnumerable<WorkflowViewModel> result = base.Listar();
+            
+            int quantidadeColunas = ObterQuantidadeColunas();
+            
+            foreach (WorkflowViewModel item in result)
+            {
+                item.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
+            }
+
+            return result;
+        }
+
+        public int ObterQuantidadeColunas()
+        {
+            return base.Listar().Count();
+        }
+
+        public string ObterTamanhoColuna(int quantidadeColunas)
+        {
+            quantidadeColunas = quantidadeColunas == 1 ? 2 : quantidadeColunas;
+
+            int i = 12 / quantidadeColunas;
             return i.ToString();
         }
     }

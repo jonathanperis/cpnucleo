@@ -34,5 +34,7 @@ namespace Cpnucleo.Domain.Models
         public IEnumerable<ImpedimentoTarefa> ListaImpedimentos { get; set; }
 
         public IEnumerable<Apontamento> ListaApontamentos { get; set; }
+
+        public IEnumerable<RecursoTarefa> ListaRecursoTarefas { get; set; }
     }
 }

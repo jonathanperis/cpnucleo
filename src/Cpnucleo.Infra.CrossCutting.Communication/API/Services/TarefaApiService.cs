@@ -1,5 +1,6 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,21 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 IRestResponse response = _client.Execute(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<TarefaViewModel> ListarPorRecurso(string token, Guid idRecurso)
+        {
+            try
+            {
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso.ToString()}", Method.GET);
+                request.AddHeader("Authorization", token);
+
+                return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(_client.Execute(request).Content.ToString());
             }
             catch (Exception)
             {

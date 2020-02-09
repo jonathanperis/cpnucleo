@@ -4,6 +4,8 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IWorkflowAppService : ICrudAppService<WorkflowViewModel>
     {
-        string ObterTamanhoColuna();
+        int ObterQuantidadeColunas();
+
+        string ObterTamanhoColuna(int quantidadeColunas);
     }
 }

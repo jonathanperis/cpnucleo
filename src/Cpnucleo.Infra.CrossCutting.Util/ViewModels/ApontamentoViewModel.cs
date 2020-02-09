@@ -21,11 +21,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         [Range(1, 24, ErrorMessage = "{0} deve estar entre {1} e {2}.")]
         public int QtdHoras { get; set; }
 
-        [Display(Name = "Percentual")]
-        [Required(ErrorMessage = "Necessário informar o {0} do Apontamento.")]
-        [Range(1, 100, ErrorMessage = "{0} deve estar entre {1} e {2}.")]
-        public int? PercentualConcluido { get; set; }
-
         [Required]
         [Display(Name = "Tarefa")]
         public Guid IdTarefa { get; set; }
