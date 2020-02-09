@@ -14,13 +14,13 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
         private readonly ITarefaGrpcService _tarefaGrpcService;
         private readonly ICrudGrpcService<ProjetoViewModel> _projetoGrpcService;
         private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
-        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ICrudGrpcService<WorkflowViewModel> _workflowGrpcService;
         private readonly ICrudGrpcService<TipoTarefaViewModel> _tipoTarefaGrpcService;
 
         public IncluirModel(ITarefaGrpcService tarefaGrpcService,
                                     ICrudGrpcService<ProjetoViewModel> projetoGrpcService,
                                     ICrudGrpcService<SistemaViewModel> sistemaGrpcService,
-                                    IWorkflowGrpcService workflowGrpcService,
+                                    ICrudGrpcService<WorkflowViewModel> workflowGrpcService,
                                     ICrudGrpcService<TipoTarefaViewModel> tipoTarefaGrpcService)
         {
             _tarefaGrpcService = tarefaGrpcService;

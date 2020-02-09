@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ICrudGrpcService<WorkflowViewModel> _workflowGrpcService;
 
-        public AlterarModel(IWorkflowGrpcService workflowGrpcService)
+        public AlterarModel(ICrudGrpcService<WorkflowViewModel> workflowGrpcService)
         {
             _workflowGrpcService = workflowGrpcService;
         }

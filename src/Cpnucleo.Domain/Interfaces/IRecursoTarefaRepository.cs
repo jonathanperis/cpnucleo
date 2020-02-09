@@ -7,7 +7,5 @@ namespace Cpnucleo.Domain.Interfaces
     public interface IRecursoTarefaRepository : ICrudRepository<RecursoTarefa>
     {
         IQueryable<RecursoTarefa> ListarPorTarefa(Guid idTarefa);
-
-        IQueryable<RecursoTarefa> ListarPorRecurso(Guid idRecurso);
     }
 }

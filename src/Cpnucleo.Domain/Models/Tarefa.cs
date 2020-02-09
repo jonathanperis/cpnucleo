@@ -15,8 +15,6 @@ namespace Cpnucleo.Domain.Models
 
         public string Detalhe { get; set; }
 
-        public int? PercentualConcluido { get; set; }
-
         public Guid IdProjeto { get; set; }
 
         public Guid? IdWorkflow { get; set; }

@@ -17,7 +17,6 @@ service RecursoTarefa {
 	rpc Alterar (RecursoTarefaModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
 	rpc ListarPorTarefa (base.BaseRequest) returns (ListarPorTarefaReply);
-	rpc ListarPorRecurso (base.BaseRequest) returns (ListarPorRecursoReply);
 }
 
 message RecursoTarefaModel {
@@ -39,11 +38,6 @@ message ListarReply {
 }
 
 message ListarPorTarefaReply {
-
-    repeated RecursoTarefaModel Lista = 1;
-}
-
-message ListarPorRecursoReply {
 
     repeated RecursoTarefaModel Lista = 1;
 }

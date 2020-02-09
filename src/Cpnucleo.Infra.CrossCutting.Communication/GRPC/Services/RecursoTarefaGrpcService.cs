@@ -72,16 +72,5 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             ListarPorTarefaReply response = await _client.ListarPorTarefaAsync(request);
             return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(response.Lista);
         }
-
-        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorRecursoAsync(Guid idRecurso)
-        {
-            BaseRequest request = new BaseRequest
-            {
-                Id = idRecurso.ToString()
-            };
-
-            ListarPorRecursoReply response = await _client.ListarPorRecursoAsync(request);
-            return _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(response.Lista);
-        }
     }
 }

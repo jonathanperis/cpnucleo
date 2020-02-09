@@ -70,14 +70,5 @@ namespace Cpnucleo.GRPC
 
             return await Task.FromResult(result);
         }
-
-        public override async Task<ListarPorRecursoReply> ListarPorRecurso(BaseRequest request, ServerCallContext context)
-        {
-            Guid id = new Guid(request.Id);
-            ListarPorRecursoReply result = new ListarPorRecursoReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_recursoTarefaAppService.ListarPorRecurso(id)));
-
-            return await Task.FromResult(result);
-        }
     }
 }
