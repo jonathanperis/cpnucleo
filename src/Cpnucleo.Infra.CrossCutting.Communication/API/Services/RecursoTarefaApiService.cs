@@ -50,20 +50,5 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 throw;
             }
         }
-
-        public IEnumerable<RecursoTarefaViewModel> ListarPorRecurso(string token, Guid idRecurso)
-        {
-            try
-            {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso.ToString()}", Method.GET);
-                request.AddHeader("Authorization", token);
-
-                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(_client.Execute(request).Content.ToString());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
     }
 }

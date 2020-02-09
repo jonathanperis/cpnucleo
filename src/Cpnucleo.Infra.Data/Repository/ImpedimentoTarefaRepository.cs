@@ -15,13 +15,6 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IQueryable<ImpedimentoTarefa> ConsultaPorTarefa(Guid idTarefa)
-        {
-            return _dbSet
-                .AsNoTracking()
-                .Where(x => x.IdTarefa == idTarefa && x.Ativo);
-        }
-
         public IQueryable<ImpedimentoTarefa> ListarPorTarefa(Guid idTarefa)
         {
             return Listar()

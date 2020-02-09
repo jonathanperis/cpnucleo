@@ -22,8 +22,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 
         public TarefaViewModel Tarefa { get; set; }
 
-        public int HorasUtilizadas { get; set; }
-
         public int HorasDisponiveis { get; set; }
     }
 }
