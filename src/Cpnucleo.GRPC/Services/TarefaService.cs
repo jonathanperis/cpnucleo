@@ -62,6 +62,14 @@ namespace Cpnucleo.GRPC
             });
         }
 
+        public override async Task<ListarPorRecursoReply> ListarPorRecurso(BaseRequest request, ServerCallContext context)
+        {
+            ListarPorRecursoReply result = new ListarPorRecursoReply();
+            result.Lista.AddRange(_mapper.Map<IEnumerable<TarefaModel>>(_tarefaAppService.ListarPorRecurso(new Guid(request.Id))));
+
+            return await Task.FromResult(result);
+        }
+
         public override async Task<BaseReply> AlterarPorWorkflow(AlterarPorWorkflowRequest request, ServerCallContext context)
         {
             Guid idTarefa = new Guid(request.IdTarefa);

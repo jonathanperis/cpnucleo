@@ -24,11 +24,10 @@ message ApontamentoModel {
 	string Descricao = 2;
 	string DataApontamento = 3;
 	int32 QtdHoras = 4;
-	int32 PercentualConcluido = 5;
-	string IdTarefa = 6;
-	string IdRecurso = 7;
-	string DataInclusao = 8;
-	tarefa.TarefaModel Tarefa = 9;
+	string IdTarefa = 5;
+	string IdRecurso = 6;
+	string DataInclusao = 7;
+	tarefa.TarefaModel Tarefa = 8;
 }
 
 message ListarReply {

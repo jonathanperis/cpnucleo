@@ -5,11 +5,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     public class RecursoTarefaViewModel : BaseViewModel
     {
-        [Display(Name = "Percentual")]
-        [Required(ErrorMessage = "Necessário informar o {0}.")]
-        [Range(1, 100, ErrorMessage = "{0} deve estar entre {1} e {2}.")]
-        public int? PercentualTarefa { get; set; }
-
         [Display(Name = "Recurso")]
         [Required(ErrorMessage = "Necessário informar o {0}.")]
         public Guid IdRecurso { get; set; }

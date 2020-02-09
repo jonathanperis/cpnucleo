@@ -22,13 +22,12 @@ service RecursoTarefa {
 message RecursoTarefaModel {
 
 	string Id = 1;
-	int32 PercentualTarefa = 2;
-	string IdRecurso = 3;
-	string IdTarefa = 4;
-	int32 HorasDisponiveis = 5;
-	string DataInclusao = 6;
-	recurso.RecursoModel Recurso = 7;
-	tarefa.TarefaModel Tarefa = 8;
+	string IdRecurso = 2;
+	string IdTarefa = 3;
+	int32 HorasDisponiveis = 4;
+	string DataInclusao = 5;
+	recurso.RecursoModel Recurso = 6;
+	tarefa.TarefaModel Tarefa = 7;
 }
 
 message ListarReply {

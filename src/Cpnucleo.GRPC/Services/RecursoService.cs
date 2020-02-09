@@ -64,7 +64,12 @@ namespace Cpnucleo.GRPC
 
         public override async Task<RecursoModel> Autenticar(AutenticarRequest request, ServerCallContext context)
         {
-            RecursoModel result = _mapper.Map<RecursoModel>(_recursoAppService.Autenticar(request.Login, request.Senha, out _));
+            RecursoModel result = _mapper.Map<RecursoModel>(_recursoAppService.Autenticar(request.Login, request.Senha, out bool valido));
+
+            if (!valido)
+            {
+                //@@JONATHAN - ESTUDAR UMA MANEIRA DE DEVOLVER UM VALOR NULO VÁLIDO ATRAVÉS DO GRPC.
+            }
 
             return await Task.FromResult(result);
         }
