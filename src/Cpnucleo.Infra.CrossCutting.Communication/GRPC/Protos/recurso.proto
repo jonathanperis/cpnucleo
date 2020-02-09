@@ -25,7 +25,7 @@ message RecursoModel {
 	string Login = 3;
 	string Senha = 4;
 	google.protobuf.StringValue ConfirmarSenha = 5;
-	string Salt = 6;
+	google.protobuf.StringValue Salt = 6;
 	google.protobuf.StringValue Token = 7;
 	string DataInclusao = 8;
 }
