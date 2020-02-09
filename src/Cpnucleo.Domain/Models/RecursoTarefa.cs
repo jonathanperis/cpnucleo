@@ -4,7 +4,7 @@ namespace Cpnucleo.Domain.Models
 {
     public class RecursoTarefa : BaseModel
     {
-        public int? PercentualTarefa { get; set; }
+        public int PercentualTarefa { get; set; }
 
         public Guid IdRecurso { get; set; }
 

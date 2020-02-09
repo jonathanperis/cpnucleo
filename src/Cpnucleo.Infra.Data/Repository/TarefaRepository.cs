@@ -17,7 +17,14 @@ namespace Cpnucleo.Infra.Data.Repository
 
         public IQueryable<Tarefa> ListarPorRecurso(Guid idRecurso)
         {
-            return Listar();
+            return Listar()
+                .Select(Tarefa => new
+                {
+                    Tarefa,
+                    ListaRecursoTarefas = Tarefa.ListaRecursoTarefas
+                        .Where(p => p.IdRecurso == idRecurso)
+                })
+                .Select(x => x.Tarefa);
         }
     }
 }

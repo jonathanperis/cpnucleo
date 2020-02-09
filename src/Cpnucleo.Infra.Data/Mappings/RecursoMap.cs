@@ -14,7 +14,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Id)
                 .HasColumnName("REC_ID")
                 .HasColumnType("uniqueidentifier")
-                .HasDefaultValue(Guid.NewGuid())
                 .IsRequired();
 
             builder.Property(c => c.Nome)
@@ -44,7 +43,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("REC_DATA_INCLUSAO")
                 .HasColumnType("datetime")
-                .HasDefaultValue(DateTime.Now)
                 .IsRequired();
 
             builder.Property(c => c.DataAlteracao)
@@ -58,7 +56,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Ativo)
                 .HasColumnName("REC_ATIVO")
                 .HasColumnType("bit")
-                .HasDefaultValue(true)
                 .IsRequired();
         }
     }
