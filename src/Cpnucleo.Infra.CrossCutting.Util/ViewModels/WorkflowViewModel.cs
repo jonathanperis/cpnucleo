@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels

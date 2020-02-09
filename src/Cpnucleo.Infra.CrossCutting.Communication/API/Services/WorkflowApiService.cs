@@ -1,7 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 
