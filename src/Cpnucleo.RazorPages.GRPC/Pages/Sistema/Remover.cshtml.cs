@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
     [Authorize]
     public class RemoverModel : PageModel
     {
-        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
 
-        public RemoverModel(ISistemaGrpcService sistemaGrpcService)
+        public RemoverModel(ICrudGrpcService<SistemaViewModel> sistemaGrpcService)
         {
             _sistemaGrpcService = sistemaGrpcService;
         }

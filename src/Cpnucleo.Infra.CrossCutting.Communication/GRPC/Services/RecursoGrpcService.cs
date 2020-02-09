@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -41,6 +42,14 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
         {
             List<RecursoViewModel> result = new List<RecursoViewModel>();
 
+            //using (AsyncServerStreamingCall<RecursoModel> reply = _client.Listar(new Empty()))
+            //{
+            //    await foreach (RecursoModel item in reply.ResponseStream.ReadAllAsync())
+            //    {
+            //        result.Add(_mapper.Map<RecursoViewModel>(item));
+            //    }
+            //}
+
             using (AsyncServerStreamingCall<RecursoModel> reply = _client.Listar(new Empty()))
             {
                 while (await reply.ResponseStream.MoveNext())
@@ -71,9 +80,15 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<RecursoViewModel> AutenticarAsync(string login, string senha)
+        public async Task<RecursoViewModel> AutenticarAsync(string login, string senha)
         {
-            throw new NotImplementedException();
+            AutenticarRequest request = new AutenticarRequest
+            {
+                Login = login,
+                Senha = senha
+            };
+
+            return _mapper.Map<RecursoViewModel>(await _client.AutenticarAsync(request));
         }
     }
 }

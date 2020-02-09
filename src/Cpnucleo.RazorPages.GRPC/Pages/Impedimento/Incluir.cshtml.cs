@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
+        private readonly ICrudGrpcService<ImpedimentoViewModel> _impedimentoGrpcService;
 
-        public IncluirModel(IImpedimentoGrpcService impedimentoGrpcService)
+        public IncluirModel(ICrudGrpcService<ImpedimentoViewModel> impedimentoGrpcService)
         {
             _impedimentoGrpcService = impedimentoGrpcService;
         }

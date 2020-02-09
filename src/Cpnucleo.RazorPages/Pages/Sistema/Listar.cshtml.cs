@@ -10,10 +10,10 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ISistemaApiService _sistemaApiService;
+        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
 
         public ListarModel(IClaimsManager claimsManager,
-                                    ISistemaApiService sistemaApiService)
+                                    ICrudApiService<SistemaViewModel> sistemaApiService)
             : base(claimsManager)
         {
             _sistemaApiService = sistemaApiService;

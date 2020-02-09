@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
@@ -16,7 +15,5 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 
         [Display(Name = "Tamanho Coluna")]
         public string TamanhoColuna { get; set; }
-
-        public List<TarefaViewModel> ListaTarefas { get; set; }
     }
 }

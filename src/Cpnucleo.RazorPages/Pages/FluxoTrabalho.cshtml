@@ -23,13 +23,15 @@
 
         foreach (var workflow in Model.Lista)
         {
+            var listaTarefas = Model.ListaTarefas.Where(x => x.Workflow.Id == workflow.Id).ToList();
+
             <div class="col-lg-@workflow.TamanhoColuna">
                 <div class="ibox">
                     <div class="ibox-content">
-                        <h3>@workflow.Nome <span id="workflow-animate-@workflow.Id" class="animated"><span id="workflow-badge-@workflow.Id" class="badge">@workflow.ListaTarefas.Count()</span></span></h3>
+                        <h3>@workflow.Nome <span id="workflow-animate-@workflow.Id" class="animated"><span id="workflow-badge-@workflow.Id" class="badge">@listaTarefas.Count()</span></span></h3>
                         <p class="small"><i class="fa fa-hand-o-up"></i> Arraste a tarefa entre as listas</p>
                         <ul class="sortable-list connectList agile-list ui-sortable" id="workflow-id-@workflow.Id">
-                            @foreach (var tarefa in workflow.ListaTarefas)
+                            @foreach (var tarefa in listaTarefas)
                             {
                                 await Html.RenderPartialAsync("_CardFluxoTrabalhoPartial", tarefa);
                             }

@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Impedimento;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class ImpedimentoGrpcService : BaseGrpcService, IImpedimentoGrpcService
+    public class ImpedimentoGrpcService : BaseGrpcService, ICrudGrpcService<ImpedimentoViewModel>
     {
         private readonly Impedimento.ImpedimentoClient _client;
 
@@ -39,25 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<ImpedimentoViewModel>> ListarAsync()
         {
-            List<ImpedimentoViewModel> result = new List<ImpedimentoViewModel>();
-
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<ImpedimentoViewModel>(item));
-            //    }
-            //}
-
-            using (AsyncServerStreamingCall<ImpedimentoModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<ImpedimentoViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<ImpedimentoViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(ImpedimentoViewModel obj)

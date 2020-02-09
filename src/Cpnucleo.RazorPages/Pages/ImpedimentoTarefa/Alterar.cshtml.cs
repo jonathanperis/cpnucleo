@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     public class AlterarModel : PageBase
     {
         private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
 
         public AlterarModel(IClaimsManager claimsManager,
                                     IImpedimentoTarefaApiService impedimentoTarefaApiService,
-                                    IImpedimentoApiService impedimentoApiService)
+                                    ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
             : base(claimsManager)
         {
             _impedimentoTarefaApiService = impedimentoTarefaApiService;

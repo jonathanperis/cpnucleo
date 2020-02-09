@@ -12,10 +12,10 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
     [Authorize]
     public class FluxoTrabalhoModel : PageModel
     {
-        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ICrudGrpcService<WorkflowViewModel> _workflowGrpcService;
         private readonly ITarefaGrpcService _tarefaGrpcService;
 
-        public FluxoTrabalhoModel(IWorkflowGrpcService workflowGrpcService,
+        public FluxoTrabalhoModel(ICrudGrpcService<WorkflowViewModel> workflowGrpcService,
                                         ITarefaGrpcService tarefaGrpcService)
         {
             _workflowGrpcService = workflowGrpcService;
@@ -24,9 +24,12 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
 
+        public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
+
         public async Task<IActionResult> OnGet()
         {
-            Lista = await _workflowGrpcService.ListarPorTarefaAsync();
+            Lista = await _workflowGrpcService.ListarAsync();
+            ListaTarefas = await _tarefaGrpcService.ListarAsync();
 
             return Page();
         }

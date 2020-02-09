@@ -15,8 +15,6 @@ namespace Cpnucleo.Domain.Models
 
         public string Detalhe { get; set; }
 
-        public int? PercentualConcluido { get; set; }
-
         public Guid IdProjeto { get; set; }
 
         public Guid? IdWorkflow { get; set; }
@@ -36,5 +34,7 @@ namespace Cpnucleo.Domain.Models
         public IEnumerable<ImpedimentoTarefa> ListaImpedimentos { get; set; }
 
         public IEnumerable<Apontamento> ListaApontamentos { get; set; }
+
+        public IEnumerable<RecursoTarefa> ListaRecursoTarefas { get; set; }
     }
 }

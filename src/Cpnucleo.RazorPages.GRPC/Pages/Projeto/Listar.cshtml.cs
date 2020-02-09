@@ -11,9 +11,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ICrudGrpcService<ProjetoViewModel> _projetoGrpcService;
 
-        public ListarModel(IProjetoGrpcService projetoGrpcService)
+        public ListarModel(ICrudGrpcService<ProjetoViewModel> projetoGrpcService)
         {
             _projetoGrpcService = projetoGrpcService;
         }

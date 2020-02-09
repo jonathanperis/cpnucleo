@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.ImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -39,25 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarAsync()
         {
-            List<ImpedimentoTarefaViewModel> result = new List<ImpedimentoTarefaViewModel>();
-
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<ImpedimentoTarefaViewModel>(item));
-            //    }
-            //}
-
-            using (AsyncServerStreamingCall<ImpedimentoTarefaModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<ImpedimentoTarefaViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(ImpedimentoTarefaViewModel obj)
@@ -79,9 +62,15 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             return reply.Sucesso;
         }
 
-        public Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
+        public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(Guid idTarefa)
         {
-            throw new NotImplementedException();
+            BaseRequest request = new BaseRequest
+            {
+                Id = idTarefa.ToString()
+            };
+
+            ListarPorTarefaReply response = await _client.ListarPorTarefaAsync(request);
+            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(response.Lista);
         }
     }
 }

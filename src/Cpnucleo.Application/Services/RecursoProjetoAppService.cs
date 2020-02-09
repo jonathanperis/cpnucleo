@@ -14,7 +14,7 @@ namespace Cpnucleo.Application.Services
     {
         private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
-        public RecursoProjetoAppService(IMapper mapper, ICrudRepository<RecursoProjeto> repository, IUnitOfWork unitOfWork, IRecursoProjetoRepository recursoProjetoRepository)
+        public RecursoProjetoAppService(IMapper mapper, IRecursoProjetoRepository repository, IUnitOfWork unitOfWork, IRecursoProjetoRepository recursoProjetoRepository)
             : base(mapper, repository, unitOfWork)
         {
             _recursoProjetoRepository = recursoProjetoRepository;

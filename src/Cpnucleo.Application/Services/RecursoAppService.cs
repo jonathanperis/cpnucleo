@@ -3,8 +3,8 @@ using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
+using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.Infra.Security.Interfaces;
 using System.Linq;
 
 namespace Cpnucleo.Application.Services
@@ -14,7 +14,7 @@ namespace Cpnucleo.Application.Services
         private readonly IRecursoRepository _recursoRepository;
         private readonly ICryptographyManager _cryptographyManager;
 
-        public RecursoAppService(IMapper mapper, ICrudRepository<Recurso> repository, IUnitOfWork unitOfWork, IRecursoRepository recursoRepository, ICryptographyManager cryptographyManager)
+        public RecursoAppService(IMapper mapper, IRecursoRepository repository, IUnitOfWork unitOfWork, IRecursoRepository recursoRepository, ICryptographyManager cryptographyManager)
             : base(mapper, repository, unitOfWork)
         {
             _recursoRepository = recursoRepository;

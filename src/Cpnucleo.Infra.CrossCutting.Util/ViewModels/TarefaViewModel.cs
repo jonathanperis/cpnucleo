@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
@@ -31,9 +30,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         [MaxLength(1000, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
         public string Detalhe { get; set; }
 
-        [Display(Name = "Percentual Concluído")]
-        public int? PercentualConcluido { get; set; }
-
         public int HorasConsumidas { get; set; }
 
         public int HorasRestantes { get; set; }
@@ -44,15 +40,15 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 
         [Display(Name = "Workflow")]
         [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
-        public Guid? IdWorkflow { get; set; }
+        public Guid IdWorkflow { get; set; }
 
         [Display(Name = "Recurso")]
         [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
-        public Guid? IdRecurso { get; set; }
+        public Guid IdRecurso { get; set; }
 
         [Display(Name = "Tipo Tarefa")]
         [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
-        public Guid? IdTipoTarefa { get; set; }
+        public Guid IdTipoTarefa { get; set; }
 
         public ProjetoViewModel Projeto { get; set; }
 
@@ -61,10 +57,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         public RecursoViewModel Recurso { get; set; }
 
         public TipoTarefaViewModel TipoTarefa { get; set; }
-
-        public List<ImpedimentoTarefaViewModel> ListaImpedimentos { get; set; }
-
-        public List<ApontamentoViewModel> ListaApontamentos { get; set; }
 
         // public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         // {

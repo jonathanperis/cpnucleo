@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
     [Authorize]
     public class AlterarModel : PageModel
     {
-        private readonly IProjetoGrpcService _projetoGrpcService;
-        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly ICrudGrpcService<ProjetoViewModel> _projetoGrpcService;
+        private readonly ICrudGrpcService<SistemaViewModel> _sistemaGrpcService;
 
-        public AlterarModel(IProjetoGrpcService projetoGrpcService,
-                            ISistemaGrpcService sistemaGrpcService)
+        public AlterarModel(ICrudGrpcService<ProjetoViewModel> projetoGrpcService,
+                            ICrudGrpcService<SistemaViewModel> sistemaGrpcService)
         {
             _projetoGrpcService = projetoGrpcService;
             _sistemaGrpcService = sistemaGrpcService;

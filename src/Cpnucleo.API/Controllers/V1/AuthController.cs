@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.Security.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cpnucleo.API.Controllers.V1

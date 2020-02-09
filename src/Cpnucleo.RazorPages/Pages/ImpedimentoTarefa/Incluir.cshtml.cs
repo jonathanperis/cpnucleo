@@ -12,12 +12,12 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     public class IncluirModel : PageBase
     {
         private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
-        private readonly IImpedimentoApiService _impedimentoApiService;
+        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
         private readonly ITarefaApiService _tarefaApiService;
 
         public IncluirModel(IClaimsManager claimsManager,
                                     IImpedimentoTarefaApiService impedimentoTarefaApiService,
-                                    IImpedimentoApiService impedimentoApiService,
+                                    ICrudApiService<ImpedimentoViewModel> impedimentoApiService,
                                     ITarefaApiService tarefaApiService)
             : base(claimsManager)
         {

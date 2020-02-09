@@ -32,6 +32,16 @@ namespace Cpnucleo.GRPC
             {
                 endpoints.MapGrpcService<SistemaService>();
                 endpoints.MapGrpcService<ProjetoService>();
+                endpoints.MapGrpcService<ImpedimentoService>();
+                endpoints.MapGrpcService<TipoTarefaService>();
+                endpoints.MapGrpcService<TarefaService>();
+                endpoints.MapGrpcService<ApontamentoService>();
+                endpoints.MapGrpcService<WorkflowService>();
+                endpoints.MapGrpcService<RecursoService>();
+                endpoints.MapGrpcService<ImpedimentoTarefaService>();
+                endpoints.MapGrpcService<RecursoProjetoService>();
+                endpoints.MapGrpcService<RecursoTarefaService>();
+
                 //endpoints.MapGrpcService<SistemaService>().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>

@@ -1,5 +1,6 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -36,11 +37,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             return Put(token, actionRoute, obj.Id, obj);
         }
 
-        public bool AlterarPorPercentualConcluido(string token, Guid idTarefa, int? percentualConcluido)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool AlterarPorWorkflow(string token, Guid idTarefa, Guid idWorkflow)
         {
             try
@@ -52,6 +48,23 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 IRestResponse response = _client.Execute(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<TarefaViewModel> ListarPorRecurso(string token, Guid idRecurso)
+        {
+            try
+            {
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso.ToString()}", Method.GET);
+                request.AddHeader("Authorization", token);
+
+                var result = _client.Execute(request);
+
+                return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(_client.Execute(request).Content.ToString());
             }
             catch (Exception)
             {

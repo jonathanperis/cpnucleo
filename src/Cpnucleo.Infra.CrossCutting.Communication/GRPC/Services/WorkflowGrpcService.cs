@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
+using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Workflow;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class WorkflowGrpcService : BaseGrpcService, IWorkflowGrpcService
+    public class WorkflowGrpcService : BaseGrpcService, ICrudGrpcService<WorkflowViewModel>
     {
         private readonly Workflow.WorkflowClient _client;
 
@@ -39,25 +39,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 
         public async Task<IEnumerable<WorkflowViewModel>> ListarAsync()
         {
-            List<WorkflowViewModel> result = new List<WorkflowViewModel>();
-
-            //using (var reply = _client.Listar(new ListarRequest()))
-            //{
-            //    await foreach (var item in reply.ResponseStream.ReadAllAsync())
-            //    {
-            //        result.Add(_mapper.Map<WorkflowViewModel>(item));
-            //    }
-            //}
-
-            using (AsyncServerStreamingCall<WorkflowModel> reply = _client.Listar(new Empty()))
-            {
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    result.Add(_mapper.Map<WorkflowViewModel>(reply.ResponseStream.Current));
-                }
-            }
-
-            return result;
+            ListarReply response = await _client.ListarAsync(new Empty());
+            return _mapper.Map<IEnumerable<WorkflowViewModel>>(response.Lista);
         }
 
         public async Task<bool> AlterarAsync(WorkflowViewModel obj)
@@ -77,11 +60,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             BaseReply reply = await _client.RemoverAsync(request);
 
             return reply.Sucesso;
-        }
-
-        public Task<IEnumerable<WorkflowViewModel>> ListarPorTarefaAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

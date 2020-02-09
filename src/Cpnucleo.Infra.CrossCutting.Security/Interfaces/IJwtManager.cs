@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.Security.Interfaces
+﻿namespace Cpnucleo.Infra.CrossCutting.Security.Interfaces
 {
     public interface IJwtManager
     {

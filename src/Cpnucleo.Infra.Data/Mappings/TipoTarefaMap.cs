@@ -14,7 +14,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Id)
                 .HasColumnName("TIP_ID")
                 .HasColumnType("uniqueidentifier")
-                .HasDefaultValue(Guid.NewGuid())
                 .IsRequired();
 
             builder.Property(c => c.Nome)
@@ -26,13 +25,12 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Image)
                 .HasColumnName("TIP_IMAGE_CARD")
                 .HasColumnType("varchar(100)")
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .IsRequired();
 
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TIP_DATA_INCLUSAO")
                 .HasColumnType("datetime")
-                .HasDefaultValue(DateTime.Now)
                 .IsRequired();
 
             builder.Property(c => c.DataAlteracao)
@@ -46,7 +44,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Ativo)
                 .HasColumnName("TIP_ATIVO")
                 .HasColumnType("bit")
-                .HasDefaultValue(true)
                 .IsRequired();
         }
     }
