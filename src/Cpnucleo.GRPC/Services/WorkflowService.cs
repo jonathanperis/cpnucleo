@@ -61,13 +61,5 @@ namespace Cpnucleo.GRPC
                 Sucesso = _workflowAppService.Remover(new Guid(request.Id))
             });
         }
-
-        public override async Task<ListarPorTarefaReply> ListarPorTarefa(Empty request, ServerCallContext context)
-        {
-            ListarPorTarefaReply result = new ListarPorTarefaReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<WorkflowModel>>(_workflowAppService.ListarPorTarefa()));
-
-            return await Task.FromResult(result);
-        }
     }
 }

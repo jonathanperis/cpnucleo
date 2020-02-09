@@ -42,10 +42,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("TAR_DETALHE")
                 .HasColumnType("varchar(1000)");
 
-            builder.Property(c => c.PercentualConcluido)
-                .HasColumnName("TAR_PERCENTUAL_CONCLUIDO")
-                .HasColumnType("int");
-
             builder.Property(c => c.IdProjeto)
                 .HasColumnName("PROJ_ID")
                 .HasColumnType("uniqueidentifier")

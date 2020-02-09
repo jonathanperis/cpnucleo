@@ -1,62 +1,27 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
     public class WorkflowAppService : CrudAppService<Workflow, WorkflowViewModel>, IWorkflowAppService
     {
-        private readonly IWorkflowRepository _workflowRepository;
-
-        public WorkflowAppService(IMapper mapper, IWorkflowRepository repository, IUnitOfWork unitOfWork, IWorkflowRepository workflowRepository)
+        public WorkflowAppService(IMapper mapper, ICrudRepository<Workflow> repository, IUnitOfWork unitOfWork)
             : base(mapper, repository, unitOfWork)
         {
-            _workflowRepository = workflowRepository;
+
         }
 
-        public IEnumerable<WorkflowViewModel> ListarPorTarefa()
+        public string ObterTamanhoColuna()
         {
-            IEnumerable<WorkflowViewModel> listaWorkflow = _workflowRepository.ListarPorTarefa().ProjectTo<WorkflowViewModel>(_mapper.ConfigurationProvider).ToList();
+            int qtdLista = Listar().Count();
+            qtdLista = qtdLista == 1 ? 2 : qtdLista;
 
-            foreach (WorkflowViewModel item in listaWorkflow)
-            {
-                int qtdLista = listaWorkflow.Count();
-                qtdLista = qtdLista == 1 ? 2 : qtdLista;
-
-                int i = 12 / qtdLista;
-                item.TamanhoColuna = i.ToString();
-
-                foreach (TarefaViewModel tarefa in item.ListaTarefas)
-                {
-                    tarefa.HorasConsumidas = tarefa.ListaApontamentos.Sum(x => x.QtdHoras);
-                    tarefa.HorasRestantes = tarefa.QtdHoras - tarefa.HorasConsumidas;
-
-                    if (tarefa.ListaImpedimentos.Count() > 0)
-                    {
-                        tarefa.TipoTarefa.Element = "warning-element";
-                    }
-                    else if (DateTime.Now.Date >= tarefa.DataInicio && DateTime.Now.Date <= tarefa.DataTermino)
-                    {
-                        tarefa.TipoTarefa.Element = "success-element";
-                    }
-                    else if (DateTime.Now.Date > tarefa.DataTermino && tarefa.PercentualConcluido != 100)
-                    {
-                        tarefa.TipoTarefa.Element = "danger-element";
-                    }
-                    else
-                    {
-                        tarefa.TipoTarefa.Element = "info-element";
-                    }
-                }
-            }
-
-            return listaWorkflow;
+            int i = 12 / qtdLista;
+            return i.ToString();
         }
     }
 }

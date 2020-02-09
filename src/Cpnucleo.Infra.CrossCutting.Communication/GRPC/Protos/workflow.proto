@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "GRPC/Protos/base.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
 
 option csharp_namespace = "Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Workflow";
 
@@ -14,23 +15,18 @@ service Workflow {
 	rpc Consultar (base.BaseRequest) returns (WorkflowModel);
 	rpc Alterar (WorkflowModel) returns (base.BaseReply);
 	rpc Remover (base.BaseRequest) returns (base.BaseReply);
-	rpc ListarPorTarefa (google.protobuf.Empty) returns (ListarPorTarefaReply);
 }
 
 message WorkflowModel {
 
 	string Id = 1;
-	int32 Ordem = 2;
-	string TamanhoColuna = 3;
-	string DataInclusao = 4;
+	string Nome = 2;
+	int32 Ordem = 3;
+	google.protobuf.StringValue TamanhoColuna = 4;
+	string DataInclusao = 5;
 }
 
 message ListarReply {
-
-    repeated WorkflowModel Lista = 1;
-}
-
-message ListarPorTarefaReply {
 
     repeated WorkflowModel Lista = 1;
 }

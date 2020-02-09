@@ -9,10 +9,10 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
 
         public IncluirModel(IClaimsManager claimsManager,
-                                    IWorkflowApiService workflowApiService)
+                                    ICrudApiService<WorkflowViewModel> workflowApiService)
             : base(claimsManager)
         {
             _workflowApiService = workflowApiService;

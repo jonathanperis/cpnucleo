@@ -5,6 +5,6 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IWorkflowAppService : ICrudAppService<WorkflowViewModel>
     {
-        IEnumerable<WorkflowViewModel> ListarPorTarefa();
+        string ObterTamanhoColuna();
     }
 }

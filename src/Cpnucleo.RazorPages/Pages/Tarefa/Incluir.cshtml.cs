@@ -13,14 +13,14 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         private readonly ITarefaApiService _tarefaApiService;
         private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
         private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
-        private readonly IWorkflowApiService _workflowApiService;
+        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
         private readonly ICrudApiService<TipoTarefaViewModel> _tipoTarefaApiService;
 
         public IncluirModel(IClaimsManager claimsManager,
                                     ITarefaApiService tarefaApiService,
                                     ICrudApiService<ProjetoViewModel> projetoApiService,
                                     ICrudApiService<SistemaViewModel> sistemaApiService,
-                                    IWorkflowApiService workflowApiService,
+                                    ICrudApiService<WorkflowViewModel> workflowApiService,
                                     ICrudApiService<TipoTarefaViewModel> tipoTarefaApiService)
             : base(claimsManager)
         {

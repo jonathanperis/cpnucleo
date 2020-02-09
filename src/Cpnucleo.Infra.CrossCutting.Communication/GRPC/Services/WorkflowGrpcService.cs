@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class WorkflowGrpcService : BaseGrpcService, IWorkflowGrpcService
+    public class WorkflowGrpcService : BaseGrpcService, ICrudGrpcService<WorkflowViewModel>
     {
         private readonly Workflow.WorkflowClient _client;
 
@@ -60,12 +60,6 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
             BaseReply reply = await _client.RemoverAsync(request);
 
             return reply.Sucesso;
-        }
-
-        public async Task<IEnumerable<WorkflowViewModel>> ListarPorTarefaAsync()
-        {
-            ListarPorTarefaReply response = await _client.ListarPorTarefaAsync(new Empty());
-            return _mapper.Map<IEnumerable<WorkflowViewModel>>(response.Lista);
         }
     }
 }

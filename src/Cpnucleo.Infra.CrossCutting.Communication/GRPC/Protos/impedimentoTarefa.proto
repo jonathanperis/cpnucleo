@@ -22,13 +22,12 @@ service ImpedimentoTarefa {
 message ImpedimentoTarefaModel {
 
 	string Id = 1;
-	string Nome = 2;
-	string Descricao = 3;
-	string IdTarefa = 4;
-	string IdImpedimento = 5;
-	string DataInclusao = 6;
-	tarefa.TarefaModel Tarefa = 7;
-	impedimento.ImpedimentoModel Impedimento = 8;
+	string Descricao = 2;
+	string IdTarefa = 3;
+	string IdImpedimento = 4;
+	string DataInclusao = 5;
+	tarefa.TarefaModel Tarefa = 6;
+	impedimento.ImpedimentoModel Impedimento = 7;
 }
 
 message ListarReply {

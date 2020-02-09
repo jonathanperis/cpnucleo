@@ -10,9 +10,9 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
     [Authorize]
     public class IncluirModel : PageModel
     {
-        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ICrudGrpcService<WorkflowViewModel> _workflowGrpcService;
 
-        public IncluirModel(IWorkflowGrpcService workflowGrpcService)
+        public IncluirModel(ICrudGrpcService<WorkflowViewModel> workflowGrpcService)
         {
             _workflowGrpcService = workflowGrpcService;
         }
