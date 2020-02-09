@@ -14,7 +14,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Id)
                 .HasColumnName("RTAR_ID")
                 .HasColumnType("uniqueidentifier")
-                .HasDefaultValue(Guid.NewGuid())
                 .IsRequired();
 
             builder.Property(c => c.PercentualTarefa)
@@ -35,7 +34,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("RTAR_DATA_INCLUSAO")
                 .HasColumnType("datetime")
-                .HasDefaultValue(DateTime.Now)
                 .IsRequired();
 
             builder.Property(c => c.DataAlteracao)
@@ -49,20 +47,17 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Ativo)
                 .HasColumnName("RTAR_ATIVO")
                 .HasColumnType("bit")
-                .HasDefaultValue(true)
                 .IsRequired();
 
             builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
-                .HasForeignKey(f => f.IdRecurso)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdRecurso);
 
             builder
                 .HasOne(p => p.Tarefa)
                 .WithMany()
-                .HasForeignKey(f => f.IdTarefa)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdTarefa);
         }
     }
 }

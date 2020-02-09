@@ -14,7 +14,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Id)
                 .HasColumnName("TAR_ID")
                 .HasColumnType("uniqueidentifier")
-                .HasDefaultValue(Guid.NewGuid())
                 .IsRequired();
 
             builder.Property(c => c.Nome)
@@ -40,7 +39,8 @@ namespace Cpnucleo.Infra.Data.Mappings
 
             builder.Property(c => c.Detalhe)
                 .HasColumnName("TAR_DETALHE")
-                .HasColumnType("varchar(1000)");
+                .HasColumnType("varchar(1000)")
+                .HasMaxLength(1000);
 
             builder.Property(c => c.IdProjeto)
                 .HasColumnName("PROJ_ID")
@@ -65,7 +65,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TAR_DATA_INCLUSAO")
                 .HasColumnType("datetime")
-                .HasDefaultValue(DateTime.Now)
                 .IsRequired();
 
             builder.Property(c => c.DataAlteracao)
@@ -79,50 +78,42 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Ativo)
                 .HasColumnName("TAR_ATIVO")
                 .HasColumnType("bit")
-                .HasDefaultValue(true)
                 .IsRequired();
 
             builder
                 .HasOne(p => p.Projeto)
                 .WithMany()
-                .HasForeignKey(f => f.IdProjeto)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdProjeto);
 
             builder
                 .HasOne(p => p.Workflow)
                 .WithMany(b => b.ListaTarefas)
-                .HasForeignKey(f => f.IdWorkflow)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdWorkflow);
 
             builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
-                .HasForeignKey(f => f.IdRecurso)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdRecurso);
 
             builder
                 .HasOne(p => p.TipoTarefa)
                 .WithMany()
-                .HasForeignKey(f => f.IdTipoTarefa)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdTipoTarefa);
 
             builder
                 .HasMany(p => p.ListaImpedimentos)
                 .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdTarefa);
 
             builder
                 .HasMany(p => p.ListaApontamentos)
                 .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdTarefa);
 
             builder
                 .HasMany(p => p.ListaRecursoTarefas)
                 .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdTarefa);
         }
     }
 }

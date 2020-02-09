@@ -14,7 +14,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Id)
                 .HasColumnName("RPROJ_ID")
                 .HasColumnType("uniqueidentifier")
-                .HasDefaultValue(Guid.NewGuid())
                 .IsRequired();
 
             builder.Property(c => c.IdRecurso)
@@ -30,7 +29,6 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("RPROJ_DATA_INCLUSAO")
                 .HasColumnType("datetime")
-                .HasDefaultValue(DateTime.Now)
                 .IsRequired();
 
             builder
@@ -43,20 +41,17 @@ namespace Cpnucleo.Infra.Data.Mappings
             builder.Property(c => c.Ativo)
                 .HasColumnName("RPROJ_ATIVO")
                 .HasColumnType("bit")
-                .HasDefaultValue(true)
                 .IsRequired();
 
             builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
-                .HasForeignKey(f => f.IdRecurso)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdRecurso);
 
             builder
                 .HasOne(p => p.Projeto)
                 .WithMany()
-                .HasForeignKey(f => f.IdProjeto)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(f => f.IdProjeto);
         }
     }
 }
