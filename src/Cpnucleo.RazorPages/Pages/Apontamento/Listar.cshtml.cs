@@ -52,7 +52,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 Guid idRecurso = new Guid(retorno);
 
                 Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-                ListaTarefas = _tarefaApiService.Listar(Token);
+                ListaTarefas = _tarefaApiService.ListarPorRecurso(Token, idRecurso);
 
                 return Page();
             }

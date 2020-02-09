@@ -53,7 +53,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
                 Guid idRecurso = new Guid(retorno);
 
                 Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);
-                ListaTarefas = await _tarefaGrpcService.ListarAsync();
+                ListaTarefas = await _tarefaGrpcService.ListarPorRecursoAsync(idRecurso);
 
                 return Page();
             }

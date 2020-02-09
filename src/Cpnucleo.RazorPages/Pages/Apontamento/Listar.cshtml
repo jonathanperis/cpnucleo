@@ -85,12 +85,12 @@
     </div>
 </div>
 
-@*<div class="row">
+<div class="row">
     <div class="col-lg-4">
         <div class="ibox">
             <div class="ibox-content">
                 @{
-                    var lista = Model.ListaRecursoTarefas.Where(x => x.Tarefa.PercentualConcluido == null || x.Tarefa.PercentualConcluido == 0);
+                    var lista = Model.ListaTarefas.Where(x => x.HorasConsumidas == 0);
 
                     <h3>Novo <span class="badge">@lista.Count()</span></h3>
                     <p class="small"><i class="fa fa-hand-o-up"></i> Clique na tarefa para realizar o apontamento</p>
@@ -110,7 +110,7 @@
         <div class="ibox">
             <div class="ibox-content">
                 @{
-                    lista = Model.ListaRecursoTarefas.Where(x => x.Tarefa.PercentualConcluido >= 1 && x.Tarefa.PercentualConcluido <= 99);
+                    lista = Model.ListaTarefas.Where(x => x.HorasConsumidas > 0 && x.HorasConsumidas < x.HorasRestantes);
 
                     <h3>Em Execução <span class="badge">@lista.Count()</span></h3>
                     <p class="small"><i class="fa fa-hand-o-up"></i> Clique na tarefa para realizar o apontamento</p>
@@ -130,7 +130,7 @@
         <div class="ibox">
             <div class="ibox-content">
                 @{
-                    lista = Model.ListaRecursoTarefas.Where(x => x.Tarefa.PercentualConcluido == 100).OrderByDescending(x => x.DataInclusao);
+                    lista = Model.ListaTarefas.Where(x => x.HorasConsumidas >= x.HorasRestantes);
 
                     <h3>Finalizado <span class="badge">@lista.Count()</span></h3>
                     <p class="small"><i class="fa fa-info-circle"></i> Tarefas finalizadas não permitem novos apontamentos</p>
@@ -146,7 +146,8 @@
             </div>
         </div>
     </div>
-</div>*@
+</div>
+
 <div class="modal inmodal" id="modal-apontamento" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
