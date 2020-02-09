@@ -25,11 +25,10 @@ message RecursoTarefaModel {
 	int32 PercentualTarefa = 2;
 	string IdRecurso = 3;
 	string IdTarefa = 4;
-	int32 HorasUtilizadas = 5;
-	int32 HorasDisponiveis = 6;
-	string DataInclusao = 7;
-	recurso.RecursoModel Recurso = 8;
-	tarefa.TarefaModel Tarefa = 9;
+	int32 HorasDisponiveis = 5;
+	string DataInclusao = 6;
+	recurso.RecursoModel Recurso = 7;
+	tarefa.TarefaModel Tarefa = 8;
 }
 
 message ListarReply {
