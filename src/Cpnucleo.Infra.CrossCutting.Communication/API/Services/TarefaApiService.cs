@@ -62,6 +62,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso.ToString()}", Method.GET);
                 request.AddHeader("Authorization", token);
 
+                var result = _client.Execute(request);
+
                 return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(_client.Execute(request).Content.ToString());
             }
             catch (Exception)

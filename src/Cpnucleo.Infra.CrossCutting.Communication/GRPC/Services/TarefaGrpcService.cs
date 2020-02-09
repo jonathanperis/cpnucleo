@@ -69,7 +69,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
                 Id = idRecurso.ToString()
             };
 
-            ListarReply response = await _client.ListarAsync(new Empty());
+            ListarPorRecursoReply response = await _client.ListarPorRecursoAsync(request);
             return _mapper.Map<IEnumerable<TarefaViewModel>>(response.Lista);
         }
 

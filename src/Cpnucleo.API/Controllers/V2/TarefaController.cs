@@ -74,7 +74,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// </remarks>
         /// <param name="id">Id do Recurso</param>        
         /// <response code="200">Retorna uma tarefa</response>
-        [HttpGet("{id}")]
+        [HttpGet("GetByRecurso/{id}")]
         [ProducesResponseType(200)]
         public IEnumerable<TarefaViewModel> GetByRecurso(Guid id)
         {

@@ -12,7 +12,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 
         public CrudApiService()
         {
-            _client = new RestClient("https://cpnucleo-api.azurewebsites.net/");
+            //_client = new RestClient("https://localhost:5001");
+            _client = new RestClient("https://cpnucleo-api.azurewebsites.net");
         }
 
         protected IEnumerable<TViewModel> Get(string token, string actionRoute)
