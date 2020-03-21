@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.24.0" />    
+    <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />    
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.27.0-pre1" />    
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
   </ItemGroup>
