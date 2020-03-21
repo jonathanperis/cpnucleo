@@ -7,8 +7,6 @@ namespace Cpnucleo.Infra.CrossCutting.Identity.Interfaces
     {
         ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims);
 
-        ClaimsPrincipal CreateClaimsPrincipal(string type, string value);
-
         string ReadClaimsPrincipal(ClaimsPrincipal principal, string type);
     }
 }
