@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 {
@@ -33,26 +34,26 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public SelectList SelectRecursos { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGet(Guid idTarefa)
         {
-            Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+            Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
 
-            SelectRecursos = new SelectList(_recursoProjetoApiService.ListarPorProjeto(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+            SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public async Task<IActionResult> OnPost(Guid idTarefa)
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
-                SelectRecursos = new SelectList(_recursoProjetoApiService.ListarPorProjeto(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
+                SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
 
-            _recursoTarefaApiService.Incluir(Token, RecursoTarefa);
+            await _recursoTarefaApiService.IncluirAsync(Token, RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });
         }

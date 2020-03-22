@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 {
@@ -22,16 +23,16 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         [BindProperty]
         public RecursoTarefaViewModel RecursoTarefa { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            RecursoTarefa = _recursoTarefaApiService.Consultar(Token, id);
+            RecursoTarefa = await _recursoTarefaApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            _recursoTarefaApiService.Remover(Token, RecursoTarefa.Id);
+            await _recursoTarefaApiService.RemoverAsync(Token, RecursoTarefa.Id);
 
             return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }

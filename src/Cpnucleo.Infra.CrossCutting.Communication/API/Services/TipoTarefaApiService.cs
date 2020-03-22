@@ -2,36 +2,37 @@
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class TipoTarefaApiService : CrudApiService<TipoTarefaViewModel>, ICrudApiService<TipoTarefaViewModel>
+    public class TipoTarefaApiService : BaseApiService<TipoTarefaViewModel>, ICrudApiService<TipoTarefaViewModel>
     {
         private const string actionRoute = "tipoTarefa";
 
-        public bool Incluir(string token, TipoTarefaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, TipoTarefaViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<TipoTarefaViewModel> Listar(string token)
+        public async Task<IEnumerable<TipoTarefaViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public TipoTarefaViewModel Consultar(string token, Guid id)
+        public async Task<TipoTarefaViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, TipoTarefaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, TipoTarefaViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
     }
 }

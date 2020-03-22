@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 {
@@ -28,24 +29,24 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public SelectList SelectImpedimentos { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            ImpedimentoTarefa = _impedimentoTarefaApiService.Consultar(Token, id);
-            SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
+            ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
+            SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _impedimentoTarefaApiService.Alterar(Token, ImpedimentoTarefa);
+            await _impedimentoTarefaApiService.AlterarAsync(Token, ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }

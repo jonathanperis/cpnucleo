@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages
 {
@@ -26,11 +27,11 @@ namespace Cpnucleo.RazorPages.Pages
         [BindProperty]
         public LoginViewModel Login { get; set; }
 
-        public IActionResult OnGet(string returnUrl = null, bool logout = false)
+        public async Task<IActionResult> OnGet(string returnUrl = null, bool logout = false)
         {
             if (logout)
             {
-                HttpContext.SignOutAsync();
+                await HttpContext.SignOutAsync();
 
                 return RedirectToPage("Login");
             }
@@ -40,14 +41,14 @@ namespace Cpnucleo.RazorPages.Pages
             return Page();
         }
 
-        public IActionResult OnPost(string returnUrl = null)
+        public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            RecursoViewModel recurso = _recursoApiService.Autenticar(Login.Usuario, Login.Senha);
+            RecursoViewModel recurso = await _recursoApiService.AutenticarAsync(Login.Usuario, Login.Senha);
 
             if (recurso.Id == Guid.Empty)
             {
@@ -63,7 +64,7 @@ namespace Cpnucleo.RazorPages.Pages
 
             ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(claims);
 
-            HttpContext.SignInAsync(principal);
+            await HttpContext.SignInAsync(principal);
 
             return RedirectToLocal(returnUrl);
         }

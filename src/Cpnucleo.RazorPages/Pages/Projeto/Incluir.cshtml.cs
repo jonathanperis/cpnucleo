@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto
 {
@@ -27,23 +28,23 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+            SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _projetoApiService.Incluir(Token, Projeto);
+            await _projetoApiService.IncluirAsync(Token, Projeto);
 
             return RedirectToPage("Listar");
         }

@@ -4,39 +4,40 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class RecursoApiService : CrudApiService<RecursoViewModel>, IRecursoApiService
+    public class RecursoApiService : BaseApiService<RecursoViewModel>, IRecursoApiService
     {
         private const string actionRoute = "recurso";
 
-        public bool Incluir(string token, RecursoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, RecursoViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<RecursoViewModel> Listar(string token)
+        public async Task<IEnumerable<RecursoViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public RecursoViewModel Consultar(string token, Guid id)
+        public async Task<RecursoViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, RecursoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, RecursoViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public RecursoViewModel Autenticar(string login, string senha)
+        public async Task<RecursoViewModel> AutenticarAsync(string login, string senha)
         {
             try
             {
@@ -44,7 +45,9 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 request.AddQueryParameter("login", login);
                 request.AddQueryParameter("senha", senha);
 
-                return JsonConvert.DeserializeObject<RecursoViewModel>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<RecursoViewModel>(response.Content);
             }
             catch (Exception)
             {

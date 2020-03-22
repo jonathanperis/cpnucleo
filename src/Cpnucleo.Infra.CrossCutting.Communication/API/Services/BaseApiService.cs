@@ -3,27 +3,30 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class CrudApiService<TViewModel>
+    public class BaseApiService<TViewModel>
     {
         protected readonly RestClient _client;
 
-        public CrudApiService()
+        public BaseApiService()
         {
             //_client = new RestClient("https://localhost:5001");
             _client = new RestClient("https://cpnucleo-api.azurewebsites.net");
         }
 
-        protected IEnumerable<TViewModel> Get(string token, string actionRoute)
+        protected async Task<IEnumerable<TViewModel>> GetAsync(string token, string actionRoute)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                return JsonConvert.DeserializeObject<IEnumerable<TViewModel>>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<IEnumerable<TViewModel>>(response.Content);
             }
             catch (Exception)
             {
@@ -31,14 +34,16 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             }
         }
 
-        protected TViewModel Get(string token, string actionRoute, Guid id)
+        protected async Task<TViewModel> GetAsync(string token, string actionRoute, Guid id)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                return JsonConvert.DeserializeObject<TViewModel>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<TViewModel>(response.Content);
             }
             catch (Exception)
             {
@@ -46,7 +51,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             }
         }
 
-        protected bool Post(string token, string actionRoute, TViewModel obj)
+        protected async Task<bool> PostAsync(string token, string actionRoute, TViewModel obj)
         {
             try
             {
@@ -54,7 +59,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
-                IRestResponse response = _client.Execute(request);
+                IRestResponse response = await _client.ExecuteAsync(request);
 
                 return response.StatusCode == HttpStatusCode.Created ? true : false;
             }
@@ -64,15 +69,15 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             }
         }
 
-        protected bool Put(string token, string actionRoute, Guid id, TViewModel obj)
+        protected async Task<bool> PutAsync(string token, string actionRoute, Guid id, TViewModel obj)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.PUT);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id}", Method.PUT);
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
-                IRestResponse response = _client.Execute(request);
+                IRestResponse response = await _client.ExecuteAsync(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
@@ -82,14 +87,14 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             }
         }
 
-        protected bool Delete(string token, string actionRoute, Guid id)
+        protected async Task<bool> DeleteAsync(string token, string actionRoute, Guid id)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id.ToString()}", Method.DELETE);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id}", Method.DELETE);
                 request.AddHeader("Authorization", token);
 
-                IRestResponse response = _client.Execute(request);
+                IRestResponse response = await _client.ExecuteAsync(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
             }

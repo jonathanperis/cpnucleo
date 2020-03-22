@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Impedimento
 {
@@ -22,16 +23,16 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         [BindProperty]
         public ImpedimentoViewModel Impedimento { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Impedimento = _impedimentoApiService.Consultar(Token, id);
+            Impedimento = await _impedimentoApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            _impedimentoApiService.Remover(Token, Impedimento.Id);
+            await _impedimentoApiService.RemoverAsync(Token, Impedimento.Id);
 
             return RedirectToPage("Listar");
         }

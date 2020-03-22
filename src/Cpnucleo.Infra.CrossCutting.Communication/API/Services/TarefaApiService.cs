@@ -5,47 +5,48 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class TarefaApiService : CrudApiService<TarefaViewModel>, ITarefaApiService
+    public class TarefaApiService : BaseApiService<TarefaViewModel>, ITarefaApiService
     {
         private const string actionRoute = "tarefa";
 
-        public bool Incluir(string token, TarefaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, TarefaViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<TarefaViewModel> Listar(string token)
+        public async Task<IEnumerable<TarefaViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public TarefaViewModel Consultar(string token, Guid id)
+        public async Task<TarefaViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, TarefaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, TarefaViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public bool AlterarPorWorkflow(string token, Guid idTarefa, Guid idWorkflow)
+        public async Task<bool> AlterarPorWorkflowAsync(string token, Guid idTarefa, Guid idWorkflow)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/putbyworkflow/{idTarefa.ToString()}", Method.PUT);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/putbyworkflow/{idTarefa}", Method.PUT);
                 request.AddHeader("Authorization", token);
                 request.AddJsonBody(idWorkflow);
 
-                IRestResponse response = _client.Execute(request);
+                IRestResponse response = await _client.ExecuteAsync(request);
 
                 return response.StatusCode == HttpStatusCode.OK ? true : false;
             }
@@ -55,16 +56,16 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             }
         }
 
-        public IEnumerable<TarefaViewModel> ListarPorRecurso(string token, Guid idRecurso)
+        public async Task<IEnumerable<TarefaViewModel>> ListarPorRecursoAsync(string token, Guid idRecurso)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                var result = _client.Execute(request);
+                IRestResponse response = await _client.ExecuteAsync(request);
 
-                return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(_client.Execute(request).Content.ToString());
+                return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(response.Content);
             }
             catch (Exception)
             {

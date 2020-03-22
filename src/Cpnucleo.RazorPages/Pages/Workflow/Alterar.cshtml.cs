@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Workflow
 {
@@ -22,21 +23,21 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         [BindProperty]
         public WorkflowViewModel Workflow { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Workflow = _workflowApiService.Consultar(Token, id);
+            Workflow = await _workflowApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _workflowApiService.Alterar(Token, Workflow);
+            await _workflowApiService.AlterarAsync(Token, Workflow);
 
             return RedirectToPage("Listar");
         }

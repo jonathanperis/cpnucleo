@@ -3,6 +3,7 @@ using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Recurso
 {
@@ -21,14 +22,14 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         [BindProperty]
         public RecursoViewModel Recurso { get; set; }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _recursoApiService.Incluir(Token, Recurso);
+            await _recursoApiService.IncluirAsync(Token, Recurso);
 
             return RedirectToPage("Listar");
         }

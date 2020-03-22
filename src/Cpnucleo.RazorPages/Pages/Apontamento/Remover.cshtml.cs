@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Apontamento
 {
@@ -22,16 +23,16 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         [BindProperty]
         public ApontamentoViewModel Apontamento { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Apontamento = _apontamentoApiService.Consultar(Token, id);
+            Apontamento = await _apontamentoApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            _apontamentoApiService.Remover(Token, Apontamento.Id);
+            await _apontamentoApiService.RemoverAsync(Token, Apontamento.Id);
 
             return RedirectToPage("Listar");
         }

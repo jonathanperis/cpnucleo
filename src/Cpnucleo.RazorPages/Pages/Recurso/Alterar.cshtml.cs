@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Recurso
 {
@@ -22,21 +23,21 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         [BindProperty]
         public RecursoViewModel Recurso { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Recurso = _recursoApiService.Consultar(Token, id);
+            Recurso = await _recursoApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _recursoApiService.Alterar(Token, Recurso);
+            await _recursoApiService.AlterarAsync(Token, Recurso);
 
             return RedirectToPage("Listar");
         }

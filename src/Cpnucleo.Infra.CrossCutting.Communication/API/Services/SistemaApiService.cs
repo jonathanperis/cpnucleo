@@ -2,36 +2,37 @@
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class SistemaApiService : CrudApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
+    public class SistemaApiService : BaseApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
     {
         private const string actionRoute = "sistema";
 
-        public bool Incluir(string token, SistemaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, SistemaViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<SistemaViewModel> Listar(string token)
+        public async Task<IEnumerable<SistemaViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public SistemaViewModel Consultar(string token, Guid id)
+        public async Task<SistemaViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, SistemaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, SistemaViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
     }
 }

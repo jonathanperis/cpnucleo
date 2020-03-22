@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
@@ -33,25 +34,25 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public SelectList SelectRecursos { get; set; }
 
-        public IActionResult OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGet(Guid idProjeto)
         {
-            Projeto = _projetoApiService.Consultar(Token, idProjeto);
-            SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
+            Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
+            SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost(Guid idProjeto)
+        public async Task<IActionResult> OnPost(Guid idProjeto)
         {
             if (!ModelState.IsValid)
             {
-                Projeto = _projetoApiService.Consultar(Token, idProjeto);
-                SelectRecursos = new SelectList(_recursoApiService.Listar(Token), "Id", "Nome");
+                Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
+                SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _recursoProjetoApiService.Incluir(Token, RecursoProjeto);
+            await _recursoProjetoApiService.IncluirAsync(Token, RecursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto });
         }

@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
@@ -22,16 +23,16 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         [BindProperty]
         public RecursoProjetoViewModel RecursoProjeto { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            RecursoProjeto = _recursoProjetoApiService.Consultar(Token, id);
+            RecursoProjeto = await _recursoProjetoApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            _recursoProjetoApiService.Remover(Token, RecursoProjeto.Id);
+            await _recursoProjetoApiService.RemoverAsync(Token, RecursoProjeto.Id);
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }
