@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cpnucleo.Domain.Models
+namespace Cpnucleo.Domain.Entities
 {
     public class Workflow : BaseModel
     {

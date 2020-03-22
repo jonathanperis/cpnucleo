@@ -1,7 +1,6 @@
-﻿using Cpnucleo.Domain.Interfaces;
-using Cpnucleo.Domain.Models;
+﻿using Cpnucleo.Domain.Entities;
+using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Infra.Data.Context;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
