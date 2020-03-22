@@ -20,7 +20,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
         [BindProperty]
         public ImpedimentoViewModel Impedimento { get; set; }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

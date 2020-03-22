@@ -27,7 +27,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Projeto = await _projetoGrpcService.ConsultarAsync(id);
             SelectSistemas = new SelectList(await _sistemaGrpcService.ListarAsync(), "Id", "Nome");
@@ -35,7 +35,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Projeto
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

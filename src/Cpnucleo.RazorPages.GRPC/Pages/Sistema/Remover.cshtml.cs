@@ -21,14 +21,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Sistema = await _sistemaGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             await _sistemaGrpcService.RemoverAsync(Sistema.Id);
 

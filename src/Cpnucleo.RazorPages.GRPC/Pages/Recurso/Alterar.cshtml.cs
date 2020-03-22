@@ -21,14 +21,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
         [BindProperty]
         public RecursoViewModel Recurso { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Recurso = await _recursoGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

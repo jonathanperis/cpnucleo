@@ -42,7 +42,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Tarefa = await _tarefaGrpcService.ConsultarAsync(id);
             SelectProjetos = new SelectList(await _projetoGrpcService.ListarAsync(), "Id", "Nome");
@@ -53,7 +53,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Tarefa
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

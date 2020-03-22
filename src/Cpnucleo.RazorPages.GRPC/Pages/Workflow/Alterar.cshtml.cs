@@ -21,14 +21,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Workflow
         [BindProperty]
         public WorkflowViewModel Workflow { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Workflow = await _workflowGrpcService.ConsultarAsync(id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
