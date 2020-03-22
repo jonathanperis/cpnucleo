@@ -4,46 +4,49 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class RecursoTarefaApiService : CrudApiService<RecursoTarefaViewModel>, IRecursoTarefaApiService
+    public class RecursoTarefaApiService : BaseApiService<RecursoTarefaViewModel>, IRecursoTarefaApiService
     {
         private const string actionRoute = "recursoTarefa";
 
-        public bool Incluir(string token, RecursoTarefaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, RecursoTarefaViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<RecursoTarefaViewModel> Listar(string token)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public RecursoTarefaViewModel Consultar(string token, Guid id)
+        public async Task<RecursoTarefaViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, RecursoTarefaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, RecursoTarefaViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(string token, Guid idTarefa)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(response.Content);
             }
             catch (Exception)
             {

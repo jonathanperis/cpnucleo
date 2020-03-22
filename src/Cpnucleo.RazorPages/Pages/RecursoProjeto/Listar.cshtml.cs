@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
@@ -25,9 +26,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public IEnumerable<RecursoProjetoViewModel> Lista { get; set; }
 
-        public IActionResult OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGet(Guid idProjeto)
         {
-            Lista = _recursoProjetoApiService.ListarPorProjeto(Token, idProjeto);
+            Lista = await _recursoProjetoApiService.ListarPorProjetoAsync(Token, idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 

@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto
 {
@@ -23,9 +24,9 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public IEnumerable<ProjetoViewModel> Lista { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            Lista = _projetoApiService.Listar(Token);
+            Lista = await _projetoApiService.ListarAsync(Token);
 
             return Page();
         }

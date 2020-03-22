@@ -4,46 +4,49 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ApontamentoApiService : CrudApiService<ApontamentoViewModel>, IApontamentoApiService
+    public class ApontamentoApiService : BaseApiService<ApontamentoViewModel>, IApontamentoApiService
     {
         private const string actionRoute = "apontamento";
 
-        public bool Incluir(string token, ApontamentoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ApontamentoViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<ApontamentoViewModel> Listar(string token)
+        public async Task<IEnumerable<ApontamentoViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public ApontamentoViewModel Consultar(string token, Guid id)
+        public async Task<ApontamentoViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, ApontamentoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ApontamentoViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public IEnumerable<ApontamentoViewModel> ListarPorRecurso(string token, Guid id)
+        public async Task<IEnumerable<ApontamentoViewModel>> ListarPorRecursoAsync(string token, Guid id)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{id.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{id}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                return JsonConvert.DeserializeObject<IEnumerable<ApontamentoViewModel>>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<IEnumerable<ApontamentoViewModel>>(response.Content);
             }
             catch (Exception)
             {

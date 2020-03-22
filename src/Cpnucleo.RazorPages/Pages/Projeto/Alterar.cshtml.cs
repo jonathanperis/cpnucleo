@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto
 {
@@ -28,24 +29,24 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Projeto = _projetoApiService.Consultar(Token, id);
-            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+            Projeto = await _projetoApiService.ConsultarAsync(Token, id);
+            SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _projetoApiService.Alterar(Token, Projeto);
+            await _projetoApiService.AlterarAsync(Token, Projeto);
 
             return RedirectToPage("Listar");
         }

@@ -3,6 +3,7 @@ using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
@@ -21,14 +22,14 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _sistemaApiService.Incluir(Token, Sistema);
+            await _sistemaApiService.IncluirAsync(Token, Sistema);
 
             return RedirectToPage("Listar");
         }

@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa
 {
@@ -42,29 +43,29 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
-            SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
-            SelectWorkflows = new SelectList(_workflowApiService.Listar(Token), "Id", "Nome");
-            SelectTipoTarefas = new SelectList(_tipoTarefaApiService.Listar(Token), "Id", "Nome");
+            SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
+            SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
+            SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
+            SelectTipoTarefas = new SelectList(await _tipoTarefaApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
-                SelectProjetos = new SelectList(_projetoApiService.Listar(Token), "Id", "Nome");
-                SelectSistemas = new SelectList(_sistemaApiService.Listar(Token), "Id", "Descricao");
-                SelectWorkflows = new SelectList(_workflowApiService.Listar(Token), "Id", "Nome");
-                SelectTipoTarefas = new SelectList(_tipoTarefaApiService.Listar(Token), "Id", "Nome");
+                SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
+                SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
+                SelectTipoTarefas = new SelectList(await _tipoTarefaApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _tarefaApiService.Incluir(Token, Tarefa);
+            await _tarefaApiService.IncluirAsync(Token, Tarefa);
 
             return RedirectToPage("Listar");
         }

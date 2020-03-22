@@ -4,46 +4,49 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ImpedimentoTarefaApiService : CrudApiService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaApiService
+    public class ImpedimentoTarefaApiService : BaseApiService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaApiService
     {
         private const string actionRoute = "impedimentoTarefa";
 
-        public bool Incluir(string token, ImpedimentoTarefaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ImpedimentoTarefaViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<ImpedimentoTarefaViewModel> Listar(string token)
+        public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public ImpedimentoTarefaViewModel Consultar(string token, Guid id)
+        public async Task<ImpedimentoTarefaViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, ImpedimentoTarefaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ImpedimentoTarefaViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public IEnumerable<ImpedimentoTarefaViewModel> ListarPorTarefa(string token, Guid idTarefa)
+        public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                return JsonConvert.DeserializeObject<IEnumerable<ImpedimentoTarefaViewModel>>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<IEnumerable<ImpedimentoTarefaViewModel>>(response.Content);
             }
             catch (Exception)
             {

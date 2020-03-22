@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages
 {
@@ -27,17 +28,17 @@ namespace Cpnucleo.RazorPages.Pages
 
         public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            Lista = _workflowApiService.Listar(Token);
-            ListaTarefas = _tarefaApiService.Listar(Token);
+            Lista = await _workflowApiService.ListarAsync(Token);
+            ListaTarefas = await _tarefaApiService.ListarAsync(Token);
 
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa, Guid idWorkflow)
+        public async Task<IActionResult> OnPost(Guid idTarefa, Guid idWorkflow)
         {
-            _tarefaApiService.AlterarPorWorkflow(Token, idTarefa, idWorkflow);
+            await _tarefaApiService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
 
             return Page();
         }

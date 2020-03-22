@@ -2,36 +2,37 @@
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class WorkflowApiService : CrudApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
+    public class WorkflowApiService : BaseApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
     {
         private const string actionRoute = "workflow";
 
-        public bool Incluir(string token, WorkflowViewModel obj)
+        public async Task<bool> IncluirAsync(string token, WorkflowViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<WorkflowViewModel> Listar(string token)
+        public async Task<IEnumerable<WorkflowViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public WorkflowViewModel Consultar(string token, Guid id)
+        public async Task<WorkflowViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, WorkflowViewModel obj)
+        public async Task<bool> AlterarAsync(string token, WorkflowViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
     }
 }

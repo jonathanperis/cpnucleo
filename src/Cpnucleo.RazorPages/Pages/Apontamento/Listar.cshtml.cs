@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Apontamento
 {
@@ -33,31 +34,31 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
             string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
 
-            Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-            ListaTarefas = _tarefaApiService.ListarPorRecurso(Token, idRecurso);
+            Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
+            ListaTarefas = await _tarefaApiService.ListarPorRecursoAsync(Token, idRecurso);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = _apontamentoApiService.ListarPorRecurso(Token, idRecurso);
-                ListaTarefas = _tarefaApiService.ListarPorRecurso(Token, idRecurso);
+                Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
+                ListaTarefas = await _tarefaApiService.ListarPorRecursoAsync(Token, idRecurso);
 
                 return Page();
             }
 
-            _apontamentoApiService.Incluir(Token, Apontamento);
+            await _apontamentoApiService.IncluirAsync(Token, Apontamento);
 
             return RedirectToPage("Listar");
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 {
@@ -33,27 +34,27 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public SelectList SelectImpedimentos { get; set; }
 
-        public IActionResult OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGet(Guid idTarefa)
         {
-            Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+            Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
 
-            SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
+            SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public IActionResult OnPost(Guid idTarefa)
+        public async Task<IActionResult> OnPost(Guid idTarefa)
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = _tarefaApiService.Consultar(Token, idTarefa);
+                Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
 
-                SelectImpedimentos = new SelectList(_impedimentoApiService.Listar(Token), "Id", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
 
-            _impedimentoTarefaApiService.Incluir(Token, ImpedimentoTarefa);
+            await _impedimentoTarefaApiService.IncluirAsync(Token, ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa });
         }

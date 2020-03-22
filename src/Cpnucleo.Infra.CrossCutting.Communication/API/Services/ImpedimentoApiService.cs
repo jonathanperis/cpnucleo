@@ -2,36 +2,37 @@
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ImpedimentoApiService : CrudApiService<ImpedimentoViewModel>, ICrudApiService<ImpedimentoViewModel>
+    public class ImpedimentoApiService : BaseApiService<ImpedimentoViewModel>, ICrudApiService<ImpedimentoViewModel>
     {
         private const string actionRoute = "impedimento";
 
-        public bool Incluir(string token, ImpedimentoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ImpedimentoViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<ImpedimentoViewModel> Listar(string token)
+        public async Task<IEnumerable<ImpedimentoViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public ImpedimentoViewModel Consultar(string token, Guid id)
+        public async Task<ImpedimentoViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, ImpedimentoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ImpedimentoViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
     }
 }

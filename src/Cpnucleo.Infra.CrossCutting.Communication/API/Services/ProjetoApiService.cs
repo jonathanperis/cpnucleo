@@ -2,36 +2,37 @@
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ProjetoApiService : CrudApiService<ProjetoViewModel>, ICrudApiService<ProjetoViewModel>
+    public class ProjetoApiService : BaseApiService<ProjetoViewModel>, ICrudApiService<ProjetoViewModel>
     {
         private const string actionRoute = "projeto";
 
-        public bool Incluir(string token, ProjetoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ProjetoViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<ProjetoViewModel> Listar(string token)
+        public async Task<IEnumerable<ProjetoViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public ProjetoViewModel Consultar(string token, Guid id)
+        public async Task<ProjetoViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, ProjetoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ProjetoViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
     }
 }

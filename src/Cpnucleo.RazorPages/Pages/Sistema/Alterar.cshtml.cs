@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
@@ -22,21 +23,21 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public IActionResult OnGet(Guid id)
+        public async Task<IActionResult> OnGet(Guid id)
         {
-            Sistema = _sistemaApiService.Consultar(Token, id);
+            Sistema = await _sistemaApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _sistemaApiService.Alterar(Token, Sistema);
+            await _sistemaApiService.AlterarAsync(Token, Sistema);
 
             return RedirectToPage("Listar");
         }

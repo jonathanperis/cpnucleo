@@ -4,46 +4,49 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class RecursoProjetoApiService : CrudApiService<RecursoProjetoViewModel>, IRecursoProjetoApiService
+    public class RecursoProjetoApiService : BaseApiService<RecursoProjetoViewModel>, IRecursoProjetoApiService
     {
         private const string actionRoute = "recursoProjeto";
 
-        public bool Incluir(string token, RecursoProjetoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, RecursoProjetoViewModel obj)
         {
-            return Post(token, actionRoute, obj);
+            return await PostAsync(token, actionRoute, obj);
         }
 
-        public IEnumerable<RecursoProjetoViewModel> Listar(string token)
+        public async Task<IEnumerable<RecursoProjetoViewModel>> ListarAsync(string token)
         {
-            return Get(token, actionRoute);
+            return await GetAsync(token, actionRoute);
         }
 
-        public RecursoProjetoViewModel Consultar(string token, Guid id)
+        public async Task<RecursoProjetoViewModel> ConsultarAsync(string token, Guid id)
         {
-            return Get(token, actionRoute, id);
+            return await GetAsync(token, actionRoute, id);
         }
 
-        public bool Remover(string token, Guid id)
+        public async Task<bool> RemoverAsync(string token, Guid id)
         {
-            return Delete(token, actionRoute, id);
+            return await DeleteAsync(token, actionRoute, id);
         }
 
-        public bool Alterar(string token, RecursoProjetoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, RecursoProjetoViewModel obj)
         {
-            return Put(token, actionRoute, obj.Id, obj);
+            return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(string token, Guid idProjeto)
+        public async Task<IEnumerable<RecursoProjetoViewModel>> ListarPorProjetoAsync(string token, Guid idProjeto)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyprojeto/{idProjeto.ToString()}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyprojeto/{idProjeto}", Method.GET);
                 request.AddHeader("Authorization", token);
 
-                return JsonConvert.DeserializeObject<IEnumerable<RecursoProjetoViewModel>>(_client.Execute(request).Content.ToString());
+                IRestResponse response = await _client.ExecuteAsync(request);
+
+                return JsonConvert.DeserializeObject<IEnumerable<RecursoProjetoViewModel>>(response.Content);
             }
             catch (Exception)
             {
