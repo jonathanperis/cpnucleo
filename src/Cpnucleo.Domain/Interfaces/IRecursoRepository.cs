@@ -1,4 +1,4 @@
-using Cpnucleo.Domain.Models;
+using Cpnucleo.Domain.Entities;
 using System.Linq;
 
 namespace Cpnucleo.Domain.Interfaces

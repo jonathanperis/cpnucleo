@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.Interfaces;
-using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace Cpnucleo.Application.Services
         public IEnumerable<TarefaViewModel> ListarPorRecurso(Guid idRecurso)
         {
             List<TarefaViewModel> lista = _tarefarepository.ListarPorRecurso(idRecurso).ProjectTo<TarefaViewModel>(_mapper.ConfigurationProvider).ToList();
-            
+
             return PreencherDadosAdicionais(lista);
         }
 

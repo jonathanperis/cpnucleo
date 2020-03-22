@@ -1,7 +1,6 @@
-﻿using Cpnucleo.Domain.Models;
+﻿using Cpnucleo.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 
 namespace Cpnucleo.Infra.Data.Mappings
 {

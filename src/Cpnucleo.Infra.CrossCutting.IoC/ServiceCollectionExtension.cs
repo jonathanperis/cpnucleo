@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Application.AutoMapper;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
+using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.Interfaces;
-using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.API.Services;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;

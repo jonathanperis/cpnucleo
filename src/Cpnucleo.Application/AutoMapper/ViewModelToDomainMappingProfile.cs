@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Cpnucleo.Domain.Models;
+using Cpnucleo.Domain.Entities;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.AutoMapper

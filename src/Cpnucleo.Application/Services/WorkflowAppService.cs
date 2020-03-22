@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.Interfaces;
-using Cpnucleo.Domain.Models;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -31,9 +31,9 @@ namespace Cpnucleo.Application.Services
         public new IEnumerable<WorkflowViewModel> Listar()
         {
             IEnumerable<WorkflowViewModel> result = base.Listar();
-            
+
             int quantidadeColunas = ObterQuantidadeColunas();
-            
+
             foreach (WorkflowViewModel item in result)
             {
                 item.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
