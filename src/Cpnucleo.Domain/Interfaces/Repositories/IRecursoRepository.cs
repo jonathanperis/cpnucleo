@@ -1,7 +1,7 @@
 using Cpnucleo.Domain.Entities;
 using System.Linq;
 
-namespace Cpnucleo.Domain.Interfaces
+namespace Cpnucleo.Domain.Interfaces.Repositories
 {
     public interface IRecursoRepository : ICrudRepository<Recurso>
     {

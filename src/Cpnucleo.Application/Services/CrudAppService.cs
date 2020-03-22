@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Domain.Interfaces;
+using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;

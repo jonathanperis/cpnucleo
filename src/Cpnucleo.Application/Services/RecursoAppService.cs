@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces;
+using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System.Linq;
