@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public IEnumerable<RecursoTarefaViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGetAsync(Guid idTarefa)
         {
             Lista = await _recursoTarefaApiService.ListarPorTarefaAsync(Token, idTarefa);
 

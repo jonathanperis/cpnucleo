@@ -23,14 +23,14 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Sistema = await _sistemaApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             await _sistemaApiService.RemoverAsync(Token, Sistema.Id);
 

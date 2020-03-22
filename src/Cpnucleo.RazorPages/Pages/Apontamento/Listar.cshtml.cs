@@ -34,7 +34,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
@@ -45,7 +45,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

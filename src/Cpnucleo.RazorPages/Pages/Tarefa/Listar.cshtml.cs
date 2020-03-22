@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public IEnumerable<TarefaViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _tarefaApiService.ListarAsync(Token);
 

@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         [BindProperty]
         public SistemaViewModel Sistema { get; set; }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

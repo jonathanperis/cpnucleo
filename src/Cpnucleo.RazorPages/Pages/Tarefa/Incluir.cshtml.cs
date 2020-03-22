@@ -43,7 +43,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
             SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
@@ -53,7 +53,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

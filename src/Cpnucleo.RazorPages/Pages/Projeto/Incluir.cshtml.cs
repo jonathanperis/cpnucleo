@@ -28,14 +28,14 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public IEnumerable<RecursoProjetoViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGetAsync(Guid idProjeto)
         {
             Lista = await _recursoProjetoApiService.ListarPorProjetoAsync(Token, idProjeto);
 

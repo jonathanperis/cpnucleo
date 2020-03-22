@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
 
         public IEnumerable<SistemaViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _sistemaApiService.ListarAsync(Token);
 
