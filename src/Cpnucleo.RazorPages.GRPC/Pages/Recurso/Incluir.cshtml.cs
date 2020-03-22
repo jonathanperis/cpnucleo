@@ -20,7 +20,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Recurso
         [BindProperty]
         public RecursoViewModel Recurso { get; set; }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

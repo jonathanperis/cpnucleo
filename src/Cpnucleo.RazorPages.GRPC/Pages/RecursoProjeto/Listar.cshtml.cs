@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 
         public IEnumerable<RecursoProjetoViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGetAsync(Guid idProjeto)
         {
             Lista = await _recursoProjetoGrpcService.ListarPorProjetoAsync(idProjeto);
 

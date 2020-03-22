@@ -32,7 +32,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
 
         public SelectList SelectRecursos { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGetAsync(Guid idProjeto)
         {
             Projeto = await _projetoGrpcService.ConsultarAsync(idProjeto);
             SelectRecursos = new SelectList(await _recursoGrpcService.ListarAsync(), "Id", "Nome");
@@ -40,7 +40,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.RecursoProjeto
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(Guid idProjeto)
+        public async Task<IActionResult> OnPostAsync(Guid idProjeto)
         {
             if (!ModelState.IsValid)
             {

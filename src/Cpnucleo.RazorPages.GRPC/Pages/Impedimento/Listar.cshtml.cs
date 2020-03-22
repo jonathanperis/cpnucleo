@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Impedimento
 
         public IEnumerable<ImpedimentoViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _impedimentoGrpcService.ListarAsync();
 

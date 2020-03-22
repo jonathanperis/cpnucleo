@@ -22,7 +22,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Sistema
 
         public IEnumerable<SistemaViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _sistemaGrpcService.ListarAsync();
 
