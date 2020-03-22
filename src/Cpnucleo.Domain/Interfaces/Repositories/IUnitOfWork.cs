@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cpnucleo.Domain.Interfaces
+namespace Cpnucleo.Domain.Interfaces.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {

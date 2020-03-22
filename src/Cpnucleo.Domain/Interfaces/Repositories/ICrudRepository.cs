@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Cpnucleo.Domain.Interfaces
+namespace Cpnucleo.Domain.Interfaces.Repositories
 {
     public interface ICrudRepository<TModel> : IDisposable
     {

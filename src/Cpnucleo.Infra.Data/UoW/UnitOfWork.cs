@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Domain.Interfaces;
+﻿using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Infra.Data.Context;
 using System;
 
