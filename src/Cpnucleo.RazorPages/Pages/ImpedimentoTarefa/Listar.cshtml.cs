@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public IEnumerable<ImpedimentoTarefaViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid idTarefa)
+        public async Task<IActionResult> OnGetAsync(Guid idTarefa)
         {
             Lista = await _impedimentoTarefaApiService.ListarPorTarefaAsync(Token, idTarefa);
 

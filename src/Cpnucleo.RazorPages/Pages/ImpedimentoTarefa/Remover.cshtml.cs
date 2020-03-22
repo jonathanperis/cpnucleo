@@ -23,14 +23,14 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         [BindProperty]
         public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             await _impedimentoTarefaApiService.RemoverAsync(Token, ImpedimentoTarefa.Id);
 

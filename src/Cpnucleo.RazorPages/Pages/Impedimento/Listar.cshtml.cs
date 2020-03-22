@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
 
         public IEnumerable<ImpedimentoViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _impedimentoApiService.ListarAsync(Token);
 

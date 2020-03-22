@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public SelectList SelectImpedimentos { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
             SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
@@ -37,7 +37,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

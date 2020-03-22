@@ -27,7 +27,7 @@ namespace Cpnucleo.RazorPages.Pages
         [BindProperty]
         public LoginViewModel Login { get; set; }
 
-        public async Task<IActionResult> OnGet(string returnUrl = null, bool logout = false)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null, bool logout = false)
         {
             if (logout)
             {
@@ -41,7 +41,7 @@ namespace Cpnucleo.RazorPages.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {

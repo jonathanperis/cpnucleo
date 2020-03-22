@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
 
         public IEnumerable<RecursoViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _recursoApiService.ListarAsync(Token);
 

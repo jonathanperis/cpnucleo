@@ -23,14 +23,14 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         [BindProperty]
         public WorkflowViewModel Workflow { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Workflow = await _workflowApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             await _workflowApiService.RemoverAsync(Token, Workflow.Id);
 

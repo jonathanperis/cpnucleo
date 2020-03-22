@@ -28,7 +28,7 @@ namespace Cpnucleo.RazorPages.Pages
 
         public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _workflowApiService.ListarAsync(Token);
             ListaTarefas = await _tarefaApiService.ListarAsync(Token);
@@ -36,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(Guid idTarefa, Guid idWorkflow)
+        public async Task<IActionResult> OnPostAsync(Guid idTarefa, Guid idWorkflow)
         {
             await _tarefaApiService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
 

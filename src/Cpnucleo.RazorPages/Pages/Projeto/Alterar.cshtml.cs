@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public SelectList SelectSistemas { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Projeto = await _projetoApiService.ConsultarAsync(Token, id);
             SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
@@ -37,7 +37,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

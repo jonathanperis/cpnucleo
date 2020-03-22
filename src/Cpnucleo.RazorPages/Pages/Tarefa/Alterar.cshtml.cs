@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public SelectList SelectTipoTarefas { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
             SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
@@ -55,7 +55,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {

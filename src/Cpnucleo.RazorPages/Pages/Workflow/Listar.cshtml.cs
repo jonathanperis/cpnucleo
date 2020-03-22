@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             Lista = await _workflowApiService.ListarAsync(Token);
 

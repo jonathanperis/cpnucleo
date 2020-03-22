@@ -34,7 +34,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public SelectList SelectRecursos { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid idProjeto)
+        public async Task<IActionResult> OnGetAsync(Guid idProjeto)
         {
             Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
             SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
@@ -42,7 +42,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             return Page();
         }
 
-        public async Task<IActionResult> OnPost(Guid idProjeto)
+        public async Task<IActionResult> OnPostAsync(Guid idProjeto)
         {
             if (!ModelState.IsValid)
             {

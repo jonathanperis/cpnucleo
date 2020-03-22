@@ -23,14 +23,14 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         [BindProperty]
         public TarefaViewModel Tarefa { get; set; }
 
-        public async Task<IActionResult> OnGet(Guid id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             await _tarefaApiService.RemoverAsync(Token, Tarefa.Id);
 
