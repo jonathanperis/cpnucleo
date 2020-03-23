@@ -14,9 +14,9 @@ namespace Cpnucleo.GRPC
     public class WorkflowService : Workflow.WorkflowBase
     {
         private readonly IMapper _mapper;
-        private readonly IWorkflowAppService _workflowAppService;
+        private readonly ICrudAppService<WorkflowViewModel> _workflowAppService;
 
-        public WorkflowService(IMapper mapper, IWorkflowAppService workflowAppService)
+        public WorkflowService(IMapper mapper, ICrudAppService<WorkflowViewModel> workflowAppService)
         {
             _mapper = mapper;
             _workflowAppService = workflowAppService;

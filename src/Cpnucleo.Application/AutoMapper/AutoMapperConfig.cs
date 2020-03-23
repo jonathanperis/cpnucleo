@@ -7,9 +7,9 @@ namespace Cpnucleo.Application.AutoMapper
     {
         public static void AddAutoMapperSetup(this IServiceCollection services)
         {
-            services.AddAutoMapper();
-
             RegisterMappings();
+
+            services.AddAutoMapper();
         }
 
         public static MapperConfiguration RegisterMappings()
