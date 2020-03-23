@@ -12,7 +12,5 @@ namespace Cpnucleo.Domain.Interfaces.Repositories
         IQueryable<TModel> Listar();
 
         void Alterar(TModel obj);
-
-        void Remover(Guid id);
     }
 }

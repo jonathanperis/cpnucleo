@@ -15,13 +15,17 @@ namespace Cpnucleo.Domain.Entities
 
         public string Detalhe { get; set; }
 
+        public int HorasConsumidas { get; set; }
+
+        public int HorasRestantes { get; set; }
+
         public Guid IdProjeto { get; set; }
 
-        public Guid? IdWorkflow { get; set; }
+        public Guid IdWorkflow { get; set; }
 
-        public Guid? IdRecurso { get; set; }
+        public Guid IdRecurso { get; set; }
 
-        public Guid? IdTipoTarefa { get; set; }
+        public Guid IdTipoTarefa { get; set; }
 
         public Projeto Projeto { get; set; }
 

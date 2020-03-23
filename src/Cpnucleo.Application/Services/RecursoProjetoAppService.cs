@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces.Repositories;
+using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,17 +12,17 @@ namespace Cpnucleo.Application.Services
 {
     public class RecursoProjetoAppService : CrudAppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
     {
-        private readonly IRecursoProjetoRepository _recursoProjetoRepository;
+        private readonly IRecursoProjetoService _recursoProjetoService;
 
-        public RecursoProjetoAppService(IMapper mapper, IRecursoProjetoRepository repository, IUnitOfWork unitOfWork, IRecursoProjetoRepository recursoProjetoRepository)
-            : base(mapper, repository, unitOfWork)
+        public RecursoProjetoAppService(IMapper mapper, IRecursoProjetoService recursoProjetoService)
+            : base(mapper, recursoProjetoService)
         {
-            _recursoProjetoRepository = recursoProjetoRepository;
+            _recursoProjetoService = recursoProjetoService;
         }
 
         public IEnumerable<RecursoProjetoViewModel> ListarPorProjeto(Guid idProjeto)
         {
-            return _recursoProjetoRepository.ListarPorProjeto(idProjeto).ProjectTo<RecursoProjetoViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _recursoProjetoService.ListarPorProjeto(idProjeto).ProjectTo<RecursoProjetoViewModel>(_mapper.ConfigurationProvider).ToList();
         }
     }
 }

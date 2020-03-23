@@ -41,6 +41,12 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("varchar(1000)")
                 .HasMaxLength(1000);
 
+            builder
+                .Ignore(c => c.HorasConsumidas);
+
+            builder
+                .Ignore(c => c.HorasRestantes);
+
             builder.Property(c => c.IdProjeto)
                 .HasColumnName("PROJ_ID")
                 .HasColumnType("uniqueidentifier")

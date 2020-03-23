@@ -3,6 +3,8 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.Interfaces.Repositories;
+using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Services;
 using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.API.Services;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
@@ -30,18 +32,35 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
                 .AddScoped<ICrudAppService<SistemaViewModel>, CrudAppService<Sistema, SistemaViewModel>>()
                 .AddScoped<ICrudAppService<ProjetoViewModel>, CrudAppService<Projeto, ProjetoViewModel>>()
                 .AddScoped<ICrudAppService<ImpedimentoViewModel>, CrudAppService<Impedimento, ImpedimentoViewModel>>()
-                .AddScoped<ICrudAppService<TipoTarefaViewModel>, CrudAppService<TipoTarefa, TipoTarefaViewModel>>();
+                .AddScoped<ICrudAppService<TipoTarefaViewModel>, CrudAppService<TipoTarefa, TipoTarefaViewModel>>()
+                .AddScoped<ICrudAppService<WorkflowViewModel>, CrudAppService<Workflow, WorkflowViewModel>>();
 
             services
                 .AddScoped<ITarefaAppService, TarefaAppService>()
                 .AddScoped<IApontamentoAppService, ApontamentoAppService>()
-                .AddScoped<IWorkflowAppService, WorkflowAppService>()
                 .AddScoped<IRecursoAppService, RecursoAppService>()
                 .AddScoped<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
                 .AddScoped<IRecursoProjetoAppService, RecursoProjetoAppService>()
                 .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>();
 
             services.AddAutoMapperSetup();
+
+            // Domain
+            services
+                .AddScoped<ICrudService<Sistema>, CrudService<Sistema>>()
+                .AddScoped<ICrudService<Projeto>, CrudService<Projeto>>()
+                .AddScoped<ICrudService<Impedimento>, CrudService<Impedimento>>()
+                .AddScoped<ICrudService<TipoTarefa>, CrudService<TipoTarefa>>()
+                .AddScoped<ICrudService<Workflow>, CrudService<Workflow>>();
+
+            services
+                .AddScoped<ITarefaService, TarefaService>()
+                .AddScoped<IApontamentoService, ApontamentoService>()
+                .AddScoped<IWorkflowService, WorkflowService>()
+                .AddScoped<IRecursoService, RecursoService>()
+                .AddScoped<IImpedimentoTarefaService, ImpedimentoTarefaService>()
+                .AddScoped<IRecursoProjetoService, RecursoProjetoService>()
+                .AddScoped<IRecursoTarefaService, RecursoTarefaService>();
 
             // Infra - Data
             services

@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces.Repositories;
+using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,17 +12,17 @@ namespace Cpnucleo.Application.Services
 {
     public class ImpedimentoTarefaAppService : CrudAppService<ImpedimentoTarefa, ImpedimentoTarefaViewModel>, IImpedimentoTarefaAppService
     {
-        private readonly IImpedimentoTarefaRepository _impedimentoTarefaRepository;
+        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
 
-        public ImpedimentoTarefaAppService(IMapper mapper, IImpedimentoTarefaRepository repository, IUnitOfWork unitOfWork, IImpedimentoTarefaRepository impedimentoTarefaRepository)
-            : base(mapper, repository, unitOfWork)
+        public ImpedimentoTarefaAppService(IMapper mapper, IImpedimentoTarefaService impedimentoTarefaService)
+            : base(mapper, impedimentoTarefaService)
         {
-            _impedimentoTarefaRepository = impedimentoTarefaRepository;
+            _impedimentoTarefaService = impedimentoTarefaService;
         }
 
         public IEnumerable<ImpedimentoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _impedimentoTarefaRepository.ListarPorTarefa(idTarefa).ProjectTo<ImpedimentoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _impedimentoTarefaService.ListarPorTarefa(idTarefa).ProjectTo<ImpedimentoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
         }
     }
 }

@@ -27,6 +27,9 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasMaxLength(100)
                 .IsRequired();
 
+            builder
+                .Ignore(c => c.Element);
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("TIP_DATA_INCLUSAO")
                 .HasColumnType("datetime")

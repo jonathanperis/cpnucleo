@@ -26,6 +26,9 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("int")
                 .IsRequired();
 
+            builder
+                .Ignore(c => c.TamanhoColuna);
+
             builder.Property(c => c.DataInclusao)
                 .HasColumnName("WOR_DATA_INCLUSAO")
                 .HasColumnType("datetime")

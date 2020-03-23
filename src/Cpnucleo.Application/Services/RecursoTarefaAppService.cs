@@ -2,7 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces.Repositories;
+using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,19 +12,17 @@ namespace Cpnucleo.Application.Services
 {
     public class RecursoTarefaAppService : CrudAppService<RecursoTarefa, RecursoTarefaViewModel>, IRecursoTarefaAppService
     {
-        private readonly IRecursoTarefaRepository _recursoTarefaRepository;
-        private readonly IApontamentoAppService _apontamentoAppService;
+        private readonly IRecursoTarefaService _recursoTarefaService;
 
-        public RecursoTarefaAppService(IMapper mapper, IRecursoTarefaRepository repository, IUnitOfWork unitOfWork, IRecursoTarefaRepository recursoTarefaRepository, IApontamentoAppService apontamentoAppService)
-            : base(mapper, repository, unitOfWork)
+        public RecursoTarefaAppService(IMapper mapper, IRecursoTarefaService recursoTarefaService)
+            : base(mapper, recursoTarefaService)
         {
-            _recursoTarefaRepository = recursoTarefaRepository;
-            _apontamentoAppService = apontamentoAppService;
+            _recursoTarefaService = recursoTarefaService;
         }
 
         public IEnumerable<RecursoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _recursoTarefaRepository.ListarPorTarefa(idTarefa).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _recursoTarefaService.ListarPorTarefa(idTarefa).ProjectTo<RecursoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
         }
     }
 }
