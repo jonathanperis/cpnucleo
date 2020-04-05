@@ -4,7 +4,7 @@ using Grpc.Net.Client;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public abstract class BaseGrpcService
+    internal abstract class BaseGrpcService
     {
         protected readonly IMapper _mapper;
         protected readonly GrpcChannel _channel;

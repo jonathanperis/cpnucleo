@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ImpedimentoApiService : BaseApiService<ImpedimentoViewModel>, ICrudApiService<ImpedimentoViewModel>
+    internal class ImpedimentoApiService : BaseApiService<ImpedimentoViewModel>, ICrudApiService<ImpedimentoViewModel>
     {
         private const string actionRoute = "impedimento";
 

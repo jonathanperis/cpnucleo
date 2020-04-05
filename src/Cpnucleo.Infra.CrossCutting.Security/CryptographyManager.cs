@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Cpnucleo.Infra.CrossCutting.Security
 {
-    public class CryptographyManager : ICryptographyManager
+    internal class CryptographyManager : ICryptographyManager
     {
         public void CryptPbkdf2(string item, out string itemCrypt, out string salt)
         {
