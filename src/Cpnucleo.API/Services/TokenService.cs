@@ -8,18 +8,17 @@ namespace Cpnucleo.API.Services
 {
     public static class TokenService
     {
-        public static string GenerateToken(string id, int expirationTime)
+        public static string GenerateToken(string id, string key, string issuer, int expires)
         {
-            byte[] key = Encoding.ASCII.GetBytes(Settings.Secret);
-
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.PrimarySid, id)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(expirationTime)),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.UtcNow.AddHours(Convert.ToInt32(expires)),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = issuer,
             };
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();

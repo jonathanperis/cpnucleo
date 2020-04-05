@@ -27,6 +27,31 @@ namespace Cpnucleo.Infra.CrossCutting.Util
             }
         }
 
+        public string JwtIssuer
+        {
+            get
+            {
+                string value = _configuration.GetSection("Jwt")["Issuer"];
+
+                if (value != null)
+                {
+                    return value;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public int JwtExpires
+        {
+            get
+            {
+                int.TryParse(_configuration.GetSection("Jwt")["Expires"], out int value);
+
+                return value;
+            }
+        }
+
         public string JwtKey
         {
             get
@@ -39,16 +64,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util
                 }
 
                 return string.Empty;
-            }
-        }
-
-        public int JwtExpirationDate
-        {
-            get
-            {
-                int.TryParse(_configuration.GetSection("Jwt")["ExpirationDate"], out int value);
-
-                return value;
             }
         }
 
