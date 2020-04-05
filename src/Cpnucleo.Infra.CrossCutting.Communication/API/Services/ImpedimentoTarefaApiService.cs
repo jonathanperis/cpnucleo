@@ -14,7 +14,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     {
         private const string actionRoute = "impedimentoTarefa";
 
-        public ImpedimentoTarefaApiService(ISystemConfiguration systemConfiguration) 
+        public ImpedimentoTarefaApiService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }
