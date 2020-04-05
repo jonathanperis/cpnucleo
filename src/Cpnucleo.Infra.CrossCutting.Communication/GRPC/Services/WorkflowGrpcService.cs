@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class WorkflowGrpcService : BaseGrpcService, ICrudGrpcService<WorkflowViewModel>
+    internal class WorkflowGrpcService : BaseGrpcService, ICrudGrpcService<WorkflowViewModel>
     {
         private readonly Workflow.WorkflowClient _client;
 
-        public WorkflowGrpcService(IMapper mapper)
-            : base(mapper)
+        public WorkflowGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new Workflow.WorkflowClient(_channel);
         }

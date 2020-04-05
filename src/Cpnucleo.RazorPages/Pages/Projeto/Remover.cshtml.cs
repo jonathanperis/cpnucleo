@@ -25,16 +25,32 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Projeto = await _projetoApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Projeto = await _projetoApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _projetoApiService.RemoverAsync(Token, Projeto.Id);
+            try
+            {
+                await _projetoApiService.RemoverAsync(Token, Projeto.Id);
 
-            return RedirectToPage("Listar");
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

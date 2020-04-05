@@ -25,16 +25,32 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
+            try
+            {
+                ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _impedimentoTarefaApiService.RemoverAsync(Token, ImpedimentoTarefa.Id);
+            try
+            {
+                await _impedimentoTarefaApiService.RemoverAsync(Token, ImpedimentoTarefa.Id);
 
-            return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
+                return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

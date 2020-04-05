@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class TarefaGrpcService : BaseGrpcService, ITarefaGrpcService
+    internal class TarefaGrpcService : BaseGrpcService, ITarefaGrpcService
     {
         private readonly Tarefa.TarefaClient _client;
 
-        public TarefaGrpcService(IMapper mapper)
-            : base(mapper)
+        public TarefaGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new Tarefa.TarefaClient(_channel);
         }

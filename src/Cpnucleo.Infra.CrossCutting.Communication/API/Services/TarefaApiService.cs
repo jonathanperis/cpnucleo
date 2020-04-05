@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Newtonsoft.Json;
 using RestSharp;
@@ -9,9 +10,14 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class TarefaApiService : BaseApiService<TarefaViewModel>, ITarefaApiService
+    internal class TarefaApiService : BaseApiService<TarefaViewModel>, ITarefaApiService
     {
         private const string actionRoute = "tarefa";
+
+        public TarefaApiService(ISystemConfiguration systemConfiguration)
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, TarefaViewModel obj)
         {
@@ -43,12 +49,24 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/putbyworkflow/{idTarefa}", Method.PUT);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
                 request.AddJsonBody(idWorkflow);
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                if (response.StatusCode != HttpStatusCode.NoContent)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
+
+                return response.StatusCode == HttpStatusCode.NoContent ? true : false;
             }
             catch (Exception)
             {
@@ -61,9 +79,21 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso}", Method.GET);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
 
                 return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(response.Content);
             }

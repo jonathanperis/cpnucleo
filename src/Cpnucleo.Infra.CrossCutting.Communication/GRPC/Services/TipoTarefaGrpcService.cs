@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class TipoTarefaGrpcService : BaseGrpcService, ICrudGrpcService<TipoTarefaViewModel>
+    internal class TipoTarefaGrpcService : BaseGrpcService, ICrudGrpcService<TipoTarefaViewModel>
     {
         private readonly TipoTarefa.TipoTarefaClient _client;
 
-        public TipoTarefaGrpcService(IMapper mapper)
-            : base(mapper)
+        public TipoTarefaGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new TipoTarefa.TipoTarefaClient(_channel);
         }

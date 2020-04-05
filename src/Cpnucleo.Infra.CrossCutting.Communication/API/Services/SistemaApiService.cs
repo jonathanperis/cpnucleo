@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class SistemaApiService : BaseApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
+    internal class SistemaApiService : BaseApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
     {
         private const string actionRoute = "sistema";
+
+        public SistemaApiService(ISystemConfiguration systemConfiguration)
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, SistemaViewModel obj)
         {

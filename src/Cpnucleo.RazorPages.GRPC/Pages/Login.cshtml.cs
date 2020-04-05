@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -56,12 +55,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
                 return Page();
             }
 
-            IEnumerable<Claim> claims = new[]
-            {
-                new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString())
-            };
-
-            ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(claims);
+            ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(recurso.Id.ToString(), string.Empty);
 
             await HttpContext.SignInAsync(principal);
 

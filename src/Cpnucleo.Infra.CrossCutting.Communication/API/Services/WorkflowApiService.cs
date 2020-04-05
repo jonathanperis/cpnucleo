@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class WorkflowApiService : BaseApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
+    internal class WorkflowApiService : BaseApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
     {
         private const string actionRoute = "workflow";
+
+        public WorkflowApiService(ISystemConfiguration systemConfiguration)
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, WorkflowViewModel obj)
         {

@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class ImpedimentoGrpcService : BaseGrpcService, ICrudGrpcService<ImpedimentoViewModel>
+    internal class ImpedimentoGrpcService : BaseGrpcService, ICrudGrpcService<ImpedimentoViewModel>
     {
         private readonly Impedimento.ImpedimentoClient _client;
 
-        public ImpedimentoGrpcService(IMapper mapper)
-            : base(mapper)
+        public ImpedimentoGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new Impedimento.ImpedimentoClient(_channel);
         }

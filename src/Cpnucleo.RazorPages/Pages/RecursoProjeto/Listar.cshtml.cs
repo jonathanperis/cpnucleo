@@ -28,11 +28,19 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync(Guid idProjeto)
         {
-            Lista = await _recursoProjetoApiService.ListarPorProjetoAsync(Token, idProjeto);
+            try
+            {
+                Lista = await _recursoProjetoApiService.ListarPorProjetoAsync(Token, idProjeto);
 
-            ViewData["idProjeto"] = idProjeto;
+                ViewData["idProjeto"] = idProjeto;
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

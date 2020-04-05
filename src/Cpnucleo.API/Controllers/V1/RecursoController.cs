@@ -1,8 +1,7 @@
-﻿using Cpnucleo.API.Filters;
-using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +11,7 @@ namespace Cpnucleo.API.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1", Deprecated = true)]
-    [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+    [Authorize]
     public class RecursoController : ControllerBase
     {
         private readonly IRecursoAppService _recursoAppService;
@@ -31,6 +30,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// Lista recursos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de recursos</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<RecursoViewModel> Get()
@@ -49,6 +50,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="id">Id do recurso</param>        
         /// <response code="200">Retorna um recurso</response>
         /// <response code="404">Recurso não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -86,6 +89,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="201">Recurso cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -101,7 +106,7 @@ namespace Cpnucleo.API.Controllers.V1
             {
                 _recursoAppService.Incluir(obj);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
                 if (ObjExists(obj.Id))
                 {
@@ -140,6 +145,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="obj">Recurso</param>        
         /// <response code="204">Recurso alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -159,7 +166,7 @@ namespace Cpnucleo.API.Controllers.V1
             {
                 _recursoAppService.Alterar(obj);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ObjExists(id))
                 {
@@ -185,6 +192,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="id">Id do recurso</param>        
         /// <response code="204">Recurso removido com sucesso</response>
         /// <response code="404">Recurso não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

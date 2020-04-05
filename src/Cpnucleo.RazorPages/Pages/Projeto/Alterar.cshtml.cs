@@ -31,24 +31,40 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Projeto = await _projetoApiService.ConsultarAsync(Token, id);
-            SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+            try
             {
+                Projeto = await _projetoApiService.ConsultarAsync(Token, id);
                 SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _projetoApiService.AlterarAsync(Token, Projeto);
+        public async Task<IActionResult> OnPostAsync()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
-            return RedirectToPage("Listar");
+                    return Page();
+                }
+
+                await _projetoApiService.AlterarAsync(Token, Projeto);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

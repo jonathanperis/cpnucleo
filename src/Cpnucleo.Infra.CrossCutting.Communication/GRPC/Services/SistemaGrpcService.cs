@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class SistemaGrpcService : BaseGrpcService, ICrudGrpcService<SistemaViewModel>
+    internal class SistemaGrpcService : BaseGrpcService, ICrudGrpcService<SistemaViewModel>
     {
         private readonly Sistema.SistemaClient _client;
 
-        public SistemaGrpcService(IMapper mapper)
-            : base(mapper)
+        public SistemaGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new Sistema.SistemaClient(_channel);
         }

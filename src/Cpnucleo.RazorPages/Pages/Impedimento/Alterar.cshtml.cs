@@ -25,21 +25,37 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Impedimento = await _impedimentoApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Impedimento = await _impedimentoApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+
+                await _impedimentoApiService.AlterarAsync(Token, Impedimento);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
-
-            await _impedimentoApiService.AlterarAsync(Token, Impedimento);
-
-            return RedirectToPage("Listar");
         }
     }
 }

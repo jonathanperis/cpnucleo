@@ -9,13 +9,14 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />    
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.27.0-pre1" />    
+    <PackageReference Include="Grpc.AspNetCore" Version="2.28.0-pre2" />    
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.28.0-pre2" />    
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
+    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Communication\Cpnucleo.Infra.CrossCutting.Communication.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.IoC\Cpnucleo.Infra.CrossCutting.IoC.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
   </ItemGroup>

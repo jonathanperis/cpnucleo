@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.API.Configuration;
-using Cpnucleo.API.Filters;
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 
 namespace Cpnucleo.API
 {
@@ -23,36 +24,31 @@ namespace Cpnucleo.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCpnucleoSetup();
+            services.AddCpnucleoApiSetup();
 
             services.AddSwaggerConfig();
             services.AddVersionConfig();
 
-            services.AddScoped<AuthorizerActionFilter>();
-
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //       .AddJwtBearer(options =>
-            //       {
-            //           options.TokenValidationParameters = new TokenValidationParameters
-            //           {
-            //               ValidateIssuer = true,
-            //               ValidateAudience = true,
-            //               ValidateLifetime = true,
-            //               ValidateIssuerSigningKey = true,
-            //               ValidIssuer = Configuration["Jwt:Issuer"],
-            //               ValidAudience = Configuration["Jwt:Issuer"],
-            //               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-            //           };
-            //       });
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                   .AddJwtBearer(options =>
-                   {
-                       options.TokenValidationParameters = new TokenValidationParameters
-                       {
-                           ValidateLifetime = true
-                       };
-                   });
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromHours(int.Parse(Configuration["Jwt:Expires"])),
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Jwt:Key"])),
+                };
+            });
 
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>
@@ -78,6 +74,9 @@ namespace Cpnucleo.API
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
