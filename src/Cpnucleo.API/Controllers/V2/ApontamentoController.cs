@@ -31,6 +31,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// Lista apontamentos na base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de apontamentos</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<ApontamentoViewModel> Get()
@@ -48,6 +50,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// </remarks>
         /// <param name="idRecurso">Id do recurso</param>        
         /// <response code="200">Retorna uma lista de apontamentos</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("GetByRecurso/{idRecurso}")]
         [ProducesResponseType(200)]
         public IEnumerable<ApontamentoViewModel> GetByRecurso(Guid idRecurso)
@@ -66,6 +70,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do apontamento</param>        
         /// <response code="200">Retorna um apontamento</response>
         /// <response code="404">Apontamento não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -105,6 +111,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="201">Apontamento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -161,6 +169,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="obj">Apontamento</param>        
         /// <response code="204">Apontamento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -206,6 +216,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do apontamento</param>        
         /// <response code="204">Apontamento removido com sucesso</response>
         /// <response code="404">Apontamento não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

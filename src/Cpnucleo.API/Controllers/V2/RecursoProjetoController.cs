@@ -31,6 +31,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// Lista recursos de projeto da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de recursos de projeto</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<RecursoProjetoViewModel> Get()
@@ -48,6 +50,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// </remarks>
         /// <param name="idRecurso">Id do recurso</param>        
         /// <response code="200">Retorna uma lista de recursos de projeto</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("GetByProjeto/{idRecurso}")]
         [ProducesResponseType(200)]
         public IEnumerable<RecursoProjetoViewModel> GetByProjeto(Guid idRecurso)
@@ -66,6 +70,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do recurso de projeto</param>        
         /// <response code="200">Retorna um recurso de projeto</response>
         /// <response code="404">Recurso de projeto não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -101,6 +107,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="201">Recurso de projeto cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -153,6 +161,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="obj">Recurso de projeto</param>        
         /// <response code="204">Recurso de projeto alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -198,6 +208,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do recurso de projeto</param>        
         /// <response code="204">Recurso de projeto removido com sucesso</response>
         /// <response code="404">Recurso de projeto não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
