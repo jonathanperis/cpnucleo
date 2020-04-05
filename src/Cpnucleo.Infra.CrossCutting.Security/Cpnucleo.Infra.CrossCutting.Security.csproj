@@ -5,14 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JWT" Version="5.2.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
+    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

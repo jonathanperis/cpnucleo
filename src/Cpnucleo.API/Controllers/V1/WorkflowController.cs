@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Security.Filters;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,7 +12,7 @@ namespace Cpnucleo.API.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1", Deprecated = true)]
-    [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+    [Authorize]
     public class WorkflowController : ControllerBase
     {
         private readonly ICrudAppService<WorkflowViewModel> _workflowAppService;

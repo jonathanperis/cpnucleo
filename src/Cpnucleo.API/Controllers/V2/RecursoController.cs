@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Security.Filters;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.API.Services;
+using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,13 +17,11 @@ namespace Cpnucleo.API.Controllers.V2
     public class RecursoController : ControllerBase
     {
         private readonly IRecursoAppService _recursoAppService;
-        private readonly IJwtManager _jwtManager;
         private readonly ISystemConfiguration _systemConfiguration;
 
-        public RecursoController(IRecursoAppService recursoAppService, IJwtManager jwtManager, ISystemConfiguration systemConfiguration)
+        public RecursoController(IRecursoAppService recursoAppService, ISystemConfiguration systemConfiguration)
         {
             _recursoAppService = recursoAppService;
-            _jwtManager = jwtManager;
             _systemConfiguration = systemConfiguration;
         }
 
@@ -38,7 +36,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="200">Retorna uma lista de recursos</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public IEnumerable<RecursoViewModel> Get()
         {
             return _recursoAppService.Listar();
@@ -58,7 +56,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public ActionResult<RecursoViewModel> Get(Guid id)
         {
             RecursoViewModel recurso = _recursoAppService.Consultar(id);
@@ -97,7 +95,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public ActionResult<RecursoViewModel> Post([FromBody]RecursoViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -152,7 +150,7 @@ namespace Cpnucleo.API.Controllers.V2
             }
             else
             {
-                recurso.Token = _jwtManager.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtExpirationDate);
+                recurso.Token = TokenService.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtExpirationDate);
 
                 return Ok(recurso);
             }
@@ -185,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public IActionResult Put(Guid id, [FromBody]RecursoViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -231,7 +229,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public IActionResult Delete(Guid id)
         {
             RecursoViewModel obj = _recursoAppService.Consultar(id);
