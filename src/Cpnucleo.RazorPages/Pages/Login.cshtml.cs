@@ -66,13 +66,7 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                IEnumerable<Claim> claims = new[]
-                {
-                    new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString()),
-                    new Claim(ClaimTypes.Hash, recurso.Token)
-                };
-
-                ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(claims);
+                ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(recurso.Id.ToString(), recurso.Token);
 
                 await HttpContext.SignInAsync(principal);
 

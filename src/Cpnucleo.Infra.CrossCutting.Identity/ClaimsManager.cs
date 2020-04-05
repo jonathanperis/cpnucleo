@@ -1,5 +1,4 @@
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
@@ -7,9 +6,14 @@ namespace Cpnucleo.Infra.CrossCutting.Identity
 {
     public class ClaimsManager : IClaimsManager
     {
-        public ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
+        public ClaimsPrincipal CreateClaimsPrincipal(string id, string token)
         {
-            ClaimsIdentity identities = new ClaimsIdentity(claims, "Dummy");
+            ClaimsIdentity identities = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.PrimarySid, id),
+                new Claim(ClaimTypes.Hash, token),
+            });
+
             return new ClaimsPrincipal(new[] { identities });
         }
 
