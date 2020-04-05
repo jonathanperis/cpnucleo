@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+﻿using AutoMapper;
+using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.API.Services;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services;
@@ -40,6 +41,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.Configuration
                 .AddScoped<IImpedimentoTarefaGrpcService, ImpedimentoTarefaGrpcService>()
                 .AddScoped<IRecursoProjetoGrpcService, RecursoProjetoGrpcService>()
                 .AddScoped<IRecursoTarefaGrpcService, RecursoTarefaGrpcService>();
+
+            services.AddAutoMapper();
         }
     }
 }

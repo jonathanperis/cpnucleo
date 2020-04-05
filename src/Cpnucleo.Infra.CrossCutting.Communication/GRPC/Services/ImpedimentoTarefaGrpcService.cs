@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -14,8 +15,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
     {
         private readonly ImpedimentoTarefa.ImpedimentoTarefaClient _client;
 
-        public ImpedimentoTarefaGrpcService(IMapper mapper)
-            : base(mapper)
+        public ImpedimentoTarefaGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new ImpedimentoTarefa.ImpedimentoTarefaClient(_channel);
         }
