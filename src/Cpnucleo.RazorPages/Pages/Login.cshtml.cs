@@ -5,7 +5,6 @@ using Cpnucleo.RazorPages.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
