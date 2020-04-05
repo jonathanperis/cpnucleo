@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -14,8 +15,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
     {
         private readonly RecursoTarefa.RecursoTarefaClient _client;
 
-        public RecursoTarefaGrpcService(IMapper mapper)
-            : base(mapper)
+        public RecursoTarefaGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new RecursoTarefa.RecursoTarefaClient(_channel);
         }

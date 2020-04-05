@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using System;
@@ -14,8 +15,8 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
     {
         private readonly Projeto.ProjetoClient _client;
 
-        public ProjetoGrpcService(IMapper mapper)
-            : base(mapper)
+        public ProjetoGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new Projeto.ProjetoClient(_channel);
         }
