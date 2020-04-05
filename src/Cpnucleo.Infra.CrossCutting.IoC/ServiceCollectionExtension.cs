@@ -5,19 +5,18 @@ using Cpnucleo.Infra.CrossCutting.Identity.Configuration;
 using Cpnucleo.Infra.CrossCutting.Security.Configuration;
 using Cpnucleo.Infra.CrossCutting.Util.Configuration;
 using Cpnucleo.Infra.Data.Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Infra.CrossCutting.IoC
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddCpnucleoApiSetup(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddCpnucleoApiSetup(this IServiceCollection services)
         {
             services.AddApplicationSetup();
             services.AddDomainSetup();
             services.AddInfraDataSetup();
-            services.AddInfraCrossCuttingSecutirySetup(configuration);
+            services.AddInfraCrossCuttingSecutirySetup();
             services.AddInfraCrossCuttingUtilSetup();
 
             return services;

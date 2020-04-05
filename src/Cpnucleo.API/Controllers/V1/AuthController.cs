@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cpnucleo.API.Controllers.V1
@@ -11,13 +11,6 @@ namespace Cpnucleo.API.Controllers.V1
     {
         private const string userT = "USERTESTE";
         private const string passT = "SENHATESTE";
-
-        private readonly IJwtManager _jwtManager;
-
-        public AuthController(IJwtManager jwtManager)
-        {
-            _jwtManager = jwtManager;
-        }
 
         /// <summary>
         /// Obter Token
@@ -40,7 +33,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             if (user == userT && pass == passT)
             {
-                token = _jwtManager.GenerateToken(user, 60);
+                token = TokenService.GenerateToken(user, 60);
             }
             else
             {
