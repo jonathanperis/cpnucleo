@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    public class CrudAppService<TModel, TViewModel> : ICrudAppService<TViewModel> where TViewModel : BaseViewModel
+    internal class CrudAppService<TModel, TViewModel> : ICrudAppService<TViewModel> where TViewModel : BaseViewModel
     {
         protected readonly IMapper _mapper;
         protected readonly ICrudService<TModel> _service;

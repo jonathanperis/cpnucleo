@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ImpedimentoTarefaApiService : BaseApiService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaApiService
+    internal class ImpedimentoTarefaApiService : BaseApiService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaApiService
     {
         private const string actionRoute = "impedimentoTarefa";
 

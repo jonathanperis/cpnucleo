@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class WorkflowGrpcService : BaseGrpcService, ICrudGrpcService<WorkflowViewModel>
+    internal class WorkflowGrpcService : BaseGrpcService, ICrudGrpcService<WorkflowViewModel>
     {
         private readonly Workflow.WorkflowClient _client;
 

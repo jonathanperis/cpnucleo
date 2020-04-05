@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class ImpedimentoGrpcService : BaseGrpcService, ICrudGrpcService<ImpedimentoViewModel>
+    internal class ImpedimentoGrpcService : BaseGrpcService, ICrudGrpcService<ImpedimentoViewModel>
     {
         private readonly Impedimento.ImpedimentoClient _client;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class WorkflowApiService : BaseApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
+    internal class WorkflowApiService : BaseApiService<WorkflowViewModel>, ICrudApiService<WorkflowViewModel>
     {
         private const string actionRoute = "workflow";
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class RecursoApiService : BaseApiService<RecursoViewModel>, IRecursoApiService
+    internal class RecursoApiService : BaseApiService<RecursoViewModel>, IRecursoApiService
     {
         private const string actionRoute = "recurso";
 

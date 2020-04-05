@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace Cpnucleo.Infra.CrossCutting.Identity
 {
-    public class ClaimsManager : IClaimsManager
+    internal class ClaimsManager : IClaimsManager
     {
         public ClaimsPrincipal CreateClaimsPrincipal(string id, string token)
         {

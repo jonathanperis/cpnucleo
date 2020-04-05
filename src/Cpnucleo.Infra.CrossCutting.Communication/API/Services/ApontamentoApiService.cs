@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class ApontamentoApiService : BaseApiService<ApontamentoViewModel>, IApontamentoApiService
+    internal class ApontamentoApiService : BaseApiService<ApontamentoViewModel>, IApontamentoApiService
     {
         private const string actionRoute = "apontamento";
 

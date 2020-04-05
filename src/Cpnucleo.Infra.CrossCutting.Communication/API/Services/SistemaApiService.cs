@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class SistemaApiService : BaseApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
+    internal class SistemaApiService : BaseApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
     {
         private const string actionRoute = "sistema";
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class RecursoProjetoGrpcService : BaseGrpcService, IRecursoProjetoGrpcService
+    internal class RecursoProjetoGrpcService : BaseGrpcService, IRecursoProjetoGrpcService
     {
         private readonly RecursoProjeto.RecursoProjetoClient _client;
 

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    public class RecursoProjetoAppService : CrudAppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
+    internal class RecursoProjetoAppService : CrudAppService<RecursoProjeto, RecursoProjetoViewModel>, IRecursoProjetoAppService
     {
         private readonly IRecursoProjetoService _recursoProjetoService;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class TipoTarefaApiService : BaseApiService<TipoTarefaViewModel>, ICrudApiService<TipoTarefaViewModel>
+    internal class TipoTarefaApiService : BaseApiService<TipoTarefaViewModel>, ICrudApiService<TipoTarefaViewModel>
     {
         private const string actionRoute = "tipoTarefa";
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class ApontamentoGrpcService : BaseGrpcService, IApontamentoGrpcService
+    internal class ApontamentoGrpcService : BaseGrpcService, IApontamentoGrpcService
     {
         private readonly Apontamento.ApontamentoClient _client;
 

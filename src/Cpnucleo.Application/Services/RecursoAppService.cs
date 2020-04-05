@@ -6,7 +6,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Services
 {
-    public class RecursoAppService : CrudAppService<Recurso, RecursoViewModel>, IRecursoAppService
+    internal class RecursoAppService : CrudAppService<Recurso, RecursoViewModel>, IRecursoAppService
     {
         private readonly IRecursoService _recursoService;
 

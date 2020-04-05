@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class BaseApiService<TViewModel>
+    internal class BaseApiService<TViewModel>
     {
         protected readonly RestClient _client;
 

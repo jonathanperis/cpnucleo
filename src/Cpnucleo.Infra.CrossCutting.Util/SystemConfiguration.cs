@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infra.CrossCutting.Util
 {
-    public class SystemConfiguration : ISystemConfiguration
+    internal class SystemConfiguration : ISystemConfiguration
     {
         private readonly IConfiguration _configuration;
 
