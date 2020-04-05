@@ -49,7 +49,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 

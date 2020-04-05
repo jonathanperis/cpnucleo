@@ -2,7 +2,6 @@
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -130,7 +129,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _tarefaAppService.Incluir(obj);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
                 if (ObjExists(obj.Id))
                 {
@@ -194,7 +193,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _tarefaAppService.Alterar(obj);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ObjExists(id))
                 {
@@ -244,7 +243,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ObjExists(idTarefa))
                 {

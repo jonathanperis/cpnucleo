@@ -49,7 +49,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/putbyworkflow/{idTarefa}", Method.PUT);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
                 request.AddJsonBody(idWorkflow);
 
                 IRestResponse response = await _client.ExecuteAsync(request);
@@ -79,7 +79,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{idRecurso}", Method.GET);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
