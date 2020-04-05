@@ -31,24 +31,40 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
-            SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+            try
             {
+                ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
                 SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _impedimentoTarefaApiService.AlterarAsync(Token, ImpedimentoTarefa);
+        public async Task<IActionResult> OnPostAsync()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
 
-            return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
+                    return Page();
+                }
+
+                await _impedimentoTarefaApiService.AlterarAsync(Token, ImpedimentoTarefa);
+
+                return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

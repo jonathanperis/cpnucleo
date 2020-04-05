@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    public class ApontamentoAppService : CrudAppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
+    internal class ApontamentoAppService : CrudAppService<Apontamento, ApontamentoViewModel>, IApontamentoAppService
     {
         private readonly IApontamentoService _apontamentoService;
 

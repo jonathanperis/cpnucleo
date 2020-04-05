@@ -1,6 +1,4 @@
 ﻿using Cpnucleo.Domain.Entities;
-using System;
-using System.Linq;
 
 namespace Cpnucleo.Domain.Interfaces.Services
 {
@@ -9,7 +7,5 @@ namespace Cpnucleo.Domain.Interfaces.Services
         int ObterQuantidadeColunas();
 
         string ObterTamanhoColuna(int quantidadeColunas);
-
-        IQueryable<Workflow> ObterPorTarefa(Guid idTarefa);
     }
 }

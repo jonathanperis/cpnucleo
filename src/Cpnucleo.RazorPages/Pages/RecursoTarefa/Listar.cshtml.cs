@@ -28,11 +28,19 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGetAsync(Guid idTarefa)
         {
-            Lista = await _recursoTarefaApiService.ListarPorTarefaAsync(Token, idTarefa);
+            try
+            {
+                Lista = await _recursoTarefaApiService.ListarPorTarefaAsync(Token, idTarefa);
 
-            ViewData["idTarefa"] = idTarefa;
+                ViewData["idTarefa"] = idTarefa;
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

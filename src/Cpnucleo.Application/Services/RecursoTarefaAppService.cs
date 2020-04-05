@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    public class RecursoTarefaAppService : CrudAppService<RecursoTarefa, RecursoTarefaViewModel>, IRecursoTarefaAppService
+    internal class RecursoTarefaAppService : CrudAppService<RecursoTarefa, RecursoTarefaViewModel>, IRecursoTarefaAppService
     {
         private readonly IRecursoTarefaService _recursoTarefaService;
 

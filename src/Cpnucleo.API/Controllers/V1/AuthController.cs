@@ -1,4 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.API.Services;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cpnucleo.API.Controllers.V1
@@ -12,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
         private const string userT = "USERTESTE";
         private const string passT = "SENHATESTE";
 
-        private readonly IJwtManager _jwtManager;
+        private readonly ISystemConfiguration _systemConfiguration;
 
-        public AuthController(IJwtManager jwtManager)
+        public AuthController(ISystemConfiguration systemConfiguration)
         {
-            _jwtManager = jwtManager;
+            _systemConfiguration = systemConfiguration;
         }
 
         /// <summary>
@@ -31,16 +33,17 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="pass">Senha padrão: SENHATESTE</param>
         /// <response code="200">Retorna um token válido por 60 minutos</response>
         /// <response code="400">Usuário ou senha inválidos</response>
-        [HttpGet]
+        /// <response code="500">Erro no processamento da requisição</response>
+        [HttpGet("Autenticar")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Index(string user, string pass)
+        public IActionResult Autenticar(string user, string pass)
         {
             string token;
 
             if (user == userT && pass == passT)
             {
-                token = _jwtManager.GenerateToken(user, 60);
+                token = TokenService.GenerateToken(user, _systemConfiguration.JwtKey, _systemConfiguration.JwtIssuer, _systemConfiguration.JwtExpires);
             }
             else
             {
@@ -48,6 +51,25 @@ namespace Cpnucleo.API.Controllers.V1
             }
 
             return Ok(token);
+        }
+
+        /// <summary>
+        /// Testar autorização
+        /// </summary>
+        /// <remarks>
+        /// # Testar autorização
+        /// 
+        /// Testa a autorização efetuada no método de testes para autenticaar.
+        /// </remarks>
+        /// <response code="200">Ácesso autorizado com sucesso</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
+        [HttpGet("TestarAutorizacao")]
+        [ProducesResponseType(200)]
+        [Authorize]
+        public IActionResult TestarAutorizacao()
+        {
+            return Ok();
         }
     }
 }

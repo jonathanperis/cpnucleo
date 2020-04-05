@@ -73,12 +73,14 @@
             </div>
             <h3>Bem vindo ao @OptionsApplicationConfiguration.Value.NomeSistema!</h3>
             <form asp-page="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="m-t" role="form">
+
                 @if (!ViewData.ModelState.IsValid)
                 {
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible" role="alert">
+                    <div asp-validation-summary="All" class="alert alert-danger alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                 }
+
                 <div class="form-group">
                     <input type="text" class="form-control" asp-for="Login.Usuario" placeholder="@Html.DisplayNameFor(x => x.Login.Usuario)">
                     <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Login.Usuario)</span>

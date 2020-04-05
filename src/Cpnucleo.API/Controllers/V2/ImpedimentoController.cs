@@ -1,8 +1,7 @@
-﻿using Cpnucleo.API.Filters;
-using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +11,7 @@ namespace Cpnucleo.API.Controllers.V2
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("2")]
-    [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+    [Authorize]
     public class ImpedimentoController : ControllerBase
     {
         private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
@@ -31,6 +30,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// Lista impedimentos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de impedimentos</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<ImpedimentoViewModel> Get()
@@ -49,6 +50,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do impedimento</param>        
         /// <response code="200">Retorna um impedimento</response>
         /// <response code="404">Impedimento não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -83,6 +86,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="201">Impedimento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -98,7 +103,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _impedimentoAppService.Incluir(obj);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
                 if (ObjExists(obj.Id))
                 {
@@ -134,6 +139,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="obj">Impedimento</param>        
         /// <response code="204">Impedimento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -153,7 +160,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _impedimentoAppService.Alterar(obj);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ObjExists(id))
                 {
@@ -179,6 +186,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do impedimento</param>        
         /// <response code="204">Impedimento removido com sucesso</response>
         /// <response code="404">Impedimento não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

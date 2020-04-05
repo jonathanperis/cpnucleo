@@ -3,6 +3,7 @@ using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Impedimento
@@ -24,14 +25,22 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+
+                await _impedimentoApiService.IncluirAsync(Token, Impedimento);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
-
-            await _impedimentoApiService.IncluirAsync(Token, Impedimento);
-
-            return RedirectToPage("Listar");
         }
     }
 }

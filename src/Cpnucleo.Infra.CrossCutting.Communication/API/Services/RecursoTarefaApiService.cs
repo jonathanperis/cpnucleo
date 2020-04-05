@@ -1,16 +1,23 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 {
-    public class RecursoTarefaApiService : BaseApiService<RecursoTarefaViewModel>, IRecursoTarefaApiService
+    internal class RecursoTarefaApiService : BaseApiService<RecursoTarefaViewModel>, IRecursoTarefaApiService
     {
         private const string actionRoute = "recursoTarefa";
+
+        public RecursoTarefaApiService(ISystemConfiguration systemConfiguration)
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, RecursoTarefaViewModel obj)
         {
@@ -42,9 +49,21 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
 
                 return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(response.Content);
             }

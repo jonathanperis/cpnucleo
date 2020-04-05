@@ -5,11 +5,18 @@ using System.Security.Claims;
 
 namespace Cpnucleo.Infra.CrossCutting.Identity
 {
-    public class ClaimsManager : IClaimsManager
+    internal class ClaimsManager : IClaimsManager
     {
-        public ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
+        public ClaimsPrincipal CreateClaimsPrincipal(string id, string token)
         {
-            ClaimsIdentity identities = new ClaimsIdentity(claims, "Dummy");
+            IEnumerable<Claim> claims = new[]
+            {
+                new Claim(ClaimTypes.PrimarySid, id),
+                new Claim(ClaimTypes.Hash, token)
+            };
+
+            ClaimsIdentity identities = new ClaimsIdentity(claims, "Cookie");
+
             return new ClaimsPrincipal(new[] { identities });
         }
 

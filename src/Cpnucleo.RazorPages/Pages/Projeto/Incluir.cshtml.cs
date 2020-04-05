@@ -4,6 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto
@@ -30,23 +31,39 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
         public async Task<IActionResult> OnGetAsync()
         {
-            SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+            try
             {
                 SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _projetoApiService.IncluirAsync(Token, Projeto);
+        public async Task<IActionResult> OnPostAsync()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
 
-            return RedirectToPage("Listar");
+                    return Page();
+                }
+
+                await _projetoApiService.IncluirAsync(Token, Projeto);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

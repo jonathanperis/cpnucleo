@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infra.CrossCutting.Util
 {
-    public class SystemConfiguration : ISystemConfiguration
+    internal class SystemConfiguration : ISystemConfiguration
     {
         private readonly IConfiguration _configuration;
 
@@ -27,6 +27,31 @@ namespace Cpnucleo.Infra.CrossCutting.Util
             }
         }
 
+        public string JwtIssuer
+        {
+            get
+            {
+                string value = _configuration.GetSection("Jwt")["Issuer"];
+
+                if (value != null)
+                {
+                    return value;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public int JwtExpires
+        {
+            get
+            {
+                int.TryParse(_configuration.GetSection("Jwt")["Expires"], out int value);
+
+                return value;
+            }
+        }
+
         public string JwtKey
         {
             get
@@ -42,13 +67,33 @@ namespace Cpnucleo.Infra.CrossCutting.Util
             }
         }
 
-        public int JwtExpirationDate
+        public string UrlCpnucleoApi
         {
             get
             {
-                int.TryParse(_configuration.GetSection("Jwt")["ExpirationDate"], out int value);
+                string value = _configuration.GetSection("AppSettings")["UrlCpnucleoApi"];
 
-                return value;
+                if (value != null)
+                {
+                    return value;
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public string UrlCpnucleoGrpc
+        {
+            get
+            {
+                string value = _configuration.GetSection("AppSettings")["UrlCpnucleoGrpc"];
+
+                if (value != null)
+                {
+                    return value;
+                }
+
+                return string.Empty;
             }
         }
     }

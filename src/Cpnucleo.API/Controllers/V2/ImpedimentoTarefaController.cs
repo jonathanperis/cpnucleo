@@ -1,8 +1,7 @@
-﻿using Cpnucleo.API.Filters;
-using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +11,7 @@ namespace Cpnucleo.API.Controllers.V2
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("2")]
-    [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+    [Authorize]
     public class ImpedimentoTarefaController : ControllerBase
     {
         private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
@@ -31,6 +30,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// Lista impedimentos de tarefa da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<ImpedimentoTarefaViewModel> Get()
@@ -48,6 +49,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// </remarks>
         /// <param name="idTarefa">Id da tarefa</param>        
         /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("GetByTarefa/{idTarefa}")]
         [ProducesResponseType(200)]
         public IEnumerable<ImpedimentoTarefaViewModel> GetByTarefa(Guid idTarefa)
@@ -66,6 +69,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do impedimento de tarefa</param>        
         /// <response code="200">Retorna um impedimento de tarefa</response>
         /// <response code="404">Impedimento de tarefa não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -102,6 +107,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="201">Impedimento de tarefa cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -117,7 +124,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _impedimentoTarefaAppService.Incluir(obj);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
                 if (ObjExists(obj.Id))
                 {
@@ -155,6 +162,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="obj">Impedimento de tarefa</param>        
         /// <response code="204">Impedimento de tarefa alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -174,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _impedimentoTarefaAppService.Alterar(obj);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ObjExists(id))
                 {
@@ -200,6 +209,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do impedimento de tarefa</param>        
         /// <response code="204">Impedimento de tarefa removido com sucesso</response>
         /// <response code="404">Impedimento de tarefa não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

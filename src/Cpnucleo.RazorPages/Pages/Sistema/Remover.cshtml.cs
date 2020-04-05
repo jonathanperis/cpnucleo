@@ -25,16 +25,32 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Sistema = await _sistemaApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Sistema = await _sistemaApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _sistemaApiService.RemoverAsync(Token, Sistema.Id);
+            try
+            {
+                await _sistemaApiService.RemoverAsync(Token, Sistema.Id);
 
-            return RedirectToPage("Listar");
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

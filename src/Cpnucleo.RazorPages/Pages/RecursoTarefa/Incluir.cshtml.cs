@@ -36,26 +36,42 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
         public async Task<IActionResult> OnGetAsync(Guid idTarefa)
         {
-            Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
-
-            SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(Guid idTarefa)
-        {
-            if (!ModelState.IsValid)
+            try
             {
                 Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
+
                 SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _recursoTarefaApiService.IncluirAsync(Token, RecursoTarefa);
+        public async Task<IActionResult> OnPostAsync(Guid idTarefa)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
+                    SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
-            return RedirectToPage("Listar", new { idTarefa });
+                    return Page();
+                }
+
+                await _recursoTarefaApiService.IncluirAsync(Token, RecursoTarefa);
+
+                return RedirectToPage("Listar", new { idTarefa });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

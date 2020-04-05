@@ -25,16 +25,32 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _tarefaApiService.RemoverAsync(Token, Tarefa.Id);
+            try
+            {
+                await _tarefaApiService.RemoverAsync(Token, Tarefa.Id);
 
-            return RedirectToPage("Listar");
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

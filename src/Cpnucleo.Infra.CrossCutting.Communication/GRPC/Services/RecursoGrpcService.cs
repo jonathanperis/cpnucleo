@@ -2,6 +2,7 @@
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos;
 using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Protos.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.GRPC.Services
 {
-    public class RecursoGrpcService : BaseGrpcService, IRecursoGrpcService
+    internal class RecursoGrpcService : BaseGrpcService, IRecursoGrpcService
     {
         private readonly Recurso.RecursoClient _client;
 
-        public RecursoGrpcService(IMapper mapper)
-            : base(mapper)
+        public RecursoGrpcService(IMapper mapper, ISystemConfiguration systemConfiguration)
+            : base(mapper, systemConfiguration)
         {
             _client = new Recurso.RecursoClient(_channel);
         }

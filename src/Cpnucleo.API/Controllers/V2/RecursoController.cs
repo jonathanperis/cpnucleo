@@ -1,10 +1,9 @@
-﻿using Cpnucleo.API.Filters;
+﻿using Cpnucleo.API.Services;
 using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 
@@ -17,13 +16,11 @@ namespace Cpnucleo.API.Controllers.V2
     public class RecursoController : ControllerBase
     {
         private readonly IRecursoAppService _recursoAppService;
-        private readonly IJwtManager _jwtManager;
         private readonly ISystemConfiguration _systemConfiguration;
 
-        public RecursoController(IRecursoAppService recursoAppService, IJwtManager jwtManager, ISystemConfiguration systemConfiguration)
+        public RecursoController(IRecursoAppService recursoAppService, ISystemConfiguration systemConfiguration)
         {
             _recursoAppService = recursoAppService;
-            _jwtManager = jwtManager;
             _systemConfiguration = systemConfiguration;
         }
 
@@ -36,9 +33,11 @@ namespace Cpnucleo.API.Controllers.V2
         /// Lista recursos da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de recursos</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public IEnumerable<RecursoViewModel> Get()
         {
             return _recursoAppService.Listar();
@@ -55,10 +54,12 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do recurso</param>        
         /// <response code="200">Retorna um recurso</response>
         /// <response code="404">Recurso não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public ActionResult<RecursoViewModel> Get(Guid id)
         {
             RecursoViewModel recurso = _recursoAppService.Consultar(id);
@@ -93,11 +94,13 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="201">Recurso cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public ActionResult<RecursoViewModel> Post([FromBody]RecursoViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -109,7 +112,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _recursoAppService.Incluir(obj);
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
                 if (ObjExists(obj.Id))
                 {
@@ -134,6 +137,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// </remarks>
         /// <response code="200">Retorna um recurso</response>
         /// <response code="404">Recurso não encontrado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("Autenticar")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -152,7 +156,7 @@ namespace Cpnucleo.API.Controllers.V2
             }
             else
             {
-                recurso.Token = _jwtManager.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtExpirationDate);
+                recurso.Token = TokenService.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtKey, _systemConfiguration.JwtIssuer, _systemConfiguration.JwtExpires);
 
                 return Ok(recurso);
             }
@@ -182,10 +186,12 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="obj">Recurso</param>        
         /// <response code="204">Recurso alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public IActionResult Put(Guid id, [FromBody]RecursoViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -202,7 +208,7 @@ namespace Cpnucleo.API.Controllers.V2
             {
                 _recursoAppService.Alterar(obj);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ObjExists(id))
                 {
@@ -228,10 +234,12 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do recurso</param>        
         /// <response code="204">Recurso removido com sucesso</response>
         /// <response code="404">Recurso não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        [ServiceFilter(typeof(AuthorizerActionFilter), Order = 1)]
+        [Authorize]
         public IActionResult Delete(Guid id)
         {
             RecursoViewModel obj = _recursoAppService.Consultar(id);

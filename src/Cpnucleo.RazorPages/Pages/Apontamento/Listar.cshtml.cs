@@ -36,18 +36,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public async Task<IActionResult> OnGetAsync()
         {
-            string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-            Guid idRecurso = new Guid(retorno);
-
-            Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
-            ListaTarefas = await _tarefaApiService.ListarPorRecursoAsync(Token, idRecurso);
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+            try
             {
                 string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
@@ -57,10 +46,37 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _apontamentoApiService.IncluirAsync(Token, Apontamento);
+        public async Task<IActionResult> OnPostAsync()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+                    Guid idRecurso = new Guid(retorno);
 
-            return RedirectToPage("Listar");
+                    Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
+                    ListaTarefas = await _tarefaApiService.ListarPorRecursoAsync(Token, idRecurso);
+
+                    return Page();
+                }
+
+                await _apontamentoApiService.IncluirAsync(Token, Apontamento);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

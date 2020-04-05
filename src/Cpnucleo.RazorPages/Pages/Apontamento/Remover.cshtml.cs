@@ -25,16 +25,32 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Apontamento = await _apontamentoApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Apontamento = await _apontamentoApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _apontamentoApiService.RemoverAsync(Token, Apontamento.Id);
+            try
+            {
+                await _apontamentoApiService.RemoverAsync(Token, Apontamento.Id);
 
-            return RedirectToPage("Listar");
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }
