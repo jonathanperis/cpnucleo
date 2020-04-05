@@ -13,9 +13,14 @@
         string JwtKey { get; }
 
         /// <summary>
+        /// JWT issuer
+        /// </summary>
+        string JwtIssuer { get; }
+
+        /// <summary>
         /// JWT token expiration date
         /// </summary>
-        int JwtExpirationDate { get; }
+        int JwtExpires { get; }
 
         /// <summary>
         /// URL for Cpnucleo API

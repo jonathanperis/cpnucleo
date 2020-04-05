@@ -150,7 +150,7 @@ namespace Cpnucleo.API.Controllers.V2
             }
             else
             {
-                recurso.Token = TokenService.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtExpirationDate);
+                recurso.Token = TokenService.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtKey, _systemConfiguration.JwtIssuer, _systemConfiguration.JwtExpires);
 
                 return Ok(recurso);
             }
