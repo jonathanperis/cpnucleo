@@ -22,7 +22,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.GET);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
@@ -51,7 +51,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id}", Method.GET);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
@@ -80,7 +80,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.POST);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
                 IRestResponse response = await _client.ExecuteAsync(request);
@@ -110,7 +110,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id}", Method.PUT);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
                 request.AddJsonBody(JsonConvert.SerializeObject(obj));
 
                 IRestResponse response = await _client.ExecuteAsync(request);
@@ -140,7 +140,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}/{id}", Method.DELETE);
-                request.AddHeader("Authorization", token);
+                request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 

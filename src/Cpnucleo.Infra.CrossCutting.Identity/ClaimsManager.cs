@@ -1,4 +1,5 @@
 using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
@@ -8,11 +9,13 @@ namespace Cpnucleo.Infra.CrossCutting.Identity
     {
         public ClaimsPrincipal CreateClaimsPrincipal(string id, string token)
         {
-            ClaimsIdentity identities = new ClaimsIdentity(new Claim[]
+            IEnumerable<Claim> claims = new[]
             {
                 new Claim(ClaimTypes.PrimarySid, id),
-                new Claim(ClaimTypes.Hash, token),
-            });
+                new Claim(ClaimTypes.Hash, token)
+            };
+
+            ClaimsIdentity identities = new ClaimsIdentity(claims, "Cookie");
 
             return new ClaimsPrincipal(new[] { identities });
         }
