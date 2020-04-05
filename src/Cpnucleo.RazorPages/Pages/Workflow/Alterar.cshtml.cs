@@ -25,21 +25,37 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Workflow = await _workflowApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Workflow = await _workflowApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+
+                await _workflowApiService.AlterarAsync(Token, Workflow);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
-
-            await _workflowApiService.AlterarAsync(Token, Workflow);
-
-            return RedirectToPage("Listar");
         }
     }
 }

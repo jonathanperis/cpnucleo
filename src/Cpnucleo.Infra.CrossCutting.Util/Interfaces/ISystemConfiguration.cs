@@ -16,5 +16,10 @@
         /// JWT token expiration date
         /// </summary>
         int JwtExpirationDate { get; }
+
+        /// <summary>
+        /// URL for Cpnucleo API
+        /// </summary>
+        string UrlCpnucleoApi { get; }
     }
 }

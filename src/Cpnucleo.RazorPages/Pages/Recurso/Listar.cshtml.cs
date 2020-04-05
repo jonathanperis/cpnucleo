@@ -3,6 +3,7 @@ using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -26,9 +27,17 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _recursoApiService.ListarAsync(Token);
+            try
+            {
+                Lista = await _recursoApiService.ListarAsync(Token);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

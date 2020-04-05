@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,11 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     public class ProjetoApiService : BaseApiService<ProjetoViewModel>, ICrudApiService<ProjetoViewModel>
     {
         private const string actionRoute = "projeto";
+
+        public ProjetoApiService(ISystemConfiguration systemConfiguration) 
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, ProjetoViewModel obj)
         {

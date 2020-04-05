@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,11 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     public class ImpedimentoApiService : BaseApiService<ImpedimentoViewModel>, ICrudApiService<ImpedimentoViewModel>
     {
         private const string actionRoute = "impedimento";
+
+        public ImpedimentoApiService(ISystemConfiguration systemConfiguration) 
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, ImpedimentoViewModel obj)
         {

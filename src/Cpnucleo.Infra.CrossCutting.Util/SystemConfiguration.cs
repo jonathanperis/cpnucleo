@@ -51,5 +51,20 @@ namespace Cpnucleo.Infra.CrossCutting.Util
                 return value;
             }
         }
+
+        public string UrlCpnucleoApi
+        {
+            get
+            {
+                string value = _configuration.GetSection("AppSettings")["UrlCpnucleoApi"];
+
+                if (value != null)
+                {
+                    return value;
+                }
+
+                return string.Empty;
+            }
+        }
     }
 }

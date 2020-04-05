@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace Cpnucleo.API.Filters
+namespace Cpnucleo.Infra.CrossCutting.Security.Filters
 {
     public class AuthorizerActionFilter : IActionFilter
     {

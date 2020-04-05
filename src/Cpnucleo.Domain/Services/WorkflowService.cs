@@ -28,9 +28,18 @@ namespace Cpnucleo.Domain.Services
             return lista;
         }
 
-        public IQueryable<Workflow> ObterPorTarefa(Guid idTarefa)
+        public new IQueryable<Workflow> Consultar(Guid id)
         {
-            throw new NotImplementedException();
+            IQueryable<Workflow> workflow = base.Consultar(id);
+
+            int quantidadeColunas = ObterQuantidadeColunas();
+
+            foreach (Workflow item in workflow)
+            {
+                item.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
+            }
+
+            return workflow;
         }
 
         public int ObterQuantidadeColunas()

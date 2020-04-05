@@ -36,25 +36,41 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
         public async Task<IActionResult> OnGetAsync(Guid idProjeto)
         {
-            Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
-            SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(Guid idProjeto)
-        {
-            if (!ModelState.IsValid)
+            try
             {
                 Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
                 SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _recursoProjetoApiService.IncluirAsync(Token, RecursoProjeto);
+        public async Task<IActionResult> OnPostAsync(Guid idProjeto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
+                    SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
 
-            return RedirectToPage("Listar", new { idProjeto });
+                    return Page();
+                }
+
+                await _recursoProjetoApiService.IncluirAsync(Token, RecursoProjeto);
+
+                return RedirectToPage("Listar", new { idProjeto });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }
