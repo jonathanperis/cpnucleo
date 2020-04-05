@@ -14,7 +14,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     {
         private const string actionRoute = "recursoTarefa";
 
-        public RecursoTarefaApiService(ISystemConfiguration systemConfiguration) 
+        public RecursoTarefaApiService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }

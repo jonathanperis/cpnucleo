@@ -11,7 +11,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     {
         private const string actionRoute = "workflow";
 
-        public WorkflowApiService(ISystemConfiguration systemConfiguration) 
+        public WorkflowApiService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }

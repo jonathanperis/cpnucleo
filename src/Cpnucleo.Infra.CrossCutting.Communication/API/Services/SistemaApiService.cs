@@ -11,7 +11,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     {
         private const string actionRoute = "sistema";
 
-        public SistemaApiService(ISystemConfiguration systemConfiguration) 
+        public SistemaApiService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }

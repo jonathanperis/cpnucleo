@@ -14,7 +14,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     {
         private const string actionRoute = "recursoProjeto";
 
-        public RecursoProjetoApiService(ISystemConfiguration systemConfiguration) 
+        public RecursoProjetoApiService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }
