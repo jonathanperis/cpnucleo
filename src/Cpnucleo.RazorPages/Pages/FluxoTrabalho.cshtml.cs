@@ -30,17 +30,33 @@ namespace Cpnucleo.RazorPages.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Lista = await _workflowApiService.ListarAsync(Token);
-            ListaTarefas = await _tarefaApiService.ListarAsync(Token);
+            try
+            {
+                Lista = await _workflowApiService.ListarAsync(Token);
+                ListaTarefas = await _tarefaApiService.ListarAsync(Token);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(Guid idTarefa, Guid idWorkflow)
         {
-            await _tarefaApiService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
+            try
+            {
+                await _tarefaApiService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

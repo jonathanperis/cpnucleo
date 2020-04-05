@@ -9,7 +9,5 @@ namespace Cpnucleo.Domain.Interfaces.Services
         int ObterQuantidadeColunas();
 
         string ObterTamanhoColuna(int quantidadeColunas);
-
-        IQueryable<Workflow> ObterPorTarefa(Guid idTarefa);
     }
 }

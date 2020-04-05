@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Newtonsoft.Json;
 using RestSharp;
@@ -12,6 +13,11 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     public class TarefaApiService : BaseApiService<TarefaViewModel>, ITarefaApiService
     {
         private const string actionRoute = "tarefa";
+
+        public TarefaApiService(ISystemConfiguration systemConfiguration) 
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, TarefaViewModel obj)
         {
@@ -48,7 +54,19 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                if (response.StatusCode != HttpStatusCode.NoContent)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
+
+                return response.StatusCode == HttpStatusCode.NoContent ? true : false;
             }
             catch (Exception)
             {
@@ -64,6 +82,18 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 request.AddHeader("Authorization", token);
 
                 IRestResponse response = await _client.ExecuteAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
 
                 return JsonConvert.DeserializeObject<IEnumerable<TarefaViewModel>>(response.Content);
             }

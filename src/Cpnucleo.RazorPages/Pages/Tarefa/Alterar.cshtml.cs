@@ -46,19 +46,9 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
-            SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
-            SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
-            SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
-            SelectTipoTarefas = new SelectList(await _tipoTarefaApiService.ListarAsync(Token), "Id", "Nome");
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
+            try
             {
+                Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
                 SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
                 SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
                 SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
@@ -66,10 +56,36 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                 return Page();
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+        }
 
-            await _tarefaApiService.AlterarAsync(Token, Tarefa);
+        public async Task<IActionResult> OnPostAsync()
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
+                    SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
+                    SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
+                    SelectTipoTarefas = new SelectList(await _tipoTarefaApiService.ListarAsync(Token), "Id", "Nome");
 
-            return RedirectToPage("Listar");
+                    return Page();
+                }
+
+                await _tarefaApiService.AlterarAsync(Token, Tarefa);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
     }
 }

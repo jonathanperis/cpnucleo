@@ -25,21 +25,37 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            Recurso = await _recursoApiService.ConsultarAsync(Token, id);
+            try
+            {
+                Recurso = await _recursoApiService.ConsultarAsync(Token, id);
 
-            return Page();
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+
+                await _recursoApiService.AlterarAsync(Token, Recurso);
+
+                return RedirectToPage("Listar");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
-
-            await _recursoApiService.AlterarAsync(Token, Recurso);
-
-            return RedirectToPage("Listar");
         }
     }
 }

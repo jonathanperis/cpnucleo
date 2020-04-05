@@ -1,9 +1,11 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
@@ -11,6 +13,11 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     public class ApontamentoApiService : BaseApiService<ApontamentoViewModel>, IApontamentoApiService
     {
         private const string actionRoute = "apontamento";
+
+        public ApontamentoApiService(ISystemConfiguration systemConfiguration) 
+            : base(systemConfiguration)
+        {
+        }
 
         public async Task<bool> IncluirAsync(string token, ApontamentoViewModel obj)
         {
@@ -45,6 +52,18 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 request.AddHeader("Authorization", token);
 
                 IRestResponse response = await _client.ExecuteAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
 
                 return JsonConvert.DeserializeObject<IEnumerable<ApontamentoViewModel>>(response.Content);
             }

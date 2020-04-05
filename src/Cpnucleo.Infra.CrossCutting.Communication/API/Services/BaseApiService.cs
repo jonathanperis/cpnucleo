@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,9 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
     {
         protected readonly RestClient _client;
 
-        public BaseApiService()
+        public BaseApiService(ISystemConfiguration systemConfiguration)
         {
-            //_client = new RestClient("https://localhost:5001");
-            _client = new RestClient("https://cpnucleo-api.azurewebsites.net");
+            _client = new RestClient(systemConfiguration.UrlCpnucleoApi);
         }
 
         protected async Task<IEnumerable<TViewModel>> GetAsync(string token, string actionRoute)
@@ -25,6 +25,18 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 request.AddHeader("Authorization", token);
 
                 IRestResponse response = await _client.ExecuteAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
 
                 return JsonConvert.DeserializeObject<IEnumerable<TViewModel>>(response.Content);
             }
@@ -42,6 +54,18 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
                 request.AddHeader("Authorization", token);
 
                 IRestResponse response = await _client.ExecuteAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
 
                 return JsonConvert.DeserializeObject<TViewModel>(response.Content);
             }
@@ -61,6 +85,18 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
+                if (response.StatusCode != HttpStatusCode.Created)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
+
                 return response.StatusCode == HttpStatusCode.Created ? true : false;
             }
             catch (Exception)
@@ -79,7 +115,19 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                if (response.StatusCode != HttpStatusCode.NoContent)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
+
+                return response.StatusCode == HttpStatusCode.NoContent ? true : false;
             }
             catch (Exception)
             {
@@ -96,7 +144,19 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
-                return response.StatusCode == HttpStatusCode.OK ? true : false;
+                if (response.StatusCode != HttpStatusCode.NoContent)
+                {
+                    if (!string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        throw new Exception(response.Content);
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao se comunicar com a api de dados.");
+                    }
+                }
+
+                return response.StatusCode == HttpStatusCode.NoContent ? true : false;
             }
             catch (Exception)
             {
