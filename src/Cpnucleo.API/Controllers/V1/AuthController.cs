@@ -33,6 +33,7 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="pass">Senha padrão: SENHATESTE</param>
         /// <response code="200">Retorna um token válido por 60 minutos</response>
         /// <response code="400">Usuário ou senha inválidos</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("Autenticar")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
@@ -61,9 +62,10 @@ namespace Cpnucleo.API.Controllers.V1
         /// Testa a autorização efetuada no método de testes para autenticaar.
         /// </remarks>
         /// <response code="200">Ácesso autorizado com sucesso</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("TestarAutorizacao")]
         [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
         [Authorize]
         public IActionResult TestarAutorizacao()
         {

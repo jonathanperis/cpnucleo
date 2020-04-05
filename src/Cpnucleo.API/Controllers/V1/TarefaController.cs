@@ -31,6 +31,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// Lista tarefas da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de tarefas</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<TarefaViewModel> Get()
@@ -49,6 +51,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="id">Id do tarefa</param>        
         /// <response code="200">Retorna uma tarefa</response>
         /// <response code="404">Tarefa não encontrada</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -90,6 +94,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="201">Tarefa cadastrada com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -148,6 +154,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="obj">Tarefa</param>        
         /// <response code="204">Tarefa alterada com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -193,6 +201,8 @@ namespace Cpnucleo.API.Controllers.V1
         /// <param name="id">Id da tarefa</param>        
         /// <response code="204">Tarefa removida com sucesso</response>
         /// <response code="404">Tarefa não encontrada</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

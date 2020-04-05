@@ -31,6 +31,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// Lista workflows da base de dados.
         /// </remarks>
         /// <response code="200">Retorna uma lista de workflows</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
         public IEnumerable<WorkflowViewModel> Get()
@@ -49,6 +51,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do workflow</param>        
         /// <response code="200">Retorna um workflow</response>
         /// <response code="404">Workflow não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -84,6 +88,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="201">Workflow cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
@@ -136,6 +142,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="obj">Workflow</param>        
         /// <response code="204">Workflow alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -181,6 +189,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <param name="id">Id do workflow</param>        
         /// <response code="204">Workflow removido com sucesso</response>
         /// <response code="404">Workflow não encontrado</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
