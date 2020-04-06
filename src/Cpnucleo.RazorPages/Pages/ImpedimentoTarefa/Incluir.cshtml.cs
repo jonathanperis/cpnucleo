@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +15,9 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
         private readonly ITarefaApiService _tarefaApiService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IImpedimentoTarefaApiService impedimentoTarefaApiService,
-                                    ICrudApiService<ImpedimentoViewModel> impedimentoApiService,
-                                    ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public IncluirModel(IImpedimentoTarefaApiService impedimentoTarefaApiService,
+                            ICrudApiService<ImpedimentoViewModel> impedimentoApiService,
+                            ITarefaApiService tarefaApiService)
         {
             _impedimentoTarefaApiService = impedimentoTarefaApiService;
             _impedimentoApiService = impedimentoApiService;

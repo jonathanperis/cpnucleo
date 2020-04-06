@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.GRPC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,15 +14,12 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
     [Authorize]
     public class ListarModel : PageModel
     {
-        private readonly IClaimsManager _claimsManager;
         private readonly IApontamentoGrpcService _apontamentoGrpcService;
         private readonly ITarefaGrpcService _tarefaGrpcService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                IApontamentoGrpcService apontamentoGrpcService,
-                                ITarefaGrpcService tarefaGrpcService)
+        public ListarModel(IApontamentoGrpcService apontamentoGrpcService,
+                           ITarefaGrpcService tarefaGrpcService)
         {
-            _claimsManager = claimsManager;
             _apontamentoGrpcService = apontamentoGrpcService;
             _tarefaGrpcService = tarefaGrpcService;
         }
@@ -36,7 +33,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
 
         public async Task<IActionResult> OnGetAsync()
         {
-            string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+            string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
 
             Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);
@@ -49,7 +46,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages.Apontamento
         {
             if (!ModelState.IsValid)
             {
-                string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+                string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
                 Lista = await _apontamentoGrpcService.ListarPorRecursoAsync(idRecurso);

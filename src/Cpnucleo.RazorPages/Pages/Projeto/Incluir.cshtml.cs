@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +14,8 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
         private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    ICrudApiService<ProjetoViewModel> projetoApiService,
-                                    ICrudApiService<SistemaViewModel> sistemaApiService)
-            : base(claimsManager)
+        public IncluirModel(ICrudApiService<ProjetoViewModel> projetoApiService,
+                            ICrudApiService<SistemaViewModel> sistemaApiService)
         {
             _projetoApiService = projetoApiService;
             _sistemaApiService = sistemaApiService;

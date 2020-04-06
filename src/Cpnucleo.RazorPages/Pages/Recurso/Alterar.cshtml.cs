@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     {
         private readonly IRecursoApiService _recursoApiService;
 
-        public AlterarModel(IClaimsManager claimsManager,
-                                    IRecursoApiService recursoApiService)
-            : base(claimsManager)
+        public AlterarModel(IRecursoApiService recursoApiService)
         {
             _recursoApiService = recursoApiService;
         }

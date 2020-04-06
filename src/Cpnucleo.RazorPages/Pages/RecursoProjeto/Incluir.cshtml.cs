@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +15,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         private readonly IRecursoApiService _recursoApiService;
         private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IRecursoProjetoApiService recursoProjetoApiService,
-                                    IRecursoApiService recursoApiService,
-                                    ICrudApiService<ProjetoViewModel> projetoApiService)
-            : base(claimsManager)
+        public IncluirModel(IRecursoProjetoApiService recursoProjetoApiService,
+                            IRecursoApiService recursoApiService,
+                            ICrudApiService<ProjetoViewModel> projetoApiService)
         {
             _recursoProjetoApiService = recursoProjetoApiService;
             _recursoApiService = recursoApiService;
