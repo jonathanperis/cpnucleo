@@ -1,7 +1,6 @@
 ﻿using Cpnucleo.Application.Configuration;
 using Cpnucleo.Domain.Configuration;
 using Cpnucleo.Infra.CrossCutting.Communication.Configuration;
-using Cpnucleo.Infra.CrossCutting.Identity.Configuration;
 using Cpnucleo.Infra.CrossCutting.Security.Configuration;
 using Cpnucleo.Infra.CrossCutting.Util.Configuration;
 using Cpnucleo.Infra.Data.Configuration;
@@ -24,7 +23,6 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 
         public static IServiceCollection AddCpnucleoSetup(this IServiceCollection services)
         {
-            services.AddInfraCrossCuttingIdentitySetup();
             services.AddInfraCrossCuttingUtilSetup();
             services.AddInfraCrossCuttingCommunicationSetup();
 

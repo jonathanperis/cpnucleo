@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     {
         private readonly IApontamentoApiService _apontamentoApiService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    IApontamentoApiService apontamentoApiService)
-            : base(claimsManager)
+        public RemoverModel(IApontamentoApiService apontamentoApiService)
         {
             _apontamentoApiService = apontamentoApiService;
         }

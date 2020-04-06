@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +17,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
         private readonly ICrudApiService<TipoTarefaViewModel> _tipoTarefaApiService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    ITarefaApiService tarefaApiService,
-                                    ICrudApiService<ProjetoViewModel> projetoApiService,
-                                    ICrudApiService<SistemaViewModel> sistemaApiService,
-                                    ICrudApiService<WorkflowViewModel> workflowApiService,
-                                    ICrudApiService<TipoTarefaViewModel> tipoTarefaApiService)
-            : base(claimsManager)
+        public IncluirModel(ITarefaApiService tarefaApiService,
+                            ICrudApiService<ProjetoViewModel> projetoApiService,
+                            ICrudApiService<SistemaViewModel> sistemaApiService,
+                            ICrudApiService<WorkflowViewModel> workflowApiService,
+                            ICrudApiService<TipoTarefaViewModel> tipoTarefaApiService)
         {
             _tarefaApiService = tarefaApiService;
             _projetoApiService = projetoApiService;

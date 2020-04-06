@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +13,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     {
         private readonly IRecursoProjetoApiService _recursoProjetoApiService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    IRecursoProjetoApiService recursoProjetoApiService)
-            : base(claimsManager)
+        public ListarModel(IRecursoProjetoApiService recursoProjetoApiService)
         {
             _recursoProjetoApiService = recursoProjetoApiService;
         }

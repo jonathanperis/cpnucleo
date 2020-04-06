@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     {
         private readonly ITarefaApiService _tarefaApiService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public RemoverModel(ITarefaApiService tarefaApiService)
         {
             _tarefaApiService = tarefaApiService;
         }

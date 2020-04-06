@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +13,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     {
         private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    ICrudApiService<SistemaViewModel> sistemaApiService)
-            : base(claimsManager)
+        public ListarModel(ICrudApiService<SistemaViewModel> sistemaApiService)
         {
             _sistemaApiService = sistemaApiService;
         }

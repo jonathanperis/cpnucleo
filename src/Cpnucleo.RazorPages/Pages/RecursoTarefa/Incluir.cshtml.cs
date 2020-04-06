@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +15,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         private readonly IRecursoProjetoApiService _recursoProjetoApiService;
         private readonly ITarefaApiService _tarefaApiService;
 
-        public IncluirModel(IClaimsManager claimsManager,
-                                    IRecursoTarefaApiService recursoTarefaApiService,
-                                    IRecursoProjetoApiService recursoProjetoApiService,
-                                    ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public IncluirModel(IRecursoTarefaApiService recursoTarefaApiService,
+                            IRecursoProjetoApiService recursoProjetoApiService,
+                            ITarefaApiService tarefaApiService)
         {
             _recursoTarefaApiService = recursoTarefaApiService;
             _recursoProjetoApiService = recursoProjetoApiService;

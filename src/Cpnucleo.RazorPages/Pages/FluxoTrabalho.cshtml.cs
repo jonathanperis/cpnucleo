@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +14,8 @@ namespace Cpnucleo.RazorPages.Pages
         private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
         private readonly ITarefaApiService _tarefaApiService;
 
-        public FluxoTrabalhoModel(IClaimsManager claimsManager,
-                                        ICrudApiService<WorkflowViewModel> workflowApiService,
-                                        ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public FluxoTrabalhoModel(ICrudApiService<WorkflowViewModel> workflowApiService,
+                                  ITarefaApiService tarefaApiService)
         {
             _workflowApiService = workflowApiService;
             _tarefaApiService = tarefaApiService;

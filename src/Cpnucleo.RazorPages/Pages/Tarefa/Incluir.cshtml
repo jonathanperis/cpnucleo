@@ -1,9 +1,7 @@
 ﻿@page
 
-@using Cpnucleo.Infra.CrossCutting.Identity.Interfaces
+@using Cpnucleo.RazorPages.Services
 @using System.Security.Claims
-
-@inject IClaimsManager _claimsManager
 
 @model Tarefa.IncluirModel
 @{
@@ -37,7 +35,7 @@
             <form method="post" class="form-horizontal">
 
                 @{
-                    string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+                    string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new Guid(retorno);
                 }
 

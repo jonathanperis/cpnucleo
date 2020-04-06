@@ -1,10 +1,11 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.Models;
+using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -12,14 +13,10 @@ namespace Cpnucleo.RazorPages.Pages
 {
     public class LoginModel : PageBase
     {
-        private readonly IClaimsManager _claimsManager;
         private readonly IRecursoApiService _recursoApiService;
 
-        public LoginModel(IClaimsManager claimsManager,
-                                    IRecursoApiService recursoApiService)
-            : base(claimsManager)
+        public LoginModel(IRecursoApiService recursoApiService)
         {
-            _claimsManager = claimsManager;
             _recursoApiService = recursoApiService;
         }
 
@@ -65,7 +62,13 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                ClaimsPrincipal principal = _claimsManager.CreateClaimsPrincipal(recurso.Id.ToString(), recurso.Token);
+                IEnumerable<Claim> claims = new[]
+                {
+                    new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString()),
+                    new Claim(ClaimTypes.Hash, recurso.Token)
+                };
+
+                ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
                 await HttpContext.SignInAsync(principal);
 

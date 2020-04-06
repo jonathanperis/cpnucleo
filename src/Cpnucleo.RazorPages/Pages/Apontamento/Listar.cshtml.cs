@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,16 +13,12 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IClaimsManager _claimsManager;
         private readonly IApontamentoApiService _apontamentoApiService;
         private readonly ITarefaApiService _tarefaApiService;
 
-        public ListarModel(IClaimsManager claimsManager,
-                                    IApontamentoApiService apontamentoApiService,
-                                    ITarefaApiService tarefaApiService)
-            : base(claimsManager)
+        public ListarModel(IApontamentoApiService apontamentoApiService,
+                           ITarefaApiService tarefaApiService)
         {
-            _claimsManager = claimsManager;
             _apontamentoApiService = apontamentoApiService;
             _tarefaApiService = tarefaApiService;
         }
@@ -38,7 +34,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         {
             try
             {
-                string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+                string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
                 Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
@@ -59,7 +55,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
             {
                 if (!ModelState.IsValid)
                 {
-                    string retorno = _claimsManager.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+                    string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new Guid(retorno);
 
                     Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);

@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Identity.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +12,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     {
         private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
 
-        public RemoverModel(IClaimsManager claimsManager,
-                                    ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
-            : base(claimsManager)
+        public RemoverModel(ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
         {
             _impedimentoApiService = impedimentoApiService;
         }
