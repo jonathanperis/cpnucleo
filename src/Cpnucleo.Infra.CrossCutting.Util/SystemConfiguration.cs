@@ -52,6 +52,16 @@ namespace Cpnucleo.Infra.CrossCutting.Util
             }
         }
 
+        public int CookieExpires
+        {
+            get
+            {
+                int.TryParse(_configuration.GetSection("Cookie")["Expires"], out int value);
+
+                return value;
+            }
+        }
+
         public string JwtKey
         {
             get

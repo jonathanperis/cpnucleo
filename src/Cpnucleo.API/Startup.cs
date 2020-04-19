@@ -44,7 +44,7 @@ namespace Cpnucleo.API
                     ValidateIssuer = true,
                     ValidIssuer = Configuration["Jwt:Issuer"],
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromHours(int.Parse(Configuration["Jwt:Expires"])),
+                    ClockSkew = TimeSpan.Zero,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Jwt:Key"])),
                 };

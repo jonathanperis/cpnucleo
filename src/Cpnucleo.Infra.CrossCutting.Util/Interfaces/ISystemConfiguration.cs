@@ -23,6 +23,11 @@
         int JwtExpires { get; }
 
         /// <summary>
+        /// Cookie expiration date
+        /// </summary>
+        int CookieExpires { get; }
+
+        /// <summary>
         /// URL for Cpnucleo API
         /// </summary>
         string UrlCpnucleoApi { get; }

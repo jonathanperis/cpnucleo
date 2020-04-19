@@ -1,8 +1,10 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Communication.GRPC.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.GRPC.Models;
 using Cpnucleo.RazorPages.GRPC.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -15,6 +17,7 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
     public class LoginModel : PageModel
     {
         private readonly IRecursoGrpcService _recursoGrpcService;
+        private readonly ISystemConfiguration _systemConfiguration;
 
         public LoginModel(IRecursoGrpcService recursoGrpcService)
         {
@@ -60,7 +63,14 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
 
             ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
-            await HttpContext.SignInAsync(principal);
+            await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            principal,
+            new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTime.UtcNow.AddMinutes(_systemConfiguration.CookieExpires)
+            });
 
             return RedirectToLocal(returnUrl);
         }

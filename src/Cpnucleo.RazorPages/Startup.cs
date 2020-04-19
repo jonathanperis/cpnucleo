@@ -29,28 +29,21 @@ namespace Cpnucleo.RazorPages
         {
             services.AddCpnucleoSetup();
 
-            services.AddRazorPages().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AddPageRoute("/Login", "");
-            });
-
             services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
 
             services.Configure<ApplicationConfigurations>(
                 Configuration.GetSection("ApplicationConfigurations"));
 
-            services.AddAuthentication()
-                .AddCookie(options =>
-                {
-                    options.LoginPath = new PathString("/Login/");
-                    options.AccessDeniedPath = new PathString("/Negado/");
-                });
-
-            services.AddAuthentication(options =>
+            services.AddAuthentication(x =>
             {
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                x.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                x.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(x =>
+            {
+                x.LoginPath = new PathString("/Login");
+                x.AccessDeniedPath = new PathString("/Negado");
             });
 
             services.AddMiniProfiler(options =>
@@ -67,6 +60,11 @@ namespace Cpnucleo.RazorPages
                 // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
                 // (defaults to true, and connection opening/closing is tracked)
                 options.TrackConnectionOpenClose = true;
+            });
+
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Login", "");
             });
         }
 
