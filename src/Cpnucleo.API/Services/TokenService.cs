@@ -16,7 +16,8 @@ namespace Cpnucleo.API.Services
                 {
                     new Claim(ClaimTypes.PrimarySid, id)
                 }),
-                Expires = DateTime.UtcNow.AddHours(Convert.ToInt32(expires)),
+                NotBefore = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddSeconds(Convert.ToInt32(expires)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = issuer,
             };
