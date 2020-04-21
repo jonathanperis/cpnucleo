@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,15 @@ namespace Cpnucleo.API.Controllers.V2
         /// 
         /// Lista impedimentos de tarefa da base de dados.
         /// </remarks>
+        /// <param name="getDependencies">Listar dependências do objeto</param>        
         /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
-        [ProducesResponseType(200)]
-        public IEnumerable<ImpedimentoTarefaViewModel> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<ImpedimentoTarefaViewModel> Get(bool getDependencies = false)
         {
-            return _impedimentoTarefaAppService.Listar();
+            return _impedimentoTarefaAppService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("GetByTarefa/{idTarefa}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<ImpedimentoTarefaViewModel> GetByTarefa(Guid idTarefa)
         {
             return _impedimentoTarefaAppService.ListarPorTarefa(idTarefa);
@@ -71,9 +73,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="404">Impedimento de tarefa não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [HttpGet("{id}", Name = "GetImpedimentoTarefa")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ImpedimentoTarefaViewModel> Get(Guid id)
         {
             ImpedimentoTarefaViewModel impedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
@@ -110,9 +112,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
+        [ProducesResponseType(typeof(ImpedimentoTarefaViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<ImpedimentoTarefaViewModel> Post([FromBody]ImpedimentoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -122,7 +124,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _impedimentoTarefaAppService.Incluir(obj);
+                obj.Id = _impedimentoTarefaAppService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -136,7 +138,7 @@ namespace Cpnucleo.API.Controllers.V2
                 }
             }
 
-            return CreatedAtAction(nameof(Get), new { id = obj.Id }, obj);
+            return CreatedAtAction("GetImpedimentoTarefa", new { id = obj.Id }, obj);
         }
 
         /// <summary>
@@ -165,8 +167,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Put(Guid id, [FromBody]ImpedimentoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -212,8 +214,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
             ImpedimentoTarefaViewModel obj = _impedimentoTarefaAppService.Consultar(id);

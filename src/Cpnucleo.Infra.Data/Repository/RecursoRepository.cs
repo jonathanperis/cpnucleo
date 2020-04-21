@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class RecursoRepository : CrudRepository<Recurso>, IRecursoRepository
+    internal class RecursoRepository : CrudRepository<Recurso>, IRecursoRepository
     {
         public RecursoRepository(CpnucleoContext context)
             : base(context)
@@ -14,11 +14,11 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IQueryable<Recurso> ConsultarPorLogin(string login)
+        public Recurso ConsultarPorLogin(string login)
         {
             return _dbSet
                 .AsNoTracking()
-                .Where(x => x.Login == login && x.Ativo);
+                .FirstOrDefault(x => x.Login == login && x.Ativo);
         }
     }
 }

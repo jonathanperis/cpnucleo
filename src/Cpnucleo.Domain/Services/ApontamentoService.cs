@@ -2,11 +2,11 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class ApontamentoService : CrudService<Apontamento>, IApontamentoService
+    internal class ApontamentoService : CrudService<Apontamento>, IApontamentoService
     {
         private readonly IApontamentoRepository _apontamentoRepository;
 
@@ -16,7 +16,7 @@ namespace Cpnucleo.Domain.Services
             _apontamentoRepository = apontamentoRepository;
         }
 
-        public IQueryable<Apontamento> ListarPorRecurso(Guid idRecurso)
+        public IEnumerable<Apontamento> ListarPorRecurso(Guid idRecurso)
         {
             return _apontamentoRepository.ListarPorRecurso(idRecurso);
         }

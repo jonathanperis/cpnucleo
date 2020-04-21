@@ -10,7 +10,7 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces
 
         Task<TViewModel> ConsultarAsync(string token, Guid id);
 
-        Task<IEnumerable<TViewModel>> ListarAsync(string token);
+        Task<IEnumerable<TViewModel>> ListarAsync(string token, bool getDependencies = false);
 
         Task<bool> AlterarAsync(string token, TViewModel obj);
 

@@ -21,9 +21,9 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             return await PostAsync(token, actionRoute, obj);
         }
 
-        public async Task<IEnumerable<WorkflowViewModel>> ListarAsync(string token)
+        public async Task<IEnumerable<WorkflowViewModel>> ListarAsync(string token, bool getDependencies = false)
         {
-            return await GetAsync(token, actionRoute);
+            return await GetAsync(token, actionRoute, getDependencies);
         }
 
         public async Task<WorkflowViewModel> ConsultarAsync(string token, Guid id)

@@ -22,7 +22,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<ImpedimentoTarefaViewModel> ListarPorTarefa(Guid idTarefa)
         {
-            return _impedimentoTarefaService.ListarPorTarefa(idTarefa).ProjectTo<ImpedimentoTarefaViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(_impedimentoTarefaService.ListarPorTarefa(idTarefa));
         }
     }
 }

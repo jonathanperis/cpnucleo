@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                Lista = await _tarefaApiService.ListarAsync(Token);
+                Lista = await _tarefaApiService.ListarAsync(Token, true);
 
                 return Page();
             }

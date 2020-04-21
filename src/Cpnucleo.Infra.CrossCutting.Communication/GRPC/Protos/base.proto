@@ -11,5 +11,6 @@ message BaseRequest {
 
 message BaseReply {
 
-	bool Sucesso = 1;
+	string Id = 1;
+	bool Sucesso = 2;
 }

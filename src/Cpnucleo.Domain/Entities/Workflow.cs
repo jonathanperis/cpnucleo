@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Entities
 {
-    public class Workflow : BaseModel
+    public class Workflow : BaseEntity
     {
         public string Nome { get; set; }
 

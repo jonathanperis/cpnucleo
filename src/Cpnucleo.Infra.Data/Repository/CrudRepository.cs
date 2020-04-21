@@ -7,38 +7,44 @@ using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class CrudRepository<TModel> : ICrudRepository<TModel> where TModel : BaseModel
+    internal class CrudRepository<TEntity> : ICrudRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly CpnucleoContext _context;
-        protected readonly DbSet<TModel> _dbSet;
+        protected readonly CpnucleoContext _context;
+        protected readonly DbSet<TEntity> _dbSet;
 
         public CrudRepository(CpnucleoContext context)
         {
             _context = context;
-            _dbSet = _context.Set<TModel>();
+            _dbSet = _context.Set<TEntity>();
         }
 
-        public void Incluir(TModel obj)
+        public void Incluir(TEntity obj)
         {
             _dbSet.Add(obj);
         }
 
-        public IQueryable<TModel> Consultar(Guid id)
+        public TEntity Consultar(Guid id)
         {
             return _dbSet
                 .AsNoTracking()
-                .Where(x => x.Id == id && x.Ativo);
+                .Include(_context.GetIncludePaths(typeof(TEntity)))
+                .FirstOrDefault(x => x.Id == id && x.Ativo);
         }
 
-        public IQueryable<TModel> Listar()
+        public IQueryable<TEntity> Listar(bool getDependencies = false)
         {
-            return _dbSet
-                .AsNoTracking()
-                .OrderBy(x => x.DataInclusao)
+            IQueryable<TEntity> obj = _dbSet.AsNoTracking();
+
+            if (getDependencies)
+            {
+                obj = obj.Include(_context.GetIncludePaths(typeof(TEntity)));
+            }
+
+            return obj.OrderBy(x => x.DataInclusao)
                 .Where(x => x.Ativo);
         }
 
-        public void Alterar(TModel obj)
+        public void Alterar(TEntity obj)
         {
             _dbSet.Update(obj);
         }

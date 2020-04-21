@@ -24,9 +24,9 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             return await PostAsync(token, actionRoute, obj);
         }
 
-        public async Task<IEnumerable<ApontamentoViewModel>> ListarAsync(string token)
+        public async Task<IEnumerable<ApontamentoViewModel>> ListarAsync(string token, bool getDependencies = false)
         {
-            return await GetAsync(token, actionRoute);
+            return await GetAsync(token, actionRoute, getDependencies);
         }
 
         public async Task<ApontamentoViewModel> ConsultarAsync(string token, Guid id)

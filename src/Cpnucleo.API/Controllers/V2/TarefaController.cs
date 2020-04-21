@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,15 @@ namespace Cpnucleo.API.Controllers.V2
         /// 
         /// Lista tarefas da base de dados.
         /// </remarks>
+        /// <param name="getDependencies">Listar dependências do objeto</param>        
         /// <response code="200">Retorna uma lista de tarefas</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
-        [ProducesResponseType(200)]
-        public IEnumerable<TarefaViewModel> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<TarefaViewModel> Get(bool getDependencies = false)
         {
-            return _tarefaAppService.Listar();
+            return _tarefaAppService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -52,9 +54,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="404">Tarefa não encontrada</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [HttpGet("{id}", Name = "GetTarefa")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<TarefaViewModel> Get(Guid id)
         {
             TarefaViewModel tarefa = _tarefaAppService.Consultar(id);
@@ -80,7 +82,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("GetByRecurso/{id}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<TarefaViewModel> GetByRecurso(Guid id)
         {
             return _tarefaAppService.ListarPorRecurso(id);
@@ -115,9 +117,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
+        [ProducesResponseType(typeof(TarefaViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<TarefaViewModel> Post([FromBody]TarefaViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -127,7 +129,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _tarefaAppService.Incluir(obj);
+                obj.Id = _tarefaAppService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -141,7 +143,7 @@ namespace Cpnucleo.API.Controllers.V2
                 }
             }
 
-            return CreatedAtAction(nameof(Get), new { id = obj.Id }, obj);
+            return CreatedAtAction("GetTarefa", new { id = obj.Id }, obj);
         }
 
         /// <summary>
@@ -175,8 +177,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Put(Guid id, [FromBody]TarefaViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -230,8 +232,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("PutByWorkflow/{idTarefa}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult PutByWorkflow(Guid idTarefa, [FromBody]Guid idWorkflow)
         {
             if (!ModelState.IsValid)
@@ -272,8 +274,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
             TarefaViewModel obj = _tarefaAppService.Consultar(id);

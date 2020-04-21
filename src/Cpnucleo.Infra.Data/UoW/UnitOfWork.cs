@@ -4,7 +4,7 @@ using System;
 
 namespace Cpnucleo.Infra.Data.UoW
 {
-    public class UnitOfWork : IUnitOfWork
+    internal class UnitOfWork : IUnitOfWork
     {
         private readonly CpnucleoContext _context;
 

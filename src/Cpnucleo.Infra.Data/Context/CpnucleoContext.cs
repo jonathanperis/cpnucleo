@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cpnucleo.Infra.Data.Context
 {
-    public class CpnucleoContext : DbContext
+    internal class CpnucleoContext : DbContext
     {
         private readonly ISystemConfiguration _configuration;
 

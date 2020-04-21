@@ -2,7 +2,7 @@ using System;
 
 namespace Cpnucleo.Domain.Entities
 {
-    public class RecursoTarefa : BaseModel
+    public class RecursoTarefa : BaseEntity
     {
         public int PercentualTarefa { get; set; }
 

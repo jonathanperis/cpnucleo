@@ -5,11 +5,11 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface ICrudAppService<TViewModel>
     {
-        bool Incluir(TViewModel obj);
+        Guid Incluir(TViewModel obj);
 
         TViewModel Consultar(Guid id);
 
-        IEnumerable<TViewModel> Listar();
+        IEnumerable<TViewModel> Listar(bool getDependencies = false);
 
         bool Alterar(TViewModel obj);
 

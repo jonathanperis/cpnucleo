@@ -2,9 +2,9 @@
 
 namespace Cpnucleo.Domain.Entities
 {
-    public abstract class BaseModel
+    public abstract class BaseEntity
     {
-        public BaseModel()
+        public BaseEntity()
         {
             Ativo = true;
         }

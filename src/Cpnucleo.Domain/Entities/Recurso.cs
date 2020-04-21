@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities
 {
-    public class Recurso : BaseModel
+    public class Recurso : BaseEntity
     {
         public string Nome { get; set; }
 

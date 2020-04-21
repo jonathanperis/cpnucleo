@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace Cpnucleo.Domain.Interfaces.Repositories
 {
-    public interface ICrudRepository<TModel> : IDisposable
+    public interface ICrudRepository<TEntity> : IDisposable
     {
-        void Incluir(TModel obj);
+        void Incluir(TEntity obj);
 
-        IQueryable<TModel> Consultar(Guid id);
+        TEntity Consultar(Guid id);
 
-        IQueryable<TModel> Listar();
+        IQueryable<TEntity> Listar(bool getDependencies = false);
 
-        void Alterar(TModel obj);
+        void Alterar(TEntity obj);
     }
 }

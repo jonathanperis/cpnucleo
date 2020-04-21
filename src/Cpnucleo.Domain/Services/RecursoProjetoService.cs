@@ -2,11 +2,11 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class RecursoProjetoService : CrudService<RecursoProjeto>, IRecursoProjetoService
+    internal class RecursoProjetoService : CrudService<RecursoProjeto>, IRecursoProjetoService
     {
         private readonly IRecursoProjetoRepository _recursoProjetoRepository;
 
@@ -16,7 +16,7 @@ namespace Cpnucleo.Domain.Services
             _recursoProjetoRepository = recursoProjetoRepository;
         }
 
-        public IQueryable<RecursoProjeto> ListarPorProjeto(Guid idProjeto)
+        public IEnumerable<RecursoProjeto> ListarPorProjeto(Guid idProjeto)
         {
             return _recursoProjetoRepository.ListarPorProjeto(idProjeto);
         }

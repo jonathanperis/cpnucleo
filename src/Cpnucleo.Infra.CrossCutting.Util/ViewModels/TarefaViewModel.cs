@@ -11,13 +11,13 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         public string Nome { get; set; }
 
         [Display(Name = "Data de Início")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
         [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
         public DateTime? DataInicio { get; set; }
 
         [Display(Name = "Data de Término")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
         [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
         public DateTime? DataTermino { get; set; }

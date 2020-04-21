@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Entities
 {
-    public class Tarefa : BaseModel
+    public class Tarefa : BaseEntity
     {
         public string Nome { get; set; }
 

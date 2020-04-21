@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities
 {
-    public class TipoTarefa : BaseModel
+    public class TipoTarefa : BaseEntity
     {
         public string Nome { get; set; }
 

@@ -17,12 +17,13 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
             _client = new RestClient(systemConfiguration.UrlCpnucleoApi);
         }
 
-        protected async Task<IEnumerable<TViewModel>> GetAsync(string token, string actionRoute)
+        protected async Task<IEnumerable<TViewModel>> GetAsync(string token, string actionRoute, bool getDependencies = false)
         {
             try
             {
                 RestRequest request = new RestRequest($"api/v2/{actionRoute}", Method.GET);
                 request.AddHeader("Authorization", $"Bearer {token}");
+                request.AddQueryParameter("getDependencies", getDependencies.ToString());
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
@@ -85,19 +86,21 @@ namespace Cpnucleo.Infra.CrossCutting.Communication.API.Services
 
                 IRestResponse response = await _client.ExecuteAsync(request);
 
-                if (response.StatusCode != HttpStatusCode.Created)
-                {
-                    if (!string.IsNullOrWhiteSpace(response.Content))
-                    {
-                        throw new Exception(response.Content);
-                    }
-                    else
-                    {
-                        throw new Exception("Falha ao se comunicar com a api de dados.");
-                    }
-                }
+                //if (response.StatusCode != HttpStatusCode.Created)
+                //{
+                //    if (!string.IsNullOrWhiteSpace(response.Content))
+                //    {
+                //        throw new Exception(response.Content);
+                //    }
+                //    else
+                //    {
+                //        throw new Exception("Falha ao se comunicar com a api de dados.");
+                //    }
+                //}
 
-                return response.StatusCode == HttpStatusCode.Created ? true : false;
+                //return response.StatusCode == HttpStatusCode.Created ? true : false;
+
+                return true;
             }
             catch (Exception)
             {

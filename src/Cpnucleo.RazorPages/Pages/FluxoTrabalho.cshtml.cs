@@ -30,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages
             try
             {
                 Lista = await _workflowApiService.ListarAsync(Token);
-                ListaTarefas = await _tarefaApiService.ListarAsync(Token);
+                ListaTarefas = await _tarefaApiService.ListarAsync(Token, true);
 
                 return Page();
             }

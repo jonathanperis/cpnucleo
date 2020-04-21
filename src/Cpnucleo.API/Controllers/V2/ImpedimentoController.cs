@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,15 @@ namespace Cpnucleo.API.Controllers.V2
         /// 
         /// Lista impedimentos da base de dados.
         /// </remarks>
+        /// <param name="getDependencies">Listar dependências do objeto</param>        
         /// <response code="200">Retorna uma lista de impedimentos</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
-        [ProducesResponseType(200)]
-        public IEnumerable<ImpedimentoViewModel> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<ImpedimentoViewModel> Get(bool getDependencies = false)
         {
-            return _impedimentoAppService.Listar();
+            return _impedimentoAppService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -52,9 +54,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="404">Impedimento não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [HttpGet("{id}", Name = "GetImpedimento")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<ImpedimentoViewModel> Get(Guid id)
         {
             ImpedimentoViewModel impedimento = _impedimentoAppService.Consultar(id);
@@ -89,9 +91,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
+        [ProducesResponseType(typeof(ImpedimentoViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<ImpedimentoViewModel> Post([FromBody]ImpedimentoViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -101,7 +103,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _impedimentoAppService.Incluir(obj);
+                obj.Id = _impedimentoAppService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -115,7 +117,7 @@ namespace Cpnucleo.API.Controllers.V2
                 }
             }
 
-            return CreatedAtAction(nameof(Get), new { id = obj.Id }, obj);
+            return CreatedAtAction("GetImpedimento", new { id = obj.Id }, obj);
         }
 
         /// <summary>
@@ -142,8 +144,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Put(Guid id, [FromBody]ImpedimentoViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -189,8 +191,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
             ImpedimentoViewModel obj = _impedimentoAppService.Consultar(id);

@@ -2,11 +2,11 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class RecursoTarefaService : CrudService<RecursoTarefa>, IRecursoTarefaService
+    internal class RecursoTarefaService : CrudService<RecursoTarefa>, IRecursoTarefaService
     {
         private readonly IRecursoTarefaRepository _recursoTarefaRepository;
 
@@ -16,7 +16,7 @@ namespace Cpnucleo.Domain.Services
             _recursoTarefaRepository = recursoTarefaRepository;
         }
 
-        public IQueryable<RecursoTarefa> ListarPorTarefa(Guid idTarefa)
+        public IEnumerable<RecursoTarefa> ListarPorTarefa(Guid idTarefa)
         {
             return _recursoTarefaRepository.ListarPorTarefa(idTarefa);
         }

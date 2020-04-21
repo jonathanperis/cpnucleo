@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces.Services
 {
-    public interface ICrudService<TModel>
+    public interface ICrudService<TEntity>
     {
-        bool Incluir(TModel obj);
+        Guid Incluir(TEntity obj);
 
-        IQueryable<TModel> Consultar(Guid id);
+        TEntity Consultar(Guid id);
 
-        IQueryable<TModel> Listar();
+        IEnumerable<TEntity> Listar(bool getDependencies = false);
 
-        bool Alterar(TModel obj);
+        bool Alterar(TEntity obj);
 
         bool Remover(Guid id);
     }

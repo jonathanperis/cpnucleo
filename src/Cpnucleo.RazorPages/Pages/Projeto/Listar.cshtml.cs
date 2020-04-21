@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                Lista = await _projetoApiService.ListarAsync(Token);
+                Lista = await _projetoApiService.ListarAsync(Token, true);
 
                 return Page();
             }

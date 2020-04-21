@@ -7,6 +7,21 @@
   </PropertyGroup>
  
   <ItemGroup>
+    <Compile Remove="Controllers\V1\ApontamentoController.cs" />
+    <Compile Remove="Controllers\V1\AuthController.cs" />
+    <Compile Remove="Controllers\V1\ImpedimentoController.cs" />
+    <Compile Remove="Controllers\V1\ImpedimentoTarefaController.cs" />
+    <Compile Remove="Controllers\V1\ProjetoController.cs" />
+    <Compile Remove="Controllers\V1\RecursoController.cs" />
+    <Compile Remove="Controllers\V1\RecursoProjetoController.cs" />
+    <Compile Remove="Controllers\V1\RecursoTarefaController.cs" />
+    <Compile Remove="Controllers\V1\SistemaController.cs" />
+    <Compile Remove="Controllers\V1\TarefaController.cs" />
+    <Compile Remove="Controllers\V1\TipoTarefaController.cs" />
+    <Compile Remove="Controllers\V1\WorkflowController.cs" />
+  </ItemGroup>
+ 
+  <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
@@ -20,6 +35,10 @@
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.IoC\Cpnucleo.Infra.CrossCutting.IoC.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Security\Cpnucleo.Infra.CrossCutting.Security.csproj" />
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <Folder Include="Controllers\V1\" />
   </ItemGroup>
   
   <PropertyGroup>

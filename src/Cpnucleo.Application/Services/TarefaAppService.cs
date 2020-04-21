@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -22,7 +20,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<TarefaViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            return _tarefaService.ListarPorRecurso(idRecurso).ProjectTo<TarefaViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _mapper.Map<IEnumerable<TarefaViewModel>>(_tarefaService.ListarPorRecurso(idRecurso));
         }
 
         public bool AlterarPorWorkflow(Guid idTarefa, Guid idWorkflow)

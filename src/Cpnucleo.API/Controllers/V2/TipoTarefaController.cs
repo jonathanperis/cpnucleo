@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,15 @@ namespace Cpnucleo.API.Controllers.V2
         /// 
         /// Lista tipos de tarefas da base de dados.
         /// </remarks>
+        /// <param name="getDependencies">Listar dependências do objeto</param>        
         /// <response code="200">Retorna uma lista de tipos de tarefas</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
-        [ProducesResponseType(200)]
-        public IEnumerable<TipoTarefaViewModel> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<TipoTarefaViewModel> Get(bool getDependencies = false)
         {
-            return _tipoTarefaAppService.Listar();
+            return _tipoTarefaAppService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -52,9 +54,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="404">Tipo de tarefa não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [HttpGet("{id}", Name = "GetTipoTarefa")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<TipoTarefaViewModel> Get(Guid id)
         {
             TipoTarefaViewModel tipoTarefa = _tipoTarefaAppService.Consultar(id);
@@ -90,9 +92,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
+        [ProducesResponseType(typeof(TipoTarefaViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public ActionResult<TipoTarefaViewModel> Post([FromBody]TipoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -102,7 +104,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _tipoTarefaAppService.Incluir(obj);
+                obj.Id = _tipoTarefaAppService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -116,7 +118,7 @@ namespace Cpnucleo.API.Controllers.V2
                 }
             }
 
-            return CreatedAtAction(nameof(Get), new { id = obj.Id }, obj);
+            return CreatedAtAction("GetTipoTarefa", new { id = obj.Id }, obj);
         }
 
         /// <summary>
@@ -144,8 +146,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Put(Guid id, [FromBody]TipoTarefaViewModel obj)
         {
             if (!ModelState.IsValid)
@@ -191,8 +193,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
             TipoTarefaViewModel obj = _tipoTarefaAppService.Consultar(id);
