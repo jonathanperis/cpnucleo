@@ -16,7 +16,5 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         public RecursoViewModel Recurso { get; set; }
 
         public TarefaViewModel Tarefa { get; set; }
-
-        public int HorasDisponiveis { get; set; }
     }
 }

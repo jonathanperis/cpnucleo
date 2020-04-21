@@ -1,10 +1,10 @@
 using Cpnucleo.Domain.Entities;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces.Repositories
 {
     public interface IRecursoRepository : ICrudRepository<Recurso>
     {
-        IQueryable<Recurso> ConsultarPorLogin(string login);
+        Recurso ConsultarPorLogin(string login);
     }
 }

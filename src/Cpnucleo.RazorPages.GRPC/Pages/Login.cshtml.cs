@@ -19,9 +19,10 @@ namespace Cpnucleo.RazorPages.GRPC.Pages
         private readonly IRecursoGrpcService _recursoGrpcService;
         private readonly ISystemConfiguration _systemConfiguration;
 
-        public LoginModel(IRecursoGrpcService recursoGrpcService)
+        public LoginModel(IRecursoGrpcService recursoGrpcService, ISystemConfiguration systemConfiguration)
         {
             _recursoGrpcService = recursoGrpcService;
+            _systemConfiguration = systemConfiguration;
         }
 
         [BindProperty]

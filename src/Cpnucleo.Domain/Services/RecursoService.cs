@@ -2,11 +2,12 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+using System;
 using System.Linq;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class RecursoService : CrudService<Recurso>, IRecursoService
+    internal class RecursoService : CrudService<Recurso>, IRecursoService
     {
         private readonly IRecursoRepository _recursoRepository;
         private readonly ICryptographyManager _cryptographyManager;
@@ -18,7 +19,7 @@ namespace Cpnucleo.Domain.Services
             _cryptographyManager = cryptographyManager;
         }
 
-        public new bool Incluir(Recurso recurso)
+        public new Guid Incluir(Recurso recurso)
         {
             _cryptographyManager.CryptPbkdf2(recurso.Senha, out string senhaCrypt, out string salt);
 
@@ -42,7 +43,7 @@ namespace Cpnucleo.Domain.Services
         {
             valido = false;
 
-            Recurso recurso = _recursoRepository.ConsultarPorLogin(login).FirstOrDefault();
+            Recurso recurso = _recursoRepository.ConsultarPorLogin(login);
 
             if (recurso == null)
             {

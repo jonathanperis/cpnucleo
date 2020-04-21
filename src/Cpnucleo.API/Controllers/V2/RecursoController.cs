@@ -3,6 +3,7 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -32,15 +33,16 @@ namespace Cpnucleo.API.Controllers.V2
         /// 
         /// Lista recursos da base de dados.
         /// </remarks>
+        /// <param name="getDependencies">Listar dependências do objeto</param>        
         /// <response code="200">Retorna uma lista de recursos</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public IEnumerable<RecursoViewModel> Get()
+        public IEnumerable<RecursoViewModel> Get(bool getDependencies = false)
         {
-            return _recursoAppService.Listar();
+            return _recursoAppService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -56,9 +58,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="404">Recurso não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
-        [HttpGet("{id}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [HttpGet("{id}", Name = "GetRecurso")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
         public ActionResult<RecursoViewModel> Get(Guid id)
         {
@@ -97,9 +99,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
+        [ProducesResponseType(typeof(RecursoViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [Authorize]
         public ActionResult<RecursoViewModel> Post([FromBody]RecursoViewModel obj)
         {
@@ -110,7 +112,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _recursoAppService.Incluir(obj);
+                obj.Id = _recursoAppService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -124,7 +126,7 @@ namespace Cpnucleo.API.Controllers.V2
                 }
             }
 
-            return CreatedAtAction(nameof(Get), new { id = obj.Id }, obj);
+            return CreatedAtAction("GetRecurso", new { id = obj.Id }, obj);
         }
 
         /// <summary>
@@ -139,9 +141,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="404">Recurso não encontrado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("Autenticar")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        public ActionResult<RecursoViewModel> Autenticar([FromQuery]string login, [FromQuery]string senha)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<RecursoViewModel> Autenticar(string login, string senha)
         {
             RecursoViewModel recurso = _recursoAppService.Autenticar(login, senha, out bool valido);
 
@@ -189,8 +191,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
         public IActionResult Put(Guid id, [FromBody]RecursoViewModel obj)
         {
@@ -237,8 +239,8 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
         public IActionResult Delete(Guid id)
         {

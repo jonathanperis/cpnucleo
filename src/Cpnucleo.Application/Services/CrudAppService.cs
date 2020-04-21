@@ -1,38 +1,36 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
-    internal class CrudAppService<TModel, TViewModel> : ICrudAppService<TViewModel> where TViewModel : BaseViewModel
+    internal class CrudAppService<TEntity, TViewModel> : ICrudAppService<TViewModel> where TViewModel : BaseViewModel
     {
         protected readonly IMapper _mapper;
-        protected readonly ICrudService<TModel> _service;
+        protected readonly ICrudService<TEntity> _service;
 
-        public CrudAppService(IMapper mapper, ICrudService<TModel> service)
+        public CrudAppService(IMapper mapper, ICrudService<TEntity> service)
         {
             _mapper = mapper;
             _service = service;
         }
 
-        public bool Incluir(TViewModel obj)
+        public Guid Incluir(TViewModel obj)
         {
-            return _service.Incluir(_mapper.Map<TModel>(obj));
+            return _service.Incluir(_mapper.Map<TEntity>(obj));
         }
 
-        public IEnumerable<TViewModel> Listar()
+        public IEnumerable<TViewModel> Listar(bool getDependencies = false)
         {
-            return _service.Listar().ProjectTo<TViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _mapper.Map<IEnumerable<TViewModel>>(_service.Listar(getDependencies));
         }
 
         public TViewModel Consultar(Guid id)
         {
-            return _service.Consultar(id).ProjectTo<TViewModel>(_mapper.ConfigurationProvider).FirstOrDefault();
+            return _mapper.Map<TViewModel>(_service.Consultar(id));
         }
 
         public bool Remover(Guid id)
@@ -42,7 +40,7 @@ namespace Cpnucleo.Application.Services
 
         public bool Alterar(TViewModel obj)
         {
-            return _service.Alterar(_mapper.Map<TModel>(obj));
+            return _service.Alterar(_mapper.Map<TEntity>(obj));
         }
     }
 }

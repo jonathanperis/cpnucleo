@@ -2,11 +2,12 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class TarefaService : CrudService<Tarefa>, ITarefaService
+    internal class TarefaService : CrudService<Tarefa>, ITarefaService
     {
         private readonly ITarefaRepository _tarefaRepository;
         private readonly IWorkflowService _workflowService;
@@ -24,16 +25,16 @@ namespace Cpnucleo.Domain.Services
             _tipoTarefaService = tipoTarefaService;
         }
 
-        public new IQueryable<Tarefa> Listar()
+        public new IEnumerable<Tarefa> Listar()
         {
-            IQueryable<Tarefa> lista = base.Listar();
+            IEnumerable<Tarefa> lista = base.Listar();
 
             return PreencherDadosAdicionais(lista);
         }
 
-        public IQueryable<Tarefa> ListarPorRecurso(Guid idRecurso)
+        public IEnumerable<Tarefa> ListarPorRecurso(Guid idRecurso)
         {
-            IQueryable<Tarefa> lista = _tarefaRepository.ListarPorRecurso(idRecurso);
+            IEnumerable<Tarefa> lista = _tarefaRepository.ListarPorRecurso(idRecurso);
 
             return PreencherDadosAdicionais(lista);
         }
@@ -42,8 +43,8 @@ namespace Cpnucleo.Domain.Services
         {
             lock (this)
             {
-                Tarefa tarefa = Consultar(idTarefa).FirstOrDefault();
-                Workflow workflow = _workflowService.Consultar(idWorkflow).FirstOrDefault();
+                Tarefa tarefa = Consultar(idTarefa);
+                Workflow workflow = _workflowService.Consultar(idWorkflow);
 
                 tarefa.IdWorkflow = idWorkflow;
                 tarefa.Workflow = workflow;
@@ -52,17 +53,19 @@ namespace Cpnucleo.Domain.Services
             }
         }
 
-        private IQueryable<Tarefa> PreencherDadosAdicionais(IQueryable<Tarefa> lista)
+        private IEnumerable<Tarefa> PreencherDadosAdicionais(IEnumerable<Tarefa> lista)
         {
             int quantidadeColunas = _workflowService.ObterQuantidadeColunas();
 
             foreach (Tarefa item in lista)
             {
-                item.Workflow = _workflowService.Consultar(item.IdWorkflow).FirstOrDefault();
+                item.Workflow = _workflowService.Consultar(item.IdWorkflow);
                 item.Workflow.TamanhoColuna = _workflowService.ObterTamanhoColuna(quantidadeColunas);
+                
                 item.HorasConsumidas = _apontamentoService.ObterTotalHorasPorRecurso(item.IdRecurso, item.Id);
                 item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
-                item.TipoTarefa = _tipoTarefaService.Consultar(item.IdTipoTarefa).FirstOrDefault();
+
+                item.TipoTarefa = _tipoTarefaService.Consultar(item.IdTipoTarefa);
 
                 if (_impedimentoTarefaService.ListarPorTarefa(item.Id).Count() > 0)
                 {

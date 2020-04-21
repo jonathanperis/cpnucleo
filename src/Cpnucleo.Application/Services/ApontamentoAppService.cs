@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cpnucleo.Application.Services
 {
@@ -22,7 +20,7 @@ namespace Cpnucleo.Application.Services
 
         public IEnumerable<ApontamentoViewModel> ListarPorRecurso(Guid idRecurso)
         {
-            return _apontamentoService.ListarPorRecurso(idRecurso).ProjectTo<ApontamentoViewModel>(_mapper.ConfigurationProvider).ToList();
+            return _mapper.Map<IEnumerable<ApontamentoViewModel>>(_apontamentoService.ListarPorRecurso(idRecurso));
         }
 
         public int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa)

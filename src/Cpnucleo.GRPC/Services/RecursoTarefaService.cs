@@ -26,7 +26,7 @@ namespace Cpnucleo.GRPC
         {
             return await Task.FromResult(new BaseReply
             {
-                Sucesso = _recursoTarefaAppService.Incluir(_mapper.Map<RecursoTarefaViewModel>(request))
+                Id = _recursoTarefaAppService.Incluir(_mapper.Map<RecursoTarefaViewModel>(request)).ToString()
             });
         }
 

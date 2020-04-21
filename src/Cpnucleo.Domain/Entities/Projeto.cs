@@ -2,7 +2,7 @@ using System;
 
 namespace Cpnucleo.Domain.Entities
 {
-    public class Projeto : BaseModel
+    public class Projeto : BaseEntity
     {
         public string Nome { get; set; }
 

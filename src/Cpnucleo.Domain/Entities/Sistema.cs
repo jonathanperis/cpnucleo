@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities
 {
-    public class Sistema : BaseModel
+    public class Sistema : BaseEntity
     {
         public string Nome { get; set; }
 

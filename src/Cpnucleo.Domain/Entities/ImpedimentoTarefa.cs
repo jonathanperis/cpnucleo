@@ -2,7 +2,7 @@ using System;
 
 namespace Cpnucleo.Domain.Entities
 {
-    public class ImpedimentoTarefa : BaseModel
+    public class ImpedimentoTarefa : BaseEntity
     {
         public string Descricao { get; set; }
 

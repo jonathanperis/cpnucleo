@@ -2,7 +2,7 @@ using System;
 
 namespace Cpnucleo.Domain.Entities
 {
-    public class RecursoProjeto : BaseModel
+    public class RecursoProjeto : BaseEntity
     {
         public Guid IdRecurso { get; set; }
 

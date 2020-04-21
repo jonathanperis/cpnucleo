@@ -3,11 +3,12 @@ using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Infra.Data.Repository
 {
-    public class TarefaRepository : CrudRepository<Tarefa>, ITarefaRepository
+    internal class TarefaRepository : CrudRepository<Tarefa>, ITarefaRepository
     {
         public TarefaRepository(CpnucleoContext context)
             : base(context)
@@ -15,11 +16,10 @@ namespace Cpnucleo.Infra.Data.Repository
 
         }
 
-        public IQueryable<Tarefa> ListarPorRecurso(Guid idRecurso)
+        public IEnumerable<Tarefa> ListarPorRecurso(Guid idRecurso)
         {
             return Listar()
-                .Include(Tarefa => Tarefa.Workflow)
-                .Include(Tarefa => Tarefa.TipoTarefa)
+                .Include(_context.GetIncludePaths(typeof(Tarefa)))
                 .Select(Tarefa => new
                 {
                     Tarefa,

@@ -2,22 +2,22 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class CrudService<TModel> : ICrudService<TModel> where TModel : BaseModel
+    internal class CrudService<TEntity> : ICrudService<TEntity> where TEntity : BaseEntity
     {
-        protected readonly ICrudRepository<TModel> _repository;
+        protected readonly ICrudRepository<TEntity> _repository;
         protected readonly IUnitOfWork _unitOfWork;
 
-        public CrudService(ICrudRepository<TModel> repository, IUnitOfWork unitOfWork)
+        public CrudService(ICrudRepository<TEntity> repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
 
-        public bool Incluir(TModel obj)
+        public Guid Incluir(TEntity obj)
         {
             if (obj.Id == Guid.Empty)
             {
@@ -29,22 +29,27 @@ namespace Cpnucleo.Domain.Services
 
             _repository.Incluir(obj);
 
-            return _unitOfWork.Commit();
+            if (!_unitOfWork.Commit())
+            {
+                return Guid.Empty;
+            }
+
+            return obj.Id;
         }
 
-        public IQueryable<TModel> Listar()
+        public IEnumerable<TEntity> Listar(bool getDependencies = false)
         {
-            return _repository.Listar();
+            return _repository.Listar(getDependencies);
         }
 
-        public IQueryable<TModel> Consultar(Guid id)
+        public TEntity Consultar(Guid id)
         {
             return _repository.Consultar(id);
         }
 
         public bool Remover(Guid id)
         {
-            TModel obj = _repository.Consultar(id).FirstOrDefault();
+            TEntity obj = _repository.Consultar(id);
 
             obj.Ativo = false;
             obj.DataExclusao = DateTime.Now;
@@ -54,7 +59,7 @@ namespace Cpnucleo.Domain.Services
             return _unitOfWork.Commit();
         }
 
-        public bool Alterar(TModel obj)
+        public bool Alterar(TEntity obj)
         {
             obj.DataAlteracao = DateTime.Now;
 

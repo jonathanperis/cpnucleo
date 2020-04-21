@@ -1,11 +1,11 @@
 using Cpnucleo.Domain.Entities;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Cpnucleo.Domain.Interfaces.Repositories
 {
     public interface ITarefaRepository : ICrudRepository<Tarefa>
     {
-        IQueryable<Tarefa> ListarPorRecurso(Guid idRecurso);
+        IEnumerable<Tarefa> ListarPorRecurso(Guid idRecurso);
     }
 }

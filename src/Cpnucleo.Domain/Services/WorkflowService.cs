@@ -2,11 +2,12 @@
 using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Cpnucleo.Domain.Services
 {
-    public class WorkflowService : CrudService<Workflow>, IWorkflowService
+    internal class WorkflowService : CrudService<Workflow>, IWorkflowService
     {
         public WorkflowService(ICrudRepository<Workflow> workflowRepository, IUnitOfWork unitOfWork)
             : base(workflowRepository, unitOfWork)
@@ -14,9 +15,9 @@ namespace Cpnucleo.Domain.Services
 
         }
 
-        public new IQueryable<Workflow> Listar()
+        public new IEnumerable<Workflow> Listar()
         {
-            IQueryable<Workflow> lista = base.Listar();
+            IEnumerable<Workflow> lista = base.Listar();
 
             int quantidadeColunas = ObterQuantidadeColunas();
 
@@ -28,16 +29,13 @@ namespace Cpnucleo.Domain.Services
             return lista;
         }
 
-        public new IQueryable<Workflow> Consultar(Guid id)
+        public new Workflow Consultar(Guid id)
         {
-            IQueryable<Workflow> workflow = base.Consultar(id);
+            Workflow workflow = base.Consultar(id);
 
             int quantidadeColunas = ObterQuantidadeColunas();
 
-            foreach (Workflow item in workflow)
-            {
-                item.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
-            }
+            workflow.TamanhoColuna = ObterTamanhoColuna(quantidadeColunas);
 
             return workflow;
         }
