@@ -20,7 +20,8 @@ namespace Cpnucleo.Infra.Data.Repository
         {
             return Listar()
                 .Include(_context.GetIncludePaths(typeof(ImpedimentoTarefa)))
-                .Where(x => x.IdTarefa == idTarefa);
+                .Where(x => x.IdTarefa == idTarefa)
+                .ToList();
         }
     }
 }

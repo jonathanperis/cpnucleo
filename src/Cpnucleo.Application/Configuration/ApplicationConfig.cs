@@ -24,7 +24,8 @@ namespace Cpnucleo.Application.Configuration
                 .AddScoped<IRecursoAppService, RecursoAppService>()
                 .AddScoped<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
                 .AddScoped<IRecursoProjetoAppService, RecursoProjetoAppService>()
-                .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>();
+                .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>()
+                .AddScoped<IWorkflowAppService, WorkflowAppService>();
 
             services.AddAutoMapper();
         }

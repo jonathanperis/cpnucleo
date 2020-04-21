@@ -13,21 +13,19 @@ namespace Cpnucleo.Domain.Services
         private readonly IWorkflowService _workflowService;
         private readonly IApontamentoService _apontamentoService;
         private readonly IImpedimentoTarefaService _impedimentoTarefaService;
-        private readonly ICrudService<TipoTarefa> _tipoTarefaService;
 
-        public TarefaService(ITarefaRepository tarefaRepository, IUnitOfWork unitOfWork, IWorkflowService workflowService, IApontamentoService apontamentoService, IImpedimentoTarefaService impedimentoTarefaService, ICrudService<TipoTarefa> tipoTarefaService)
+        public TarefaService(ITarefaRepository tarefaRepository, IUnitOfWork unitOfWork, IWorkflowService workflowService, IApontamentoService apontamentoService, IImpedimentoTarefaService impedimentoTarefaService)
             : base(tarefaRepository, unitOfWork)
         {
             _tarefaRepository = tarefaRepository;
             _workflowService = workflowService;
             _apontamentoService = apontamentoService;
             _impedimentoTarefaService = impedimentoTarefaService;
-            _tipoTarefaService = tipoTarefaService;
         }
 
-        public new IEnumerable<Tarefa> Listar()
+        public new IEnumerable<Tarefa> Listar(bool getDependencies = false)
         {
-            IEnumerable<Tarefa> lista = base.Listar();
+            IEnumerable<Tarefa> lista = base.Listar(getDependencies);
 
             return PreencherDadosAdicionais(lista);
         }
@@ -59,13 +57,10 @@ namespace Cpnucleo.Domain.Services
 
             foreach (Tarefa item in lista)
             {
-                item.Workflow = _workflowService.Consultar(item.IdWorkflow);
                 item.Workflow.TamanhoColuna = _workflowService.ObterTamanhoColuna(quantidadeColunas);
                 
                 item.HorasConsumidas = _apontamentoService.ObterTotalHorasPorRecurso(item.IdRecurso, item.Id);
                 item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
-
-                item.TipoTarefa = _tipoTarefaService.Consultar(item.IdTipoTarefa);
 
                 if (_impedimentoTarefaService.ListarPorTarefa(item.Id).Count() > 0)
                 {

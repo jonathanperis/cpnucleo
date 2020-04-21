@@ -10,8 +10,6 @@ namespace Cpnucleo.Domain.Entities
 
         public int QtdHoras { get; set; }
 
-        public int? PercentualConcluido { get; set; }
-
         public Guid IdTarefa { get; set; }
 
         public Guid IdRecurso { get; set; }

@@ -20,7 +20,8 @@ namespace Cpnucleo.Infra.Data.Repository
         {
             return Listar()
                 .Include(_context.GetIncludePaths(typeof(RecursoProjeto)))
-                .Where(x => x.IdProjeto == idProjeto);
+                .Where(x => x.IdProjeto == idProjeto)
+                .ToList();
         }
     }
 }

@@ -20,7 +20,8 @@ namespace Cpnucleo.Infra.Data.Repository
         {
             return Listar()
                 .Include(_context.GetIncludePaths(typeof(Apontamento)))
-                .Where(x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30));
+                .Where(x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30))
+                .ToList();
         }
 
         public int ObterTotalHorasPorRecurso(Guid idRecurso, Guid idTarefa)
