@@ -31,11 +31,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnType("int")
                 .IsRequired();
 
-            builder.Property(c => c.PercentualConcluido)
-                .HasColumnName("LANC_PERCENTUAL_CONCLUIDO")
-                .HasColumnType("int")
-                .IsRequired();
-
             builder.Property(c => c.IdTarefa)
                 .HasColumnName("TAR_ID")
                 .HasColumnType("uniqueidentifier")

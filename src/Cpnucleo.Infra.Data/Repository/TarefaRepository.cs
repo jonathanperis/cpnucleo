@@ -26,7 +26,8 @@ namespace Cpnucleo.Infra.Data.Repository
                     ListaRecursoTarefas = Tarefa.ListaRecursoTarefas
                         .Where(p => p.IdRecurso == idRecurso)
                 })
-                .Select(x => x.Tarefa);
+                .Select(x => x.Tarefa)
+                .ToList();
         }
     }
 }

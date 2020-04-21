@@ -15,9 +15,9 @@ namespace Cpnucleo.Domain.Services
 
         }
 
-        public new IEnumerable<Workflow> Listar()
+        public new IEnumerable<Workflow> Listar(bool getDependencies = false)
         {
-            IEnumerable<Workflow> lista = base.Listar();
+            IEnumerable<Workflow> lista = base.Listar(getDependencies);
 
             int quantidadeColunas = ObterQuantidadeColunas();
 

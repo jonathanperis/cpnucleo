@@ -3,6 +3,7 @@ using Cpnucleo.Domain.Interfaces.Repositories;
 using Cpnucleo.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cpnucleo.Domain.Services
 {
@@ -39,7 +40,7 @@ namespace Cpnucleo.Domain.Services
 
         public IEnumerable<TEntity> Listar(bool getDependencies = false)
         {
-            return _repository.Listar(getDependencies);
+            return _repository.Listar(getDependencies).ToList();
         }
 
         public TEntity Consultar(Guid id)
