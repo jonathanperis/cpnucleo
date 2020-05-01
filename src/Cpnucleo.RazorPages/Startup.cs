@@ -79,8 +79,7 @@ namespace Cpnucleo.RazorPages
             else
             {
                 app.UseExceptionHandler("/Erro");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
@@ -91,7 +90,6 @@ namespace Cpnucleo.RazorPages
             };
 
             app.UseRequestLocalization(localizationOptions);
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
