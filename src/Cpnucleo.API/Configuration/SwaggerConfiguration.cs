@@ -32,23 +32,23 @@ namespace Cpnucleo.API.Configuration
                     }
                 });
 
-                //config.SwaggerDoc("v1", new OpenApiInfo
-                //{
-                //    Version = "v1",
-                //    Title = "Cpnucleo API",
-                //    Description = "Cpnucleo example ASP.NET Core Web API (deprecated)",
-                //    Contact = new OpenApiContact
-                //    {
-                //        Name = "Jonathan Peris",
-                //        Email = "jperis.silva@gmail.com",
-                //        Url = new Uri("https://jonathanperis.github.io"),
-                //    },
-                //    License = new OpenApiLicense
-                //    {
-                //        Name = "Use under MIT",
-                //        Url = new Uri("https://en.wikipedia.org/wiki/MIT_License"),
-                //    }
-                //});
+                config.SwaggerDoc("v1", new OpenApiInfo
+                {
+                   Version = "v1",
+                   Title = "Cpnucleo API",
+                   Description = "Cpnucleo example ASP.NET Core Web API (deprecated)",
+                   Contact = new OpenApiContact
+                   {
+                       Name = "Jonathan Peris",
+                       Email = "jperis.silva@gmail.com",
+                       Url = new Uri("https://jonathanperis.github.io"),
+                   },
+                   License = new OpenApiLicense
+                   {
+                       Name = "Use under MIT",
+                       Url = new Uri("https://en.wikipedia.org/wiki/MIT_License"),
+                   }
+                });
 
                 config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -91,7 +91,7 @@ namespace Cpnucleo.API.Configuration
                 string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
 
                 c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v2/swagger.json", "V2");
-                //c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "V1");
+                c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "V1");
 
                 c.RoutePrefix = "swagger";
             });
