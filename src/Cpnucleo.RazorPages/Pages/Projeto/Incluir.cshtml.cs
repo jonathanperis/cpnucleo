@@ -11,14 +11,14 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
-        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
+        private readonly ICrudService<ProjetoViewModel> _projetoService;
+        private readonly ICrudService<SistemaViewModel> _sistemaService;
 
-        public IncluirModel(ICrudApiService<ProjetoViewModel> projetoApiService,
-                            ICrudApiService<SistemaViewModel> sistemaApiService)
+        public IncluirModel(ICrudService<ProjetoViewModel> projetoService,
+                            ICrudService<SistemaViewModel> sistemaService)
         {
-            _projetoApiService = projetoApiService;
-            _sistemaApiService = sistemaApiService;
+            _projetoService = projetoService;
+            _sistemaService = sistemaService;
         }
 
         [BindProperty]
@@ -30,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
@@ -47,12 +47,12 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Nome");
+                    SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Nome");
 
                     return Page();
                 }
 
-                await _projetoApiService.IncluirAsync(Token, Projeto);
+                await _projetoService.IncluirAsync(Token, Projeto);
 
                 return RedirectToPage("Listar");
             }

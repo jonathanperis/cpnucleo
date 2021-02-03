@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class BaseApiService<TViewModel>
+    internal class BaseService<TViewModel>
     {
         protected readonly RestClient _client;
 
-        public BaseApiService(ISystemConfiguration systemConfiguration)
+        public BaseService(ISystemConfiguration systemConfiguration)
         {
             _client = new RestClient(systemConfiguration.UrlCpnucleoApi);
         }

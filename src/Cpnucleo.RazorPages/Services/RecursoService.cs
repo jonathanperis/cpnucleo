@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class RecursoApiService : BaseApiService<RecursoViewModel>, IRecursoApiService
+    internal class RecursoService : BaseService<RecursoViewModel>, IRecursoService
     {
         private const string actionRoute = "recurso";
 
-        public RecursoApiService(ISystemConfiguration systemConfiguration)
+        public RecursoService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }

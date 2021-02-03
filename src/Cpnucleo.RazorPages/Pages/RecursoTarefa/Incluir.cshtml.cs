@@ -11,17 +11,17 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
-        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IRecursoTarefaService _recursoTarefaService;
+        private readonly IRecursoProjetoService _recursoProjetoService;
+        private readonly ITarefaService _tarefaService;
 
-        public IncluirModel(IRecursoTarefaApiService recursoTarefaApiService,
-                            IRecursoProjetoApiService recursoProjetoApiService,
-                            ITarefaApiService tarefaApiService)
+        public IncluirModel(IRecursoTarefaService recursoTarefaService,
+                            IRecursoProjetoService recursoProjetoService,
+                            ITarefaService tarefaService)
         {
-            _recursoTarefaApiService = recursoTarefaApiService;
-            _recursoProjetoApiService = recursoProjetoApiService;
-            _tarefaApiService = tarefaApiService;
+            _recursoTarefaService = recursoTarefaService;
+            _recursoProjetoService = recursoProjetoService;
+            _tarefaService = tarefaService;
         }
 
         [BindProperty]
@@ -35,9 +35,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
+                Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
-                SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                SelectRecursos = new SelectList(await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
@@ -54,13 +54,13 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
-                    SelectRecursos = new SelectList(await _recursoProjetoApiService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                    Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                    SelectRecursos = new SelectList(await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
 
                     return Page();
                 }
 
-                await _recursoTarefaApiService.IncluirAsync(Token, RecursoTarefa);
+                await _recursoTarefaService.IncluirAsync(Token, RecursoTarefa);
 
                 return RedirectToPage("Listar", new { idTarefa });
             }

@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
+        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
 
-        public ListarModel(IImpedimentoTarefaApiService impedimentoTarefaApiService)
+        public ListarModel(IImpedimentoTarefaService impedimentoTarefaService)
         {
-            _impedimentoTarefaApiService = impedimentoTarefaApiService;
+            _impedimentoTarefaService = impedimentoTarefaService;
         }
 
         [BindProperty]
@@ -27,7 +27,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                Lista = await _impedimentoTarefaApiService.ListarPorTarefaAsync(Token, idTarefa);
+                Lista = await _impedimentoTarefaService.ListarPorTarefaAsync(Token, idTarefa);
 
                 ViewData["idTarefa"] = idTarefa;
 

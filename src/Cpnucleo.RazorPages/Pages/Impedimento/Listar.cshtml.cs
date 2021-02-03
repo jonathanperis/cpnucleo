@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
 
-        public ListarModel(ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
+        public ListarModel(ICrudService<ImpedimentoViewModel> impedimentoService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoService = impedimentoService;
         }
 
         public ImpedimentoViewModel Impedimento { get; set; }
@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                Lista = await _impedimentoApiService.ListarAsync(Token);
+                Lista = await _impedimentoService.ListarAsync(Token);
 
                 return Page();
             }

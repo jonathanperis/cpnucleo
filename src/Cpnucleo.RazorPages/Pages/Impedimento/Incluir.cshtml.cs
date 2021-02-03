@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
 
-        public IncluirModel(ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
+        public IncluirModel(ICrudService<ImpedimentoViewModel> impedimentoService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoService = impedimentoService;
         }
 
         [BindProperty]
@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
                     return Page();
                 }
 
-                await _impedimentoApiService.IncluirAsync(Token, Impedimento);
+                await _impedimentoService.IncluirAsync(Token, Impedimento);
 
                 return RedirectToPage("Listar");
             }

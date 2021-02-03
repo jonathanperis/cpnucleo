@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoService _recursoService;
 
-        public IncluirModel(IRecursoApiService recursoApiService)
+        public IncluirModel(IRecursoService recursoService)
         {
-            _recursoApiService = recursoApiService;
+            _recursoService = recursoService;
         }
 
         [BindProperty]
@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
                     return Page();
                 }
 
-                await _recursoApiService.IncluirAsync(Token, Recurso);
+                await _recursoService.IncluirAsync(Token, Recurso);
 
                 return RedirectToPage("Listar");
             }

@@ -11,14 +11,14 @@ namespace Cpnucleo.RazorPages.Pages
     [Authorize]
     public class FluxoTrabalhoModel : PageBase
     {
-        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly ICrudService<WorkflowViewModel> _workflowService;
+        private readonly ITarefaService _tarefaService;
 
-        public FluxoTrabalhoModel(ICrudApiService<WorkflowViewModel> workflowApiService,
-                                  ITarefaApiService tarefaApiService)
+        public FluxoTrabalhoModel(ICrudService<WorkflowViewModel> workflowService,
+                                  ITarefaService tarefaService)
         {
-            _workflowApiService = workflowApiService;
-            _tarefaApiService = tarefaApiService;
+            _workflowService = workflowService;
+            _tarefaService = tarefaService;
         }
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
@@ -29,8 +29,8 @@ namespace Cpnucleo.RazorPages.Pages
         {
             try
             {
-                Lista = await _workflowApiService.ListarAsync(Token);
-                ListaTarefas = await _tarefaApiService.ListarAsync(Token, true);
+                Lista = await _workflowService.ListarAsync(Token);
+                ListaTarefas = await _tarefaService.ListarAsync(Token, true);
 
                 return Page();
             }
@@ -45,7 +45,7 @@ namespace Cpnucleo.RazorPages.Pages
         {
             try
             {
-                await _tarefaApiService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
+                await _tarefaService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
 
                 return Page();
             }

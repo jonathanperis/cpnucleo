@@ -7,26 +7,26 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class TipoTarefaApiService : BaseApiService<TipoTarefaViewModel>, ICrudApiService<TipoTarefaViewModel>
+    internal class ProjetoService : BaseService<ProjetoViewModel>, ICrudService<ProjetoViewModel>
     {
-        private const string actionRoute = "tipoTarefa";
+        private const string actionRoute = "projeto";
 
-        public TipoTarefaApiService(ISystemConfiguration systemConfiguration)
+        public ProjetoService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }
 
-        public async Task<bool> IncluirAsync(string token, TipoTarefaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ProjetoViewModel obj)
         {
             return await PostAsync(token, actionRoute, obj);
         }
 
-        public async Task<IEnumerable<TipoTarefaViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<IEnumerable<ProjetoViewModel>> ListarAsync(string token, bool getDependencies = false)
         {
             return await GetAsync(token, actionRoute, getDependencies);
         }
 
-        public async Task<TipoTarefaViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<ProjetoViewModel> ConsultarAsync(string token, Guid id)
         {
             return await GetAsync(token, actionRoute, id);
         }
@@ -36,7 +36,7 @@ namespace Cpnucleo.RazorPages.Services
             return await DeleteAsync(token, actionRoute, id);
         }
 
-        public async Task<bool> AlterarAsync(string token, TipoTarefaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ProjetoViewModel obj)
         {
             return await PutAsync(token, actionRoute, obj.Id, obj);
         }

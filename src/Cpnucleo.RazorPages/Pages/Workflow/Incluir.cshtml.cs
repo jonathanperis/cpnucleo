@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
+        private readonly ICrudService<WorkflowViewModel> _workflowService;
 
-        public IncluirModel(ICrudApiService<WorkflowViewModel> workflowApiService)
+        public IncluirModel(ICrudService<WorkflowViewModel> workflowService)
         {
-            _workflowApiService = workflowApiService;
+            _workflowService = workflowService;
         }
 
         [BindProperty]
@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                     return Page();
                 }
 
-                await _workflowApiService.IncluirAsync(Token, Workflow);
+                await _workflowService.IncluirAsync(Token, Workflow);
 
                 return RedirectToPage("Listar");
             }

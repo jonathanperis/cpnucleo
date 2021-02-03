@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {
-    public interface IImpedimentoTarefaApiService : ICrudApiService<ImpedimentoTarefaViewModel>
+    public interface IImpedimentoTarefaService : ICrudService<ImpedimentoTarefaViewModel>
     {
         Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa);
     }

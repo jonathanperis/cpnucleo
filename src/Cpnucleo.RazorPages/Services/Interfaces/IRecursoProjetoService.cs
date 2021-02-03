@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {
-    public interface IRecursoProjetoApiService : ICrudApiService<RecursoProjetoViewModel>
+    public interface IRecursoProjetoService : ICrudService<RecursoProjetoViewModel>
     {
         Task<IEnumerable<RecursoProjetoViewModel>> ListarPorProjetoAsync(string token, Guid idProjeto);
     }

@@ -7,26 +7,26 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class ProjetoApiService : BaseApiService<ProjetoViewModel>, ICrudApiService<ProjetoViewModel>
+    internal class ImpedimentoService : BaseService<ImpedimentoViewModel>, ICrudService<ImpedimentoViewModel>
     {
-        private const string actionRoute = "projeto";
+        private const string actionRoute = "impedimento";
 
-        public ProjetoApiService(ISystemConfiguration systemConfiguration)
+        public ImpedimentoService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }
 
-        public async Task<bool> IncluirAsync(string token, ProjetoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ImpedimentoViewModel obj)
         {
             return await PostAsync(token, actionRoute, obj);
         }
 
-        public async Task<IEnumerable<ProjetoViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<IEnumerable<ImpedimentoViewModel>> ListarAsync(string token, bool getDependencies = false)
         {
             return await GetAsync(token, actionRoute, getDependencies);
         }
 
-        public async Task<ProjetoViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<ImpedimentoViewModel> ConsultarAsync(string token, Guid id)
         {
             return await GetAsync(token, actionRoute, id);
         }
@@ -36,7 +36,7 @@ namespace Cpnucleo.RazorPages.Services
             return await DeleteAsync(token, actionRoute, id);
         }
 
-        public async Task<bool> AlterarAsync(string token, ProjetoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ImpedimentoViewModel obj)
         {
             return await PutAsync(token, actionRoute, obj.Id, obj);
         }

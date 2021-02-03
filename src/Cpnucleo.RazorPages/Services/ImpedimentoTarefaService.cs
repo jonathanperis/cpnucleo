@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class ImpedimentoTarefaApiService : BaseApiService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaApiService
+    internal class ImpedimentoTarefaService : BaseService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaService
     {
         private const string actionRoute = "impedimentoTarefa";
 
-        public ImpedimentoTarefaApiService(ISystemConfiguration systemConfiguration)
+        public ImpedimentoTarefaService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }

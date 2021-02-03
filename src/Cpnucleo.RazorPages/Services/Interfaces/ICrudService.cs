@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {
-    public interface ICrudApiService<TViewModel>
+    public interface ICrudService<TViewModel>
     {
         Task<bool> IncluirAsync(string token, TViewModel obj);
 
