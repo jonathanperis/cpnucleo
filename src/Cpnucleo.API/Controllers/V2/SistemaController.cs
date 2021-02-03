@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +15,11 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class SistemaController : ControllerBase
     {
-        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
+        private readonly ICrudService<Sistema> _sistemaService;
 
-        public SistemaController(ICrudAppService<SistemaViewModel> sistemaAppService)
+        public SistemaController(ICrudService<Sistema> sistemaService)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaService = sistemaService;
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<SistemaViewModel> Get(bool getDependencies = false)
+        public IEnumerable<Sistema> Get(bool getDependencies = false)
         {
-            return _sistemaAppService.Listar(getDependencies);
+            return _sistemaService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -57,9 +57,9 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}", Name = "GetSistema")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<SistemaViewModel> Get(Guid id)
+        public ActionResult<Sistema> Get(Guid id)
         {
-            SistemaViewModel sistema = _sistemaAppService.Consultar(id);
+            Sistema sistema = _sistemaService.Consultar(id);
 
             if (sistema == null)
             {
@@ -92,10 +92,10 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(typeof(SistemaViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Sistema), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<SistemaViewModel> Post([FromBody]SistemaViewModel obj)
+        public ActionResult<Sistema> Post([FromBody]Sistema obj)
         {
             if (!ModelState.IsValid)
             {
@@ -104,7 +104,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                obj.Id = _sistemaAppService.Incluir(obj);
+                obj.Id = _sistemaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Put(Guid id, [FromBody]SistemaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Sistema obj)
         {
             if (!ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _sistemaAppService.Alterar(obj);
+                _sistemaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -197,21 +197,21 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
-            SistemaViewModel obj = _sistemaAppService.Consultar(id);
+            Sistema obj = _sistemaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _sistemaAppService.Remover(id);
+            _sistemaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _sistemaAppService.Consultar(id) != null;
+            return _sistemaService.Consultar(id) != null;
         }
     }
 }

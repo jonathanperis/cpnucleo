@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoService _recursoService;
 
-        public RemoverModel(IRecursoApiService recursoApiService)
+        public RemoverModel(IRecursoService recursoService)
         {
-            _recursoApiService = recursoApiService;
+            _recursoService = recursoService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                Recurso = await _recursoApiService.ConsultarAsync(Token, id);
+                Recurso = await _recursoService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                await _recursoApiService.RemoverAsync(Token, Recurso.Id);
+                await _recursoService.RemoverAsync(Token, Recurso.Id);
 
                 return RedirectToPage("Listar");
             }

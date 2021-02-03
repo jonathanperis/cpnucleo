@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class ImpedimentoController : ControllerBase
     {
-        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly ICrudService<Impedimento> _impedimentoService;
 
-        public ImpedimentoController(ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
+        public ImpedimentoController(ICrudService<Impedimento> impedimentoService)
         {
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoService = impedimentoService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ImpedimentoViewModel> Get()
+        public IEnumerable<Impedimento> Get()
         {
-            return _impedimentoAppService.Listar();
+            return _impedimentoService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ImpedimentoViewModel> Get(Guid id)
+        public ActionResult<Impedimento> Get(Guid id)
         {
-            ImpedimentoViewModel impedimento = _impedimentoAppService.Consultar(id);
+            Impedimento impedimento = _impedimentoService.Consultar(id);
 
             if (impedimento == null)
             {
@@ -92,7 +92,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ImpedimentoViewModel> Post([FromBody]ImpedimentoViewModel obj)
+        public ActionResult<Impedimento> Post([FromBody]Impedimento obj)
         {
             if (!ModelState.IsValid)
             {
@@ -101,7 +101,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _impedimentoAppService.Incluir(obj);
+                _impedimentoService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -144,7 +144,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ImpedimentoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Impedimento obj)
         {
             if (!ModelState.IsValid)
             {
@@ -158,7 +158,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _impedimentoAppService.Alterar(obj);
+                _impedimentoService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -193,21 +193,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ImpedimentoViewModel obj = _impedimentoAppService.Consultar(id);
+            Impedimento obj = _impedimentoService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _impedimentoAppService.Remover(id);
+            _impedimentoService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _impedimentoAppService.Consultar(id) != null;
+            return _impedimentoService.Consultar(id) != null;
         }
     }
 }

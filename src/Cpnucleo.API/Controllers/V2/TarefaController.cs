@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +15,11 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class TarefaController : ControllerBase
     {
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly ITarefaService _tarefaService;
 
-        public TarefaController(ITarefaAppService tarefaAppService)
+        public TarefaController(ITarefaService tarefaService)
         {
-            _tarefaAppService = tarefaAppService;
+            _tarefaService = tarefaService;
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<TarefaViewModel> Get(bool getDependencies = false)
+        public IEnumerable<Tarefa> Get(bool getDependencies = false)
         {
-            return _tarefaAppService.Listar(getDependencies);
+            return _tarefaService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -57,9 +57,9 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}", Name = "GetTarefa")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<TarefaViewModel> Get(Guid id)
+        public ActionResult<Tarefa> Get(Guid id)
         {
-            TarefaViewModel tarefa = _tarefaAppService.Consultar(id);
+            Tarefa tarefa = _tarefaService.Consultar(id);
 
             if (tarefa == null)
             {
@@ -83,9 +83,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("GetByRecurso/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<TarefaViewModel> GetByRecurso(Guid id)
+        public IEnumerable<Tarefa> GetByRecurso(Guid id)
         {
-            return _tarefaAppService.ListarPorRecurso(id);
+            return _tarefaService.ListarPorRecurso(id);
         }
 
         /// <summary>
@@ -117,10 +117,10 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(typeof(TarefaViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Tarefa), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<TarefaViewModel> Post([FromBody]TarefaViewModel obj)
+        public ActionResult<Tarefa> Post([FromBody]Tarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -129,7 +129,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                obj.Id = _tarefaAppService.Incluir(obj);
+                obj.Id = _tarefaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -179,7 +179,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Put(Guid id, [FromBody]TarefaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Tarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -193,7 +193,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _tarefaAppService.Alterar(obj);
+                _tarefaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -243,7 +243,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _tarefaAppService.AlterarPorWorkflow(idTarefa, idWorkflow);
+                _tarefaService.AlterarPorWorkflow(idTarefa, idWorkflow);
             }
             catch (Exception)
             {
@@ -278,21 +278,21 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
-            TarefaViewModel obj = _tarefaAppService.Consultar(id);
+            Tarefa obj = _tarefaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _tarefaAppService.Remover(id);
+            _tarefaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _tarefaAppService.Consultar(id) != null;
+            return _tarefaService.Consultar(id) != null;
         }
     }
 }

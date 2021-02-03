@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.ViewModels;
 using Cpnucleo.RazorPages.Models;
 using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -15,12 +15,12 @@ namespace Cpnucleo.RazorPages.Pages
 {
     public class LoginModel : PageBase
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoService _recursoService;
         private readonly ISystemConfiguration _systemConfiguration;
 
-        public LoginModel(IRecursoApiService recursoApiService, ISystemConfiguration systemConfiguration)
+        public LoginModel(IRecursoService recursoService, ISystemConfiguration systemConfiguration)
         {
-            _recursoApiService = recursoApiService;
+            _recursoService = recursoService;
             _systemConfiguration = systemConfiguration;
         }
 
@@ -58,7 +58,7 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                RecursoViewModel recurso = await _recursoApiService.AutenticarAsync(Login.Usuario, Login.Senha);
+                RecursoViewModel recurso = await _recursoService.AutenticarAsync(Login.Usuario, Login.Senha);
 
                 if (recurso.Id == Guid.Empty)
                 {

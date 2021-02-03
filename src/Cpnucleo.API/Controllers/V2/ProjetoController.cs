@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +15,11 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class ProjetoController : ControllerBase
     {
-        private readonly ICrudAppService<ProjetoViewModel> _projetoAppService;
+        private readonly ICrudService<Projeto> _projetoService;
 
-        public ProjetoController(ICrudAppService<ProjetoViewModel> projetoAppService)
+        public ProjetoController(ICrudService<Projeto> projetoService)
         {
-            _projetoAppService = projetoAppService;
+            _projetoService = projetoService;
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<ProjetoViewModel> Get(bool getDependencies = false)
+        public IEnumerable<Projeto> Get(bool getDependencies = false)
         {
-            return _projetoAppService.Listar(getDependencies);
+            return _projetoService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -57,9 +57,9 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}", Name = "GetProjeto")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ProjetoViewModel> Get(Guid id)
+        public ActionResult<Projeto> Get(Guid id)
         {
-            ProjetoViewModel projeto = _projetoAppService.Consultar(id);
+            Projeto projeto = _projetoService.Consultar(id);
 
             if (projeto == null)
             {
@@ -92,10 +92,10 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ProjetoViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Projeto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ProjetoViewModel> Post([FromBody]ProjetoViewModel obj)
+        public ActionResult<Projeto> Post([FromBody]Projeto obj)
         {
             if (!ModelState.IsValid)
             {
@@ -104,7 +104,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                obj.Id = _projetoAppService.Incluir(obj);
+                obj.Id = _projetoService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Put(Guid id, [FromBody]ProjetoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Projeto obj)
         {
             if (!ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _projetoAppService.Alterar(obj);
+                _projetoService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -197,21 +197,21 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
-            ProjetoViewModel obj = _projetoAppService.Consultar(id);
+            Projeto obj = _projetoService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _projetoAppService.Remover(id);
+            _projetoService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _projetoAppService.Consultar(id) != null;
+            return _projetoService.Consultar(id) != null;
         }
     }
 }

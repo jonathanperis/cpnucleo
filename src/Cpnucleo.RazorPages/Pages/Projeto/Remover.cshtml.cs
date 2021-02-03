@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
+        private readonly ICrudService<ProjetoViewModel> _projetoService;
 
-        public RemoverModel(ICrudApiService<ProjetoViewModel> projetoApiService)
+        public RemoverModel(ICrudService<ProjetoViewModel> projetoService)
         {
-            _projetoApiService = projetoApiService;
+            _projetoService = projetoService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                Projeto = await _projetoApiService.ConsultarAsync(Token, id);
+                Projeto = await _projetoService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                await _projetoApiService.RemoverAsync(Token, Projeto.Id);
+                await _projetoService.RemoverAsync(Token, Projeto.Id);
 
                 return RedirectToPage("Listar");
             }

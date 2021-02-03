@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class ImpedimentoTarefaController : ControllerBase
     {
-        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
+        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
 
-        public ImpedimentoTarefaController(IImpedimentoTarefaAppService impedimentoTarefaAppService)
+        public ImpedimentoTarefaController(IImpedimentoTarefaService impedimentoTarefaService)
         {
-            _impedimentoTarefaAppService = impedimentoTarefaAppService;
+            _impedimentoTarefaService = impedimentoTarefaService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ImpedimentoTarefaViewModel> Get()
+        public IEnumerable<ImpedimentoTarefa> Get()
         {
-            return _impedimentoTarefaAppService.Listar();
+            return _impedimentoTarefaService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ImpedimentoTarefaViewModel> Get(Guid id)
+        public ActionResult<ImpedimentoTarefa> Get(Guid id)
         {
-            ImpedimentoTarefaViewModel impedimentoTarefa = _impedimentoTarefaAppService.Consultar(id);
+            ImpedimentoTarefa impedimentoTarefa = _impedimentoTarefaService.Consultar(id);
 
             if (impedimentoTarefa == null)
             {
@@ -94,7 +94,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ImpedimentoTarefaViewModel> Post([FromBody]ImpedimentoTarefaViewModel obj)
+        public ActionResult<ImpedimentoTarefa> Post([FromBody]ImpedimentoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _impedimentoTarefaAppService.Incluir(obj);
+                _impedimentoTarefaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ImpedimentoTarefaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]ImpedimentoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _impedimentoTarefaAppService.Alterar(obj);
+                _impedimentoTarefaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -197,21 +197,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ImpedimentoTarefaViewModel obj = _impedimentoTarefaAppService.Consultar(id);
+            ImpedimentoTarefa obj = _impedimentoTarefaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _impedimentoTarefaAppService.Remover(id);
+            _impedimentoTarefaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _impedimentoTarefaAppService.Consultar(id) != null;
+            return _impedimentoTarefaService.Consultar(id) != null;
         }
     }
 }

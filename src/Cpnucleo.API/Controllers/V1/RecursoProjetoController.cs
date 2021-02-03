@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class RecursoProjetoController : ControllerBase
     {
-        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
+        private readonly IRecursoProjetoService _recursoProjetoService;
 
-        public RecursoProjetoController(IRecursoProjetoAppService recursoProjetoAppService)
+        public RecursoProjetoController(IRecursoProjetoService recursoProjetoService)
         {
-            _recursoProjetoAppService = recursoProjetoAppService;
+            _recursoProjetoService = recursoProjetoService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<RecursoProjetoViewModel> Get()
+        public IEnumerable<RecursoProjeto> Get()
         {
-            return _recursoProjetoAppService.Listar();
+            return _recursoProjetoService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<RecursoProjetoViewModel> Get(Guid id)
+        public ActionResult<RecursoProjeto> Get(Guid id)
         {
-            RecursoProjetoViewModel recursoProjeto = _recursoProjetoAppService.Consultar(id);
+            RecursoProjeto recursoProjeto = _recursoProjetoService.Consultar(id);
 
             if (recursoProjeto == null)
             {
@@ -93,7 +93,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<RecursoProjetoViewModel> Post([FromBody]RecursoProjetoViewModel obj)
+        public ActionResult<RecursoProjeto> Post([FromBody]RecursoProjeto obj)
         {
             if (!ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _recursoProjetoAppService.Incluir(obj);
+                _recursoProjetoService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -146,7 +146,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]RecursoProjetoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]RecursoProjeto obj)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +160,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _recursoProjetoAppService.Alterar(obj);
+                _recursoProjetoService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -195,21 +195,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            RecursoProjetoViewModel obj = _recursoProjetoAppService.Consultar(id);
+            RecursoProjeto obj = _recursoProjetoService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _recursoProjetoAppService.Remover(id);
+            _recursoProjetoService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _recursoProjetoAppService.Consultar(id) != null;
+            return _recursoProjetoService.Consultar(id) != null;
         }
     }
 }
