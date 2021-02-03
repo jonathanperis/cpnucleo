@@ -71,7 +71,7 @@
                 <h1 class="logo-name">@OptionsApplicationConfiguration.Value.NomeSistema </h1>
 
             </div>
-            <h3>Bem vindo ao @OptionsApplicationConfiguration.Value.NomeSistema!</h3>
+            <h3>Bem vindo ao @OptionsApplicationConfiguration.Value.NomeSistema! - TESTE AZURE DEVOPS 2</h3>
             <form asp-page="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="m-t" role="form">
 
                 @if (!ViewData.ModelState.IsValid)
@@ -89,13 +89,13 @@
                     <input type="password" class="form-control" asp-for="Login.Senha" placeholder="@Html.DisplayNameFor(x => x.Login.Senha)">
                     <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Login.Senha)</span>
                 </div>
-                <button type="submit" class="btn btn-primary block full-width m-b">Entrar - TESTE AZURE DEVOPS 2</button>
+                <button type="submit" class="btn btn-primary block full-width m-b">Entrar</button>
                 <div class="alert alert-info alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <p style="text-align: left;">Fazendo uma visita? utilize as seguintes credenciais:</p>
                     <br>
                     <ul style="padding-left: 15px;">
-                        <li style="text-align: left;">login: "usuario.teste - TESTE AZURE DEVOPS 2"</li>
+                        <li style="text-align: left;">login: "usuario.teste"</li>
                         <li style="text-align: left;">senha: "12345678"</li>
                     </ul>
                 </div>
