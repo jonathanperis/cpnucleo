@@ -11,23 +11,23 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ITarefaApiService _tarefaApiService;
-        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
-        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
-        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
-        private readonly ICrudApiService<TipoTarefaViewModel> _tipoTarefaApiService;
+        private readonly ITarefaService _tarefaService;
+        private readonly ICrudService<ProjetoViewModel> _projetoService;
+        private readonly ICrudService<SistemaViewModel> _sistemaService;
+        private readonly ICrudService<WorkflowViewModel> _workflowService;
+        private readonly ICrudService<TipoTarefaViewModel> _tipoTarefaService;
 
-        public AlterarModel(ITarefaApiService tarefaApiService,
-                            ICrudApiService<ProjetoViewModel> projetoApiService,
-                            ICrudApiService<SistemaViewModel> sistemaApiService,
-                            ICrudApiService<WorkflowViewModel> workflowApiService,
-                            ICrudApiService<TipoTarefaViewModel> tipoTarefaApiService)
+        public AlterarModel(ITarefaService tarefaService,
+                            ICrudService<ProjetoViewModel> projetoService,
+                            ICrudService<SistemaViewModel> sistemaService,
+                            ICrudService<WorkflowViewModel> workflowService,
+                            ICrudService<TipoTarefaViewModel> tipoTarefaService)
         {
-            _tarefaApiService = tarefaApiService;
-            _projetoApiService = projetoApiService;
-            _sistemaApiService = sistemaApiService;
-            _workflowApiService = workflowApiService;
-            _tipoTarefaApiService = tipoTarefaApiService;
+            _tarefaService = tarefaService;
+            _projetoService = projetoService;
+            _sistemaService = sistemaService;
+            _workflowService = workflowService;
+            _tipoTarefaService = tipoTarefaService;
         }
 
         [BindProperty]
@@ -45,11 +45,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
-                SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
-                SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
-                SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
-                SelectTipoTarefas = new SelectList(await _tipoTarefaApiService.ListarAsync(Token), "Id", "Nome");
+                Tarefa = await _tarefaService.ConsultarAsync(Token, id);
+                SelectProjetos = new SelectList(await _projetoService.ListarAsync(Token), "Id", "Nome");
+                SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Descricao");
+                SelectWorkflows = new SelectList(await _workflowService.ListarAsync(Token), "Id", "Nome");
+                SelectTipoTarefas = new SelectList(await _tipoTarefaService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
@@ -66,15 +66,15 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    SelectProjetos = new SelectList(await _projetoApiService.ListarAsync(Token), "Id", "Nome");
-                    SelectSistemas = new SelectList(await _sistemaApiService.ListarAsync(Token), "Id", "Descricao");
-                    SelectWorkflows = new SelectList(await _workflowApiService.ListarAsync(Token), "Id", "Nome");
-                    SelectTipoTarefas = new SelectList(await _tipoTarefaApiService.ListarAsync(Token), "Id", "Nome");
+                    SelectProjetos = new SelectList(await _projetoService.ListarAsync(Token), "Id", "Nome");
+                    SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Descricao");
+                    SelectWorkflows = new SelectList(await _workflowService.ListarAsync(Token), "Id", "Nome");
+                    SelectTipoTarefas = new SelectList(await _tipoTarefaService.ListarAsync(Token), "Id", "Nome");
 
                     return Page();
                 }
 
-                await _tarefaApiService.AlterarAsync(Token, Tarefa);
+                await _tarefaService.AlterarAsync(Token, Tarefa);
 
                 return RedirectToPage("Listar");
             }

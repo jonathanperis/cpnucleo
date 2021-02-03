@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
+        private readonly IRecursoProjetoService _recursoProjetoService;
 
-        public RemoverModel(IRecursoProjetoApiService recursoProjetoApiService)
+        public RemoverModel(IRecursoProjetoService recursoProjetoService)
         {
-            _recursoProjetoApiService = recursoProjetoApiService;
+            _recursoProjetoService = recursoProjetoService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                RecursoProjeto = await _recursoProjetoApiService.ConsultarAsync(Token, id);
+                RecursoProjeto = await _recursoProjetoService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                await _recursoProjetoApiService.RemoverAsync(Token, RecursoProjeto.Id);
+                await _recursoProjetoService.RemoverAsync(Token, RecursoProjeto.Id);
 
                 return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
             }

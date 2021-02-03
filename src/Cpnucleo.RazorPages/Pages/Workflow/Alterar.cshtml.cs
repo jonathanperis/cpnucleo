@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
+        private readonly ICrudService<WorkflowViewModel> _workflowService;
 
-        public AlterarModel(ICrudApiService<WorkflowViewModel> workflowApiService)
+        public AlterarModel(ICrudService<WorkflowViewModel> workflowService)
         {
-            _workflowApiService = workflowApiService;
+            _workflowService = workflowService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                Workflow = await _workflowApiService.ConsultarAsync(Token, id);
+                Workflow = await _workflowService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                     return Page();
                 }
 
-                await _workflowApiService.AlterarAsync(Token, Workflow);
+                await _workflowService.AlterarAsync(Token, Workflow);
 
                 return RedirectToPage("Listar");
             }

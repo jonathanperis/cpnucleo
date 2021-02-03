@@ -11,14 +11,14 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
+        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
 
-        public AlterarModel(IImpedimentoTarefaApiService impedimentoTarefaApiService,
-                            ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
+        public AlterarModel(IImpedimentoTarefaService impedimentoTarefaService,
+                            ICrudService<ImpedimentoViewModel> impedimentoService)
         {
-            _impedimentoTarefaApiService = impedimentoTarefaApiService;
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoTarefaService = impedimentoTarefaService;
+            _impedimentoService = impedimentoService;
         }
 
         [BindProperty]
@@ -30,8 +30,8 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                ImpedimentoTarefa = await _impedimentoTarefaApiService.ConsultarAsync(Token, id);
-                SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
+                ImpedimentoTarefa = await _impedimentoTarefaService.ConsultarAsync(Token, id);
+                SelectImpedimentos = new SelectList(await _impedimentoService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
@@ -48,12 +48,12 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
+                    SelectImpedimentos = new SelectList(await _impedimentoService.ListarAsync(Token), "Id", "Nome");
 
                     return Page();
                 }
 
-                await _impedimentoTarefaApiService.AlterarAsync(Token, ImpedimentoTarefa);
+                await _impedimentoTarefaService.AlterarAsync(Token, ImpedimentoTarefa);
 
                 return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
             }

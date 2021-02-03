@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {
-    public interface IRecursoApiService : ICrudApiService<RecursoViewModel>
+    public interface IRecursoService : ICrudService<RecursoViewModel>
     {
         Task<RecursoViewModel> AutenticarAsync(string login, string senha);
     }

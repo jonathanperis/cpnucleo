@@ -11,17 +11,17 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IImpedimentoTarefaApiService _impedimentoTarefaApiService;
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
+        private readonly ITarefaService _tarefaService;
 
-        public IncluirModel(IImpedimentoTarefaApiService impedimentoTarefaApiService,
-                            ICrudApiService<ImpedimentoViewModel> impedimentoApiService,
-                            ITarefaApiService tarefaApiService)
+        public IncluirModel(IImpedimentoTarefaService impedimentoTarefaService,
+                            ICrudService<ImpedimentoViewModel> impedimentoService,
+                            ITarefaService tarefaService)
         {
-            _impedimentoTarefaApiService = impedimentoTarefaApiService;
-            _impedimentoApiService = impedimentoApiService;
-            _tarefaApiService = tarefaApiService;
+            _impedimentoTarefaService = impedimentoTarefaService;
+            _impedimentoService = impedimentoService;
+            _tarefaService = tarefaService;
         }
 
         [BindProperty]
@@ -35,9 +35,9 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
+                Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
-                SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
+                SelectImpedimentos = new SelectList(await _impedimentoService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
@@ -54,14 +54,14 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    Tarefa = await _tarefaApiService.ConsultarAsync(Token, idTarefa);
+                    Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
-                    SelectImpedimentos = new SelectList(await _impedimentoApiService.ListarAsync(Token), "Id", "Nome");
+                    SelectImpedimentos = new SelectList(await _impedimentoService.ListarAsync(Token), "Id", "Nome");
 
                     return Page();
                 }
 
-                await _impedimentoTarefaApiService.IncluirAsync(Token, ImpedimentoTarefa);
+                await _impedimentoTarefaService.IncluirAsync(Token, ImpedimentoTarefa);
 
                 return RedirectToPage("Listar", new { idTarefa });
             }

@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IRecursoApiService _recursoApiService;
+        private readonly IRecursoService _recursoService;
 
-        public AlterarModel(IRecursoApiService recursoApiService)
+        public AlterarModel(IRecursoService recursoService)
         {
-            _recursoApiService = recursoApiService;
+            _recursoService = recursoService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                Recurso = await _recursoApiService.ConsultarAsync(Token, id);
+                Recurso = await _recursoService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
                     return Page();
                 }
 
-                await _recursoApiService.AlterarAsync(Token, Recurso);
+                await _recursoService.AlterarAsync(Token, Recurso);
 
                 return RedirectToPage("Listar");
             }

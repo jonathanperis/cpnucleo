@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
+        private readonly ICrudService<SistemaViewModel> _sistemaService;
 
-        public ListarModel(ICrudApiService<SistemaViewModel> sistemaApiService)
+        public ListarModel(ICrudService<SistemaViewModel> sistemaService)
         {
-            _sistemaApiService = sistemaApiService;
+            _sistemaService = sistemaService;
         }
 
         public SistemaViewModel Sistema { get; set; }
@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                Lista = await _sistemaApiService.ListarAsync(Token);
+                Lista = await _sistemaService.ListarAsync(Token);
 
                 return Page();
             }

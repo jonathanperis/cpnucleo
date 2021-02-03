@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class RecursoTarefaApiService : BaseApiService<RecursoTarefaViewModel>, IRecursoTarefaApiService
+    internal class ApontamentoService : BaseService<ApontamentoViewModel>, IApontamentoService
     {
-        private const string actionRoute = "recursoTarefa";
+        private const string actionRoute = "apontamento";
 
-        public RecursoTarefaApiService(ISystemConfiguration systemConfiguration)
+        public ApontamentoService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }
 
-        public async Task<bool> IncluirAsync(string token, RecursoTarefaViewModel obj)
+        public async Task<bool> IncluirAsync(string token, ApontamentoViewModel obj)
         {
             return await PostAsync(token, actionRoute, obj);
         }
 
-        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<IEnumerable<ApontamentoViewModel>> ListarAsync(string token, bool getDependencies = false)
         {
             return await GetAsync(token, actionRoute, getDependencies);
         }
 
-        public async Task<RecursoTarefaViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<ApontamentoViewModel> ConsultarAsync(string token, Guid id)
         {
             return await GetAsync(token, actionRoute, id);
         }
@@ -39,16 +39,16 @@ namespace Cpnucleo.RazorPages.Services
             return await DeleteAsync(token, actionRoute, id);
         }
 
-        public async Task<bool> AlterarAsync(string token, RecursoTarefaViewModel obj)
+        public async Task<bool> AlterarAsync(string token, ApontamentoViewModel obj)
         {
             return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa)
+        public async Task<IEnumerable<ApontamentoViewModel>> ListarPorRecursoAsync(string token, Guid id)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyrecurso/{id}", Method.GET);
                 request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
@@ -65,7 +65,7 @@ namespace Cpnucleo.RazorPages.Services
                     }
                 }
 
-                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(response.Content);
+                return JsonConvert.DeserializeObject<IEnumerable<ApontamentoViewModel>>(response.Content);
             }
             catch (Exception)
             {

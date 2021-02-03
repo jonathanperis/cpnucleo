@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class RecursoProjetoApiService : BaseApiService<RecursoProjetoViewModel>, IRecursoProjetoApiService
+    internal class RecursoTarefaService : BaseService<RecursoTarefaViewModel>, IRecursoTarefaService
     {
-        private const string actionRoute = "recursoProjeto";
+        private const string actionRoute = "recursoTarefa";
 
-        public RecursoProjetoApiService(ISystemConfiguration systemConfiguration)
+        public RecursoTarefaService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }
 
-        public async Task<bool> IncluirAsync(string token, RecursoProjetoViewModel obj)
+        public async Task<bool> IncluirAsync(string token, RecursoTarefaViewModel obj)
         {
             return await PostAsync(token, actionRoute, obj);
         }
 
-        public async Task<IEnumerable<RecursoProjetoViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarAsync(string token, bool getDependencies = false)
         {
             return await GetAsync(token, actionRoute, getDependencies);
         }
 
-        public async Task<RecursoProjetoViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<RecursoTarefaViewModel> ConsultarAsync(string token, Guid id)
         {
             return await GetAsync(token, actionRoute, id);
         }
@@ -39,16 +39,16 @@ namespace Cpnucleo.RazorPages.Services
             return await DeleteAsync(token, actionRoute, id);
         }
 
-        public async Task<bool> AlterarAsync(string token, RecursoProjetoViewModel obj)
+        public async Task<bool> AlterarAsync(string token, RecursoTarefaViewModel obj)
         {
             return await PutAsync(token, actionRoute, obj.Id, obj);
         }
 
-        public async Task<IEnumerable<RecursoProjetoViewModel>> ListarPorProjetoAsync(string token, Guid idProjeto)
+        public async Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa)
         {
             try
             {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbyprojeto/{idProjeto}", Method.GET);
+                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
                 request.AddHeader("Authorization", $"Bearer {token}");
 
                 IRestResponse response = await _client.ExecuteAsync(request);
@@ -65,7 +65,7 @@ namespace Cpnucleo.RazorPages.Services
                     }
                 }
 
-                return JsonConvert.DeserializeObject<IEnumerable<RecursoProjetoViewModel>>(response.Content);
+                return JsonConvert.DeserializeObject<IEnumerable<RecursoTarefaViewModel>>(response.Content);
             }
             catch (Exception)
             {

@@ -11,17 +11,17 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IRecursoProjetoApiService _recursoProjetoApiService;
-        private readonly IRecursoApiService _recursoApiService;
-        private readonly ICrudApiService<ProjetoViewModel> _projetoApiService;
+        private readonly IRecursoProjetoService _recursoProjetoService;
+        private readonly IRecursoService _recursoService;
+        private readonly ICrudService<ProjetoViewModel> _projetoService;
 
-        public IncluirModel(IRecursoProjetoApiService recursoProjetoApiService,
-                            IRecursoApiService recursoApiService,
-                            ICrudApiService<ProjetoViewModel> projetoApiService)
+        public IncluirModel(IRecursoProjetoService recursoProjetoService,
+                            IRecursoService recursoService,
+                            ICrudService<ProjetoViewModel> projetoService)
         {
-            _recursoProjetoApiService = recursoProjetoApiService;
-            _recursoApiService = recursoApiService;
-            _projetoApiService = projetoApiService;
+            _recursoProjetoService = recursoProjetoService;
+            _recursoService = recursoService;
+            _projetoService = projetoService;
         }
 
         [BindProperty]
@@ -35,8 +35,8 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
-                SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
+                Projeto = await _projetoService.ConsultarAsync(Token, idProjeto);
+                SelectRecursos = new SelectList(await _recursoService.ListarAsync(Token), "Id", "Nome");
 
                 return Page();
             }
@@ -53,13 +53,13 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             {
                 if (!ModelState.IsValid)
                 {
-                    Projeto = await _projetoApiService.ConsultarAsync(Token, idProjeto);
-                    SelectRecursos = new SelectList(await _recursoApiService.ListarAsync(Token), "Id", "Nome");
+                    Projeto = await _projetoService.ConsultarAsync(Token, idProjeto);
+                    SelectRecursos = new SelectList(await _recursoService.ListarAsync(Token), "Id", "Nome");
 
                     return Page();
                 }
 
-                await _recursoProjetoApiService.IncluirAsync(Token, RecursoProjeto);
+                await _recursoProjetoService.IncluirAsync(Token, RecursoProjeto);
 
                 return RedirectToPage("Listar", new { idProjeto });
             }

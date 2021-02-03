@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly ITarefaService _tarefaService;
 
-        public RemoverModel(ITarefaApiService tarefaApiService)
+        public RemoverModel(ITarefaService tarefaService)
         {
-            _tarefaApiService = tarefaApiService;
+            _tarefaService = tarefaService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                Tarefa = await _tarefaApiService.ConsultarAsync(Token, id);
+                Tarefa = await _tarefaService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                await _tarefaApiService.RemoverAsync(Token, Tarefa.Id);
+                await _tarefaService.RemoverAsync(Token, Tarefa.Id);
 
                 return RedirectToPage("Listar");
             }

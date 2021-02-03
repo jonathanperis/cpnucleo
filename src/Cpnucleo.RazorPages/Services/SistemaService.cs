@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class SistemaApiService : BaseApiService<SistemaViewModel>, ICrudApiService<SistemaViewModel>
+    internal class SistemaService : BaseService<SistemaViewModel>, ICrudService<SistemaViewModel>
     {
         private const string actionRoute = "sistema";
 
-        public SistemaApiService(ISystemConfiguration systemConfiguration)
+        public SistemaService(ISystemConfiguration systemConfiguration)
             : base(systemConfiguration)
         {
         }

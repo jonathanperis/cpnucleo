@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
 
-        public RemoverModel(ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
+        public RemoverModel(ICrudService<ImpedimentoViewModel> impedimentoService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoService = impedimentoService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                Impedimento = await _impedimentoApiService.ConsultarAsync(Token, id);
+                Impedimento = await _impedimentoService.ConsultarAsync(Token, id);
 
                 return Page();
 
@@ -40,7 +40,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                await _impedimentoApiService.RemoverAsync(Token, Impedimento.Id);
+                await _impedimentoService.RemoverAsync(Token, Impedimento.Id);
 
                 return RedirectToPage("Listar");
             }

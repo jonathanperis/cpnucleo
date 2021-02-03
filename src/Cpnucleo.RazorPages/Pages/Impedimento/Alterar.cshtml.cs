@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
 
-        public AlterarModel(ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
+        public AlterarModel(ICrudService<ImpedimentoViewModel> impedimentoService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoService = impedimentoService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                Impedimento = await _impedimentoApiService.ConsultarAsync(Token, id);
+                Impedimento = await _impedimentoService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
                     return Page();
                 }
 
-                await _impedimentoApiService.AlterarAsync(Token, Impedimento);
+                await _impedimentoService.AlterarAsync(Token, Impedimento);
 
                 return RedirectToPage("Listar");
             }
