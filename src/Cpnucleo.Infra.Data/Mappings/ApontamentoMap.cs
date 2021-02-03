@@ -58,11 +58,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("LANC_ATIVO")
                 .HasColumnType("bit")
                 .IsRequired();
-
-            builder
-                .HasOne(p => p.Tarefa)
-                .WithMany(b => b.ListaApontamentos)
-                .HasForeignKey(f => f.IdTarefa);
         }
     }
 }

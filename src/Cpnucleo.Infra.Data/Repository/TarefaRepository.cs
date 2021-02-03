@@ -23,8 +23,8 @@ namespace Cpnucleo.Infra.Data.Repository
                 .Select(Tarefa => new
                 {
                     Tarefa,
-                    ListaRecursoTarefas = Tarefa.ListaRecursoTarefas
-                        .Where(p => p.IdRecurso == idRecurso)
+                    // ListaRecursoTarefas = Tarefa.ListaRecursoTarefas
+                    //     .Where(p => p.IdRecurso == idRecurso)
                 })
                 .Select(x => x.Tarefa)
                 .ToList();

@@ -34,11 +34,5 @@ namespace Cpnucleo.Domain.Entities
         public Recurso Recurso { get; set; }
 
         public TipoTarefa TipoTarefa { get; set; }
-
-        public IEnumerable<ImpedimentoTarefa> ListaImpedimentos { get; set; }
-
-        public IEnumerable<Apontamento> ListaApontamentos { get; set; }
-
-        public IEnumerable<RecursoTarefa> ListaRecursoTarefas { get; set; }
     }
 }

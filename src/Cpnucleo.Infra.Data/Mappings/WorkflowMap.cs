@@ -46,11 +46,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasColumnName("WOR_ATIVO")
                 .HasColumnType("bit")
                 .IsRequired();
-
-            builder
-                .HasMany(c => c.ListaTarefas)
-                .WithOne(c => c.Workflow)
-                .HasForeignKey(f => f.IdWorkflow);
         }
     }
 }
