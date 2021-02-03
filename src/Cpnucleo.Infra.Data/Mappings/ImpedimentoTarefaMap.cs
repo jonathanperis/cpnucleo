@@ -50,6 +50,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .IsRequired();
 
             builder
+                .HasOne(p => p.Tarefa)
+                .WithMany()
+                .HasForeignKey(f => f.IdTarefa);
+
+            builder
                 .HasOne(p => p.Impedimento)
                 .WithMany()
                 .HasForeignKey(f => f.IdImpedimento);

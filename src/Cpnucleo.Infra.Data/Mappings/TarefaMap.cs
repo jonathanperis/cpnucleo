@@ -91,6 +91,11 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasForeignKey(f => f.IdProjeto);
 
             builder
+                .HasOne(p => p.Workflow)
+                .WithMany()
+                .HasForeignKey(f => f.IdWorkflow);                
+
+            builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
                 .HasForeignKey(f => f.IdRecurso);
