@@ -70,7 +70,7 @@ namespace Cpnucleo.API.Controllers.V2
         }
 
         /// <summary>
-        /// Incluir sistema - TESTE AZURE DEVOPS 3
+        /// Incluir sistema
         /// </summary>
         /// <remarks>
         /// # Incluir sistema
