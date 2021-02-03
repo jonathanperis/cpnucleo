@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class ApontamentoController : ControllerBase
     {
-        private readonly IApontamentoAppService _apontamentoAppService;
+        private readonly IApontamentoService _apontamentoService;
 
-        public ApontamentoController(IApontamentoAppService apontamentoAppService)
+        public ApontamentoController(IApontamentoService apontamentoService)
         {
-            _apontamentoAppService = apontamentoAppService;
+            _apontamentoService = apontamentoService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<ApontamentoViewModel> Get()
+        public IEnumerable<Apontamento> Get()
         {
-            return _apontamentoAppService.Listar();
+            return _apontamentoService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<ApontamentoViewModel> Get(Guid id)
+        public ActionResult<Apontamento> Get(Guid id)
         {
-            ApontamentoViewModel apontamento = _apontamentoAppService.Consultar(id);
+            Apontamento apontamento = _apontamentoService.Consultar(id);
 
             if (apontamento == null)
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<ApontamentoViewModel> Post([FromBody]ApontamentoViewModel obj)
+        public ActionResult<Apontamento> Post([FromBody]Apontamento obj)
         {
             if (!ModelState.IsValid)
             {
@@ -106,7 +106,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _apontamentoAppService.Incluir(obj);
+                _apontamentoService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -154,7 +154,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]ApontamentoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Apontamento obj)
         {
             if (!ModelState.IsValid)
             {
@@ -168,7 +168,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _apontamentoAppService.Alterar(obj);
+                _apontamentoService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -203,21 +203,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            ApontamentoViewModel obj = _apontamentoAppService.Consultar(id);
+            Apontamento obj = _apontamentoService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _apontamentoAppService.Remover(id);
+            _apontamentoService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _apontamentoAppService.Consultar(id) != null;
+            return _apontamentoService.Consultar(id) != null;
         }
     }
 }

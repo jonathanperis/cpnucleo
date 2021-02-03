@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ICrudApiService<SistemaViewModel> _sistemaApiService;
+        private readonly ICrudService<SistemaViewModel> _sistemaService;
 
-        public AlterarModel(ICrudApiService<SistemaViewModel> sistemaApiService)
+        public AlterarModel(ICrudService<SistemaViewModel> sistemaService)
         {
-            _sistemaApiService = sistemaApiService;
+            _sistemaService = sistemaService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                Sistema = await _sistemaApiService.ConsultarAsync(Token, id);
+                Sistema = await _sistemaService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -44,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
                     return Page();
                 }
 
-                await _sistemaApiService.AlterarAsync(Token, Sistema);
+                await _sistemaService.AlterarAsync(Token, Sistema);
 
                 return RedirectToPage("Listar");
             }

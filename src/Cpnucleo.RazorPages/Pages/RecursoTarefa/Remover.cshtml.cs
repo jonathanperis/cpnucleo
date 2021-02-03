@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IRecursoTarefaApiService _recursoTarefaApiService;
+        private readonly IRecursoTarefaService _recursoTarefaService;
 
-        public RemoverModel(IRecursoTarefaApiService recursoTarefaApiService)
+        public RemoverModel(IRecursoTarefaService recursoTarefaService)
         {
-            _recursoTarefaApiService = recursoTarefaApiService;
+            _recursoTarefaService = recursoTarefaService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                RecursoTarefa = await _recursoTarefaApiService.ConsultarAsync(Token, id);
+                RecursoTarefa = await _recursoTarefaService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                await _recursoTarefaApiService.RemoverAsync(Token, RecursoTarefa.Id);
+                await _recursoTarefaService.RemoverAsync(Token, RecursoTarefa.Id);
 
                 return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
             }

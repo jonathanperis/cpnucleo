@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.API.Services;
-using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Domain.Interfaces.Services;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +16,12 @@ namespace Cpnucleo.API.Controllers.V2
     [ApiVersion("2")]
     public class RecursoController : ControllerBase
     {
-        private readonly IRecursoAppService _recursoAppService;
+        private readonly IRecursoService _recursoService;
         private readonly ISystemConfiguration _systemConfiguration;
 
-        public RecursoController(IRecursoAppService recursoAppService, ISystemConfiguration systemConfiguration)
+        public RecursoController(IRecursoService recursoService, ISystemConfiguration systemConfiguration)
         {
-            _recursoAppService = recursoAppService;
+            _recursoService = recursoService;
             _systemConfiguration = systemConfiguration;
         }
 
@@ -40,9 +40,9 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize]
-        public IEnumerable<RecursoViewModel> Get(bool getDependencies = false)
+        public IEnumerable<Recurso> Get(bool getDependencies = false)
         {
-            return _recursoAppService.Listar(getDependencies);
+            return _recursoService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize]
-        public ActionResult<RecursoViewModel> Get(Guid id)
+        public ActionResult<Recurso> Get(Guid id)
         {
-            RecursoViewModel recurso = _recursoAppService.Consultar(id);
+            Recurso recurso = _recursoService.Consultar(id);
 
             if (recurso == null)
             {
@@ -99,11 +99,11 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RecursoViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Recurso), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [Authorize]
-        public ActionResult<RecursoViewModel> Post([FromBody]RecursoViewModel obj)
+        public ActionResult<Recurso> Post([FromBody]Recurso obj)
         {
             if (!ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                obj.Id = _recursoAppService.Incluir(obj);
+                obj.Id = _recursoService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -143,9 +143,9 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("Autenticar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<RecursoViewModel> Autenticar(string login, string senha)
+        public ActionResult<Recurso> Autenticar(string login, string senha)
         {
-            RecursoViewModel recurso = _recursoAppService.Autenticar(login, senha, out bool valido);
+            Recurso recurso = _recursoService.Autenticar(login, senha, out bool valido);
 
             if (recurso == null)
             {
@@ -194,7 +194,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
-        public IActionResult Put(Guid id, [FromBody]RecursoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Recurso obj)
         {
             if (!ModelState.IsValid)
             {
@@ -208,7 +208,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _recursoAppService.Alterar(obj);
+                _recursoService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -244,21 +244,21 @@ namespace Cpnucleo.API.Controllers.V2
         [Authorize]
         public IActionResult Delete(Guid id)
         {
-            RecursoViewModel obj = _recursoAppService.Consultar(id);
+            Recurso obj = _recursoService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _recursoAppService.Remover(id);
+            _recursoService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _recursoAppService.Consultar(id) != null;
+            return _recursoService.Consultar(id) != null;
         }
     }
 }

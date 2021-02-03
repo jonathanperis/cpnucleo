@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +13,14 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IApontamentoApiService _apontamentoApiService;
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly IApontamentoService _apontamentoService;
+        private readonly ITarefaService _tarefaService;
 
-        public ListarModel(IApontamentoApiService apontamentoApiService,
-                           ITarefaApiService tarefaApiService)
+        public ListarModel(IApontamentoService apontamentoService,
+                           ITarefaService tarefaService)
         {
-            _apontamentoApiService = apontamentoApiService;
-            _tarefaApiService = tarefaApiService;
+            _apontamentoService = apontamentoService;
+            _tarefaService = tarefaService;
         }
 
         [BindProperty]
@@ -37,8 +37,8 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
-                ListaTarefas = await _tarefaApiService.ListarPorRecursoAsync(Token, idRecurso);
+                Lista = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
+                ListaTarefas = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
 
                 return Page();
             }
@@ -58,13 +58,13 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                     string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new Guid(retorno);
 
-                    Lista = await _apontamentoApiService.ListarPorRecursoAsync(Token, idRecurso);
-                    ListaTarefas = await _tarefaApiService.ListarPorRecursoAsync(Token, idRecurso);
+                    Lista = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
+                    ListaTarefas = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
 
                     return Page();
                 }
 
-                await _apontamentoApiService.IncluirAsync(Token, Apontamento);
+                await _apontamentoService.IncluirAsync(Token, Apontamento);
 
                 return RedirectToPage("Listar");
             }

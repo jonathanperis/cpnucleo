@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ITarefaApiService _tarefaApiService;
+        private readonly ITarefaService _tarefaService;
 
-        public ListarModel(ITarefaApiService tarefaApiService)
+        public ListarModel(ITarefaService tarefaService)
         {
-            _tarefaApiService = tarefaApiService;
+            _tarefaService = tarefaService;
         }
 
         public TarefaViewModel Tarefa { get; set; }
@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                Lista = await _tarefaApiService.ListarAsync(Token, true);
+                Lista = await _tarefaService.ListarAsync(Token, true);
 
                 return Page();
             }

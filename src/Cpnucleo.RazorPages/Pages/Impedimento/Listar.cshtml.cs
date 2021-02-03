@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ICrudApiService<ImpedimentoViewModel> _impedimentoApiService;
+        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
 
-        public ListarModel(ICrudApiService<ImpedimentoViewModel> impedimentoApiService)
+        public ListarModel(ICrudService<ImpedimentoViewModel> impedimentoService)
         {
-            _impedimentoApiService = impedimentoApiService;
+            _impedimentoService = impedimentoService;
         }
 
         public ImpedimentoViewModel Impedimento { get; set; }
@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                Lista = await _impedimentoApiService.ListarAsync(Token);
+                Lista = await _impedimentoService.ListarAsync(Token);
 
                 return Page();
             }

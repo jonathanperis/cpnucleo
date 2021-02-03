@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class RecursoTarefaController : ControllerBase
     {
-        private readonly IRecursoTarefaAppService _recursoTarefaAppService;
+        private readonly IRecursoTarefaService _recursoTarefaService;
 
-        public RecursoTarefaController(IRecursoTarefaAppService recursoTarefaAppService)
+        public RecursoTarefaController(IRecursoTarefaService recursoTarefaService)
         {
-            _recursoTarefaAppService = recursoTarefaAppService;
+            _recursoTarefaService = recursoTarefaService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<RecursoTarefaViewModel> Get()
+        public IEnumerable<RecursoTarefa> Get()
         {
-            return _recursoTarefaAppService.Listar();
+            return _recursoTarefaService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<RecursoTarefaViewModel> Get(Guid id)
+        public ActionResult<RecursoTarefa> Get(Guid id)
         {
-            RecursoTarefaViewModel recursoTarefa = _recursoTarefaAppService.Consultar(id);
+            RecursoTarefa recursoTarefa = _recursoTarefaService.Consultar(id);
 
             if (recursoTarefa == null)
             {
@@ -94,7 +94,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<RecursoTarefaViewModel> Post([FromBody]RecursoTarefaViewModel obj)
+        public ActionResult<RecursoTarefa> Post([FromBody]RecursoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _recursoTarefaAppService.Incluir(obj);
+                _recursoTarefaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]RecursoTarefaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]RecursoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _recursoTarefaAppService.Alterar(obj);
+                _recursoTarefaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -197,21 +197,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            RecursoTarefaViewModel obj = _recursoTarefaAppService.Consultar(id);
+            RecursoTarefa obj = _recursoTarefaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _recursoTarefaAppService.Remover(id);
+            _recursoTarefaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _recursoTarefaAppService.Consultar(id) != null;
+            return _recursoTarefaService.Consultar(id) != null;
         }
     }
 }

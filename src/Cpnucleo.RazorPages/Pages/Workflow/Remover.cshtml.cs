@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Communication.API.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Cpnucleo.RazorPages.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ICrudApiService<WorkflowViewModel> _workflowApiService;
+        private readonly ICrudService<WorkflowViewModel> _workflowService;
 
-        public RemoverModel(ICrudApiService<WorkflowViewModel> workflowApiService)
+        public RemoverModel(ICrudService<WorkflowViewModel> workflowService)
         {
-            _workflowApiService = workflowApiService;
+            _workflowService = workflowService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                Workflow = await _workflowApiService.ConsultarAsync(Token, id);
+                Workflow = await _workflowService.ConsultarAsync(Token, id);
 
                 return Page();
             }
@@ -39,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                await _workflowApiService.RemoverAsync(Token, Workflow.Id);
+                await _workflowService.RemoverAsync(Token, Workflow.Id);
 
                 return RedirectToPage("Listar");
             }
