@@ -74,7 +74,6 @@ namespace Cpnucleo.RazorPages
         {
             if (env.IsDevelopment())
             {
-                app.UseMiniProfiler();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -90,6 +89,8 @@ namespace Cpnucleo.RazorPages
                 DefaultRequestCulture = new RequestCulture("pt-BR")
             };
 
+            app.UseMiniProfiler();
+            
             app.UseRequestLocalization(localizationOptions);
             app.UseStaticFiles();
 
