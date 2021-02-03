@@ -9,8 +9,6 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
             return app;
         }
         
-        
-
         public static IApplicationBuilder UseCpnucleoSetup(this IApplicationBuilder app)
         {
             return app;
