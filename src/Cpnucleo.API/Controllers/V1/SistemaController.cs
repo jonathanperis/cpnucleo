@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class SistemaController : ControllerBase
     {
-        private readonly ICrudAppService<SistemaViewModel> _sistemaAppService;
+        private readonly ICrudService<Sistema> _sistemaService;
 
-        public SistemaController(ICrudAppService<SistemaViewModel> sistemaAppService)
+        public SistemaController(ICrudService<Sistema> sistemaService)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaService = sistemaService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<SistemaViewModel> Get()
+        public IEnumerable<Sistema> Get()
         {
-            return _sistemaAppService.Listar();
+            return _sistemaService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<SistemaViewModel> Get(Guid id)
+        public ActionResult<Sistema> Get(Guid id)
         {
-            SistemaViewModel sistema = _sistemaAppService.Consultar(id);
+            Sistema sistema = _sistemaService.Consultar(id);
 
             if (sistema == null)
             {
@@ -93,7 +93,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<SistemaViewModel> Post([FromBody]SistemaViewModel obj)
+        public ActionResult<Sistema> Post([FromBody]Sistema obj)
         {
             if (!ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _sistemaAppService.Incluir(obj);
+                _sistemaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -146,7 +146,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]SistemaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Sistema obj)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +160,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _sistemaAppService.Alterar(obj);
+                _sistemaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -195,21 +195,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            SistemaViewModel obj = _sistemaAppService.Consultar(id);
+            Sistema obj = _sistemaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _sistemaAppService.Remover(id);
+            _sistemaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _sistemaAppService.Consultar(id) != null;
+            return _sistemaService.Consultar(id) != null;
         }
     }
 }

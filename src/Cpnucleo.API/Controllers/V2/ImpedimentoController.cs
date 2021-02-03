@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +15,11 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class ImpedimentoController : ControllerBase
     {
-        private readonly ICrudAppService<ImpedimentoViewModel> _impedimentoAppService;
+        private readonly ICrudService<Impedimento> _impedimentoService;
 
-        public ImpedimentoController(ICrudAppService<ImpedimentoViewModel> impedimentoAppService)
+        public ImpedimentoController(ICrudService<Impedimento> impedimentoService)
         {
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoService = impedimentoService;
         }
 
         /// <summary>
@@ -36,9 +36,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<ImpedimentoViewModel> Get(bool getDependencies = false)
+        public IEnumerable<Impedimento> Get(bool getDependencies = false)
         {
-            return _impedimentoAppService.Listar(getDependencies);
+            return _impedimentoService.Listar(getDependencies);
         }
 
         /// <summary>
@@ -57,9 +57,9 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}", Name = "GetImpedimento")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ImpedimentoViewModel> Get(Guid id)
+        public ActionResult<Impedimento> Get(Guid id)
         {
-            ImpedimentoViewModel impedimento = _impedimentoAppService.Consultar(id);
+            Impedimento impedimento = _impedimentoService.Consultar(id);
 
             if (impedimento == null)
             {
@@ -91,10 +91,10 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ImpedimentoViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Impedimento), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public ActionResult<ImpedimentoViewModel> Post([FromBody]ImpedimentoViewModel obj)
+        public ActionResult<Impedimento> Post([FromBody]Impedimento obj)
         {
             if (!ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                obj.Id = _impedimentoAppService.Incluir(obj);
+                obj.Id = _impedimentoService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -146,7 +146,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Put(Guid id, [FromBody]ImpedimentoViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Impedimento obj)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +160,7 @@ namespace Cpnucleo.API.Controllers.V2
 
             try
             {
-                _impedimentoAppService.Alterar(obj);
+                _impedimentoService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -195,21 +195,21 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(Guid id)
         {
-            ImpedimentoViewModel obj = _impedimentoAppService.Consultar(id);
+            Impedimento obj = _impedimentoService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _impedimentoAppService.Remover(id);
+            _impedimentoService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _impedimentoAppService.Consultar(id) != null;
+            return _impedimentoService.Consultar(id) != null;
         }
     }
 }
