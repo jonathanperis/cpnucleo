@@ -91,11 +91,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasForeignKey(f => f.IdProjeto);
 
             builder
-                .HasOne(p => p.Workflow)
-                .WithMany(b => b.ListaTarefas)
-                .HasForeignKey(f => f.IdWorkflow);
-
-            builder
                 .HasOne(p => p.Recurso)
                 .WithMany()
                 .HasForeignKey(f => f.IdRecurso);
@@ -104,21 +99,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasOne(p => p.TipoTarefa)
                 .WithMany()
                 .HasForeignKey(f => f.IdTipoTarefa);
-
-            builder
-                .HasMany(p => p.ListaImpedimentos)
-                .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa);
-
-            builder
-                .HasMany(p => p.ListaApontamentos)
-                .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa);
-
-            builder
-                .HasMany(p => p.ListaRecursoTarefas)
-                .WithOne(c => c.Tarefa)
-                .HasForeignKey(f => f.IdTarefa);
         }
     }
 }

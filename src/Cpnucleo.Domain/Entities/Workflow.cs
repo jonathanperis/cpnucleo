@@ -9,7 +9,5 @@ namespace Cpnucleo.Domain.Entities
         public int? Ordem { get; set; }
 
         public string TamanhoColuna { get; set; }
-
-        public IEnumerable<Tarefa> ListaTarefas { get; set; }
     }
 }
