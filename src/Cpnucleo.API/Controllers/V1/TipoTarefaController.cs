@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class TipoTarefaController : ControllerBase
     {
-        private readonly ICrudAppService<TipoTarefaViewModel> _tipoTarefaAppService;
+        private readonly ICrudService<TipoTarefa> _tipoTarefaService;
 
-        public TipoTarefaController(ICrudAppService<TipoTarefaViewModel> tipoTarefaAppService)
+        public TipoTarefaController(ICrudService<TipoTarefa> tipoTarefaService)
         {
-            _tipoTarefaAppService = tipoTarefaAppService;
+            _tipoTarefaService = tipoTarefaService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<TipoTarefaViewModel> Get()
+        public IEnumerable<TipoTarefa> Get()
         {
-            return _tipoTarefaAppService.Listar();
+            return _tipoTarefaService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<TipoTarefaViewModel> Get(Guid id)
+        public ActionResult<TipoTarefa> Get(Guid id)
         {
-            TipoTarefaViewModel tipoTarefa = _tipoTarefaAppService.Consultar(id);
+            TipoTarefa tipoTarefa = _tipoTarefaService.Consultar(id);
 
             if (tipoTarefa == null)
             {
@@ -93,7 +93,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<TipoTarefaViewModel> Post([FromBody]TipoTarefaViewModel obj)
+        public ActionResult<TipoTarefa> Post([FromBody]TipoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _tipoTarefaAppService.Incluir(obj);
+                _tipoTarefaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -146,7 +146,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]TipoTarefaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]TipoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +160,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _tipoTarefaAppService.Alterar(obj);
+                _tipoTarefaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -195,21 +195,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            TipoTarefaViewModel obj = _tipoTarefaAppService.Consultar(id);
+            TipoTarefa obj = _tipoTarefaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _tipoTarefaAppService.Remover(id);
+            _tipoTarefaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _tipoTarefaAppService.Consultar(id) != null;
+            return _tipoTarefaService.Consultar(id) != null;
         }
     }
 }

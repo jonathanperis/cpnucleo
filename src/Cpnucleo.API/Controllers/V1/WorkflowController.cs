@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class WorkflowController : ControllerBase
     {
-        private readonly ICrudAppService<WorkflowViewModel> _workflowAppService;
+        private readonly ICrudService<Workflow> _workflowService;
 
-        public WorkflowController(ICrudAppService<WorkflowViewModel> workflowAppService)
+        public WorkflowController(ICrudService<Workflow> workflowService)
         {
-            _workflowAppService = workflowAppService;
+            _workflowService = workflowService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<WorkflowViewModel> Get()
+        public IEnumerable<Workflow> Get()
         {
-            return _workflowAppService.Listar();
+            return _workflowService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<WorkflowViewModel> Get(Guid id)
+        public ActionResult<Workflow> Get(Guid id)
         {
-            WorkflowViewModel workflow = _workflowAppService.Consultar(id);
+            Workflow workflow = _workflowService.Consultar(id);
 
             if (workflow == null)
             {
@@ -93,7 +93,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<WorkflowViewModel> Post([FromBody]WorkflowViewModel obj)
+        public ActionResult<Workflow> Post([FromBody]Workflow obj)
         {
             if (!ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _workflowAppService.Incluir(obj);
+                _workflowService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -146,7 +146,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]WorkflowViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Workflow obj)
         {
             if (!ModelState.IsValid)
             {
@@ -160,7 +160,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _workflowAppService.Alterar(obj);
+                _workflowService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -195,21 +195,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            WorkflowViewModel obj = _workflowAppService.Consultar(id);
+            Workflow obj = _workflowService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _workflowAppService.Remover(id);
+            _workflowService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _workflowAppService.Consultar(id) != null;
+            return _workflowService.Consultar(id) != null;
         }
     }
 }

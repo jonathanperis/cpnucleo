@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Domain.Interfaces.Services;
+using Cpnucleo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,11 +14,11 @@ namespace Cpnucleo.API.Controllers.V1
     [Authorize]
     public class TarefaController : ControllerBase
     {
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly ITarefaService _tarefaService;
 
-        public TarefaController(ITarefaAppService tarefaAppService)
+        public TarefaController(ITarefaService tarefaService)
         {
-            _tarefaAppService = tarefaAppService;
+            _tarefaService = tarefaService;
         }
 
         /// <summary>
@@ -34,9 +34,9 @@ namespace Cpnucleo.API.Controllers.V1
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(200)]
-        public IEnumerable<TarefaViewModel> Get()
+        public IEnumerable<Tarefa> Get()
         {
-            return _tarefaAppService.Listar();
+            return _tarefaService.Listar();
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<TarefaViewModel> Get(Guid id)
+        public ActionResult<Tarefa> Get(Guid id)
         {
-            TarefaViewModel tarefa = _tarefaAppService.Consultar(id);
+            Tarefa tarefa = _tarefaService.Consultar(id);
 
             if (tarefa == null)
             {
@@ -99,7 +99,7 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(409)]
-        public ActionResult<TarefaViewModel> Post([FromBody]TarefaViewModel obj)
+        public ActionResult<Tarefa> Post([FromBody]Tarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -108,7 +108,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _tarefaAppService.Incluir(obj);
+                _tarefaService.Incluir(obj);
             }
             catch (Exception)
             {
@@ -158,7 +158,7 @@ namespace Cpnucleo.API.Controllers.V1
         [HttpPut("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult Put(Guid id, [FromBody]TarefaViewModel obj)
+        public IActionResult Put(Guid id, [FromBody]Tarefa obj)
         {
             if (!ModelState.IsValid)
             {
@@ -172,7 +172,7 @@ namespace Cpnucleo.API.Controllers.V1
 
             try
             {
-                _tarefaAppService.Alterar(obj);
+                _tarefaService.Alterar(obj);
             }
             catch (Exception)
             {
@@ -207,21 +207,21 @@ namespace Cpnucleo.API.Controllers.V1
         [ProducesResponseType(404)]
         public IActionResult Delete(Guid id)
         {
-            TarefaViewModel obj = _tarefaAppService.Consultar(id);
+            Tarefa obj = _tarefaService.Consultar(id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _tarefaAppService.Remover(id);
+            _tarefaService.Remover(id);
 
             return NoContent();
         }
 
         private bool ObjExists(Guid id)
         {
-            return _tarefaAppService.Consultar(id) != null;
+            return _tarefaService.Consultar(id) != null;
         }
     }
 }
