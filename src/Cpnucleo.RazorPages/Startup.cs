@@ -1,4 +1,3 @@
-using Cpnucleo.Infra.CrossCutting.IoC;
 using Cpnucleo.RazorPages.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +27,6 @@ namespace Cpnucleo.RazorPages
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPagesConfigSetup();
-            services.AddCpnucleoSetup();
 
             services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
 
