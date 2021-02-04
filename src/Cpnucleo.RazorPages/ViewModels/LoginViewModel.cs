@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Cpnucleo.RazorPages.Models
+namespace Cpnucleo.RazorPages.ViewModels
 {
     public class LoginViewModel
     {
