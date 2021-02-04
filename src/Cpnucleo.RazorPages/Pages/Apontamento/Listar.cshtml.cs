@@ -37,8 +37,25 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
-                ListaTarefas = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
+                var result = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;
+
+                var result2 = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                ListaTarefas = result2.response;
 
                 return Page();
             }
@@ -58,13 +75,36 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                     string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new Guid(retorno);
 
-                    Lista = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
-                    ListaTarefas = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
+                    var result = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Lista = result.response;
+
+                    var result2 = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    ListaTarefas = result2.response;
 
                     return Page();
                 }
 
-                await _apontamentoService.IncluirAsync(Token, Apontamento);
+                var result3 = await _apontamentoService.IncluirAsync(Token, Apontamento);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }                
 
                 return RedirectToPage("Listar");
             }

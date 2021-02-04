@@ -29,7 +29,13 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
                     return Page();
                 }
 
-                await _recursoService.IncluirAsync(Token, Recurso);
+                var result = await _recursoService.IncluirAsync(Token, Recurso);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

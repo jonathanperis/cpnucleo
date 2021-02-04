@@ -30,7 +30,15 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Nome");
+                var result = await _sistemaService.ListarAsync(Token);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }         
+
+                SelectSistemas = new SelectList(result.response, "Id", "Nome");
 
                 return Page();
             }
@@ -47,12 +55,26 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Nome");
+                    var result = await _sistemaService.ListarAsync(Token);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }         
+
+                    SelectSistemas = new SelectList(result.response, "Id", "Nome");
 
                     return Page();
                 }
 
-                await _projetoService.IncluirAsync(Token, Projeto);
+                var result2 = await _projetoService.IncluirAsync(Token, Projeto);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

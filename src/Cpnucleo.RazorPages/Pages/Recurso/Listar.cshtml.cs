@@ -26,7 +26,15 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                Lista = await _recursoService.ListarAsync(Token);
+                var result = await _recursoService.ListarAsync(Token);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;
 
                 return Page();
             }

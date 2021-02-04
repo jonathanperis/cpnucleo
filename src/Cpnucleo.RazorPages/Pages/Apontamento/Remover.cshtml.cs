@@ -24,7 +24,15 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         {
             try
             {
-                Apontamento = await _apontamentoService.ConsultarAsync(Token, id);
+                var result = await _apontamentoService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Apontamento = result.response;
 
                 return Page();
             }
@@ -39,7 +47,28 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         {
             try
             {
-                await _apontamentoService.RemoverAsync(Token, Apontamento.Id);
+                if (!ModelState.IsValid)
+                {
+                    var result = await _apontamentoService.ConsultarAsync(Token, Apontamento.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Apontamento = result.response;
+
+                    return Page();               
+                }
+
+                var result2 = await _apontamentoService.RemoverAsync(Token, Apontamento.Id);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }                
 
                 return RedirectToPage("Listar");
             }

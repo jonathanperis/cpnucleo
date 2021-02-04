@@ -24,7 +24,15 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                Impedimento = await _impedimentoService.ConsultarAsync(Token, id);
+                var result = await _impedimentoService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Impedimento = result.response; 
 
                 return Page();
             }
@@ -41,10 +49,26 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
             {
                 if (!ModelState.IsValid)
                 {
+                    var result = await _impedimentoService.ConsultarAsync(Token, Impedimento.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Impedimento = result.response;  
+                                        
                     return Page();
                 }
 
-                await _impedimentoService.AlterarAsync(Token, Impedimento);
+                var result2 = await _impedimentoService.AlterarAsync(Token, Impedimento.Id, Impedimento);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

@@ -23,6 +23,9 @@ namespace Cpnucleo.RazorPages.Configuration
                 .AddScoped<IImpedimentoTarefaService, ImpedimentoTarefaService>()
                 .AddScoped<IRecursoProjetoService, RecursoProjetoService>()
                 .AddScoped<IRecursoTarefaService, RecursoTarefaService>();
+
+            services
+                .AddScoped<IHttpService, HttpService>();                
         }
     }
 }

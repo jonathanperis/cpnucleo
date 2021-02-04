@@ -35,9 +35,25 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
-                SelectImpedimentos = new SelectList(await _impedimentoService.ListarAsync(Token), "Id", "Nome");
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Tarefa = result.response;
+
+                var result2 = await _impedimentoService.ListarAsync(Token);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                SelectImpedimentos = new SelectList(result2.response, "Id", "Nome");
 
                 return Page();
             }
@@ -54,14 +70,36 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                    var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
-                    SelectImpedimentos = new SelectList(await _impedimentoService.ListarAsync(Token), "Id", "Nome");
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Tarefa = result.response;
+
+                    var result2 = await _impedimentoService.ListarAsync(Token);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    SelectImpedimentos = new SelectList(result2.response, "Id", "Nome");
 
                     return Page();
                 }
 
-                await _impedimentoTarefaService.IncluirAsync(Token, ImpedimentoTarefa);
+                var result3 = await _impedimentoTarefaService.IncluirAsync(Token, ImpedimentoTarefa);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }                
 
                 return RedirectToPage("Listar", new { idTarefa });
             }

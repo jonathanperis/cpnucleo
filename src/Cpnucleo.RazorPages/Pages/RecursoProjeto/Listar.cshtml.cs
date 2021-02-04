@@ -27,7 +27,15 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                Lista = await _recursoProjetoService.ListarPorProjetoAsync(Token, idProjeto);
+                var result = await _recursoProjetoService.ListarPorProjetoAsync(Token, idProjeto);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;
 
                 ViewData["idProjeto"] = idProjeto;
 

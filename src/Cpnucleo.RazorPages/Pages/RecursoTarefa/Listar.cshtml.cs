@@ -27,7 +27,15 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                Lista = await _recursoTarefaService.ListarPorTarefaAsync(Token, idTarefa);
+                var result = await _recursoTarefaService.ListarPorTarefaAsync(Token, idTarefa);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;
 
                 ViewData["idTarefa"] = idTarefa;
 

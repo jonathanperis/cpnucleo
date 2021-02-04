@@ -29,7 +29,13 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
                     return Page();
                 }
 
-                await _impedimentoService.IncluirAsync(Token, Impedimento);
+                var result = await _impedimentoService.IncluirAsync(Token, Impedimento);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

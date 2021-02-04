@@ -26,7 +26,15 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                Lista = await _workflowService.ListarAsync(Token);
+                var result = await _workflowService.ListarAsync(Token);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;
 
                 return Page();
             }

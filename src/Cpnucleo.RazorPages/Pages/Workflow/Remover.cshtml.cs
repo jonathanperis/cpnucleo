@@ -24,7 +24,15 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                Workflow = await _workflowService.ConsultarAsync(Token, id);
+                var result = await _workflowService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Workflow = result.response;
 
                 return Page();
             }
@@ -39,7 +47,28 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                await _workflowService.RemoverAsync(Token, Workflow.Id);
+                if (!ModelState.IsValid)
+                {
+                    var result = await _workflowService.ConsultarAsync(Token, Workflow.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Workflow = result.response;
+                    
+                    return Page();
+                }
+
+                var result2 = await _workflowService.RemoverAsync(Token, Workflow.Id);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

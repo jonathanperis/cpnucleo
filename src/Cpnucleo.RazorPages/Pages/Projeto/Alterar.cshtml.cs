@@ -30,8 +30,25 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                Projeto = await _projetoService.ConsultarAsync(Token, id);
-                SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Nome");
+                var result = await _projetoService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Projeto = result.response;    
+
+                var result2 = await _sistemaService.ListarAsync(Token);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                SelectSistemas = new SelectList(result2.response, "Id", "Nome");
 
                 return Page();
             }
@@ -48,12 +65,36 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Nome");
+                    var result = await _projetoService.ConsultarAsync(Token, Projeto.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Projeto = result.response;    
+
+                    var result2 = await _sistemaService.ListarAsync(Token);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    SelectSistemas = new SelectList(result2.response, "Id", "Nome");
 
                     return Page();
                 }
 
-                await _projetoService.AlterarAsync(Token, Projeto);
+                var result3 = await _projetoService.AlterarAsync(Token, Projeto.Id, Projeto);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

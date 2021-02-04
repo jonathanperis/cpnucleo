@@ -1,8 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.RazorPages.ViewModels;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -10,68 +7,45 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class RecursoService : BaseService<RecursoViewModel>, IRecursoService
+    internal class RecursoService : IRecursoService
     {
+        private readonly IHttpService _httpService;
+
         private const string actionRoute = "recurso";
-
-        public RecursoService(ISystemConfiguration systemConfiguration)
-            : base(systemConfiguration)
+        
+        public RecursoService(IHttpService httpService)
         {
+            _httpService = httpService;
         }
 
-        public async Task<bool> IncluirAsync(string token, RecursoViewModel obj)
+        public async Task<(IEnumerable<RecursoViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarAsync(string token, bool getDependencies = false)
         {
-            return await PostAsync(token, actionRoute, obj);
+            return await _httpService.GetAsync<IEnumerable<RecursoViewModel>>(actionRoute, token, getDependencies);
         }
 
-        public async Task<IEnumerable<RecursoViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<(RecursoViewModel response, bool sucess, HttpStatusCode code, string message)> ConsultarAsync(string token, Guid id)
         {
-            return await GetAsync(token, actionRoute, getDependencies);
+            return await _httpService.GetAsync<RecursoViewModel>(actionRoute, token, id);
         }
 
-        public async Task<RecursoViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<(RecursoViewModel response, bool sucess, HttpStatusCode code, string message)> IncluirAsync(string token, object value)
         {
-            return await GetAsync(token, actionRoute, id);
+            return await _httpService.PostAsync<RecursoViewModel>(actionRoute, token, value);
         }
 
-        public async Task<bool> RemoverAsync(string token, Guid id)
+        public async Task<(RecursoViewModel response, bool sucess, HttpStatusCode code, string message)> AlterarAsync(string token, Guid id, object value)
         {
-            return await DeleteAsync(token, actionRoute, id);
+            return await _httpService.PutAsync<RecursoViewModel>(actionRoute, token, id, value);
         }
 
-        public async Task<bool> AlterarAsync(string token, RecursoViewModel obj)
+        public async Task<(RecursoViewModel response, bool sucess, HttpStatusCode code, string message)> RemoverAsync(string token, Guid id)
         {
-            return await PutAsync(token, actionRoute, obj.Id, obj);
+            return await _httpService.DeleteAsync<RecursoViewModel>(actionRoute, token, id);
         }
 
-        public async Task<RecursoViewModel> AutenticarAsync(string login, string senha)
+        public async Task<(RecursoViewModel response, bool sucess, HttpStatusCode code, string message)> AutenticarAsync(string username, string password)
         {
-            try
-            {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/autenticar", Method.GET);
-                request.AddQueryParameter("login", login);
-                request.AddQueryParameter("senha", senha);
-
-                IRestResponse response = await _client.ExecuteAsync(request);
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    if (!string.IsNullOrWhiteSpace(response.Content))
-                    {
-                        throw new Exception(response.Content);
-                    }
-                    else
-                    {
-                        throw new Exception("Falha ao se comunicar com a api de dados.");
-                    }
-                }
-
-                return JsonConvert.DeserializeObject<RecursoViewModel>(response.Content);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return await _httpService.PostAsync<RecursoViewModel>($"{actionRoute}/autenticar", "", new RecursoViewModel { Login = username, Senha = password });
         }
     }
 }
