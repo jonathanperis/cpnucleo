@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.RazorPages.Services.Interfaces;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -12,9 +12,9 @@ namespace Cpnucleo.RazorPages.Services
     {
         private readonly RestClient _client;
 
-        public HttpService(ISystemConfiguration systemConfiguration)
+        public HttpService(IConfiguration configuration)
         {
-            _client = new RestClient($"{systemConfiguration.UrlCpnucleoApi}/api/v2/");
+            _client = new RestClient($"{configuration["AppSettings:UrlCpnucleoApi"]}/api/v2/");
         }
 
         public async Task<(T response, bool sucess, HttpStatusCode code, string message)> GetAsync<T>(string uri, string token, bool getDependencies = false)

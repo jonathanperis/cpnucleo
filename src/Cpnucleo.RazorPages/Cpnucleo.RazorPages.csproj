@@ -2,17 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>a7b3bee9-780a-4da3-beb2-735778c4f94e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="RestSharp" Version="106.11.8-alpha.0.12" />
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.IoC\Cpnucleo.Infra.CrossCutting.IoC.csproj" />
-    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
   </ItemGroup>
 
 </Project>

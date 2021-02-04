@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.RazorPages.ViewModels;
 using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -9,18 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.RazorPages.Pages
 {
     public class LoginModel : PageBase
     {
         private readonly IRecursoService _recursoService;
-        private readonly ISystemConfiguration _systemConfiguration;
+        private readonly IConfiguration _configuration;
 
-        public LoginModel(IRecursoService recursoService, ISystemConfiguration systemConfiguration)
+        public LoginModel(IRecursoService recursoService, IConfiguration configuration)
         {
             _recursoService = recursoService;
-            _systemConfiguration = systemConfiguration;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -75,13 +75,16 @@ namespace Cpnucleo.RazorPages.Pages
 
                 ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
+                int expiresUtc;
+                int.TryParse(_configuration["Cookie:Expires"], out expiresUtc);
+
                 await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
                 new AuthenticationProperties
                 {
                     IsPersistent = true,
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(_systemConfiguration.CookieExpires)
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
                 });
 
                 return RedirectToLocal(returnUrl);
