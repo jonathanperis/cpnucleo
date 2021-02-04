@@ -1,4 +1,4 @@
-# Cpnucleo Pages
+# Cpnucleo Pages 
 A sample application that implements the best praticles when building a .NET 5 Razor Pages project
 
 If you're looking for the API that's powering this client, please look to https://github.com/jonathanperis/api-cpnucleo
