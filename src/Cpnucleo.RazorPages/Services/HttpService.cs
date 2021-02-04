@@ -1,57 +1,76 @@
-﻿// using Cpnucleo.RazorPages.Services.Interfaces;
-// using System.Net;
-// using System.Net.Http;
-// using System.Text;
-// using System.Text.Json;
-// using System.Threading.Tasks;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Cpnucleo.RazorPages.Services.Interfaces;
+using Newtonsoft.Json;
+using RestSharp;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
-// namespace TSystems.BR.TEntrego.Web.Admin.Services
-// {
-//     public class HttpService : IHttpService
-//     {
-//         private readonly HttpClient _httpClient;
+namespace TSystems.BR.TEntrego.Web.Admin.Services
+{
+    public class HttpService : IHttpService
+    {
+        private readonly RestClient _client;
 
-//         public HttpService(HttpClient httpClient)
-//         {
-//             _httpClient = httpClient;
-//         }
+        public HttpService(ISystemConfiguration systemConfiguration)
+        {
+            _client = new RestClient($"{systemConfiguration.UrlCpnucleoApi}/api/v2/");
+        }
 
-//         public async Task<(T response, bool sucess, HttpStatusCode code, string message)> Get<T>(string uri)
-//         {
-//             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-//             return await SendRequest<T>(request);
-//         }
+        public async Task<(T response, bool sucess, HttpStatusCode code, string message)> GetAsync<T>(string uri, string token, bool getDependencies = false)
+        {
+            RestRequest request = new RestRequest(uri, Method.GET);
+            request.AddQueryParameter("getDependencies", getDependencies.ToString());
 
-//         public async Task<(T response, bool sucess, HttpStatusCode code, string message)> Post<T>(string uri, object value)
-//         {
-//             var request = new HttpRequestMessage(HttpMethod.Post, uri);
-//             request.Content = new StringContent(JsonSerializer.Serialize(value), Encoding.UTF8, "application/json");
-//             return await SendRequest<T>(request);
-//         }
+            return await SendRequest<T>(request, token);
+        }
 
-//         public async Task<(T response, bool sucess, HttpStatusCode code, string message)> Put<T>(string uri, object value)
-//         {
-//             var request = new HttpRequestMessage(HttpMethod.Put, uri);
-//             request.Content = new StringContent(JsonSerializer.Serialize(value), Encoding.UTF8, "application/json");
-//             return await SendRequest<T>(request);
-//         }
+        public async Task<(T response, bool sucess, HttpStatusCode code, string message)> GetAsync<T>(string uri, string token, Guid id)
+        {
+            RestRequest request = new RestRequest($"{uri}/{id}", Method.GET);
 
-//         private async Task<(T response, bool sucess, HttpStatusCode code, string message)> SendRequest<T>(HttpRequestMessage request)
-//         {
-//             //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "user.Token");
+            return await SendRequest<T>(request, token);
+        }        
 
-//             using var response = await _httpClient.SendAsync(request);
+        public async Task<(T response, bool sucess, HttpStatusCode code, string message)> PostAsync<T>(string uri, string token, object value)
+        {
+            RestRequest request = new RestRequest(uri, Method.POST);
+            request.AddJsonBody(JsonConvert.SerializeObject(value));
 
-//             if (response.StatusCode == HttpStatusCode.Unauthorized)
-//                 return (default, false, response.StatusCode, string.Empty);
+            return await SendRequest<T>(request, token);
+        }
 
-//             if (!response.IsSuccessStatusCode)
-//                 return (default, false, response.StatusCode, await response.Content.ReadAsStringAsync());
+        public async Task<(T response, bool sucess, HttpStatusCode code, string message)> PutAsync<T>(string uri, string token, Guid id, object value)
+        {                
+            RestRequest request = new RestRequest($"{uri}/{id}", Method.PUT);
+            request.AddJsonBody(JsonConvert.SerializeObject(value));
 
-//             if (response.StatusCode == HttpStatusCode.NoContent)
-//                 return (default, true, response.StatusCode, string.Empty);
+            return await SendRequest<T>(request, token);
+        }
 
-//             return (await response.Content.ReadFromJsonAsync<T>(), true, response.StatusCode, string.Empty);
-//         }
-//     }
-// }
+        public async Task<(T response, bool sucess, HttpStatusCode code, string message)> DeleteAsync<T>(string uri, string token, Guid id)
+        {
+            RestRequest request = new RestRequest($"{uri}/{id}", Method.DELETE);
+
+            return await SendRequest<T>(request, token);
+        }                
+
+        private async Task<(T response, bool sucess, HttpStatusCode code, string message)> SendRequest<T>(RestRequest request, string token)
+        {
+            request.AddHeader("Authorization", $"Bearer {token}");
+
+            IRestResponse response = await _client.ExecuteAsync(request);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+                return (default, false, response.StatusCode, string.Empty);
+
+            if (!response.IsSuccessful)
+                return (default, false, response.StatusCode, response.Content);
+
+            if (response.StatusCode == HttpStatusCode.NoContent)
+                return (default, true, response.StatusCode, string.Empty);
+
+            return (JsonConvert.DeserializeObject<T>(response.Content), true, response.StatusCode, string.Empty);
+        }
+    }
+}
