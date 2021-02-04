@@ -35,8 +35,25 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                Projeto = await _projetoService.ConsultarAsync(Token, idProjeto);
-                SelectRecursos = new SelectList(await _recursoService.ListarAsync(Token), "Id", "Nome");
+                var result = await _projetoService.ConsultarAsync(Token, idProjeto);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Projeto = result.response;
+
+                var result2 = await _recursoService.ListarAsync(Token);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                SelectRecursos = new SelectList(result2.response, "Id", "Nome");
 
                 return Page();
             }
@@ -53,13 +70,36 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             {
                 if (!ModelState.IsValid)
                 {
-                    Projeto = await _projetoService.ConsultarAsync(Token, idProjeto);
-                    SelectRecursos = new SelectList(await _recursoService.ListarAsync(Token), "Id", "Nome");
+                    var result = await _projetoService.ConsultarAsync(Token, idProjeto);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Projeto = result.response;
+
+                    var result2 = await _recursoService.ListarAsync(Token);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    SelectRecursos = new SelectList(result2.response, "Id", "Nome");
 
                     return Page();
                 }
 
-                await _recursoProjetoService.IncluirAsync(Token, RecursoProjeto);
+                var result3 = await _recursoProjetoService.IncluirAsync(Token, RecursoProjeto);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar", new { idProjeto });
             }

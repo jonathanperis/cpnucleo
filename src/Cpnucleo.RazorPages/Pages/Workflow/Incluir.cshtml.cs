@@ -29,7 +29,13 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                     return Page();
                 }
 
-                await _workflowService.IncluirAsync(Token, Workflow);
+                var result = await _workflowService.IncluirAsync(Token, Workflow);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

@@ -57,13 +57,15 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                RecursoViewModel recurso = await _recursoService.AutenticarAsync(Login.Usuario, Login.Senha);
+                var result = await _recursoService.AutenticarAsync(Login.Usuario, Login.Senha);
 
-                if (recurso.Id == Guid.Empty)
+                if (!result.sucess)
                 {
-                    ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
                     return Page();
                 }
+
+                RecursoViewModel recurso = result.response;
 
                 IEnumerable<Claim> claims = new[]
                 {

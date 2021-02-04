@@ -29,8 +29,25 @@ namespace Cpnucleo.RazorPages.Pages
         {
             try
             {
-                Lista = await _workflowService.ListarAsync(Token);
-                ListaTarefas = await _tarefaService.ListarAsync(Token, true);
+                var result = await _workflowService.ListarAsync(Token);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;  
+
+                var result2 = await _tarefaService.ListarAsync(Token, true);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                ListaTarefas = result2.response;
 
                 return Page();
             }
@@ -45,7 +62,38 @@ namespace Cpnucleo.RazorPages.Pages
         {
             try
             {
-                await _tarefaService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
+                if (!ModelState.IsValid)
+                {
+                    var result = await _workflowService.ListarAsync(Token);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Lista = result.response;  
+
+                    var result2 = await _tarefaService.ListarAsync(Token, true);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    ListaTarefas = result2.response;
+                                        
+                    return Page();
+                }
+
+                var result3 = await _tarefaService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }
 
                 return Page();
             }

@@ -1,44 +1,46 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.RazorPages.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class WorkflowService : BaseService<WorkflowViewModel>, ICrudService<WorkflowViewModel>
+    internal class WorkflowService : ICrudService<WorkflowViewModel>
     {
+        private readonly IHttpService _httpService;
+
         private const string actionRoute = "workflow";
-
-        public WorkflowService(ISystemConfiguration systemConfiguration)
-            : base(systemConfiguration)
+        
+        public WorkflowService(IHttpService httpService)
         {
+            _httpService = httpService;
         }
 
-        public async Task<bool> IncluirAsync(string token, WorkflowViewModel obj)
+        public async Task<(IEnumerable<WorkflowViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarAsync(string token, bool getDependencies = false)
         {
-            return await PostAsync(token, actionRoute, obj);
+            return await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>(actionRoute, token, getDependencies);
         }
 
-        public async Task<IEnumerable<WorkflowViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<(WorkflowViewModel response, bool sucess, HttpStatusCode code, string message)> ConsultarAsync(string token, Guid id)
         {
-            return await GetAsync(token, actionRoute, getDependencies);
+            return await _httpService.GetAsync<WorkflowViewModel>(actionRoute, token, id);
         }
 
-        public async Task<WorkflowViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<(WorkflowViewModel response, bool sucess, HttpStatusCode code, string message)> IncluirAsync(string token, object value)
         {
-            return await GetAsync(token, actionRoute, id);
+            return await _httpService.PostAsync<WorkflowViewModel>(actionRoute, token, value);
         }
 
-        public async Task<bool> RemoverAsync(string token, Guid id)
+        public async Task<(WorkflowViewModel response, bool sucess, HttpStatusCode code, string message)> AlterarAsync(string token, Guid id, object value)
         {
-            return await DeleteAsync(token, actionRoute, id);
+            return await _httpService.PutAsync<WorkflowViewModel>(actionRoute, token, id, value);
         }
 
-        public async Task<bool> AlterarAsync(string token, WorkflowViewModel obj)
+        public async Task<(WorkflowViewModel response, bool sucess, HttpStatusCode code, string message)> RemoverAsync(string token, Guid id)
         {
-            return await PutAsync(token, actionRoute, obj.Id, obj);
+            return await _httpService.DeleteAsync<WorkflowViewModel>(actionRoute, token, id);
         }
     }
 }

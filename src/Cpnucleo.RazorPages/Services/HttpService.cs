@@ -6,7 +6,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace TSystems.BR.TEntrego.Web.Admin.Services
+namespace Cpnucleo.RazorPages.Services
 {
     public class HttpService : IHttpService
     {

@@ -1,8 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.RazorPages.ViewModels;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -10,67 +7,45 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class ImpedimentoTarefaService : BaseService<ImpedimentoTarefaViewModel>, IImpedimentoTarefaService
+    internal class ImpedimentoTarefaService : IImpedimentoTarefaService
     {
+        private readonly IHttpService _httpService;
+
         private const string actionRoute = "impedimentoTarefa";
-
-        public ImpedimentoTarefaService(ISystemConfiguration systemConfiguration)
-            : base(systemConfiguration)
+        
+        public ImpedimentoTarefaService(IHttpService httpService)
         {
+            _httpService = httpService;
         }
 
-        public async Task<bool> IncluirAsync(string token, ImpedimentoTarefaViewModel obj)
+        public async Task<(IEnumerable<ImpedimentoTarefaViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarAsync(string token, bool getDependencies = false)
         {
-            return await PostAsync(token, actionRoute, obj);
+            return await _httpService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>(actionRoute, token, getDependencies);
         }
 
-        public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarAsync(string token, bool getDependencies = false)
+        public async Task<(ImpedimentoTarefaViewModel response, bool sucess, HttpStatusCode code, string message)> ConsultarAsync(string token, Guid id)
         {
-            return await GetAsync(token, actionRoute, getDependencies);
+            return await _httpService.GetAsync<ImpedimentoTarefaViewModel>(actionRoute, token, id);
         }
 
-        public async Task<ImpedimentoTarefaViewModel> ConsultarAsync(string token, Guid id)
+        public async Task<(ImpedimentoTarefaViewModel response, bool sucess, HttpStatusCode code, string message)> IncluirAsync(string token, object value)
         {
-            return await GetAsync(token, actionRoute, id);
+            return await _httpService.PostAsync<ImpedimentoTarefaViewModel>(actionRoute, token, value);
         }
 
-        public async Task<bool> RemoverAsync(string token, Guid id)
+        public async Task<(ImpedimentoTarefaViewModel response, bool sucess, HttpStatusCode code, string message)> AlterarAsync(string token, Guid id, object value)
         {
-            return await DeleteAsync(token, actionRoute, id);
+            return await _httpService.PutAsync<ImpedimentoTarefaViewModel>(actionRoute, token, id, value);
         }
 
-        public async Task<bool> AlterarAsync(string token, ImpedimentoTarefaViewModel obj)
+        public async Task<(ImpedimentoTarefaViewModel response, bool sucess, HttpStatusCode code, string message)> RemoverAsync(string token, Guid id)
         {
-            return await PutAsync(token, actionRoute, obj.Id, obj);
+            return await _httpService.DeleteAsync<ImpedimentoTarefaViewModel>(actionRoute, token, id);
         }
 
-        public async Task<IEnumerable<ImpedimentoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa)
+        public async Task<(IEnumerable<ImpedimentoTarefaViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarPorTarefaAsync(string token, Guid id)
         {
-            try
-            {
-                RestRequest request = new RestRequest($"api/v2/{actionRoute}/getbytarefa/{idTarefa}", Method.GET);
-                request.AddHeader("Authorization", $"Bearer {token}");
-
-                IRestResponse response = await _client.ExecuteAsync(request);
-
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    if (!string.IsNullOrWhiteSpace(response.Content))
-                    {
-                        throw new Exception(response.Content);
-                    }
-                    else
-                    {
-                        throw new Exception("Falha ao se comunicar com a api de dados.");
-                    }
-                }
-
-                return JsonConvert.DeserializeObject<IEnumerable<ImpedimentoTarefaViewModel>>(response.Content);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return await _httpService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>($"{actionRoute}/getbytarefa", token, id);
         }
     }
 }

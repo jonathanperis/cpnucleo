@@ -24,7 +24,15 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                RecursoProjeto = await _recursoProjetoService.ConsultarAsync(Token, id);
+                var result = await _recursoProjetoService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                RecursoProjeto = result.response;
 
                 return Page();
             }
@@ -39,7 +47,28 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                await _recursoProjetoService.RemoverAsync(Token, RecursoProjeto.Id);
+                if (!ModelState.IsValid)
+                {
+                    var result = await _recursoProjetoService.ConsultarAsync(Token, RecursoProjeto.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    RecursoProjeto = result.response;
+                    
+                    return Page();
+                }
+
+                var result2 = await _recursoProjetoService.RemoverAsync(Token, RecursoProjeto.Id);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
             }

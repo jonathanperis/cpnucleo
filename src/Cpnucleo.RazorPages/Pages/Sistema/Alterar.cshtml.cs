@@ -24,7 +24,15 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                Sistema = await _sistemaService.ConsultarAsync(Token, id);
+                var result = await _sistemaService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Sistema = result.response;
 
                 return Page();
             }
@@ -41,10 +49,26 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
             {
                 if (!ModelState.IsValid)
                 {
+                    var result = await _sistemaService.ConsultarAsync(Token, Sistema.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Sistema = result.response;
+
                     return Page();
                 }
 
-                await _sistemaService.AlterarAsync(Token, Sistema);
+                var result2 = await _sistemaService.AlterarAsync(Token, Sistema.Id, Sistema);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

@@ -35,9 +35,25 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
-                SelectRecursos = new SelectList(await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Tarefa = result.response;
+
+                var result2 = await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                SelectRecursos = new SelectList(result2.response, "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
@@ -54,13 +70,36 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    Tarefa = await _tarefaService.ConsultarAsync(Token, idTarefa);
-                    SelectRecursos = new SelectList(await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto), "Recurso.Id", "Recurso.Nome");
+                    var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
 
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    Tarefa = result.response;
+
+                    var result2 = await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    SelectRecursos = new SelectList(result2.response, "Recurso.Id", "Recurso.Nome");
+                    
                     return Page();
                 }
 
-                await _recursoTarefaService.IncluirAsync(Token, RecursoTarefa);
+                var result3 = await _recursoTarefaService.IncluirAsync(Token, RecursoTarefa);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar", new { idTarefa });
             }

@@ -1,12 +1,13 @@
-﻿using Cpnucleo.RazorPages.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
+using Cpnucleo.RazorPages.ViewModels;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {
     public interface IRecursoTarefaService : ICrudService<RecursoTarefaViewModel>
     {
-        Task<IEnumerable<RecursoTarefaViewModel>> ListarPorTarefaAsync(string token, Guid idTarefa);
+        Task<(IEnumerable<RecursoTarefaViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarPorTarefaAsync(string token, Guid id);
     }
 }

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {
     public interface ICrudService<TViewModel>
     {
-        Task<bool> IncluirAsync(string token, TViewModel obj);
+        Task<(IEnumerable<TViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarAsync(string token, bool getDependencies = false);
 
-        Task<TViewModel> ConsultarAsync(string token, Guid id);
+        Task<(TViewModel response, bool sucess, HttpStatusCode code, string message)> ConsultarAsync(string token, Guid id);
 
-        Task<IEnumerable<TViewModel>> ListarAsync(string token, bool getDependencies = false);
+        Task<(TViewModel response, bool sucess, HttpStatusCode code, string message)> IncluirAsync(string token, object value);
 
-        Task<bool> AlterarAsync(string token, TViewModel obj);
+        Task<(TViewModel response, bool sucess, HttpStatusCode code, string message)> AlterarAsync(string token, Guid id, object value);
 
-        Task<bool> RemoverAsync(string token, Guid id);
+        Task<(TViewModel response, bool sucess, HttpStatusCode code, string message)> RemoverAsync(string token, Guid id);        
     }
 }

@@ -26,7 +26,15 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                Lista = await _impedimentoService.ListarAsync(Token);
+                var result = await _impedimentoService.ListarAsync(Token);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;                
 
                 return Page();
             }

@@ -24,7 +24,15 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                RecursoTarefa = await _recursoTarefaService.ConsultarAsync(Token, id);
+                var result = await _recursoTarefaService.ConsultarAsync(Token, id);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                RecursoTarefa = result.response;
 
                 return Page();
             }
@@ -39,7 +47,28 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                await _recursoTarefaService.RemoverAsync(Token, RecursoTarefa.Id);
+                if (!ModelState.IsValid)
+                {
+                    var result = await _recursoTarefaService.ConsultarAsync(Token, RecursoTarefa.Id);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    RecursoTarefa = result.response;
+                    
+                    return Page();
+                }
+
+                var result2 = await _recursoTarefaService.RemoverAsync(Token, RecursoTarefa.Id);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
             }

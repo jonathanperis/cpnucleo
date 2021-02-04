@@ -45,10 +45,45 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                SelectProjetos = new SelectList(await _projetoService.ListarAsync(Token), "Id", "Nome");
-                SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Descricao");
-                SelectWorkflows = new SelectList(await _workflowService.ListarAsync(Token), "Id", "Nome");
-                SelectTipoTarefas = new SelectList(await _tipoTarefaService.ListarAsync(Token), "Id", "Nome");
+                var result = await _projetoService.ListarAsync(Token);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                SelectProjetos = new SelectList(result.response, "Id", "Nome");
+
+                var result2 = await _sistemaService.ListarAsync(Token);
+
+                if (!result2.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                    return Page();
+                }
+
+                SelectSistemas = new SelectList(result2.response, "Id", "Descricao");
+
+                var result3 = await _workflowService.ListarAsync(Token);
+
+                if (!result3.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }
+
+                SelectWorkflows = new SelectList(result3.response, "Id", "Nome");
+
+                var result4 = await _tipoTarefaService.ListarAsync(Token);
+
+                if (!result4.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result4.code} - {result4.message}");
+                    return Page();
+                }
+
+                SelectTipoTarefas = new SelectList(result4.response, "Id", "Nome");
 
                 return Page();
             }
@@ -65,15 +100,56 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    SelectProjetos = new SelectList(await _projetoService.ListarAsync(Token), "Id", "Nome");
-                    SelectSistemas = new SelectList(await _sistemaService.ListarAsync(Token), "Id", "Descricao");
-                    SelectWorkflows = new SelectList(await _workflowService.ListarAsync(Token), "Id", "Nome");
-                    SelectTipoTarefas = new SelectList(await _tipoTarefaService.ListarAsync(Token), "Id", "Nome");
+                    var result = await _projetoService.ListarAsync(Token);
+
+                    if (!result.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                        return Page();
+                    }
+
+                    SelectProjetos = new SelectList(result.response, "Id", "Nome");
+
+                    var result2 = await _sistemaService.ListarAsync(Token);
+
+                    if (!result2.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
+                        return Page();
+                    }
+
+                    SelectSistemas = new SelectList(result2.response, "Id", "Descricao");
+
+                    var result3 = await _workflowService.ListarAsync(Token);
+
+                    if (!result3.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                        return Page();
+                    }
+
+                    SelectWorkflows = new SelectList(result3.response, "Id", "Nome");
+
+                    var result4 = await _tipoTarefaService.ListarAsync(Token);
+
+                    if (!result4.sucess)
+                    {
+                        ModelState.AddModelError(string.Empty, $"{result4.code} - {result4.message}");
+                        return Page();
+                    }
+
+                    SelectTipoTarefas = new SelectList(result4.response, "Id", "Nome");
 
                     return Page();
                 }
 
-                await _tarefaService.IncluirAsync(Token, Tarefa);
+                var result5 = await _tarefaService.IncluirAsync(Token, Tarefa);
+
+                if (!result5.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result5.code} - {result5.message}");
+                    return Page();
+                }
 
                 return RedirectToPage("Listar");
             }

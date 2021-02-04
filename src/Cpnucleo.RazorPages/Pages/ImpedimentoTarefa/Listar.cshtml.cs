@@ -27,7 +27,15 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                Lista = await _impedimentoTarefaService.ListarPorTarefaAsync(Token, idTarefa);
+                var result = await _impedimentoTarefaService.ListarPorTarefaAsync(Token, idTarefa);
+
+                if (!result.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
+                    return Page();
+                }
+
+                Lista = result.response;  
 
                 ViewData["idTarefa"] = idTarefa;
 
