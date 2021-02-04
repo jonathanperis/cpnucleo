@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.RazorPages.ViewModels;
+using Cpnucleo.RazorPages.Models;
 using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -24,7 +25,7 @@ namespace Cpnucleo.RazorPages.Pages
         }
 
         [BindProperty]
-        public RecursoViewModel Recurso { get; set; }
+        public LoginViewModel Login { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string returnUrl = null, bool logout = false)
         {
@@ -57,9 +58,9 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                Recurso = await _recursoService.AutenticarAsync(Recurso.Login, Recurso.Senha);
+                RecursoViewModel recurso = await _recursoService.AutenticarAsync(Login.Usuario, Login.Senha);
 
-                if (Recurso.Id == Guid.Empty)
+                if (recurso.Id == Guid.Empty)
                 {
                     ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                     return Page();
@@ -67,8 +68,8 @@ namespace Cpnucleo.RazorPages.Pages
 
                 IEnumerable<Claim> claims = new[]
                 {
-                    new Claim(ClaimTypes.PrimarySid, Recurso.Id.ToString()),
-                    new Claim(ClaimTypes.Hash, Recurso.Token)
+                    new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString()),
+                    new Claim(ClaimTypes.Hash, recurso.Token)
                 };
 
                 ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
