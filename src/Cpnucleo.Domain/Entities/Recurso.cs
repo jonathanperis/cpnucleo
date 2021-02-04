@@ -8,8 +8,6 @@ namespace Cpnucleo.Domain.Entities
 
         public string Senha { get; set; }
 
-        public string ConfirmarSenha { get; set; }
-
         public string Salt { get; set; }
 
         public string Token { get; set; }

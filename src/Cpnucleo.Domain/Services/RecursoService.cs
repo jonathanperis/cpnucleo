@@ -19,6 +19,16 @@ namespace Cpnucleo.Domain.Services
             _cryptographyManager = cryptographyManager;
         }
 
+        public new Recurso Consultar(Guid id)
+        {
+            Recurso recurso = base.Consultar(id);
+
+            recurso.Senha = null;
+            recurso.Salt = null;
+
+            return recurso;
+        }        
+
         public new Guid Incluir(Recurso recurso)
         {
             _cryptographyManager.CryptPbkdf2(recurso.Senha, out string senhaCrypt, out string salt);
@@ -51,6 +61,9 @@ namespace Cpnucleo.Domain.Services
             }
 
             valido = _cryptographyManager.VerifyPbkdf2(senha, recurso.Senha, recurso.Salt);
+
+            recurso.Senha = null;
+            recurso.Salt = null;
 
             return recurso;
         }

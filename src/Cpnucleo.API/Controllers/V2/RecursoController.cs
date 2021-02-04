@@ -92,7 +92,7 @@ namespace Cpnucleo.API.Controllers.V2
         ///        "confirmarSenha": "12345678"
         ///     }
         /// </remarks>
-        /// <param name="obj">Recurso</param>        
+        /// <param name="obj">Recurso</param>     
         /// <response code="201">Recurso cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -136,18 +136,34 @@ namespace Cpnucleo.API.Controllers.V2
         /// # Autenticar recurso
         /// 
         /// Autentica o recurso e devolve um token válido por 60 minutos para utilização na API.
+        /// 
+        /// # Sample request:
+        ///
+        ///     POST /recurso/autenticar
+        ///     {
+        ///        "login": "usuario.teste",
+        ///        "senha": "12345678",
+        ///     }
         /// </remarks>
+        /// <param name="obj">Recurso</param>
         /// <response code="200">Retorna um recurso</response>
+        /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="404">Recurso não encontrado</response>
         /// <response code="500">Erro no processamento da requisição</response>
-        [HttpGet("Autenticar")]
+        [HttpPost("Autenticar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Recurso> Autenticar(string login, string senha)
+        public ActionResult<Recurso> Autenticar([FromBody]Recurso obj)
         {
-            Recurso recurso = _recursoService.Autenticar(login, senha, out bool valido);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            if (recurso == null)
+            obj = _recursoService.Autenticar(obj.Login, obj.Senha, out bool valido);
+
+            if (obj == null)
             {
                 return NotFound();
             }
@@ -158,9 +174,9 @@ namespace Cpnucleo.API.Controllers.V2
             }
             else
             {
-                recurso.Token = TokenService.GenerateToken(recurso.Id.ToString(), _systemConfiguration.JwtKey, _systemConfiguration.JwtIssuer, _systemConfiguration.JwtExpires);
+                obj.Token = TokenService.GenerateToken(obj.Id.ToString(), _systemConfiguration.JwtKey, _systemConfiguration.JwtIssuer, _systemConfiguration.JwtExpires);
 
-                return Ok(recurso);
+                return Ok(obj);
             }
         }
 

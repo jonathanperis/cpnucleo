@@ -33,9 +33,6 @@ namespace Cpnucleo.Infra.Data.Mappings
                 .HasMaxLength(64)
                 .IsRequired();
 
-            builder
-                .Ignore(c => c.ConfirmarSenha);
-
             builder.Property(c => c.Salt)
                 .HasColumnName("REC_SENHA_SALT")
                 .HasColumnType("varchar(64)")
