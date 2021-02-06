@@ -87,11 +87,19 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                var result3 = await _tarefaService.AlterarPorWorkflowAsync(Token, idTarefa, idWorkflow);
+                var result3 = await _workflowService.ConsultarAsync(Token, idWorkflow);
 
                 if (!result3.sucess)
                 {
                     ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
+                    return Page();
+                }
+
+                var result4 = await _tarefaService.AlterarPorWorkflowAsync(Token, idTarefa, result3.response);
+
+                if (!result4.sucess)
+                {
+                    ModelState.AddModelError(string.Empty, $"{result4.code} - {result4.message}");
                     return Page();
                 }
 
