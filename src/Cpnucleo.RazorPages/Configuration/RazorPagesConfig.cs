@@ -2,12 +2,15 @@
 using Cpnucleo.RazorPages.Services.Interfaces;
 using Cpnucleo.RazorPages.Models;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Cpnucleo.RazorPages.Configuration
 {
     public static class RazorPagesConfig
     {
-        public static void AddRazorPagesConfigSetup(this IServiceCollection services)
+        public static void AddRazorPagesConfigSetup(this IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddScoped<ICrudService<SistemaViewModel>, SistemaService>()
@@ -25,7 +28,8 @@ namespace Cpnucleo.RazorPages.Configuration
                 .AddScoped<IRecursoTarefaService, RecursoTarefaService>();
 
             services
-                .AddScoped<IHttpService, HttpService>();                
+                .AddScoped<IHttpService, HttpService>()
+                .AddScoped(sp => new HttpClient { BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2/") });                
         }
     }
 }
