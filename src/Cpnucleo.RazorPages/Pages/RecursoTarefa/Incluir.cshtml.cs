@@ -5,23 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 {
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IRecursoTarefaService _recursoTarefaService;
-        private readonly IRecursoProjetoService _recursoProjetoService;
-        private readonly ITarefaService _tarefaService;
+        private readonly IHttpService _httpService;
 
-        public IncluirModel(IRecursoTarefaService recursoTarefaService,
-                            IRecursoProjetoService recursoProjetoService,
-                            ITarefaService tarefaService)
+        public IncluirModel(IHttpService httpService)
         {
-            _recursoTarefaService = recursoTarefaService;
-            _recursoProjetoService = recursoProjetoService;
-            _tarefaService = tarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -35,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
                 if (!result.sucess)
                 {
@@ -45,7 +40,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
                 Tarefa = result.response;
 
-                var result2 = await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto);
+                var result2 = await _httpService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
 
                 if (!result2.sucess)
                 {
@@ -70,7 +65,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
                     if (!result.sucess)
                     {
@@ -80,7 +75,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 
                     Tarefa = result.response;
 
-                    var result2 = await _recursoProjetoService.ListarPorProjetoAsync(Token, Tarefa.IdProjeto);
+                    var result2 = await _httpService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
 
                     if (!result2.sucess)
                     {
@@ -93,7 +88,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
                     return Page();
                 }
 
-                var result3 = await _recursoTarefaService.IncluirAsync(Token, RecursoTarefa);
+                var result3 = await _httpService.PostAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa);
 
                 if (!result3.sucess)
                 {

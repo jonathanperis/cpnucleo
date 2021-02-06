@@ -5,20 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto
 {
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ICrudService<ProjetoViewModel> _projetoService;
-        private readonly ICrudService<SistemaViewModel> _sistemaService;
+        private readonly IHttpService _httpService;
 
-        public IncluirModel(ICrudService<ProjetoViewModel> projetoService,
-                            ICrudService<SistemaViewModel> sistemaService)
+        public IncluirModel(IHttpService httpService)
         {
-            _projetoService = projetoService;
-            _sistemaService = sistemaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -30,7 +28,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                var result = await _sistemaService.ListarAsync(Token);
+                var result = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
 
                 if (!result.sucess)
                 {
@@ -55,7 +53,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _sistemaService.ListarAsync(Token);
+                    var result = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
 
                     if (!result.sucess)
                     {
@@ -68,7 +66,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
                     return Page();
                 }
 
-                var result2 = await _projetoService.IncluirAsync(Token, Projeto);
+                var result2 = await _httpService.PostAsync<ProjetoViewModel>("projeto", Token, Projeto);
 
                 if (!result2.sucess)
                 {

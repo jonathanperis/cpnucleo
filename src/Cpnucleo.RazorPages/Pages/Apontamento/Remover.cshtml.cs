@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IApontamentoService _apontamentoService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(IApontamentoService apontamentoService)
+        public RemoverModel(IHttpService httpService)
         {
-            _apontamentoService = apontamentoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         {
             try
             {
-                var result = await _apontamentoService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<ApontamentoViewModel>("apontamento", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _apontamentoService.ConsultarAsync(Token, Apontamento.Id);
+                    var result = await _httpService.GetAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                     return Page();               
                 }
 
-                var result2 = await _apontamentoService.RemoverAsync(Token, Apontamento.Id);
+                var result2 = await _httpService.DeleteAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
 
                 if (!result2.sucess)
                 {

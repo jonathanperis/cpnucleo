@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(ICrudService<ImpedimentoViewModel> impedimentoService)
+        public RemoverModel(IHttpService httpService)
         {
-            _impedimentoService = impedimentoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                var result = await _impedimentoService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<ImpedimentoViewModel>("impedimento", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _impedimentoService.ConsultarAsync(Token, Impedimento.Id);
+                    var result = await _httpService.GetAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
                     return Page();
                 }
 
-                var result2 = await _impedimentoService.RemoverAsync(Token, Impedimento.Id);
+                var result2 = await _httpService.DeleteAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
 
                 if (!result2.sucess)
                 {

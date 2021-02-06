@@ -5,23 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IRecursoProjetoService _recursoProjetoService;
-        private readonly IRecursoService _recursoService;
-        private readonly ICrudService<ProjetoViewModel> _projetoService;
+        private readonly IHttpService _httpService;
 
-        public IncluirModel(IRecursoProjetoService recursoProjetoService,
-                            IRecursoService recursoService,
-                            ICrudService<ProjetoViewModel> projetoService)
+        public IncluirModel(IHttpService httpService)
         {
-            _recursoProjetoService = recursoProjetoService;
-            _recursoService = recursoService;
-            _projetoService = projetoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -35,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                var result = await _projetoService.ConsultarAsync(Token, idProjeto);
+                var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, idProjeto);
 
                 if (!result.sucess)
                 {
@@ -45,7 +40,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
                 Projeto = result.response;
 
-                var result2 = await _recursoService.ListarAsync(Token);
+                var result2 = await _httpService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
 
                 if (!result2.sucess)
                 {
@@ -70,7 +65,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _projetoService.ConsultarAsync(Token, idProjeto);
+                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, idProjeto);
 
                     if (!result.sucess)
                     {
@@ -80,7 +75,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 
                     Projeto = result.response;
 
-                    var result2 = await _recursoService.ListarAsync(Token);
+                    var result2 = await _httpService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
 
                     if (!result2.sucess)
                     {
@@ -93,7 +88,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
                     return Page();
                 }
 
-                var result3 = await _recursoProjetoService.IncluirAsync(Token, RecursoProjeto);
+                var result3 = await _httpService.PostAsync<RecursoProjetoViewModel>("recursoProjeto", Token, RecursoProjeto);
 
                 if (!result3.sucess)
                 {

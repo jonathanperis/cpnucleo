@@ -5,20 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 {
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
-        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
+        private readonly IHttpService _httpService;
 
-        public AlterarModel(IImpedimentoTarefaService impedimentoTarefaService,
-                            ICrudService<ImpedimentoViewModel> impedimentoService)
+        public AlterarModel(IHttpService httpService)
         {
-            _impedimentoTarefaService = impedimentoTarefaService;
-            _impedimentoService = impedimentoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -30,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                var result = await _impedimentoTarefaService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, id);
 
                 if (!result.sucess)
                 {
@@ -40,7 +39,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
                 ImpedimentoTarefa = result.response; 
 
-                var result2 = await _impedimentoService.ListarAsync(Token);
+                var result2 = await _httpService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
 
                 if (!result2.sucess)
                 {
@@ -65,7 +64,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _impedimentoTarefaService.ConsultarAsync(Token, ImpedimentoTarefa.Id);
+                    var result = await _httpService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa.Id);
 
                     if (!result.sucess)
                     {
@@ -75,7 +74,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
                     ImpedimentoTarefa = result.response; 
 
-                    var result2 = await _impedimentoService.ListarAsync(Token);
+                    var result2 = await _httpService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
 
                     if (!result2.sucess)
                     {
@@ -88,7 +87,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
                     return Page();
                 }
 
-                var result3 = await _impedimentoTarefaService.AlterarAsync(Token, ImpedimentoTarefa.Id, ImpedimentoTarefa);
+                var result3 = await _httpService.PutAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa.Id, ImpedimentoTarefa);
 
                 if (!result3.sucess)
                 {

@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IRecursoService _recursoService;
+        private readonly IHttpService _httpService;
 
-        public ListarModel(IRecursoService recursoService)
+        public ListarModel(IHttpService httpService)
         {
-            _recursoService = recursoService;
+            _httpService = httpService;
         }
 
         public RecursoViewModel Recurso { get; set; }
@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                var result = await _recursoService.ListarAsync(Token);
+                var result = await _httpService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
 
                 if (!result.sucess)
                 {

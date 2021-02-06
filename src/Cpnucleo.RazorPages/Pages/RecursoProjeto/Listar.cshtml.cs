@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IRecursoProjetoService _recursoProjetoService;
+        private readonly IHttpService _httpService;
 
-        public ListarModel(IRecursoProjetoService recursoProjetoService)
+        public ListarModel(IHttpService httpService)
         {
-            _recursoProjetoService = recursoProjetoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -27,7 +27,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
         {
             try
             {
-                var result = await _recursoProjetoService.ListarPorProjetoAsync(Token, idProjeto);
+                var result = await _httpService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, idProjeto);
 
                 if (!result.sucess)
                 {

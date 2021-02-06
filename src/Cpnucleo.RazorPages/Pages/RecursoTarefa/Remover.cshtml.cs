@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IRecursoTarefaService _recursoTarefaService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(IRecursoTarefaService recursoTarefaService)
+        public RemoverModel(IHttpService httpService)
         {
-            _recursoTarefaService = recursoTarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                var result = await _recursoTarefaService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<RecursoTarefaViewModel>("recursoTarefa", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _recursoTarefaService.ConsultarAsync(Token, RecursoTarefa.Id);
+                    var result = await _httpService.GetAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
                     return Page();
                 }
 
-                var result2 = await _recursoTarefaService.RemoverAsync(Token, RecursoTarefa.Id);
+                var result2 = await _httpService.DeleteAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa.Id);
 
                 if (!result2.sucess)
                 {

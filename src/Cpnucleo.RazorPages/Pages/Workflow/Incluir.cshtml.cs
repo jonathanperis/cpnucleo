@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ICrudService<WorkflowViewModel> _workflowService;
+        private readonly IHttpService _httpService;
 
-        public IncluirModel(ICrudService<WorkflowViewModel> workflowService)
+        public IncluirModel(IHttpService httpService)
         {
-            _workflowService = workflowService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                     return Page();
                 }
 
-                var result = await _workflowService.IncluirAsync(Token, Workflow);
+                var result = await _httpService.PostAsync<WorkflowViewModel>("workflow", Token, Workflow);
 
                 if (!result.sucess)
                 {

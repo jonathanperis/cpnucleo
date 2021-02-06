@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ICrudService<ProjetoViewModel> _projetoService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(ICrudService<ProjetoViewModel> projetoService)
+        public RemoverModel(IHttpService httpService)
         {
-            _projetoService = projetoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                var result = await _projetoService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _projetoService.ConsultarAsync(Token, Projeto.Id);
+                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
                     return Page();                    
                 }
 
-                var result2 = await _projetoService.RemoverAsync(Token, Projeto.Id);
+                var result2 = await _httpService.DeleteAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
 
                 if (!result2.sucess)
                 {
