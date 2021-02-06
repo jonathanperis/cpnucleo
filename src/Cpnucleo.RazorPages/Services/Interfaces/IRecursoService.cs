@@ -1,6 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
-using Cpnucleo.RazorPages.ViewModels;
+using Cpnucleo.RazorPages.Models;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {

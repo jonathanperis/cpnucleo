@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.ViewModels;
+using Cpnucleo.RazorPages.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

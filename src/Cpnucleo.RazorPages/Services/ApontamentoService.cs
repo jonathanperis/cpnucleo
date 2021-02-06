@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.ViewModels;
+using Cpnucleo.RazorPages.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;

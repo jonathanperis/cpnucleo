@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cpnucleo.RazorPages.ViewModels
+namespace Cpnucleo.RazorPages.Models
 {
     public class ImpedimentoTarefaViewModel : BaseViewModel
     {
