@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ICrudService<WorkflowViewModel> _workflowService;
+        private readonly IHttpService _httpService;
 
-        public ListarModel(ICrudService<WorkflowViewModel> workflowService)
+        public ListarModel(IHttpService httpService)
         {
-            _workflowService = workflowService;
+            _httpService = httpService;
         }
 
         public WorkflowViewModel Workflow { get; set; }
@@ -26,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                var result = await _workflowService.ListarAsync(Token);
+                var result = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
                 if (!result.sucess)
                 {

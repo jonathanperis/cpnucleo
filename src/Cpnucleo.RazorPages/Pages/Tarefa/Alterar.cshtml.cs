@@ -5,29 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa
 {
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ITarefaService _tarefaService;
-        private readonly ICrudService<ProjetoViewModel> _projetoService;
-        private readonly ICrudService<SistemaViewModel> _sistemaService;
-        private readonly ICrudService<WorkflowViewModel> _workflowService;
-        private readonly ICrudService<TipoTarefaViewModel> _tipoTarefaService;
+        private readonly IHttpService _httpService;
 
-        public AlterarModel(ITarefaService tarefaService,
-                            ICrudService<ProjetoViewModel> projetoService,
-                            ICrudService<SistemaViewModel> sistemaService,
-                            ICrudService<WorkflowViewModel> workflowService,
-                            ICrudService<TipoTarefaViewModel> tipoTarefaService)
+        public AlterarModel(IHttpService httpService)
         {
-            _tarefaService = tarefaService;
-            _projetoService = projetoService;
-            _sistemaService = sistemaService;
-            _workflowService = workflowService;
-            _tipoTarefaService = tipoTarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -45,7 +34,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                var result = await _tarefaService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, id);
 
                 if (!result.sucess)
                 {
@@ -55,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                 Tarefa = result.response;
 
-                var result2 = await _projetoService.ListarAsync(Token);
+                var result2 = await _httpService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
 
                 if (!result2.sucess)
                 {
@@ -65,7 +54,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                 SelectProjetos = new SelectList(result2.response, "Id", "Nome");
 
-                var result3 = await _sistemaService.ListarAsync(Token);
+                var result3 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
 
                 if (!result3.sucess)
                 {
@@ -75,7 +64,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                 SelectSistemas = new SelectList(result3.response, "Id", "Descricao");
 
-                var result4 = await _workflowService.ListarAsync(Token);
+                var result4 = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
                 if (!result4.sucess)
                 {
@@ -85,7 +74,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                 SelectWorkflows = new SelectList(result4.response, "Id", "Nome");
 
-                var result5 = await _tipoTarefaService.ListarAsync(Token);
+                var result5 = await _httpService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
 
                 if (!result5.sucess)
                 {
@@ -110,7 +99,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _tarefaService.ConsultarAsync(Token, Tarefa.Id);
+                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id);
 
                     if (!result.sucess)
                     {
@@ -120,7 +109,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                     Tarefa = result.response;
 
-                    var result2 = await _projetoService.ListarAsync(Token);
+                    var result2 = await _httpService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
 
                     if (!result2.sucess)
                     {
@@ -130,7 +119,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                     SelectProjetos = new SelectList(result2.response, "Id", "Nome");
 
-                    var result3 = await _sistemaService.ListarAsync(Token);
+                    var result3 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
 
                     if (!result3.sucess)
                     {
@@ -140,7 +129,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                     SelectSistemas = new SelectList(result3.response, "Id", "Descricao");
 
-                    var result4 = await _workflowService.ListarAsync(Token);
+                    var result4 = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
                     if (!result4.sucess)
                     {
@@ -150,7 +139,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                     SelectWorkflows = new SelectList(result4.response, "Id", "Nome");
 
-                    var result5 = await _tipoTarefaService.ListarAsync(Token);
+                    var result5 = await _httpService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
 
                     if (!result5.sucess)
                     {
@@ -163,7 +152,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
                     return Page();
                 }
 
-                var result6 = await _tarefaService.AlterarAsync(Token, Tarefa.Id, Tarefa);
+                var result6 = await _httpService.PutAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id, Tarefa);
 
                 if (!result6.sucess)
                 {

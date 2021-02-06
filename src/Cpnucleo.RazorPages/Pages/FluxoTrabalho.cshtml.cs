@@ -11,14 +11,11 @@ namespace Cpnucleo.RazorPages.Pages
     [Authorize]
     public class FluxoTrabalhoModel : PageBase
     {
-        private readonly ICrudService<WorkflowViewModel> _workflowService;
-        private readonly ITarefaService _tarefaService;
+        private readonly IHttpService _httpService;
 
-        public FluxoTrabalhoModel(ICrudService<WorkflowViewModel> workflowService,
-                                  ITarefaService tarefaService)
+        public FluxoTrabalhoModel(IHttpService httpService)
         {
-            _workflowService = workflowService;
-            _tarefaService = tarefaService;
+            _httpService = httpService;
         }
 
         public IEnumerable<WorkflowViewModel> Lista { get; set; }
@@ -29,7 +26,7 @@ namespace Cpnucleo.RazorPages.Pages
         {
             try
             {
-                var result = await _workflowService.ListarAsync(Token);
+                var result = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
                 if (!result.sucess)
                 {
@@ -39,7 +36,7 @@ namespace Cpnucleo.RazorPages.Pages
 
                 Lista = result.response;  
 
-                var result2 = await _tarefaService.ListarAsync(Token, true);
+                var result2 = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
 
                 if (!result2.sucess)
                 {
@@ -64,7 +61,7 @@ namespace Cpnucleo.RazorPages.Pages
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _workflowService.ListarAsync(Token);
+                    var result = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
                     if (!result.sucess)
                     {
@@ -74,7 +71,7 @@ namespace Cpnucleo.RazorPages.Pages
 
                     Lista = result.response;  
 
-                    var result2 = await _tarefaService.ListarAsync(Token, true);
+                    var result2 = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
 
                     if (!result2.sucess)
                     {
@@ -87,7 +84,7 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                var result3 = await _workflowService.ConsultarAsync(Token, idWorkflow);
+                var result3 = await _httpService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
 
                 if (!result3.sucess)
                 {
@@ -95,7 +92,7 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                var result4 = await _tarefaService.AlterarPorWorkflowAsync(Token, idTarefa, result3.response);
+                var result4 = await _httpService.PutAsync<TarefaViewModel>("tarefa/putByWorkflow", Token, idTarefa, result3.response);
 
                 if (!result4.sucess)
                 {

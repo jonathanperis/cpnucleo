@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly ICrudService<SistemaViewModel> _sistemaService;
+        private readonly IHttpService _httpService;
 
-        public IncluirModel(ICrudService<SistemaViewModel> sistemaService)
+        public IncluirModel(IHttpService httpService)
         {
-            _sistemaService = sistemaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -29,7 +29,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
                     return Page();
                 }
 
-                var result = await _sistemaService.IncluirAsync(Token, Sistema);
+                var result = await _httpService.PostAsync<SistemaViewModel>("sistema", Token, Sistema);
 
                 if (!result.sucess)
                 {

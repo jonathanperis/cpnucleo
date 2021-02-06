@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IRecursoTarefaService _recursoTarefaService;
+        private readonly IHttpService _httpService;
 
-        public ListarModel(IRecursoTarefaService recursoTarefaService)
+        public ListarModel(IHttpService httpService)
         {
-            _recursoTarefaService = recursoTarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -27,7 +27,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                var result = await _recursoTarefaService.ListarPorTarefaAsync(Token, idTarefa);
+                var result = await _httpService.GetAsync<IEnumerable<RecursoTarefaViewModel>>("recursoTarefa/getByTarefa", Token, idTarefa);
 
                 if (!result.sucess)
                 {

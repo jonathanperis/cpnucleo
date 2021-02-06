@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly ICrudService<SistemaViewModel> _sistemaService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(ICrudService<SistemaViewModel> sistemaService)
+        public RemoverModel(IHttpService httpService)
         {
-            _sistemaService = sistemaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                var result = await _sistemaService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<SistemaViewModel>("sistema", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _sistemaService.ConsultarAsync(Token, Sistema.Id);
+                    var result = await _httpService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
                     return Page();
                 }
 
-                var result2 = await _sistemaService.RemoverAsync(Token, Sistema.Id);
+                var result2 = await _httpService.DeleteAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
 
                 if (!result2.sucess)
                 {

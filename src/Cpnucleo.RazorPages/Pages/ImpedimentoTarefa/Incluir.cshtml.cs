@@ -5,23 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 {
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
-        private readonly ICrudService<ImpedimentoViewModel> _impedimentoService;
-        private readonly ITarefaService _tarefaService;
+        private readonly IHttpService _httpService;
 
-        public IncluirModel(IImpedimentoTarefaService impedimentoTarefaService,
-                            ICrudService<ImpedimentoViewModel> impedimentoService,
-                            ITarefaService tarefaService)
+        public IncluirModel(IHttpService httpService)
         {
-            _impedimentoTarefaService = impedimentoTarefaService;
-            _impedimentoService = impedimentoService;
-            _tarefaService = tarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -35,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
                 if (!result.sucess)
                 {
@@ -45,7 +40,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
                 Tarefa = result.response;
 
-                var result2 = await _impedimentoService.ListarAsync(Token);
+                var result2 = await _httpService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
 
                 if (!result2.sucess)
                 {
@@ -70,7 +65,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _tarefaService.ConsultarAsync(Token, idTarefa);
+                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
                     if (!result.sucess)
                     {
@@ -80,7 +75,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 
                     Tarefa = result.response;
 
-                    var result2 = await _impedimentoService.ListarAsync(Token);
+                    var result2 = await _httpService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
 
                     if (!result2.sucess)
                     {
@@ -93,7 +88,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
                     return Page();
                 }
 
-                var result3 = await _impedimentoTarefaService.IncluirAsync(Token, ImpedimentoTarefa);
+                var result3 = await _httpService.PostAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa);
 
                 if (!result3.sucess)
                 {

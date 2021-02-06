@@ -13,14 +13,11 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IApontamentoService _apontamentoService;
-        private readonly ITarefaService _tarefaService;
+        private readonly IHttpService _httpService;
 
-        public ListarModel(IApontamentoService apontamentoService,
-                           ITarefaService tarefaService)
+        public ListarModel(IHttpService httpService)
         {
-            _apontamentoService = apontamentoService;
-            _tarefaService = tarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -37,7 +34,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                var result = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
+                var result = await _httpService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
 
                 if (!result.sucess)
                 {
@@ -47,7 +44,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
                 Lista = result.response;
 
-                var result2 = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
+                var result2 = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
 
                 if (!result2.sucess)
                 {
@@ -75,7 +72,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                     string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new Guid(retorno);
 
-                    var result = await _apontamentoService.ListarPorRecursoAsync(Token, idRecurso);
+                    var result = await _httpService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
 
                     if (!result.sucess)
                     {
@@ -85,7 +82,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
 
                     Lista = result.response;
 
-                    var result2 = await _tarefaService.ListarPorRecursoAsync(Token, idRecurso);
+                    var result2 = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
 
                     if (!result2.sucess)
                     {
@@ -98,7 +95,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                     return Page();
                 }
 
-                var result3 = await _apontamentoService.IncluirAsync(Token, Apontamento);
+                var result3 = await _httpService.PostAsync<ApontamentoViewModel>("apontamento", Token, Apontamento);
 
                 if (!result3.sucess)
                 {

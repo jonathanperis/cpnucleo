@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ICrudService<WorkflowViewModel> _workflowService;
+        private readonly IHttpService _httpService;
 
-        public AlterarModel(ICrudService<WorkflowViewModel> workflowService)
+        public AlterarModel(IHttpService httpService)
         {
-            _workflowService = workflowService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                var result = await _workflowService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<WorkflowViewModel>("workflow", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _workflowService.ConsultarAsync(Token, Workflow.Id);
+                    var result = await _httpService.GetAsync<WorkflowViewModel>("workflow", Token, Workflow.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
                     return Page();
                 }
 
-                var result2 = await _workflowService.AlterarAsync(Token, Workflow.Id, Workflow);
+                var result2 = await _httpService.PutAsync<WorkflowViewModel>("workflow", Token, Workflow.Id, Workflow);
 
                 if (!result2.sucess)
                 {

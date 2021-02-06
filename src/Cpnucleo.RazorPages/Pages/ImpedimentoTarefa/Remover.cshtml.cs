@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(IImpedimentoTarefaService impedimentoTarefaService)
+        public RemoverModel(IHttpService httpService)
         {
-            _impedimentoTarefaService = impedimentoTarefaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                var result = await _impedimentoTarefaService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _impedimentoTarefaService.ConsultarAsync(Token, ImpedimentoTarefa.Id);
+                    var result = await _httpService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
                     return Page();
                 }
 
-                var result2 = await _impedimentoTarefaService.RemoverAsync(Token, ImpedimentoTarefa.Id);
+                var result2 = await _httpService.DeleteAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa.Id);
 
                 if (!result2.sucess)
                 {

@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IRecursoService _recursoService;
+        private readonly IHttpService _httpService;
 
-        public RemoverModel(IRecursoService recursoService)
+        public RemoverModel(IHttpService httpService)
         {
-            _recursoService = recursoService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                var result = await _recursoService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<RecursoViewModel>("recurso", Token, id);
 
                 if (!result.sucess)
                 {
@@ -49,7 +49,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _recursoService.ConsultarAsync(Token, Recurso.Id);
+                    var result = await _httpService.GetAsync<RecursoViewModel>("recurso", Token, Recurso.Id);
 
                     if (!result.sucess)
                     {
@@ -62,7 +62,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
                     return Page();
                 }
 
-                var result2 = await _recursoService.RemoverAsync(Token, Recurso.Id);
+                var result2 = await _httpService.DeleteAsync<RecursoViewModel>("recurso", Token, Recurso.Id);
 
                 if (!result2.sucess)
                 {

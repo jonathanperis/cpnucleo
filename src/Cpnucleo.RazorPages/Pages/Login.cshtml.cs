@@ -14,14 +14,14 @@ namespace Cpnucleo.RazorPages.Pages
 {
     public class LoginModel : PageBase
     {
-        private readonly IRecursoService _recursoService;
+        private readonly IHttpService _httpService;
         private readonly IConfiguration _configuration;
 
-        public LoginModel(IRecursoService recursoService, IConfiguration configuration)
+        public LoginModel(IHttpService httpService, IConfiguration configuration)
         {
-            _recursoService = recursoService;
-            _configuration = configuration;
-        }
+            _httpService = httpService;
+            _configuration = configuration;        
+        }        
 
         [BindProperty]
         public LoginViewModel Login { get; set; }
@@ -57,7 +57,7 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                var result = await _recursoService.AutenticarAsync(Login.Usuario, Login.Senha);
+                var result = await _httpService.PostAsync<RecursoViewModel>("recurso/auth", "", new RecursoViewModel { Login = Login.Usuario, Senha = Login.Senha });
 
                 if (!result.sucess)
                 {

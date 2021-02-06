@@ -5,20 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto
 {
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly ICrudService<ProjetoViewModel> _projetoService;
-        private readonly ICrudService<SistemaViewModel> _sistemaService;
+        private readonly IHttpService _httpService;
 
-        public AlterarModel(ICrudService<ProjetoViewModel> projetoService,
-                            ICrudService<SistemaViewModel> sistemaService)
+        public AlterarModel(IHttpService httpService)
         {
-            _projetoService = projetoService;
-            _sistemaService = sistemaService;
+            _httpService = httpService;
         }
 
         [BindProperty]
@@ -30,7 +28,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                var result = await _projetoService.ConsultarAsync(Token, id);
+                var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, id);
 
                 if (!result.sucess)
                 {
@@ -40,7 +38,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
                 Projeto = result.response;    
 
-                var result2 = await _sistemaService.ListarAsync(Token);
+                var result2 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
 
                 if (!result2.sucess)
                 {
@@ -65,7 +63,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _projetoService.ConsultarAsync(Token, Projeto.Id);
+                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
 
                     if (!result.sucess)
                     {
@@ -75,7 +73,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
 
                     Projeto = result.response;    
 
-                    var result2 = await _sistemaService.ListarAsync(Token);
+                    var result2 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
 
                     if (!result2.sucess)
                     {
@@ -88,7 +86,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
                     return Page();
                 }
 
-                var result3 = await _projetoService.AlterarAsync(Token, Projeto.Id, Projeto);
+                var result3 = await _httpService.PutAsync<ProjetoViewModel>("projeto", Token, Projeto.Id, Projeto);
 
                 if (!result3.sucess)
                 {
