@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.RazorPages.Services;
 using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.ViewModels;
+using Cpnucleo.RazorPages.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.RazorPages.Configuration
