@@ -45,7 +45,7 @@ namespace Cpnucleo.RazorPages.Services
 
         public async Task<(RecursoViewModel response, bool sucess, HttpStatusCode code, string message)> AutenticarAsync(string username, string password)
         {
-            return await _httpService.PostAsync<RecursoViewModel>($"{actionRoute}/autenticar", "", new RecursoViewModel { Login = username, Senha = password });
+            return await _httpService.PostAsync<RecursoViewModel>($"{actionRoute}/auth", "", new RecursoViewModel { Login = username, Senha = password });
         }
     }
 }
