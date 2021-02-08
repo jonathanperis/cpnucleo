@@ -59,13 +59,13 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid idTarefa)
+        public async Task<IActionResult> OnPostAsync()
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
 
                     if (!result.sucess)
                     {
@@ -96,7 +96,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
                     return Page();
                 }
 
-                return RedirectToPage("Listar", new { idTarefa });
+                return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
             }
             catch (Exception ex)
             {

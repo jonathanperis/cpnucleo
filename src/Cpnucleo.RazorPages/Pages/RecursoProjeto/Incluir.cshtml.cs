@@ -59,13 +59,13 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid idProjeto)
+        public async Task<IActionResult> OnPostAsync()
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, idProjeto);
+                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, RecursoProjeto.IdProjeto);
 
                     if (!result.sucess)
                     {
@@ -96,7 +96,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
                     return Page();
                 }
 
-                return RedirectToPage("Listar", new { idProjeto });
+                return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
             }
             catch (Exception ex)
             {

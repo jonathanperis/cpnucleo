@@ -52,7 +52,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
                     return Page();
                 }
 
-                SelectSistemas = new SelectList(result2.response, "Id", "Descricao");
+                SelectSistemas = new SelectList(result2.response, "Id", "Nome");
 
                 var result3 = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
@@ -107,7 +107,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
                         return Page();
                     }
 
-                    SelectSistemas = new SelectList(result2.response, "Id", "Descricao");
+                    SelectSistemas = new SelectList(result2.response, "Id", "Nome");
 
                     var result3 = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
 
