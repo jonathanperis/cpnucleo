@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public IncluirModel(IHttpService httpService)
+        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -28,15 +28,8 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                var result = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }         
-
-                SelectSistemas = new SelectList(result.response, "Id", "Nome");
+                var result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                SelectSistemas = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
@@ -53,26 +46,13 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }         
-
-                    SelectSistemas = new SelectList(result.response, "Id", "Nome");
+                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                    SelectSistemas = new SelectList(result, "Id", "Nome");
 
                     return Page();
                 }
 
-                var result2 = await _httpService.PostAsync<ProjetoViewModel>("projeto", Token, Projeto);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.PostAsync<ProjetoViewModel>("projeto", Token, Projeto);
 
                 return RedirectToPage("Listar");
             }

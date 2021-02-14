@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public AlterarModel(IHttpService httpService)
+        public AlterarModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                var result = await _httpService.GetAsync<SistemaViewModel>("sistema", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Sistema = result.response;
+                Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, id);
 
                 return Page();
             }
@@ -49,27 +41,13 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Sistema = result.response;
+                    Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
 
                     return Page();
                 }
 
-                var result2 = await _httpService.PutAsync<SistemaViewModel>("sistema", Token, Sistema.Id, Sistema);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
-
+                await _cpnucleoApiService.PutAsync("sistema", Token, Sistema.Id, Sistema);
+                
                 return RedirectToPage("Listar");
             }
             catch (Exception ex)

@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public IncluirModel(IHttpService httpService)
+        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -34,45 +34,17 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                var result = await _httpService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+                var result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+                SelectProjetos = new SelectList(result, "Id", "Nome");
 
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
+                var result2 = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                SelectSistemas = new SelectList(result2, "Id", "Nome");
 
-                SelectProjetos = new SelectList(result.response, "Id", "Nome");
+                var result3 = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
+                SelectWorkflows = new SelectList(result3, "Id", "Nome");
 
-                var result2 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
-
-                SelectSistemas = new SelectList(result2.response, "Id", "Nome");
-
-                var result3 = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
-
-                if (!result3.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
-                    return Page();
-                }
-
-                SelectWorkflows = new SelectList(result3.response, "Id", "Nome");
-
-                var result4 = await _httpService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
-
-                if (!result4.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result4.code} - {result4.message}");
-                    return Page();
-                }
-
-                SelectTipoTarefas = new SelectList(result4.response, "Id", "Nome");
+                var result4 = await _cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
+                SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
 
                 return Page();
             }
@@ -89,56 +61,22 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+                    SelectProjetos = new SelectList(result, "Id", "Nome");
 
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
+                    var result2 = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                    SelectSistemas = new SelectList(result2, "Id", "Nome");
 
-                    SelectProjetos = new SelectList(result.response, "Id", "Nome");
+                    var result3 = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
+                    SelectWorkflows = new SelectList(result3, "Id", "Nome");
 
-                    var result2 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-
-                    if (!result2.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                        return Page();
-                    }
-
-                    SelectSistemas = new SelectList(result2.response, "Id", "Nome");
-
-                    var result3 = await _httpService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
-
-                    if (!result3.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
-                        return Page();
-                    }
-
-                    SelectWorkflows = new SelectList(result3.response, "Id", "Nome");
-
-                    var result4 = await _httpService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
-
-                    if (!result4.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result4.code} - {result4.message}");
-                        return Page();
-                    }
-
-                    SelectTipoTarefas = new SelectList(result4.response, "Id", "Nome");
+                    var result4 = await _cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
+                    SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
 
                     return Page();
                 }
 
-                var result5 = await _httpService.PostAsync<TarefaViewModel>("tarefa", Token, Tarefa);
-
-                if (!result5.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result5.code} - {result5.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.PostAsync<TarefaViewModel>("tarefa", Token, Tarefa);
 
                 return RedirectToPage("Listar");
             }

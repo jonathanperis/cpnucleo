@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public RemoverModel(IHttpService httpService)
+        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                var result = await _httpService.GetAsync<SistemaViewModel>("sistema", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Sistema = result.response;
+                Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, id);
 
                 return Page();
             }
@@ -49,26 +41,12 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
+                    Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
 
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Sistema = result.response;
-                    
                     return Page();
                 }
 
-                var result2 = await _httpService.DeleteAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.DeleteAsync("sistema", Token, Sistema.Id);
 
                 return RedirectToPage("Listar");
             }

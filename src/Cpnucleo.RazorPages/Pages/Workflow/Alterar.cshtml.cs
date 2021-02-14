@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public AlterarModel(IHttpService httpService)
+        public AlterarModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
         {
             try
             {
-                var result = await _httpService.GetAsync<WorkflowViewModel>("workflow", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Workflow = result.response;
+                Workflow = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, id);
 
                 return Page();
             }
@@ -49,26 +41,12 @@ namespace Cpnucleo.RazorPages.Pages.Workflow
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<WorkflowViewModel>("workflow", Token, Workflow.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Workflow = result.response;
+                    Workflow = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, Workflow.Id);
 
                     return Page();
                 }
 
-                var result2 = await _httpService.PutAsync<WorkflowViewModel>("workflow", Token, Workflow.Id, Workflow);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.PutAsync("workflow", Token, Workflow.Id, Workflow);
 
                 return RedirectToPage("Listar");
             }

@@ -11,11 +11,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public ListarModel(IHttpService httpService)
+        public ListarModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         public TarefaViewModel Tarefa { get; set; }
@@ -26,15 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                var result = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Lista = result.response;
+                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
 
                 return Page();
             }

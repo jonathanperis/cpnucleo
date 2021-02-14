@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public IncluirModel(IHttpService httpService)
+        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -30,25 +30,10 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
         {
             try
             {
-                var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Tarefa = result.response;
-
-                var result2 = await _httpService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
-
-                SelectImpedimentos = new SelectList(result2.response, "Id", "Nome");
+                var result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+                SelectImpedimentos = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
@@ -65,36 +50,15 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, ImpedimentoTarefa.IdTarefa);
+                    Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, ImpedimentoTarefa.IdTarefa);
 
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Tarefa = result.response;
-
-                    var result2 = await _httpService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
-
-                    if (!result2.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                        return Page();
-                    }
-
-                    SelectImpedimentos = new SelectList(result2.response, "Id", "Nome");
+                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+                    SelectImpedimentos = new SelectList(result, "Id", "Nome");
 
                     return Page();
                 }
 
-                var result3 = await _httpService.PostAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa);
-
-                if (!result3.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
-                    return Page();
-                }                
+                await _cpnucleoApiService.PostAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa);
 
                 return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
             }

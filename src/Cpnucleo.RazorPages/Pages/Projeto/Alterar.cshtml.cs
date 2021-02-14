@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class AlterarModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public AlterarModel(IHttpService httpService)
+        public AlterarModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -28,25 +28,10 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, id);
+                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, id);
 
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Projeto = result.response;    
-
-                var result2 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
-
-                SelectSistemas = new SelectList(result2.response, "Id", "Nome");
+                var result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                SelectSistemas = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
@@ -63,36 +48,15 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
+                    Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
 
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Projeto = result.response;    
-
-                    var result2 = await _httpService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-
-                    if (!result2.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                        return Page();
-                    }
-
-                    SelectSistemas = new SelectList(result2.response, "Id", "Nome");
+                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                    SelectSistemas = new SelectList(result, "Id", "Nome");
 
                     return Page();
                 }
 
-                var result3 = await _httpService.PutAsync<ProjetoViewModel>("projeto", Token, Projeto.Id, Projeto);
-
-                if (!result3.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.PutAsync("projeto", Token, Projeto.Id, Projeto);
 
                 return RedirectToPage("Listar");
             }

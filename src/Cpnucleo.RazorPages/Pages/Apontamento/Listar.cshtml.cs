@@ -13,11 +13,11 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     [Authorize]
     public class ListarModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public ListarModel(IHttpService httpService)
+        public ListarModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -34,25 +34,8 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                var result = await _httpService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Lista = result.response;
-
-                var result2 = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
-
-                ListaTarefas = result2.response;
+                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
+                ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
 
                 return Page();
             }
@@ -72,36 +55,13 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                     string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new Guid(retorno);
 
-                    var result = await _httpService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Lista = result.response;
-
-                    var result2 = await _httpService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
-
-                    if (!result2.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                        return Page();
-                    }
-
-                    ListaTarefas = result2.response;
+                    Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
+                    ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
 
                     return Page();
                 }
 
-                var result3 = await _httpService.PostAsync<ApontamentoViewModel>("apontamento", Token, Apontamento);
-
-                if (!result3.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
-                    return Page();
-                }                
+                await _cpnucleoApiService.PostAsync<ApontamentoViewModel>("apontamento", Token, Apontamento);
 
                 return RedirectToPage("Listar");
             }

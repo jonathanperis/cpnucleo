@@ -12,11 +12,11 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
     [Authorize]
     public class IncluirModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public IncluirModel(IHttpService httpService)
+        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -30,25 +30,10 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
         {
             try
             {
-                var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Tarefa = result.response;
-
-                var result2 = await _httpService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
-
-                SelectRecursos = new SelectList(result2.response, "Recurso.Id", "Recurso.Nome");
+                var result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+                SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
@@ -65,36 +50,15 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
+                    Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
 
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Tarefa = result.response;
-
-                    var result2 = await _httpService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
-
-                    if (!result2.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                        return Page();
-                    }
-
-                    SelectRecursos = new SelectList(result2.response, "Recurso.Id", "Recurso.Nome");
+                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+                    SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
                     
                     return Page();
                 }
 
-                var result3 = await _httpService.PostAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa);
-
-                if (!result3.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result3.code} - {result3.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.PostAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa);
 
                 return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
             }
