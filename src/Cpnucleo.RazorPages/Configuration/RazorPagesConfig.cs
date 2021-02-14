@@ -1,10 +1,10 @@
 ﻿using Cpnucleo.RazorPages.Services;
 using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using System;
+using Refit;
 
 namespace Cpnucleo.RazorPages.Configuration
 {
@@ -13,8 +13,8 @@ namespace Cpnucleo.RazorPages.Configuration
         public static void AddRazorPagesConfigSetup(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddScoped<IHttpService, HttpService>()
-                .AddScoped(sp => new HttpClient { BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2/") });                
+                .AddRefitClient<ICpnucleoApiService>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2"));                           
         }
     }
 }

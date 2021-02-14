@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public RemoverModel(IHttpService httpService)
+        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
         {
             try
             {
-                var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Tarefa = result.response;
+                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, id);
 
                 return Page();
             }
@@ -49,26 +41,12 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Tarefa = result.response;
+                    Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id);
                     
                     return Page();
                 }
 
-                var result2 = await _httpService.DeleteAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.DeleteAsync("tarefa", Token, Tarefa.Id);
 
                 return RedirectToPage("Listar");
             }

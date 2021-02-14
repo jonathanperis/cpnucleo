@@ -14,12 +14,12 @@ namespace Cpnucleo.RazorPages.Pages
 {
     public class LoginModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
         private readonly IConfiguration _configuration;
 
-        public LoginModel(IHttpService httpService, IConfiguration configuration)
+        public LoginModel(ICpnucleoApiService cpnucleoApiService, IConfiguration configuration)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
             _configuration = configuration;        
         }        
 
@@ -57,15 +57,7 @@ namespace Cpnucleo.RazorPages.Pages
                     return Page();
                 }
 
-                var result = await _httpService.PostAsync<RecursoViewModel>("recurso/auth", "", new RecursoViewModel { Login = Login.Usuario, Senha = Login.Senha });
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                RecursoViewModel recurso = result.response;
+                RecursoViewModel recurso = await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso/auth", "", new RecursoViewModel { Login = Login.Usuario, Senha = Login.Senha });
 
                 IEnumerable<Claim> claims = new[]
                 {

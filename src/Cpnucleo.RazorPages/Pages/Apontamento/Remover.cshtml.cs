@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public RemoverModel(IHttpService httpService)
+        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
         {
             try
             {
-                var result = await _httpService.GetAsync<ApontamentoViewModel>("apontamento", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Apontamento = result.response;
+                Apontamento = await _cpnucleoApiService.GetAsync<ApontamentoViewModel>("apontamento", Token, id);
 
                 return Page();
             }
@@ -49,27 +41,13 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Apontamento = result.response;
+                    Apontamento = await _cpnucleoApiService.GetAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
 
                     return Page();               
                 }
 
-                var result2 = await _httpService.DeleteAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }                
-
+                await _cpnucleoApiService.DeleteAsync("apontamento", Token, Apontamento.Id);
+                
                 return RedirectToPage("Listar");
             }
             catch (Exception ex)

@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public RemoverModel(IHttpService httpService)
+        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
         {
             try
             {
-                var result = await _httpService.GetAsync<ImpedimentoViewModel>("impedimento", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Impedimento = result.response;
+                Impedimento = await _cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", Token, id);
 
                 return Page();
             }
@@ -49,26 +41,12 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Impedimento = result.response;
+                    Impedimento = await _cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
                     
                     return Page();
                 }
 
-                var result2 = await _httpService.DeleteAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.DeleteAsync("impedimento", Token, Impedimento.Id);
 
                 return RedirectToPage("Listar");
             }

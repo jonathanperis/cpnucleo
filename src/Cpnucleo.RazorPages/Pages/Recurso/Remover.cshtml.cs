@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public RemoverModel(IHttpService httpService)
+        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
         {
             try
             {
-                var result = await _httpService.GetAsync<RecursoViewModel>("recurso", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Recurso = result.response;
+                Recurso = await _cpnucleoApiService.GetAsync<RecursoViewModel>("recurso", Token, id);
 
                 return Page();
             }
@@ -49,26 +41,12 @@ namespace Cpnucleo.RazorPages.Pages.Recurso
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<RecursoViewModel>("recurso", Token, Recurso.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Recurso = result.response;
+                    Recurso = await _cpnucleoApiService.GetAsync<RecursoViewModel>("recurso", Token, Recurso.Id);
                     
                     return Page();
                 }
 
-                var result2 = await _httpService.DeleteAsync<RecursoViewModel>("recurso", Token, Recurso.Id);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.DeleteAsync("recurso", Token, Recurso.Id);
 
                 return RedirectToPage("Listar");
             }

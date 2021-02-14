@@ -10,11 +10,11 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
     [Authorize]
     public class RemoverModel : PageBase
     {
-        private readonly IHttpService _httpService;
+        private readonly ICpnucleoApiService _cpnucleoApiService;
 
-        public RemoverModel(IHttpService httpService)
+        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
         {
-            _httpService = httpService;
+            _cpnucleoApiService = cpnucleoApiService;
         }
 
         [BindProperty]
@@ -24,15 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, id);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Projeto = result.response;                
+                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, id);  
 
                 return Page();
             }
@@ -49,26 +41,12 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
             {
                 if (!ModelState.IsValid)
                 {
-                    var result = await _httpService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
-
-                    if (!result.sucess)
-                    {
-                        ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                        return Page();
-                    }
-
-                    Projeto = result.response;
+                    Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
                     
                     return Page();                    
                 }
 
-                var result2 = await _httpService.DeleteAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
-
-                if (!result2.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result2.code} - {result2.message}");
-                    return Page();
-                }
+                await _cpnucleoApiService.DeleteAsync("projeto", Token, Projeto.Id);
 
                 return RedirectToPage("Listar");
             }
