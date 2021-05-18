@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+import "Protos/base.proto";
+import "Protos/tarefa.proto";
+import "Protos/impedimento.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.RazorPages.Protos.ImpedimentoTarefaProto";
+
+package impedimentoTarefa;
+
+service ImpedimentoTarefaProto {
+
+	rpc Incluir (ImpedimentoTarefaModel) returns (ImpedimentoTarefaModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
+	rpc Consultar (base.BaseRequest) returns (ImpedimentoTarefaModel);
+	rpc Alterar (ImpedimentoTarefaModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+	rpc ListarPorTarefa (base.BaseRequest) returns (ListarPorTarefaReply);
+}
+
+message ImpedimentoTarefaModel {
+
+	string Id = 1;
+	string Descricao = 2;
+	string IdTarefa = 3;
+	string IdImpedimento = 4;
+	string DataInclusao = 5;
+	tarefa.TarefaModel Tarefa = 6;
+	impedimento.ImpedimentoModel Impedimento = 7;
+}
+
+message ListarReply {
+
+    repeated ImpedimentoTarefaModel Lista = 1;
+}
+
+message ListarPorTarefaReply {
+
+    repeated ImpedimentoTarefaModel Lista = 1;
+}

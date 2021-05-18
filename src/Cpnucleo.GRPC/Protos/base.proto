@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "Cpnucleo.GRPC.Protos";
+
+package base;
+
+message BaseRequest {
+
+	string Id = 1;
+}
+
+message BaseReply {
+
+	string Id = 1;
+	bool Sucesso = 2;
+}

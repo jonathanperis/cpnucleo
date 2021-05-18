@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "Protos/base.proto";
+import "Protos/sistema.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Cpnucleo.GRPC.Protos.ProjetoProto";
+
+package projeto;
+
+service ProjetoProto {
+
+	rpc Incluir (ProjetoModel) returns (ProjetoModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
+	rpc Consultar (base.BaseRequest) returns (ProjetoModel);
+	rpc Alterar (ProjetoModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message ProjetoModel {
+
+	string Id = 1;
+	string Nome = 2;
+	string IdSistema = 3;
+	string DataInclusao = 4;
+	sistema.SistemaModel Sistema = 5;
+}
+
+message ListarReply {
+
+    repeated ProjetoModel Lista = 1;
+}
