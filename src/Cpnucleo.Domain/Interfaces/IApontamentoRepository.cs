@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Repositories
+namespace Cpnucleo.Domain.Interfaces
 {
     public interface IApontamentoRepository : IGenericRepository<Apontamento>
     {

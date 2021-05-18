@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Repositories;
+using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.Repositories;
