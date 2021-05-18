@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-144007742-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-144007742-2');
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPN - Blazor</title>
+    <!-- Mainly links -->
+    <link href="https://cpnucleo-assets.azurewebsites.net/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cpnucleo-assets.azurewebsites.net/css/animate.css" rel="stylesheet">
+    <link href="https://cpnucleo-assets.azurewebsites.net/css/style.css" rel="stylesheet">
+    <link href="https://cpnucleo-assets.azurewebsites.net/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="https://cpnucleo-assets.azurewebsites.net/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+</head>
+<body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg">
+            <div id="app">Carregando...</div>
+        </div>
+    </div>
+    <!-- Mainly scripts -->
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/jquery-3.1.1.min.js"></script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/bootstrap.min.js"></script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- Custom and plugin javascript -->
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/inspinia.js"></script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/pace/pace.min.js"></script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/dataTables/datatables.min.js"></script> -->
+    <script>
+        function dataTables(nomeRelatorio) {
+
+            $(document).ready(function () {
+            
+                $('.table-datatable').DataTable({
+                    language: {
+                        "lengthMenu": "Mostrando _MENU_ registros por página",
+                        "zeroRecords": "Nenhum registro encontrado",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "Não há registros disponíveis",
+                        "infoFiltered": "(filtrando de _MAX_ registros totais)",
+                        "search": "Buscar",
+                        "loadingRecords": "Carregando...",
+                        "processing": "Processando...",
+                        "paginate": {
+                            "first": "Primeira",
+                            "last": "Ultima",
+                            "next": "Próxima",
+                            "previous": "Anterior"
+                        }
+                    },
+                    pageLength: 10,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    buttons: [
+                        { extend: 'copy', text: 'Copiar', exportOptions: { columns: [0, 1, 2, 3] } },
+                        //{extend: 'csv', title: nomeRelatorio, exportOptions: { columns: [0, 1, 2, 3] }},
+                        { extend: 'excel', title: nomeRelatorio, exportOptions: { columns: [0, 1, 2, 3] } },
+                        { extend: 'pdf', title: nomeRelatorio, exportOptions: { columns: [0, 1, 2, 3] } },
+                        {
+                            extend: 'print', text: 'Imprimir', exportOptions: { columns: [0, 1, 2, 3] },
+                            customize: function (win) {
+                                $(win.document.body).addClass('white-bg');
+                                $(win.document.body).css('font-size', '10px');
+
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                            }
+                        }
+                    ],
+                    "columnDefs": [{
+                        "targets": 'no-sort',
+                        "orderable": false,
+                    }]
+                });      
+
+            });
+
+        }
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>        
+</body>
+</html>
