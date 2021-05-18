@@ -1,10 +1,8 @@
-﻿using Cpnucleo.RazorPages.Services;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
+﻿using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 using Refit;
+using System;
 
 namespace Cpnucleo.RazorPages.Configuration
 {
@@ -14,7 +12,7 @@ namespace Cpnucleo.RazorPages.Configuration
         {
             services
                 .AddRefitClient<ICpnucleoApiService>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2"));                           
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2"));
         }
     }
 }

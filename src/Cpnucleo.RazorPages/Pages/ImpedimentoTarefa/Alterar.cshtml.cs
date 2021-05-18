@@ -1,12 +1,11 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Threading.Tasks;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
 {
@@ -31,7 +30,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
             {
                 ImpedimentoTarefa = await _cpnucleoApiService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, id);
 
-                var result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+                IEnumerable<ImpedimentoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
                 SelectImpedimentos = new SelectList(result, "Id", "Nome");
 
                 return Page();
@@ -51,7 +50,7 @@ namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
                 {
                     ImpedimentoTarefa = await _cpnucleoApiService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa.Id);
 
-                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+                    IEnumerable<ImpedimentoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
                     SelectImpedimentos = new SelectList(result, "Id", "Nome");
 
                     return Page();

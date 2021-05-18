@@ -1,7 +1,7 @@
-﻿using Cpnucleo.Domain.Entities;
+﻿using Cpnucleo.API.Services;
+using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
-using Cpnucleo.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

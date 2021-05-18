@@ -1,14 +1,14 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.RazorPages.Services;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.RazorPages.Pages
 {
@@ -20,8 +20,8 @@ namespace Cpnucleo.RazorPages.Pages
         public LoginModel(ICpnucleoApiService cpnucleoApiService, IConfiguration configuration)
         {
             _cpnucleoApiService = cpnucleoApiService;
-            _configuration = configuration;        
-        }        
+            _configuration = configuration;
+        }
 
         [BindProperty]
         public LoginViewModel Login { get; set; }
@@ -67,8 +67,7 @@ namespace Cpnucleo.RazorPages.Pages
 
                 ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
-                int expiresUtc;
-                int.TryParse(_configuration["Cookie:Expires"], out expiresUtc);
+                int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
 
                 await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,

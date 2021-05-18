@@ -1,5 +1,5 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -42,12 +42,12 @@ namespace Cpnucleo.RazorPages.Pages.Impedimento
                 if (!ModelState.IsValid)
                 {
                     Impedimento = await _cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
-                                        
+
                     return Page();
                 }
 
                 await _cpnucleoApiService.PutAsync("impedimento", Token, Impedimento.Id, Impedimento);
-                
+
                 return RedirectToPage("Listar");
             }
             catch (Exception ex)

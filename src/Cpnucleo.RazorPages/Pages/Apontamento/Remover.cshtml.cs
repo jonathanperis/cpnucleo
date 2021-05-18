@@ -1,5 +1,5 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -43,11 +43,11 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento
                 {
                     Apontamento = await _cpnucleoApiService.GetAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
 
-                    return Page();               
+                    return Page();
                 }
 
                 await _cpnucleoApiService.DeleteAsync("apontamento", Token, Apontamento.Id);
-                
+
                 return RedirectToPage("Listar");
             }
             catch (Exception ex)

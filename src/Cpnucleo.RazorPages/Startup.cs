@@ -88,7 +88,7 @@ namespace Cpnucleo.RazorPages
             };
 
             app.UseMiniProfiler();
-            
+
             app.UseRequestLocalization(localizationOptions);
             app.UseStaticFiles();
 

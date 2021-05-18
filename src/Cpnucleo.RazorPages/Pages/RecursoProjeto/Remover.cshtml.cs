@@ -1,5 +1,5 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -42,7 +42,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
                 if (!ModelState.IsValid)
                 {
                     RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, RecursoProjeto.Id);
-                    
+
                     return Page();
                 }
 

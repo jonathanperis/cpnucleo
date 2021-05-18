@@ -1,5 +1,5 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,7 +24,7 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
         {
             try
             {
-                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, id);  
+                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, id);
 
                 return Page();
             }
@@ -42,8 +42,8 @@ namespace Cpnucleo.RazorPages.Pages.Projeto
                 if (!ModelState.IsValid)
                 {
                     Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
-                    
-                    return Page();                    
+
+                    return Page();
                 }
 
                 await _cpnucleoApiService.DeleteAsync("projeto", Token, Projeto.Id);

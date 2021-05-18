@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Cpnucleo.RazorPages.Models
+namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     public class RecursoViewModel : BaseViewModel
     {
