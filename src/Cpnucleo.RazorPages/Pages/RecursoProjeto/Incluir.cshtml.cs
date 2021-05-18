@@ -1,11 +1,11 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
 {
@@ -32,7 +32,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
             {
                 Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, idProjeto);
 
-                var result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
+                IEnumerable<RecursoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
                 SelectRecursos = new SelectList(result, "Id", "Nome");
 
                 return Page();
@@ -52,7 +52,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
                 {
                     Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, RecursoProjeto.IdProjeto);
 
-                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
+                    IEnumerable<RecursoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
                     SelectRecursos = new SelectList(result, "Id", "Nome");
 
                     return Page();

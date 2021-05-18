@@ -1,5 +1,5 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -46,11 +46,11 @@ namespace Cpnucleo.RazorPages.Pages
                 {
                     Lista = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
                     ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
-                                        
+
                     return Page();
                 }
 
-                var result3 = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
+                WorkflowViewModel result3 = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
                 await _cpnucleoApiService.PutAsync("tarefa/putByWorkflow", Token, idTarefa, result3);
 
                 return Page();

@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.IoC;
-using Cpnucleo.API.Configuration;
+﻿using Cpnucleo.API.Configuration;
+using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
