@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.14.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.35.0" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.35.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.35.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="RestSharp" Version="106.11.8-alpha.0.12" />
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\base.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\apontamento.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\impedimentoTarefa.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\recursoTarefa.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\recursoProjeto.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\recurso.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\impedimento.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\workflow.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\tarefa.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\tipoTarefa.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\sistema.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\projeto.proto" GrpcServices="Client" />
+  </ItemGroup>  
+
+</Project>

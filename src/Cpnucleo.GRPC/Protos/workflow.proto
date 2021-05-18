@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "Protos/base.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Cpnucleo.GRPC.Protos.WorkflowProto";
+
+package workflow;
+
+service WorkflowProto {
+
+	rpc Incluir (WorkflowModel) returns (WorkflowModel);
+	rpc Listar (google.protobuf.Empty) returns (ListarReply);
+	rpc Consultar (base.BaseRequest) returns (WorkflowModel);
+	rpc Alterar (WorkflowModel) returns (base.BaseReply);
+	rpc Remover (base.BaseRequest) returns (base.BaseReply);
+}
+
+message WorkflowModel {
+
+	string Id = 1;
+	string Nome = 2;
+	int32 Ordem = 3;
+	google.protobuf.StringValue TamanhoColuna = 4;
+	string DataInclusao = 5;
+}
+
+message ListarReply {
+
+    repeated WorkflowModel Lista = 1;
+}
