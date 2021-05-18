@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Repositories
+namespace Cpnucleo.Domain.Interfaces
 {
     public interface IGenericRepository<TEntity> : IDisposable
     {

@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Repositories;
+using Cpnucleo.Domain.Interfaces;
 using System;
 using System.Threading.Tasks;
 
