@@ -1,11 +1,11 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
 {
@@ -32,7 +32,7 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
             {
                 Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
-                var result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+                IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
                 SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
                 return Page();
@@ -52,9 +52,9 @@ namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
                 {
                     Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
 
-                    var result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+                    IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
                     SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
-                    
+
                     return Page();
                 }
 

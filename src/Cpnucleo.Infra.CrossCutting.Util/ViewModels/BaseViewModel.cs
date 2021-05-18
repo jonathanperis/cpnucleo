@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cpnucleo.RazorPages.Models
+namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     public abstract class BaseViewModel
     {
