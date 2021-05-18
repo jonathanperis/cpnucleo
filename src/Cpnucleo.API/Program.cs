@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Cpnucleo.Services
+namespace Cpnucleo.API
 {
     public class Program
     {

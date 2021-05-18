@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 
-namespace Cpnucleo.Services
+namespace Cpnucleo.API
 {
     public class Startup
     {
