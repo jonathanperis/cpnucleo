@@ -3,8 +3,9 @@ using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class SistemaController : Controller
@@ -34,11 +35,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.SistemaRepository.All();
+                ViewModel.Lista = await _unitOfWork.SistemaRepository.AllAsync();
 
                 return View(ViewModel);
             }
@@ -56,7 +57,7 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Incluir(SistemaViewModel obj)
+        public async Task<IActionResult> Incluir(SistemaViewModel obj)
         {
             try
             {
@@ -65,7 +66,7 @@ namespace Cpnucleo.MVC.Controllers.V2
                     return View();
                 }
 
-                _unitOfWork.SistemaRepository.Add(obj.Sistema);
+                await _unitOfWork.SistemaRepository.AddAsync(obj.Sistema);
 
                 return RedirectToAction("Listar");
             }
@@ -77,11 +78,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.Sistema  = _unitOfWork.SistemaRepository.Get(id);
+                ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -93,13 +94,13 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(SistemaViewModel obj)
+        public async Task<IActionResult> Alterar(SistemaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Sistema  = _unitOfWork.SistemaRepository.Get(obj.Sistema.Id);
+                    ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(obj.Sistema.Id);
 
                     return View(ViewModel);
                 }
@@ -116,11 +117,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.Sistema  = _unitOfWork.SistemaRepository.Get(id);
+                ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -132,18 +133,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(SistemaViewModel obj)
+        public async Task<IActionResult> Remover(SistemaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Sistema  = _unitOfWork.SistemaRepository.Get(obj.Sistema.Id);
+                    ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(obj.Sistema.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.SistemaRepository.Remove(obj.Sistema.Id);
+                await _unitOfWork.SistemaRepository.RemoveAsync(obj.Sistema.Id);
 
                 return RedirectToAction("Listar");
             }

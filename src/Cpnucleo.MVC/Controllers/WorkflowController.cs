@@ -3,8 +3,9 @@ using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class WorkflowController : Controller
@@ -34,11 +35,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.WorkflowRepository.All();
+                ViewModel.Lista = await _unitOfWork.WorkflowRepository.AllAsync();
 
                 return View(ViewModel);
             }
@@ -50,13 +51,13 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Incluir()
+        public async Task<IActionResult> Incluir()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Incluir(WorkflowViewModel obj)
+        public async Task<IActionResult> Incluir(WorkflowViewModel obj)
         {
             try
             {
@@ -65,7 +66,7 @@ namespace Cpnucleo.MVC.Controllers.V2
                     return View();
                 }
 
-                _unitOfWork.WorkflowRepository.Add(obj.Workflow);
+                _unitOfWork.WorkflowRepository.AddAsync(obj.Workflow);
 
                 return RedirectToAction("Listar");
             }
@@ -77,11 +78,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.Workflow  = _unitOfWork.WorkflowRepository.Get(id);
+                ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -93,13 +94,13 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(WorkflowViewModel obj)
+        public async Task<IActionResult> Alterar(WorkflowViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Workflow  = _unitOfWork.WorkflowRepository.Get(obj.Workflow.Id);
+                    ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(obj.Workflow.Id);
 
                     return View(ViewModel);
                 }
@@ -116,11 +117,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.Workflow  = _unitOfWork.WorkflowRepository.Get(id);
+                ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -132,18 +133,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(WorkflowViewModel obj)
+        public async Task<IActionResult> Remover(WorkflowViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Workflow  = _unitOfWork.WorkflowRepository.Get(obj.Workflow.Id);
+                    ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(obj.Workflow.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.WorkflowRepository.Remove(obj.Workflow.Id);
+                await _unitOfWork.WorkflowRepository.RemoveAsync(obj.Workflow.Id);
 
                 return RedirectToAction("Listar");
             }

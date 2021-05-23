@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class RecursoController : Controller
@@ -37,11 +38,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.RecursoRepository.All();
+                ViewModel.Lista = await _unitOfWork.RecursoRepository.AllAsync();
 
                 return View(ViewModel);
             }
@@ -59,7 +60,7 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Incluir(RecursoViewModel obj)
+        public async Task<IActionResult> Incluir(RecursoViewModel obj)
         {
             try
             {
@@ -73,7 +74,7 @@ namespace Cpnucleo.MVC.Controllers.V2
                 obj.Recurso.Senha = senhaCrypt;
                 obj.Recurso.Salt = salt;
 
-                _unitOfWork.RecursoRepository.Add(obj.Recurso);
+                await _unitOfWork.RecursoRepository.AddAsync(obj.Recurso);
 
                 return RedirectToAction("Listar");
             }
@@ -85,11 +86,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.Recurso  = _unitOfWork.RecursoRepository.Get(id);
+                ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(id);
 
                 ViewModel.Recurso.Senha = null;
                 ViewModel.Recurso.Salt = null;
@@ -104,13 +105,13 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(RecursoViewModel obj)
+        public async Task<IActionResult> Alterar(RecursoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Recurso  = _unitOfWork.RecursoRepository.Get(obj.Recurso.Id);
+                    ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(obj.Recurso.Id);
 
                     ViewModel.Recurso.Senha = null;
                     ViewModel.Recurso.Salt = null;                    
@@ -135,11 +136,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.Recurso  = _unitOfWork.RecursoRepository.Get(id);
+                ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(id);
 
                 ViewModel.Recurso.Senha = null;
                 ViewModel.Recurso.Salt = null;                
@@ -154,13 +155,13 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(RecursoViewModel obj)
+        public async Task<IActionResult> Remover(RecursoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Recurso  = _unitOfWork.RecursoRepository.Get(obj.Recurso.Id);
+                    ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(obj.Recurso.Id);
 
                     ViewModel.Recurso.Senha = null;
                     ViewModel.Recurso.Salt = null;                    
@@ -168,7 +169,7 @@ namespace Cpnucleo.MVC.Controllers.V2
                     return View(ViewModel);
                 }
 
-                _unitOfWork.RecursoRepository.Remove(obj.Recurso.Id);
+                await _unitOfWork.RecursoRepository.RemoveAsync(obj.Recurso.Id);
 
                 return RedirectToAction("Listar");
             }

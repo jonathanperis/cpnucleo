@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class RecursoProjetoController : Controller
@@ -35,11 +36,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar(Guid idProjeto)
+        public async Task<IActionResult> Listar(Guid idProjeto)
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.RecursoProjetoRepository.GetByProjeto(idProjeto);
+                ViewModel.Lista = await _unitOfWork.RecursoProjetoRepository.GetByProjetoAsync(idProjeto);
 
                 ViewData["idProjeto"] = idProjeto;
 
@@ -53,28 +54,28 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Incluir(Guid idProjeto)
+        public async Task<IActionResult> Incluir(Guid idProjeto)
         {
-            ViewModel.Projeto = _unitOfWork.ProjetoRepository.Get(idProjeto);
-            ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+            ViewModel.Projeto = await _unitOfWork.ProjetoRepository.GetAsync(idProjeto);
+            ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
             return View(ViewModel);
         }
 
         [HttpPost]
-        public IActionResult Incluir(RecursoProjetoViewModel obj)
+        public async Task<IActionResult> Incluir(RecursoProjetoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Projeto = _unitOfWork.ProjetoRepository.Get(obj.Projeto.Id);
-                    ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+                    ViewModel.Projeto = await _unitOfWork.ProjetoRepository.GetAsync(obj.Projeto.Id);
+                    ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.RecursoProjetoRepository.Add(obj.RecursoProjeto);
+                await _unitOfWork.RecursoProjetoRepository.AddAsync(obj.RecursoProjeto);
 
                 return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
             }
@@ -86,12 +87,12 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.RecursoProjeto  = _unitOfWork.RecursoProjetoRepository.Get(id);
-                ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+                ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(id);
+                ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
                 return View(ViewModel);
             }
@@ -103,14 +104,14 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(RecursoProjetoViewModel obj)
+        public async Task<IActionResult> Alterar(RecursoProjetoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.RecursoProjeto  = _unitOfWork.RecursoProjetoRepository.Get(obj.RecursoProjeto.Id);
-                    ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+                    ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(obj.RecursoProjeto.Id);
+                    ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
@@ -127,11 +128,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.RecursoProjeto  = _unitOfWork.RecursoProjetoRepository.Get(id);
+                ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -143,18 +144,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(RecursoProjetoViewModel obj)
+        public async Task<IActionResult> Remover(RecursoProjetoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.RecursoProjeto  = _unitOfWork.RecursoProjetoRepository.Get(obj.RecursoProjeto.Id);
+                    ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(obj.RecursoProjeto.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.RecursoProjetoRepository.Remove(obj.RecursoProjeto.Id);
+                await _unitOfWork.RecursoProjetoRepository.RemoveAsync(obj.RecursoProjeto.Id);
 
                 return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
             }

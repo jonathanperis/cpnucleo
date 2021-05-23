@@ -3,8 +3,9 @@ using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ImpedimentoController : Controller
@@ -34,11 +35,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.ImpedimentoRepository.All();
+                ViewModel.Lista = await _unitOfWork.ImpedimentoRepository.AllAsync();
 
                 return View(ViewModel);
             }
@@ -56,7 +57,7 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Incluir(ImpedimentoViewModel obj)
+        public async Task<IActionResult> Incluir(ImpedimentoViewModel obj)
         {
             try
             {
@@ -65,7 +66,7 @@ namespace Cpnucleo.MVC.Controllers.V2
                     return View();
                 }
 
-                _unitOfWork.ImpedimentoRepository.Add(obj.Impedimento);
+                await _unitOfWork.ImpedimentoRepository.AddAsync(obj.Impedimento);
 
                 return RedirectToAction("Listar");
             }
@@ -77,11 +78,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.Impedimento  = _unitOfWork.ImpedimentoRepository.Get(id);
+                ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -93,13 +94,13 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(ImpedimentoViewModel obj)
+        public async Task<IActionResult> Alterar(ImpedimentoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Impedimento  = _unitOfWork.ImpedimentoRepository.Get(obj.Impedimento.Id);
+                    ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(obj.Impedimento.Id);
 
                     return View(ViewModel);
                 }
@@ -116,11 +117,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.Impedimento  = _unitOfWork.ImpedimentoRepository.Get(id);
+                ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -132,18 +133,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(ImpedimentoViewModel obj)
+        public async Task<IActionResult> Remover(ImpedimentoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Impedimento  = _unitOfWork.ImpedimentoRepository.Get(obj.Impedimento.Id);
+                    ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(obj.Impedimento.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.ImpedimentoRepository.Remove(obj.Impedimento.Id);
+                await _unitOfWork.ImpedimentoRepository.RemoveAsync(obj.Impedimento.Id);
 
                 return RedirectToAction("Listar");
             }

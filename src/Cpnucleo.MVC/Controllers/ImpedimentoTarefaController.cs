@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ImpedimentoTarefaController : Controller
@@ -35,11 +36,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar(Guid idTarefa)
+        public async Task<IActionResult> Listar(Guid idTarefa)
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.ImpedimentoTarefaRepository.GetByTarefa(idTarefa);
+                ViewModel.Lista = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(idTarefa);
 
                 ViewData["idTarefa"] = idTarefa;
 
@@ -53,28 +54,28 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Incluir(Guid idTarefa)
+        public async Task<IActionResult> Incluir(Guid idTarefa)
         {
-            ViewModel.Tarefa = _unitOfWork.TarefaRepository.Get(idTarefa);
-            ViewModel.SelectImpedimentos = new SelectList(_unitOfWork.ImpedimentoRepository.All(), "Id", "Nome");
+            ViewModel.Tarefa = await _unitOfWork.TarefaRepository.GetAsync(idTarefa);
+            ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
 
             return View(ViewModel);
         }
 
         [HttpPost]
-        public IActionResult Incluir(ImpedimentoTarefaViewModel obj)
+        public async Task<IActionResult> Incluir(ImpedimentoTarefaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Tarefa = _unitOfWork.TarefaRepository.Get(obj.Tarefa.Id);
-                    ViewModel.SelectImpedimentos = new SelectList(_unitOfWork.ImpedimentoRepository.All(), "Id", "Nome");
+                    ViewModel.Tarefa = await _unitOfWork.TarefaRepository.GetAsync(obj.Tarefa.Id);
+                    ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.ImpedimentoTarefaRepository.Add(obj.ImpedimentoTarefa);
+                await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(obj.ImpedimentoTarefa);
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -86,12 +87,12 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.ImpedimentoTarefa  = _unitOfWork.ImpedimentoTarefaRepository.Get(id);
-                ViewModel.SelectImpedimentos = new SelectList(_unitOfWork.ImpedimentoRepository.All(), "Id", "Nome");
+                ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id);
+                ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
 
                 return View(ViewModel);
             }
@@ -103,14 +104,14 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(ImpedimentoTarefaViewModel obj)
+        public async Task<IActionResult> Alterar(ImpedimentoTarefaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.ImpedimentoTarefa  = _unitOfWork.ImpedimentoTarefaRepository.Get(obj.ImpedimentoTarefa.Id);
-                    ViewModel.SelectImpedimentos = new SelectList(_unitOfWork.ImpedimentoRepository.All(), "Id", "Nome");
+                    ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(obj.ImpedimentoTarefa.Id);
+                    ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
@@ -127,11 +128,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.ImpedimentoTarefa  = _unitOfWork.ImpedimentoTarefaRepository.Get(id);
+                ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -143,18 +144,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(ImpedimentoTarefaViewModel obj)
+        public async Task<IActionResult> Remover(ImpedimentoTarefaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.ImpedimentoTarefa  = _unitOfWork.ImpedimentoTarefaRepository.Get(obj.ImpedimentoTarefa.Id);
+                    ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(obj.ImpedimentoTarefa.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.ImpedimentoTarefaRepository.Remove(obj.ImpedimentoTarefa.Id);
+                await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(obj.ImpedimentoTarefa.Id);
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }

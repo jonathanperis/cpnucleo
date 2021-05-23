@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ProjetoController : Controller
@@ -35,11 +36,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar()
+        public async Task<IActionResult> Listar()
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.ProjetoRepository.All(true);
+                ViewModel.Lista = await _unitOfWork.ProjetoRepository.AllAsync(true);
 
                 return View(ViewModel);
             }
@@ -51,26 +52,26 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Incluir()
+        public async Task<IActionResult> Incluir()
         {
-            ViewModel.SelectSistemas = new SelectList(_unitOfWork.SistemaRepository.All(), "Id", "Nome");
+            ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
 
             return View(ViewModel);
         }
 
         [HttpPost]
-        public IActionResult Incluir(ProjetoViewModel obj)
+        public async Task<IActionResult> Incluir(ProjetoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.SelectSistemas = new SelectList(_unitOfWork.SistemaRepository.All(), "Id", "Nome");
+                    ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.ProjetoRepository.Add(obj.Projeto);
+                await _unitOfWork.ProjetoRepository.AddAsync(obj.Projeto);
 
                 return RedirectToAction("Listar");
             }
@@ -82,12 +83,12 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.Projeto  = _unitOfWork.ProjetoRepository.Get(id);
-                ViewModel.SelectSistemas = new SelectList(_unitOfWork.SistemaRepository.All(), "Id", "Nome");
+                ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(id);
+                ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
 
                 return View(ViewModel);
             }
@@ -99,14 +100,14 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(ProjetoViewModel obj)
+        public async Task<IActionResult> Alterar(ProjetoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Projeto  = _unitOfWork.ProjetoRepository.Get(obj.Projeto.Id);
-                    ViewModel.SelectSistemas = new SelectList(_unitOfWork.SistemaRepository.All(), "Id", "Nome");
+                    ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(obj.Projeto.Id);
+                    ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
@@ -123,11 +124,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.Projeto  = _unitOfWork.ProjetoRepository.Get(id);
+                ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -139,18 +140,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(ProjetoViewModel obj)
+        public async Task<IActionResult> Remover(ProjetoViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Projeto  = _unitOfWork.ProjetoRepository.Get(obj.Projeto.Id);
+                    ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(obj.Projeto.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.ProjetoRepository.Remove(obj.Projeto.Id);
+                await _unitOfWork.ProjetoRepository.RemoveAsync(obj.Projeto.Id);
 
                 return RedirectToAction("Listar");
             }

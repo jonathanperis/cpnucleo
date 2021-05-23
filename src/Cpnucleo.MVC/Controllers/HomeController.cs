@@ -12,7 +12,7 @@ using Cpnucleo.MVC.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     public class HomeController : Controller
     {
@@ -81,7 +81,7 @@ namespace Cpnucleo.MVC.Controllers.V2
 
                 bool valido = false;
 
-                Recurso recurso = _unitOfWork.RecursoRepository.GetByLogin(obj.Usuario);
+                Recurso recurso = await _unitOfWork.RecursoRepository.GetByLoginAsync(obj.Usuario);
 
                 if (recurso == null)
                 {
@@ -105,8 +105,7 @@ namespace Cpnucleo.MVC.Controllers.V2
 
                     ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
-                    int expiresUtc;
-                    int.TryParse(_configuration["Cookie:Expires"], out expiresUtc);
+                    int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
 
                     await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
@@ -140,8 +139,8 @@ namespace Cpnucleo.MVC.Controllers.V2
         public IActionResult NaoEncontrado()
         {
             return View();
-        }        
-        
+        }
+
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

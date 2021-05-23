@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers.V2
+namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class RecursoTarefaController : Controller
@@ -35,11 +36,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Listar(Guid idTarefa)
+        public async Task<IActionResult> Listar(Guid idTarefa)
         {
             try
             {
-                ViewModel.Lista = _unitOfWork.RecursoTarefaRepository.GetByTarefa(idTarefa);
+                ViewModel.Lista = await _unitOfWork.RecursoTarefaRepository.GetByTarefaAsync(idTarefa);
 
                 ViewData["idTarefa"] = idTarefa;
 
@@ -53,28 +54,28 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Incluir(Guid idTarefa)
+        public async Task<IActionResult> Incluir(Guid idTarefa)
         {
-            ViewModel.Tarefa = _unitOfWork.TarefaRepository.Get(idTarefa);
-            ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+            ViewModel.Tarefa = await _unitOfWork.TarefaRepository.GetAsync(idTarefa);
+            ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
             return View(ViewModel);
         }
 
         [HttpPost]
-        public IActionResult Incluir(RecursoTarefaViewModel obj)
+        public async Task<IActionResult> Incluir(RecursoTarefaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Tarefa = _unitOfWork.TarefaRepository.Get(obj.Tarefa.Id);
-                    ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+                    ViewModel.Tarefa = await _unitOfWork.TarefaRepository.GetAsync(obj.Tarefa.Id);
+                    ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.RecursoTarefaRepository.Add(obj.RecursoTarefa);
+                await _unitOfWork.RecursoTarefaRepository.AddAsync(obj.RecursoTarefa);
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -86,12 +87,12 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Alterar(Guid id)
+        public async Task<IActionResult> Alterar(Guid id)
         {
             try
             {
-                ViewModel.RecursoTarefa  = _unitOfWork.RecursoTarefaRepository.Get(id);
-                ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+                ViewModel.RecursoTarefa  = await _unitOfWork.RecursoTarefaRepository.GetAsync(id);
+                ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
                 return View(ViewModel);
             }
@@ -103,14 +104,14 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Alterar(RecursoTarefaViewModel obj)
+        public async Task<IActionResult> Alterar(RecursoTarefaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.RecursoTarefa  = _unitOfWork.RecursoTarefaRepository.Get(obj.RecursoTarefa.Id);
-                    ViewModel.SelectRecursos = new SelectList(_unitOfWork.RecursoRepository.All(), "Id", "Nome");
+                    ViewModel.RecursoTarefa  = await _unitOfWork.RecursoTarefaRepository.GetAsync(obj.RecursoTarefa.Id);
+                    ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
 
                     return View(ViewModel);
                 }
@@ -127,11 +128,11 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpGet]
-        public IActionResult Remover(Guid id)
+        public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ViewModel.RecursoTarefa  = _unitOfWork.RecursoTarefaRepository.Get(id);
+                ViewModel.RecursoTarefa  = await _unitOfWork.RecursoTarefaRepository.GetAsync(id);
 
                 return View(ViewModel);
             }
@@ -143,18 +144,18 @@ namespace Cpnucleo.MVC.Controllers.V2
         }
 
         [HttpPost]
-        public IActionResult Remover(RecursoTarefaViewModel obj)
+        public async Task<IActionResult> Remover(RecursoTarefaViewModel obj)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.RecursoTarefa  = _unitOfWork.RecursoTarefaRepository.Get(obj.RecursoTarefa.Id);
+                    ViewModel.RecursoTarefa  = await _unitOfWork.RecursoTarefaRepository.GetAsync(obj.RecursoTarefa.Id);
 
                     return View(ViewModel);
                 }
 
-                _unitOfWork.RecursoTarefaRepository.Remove(obj.RecursoTarefa.Id);
+                await _unitOfWork.RecursoTarefaRepository.RemoveAsync(obj.RecursoTarefa.Id);
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
