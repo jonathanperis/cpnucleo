@@ -17,14 +17,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private SistemaViewModel _viewModel;
+        private SistemaView _viewModel;
 
-        public SistemaViewModel ViewModel
+        public SistemaView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new SistemaViewModel();
+                    _viewModel = new SistemaView();
 
                 return _viewModel;
             }
@@ -57,7 +57,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(SistemaViewModel obj)
+        public async Task<IActionResult> Incluir(SistemaView obj)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(SistemaViewModel obj)
+        public async Task<IActionResult> Alterar(SistemaView obj)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(SistemaViewModel obj)
+        public async Task<IActionResult> Remover(SistemaView obj)
         {
             try
             {

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Cpnucleo.MVC.Models
 {
-    public class HomeViewModel
+    public class HomeView
     {
         [Display(Name = "Login")]
         [Required(ErrorMessage = "Necessário informar o {0}.")]
