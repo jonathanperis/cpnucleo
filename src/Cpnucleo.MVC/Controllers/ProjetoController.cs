@@ -18,14 +18,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private ProjetoViewModel _viewModel;
+        private ProjetoView _viewModel;
 
-        public ProjetoViewModel ViewModel
+        public ProjetoView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new ProjetoViewModel();
+                    _viewModel = new ProjetoView();
 
                 return _viewModel;
             }
@@ -60,7 +60,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(ProjetoViewModel obj)
+        public async Task<IActionResult> Incluir(ProjetoView obj)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(ProjetoViewModel obj)
+        public async Task<IActionResult> Alterar(ProjetoView obj)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(ProjetoViewModel obj)
+        public async Task<IActionResult> Remover(ProjetoView obj)
         {
             try
             {

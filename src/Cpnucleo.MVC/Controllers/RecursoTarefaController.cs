@@ -18,14 +18,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private RecursoTarefaViewModel _viewModel;
+        private RecursoTarefaView _viewModel;
 
-        public RecursoTarefaViewModel ViewModel
+        public RecursoTarefaView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new RecursoTarefaViewModel();
+                    _viewModel = new RecursoTarefaView();
 
                 return _viewModel;
             }
@@ -63,7 +63,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(RecursoTarefaViewModel obj)
+        public async Task<IActionResult> Incluir(RecursoTarefaView obj)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(RecursoTarefaViewModel obj)
+        public async Task<IActionResult> Alterar(RecursoTarefaView obj)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(RecursoTarefaViewModel obj)
+        public async Task<IActionResult> Remover(RecursoTarefaView obj)
         {
             try
             {

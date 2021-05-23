@@ -29,14 +29,14 @@ namespace Cpnucleo.MVC.Controllers
             _configuration = configuration;
         }
 
-        private HomeViewModel _viewModel;
+        private HomeView _viewModel;
 
-        public HomeViewModel ViewModel
+        public HomeView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new HomeViewModel();
+                    _viewModel = new HomeView();
 
                 return _viewModel;
             }
@@ -70,7 +70,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(HomeViewModel obj, string returnUrl = null)
+        public async Task<IActionResult> Login(HomeView obj, string returnUrl = null)
         {
             try
             {
