@@ -22,14 +22,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private ApontamentoViewModel _viewModel;
+        private ApontamentoView _viewModel;
 
-        public ApontamentoViewModel ViewModel
+        public ApontamentoView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new ApontamentoViewModel();
+                    _viewModel = new ApontamentoView();
 
                 return _viewModel;
             }
@@ -62,7 +62,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Listar(ApontamentoViewModel obj)
+        public async Task<IActionResult> Listar(ApontamentoView obj)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(ApontamentoViewModel obj)
+        public async Task<IActionResult> Remover(ApontamentoView obj)
         {
             try
             {

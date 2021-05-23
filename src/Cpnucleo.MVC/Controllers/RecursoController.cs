@@ -20,14 +20,14 @@ namespace Cpnucleo.MVC.Controllers
             _cryptographyManager = cryptographyManager;
         }
 
-        private RecursoViewModel _viewModel;
+        private RecursoView _viewModel;
 
-        public RecursoViewModel ViewModel
+        public RecursoView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new RecursoViewModel();
+                    _viewModel = new RecursoView();
 
                 return _viewModel;
             }
@@ -60,7 +60,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(RecursoViewModel obj)
+        public async Task<IActionResult> Incluir(RecursoView obj)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(RecursoViewModel obj)
+        public async Task<IActionResult> Alterar(RecursoView obj)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(RecursoViewModel obj)
+        public async Task<IActionResult> Remover(RecursoView obj)
         {
             try
             {

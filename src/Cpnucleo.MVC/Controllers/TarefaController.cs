@@ -18,14 +18,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private TarefaViewModel _viewModel;
+        private TarefaView _viewModel;
 
-        public TarefaViewModel ViewModel
+        public TarefaView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new TarefaViewModel();
+                    _viewModel = new TarefaView();
 
                 return _viewModel;
             }
@@ -65,7 +65,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(TarefaViewModel obj)
+        public async Task<IActionResult> Incluir(TarefaView obj)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(TarefaViewModel obj)
+        public async Task<IActionResult> Alterar(TarefaView obj)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(TarefaViewModel obj)
+        public async Task<IActionResult> Remover(TarefaView obj)
         {
             try
             {

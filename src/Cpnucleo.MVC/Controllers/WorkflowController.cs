@@ -17,14 +17,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private WorkflowViewModel _viewModel;
+        private WorkflowView _viewModel;
 
-        public WorkflowViewModel ViewModel
+        public WorkflowView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new WorkflowViewModel();
+                    _viewModel = new WorkflowView();
 
                 return _viewModel;
             }
@@ -57,7 +57,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(WorkflowViewModel obj)
+        public async Task<IActionResult> Incluir(WorkflowView obj)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(WorkflowViewModel obj)
+        public async Task<IActionResult> Alterar(WorkflowView obj)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(WorkflowViewModel obj)
+        public async Task<IActionResult> Remover(WorkflowView obj)
         {
             try
             {

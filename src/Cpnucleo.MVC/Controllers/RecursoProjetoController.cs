@@ -18,14 +18,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private RecursoProjetoViewModel _viewModel;
+        private RecursoProjetoView _viewModel;
 
-        public RecursoProjetoViewModel ViewModel
+        public RecursoProjetoView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new RecursoProjetoViewModel();
+                    _viewModel = new RecursoProjetoView();
 
                 return _viewModel;
             }
@@ -63,7 +63,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(RecursoProjetoViewModel obj)
+        public async Task<IActionResult> Incluir(RecursoProjetoView obj)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(RecursoProjetoViewModel obj)
+        public async Task<IActionResult> Alterar(RecursoProjetoView obj)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(RecursoProjetoViewModel obj)
+        public async Task<IActionResult> Remover(RecursoProjetoView obj)
         {
             try
             {

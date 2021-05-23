@@ -18,14 +18,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private ImpedimentoTarefaViewModel _viewModel;
+        private ImpedimentoTarefaView _viewModel;
 
-        public ImpedimentoTarefaViewModel ViewModel
+        public ImpedimentoTarefaView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new ImpedimentoTarefaViewModel();
+                    _viewModel = new ImpedimentoTarefaView();
 
                 return _viewModel;
             }
@@ -63,7 +63,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(ImpedimentoTarefaViewModel obj)
+        public async Task<IActionResult> Incluir(ImpedimentoTarefaView obj)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(ImpedimentoTarefaViewModel obj)
+        public async Task<IActionResult> Alterar(ImpedimentoTarefaView obj)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(ImpedimentoTarefaViewModel obj)
+        public async Task<IActionResult> Remover(ImpedimentoTarefaView obj)
         {
             try
             {

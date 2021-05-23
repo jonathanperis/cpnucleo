@@ -17,14 +17,14 @@ namespace Cpnucleo.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        private ImpedimentoViewModel _viewModel;
+        private ImpedimentoView _viewModel;
 
-        public ImpedimentoViewModel ViewModel
+        public ImpedimentoView ViewModel
         {
             get
             {
                 if (_viewModel == null)
-                    _viewModel = new ImpedimentoViewModel();
+                    _viewModel = new ImpedimentoView();
 
                 return _viewModel;
             }
@@ -57,7 +57,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Incluir(ImpedimentoViewModel obj)
+        public async Task<IActionResult> Incluir(ImpedimentoView obj)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Alterar(ImpedimentoViewModel obj)
+        public async Task<IActionResult> Alterar(ImpedimentoView obj)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Remover(ImpedimentoViewModel obj)
+        public async Task<IActionResult> Remover(ImpedimentoView obj)
         {
             try
             {

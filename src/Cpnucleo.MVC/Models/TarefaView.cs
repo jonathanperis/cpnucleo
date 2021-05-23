@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Security.Claims;
-using Cpnucleo.Domain.Entities;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Cpnucleo.MVC.Models
 {
-    public class TarefaViewModel
+    public class TarefaView
     {
-        public Tarefa Tarefa { get; set; }
+        public TarefaViewModel Tarefa { get; set; }
 
-        public IEnumerable<Tarefa> Lista { get; set; }
+        public IEnumerable<TarefaViewModel> Lista { get; set; }
 
         public SelectList SelectProjetos { get; set; }
 

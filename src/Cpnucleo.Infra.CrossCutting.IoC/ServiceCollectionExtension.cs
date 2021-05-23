@@ -7,7 +7,7 @@ namespace Cpnucleo.Infra.CrossCutting.IoC
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddCpnucleoApiSetup(this IServiceCollection services)
+        public static IServiceCollection AddCpnucleoSetup(this IServiceCollection services)
         {
             services.AddDomainSetup();
             services.AddInfraDataSetup();
