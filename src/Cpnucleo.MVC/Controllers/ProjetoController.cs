@@ -1,37 +1,40 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ProjetoController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProjetoAppService _projetoAppService;
+        private readonly ISistemaAppService _sistemaAppService;
 
-        public ProjetoController(IUnitOfWork unitOfWork)
+        private ProjetoView _projetoView;
+
+        public ProjetoController(IProjetoAppService projetoAppService, 
+                                 ISistemaAppService sistemaAppService)
         {
-            _unitOfWork = unitOfWork;
+            _projetoAppService = projetoAppService;
+            _sistemaAppService = sistemaAppService;
         }
 
-        private ProjetoView _viewModel;
-
-        public ProjetoView ViewModel
+        public ProjetoView ProjetoView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new ProjetoView();
+                if (_projetoView == null)
+                    _projetoView = new ProjetoView();
 
-                return _viewModel;
+                return _projetoView;
             }
             set
             {
-                _viewModel = value;
+                _projetoView = value;
             }
         }
 
@@ -40,9 +43,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.ProjetoRepository.AllAsync(true);
+                ProjetoView.Lista = await _projetoAppService.AllAsync(true);
 
-                return View(ViewModel);
+                return View(ProjetoView);
             }
             catch (Exception ex)
             {
@@ -54,9 +57,9 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir()
         {
-            ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
+            ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
 
-            return View(ViewModel);
+            return View(ProjetoView);
         }
 
         [HttpPost]
@@ -66,12 +69,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
+                    ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
 
-                    return View(ViewModel);
+                    return View(ProjetoView);
                 }
 
-                await _unitOfWork.ProjetoRepository.AddAsync(obj.Projeto);
+                await _projetoAppService.AddAsync(obj.Projeto);
+                await _projetoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -87,10 +91,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(id);
-                ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
+                ProjetoView.Projeto  = await _projetoAppService.GetAsync(id);
+                ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
 
-                return View(ViewModel);
+                return View(ProjetoView);
             }
             catch (Exception ex)
             {
@@ -106,13 +110,14 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(obj.Projeto.Id);
-                    ViewModel.SelectSistemas = new SelectList(await _unitOfWork.SistemaRepository.AllAsync(), "Id", "Nome");
+                    ProjetoView.Projeto  = await _projetoAppService.GetAsync(obj.Projeto.Id);
+                    ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
 
-                    return View(ViewModel);
+                    return View(ProjetoView);
                 }
 
-                _unitOfWork.ProjetoRepository.Update(obj.Projeto);
+                _projetoAppService.Update(obj.Projeto);
+                await _projetoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -128,9 +133,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(id);
+                ProjetoView.Projeto  = await _projetoAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(ProjetoView);
             }
             catch (Exception ex)
             {
@@ -146,12 +151,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Projeto  = await _unitOfWork.ProjetoRepository.GetAsync(obj.Projeto.Id);
+                    ProjetoView.Projeto  = await _projetoAppService.GetAsync(obj.Projeto.Id);
 
-                    return View(ViewModel);
+                    return View(ProjetoView);
                 }
 
-                await _unitOfWork.ProjetoRepository.RemoveAsync(obj.Projeto.Id);
+                await _projetoAppService.RemoveAsync(obj.Projeto.Id);
+                await _projetoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }

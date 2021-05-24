@@ -11,13 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Presentation", "1 - Pre
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Services", "2 - Services", "{11243658-E0A8-43BB-B3DC-DAD16ADAA4D1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Domain", "3 - Domain", "{B96BB013-6B3C-4B0B-A6F1-ECC00FEEB226}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Domain", "4 - Domain", "{B96BB013-6B3C-4B0B-A6F1-ECC00FEEB226}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infra", "4 - Infra", "{343708C7-725F-4B06-AD6F-D4D9674C2C8C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Infra", "5 - Infra", "{343708C7-725F-4B06-AD6F-D4D9674C2C8C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.1 - Data", "4.1 - Data", "{51896477-8F5D-44EF-A3AE-107B126685E2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.1 - Data", "5.1 - Data", "{51896477-8F5D-44EF-A3AE-107B126685E2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.2 - CrossCutting", "4.2 - CrossCutting", "{27786067-7F33-4B64-BA82-22B8C6086450}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.2 - CrossCutting", "5.2 - CrossCutting", "{27786067-7F33-4B64-BA82-22B8C6086450}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Domain", "src\Cpnucleo.Domain\Cpnucleo.Domain.csproj", "{91E8903D-ECE5-4018-91E2-A41DA4B5607A}"
 EndProject
@@ -47,6 +47,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Infra.CrossCutting.Util", "src\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj", "{CAE8B644-8FC6-4923-8088-5CA97528B369}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Application", "3 - Application", "{5AF7028A-8D26-4F15-BB4D-15E9444EF5FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Application", "src\Cpnucleo.Application\Cpnucleo.Application.csproj", "{67EB6264-50E6-4B64-821C-74EA29A7E920}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +102,10 @@ Global
 		{CAE8B644-8FC6-4923-8088-5CA97528B369}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAE8B644-8FC6-4923-8088-5CA97528B369}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAE8B644-8FC6-4923-8088-5CA97528B369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +128,8 @@ Global
 		{06D55D49-7849-4413-A0A6-784C0C9F4C19} = {12A4173B-9423-4137-AC9C-D07D892493C0}
 		{D64724D0-80C6-4C64-8C8C-90F3ECBD91FC} = {12A4173B-9423-4137-AC9C-D07D892493C0}
 		{CAE8B644-8FC6-4923-8088-5CA97528B369} = {27786067-7F33-4B64-BA82-22B8C6086450}
+		{5AF7028A-8D26-4F15-BB4D-15E9444EF5FE} = {71EC472F-C43B-4999-8C29-D624B0616E10}
+		{67EB6264-50E6-4B64-821C-74EA29A7E920} = {5AF7028A-8D26-4F15-BB4D-15E9444EF5FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {675F3075-5730-40F7-A628-6AE3BDBDFBB1}

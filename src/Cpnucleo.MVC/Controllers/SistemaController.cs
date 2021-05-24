@@ -1,36 +1,36 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class SistemaController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ISistemaAppService _sistemaAppService;
 
-        public SistemaController(IUnitOfWork unitOfWork)
+        private SistemaView _sistemaView;
+
+        public SistemaController(ISistemaAppService sistemaAppService)
         {
-            _unitOfWork = unitOfWork;
+            _sistemaAppService = sistemaAppService;
         }
 
-        private SistemaView _viewModel;
-
-        public SistemaView ViewModel
+        public SistemaView SistemaView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new SistemaView();
+                if (_sistemaView == null)
+                    _sistemaView = new SistemaView();
 
-                return _viewModel;
+                return _sistemaView;
             }
             set
             {
-                _viewModel = value;
+                _sistemaView = value;
             }
         }
 
@@ -39,9 +39,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.SistemaRepository.AllAsync();
+                SistemaView.Lista = await _sistemaAppService.AllAsync();
 
-                return View(ViewModel);
+                return View(SistemaView);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,8 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _unitOfWork.SistemaRepository.AddAsync(obj.Sistema);
+                await _sistemaAppService.AddAsync(obj.Sistema);
+                await _sistemaAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -82,9 +83,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(id);
+                SistemaView.Sistema  = await _sistemaAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(SistemaView);
             }
             catch (Exception ex)
             {
@@ -100,12 +101,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(obj.Sistema.Id);
+                    SistemaView.Sistema  = await _sistemaAppService.GetAsync(obj.Sistema.Id);
 
-                    return View(ViewModel);
+                    return View(SistemaView);
                 }
 
-                _unitOfWork.SistemaRepository.Update(obj.Sistema);
+                _sistemaAppService.Update(obj.Sistema);
+                await _sistemaAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -121,9 +123,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(id);
+                SistemaView.Sistema  = await _sistemaAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(SistemaView);
             }
             catch (Exception ex)
             {
@@ -139,12 +141,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Sistema  = await _unitOfWork.SistemaRepository.GetAsync(obj.Sistema.Id);
+                    SistemaView.Sistema  = await _sistemaAppService.GetAsync(obj.Sistema.Id);
 
-                    return View(ViewModel);
+                    return View(SistemaView);
                 }
 
-                await _unitOfWork.SistemaRepository.RemoveAsync(obj.Sistema.Id);
+                await _sistemaAppService.RemoveAsync(obj.Sistema.Id);
+                await _sistemaAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }

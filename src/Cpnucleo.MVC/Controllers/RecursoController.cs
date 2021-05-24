@@ -1,39 +1,40 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class RecursoController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRecursoAppService _recursoAppService;
         private readonly ICryptographyManager _cryptographyManager;
 
-        public RecursoController(IUnitOfWork unitOfWork, ICryptographyManager cryptographyManager)
+        private RecursoView _recursoView;
+
+        public RecursoController(IRecursoAppService recursoAppService, 
+                                 ICryptographyManager cryptographyManager)
         {
-            _unitOfWork = unitOfWork;
+            _recursoAppService = recursoAppService;
             _cryptographyManager = cryptographyManager;
         }
 
-        private RecursoView _viewModel;
-
-        public RecursoView ViewModel
+        public RecursoView RecursoView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new RecursoView();
+                if (_recursoView == null)
+                    _recursoView = new RecursoView();
 
-                return _viewModel;
+                return _recursoView;
             }
             set
             {
-                _viewModel = value;
+                _recursoView = value;
             }
         }
 
@@ -42,9 +43,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.RecursoRepository.AllAsync();
+                RecursoView.Lista = await _recursoAppService.AllAsync();
 
-                return View(ViewModel);
+                return View(RecursoView);
             }
             catch (Exception ex)
             {
@@ -74,7 +75,8 @@ namespace Cpnucleo.MVC.Controllers
                 obj.Recurso.Senha = senhaCrypt;
                 obj.Recurso.Salt = salt;
 
-                await _unitOfWork.RecursoRepository.AddAsync(obj.Recurso);
+                await _recursoAppService.AddAsync(obj.Recurso);
+                await _recursoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -90,12 +92,12 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(id);
+                RecursoView.Recurso  = await _recursoAppService.GetAsync(id);
 
-                ViewModel.Recurso.Senha = null;
-                ViewModel.Recurso.Salt = null;
+                RecursoView.Recurso.Senha = null;
+                RecursoView.Recurso.Salt = null;
 
-                return View(ViewModel);
+                return View(RecursoView);
             }
             catch (Exception ex)
             {
@@ -111,20 +113,21 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(obj.Recurso.Id);
+                    RecursoView.Recurso  = await _recursoAppService.GetAsync(obj.Recurso.Id);
 
-                    ViewModel.Recurso.Senha = null;
-                    ViewModel.Recurso.Salt = null;                    
+                    RecursoView.Recurso.Senha = null;
+                    RecursoView.Recurso.Salt = null;                    
 
-                    return View(ViewModel);
+                    return View(RecursoView);
                 }
 
                 _cryptographyManager.CryptPbkdf2(obj.Recurso.Senha, out string senhaCrypt, out string salt);
 
                 obj.Recurso.Senha = senhaCrypt;
-                obj.Recurso.Salt = salt;                
+                obj.Recurso.Salt = salt;
 
-                _unitOfWork.RecursoRepository.Update(obj.Recurso);
+                _recursoAppService.Update(obj.Recurso);
+                await _recursoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -140,12 +143,12 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(id);
+                RecursoView.Recurso  = await _recursoAppService.GetAsync(id);
 
-                ViewModel.Recurso.Senha = null;
-                ViewModel.Recurso.Salt = null;                
+                RecursoView.Recurso.Senha = null;
+                RecursoView.Recurso.Salt = null;                
 
-                return View(ViewModel);
+                return View(RecursoView);
             }
             catch (Exception ex)
             {
@@ -161,15 +164,16 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Recurso  = await _unitOfWork.RecursoRepository.GetAsync(obj.Recurso.Id);
+                    RecursoView.Recurso  = await _recursoAppService.GetAsync(obj.Recurso.Id);
 
-                    ViewModel.Recurso.Senha = null;
-                    ViewModel.Recurso.Salt = null;                    
+                    RecursoView.Recurso.Senha = null;
+                    RecursoView.Recurso.Salt = null;                    
 
-                    return View(ViewModel);
+                    return View(RecursoView);
                 }
 
-                await _unitOfWork.RecursoRepository.RemoveAsync(obj.Recurso.Id);
+                await _recursoAppService.RemoveAsync(obj.Recurso.Id);
+                await _recursoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }

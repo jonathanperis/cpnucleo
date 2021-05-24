@@ -1,9 +1,9 @@
-﻿@model Cpnucleo.Domain.Entities.Tarefa
+﻿@model Cpnucleo.Infra.CrossCutting.Util.ViewModels.TarefaViewModel
 
 <li class="@Model.TipoTarefa.Element image-align" id="@Model.Id" data-idworkflow="@Model.IdWorkflow" style="background-image:url(@Model.TipoTarefa.Image);">
     @Model.Nome
     <div class="agile-detail">
-        <i class="fa fa-clock-o"></i> @Model.DataTermino.ToString("dd/MM/yyyy")
+        <i class="fa fa-clock-o"></i> @Model.DataTermino.Value.ToString("dd/MM/yyyy")
         <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@Model.Id criada por @Model.Recurso.Nome</div>
         <i class="fa fa-plus-square-o"></i> <font color="1c84c6"> @Model.QtdHoras horas planejadas</font>
         @if (@Model.HorasConsumidas != 0)

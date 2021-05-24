@@ -1,41 +1,50 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Cpnucleo.MVC.Services;
 using System.Security.Claims;
 using System.Collections.Generic;
-using Cpnucleo.Domain.Entities;
 using System.Linq;
 using System.Threading.Tasks;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ApontamentoController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IApontamentoAppService _apontamentoAppService;
+        private readonly ITarefaAppService _tarefaAppService;
+        private readonly IWorkflowAppService _workflowAppService;
+        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
 
-        public ApontamentoController(IUnitOfWork unitOfWork)
+        private ApontamentoView _apontamentoView;
+
+        public ApontamentoController(IApontamentoAppService apontamentoAppService, 
+                                     ITarefaAppService tarefaAppService, 
+                                     IWorkflowAppService workflowAppService,
+                                     IImpedimentoTarefaAppService impedimentoTarefaAppService)
         {
-            _unitOfWork = unitOfWork;
+            _apontamentoAppService = apontamentoAppService;
+            _tarefaAppService = tarefaAppService;
+            _workflowAppService = workflowAppService;
+            _impedimentoTarefaAppService = impedimentoTarefaAppService;
         }
 
-        private ApontamentoView _viewModel;
-
-        public ApontamentoView ViewModel
+        public ApontamentoView ApontamentoView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new ApontamentoView();
+                if (_apontamentoView == null)
+                    _apontamentoView = new ApontamentoView();
 
-                return _viewModel;
+                return _apontamentoView;
             }
             set
             {
-                _viewModel = value;
+                _apontamentoView = value;
             }
         }
 
@@ -47,12 +56,12 @@ namespace Cpnucleo.MVC.Controllers
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new(retorno);
 
-                ViewModel.Lista = await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(idRecurso);
-                ViewModel.ListaTarefas = await _unitOfWork.TarefaRepository.GetByRecursoAsync(idRecurso);
+                ApontamentoView.Lista = await _apontamentoAppService.GetByRecursoAsync(idRecurso);
+                ApontamentoView.ListaTarefas = await _tarefaAppService.GetByRecursoAsync(idRecurso);
 
-                await PreencherDadosAdicionais(ViewModel.ListaTarefas);
+                await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
 
-                return View(ViewModel);
+                return View(ApontamentoView);
             }
             catch (Exception ex)
             {
@@ -71,15 +80,15 @@ namespace Cpnucleo.MVC.Controllers
                     string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new(retorno);
 
-                    ViewModel.Lista = await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(idRecurso);
-                    ViewModel.ListaTarefas = await _unitOfWork.TarefaRepository.GetByRecursoAsync(idRecurso);
+                    ApontamentoView.Lista = await _apontamentoAppService.GetByRecursoAsync(idRecurso);
+                    ApontamentoView.ListaTarefas = await _tarefaAppService.GetByRecursoAsync(idRecurso);
 
-                    await PreencherDadosAdicionais(ViewModel.ListaTarefas);
+                    await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
 
-                    return View(ViewModel);
+                    return View(ApontamentoView);
                 }
 
-                await _unitOfWork.ApontamentoRepository.AddAsync(obj.Apontamento);
+                await _apontamentoAppService.AddAsync(obj.Apontamento);
 
                 return RedirectToAction("Listar");
             }
@@ -95,9 +104,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Apontamento  = await _unitOfWork.ApontamentoRepository.GetAsync(id);
+                ApontamentoView.Apontamento  = await _apontamentoAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(ApontamentoView);
             }
             catch (Exception ex)
             {
@@ -113,12 +122,12 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Apontamento  = await _unitOfWork.ApontamentoRepository.GetAsync(obj.Apontamento.Id);
+                    ApontamentoView.Apontamento  = await _apontamentoAppService.GetAsync(obj.Apontamento.Id);
 
-                    return View(ViewModel);
+                    return View(ApontamentoView);
                 }
 
-                await _unitOfWork.ApontamentoRepository.RemoveAsync(obj.Apontamento.Id);
+                await _apontamentoAppService.RemoveAsync(obj.Apontamento.Id);
 
                 return RedirectToAction("Listar");
             }
@@ -134,19 +143,19 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.ListaWorkflow = await _unitOfWork.WorkflowRepository.AllAsync();
-                ViewModel.ListaTarefas = await _unitOfWork.TarefaRepository.AllAsync(true);
+                ApontamentoView.ListaWorkflow = await _workflowAppService.AllAsync();
+                ApontamentoView.ListaTarefas = await _tarefaAppService.AllAsync(true);
 
-                int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
+                int colunas = await _workflowAppService.GetQuantidadeColunasAsync();
 
-                foreach (Workflow item in ViewModel.ListaWorkflow)
+                foreach (WorkflowViewModel item in ApontamentoView.ListaWorkflow)
                 {
-                    item.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+                    item.TamanhoColuna = _workflowAppService.GetTamanhoColuna(colunas);
                 }                
 
-                await PreencherDadosAdicionais(ViewModel.ListaTarefas);
+                await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
 
-                return View(ViewModel);
+                return View(ApontamentoView);
             }
             catch (Exception ex)
             {
@@ -162,21 +171,21 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.ListaWorkflow = await _unitOfWork.WorkflowRepository.AllAsync();
-                    ViewModel.ListaTarefas = await _unitOfWork.TarefaRepository.AllAsync(true);
+                    ApontamentoView.ListaWorkflow = await _workflowAppService.AllAsync();
+                    ApontamentoView.ListaTarefas = await _tarefaAppService.AllAsync(true);
 
-                    await PreencherDadosAdicionais (ViewModel.ListaTarefas);
+                    await PreencherDadosAdicionais (ApontamentoView.ListaTarefas);
 
-                    return Json(new { success = false, message = "", body = ViewModel });
+                    return Json(new { success = false, message = "", body = ApontamentoView });
                 }
 
-                Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(idTarefa);
-                Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(idWorkflow);
+                TarefaViewModel tarefa = await _tarefaAppService.GetAsync(idTarefa);
+                WorkflowViewModel workflow = await _workflowAppService.GetAsync(idWorkflow);
 
                 tarefa.IdWorkflow = workflow.Id;
                 tarefa.Workflow = workflow;
 
-                _unitOfWork.TarefaRepository.Update(tarefa);
+                _tarefaAppService.Update(tarefa);
 
                 return Json(new { success = true });
             }
@@ -187,18 +196,18 @@ namespace Cpnucleo.MVC.Controllers
             }
         }    
 
-        private async Task<IEnumerable<Tarefa>> PreencherDadosAdicionais(IEnumerable<Tarefa> lista)
+        private async Task<IEnumerable<TarefaViewModel>> PreencherDadosAdicionais(IEnumerable<TarefaViewModel> lista)
         {
-            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
+            int colunas = await _workflowAppService.GetQuantidadeColunasAsync();
 
-            foreach (Tarefa item in lista)
+            foreach (TarefaViewModel item in lista)
             {
-                item.Workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+                item.Workflow.TamanhoColuna = _workflowAppService.GetTamanhoColuna(colunas);
                 
-                item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasPorRecursoAsync(item.IdRecurso, item.Id);
+                item.HorasConsumidas = await _apontamentoAppService.GetTotalHorasPorRecursoAsync(item.IdRecurso, item.Id);
                 item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-                IEnumerable<ImpedimentoTarefa> tarefas = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(item.Id);
+                IEnumerable<ImpedimentoTarefaViewModel> tarefas = await _impedimentoTarefaAppService.GetByTarefaAsync(item.Id);
 
                 if (tarefas.Any())
                 {

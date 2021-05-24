@@ -1,36 +1,36 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class WorkflowController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IWorkflowAppService _workflowAppService;
 
-        public WorkflowController(IUnitOfWork unitOfWork)
+        private WorkflowView _workflowView;
+
+        public WorkflowController(IWorkflowAppService workflowAppService)
         {
-            _unitOfWork = unitOfWork;
+            _workflowAppService = workflowAppService;
         }
 
-        private WorkflowView _viewModel;
-
-        public WorkflowView ViewModel
+        public WorkflowView WorkflowView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new WorkflowView();
+                if (_workflowView == null)
+                    _workflowView = new WorkflowView();
 
-                return _viewModel;
+                return _workflowView;
             }
             set
             {
-                _viewModel = value;
+                _workflowView = value;
             }
         }
 
@@ -39,9 +39,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.WorkflowRepository.AllAsync();
+                WorkflowView.Lista = await _workflowAppService.AllAsync();
 
-                return View(ViewModel);
+                return View(WorkflowView);
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace Cpnucleo.MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Incluir()
+        public IActionResult Incluir()
         {
             return View();
         }
@@ -66,7 +66,8 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                _unitOfWork.WorkflowRepository.AddAsync(obj.Workflow);
+                await _workflowAppService.AddAsync(obj.Workflow);
+                await _workflowAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -82,9 +83,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(id);
+                WorkflowView.Workflow  = await _workflowAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(WorkflowView);
             }
             catch (Exception ex)
             {
@@ -100,12 +101,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(obj.Workflow.Id);
+                    WorkflowView.Workflow  = await _workflowAppService.GetAsync(obj.Workflow.Id);
 
-                    return View(ViewModel);
+                    return View(WorkflowView);
                 }
 
-                _unitOfWork.WorkflowRepository.Update(obj.Workflow);
+                _workflowAppService.Update(obj.Workflow);
+                await _workflowAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -121,9 +123,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(id);
+                WorkflowView.Workflow  = await _workflowAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(WorkflowView);
             }
             catch (Exception ex)
             {
@@ -139,12 +141,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Workflow  = await _unitOfWork.WorkflowRepository.GetAsync(obj.Workflow.Id);
+                    WorkflowView.Workflow  = await _workflowAppService.GetAsync(obj.Workflow.Id);
 
-                    return View(ViewModel);
+                    return View(WorkflowView);
                 }
 
-                await _unitOfWork.WorkflowRepository.RemoveAsync(obj.Workflow.Id);
+                await _workflowAppService.RemoveAsync(obj.Workflow.Id);
+                await _workflowAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
