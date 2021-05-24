@@ -1,37 +1,43 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class RecursoProjetoController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRecursoProjetoAppService _recursoProjetoAppService;
+        private readonly IRecursoAppService _recursoAppService;
+        private readonly IProjetoAppService _projetoAppService;
 
-        public RecursoProjetoController(IUnitOfWork unitOfWork)
+        private RecursoProjetoView _recursoProjetoView;
+
+        public RecursoProjetoController(IRecursoProjetoAppService recursoProjetoAppService, 
+                                        IRecursoAppService recursoAppService, 
+                                        IProjetoAppService projetoAppService)
         {
-            _unitOfWork = unitOfWork;
+            _recursoProjetoAppService = recursoProjetoAppService;
+            _recursoAppService = recursoAppService;
+            _projetoAppService = projetoAppService;
         }
 
-        private RecursoProjetoView _viewModel;
-
-        public RecursoProjetoView ViewModel
+        public RecursoProjetoView RecursoProjetoView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new RecursoProjetoView();
+                if (_recursoProjetoView == null)
+                    _recursoProjetoView = new RecursoProjetoView();
 
-                return _viewModel;
+                return _recursoProjetoView;
             }
             set
             {
-                _viewModel = value;
+                _recursoProjetoView = value;
             }
         }
 
@@ -40,11 +46,11 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.RecursoProjetoRepository.GetByProjetoAsync(idProjeto);
+                RecursoProjetoView.Lista = await _recursoProjetoAppService.GetByProjetoAsync(idProjeto);
 
                 ViewData["idProjeto"] = idProjeto;
 
-                return View(ViewModel);
+                return View(RecursoProjetoView);
             }
             catch (Exception ex)
             {
@@ -56,10 +62,10 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir(Guid idProjeto)
         {
-            ViewModel.Projeto = await _unitOfWork.ProjetoRepository.GetAsync(idProjeto);
-            ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
+            RecursoProjetoView.Projeto = await _projetoAppService.GetAsync(idProjeto);
+            RecursoProjetoView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
-            return View(ViewModel);
+            return View(RecursoProjetoView);
         }
 
         [HttpPost]
@@ -69,13 +75,14 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Projeto = await _unitOfWork.ProjetoRepository.GetAsync(obj.Projeto.Id);
-                    ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
+                    RecursoProjetoView.Projeto = await _projetoAppService.GetAsync(obj.Projeto.Id);
+                    RecursoProjetoView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
-                    return View(ViewModel);
+                    return View(RecursoProjetoView);
                 }
 
-                await _unitOfWork.RecursoProjetoRepository.AddAsync(obj.RecursoProjeto);
+                await _recursoProjetoAppService.AddAsync(obj.RecursoProjeto);
+                await _recursoProjetoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
             }
@@ -91,10 +98,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(id);
-                ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
+                RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(id);
+                RecursoProjetoView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
-                return View(ViewModel);
+                return View(RecursoProjetoView);
             }
             catch (Exception ex)
             {
@@ -110,13 +117,14 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(obj.RecursoProjeto.Id);
-                    ViewModel.SelectRecursos = new SelectList(await _unitOfWork.RecursoRepository.AllAsync(), "Id", "Nome");
+                    RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(obj.RecursoProjeto.Id);
+                    RecursoProjetoView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
-                    return View(ViewModel);
+                    return View(RecursoProjetoView);
                 }
 
-                _unitOfWork.RecursoProjetoRepository.Update(obj.RecursoProjeto);
+                _recursoProjetoAppService.Update(obj.RecursoProjeto);
+                await _recursoProjetoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
             }
@@ -132,9 +140,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(id);
+                RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(RecursoProjetoView);
             }
             catch (Exception ex)
             {
@@ -150,12 +158,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.RecursoProjeto  = await _unitOfWork.RecursoProjetoRepository.GetAsync(obj.RecursoProjeto.Id);
+                    RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(obj.RecursoProjeto.Id);
 
-                    return View(ViewModel);
+                    return View(RecursoProjetoView);
                 }
 
-                await _unitOfWork.RecursoProjetoRepository.RemoveAsync(obj.RecursoProjeto.Id);
+                await _recursoProjetoAppService.RemoveAsync(obj.RecursoProjeto.Id);
+                await _recursoProjetoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
             }

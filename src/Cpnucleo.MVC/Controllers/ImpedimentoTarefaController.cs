@@ -1,37 +1,43 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ImpedimentoTarefaController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
+        private readonly ITarefaAppService _tarefaAppService;
+        private readonly IImpedimentoAppService _impedimentoAppService;
 
-        public ImpedimentoTarefaController(IUnitOfWork unitOfWork)
+        private ImpedimentoTarefaView _impedimentoTarefaView;
+
+        public ImpedimentoTarefaController(IImpedimentoTarefaAppService impedimentoTarefaAppService,
+                                           ITarefaAppService tarefaAppService, 
+                                           IImpedimentoAppService impedimentoAppService)
         {
-            _unitOfWork = unitOfWork;
+            _impedimentoTarefaAppService = impedimentoTarefaAppService;
+            _tarefaAppService = tarefaAppService;
+            _impedimentoAppService = impedimentoAppService;
         }
 
-        private ImpedimentoTarefaView _viewModel;
-
-        public ImpedimentoTarefaView ViewModel
+        public ImpedimentoTarefaView ImpedimentoTarefaView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new ImpedimentoTarefaView();
+                if (_impedimentoTarefaView == null)
+                    _impedimentoTarefaView = new ImpedimentoTarefaView();
 
-                return _viewModel;
+                return _impedimentoTarefaView;
             }
             set
             {
-                _viewModel = value;
+                _impedimentoTarefaView = value;
             }
         }
 
@@ -40,11 +46,11 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(idTarefa);
+                ImpedimentoTarefaView.Lista = await _impedimentoTarefaAppService.GetByTarefaAsync(idTarefa);
 
                 ViewData["idTarefa"] = idTarefa;
 
-                return View(ViewModel);
+                return View(ImpedimentoTarefaView);
             }
             catch (Exception ex)
             {
@@ -56,10 +62,10 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir(Guid idTarefa)
         {
-            ViewModel.Tarefa = await _unitOfWork.TarefaRepository.GetAsync(idTarefa);
-            ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
+            ImpedimentoTarefaView.Tarefa = await _tarefaAppService.GetAsync(idTarefa);
+            ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
 
-            return View(ViewModel);
+            return View(ImpedimentoTarefaView);
         }
 
         [HttpPost]
@@ -69,13 +75,14 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Tarefa = await _unitOfWork.TarefaRepository.GetAsync(obj.Tarefa.Id);
-                    ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
+                    ImpedimentoTarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
+                    ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
 
-                    return View(ViewModel);
+                    return View(ImpedimentoTarefaView);
                 }
 
-                await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(obj.ImpedimentoTarefa);
+                await _impedimentoTarefaAppService.AddAsync(obj.ImpedimentoTarefa);
+                await _impedimentoTarefaAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -91,10 +98,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id);
-                ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
+                ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(id);
+                ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
 
-                return View(ViewModel);
+                return View(ImpedimentoTarefaView);
             }
             catch (Exception ex)
             {
@@ -110,13 +117,14 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(obj.ImpedimentoTarefa.Id);
-                    ViewModel.SelectImpedimentos = new SelectList(await _unitOfWork.ImpedimentoRepository.AllAsync(), "Id", "Nome");
+                    ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
+                    ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
 
-                    return View(ViewModel);
+                    return View(ImpedimentoTarefaView);
                 }
 
-                _unitOfWork.ImpedimentoTarefaRepository.Update(obj.ImpedimentoTarefa);
+                _impedimentoTarefaAppService.Update(obj.ImpedimentoTarefa);
+                await _impedimentoTarefaAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -132,9 +140,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id);
+                ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(ImpedimentoTarefaView);
             }
             catch (Exception ex)
             {
@@ -150,12 +158,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.ImpedimentoTarefa  = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(obj.ImpedimentoTarefa.Id);
+                    ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
 
-                    return View(ViewModel);
+                    return View(ImpedimentoTarefaView);
                 }
 
-                await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(obj.ImpedimentoTarefa.Id);
+                await _impedimentoTarefaAppService.RemoveAsync(obj.ImpedimentoTarefa.Id);
+                await _impedimentoTarefaAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
