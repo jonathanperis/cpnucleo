@@ -1,36 +1,36 @@
 ﻿using System;
-using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Mvc;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
     public class ImpedimentoController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IImpedimentoAppService _impedimentoAppService;
 
-        public ImpedimentoController(IUnitOfWork unitOfWork)
+        private ImpedimentoView _impedimentoView;
+
+        public ImpedimentoController(IImpedimentoAppService impedimentoAppService)
         {
-            _unitOfWork = unitOfWork;
+            _impedimentoAppService = impedimentoAppService;
         }
 
-        private ImpedimentoView _viewModel;
-
-        public ImpedimentoView ViewModel
+        public ImpedimentoView ImpedimentoView
         {
             get
             {
-                if (_viewModel == null)
-                    _viewModel = new ImpedimentoView();
+                if (_impedimentoView == null)
+                    _impedimentoView = new ImpedimentoView();
 
-                return _viewModel;
+                return _impedimentoView;
             }
             set
             {
-                _viewModel = value;
+                _impedimentoView = value;
             }
         }
 
@@ -39,9 +39,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Lista = await _unitOfWork.ImpedimentoRepository.AllAsync();
+                ImpedimentoView.Lista = await _impedimentoAppService.AllAsync();
 
-                return View(ViewModel);
+                return View(ImpedimentoView);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,8 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _unitOfWork.ImpedimentoRepository.AddAsync(obj.Impedimento);
+                await _impedimentoAppService.AddAsync(obj.Impedimento);
+                await _impedimentoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -82,9 +83,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
+                ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(ImpedimentoView);
             }
             catch (Exception ex)
             {
@@ -100,12 +101,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(obj.Impedimento.Id);
+                    ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
 
-                    return View(ViewModel);
+                    return View(ImpedimentoView);
                 }
 
-                _unitOfWork.ImpedimentoRepository.Update(obj.Impedimento);
+                _impedimentoAppService.Update(obj.Impedimento);
+                await _impedimentoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }
@@ -121,9 +123,9 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
+                ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(id);
 
-                return View(ViewModel);
+                return View(ImpedimentoView);
             }
             catch (Exception ex)
             {
@@ -139,12 +141,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewModel.Impedimento  = await _unitOfWork.ImpedimentoRepository.GetAsync(obj.Impedimento.Id);
+                    ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
 
-                    return View(ViewModel);
+                    return View(ImpedimentoView);
                 }
 
-                await _unitOfWork.ImpedimentoRepository.RemoveAsync(obj.Impedimento.Id);
+                await _impedimentoAppService.RemoveAsync(obj.Impedimento.Id);
+                await _impedimentoAppService.SaveChangesAsync();
 
                 return RedirectToAction("Listar");
             }

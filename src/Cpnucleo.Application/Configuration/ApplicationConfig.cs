@@ -4,11 +4,11 @@ using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Cpnucleo.MVC.Configuration
+namespace Cpnucleo.Application.Configuration
 {
-    public static class MvcConfig
+    public static class ApplicationConfig
     {
-        public static void AddMvcConfigSetup(this IServiceCollection services)
+        public static void AddApplicationSetup(this IServiceCollection services)
         {
             var assembliesForScanning = new Assembly[]
             {
