@@ -1,5 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util
+﻿using System.Runtime.Serialization;
+
+namespace Cpnucleo.Infra.CrossCutting.Util
 {
+    [DataContract]
     public enum OperationResult
     {
         Failed,
