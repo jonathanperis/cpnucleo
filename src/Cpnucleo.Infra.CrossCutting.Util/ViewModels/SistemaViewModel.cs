@@ -28,20 +28,5 @@ namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
         [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
         [DataMember(Order = 4)]
         public string Descricao { get; set; }
-
-        [Display(Name = "Descrição")]
-        [Required(ErrorMessage = "Necessário informar a {0} do Sistema.")]
-        [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
-        [DataMember(Order = 5)]
-        public string Teste2 { get; set; }
-
-        [Display(Name = "Descrição")]
-        [Required(ErrorMessage = "Necessário informar a {0} do Sistema.")]
-        [MaxLength(450, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
-        [DataMember(Order = 6)]
-        public bool Sucesso { get; set; }
-
-        [DataMember(Order = 7)]
-        public WorkflowViewModel Workflow { get; set; }
     }
 }
