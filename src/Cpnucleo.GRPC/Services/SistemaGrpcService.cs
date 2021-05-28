@@ -19,7 +19,7 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateSistemaResponse> AddAsync(CreateSistemaComand command, CallContext context = default)
+        public async Task<CreateSistemaResponse> AddAsync(CreateSistemaCommand command, CallContext context = default)
         {
             return await _mediator.Send(command);
         }
@@ -34,12 +34,12 @@ namespace Cpnucleo.GRPC.Services
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveSistemaResponse> RemoveAsync(RemoveSistemaComand command, CallContext context = default)
+        public async Task<RemoveSistemaResponse> RemoveAsync(RemoveSistemaCommand command, CallContext context = default)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateSistemaResponse> UpdateAsync(UpdateSistemaComand command, CallContext context = default)
+        public async Task<UpdateSistemaResponse> UpdateAsync(UpdateSistemaCommand command, CallContext context = default)
         {
             return await _mediator.Send(command);
         }

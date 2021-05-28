@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class ImpedimentoTarefaHandler :
-        IRequestHandler<CreateImpedimentoTarefaComand, CreateImpedimentoTarefaResponse>,
+        IRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse>,
         IRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse>,
         IRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse>,
-        IRequestHandler<RemoveImpedimentoTarefaComand, RemoveImpedimentoTarefaResponse>,
-        IRequestHandler<UpdateImpedimentoTarefaComand, UpdateImpedimentoTarefaResponse>,
+        IRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse>,
+        IRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse>,
         IRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateImpedimentoTarefaResponse> Handle(CreateImpedimentoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<CreateImpedimentoTarefaResponse> Handle(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateImpedimentoTarefaResponse result = new CreateImpedimentoTarefaResponse
             {
@@ -74,7 +74,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveImpedimentoTarefaResponse> Handle(RemoveImpedimentoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<RemoveImpedimentoTarefaResponse> Handle(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveImpedimentoTarefaResponse result = new RemoveImpedimentoTarefaResponse
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateImpedimentoTarefaResponse> Handle(UpdateImpedimentoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<UpdateImpedimentoTarefaResponse> Handle(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateImpedimentoTarefaResponse result = new UpdateImpedimentoTarefaResponse
             {

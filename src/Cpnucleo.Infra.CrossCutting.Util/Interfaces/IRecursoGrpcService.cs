@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface IRecursoGrpcService
     {
         [OperationContract]
-        Task<CreateRecursoResponse> AddAsync(CreateRecursoComand command, CallContext context = default);
+        Task<CreateRecursoResponse> AddAsync(CreateRecursoCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateRecursoResponse> UpdateAsync(UpdateRecursoComand command, CallContext context = default);
+        Task<UpdateRecursoResponse> UpdateAsync(UpdateRecursoCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetRecursoResponse> GetAsync(GetRecursoQuery query, CallContext context = default);
@@ -24,6 +24,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListRecursoResponse> AllAsync(ListRecursoQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveRecursoResponse> RemoveAsync(RemoveRecursoComand command, CallContext context = default);
+        Task<RemoveRecursoResponse> RemoveAsync(RemoveRecursoCommand command, CallContext context = default);
     }
 }

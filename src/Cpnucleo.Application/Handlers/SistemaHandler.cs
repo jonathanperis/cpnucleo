@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class SistemaHandler :
-        IRequestHandler<CreateSistemaComand, CreateSistemaResponse>,
+        IRequestHandler<CreateSistemaCommand, CreateSistemaResponse>,
         IRequestHandler<GetSistemaQuery, GetSistemaResponse>,
         IRequestHandler<ListSistemaQuery, ListSistemaResponse>,
-        IRequestHandler<RemoveSistemaComand, RemoveSistemaResponse>,
-        IRequestHandler<UpdateSistemaComand, UpdateSistemaResponse>
+        IRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse>,
+        IRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateSistemaResponse> Handle(CreateSistemaComand request, CancellationToken cancellationToken)
+        public async Task<CreateSistemaResponse> Handle(CreateSistemaCommand request, CancellationToken cancellationToken)
         {
             CreateSistemaResponse result = new CreateSistemaResponse
             {
@@ -73,7 +73,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveSistemaResponse> Handle(RemoveSistemaComand request, CancellationToken cancellationToken)
+        public async Task<RemoveSistemaResponse> Handle(RemoveSistemaCommand request, CancellationToken cancellationToken)
         {
             RemoveSistemaResponse result = new RemoveSistemaResponse
             {
@@ -96,7 +96,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateSistemaResponse> Handle(UpdateSistemaComand request, CancellationToken cancellationToken)
+        public async Task<UpdateSistemaResponse> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken)
         {
             UpdateSistemaResponse result = new UpdateSistemaResponse
             {

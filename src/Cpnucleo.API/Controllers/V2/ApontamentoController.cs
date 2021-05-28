@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Apontamento), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateApontamentoResponse>> Post([FromBody] CreateApontamentoComand request)
+        public async Task<ActionResult<CreateApontamentoResponse>> Post([FromBody] CreateApontamentoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateApontamentoResponse>> Put(Guid id, [FromBody] UpdateApontamentoComand request)
+        public async Task<ActionResult<UpdateApontamentoResponse>> Put(Guid id, [FromBody] UpdateApontamentoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveApontamentoResponse>> Delete(Guid id)
         {
-            RemoveApontamentoResponse result = await _mediator.Send(new RemoveApontamentoComand
+            RemoveApontamentoResponse result = await _mediator.Send(new RemoveApontamentoCommand
             {
                 Id = id
             });

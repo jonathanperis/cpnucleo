@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class WorkflowHandler :
-        IRequestHandler<CreateWorkflowComand, CreateWorkflowResponse>,
+        IRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse>,
         IRequestHandler<GetWorkflowQuery, GetWorkflowResponse>,
         IRequestHandler<ListWorkflowQuery, ListWorkflowResponse>,
-        IRequestHandler<RemoveWorkflowComand, RemoveWorkflowResponse>,
-        IRequestHandler<UpdateWorkflowComand, UpdateWorkflowResponse>
+        IRequestHandler<RemoveWorkflowCommand, RemoveWorkflowResponse>,
+        IRequestHandler<UpdateWorkflowCommand, UpdateWorkflowResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateWorkflowResponse> Handle(CreateWorkflowComand request, CancellationToken cancellationToken)
+        public async Task<CreateWorkflowResponse> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
         {
             CreateWorkflowResponse result = new CreateWorkflowResponse
             {
@@ -73,7 +73,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveWorkflowResponse> Handle(RemoveWorkflowComand request, CancellationToken cancellationToken)
+        public async Task<RemoveWorkflowResponse> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)
         {
             RemoveWorkflowResponse result = new RemoveWorkflowResponse
             {
@@ -96,7 +96,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateWorkflowResponse> Handle(UpdateWorkflowComand request, CancellationToken cancellationToken)
+        public async Task<UpdateWorkflowResponse> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
         {
             UpdateWorkflowResponse result = new UpdateWorkflowResponse
             {

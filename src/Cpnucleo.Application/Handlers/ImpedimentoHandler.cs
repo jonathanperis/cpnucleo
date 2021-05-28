@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class ImpedimentoHandler :
-        IRequestHandler<CreateImpedimentoComand, CreateImpedimentoResponse>,
+        IRequestHandler<CreateImpedimentoCommand, CreateImpedimentoResponse>,
         IRequestHandler<GetImpedimentoQuery, GetImpedimentoResponse>,
         IRequestHandler<ListImpedimentoQuery, ListImpedimentoResponse>,
-        IRequestHandler<RemoveImpedimentoComand, RemoveImpedimentoResponse>,
-        IRequestHandler<UpdateImpedimentoComand, UpdateImpedimentoResponse>
+        IRequestHandler<RemoveImpedimentoCommand, RemoveImpedimentoResponse>,
+        IRequestHandler<UpdateImpedimentoCommand, UpdateImpedimentoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateImpedimentoResponse> Handle(CreateImpedimentoComand request, CancellationToken cancellationToken)
+        public async Task<CreateImpedimentoResponse> Handle(CreateImpedimentoCommand request, CancellationToken cancellationToken)
         {
             CreateImpedimentoResponse result = new CreateImpedimentoResponse
             {
@@ -73,7 +73,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveImpedimentoResponse> Handle(RemoveImpedimentoComand request, CancellationToken cancellationToken)
+        public async Task<RemoveImpedimentoResponse> Handle(RemoveImpedimentoCommand request, CancellationToken cancellationToken)
         {
             RemoveImpedimentoResponse result = new RemoveImpedimentoResponse
             {
@@ -96,7 +96,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateImpedimentoResponse> Handle(UpdateImpedimentoComand request, CancellationToken cancellationToken)
+        public async Task<UpdateImpedimentoResponse> Handle(UpdateImpedimentoCommand request, CancellationToken cancellationToken)
         {
             UpdateImpedimentoResponse result = new UpdateImpedimentoResponse
             {

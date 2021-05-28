@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface IImpedimentoGrpcService
     {
         [OperationContract]
-        Task<CreateImpedimentoResponse> AddAsync(CreateImpedimentoComand command, CallContext context = default);
+        Task<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoComand command, CallContext context = default);
+        Task<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query, CallContext context = default);
@@ -24,6 +24,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoComand command, CallContext context = default);
+        Task<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command, CallContext context = default);
     }
 }

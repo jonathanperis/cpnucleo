@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class RecursoTarefaHandler :
-        IRequestHandler<CreateRecursoTarefaComand, CreateRecursoTarefaResponse>,
+        IRequestHandler<CreateRecursoTarefaCommand, CreateRecursoTarefaResponse>,
         IRequestHandler<GetRecursoTarefaQuery, GetRecursoTarefaResponse>,
         IRequestHandler<ListRecursoTarefaQuery, ListRecursoTarefaResponse>,
-        IRequestHandler<RemoveRecursoTarefaComand, RemoveRecursoTarefaResponse>,
-        IRequestHandler<UpdateRecursoTarefaComand, UpdateRecursoTarefaResponse>,
+        IRequestHandler<RemoveRecursoTarefaCommand, RemoveRecursoTarefaResponse>,
+        IRequestHandler<UpdateRecursoTarefaCommand, UpdateRecursoTarefaResponse>,
         IRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateRecursoTarefaResponse> Handle(CreateRecursoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<CreateRecursoTarefaResponse> Handle(CreateRecursoTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateRecursoTarefaResponse result = new CreateRecursoTarefaResponse
             {
@@ -74,7 +74,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveRecursoTarefaResponse> Handle(RemoveRecursoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<RemoveRecursoTarefaResponse> Handle(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveRecursoTarefaResponse result = new RemoveRecursoTarefaResponse
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateRecursoTarefaResponse> Handle(UpdateRecursoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<UpdateRecursoTarefaResponse> Handle(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateRecursoTarefaResponse result = new UpdateRecursoTarefaResponse
             {

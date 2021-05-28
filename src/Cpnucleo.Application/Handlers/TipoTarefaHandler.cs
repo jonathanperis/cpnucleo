@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class TipoTarefaHandler :
-        IRequestHandler<CreateTipoTarefaComand, CreateTipoTarefaResponse>,
+        IRequestHandler<CreateTipoTarefaCommand, CreateTipoTarefaResponse>,
         IRequestHandler<GetTipoTarefaQuery, GetTipoTarefaResponse>,
         IRequestHandler<ListTipoTarefaQuery, ListTipoTarefaResponse>,
-        IRequestHandler<RemoveTipoTarefaComand, RemoveTipoTarefaResponse>,
-        IRequestHandler<UpdateTipoTarefaComand, UpdateTipoTarefaResponse>
+        IRequestHandler<RemoveTipoTarefaCommand, RemoveTipoTarefaResponse>,
+        IRequestHandler<UpdateTipoTarefaCommand, UpdateTipoTarefaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateTipoTarefaResponse> Handle(CreateTipoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<CreateTipoTarefaResponse> Handle(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateTipoTarefaResponse result = new CreateTipoTarefaResponse
             {
@@ -73,7 +73,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveTipoTarefaResponse> Handle(RemoveTipoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<RemoveTipoTarefaResponse> Handle(RemoveTipoTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveTipoTarefaResponse result = new RemoveTipoTarefaResponse
             {
@@ -96,7 +96,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateTipoTarefaResponse> Handle(UpdateTipoTarefaComand request, CancellationToken cancellationToken)
+        public async Task<UpdateTipoTarefaResponse> Handle(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateTipoTarefaResponse result = new UpdateTipoTarefaResponse
             {

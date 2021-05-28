@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Workflow), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateWorkflowResponse>> Post([FromBody] CreateWorkflowComand request)
+        public async Task<ActionResult<CreateWorkflowResponse>> Post([FromBody] CreateWorkflowCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateWorkflowResponse>> Put(Guid id, [FromBody] UpdateWorkflowComand request)
+        public async Task<ActionResult<UpdateWorkflowResponse>> Put(Guid id, [FromBody] UpdateWorkflowCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveWorkflowResponse>> Delete(Guid id)
         {
-            RemoveWorkflowResponse result = await _mediator.Send(new RemoveWorkflowComand
+            RemoveWorkflowResponse result = await _mediator.Send(new RemoveWorkflowCommand
             {
                 Id = id
             });

@@ -18,7 +18,7 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateImpedimentoResponse> AddAsync(CreateImpedimentoComand command, CallContext context = default)
+        public async Task<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command, CallContext context = default)
         {
             return await _mediator.Send(command);
         }
@@ -33,12 +33,12 @@ namespace Cpnucleo.GRPC.Services
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoComand command, CallContext context = default)
+        public async Task<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command, CallContext context = default)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoComand command, CallContext context = default)
+        public async Task<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command, CallContext context = default)
         {
             return await _mediator.Send(command);
         }

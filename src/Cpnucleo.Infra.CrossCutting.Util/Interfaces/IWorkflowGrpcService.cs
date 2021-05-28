@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface IWorkflowGrpcService
     {
         [OperationContract]
-        Task<CreateWorkflowResponse> AddAsync(CreateWorkflowComand command, CallContext context = default);
+        Task<CreateWorkflowResponse> AddAsync(CreateWorkflowCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowComand command, CallContext context = default);
+        Task<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetWorkflowResponse> GetAsync(GetWorkflowQuery query, CallContext context = default);
@@ -24,6 +24,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListWorkflowResponse> AllAsync(ListWorkflowQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowComand command, CallContext context = default);
+        Task<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowCommand command, CallContext context = default);
     }
 }

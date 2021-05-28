@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class ProjetoHandler :
-        IRequestHandler<CreateProjetoComand, CreateProjetoResponse>,
+        IRequestHandler<CreateProjetoCommand, CreateProjetoResponse>,
         IRequestHandler<GetProjetoQuery, GetProjetoResponse>,
         IRequestHandler<ListProjetoQuery, ListProjetoResponse>,
-        IRequestHandler<RemoveProjetoComand, RemoveProjetoResponse>,
-        IRequestHandler<UpdateProjetoComand, UpdateProjetoResponse>
+        IRequestHandler<RemoveProjetoCommand, RemoveProjetoResponse>,
+        IRequestHandler<UpdateProjetoCommand, UpdateProjetoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateProjetoResponse> Handle(CreateProjetoComand request, CancellationToken cancellationToken)
+        public async Task<CreateProjetoResponse> Handle(CreateProjetoCommand request, CancellationToken cancellationToken)
         {
             CreateProjetoResponse result = new CreateProjetoResponse
             {
@@ -73,7 +73,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveProjetoResponse> Handle(RemoveProjetoComand request, CancellationToken cancellationToken)
+        public async Task<RemoveProjetoResponse> Handle(RemoveProjetoCommand request, CancellationToken cancellationToken)
         {
             RemoveProjetoResponse result = new RemoveProjetoResponse
             {
@@ -96,7 +96,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateProjetoResponse> Handle(UpdateProjetoComand request, CancellationToken cancellationToken)
+        public async Task<UpdateProjetoResponse> Handle(UpdateProjetoCommand request, CancellationToken cancellationToken)
         {
             UpdateProjetoResponse result = new UpdateProjetoResponse
             {
