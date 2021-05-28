@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class RecursoHandler :
-        IRequestHandler<CreateRecursoComand, CreateRecursoResponse>,
+        IRequestHandler<CreateRecursoCommand, CreateRecursoResponse>,
         IRequestHandler<GetRecursoQuery, GetRecursoResponse>,
         IRequestHandler<ListRecursoQuery, ListRecursoResponse>,
-        IRequestHandler<RemoveRecursoComand, RemoveRecursoResponse>,
-        IRequestHandler<UpdateRecursoComand, UpdateRecursoResponse>,
+        IRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse>,
+        IRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse>,
         IRequestHandler<AuthQuery, AuthResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -34,7 +34,7 @@ namespace Cpnucleo.Domain.Handlers
             _cryptographyManager = cryptographyManager;
         }
 
-        public async Task<CreateRecursoResponse> Handle(CreateRecursoComand request, CancellationToken cancellationToken)
+        public async Task<CreateRecursoResponse> Handle(CreateRecursoCommand request, CancellationToken cancellationToken)
         {
             CreateRecursoResponse result = new CreateRecursoResponse
             {
@@ -77,7 +77,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveRecursoResponse> Handle(RemoveRecursoComand request, CancellationToken cancellationToken)
+        public async Task<RemoveRecursoResponse> Handle(RemoveRecursoCommand request, CancellationToken cancellationToken)
         {
             RemoveRecursoResponse result = new RemoveRecursoResponse
             {
@@ -100,7 +100,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateRecursoResponse> Handle(UpdateRecursoComand request, CancellationToken cancellationToken)
+        public async Task<UpdateRecursoResponse> Handle(UpdateRecursoCommand request, CancellationToken cancellationToken)
         {
             UpdateRecursoResponse result = new UpdateRecursoResponse
             {

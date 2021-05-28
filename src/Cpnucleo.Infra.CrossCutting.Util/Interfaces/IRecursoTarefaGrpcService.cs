@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface IRecursoTarefaGrpcService
     {
         [OperationContract]
-        Task<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaComand command, CallContext context = default);
+        Task<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaComand command, CallContext context = default);
+        Task<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetRecursoTarefaResponse> GetAsync(GetRecursoTarefaQuery query, CallContext context = default);
@@ -24,7 +24,7 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListRecursoTarefaResponse> AllAsync(ListRecursoTarefaQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaComand command, CallContext context = default);
+        Task<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query);

@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(ImpedimentoTarefa), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateImpedimentoTarefaResponse>> Post([FromBody] CreateImpedimentoTarefaComand request)
+        public async Task<ActionResult<CreateImpedimentoTarefaResponse>> Post([FromBody] CreateImpedimentoTarefaCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateImpedimentoTarefaResponse>> Put(Guid id, [FromBody] UpdateImpedimentoTarefaComand request)
+        public async Task<ActionResult<UpdateImpedimentoTarefaResponse>> Put(Guid id, [FromBody] UpdateImpedimentoTarefaCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveImpedimentoTarefaResponse>> Delete(Guid id)
         {
-            RemoveImpedimentoTarefaResponse result = await _mediator.Send(new RemoveImpedimentoTarefaComand
+            RemoveImpedimentoTarefaResponse result = await _mediator.Send(new RemoveImpedimentoTarefaCommand
             {
                 Id = id
             });

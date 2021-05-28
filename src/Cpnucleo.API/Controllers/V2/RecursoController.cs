@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Recurso), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateRecursoResponse>> Post([FromBody] CreateRecursoComand request)
+        public async Task<ActionResult<CreateRecursoResponse>> Post([FromBody] CreateRecursoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateRecursoResponse>> Put(Guid id, [FromBody] UpdateRecursoComand request)
+        public async Task<ActionResult<UpdateRecursoResponse>> Put(Guid id, [FromBody] UpdateRecursoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveRecursoResponse>> Delete(Guid id)
         {
-            RemoveRecursoResponse result = await _mediator.Send(new RemoveRecursoComand
+            RemoveRecursoResponse result = await _mediator.Send(new RemoveRecursoCommand
             {
                 Id = id
             });

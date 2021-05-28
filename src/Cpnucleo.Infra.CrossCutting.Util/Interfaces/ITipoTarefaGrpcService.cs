@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface ITipoTarefaGrpcService
     {
         [OperationContract]
-        Task<CreateTipoTarefaResponse> AddAsync(CreateTipoTarefaComand command, CallContext context = default);
+        Task<CreateTipoTarefaResponse> AddAsync(CreateTipoTarefaCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateTipoTarefaResponse> UpdateAsync(UpdateTipoTarefaComand command, CallContext context = default);
+        Task<UpdateTipoTarefaResponse> UpdateAsync(UpdateTipoTarefaCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetTipoTarefaResponse> GetAsync(GetTipoTarefaQuery query, CallContext context = default);
@@ -24,6 +24,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListTipoTarefaResponse> AllAsync(ListTipoTarefaQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveTipoTarefaResponse> RemoveAsync(RemoveTipoTarefaComand command, CallContext context = default);
+        Task<RemoveTipoTarefaResponse> RemoveAsync(RemoveTipoTarefaCommand command, CallContext context = default);
     }
 }

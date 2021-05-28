@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(RecursoProjeto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateRecursoProjetoResponse>> Post([FromBody] CreateRecursoProjetoComand request)
+        public async Task<ActionResult<CreateRecursoProjetoResponse>> Post([FromBody] CreateRecursoProjetoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateRecursoProjetoResponse>> Put(Guid id, [FromBody] UpdateRecursoProjetoComand request)
+        public async Task<ActionResult<UpdateRecursoProjetoResponse>> Put(Guid id, [FromBody] UpdateRecursoProjetoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveRecursoProjetoResponse>> Delete(Guid id)
         {
-            RemoveRecursoProjetoResponse result = await _mediator.Send(new RemoveRecursoProjetoComand
+            RemoveRecursoProjetoResponse result = await _mediator.Send(new RemoveRecursoProjetoCommand
             {
                 Id = id
             });

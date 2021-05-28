@@ -106,7 +106,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Sistema), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateSistemaResponse>> Post([FromBody] CreateSistemaComand request)
+        public async Task<ActionResult<CreateSistemaResponse>> Post([FromBody] CreateSistemaCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -147,7 +147,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateSistemaResponse>> Put(Guid id, [FromBody] UpdateSistemaComand request)
+        public async Task<ActionResult<UpdateSistemaResponse>> Put(Guid id, [FromBody] UpdateSistemaCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -182,7 +182,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveSistemaResponse>> Delete(Guid id)
         {
-            RemoveSistemaResponse result = await _mediator.Send(new RemoveSistemaComand
+            RemoveSistemaResponse result = await _mediator.Send(new RemoveSistemaCommand
             {
                 Id = id
             });

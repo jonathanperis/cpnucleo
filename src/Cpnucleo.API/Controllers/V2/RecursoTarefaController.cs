@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(RecursoTarefa), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateRecursoTarefaResponse>> Post([FromBody] CreateRecursoTarefaComand request)
+        public async Task<ActionResult<CreateRecursoTarefaResponse>> Post([FromBody] CreateRecursoTarefaCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateRecursoTarefaResponse>> Put(Guid id, [FromBody] UpdateRecursoTarefaComand request)
+        public async Task<ActionResult<UpdateRecursoTarefaResponse>> Put(Guid id, [FromBody] UpdateRecursoTarefaCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveRecursoTarefaResponse>> Delete(Guid id)
         {
-            RemoveRecursoTarefaResponse result = await _mediator.Send(new RemoveRecursoTarefaComand
+            RemoveRecursoTarefaResponse result = await _mediator.Send(new RemoveRecursoTarefaCommand
             {
                 Id = id
             });
