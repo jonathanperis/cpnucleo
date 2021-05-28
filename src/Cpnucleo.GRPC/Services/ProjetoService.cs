@@ -34,7 +34,7 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
             ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<ProjetoModel>>(_unitOfWork.ProjetoRepository.All(true)));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<ProjetoModel>>(_unitOfWork.ProjetoRepository.AllAsync(true)));
 
             return await Task.FromResult(result);
         }
@@ -42,7 +42,7 @@ namespace Cpnucleo.GRPC
         public override async Task<ProjetoModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            ProjetoModel result = _mapper.Map<ProjetoModel>(_unitOfWork.ProjetoRepository.Get(id));
+            ProjetoModel result = _mapper.Map<ProjetoModel>(_unitOfWork.ProjetoRepository.GetAsync(id));
 
             return await Task.FromResult(result);
         }
