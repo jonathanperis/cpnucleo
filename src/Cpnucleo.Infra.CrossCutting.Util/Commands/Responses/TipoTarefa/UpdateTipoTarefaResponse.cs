@@ -1,7 +1,11 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.TipoTarefa
+﻿using System.Runtime.Serialization;
+
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.TipoTarefa
 {
+    [DataContract]
     public class UpdateTipoTarefaResponse
     {
+        [DataMember(Order = 1)]
         public OperationResult Status { get; set; }
     }
 }
