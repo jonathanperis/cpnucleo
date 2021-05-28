@@ -34,9 +34,9 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
             ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<WorkflowModel>>(_unitOfWork.WorkflowRepository.All()));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<WorkflowModel>>(_unitOfWork.WorkflowRepository.AllAsync()));
 
-            int colunas = _unitOfWork.WorkflowRepository.GetQuantidadeColunas();
+            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 
             foreach (WorkflowModel item in result.Lista)
             {
@@ -49,7 +49,7 @@ namespace Cpnucleo.GRPC
         public override async Task<WorkflowModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            WorkflowModel result = _mapper.Map<WorkflowModel>(_unitOfWork.WorkflowRepository.Get(id));
+            WorkflowModel result = _mapper.Map<WorkflowModel>(_unitOfWork.WorkflowRepository.GetAsync(id));
 
             if (result == null)
             {

@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Domain.Commands.Requests.Workflow;
-using Cpnucleo.Domain.Commands.Responses.Workflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Workflow;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Queries.Requests.Workflow;
-using Cpnucleo.Domain.Queries.Responses.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

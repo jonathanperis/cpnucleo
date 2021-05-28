@@ -1,94 +1,42 @@
-﻿using AutoMapper;
-using Cpnucleo.RazorPages.Protos;
-using Cpnucleo.RazorPages.Protos.SistemaProto;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
+using ProtoBuf.Grpc.Client;
+using Cpnucleo.Infra.CrossCutting.Util;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
+using Grpc.Net.Client;
 
 namespace Cpnucleo.RazorPages.Services
 {
     internal class SistemaService : GrpcService, ICrudService<SistemaViewModel>
     {
-        private SistemaProto.SistemaProtoClient _client;
+        private ISistemaGrpcService _client;
         
-        public SistemaService(IMapper mapper, IConfiguration configuration)
-            : base(mapper, configuration)
+        public SistemaService(IConfiguration configuration)
+            : base(configuration)
         {
 
         }
 
-        public async Task<(IEnumerable<SistemaViewModel> response, bool sucess, HttpStatusCode code, string message)> ListarAsync(string token, bool getDependencies = false)
-        {
-            _client = InitializeAuthenticatedChannel(token);
-
-            ListarReply response = await _client.ListarAsync(new Empty());
-            var result =  _mapper.Map<IEnumerable<SistemaViewModel>>(response.Lista);
-
-            return (result, true, HttpStatusCode.OK, "");
-        }
-
-        public async Task<(SistemaViewModel response, bool sucess, HttpStatusCode code, string message)> ConsultarAsync(string token, Guid id)
+        public async Task<IEnumerable<SistemaViewModel>> AllAsync(string token, string getDependencies, SistemaViewModel viewModel)
         {
             _client = InitializeAuthenticatedChannel(token);
 
-            BaseRequest request = new BaseRequest
-            {
-                Id = id.ToString()
-            };
+            var lista = new List<SistemaViewModel>();
+            lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Teste 1", Descricao = "Descrição 1", DataInclusao = System.DateTime.Now, Sucesso = true, Workflow = new WorkflowViewModel { Id = System.Guid.NewGuid(), Nome = "Teste Workflow" } });
+            lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Teste 2", Descricao = "Descrição 2", DataInclusao = System.DateTime.Now, Sucesso = false });
+            lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Teste 3", Descricao = "Descrição 3", DataInclusao = System.DateTime.Now, Sucesso = true });
+            lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Descricao = "Descrição 4", DataInclusao = System.DateTime.Now, Teste2 = "Teste 2" });
 
-            var result = _mapper.Map<SistemaViewModel>(await _client.ConsultarAsync(request));
-
-            return (result, true, HttpStatusCode.OK, "");
+            return await _client.AllAsync(lista);
         }
 
-        public async Task<(SistemaViewModel response, bool sucess, HttpStatusCode code, string message)> IncluirAsync(string token, object value)
-        {
-            _client = InitializeAuthenticatedChannel(token);
-
-            SistemaModel reply = await _client.IncluirAsync(_mapper.Map<SistemaModel>(value));
-
-            HttpStatusCode statusCode = reply.Id != string.Empty ? HttpStatusCode.Created : HttpStatusCode.BadRequest;
-            bool sucesso = reply.Id != string.Empty ? true : false;
-
-            return (_mapper.Map<SistemaViewModel>(reply), sucesso, statusCode, "");
-        }
-
-        public async Task<(SistemaViewModel response, bool sucess, HttpStatusCode code, string message)> AlterarAsync(string token, Guid id, object value)
-        {
-            _client = InitializeAuthenticatedChannel(token);
-
-            BaseReply reply = await _client.AlterarAsync(_mapper.Map<SistemaModel>(value));
-
-            HttpStatusCode statusCode = reply.Sucesso ? HttpStatusCode.NoContent : HttpStatusCode.BadRequest;
-
-            return (null, reply.Sucesso, statusCode, "");
-        }
-
-        public async Task<(SistemaViewModel response, bool sucess, HttpStatusCode code, string message)> RemoverAsync(string token, Guid id)
-        {
-            _client = InitializeAuthenticatedChannel(token);
-
-            BaseRequest request = new BaseRequest
-            {
-                Id = id.ToString()
-            };
-
-            BaseReply reply = await _client.RemoverAsync(request);
-
-            HttpStatusCode statusCode = reply.Sucesso ? HttpStatusCode.NoContent : HttpStatusCode.BadRequest;
-
-            return (null, reply.Sucesso, statusCode, "");
-        }
-
-        private SistemaProto.SistemaProtoClient InitializeAuthenticatedChannel(string token)
+        private ISistemaGrpcService InitializeAuthenticatedChannel(string token)
         {
             _channel = CreateAuthenticatedChannel(token);
-            return new SistemaProto.SistemaProtoClient(_channel);        
-        }        
+            //_channel = GrpcChannel.ForAddress("https://localhost:5021");
+            return _channel.CreateGrpcService<ISistemaGrpcService>();
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
             ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<ApontamentoModel>>(_unitOfWork.ApontamentoRepository.All()));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<ApontamentoModel>>(_unitOfWork.ApontamentoRepository.AllAsync()));
 
             return await Task.FromResult(result);
         }
@@ -42,7 +42,7 @@ namespace Cpnucleo.GRPC
         public override async Task<ApontamentoModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            ApontamentoModel result = _mapper.Map<ApontamentoModel>(_unitOfWork.ApontamentoRepository.Get(id));
+            ApontamentoModel result = _mapper.Map<ApontamentoModel>(_unitOfWork.ApontamentoRepository.GetAsync(id));
 
             return await Task.FromResult(result);
         }
@@ -59,14 +59,14 @@ namespace Cpnucleo.GRPC
         {
             return await Task.FromResult(new BaseReply
             {
-                Sucesso = _unitOfWork.ApontamentoRepository.Remove(new Guid(request.Id))
+                Sucesso = _unitOfWork.ApontamentoRepository.RemoveAsync(new Guid(request.Id))
             });
         }
 
         public override async Task<ListarPorRecursoReply> ListarPorRecurso(BaseRequest request, ServerCallContext context)
         {
             ListarPorRecursoReply result = new ListarPorRecursoReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<ApontamentoModel>>(_unitOfWork.ApontamentoRepository.GetByRecurso(new Guid(request.Id))));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<ApontamentoModel>>(_unitOfWork.ApontamentoRepository.GetByRecursoAsync(new Guid(request.Id))));
 
             return await Task.FromResult(result);
         }

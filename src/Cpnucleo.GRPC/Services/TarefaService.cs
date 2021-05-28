@@ -36,9 +36,9 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
             ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<TarefaModel>>(_unitOfWork.TarefaRepository.All(true)));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<TarefaModel>>(_unitOfWork.TarefaRepository.AllAsync(true)));
 
-            PreencherDadosAdicionais(result.Lista);
+            await PreencherDadosAdicionais (result.Lista);
 
             return await Task.FromResult(result);
         }
@@ -46,7 +46,7 @@ namespace Cpnucleo.GRPC
         public override async Task<TarefaModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            TarefaModel result = _mapper.Map<TarefaModel>(_unitOfWork.TarefaRepository.Get(id));
+            TarefaModel result = _mapper.Map<TarefaModel>(_unitOfWork.TarefaRepository.GetAsync(id));
 
             return await Task.FromResult(result);
         }
@@ -70,9 +70,9 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarPorRecursoReply> ListarPorRecurso(BaseRequest request, ServerCallContext context)
         {
             ListarPorRecursoReply result = new ListarPorRecursoReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<TarefaModel>>(_unitOfWork.TarefaRepository.GetByRecurso(new Guid(request.Id))));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<TarefaModel>>(_unitOfWork.TarefaRepository.GetByRecursoAsync(new Guid(request.Id))));
 
-            PreencherDadosAdicionais(result.Lista);
+            await PreencherDadosAdicionais(result.Lista);
 
             return await Task.FromResult(result);
         }
@@ -82,8 +82,8 @@ namespace Cpnucleo.GRPC
             Guid idTarefa = new Guid(request.IdTarefa);
             Guid idWorkflow = new Guid(request.IdWorkflow);
 
-            Tarefa tarefa = _unitOfWork.TarefaRepository.Get(idTarefa);
-            Workflow workflow = _unitOfWork.WorkflowRepository.Get(idWorkflow);
+            Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(idTarefa);
+            Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(idWorkflow);
 
             tarefa.IdWorkflow = idWorkflow;
             tarefa.Workflow = workflow;
@@ -94,9 +94,9 @@ namespace Cpnucleo.GRPC
             });
         }
 
-        private RepeatedField<TarefaModel> PreencherDadosAdicionais(RepeatedField<TarefaModel> lista)
+        private async Task<RepeatedField<TarefaModel>> PreencherDadosAdicionais(RepeatedField<TarefaModel> lista)
         {
-            int colunas = _unitOfWork.WorkflowRepository.GetQuantidadeColunas();
+            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 
             foreach (TarefaModel item in lista)
             {
@@ -105,16 +105,15 @@ namespace Cpnucleo.GRPC
 
                 item.Workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
                 
-                item.HorasConsumidas = _unitOfWork.ApontamentoRepository.GetTotalHorasPorRecurso(idRecurso, idTarefa);
+                item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasPorRecursoAsync(idRecurso, idTarefa);
                 item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-                DateTime dataInicio;
-                DateTime.TryParse(item.DataInicio, out dataInicio);
+                DateTime.TryParse(item.DataInicio, out DateTime dataInicio);
+                DateTime.TryParse(item.DataTermino, out DateTime dataTermino);
 
-                DateTime dataTermino;
-                DateTime.TryParse(item.DataTermino, out dataTermino);
+                IEnumerable<ImpedimentoTarefa> tarefas = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(idTarefa);
 
-                if (_unitOfWork.ImpedimentoTarefaRepository.GetByTarefa(idTarefa).Count() > 0)
+                if (tarefas.Any())
                 {
                     item.TipoTarefa.Element = "warning-element";
                 }

@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Domain.Commands.Requests.RecursoProjeto;
-using Cpnucleo.Domain.Commands.Responses.RecursoProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoProjeto;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Queries.Requests.RecursoProjeto;
-using Cpnucleo.Domain.Queries.Responses.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoProjeto;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

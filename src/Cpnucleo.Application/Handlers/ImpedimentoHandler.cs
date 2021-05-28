@@ -1,0 +1,115 @@
+﻿using AutoMapper;
+using Cpnucleo.Domain.Entities;
+using Cpnucleo.Domain.UoW;
+using Cpnucleo.Infra.CrossCutting.Util;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Cpnucleo.Domain.Handlers
+{
+    internal class ImpedimentoHandler :
+        IRequestHandler<CreateImpedimentoComand, CreateImpedimentoResponse>,
+        IRequestHandler<GetImpedimentoQuery, GetImpedimentoResponse>,
+        IRequestHandler<ListImpedimentoQuery, ListImpedimentoResponse>,
+        IRequestHandler<RemoveImpedimentoComand, RemoveImpedimentoResponse>,
+        IRequestHandler<UpdateImpedimentoComand, UpdateImpedimentoResponse>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public ImpedimentoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
+        public async Task<CreateImpedimentoResponse> Handle(CreateImpedimentoComand request, CancellationToken cancellationToken)
+        {
+            CreateImpedimentoResponse result = new CreateImpedimentoResponse
+            {
+                Status = OperationResult.Failed
+            };
+
+            Impedimento obj = await _unitOfWork.ImpedimentoRepository.AddAsync(_mapper.Map<Impedimento>(request.Impedimento));
+            result.Impedimento = _mapper.Map<ImpedimentoViewModel>(obj);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            result.Status = OperationResult.Success;
+
+            return result;
+        }
+
+        public async Task<GetImpedimentoResponse> Handle(GetImpedimentoQuery request, CancellationToken cancellationToken)
+        {
+            GetImpedimentoResponse result = new GetImpedimentoResponse
+            {
+                Status = OperationResult.Failed
+            };
+
+            result.Impedimento = _mapper.Map<ImpedimentoViewModel>(await _unitOfWork.ImpedimentoRepository.GetAsync(request.Id));
+            result.Status = OperationResult.Success;
+
+            return result;
+        }
+
+        public async Task<ListImpedimentoResponse> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
+        {
+            ListImpedimentoResponse result = new ListImpedimentoResponse
+            {
+                Status = OperationResult.Failed
+            };
+
+            result.Impedimentos = _mapper.Map<IEnumerable<ImpedimentoViewModel>>(await _unitOfWork.ImpedimentoRepository.AllAsync(request.GetDependencies));
+            result.Status = OperationResult.Success;
+
+            return result;
+        }
+
+        public async Task<RemoveImpedimentoResponse> Handle(RemoveImpedimentoComand request, CancellationToken cancellationToken)
+        {
+            RemoveImpedimentoResponse result = new RemoveImpedimentoResponse
+            {
+                Status = OperationResult.Failed
+            };
+
+            Impedimento obj = await _unitOfWork.ImpedimentoRepository.GetAsync(request.Id);
+
+            if (obj == null)
+            {
+                return null;
+            }
+
+            await _unitOfWork.ImpedimentoRepository.RemoveAsync(request.Id);
+
+            bool success = await _unitOfWork.SaveChangesAsync();
+
+            result.Status = success ? OperationResult.Success : OperationResult.Failed;
+
+            return result;
+        }
+
+        public async Task<UpdateImpedimentoResponse> Handle(UpdateImpedimentoComand request, CancellationToken cancellationToken)
+        {
+            UpdateImpedimentoResponse result = new UpdateImpedimentoResponse
+            {
+                Status = OperationResult.Failed
+            };
+
+            _unitOfWork.ImpedimentoRepository.Update(_mapper.Map<Impedimento>(request.Impedimento));
+
+            bool success = await _unitOfWork.SaveChangesAsync();
+
+            result.Status = success ? OperationResult.Success : OperationResult.Failed;
+
+            return result;
+        }
+    }
+}

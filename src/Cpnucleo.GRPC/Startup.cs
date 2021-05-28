@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using ProtoBuf.Grpc.Server;
 
 namespace Cpnucleo.GRPC
 {
@@ -27,7 +27,7 @@ namespace Cpnucleo.GRPC
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGrpc();
+            services.AddCodeFirstGrpc();
 
             services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             {
@@ -37,9 +37,7 @@ namespace Cpnucleo.GRPC
                        .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
             }));
 
-            services.AddAutoMapper();
-
-            services.AddCpnucleoApiSetup();
+            services.AddCpnucleoSetup();
 
             services.AddAuthorization(options =>
             {
@@ -77,7 +75,6 @@ namespace Cpnucleo.GRPC
             }
 
             app.UseRouting();
-            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCors();
 
             app.UseAuthentication();
@@ -86,23 +83,21 @@ namespace Cpnucleo.GRPC
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<SistemaService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ProjetoService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ImpedimentoService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<TipoTarefaService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<TarefaService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ApontamentoService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<WorkflowService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<RecursoService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ImpedimentoTarefaService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<RecursoProjetoService>().RequireCors("AllowAll");
-                endpoints.MapGrpcService<RecursoTarefaService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<ProjetoService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<ImpedimentoService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<TipoTarefaService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<TarefaService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<ApontamentoService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<WorkflowService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<RecursoService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<ImpedimentoTarefaService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<RecursoProjetoService>().RequireCors("AllowAll");
+                //endpoints.MapGrpcService<RecursoTarefaService>().RequireCors("AllowAll");
 
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("If you're looking for clients that implements this GRPC service, please look to https://cpnucleo-pages-grpc.azurewebsites.net");
                 });
-
-                //endpoints.MapGrpcService<RecursoTarefaService>().RequireCors("AllowAll");
             });
         }
     }

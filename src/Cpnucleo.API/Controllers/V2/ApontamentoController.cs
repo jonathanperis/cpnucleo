@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Domain.Commands.Requests.Apontamento;
-using Cpnucleo.Domain.Commands.Responses.Apontamento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Apontamento;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Queries.Requests.Apontamento;
-using Cpnucleo.Domain.Queries.Responses.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

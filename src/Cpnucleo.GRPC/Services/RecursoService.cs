@@ -44,7 +44,7 @@ namespace Cpnucleo.GRPC
         [Authorize]
         public override async Task Listar(Empty request, IServerStreamWriter<RecursoModel> responseStream, ServerCallContext context)
         {
-            foreach (RecursoModel item in _mapper.Map<IEnumerable<RecursoModel>>(_unitOfWork.RecursoRepository.All()))
+            foreach (RecursoModel item in _mapper.Map<IEnumerable<RecursoModel>>(_unitOfWork.RecursoRepository.AllAsync()))
             {
                 await responseStream.WriteAsync(item);
             }
@@ -54,7 +54,7 @@ namespace Cpnucleo.GRPC
         public override async Task<RecursoModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            RecursoModel result = _mapper.Map<RecursoModel>(_unitOfWork.RecursoRepository.Get(id));
+            RecursoModel result = _mapper.Map<RecursoModel>(_unitOfWork.RecursoRepository.GetAsync(id));
 
             return await Task.FromResult(result);
         }
@@ -81,7 +81,7 @@ namespace Cpnucleo.GRPC
         {
             bool valido = false;
 
-            RecursoModel recurso = _mapper.Map<RecursoModel>(_unitOfWork.RecursoRepository.GetByLogin(request.Login));
+            RecursoModel recurso = _mapper.Map<RecursoModel>(_unitOfWork.RecursoRepository.GetByLoginAsync(request.Login));
 
             if (recurso == null)
             {
