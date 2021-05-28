@@ -52,6 +52,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Application", "3 - Appl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Application", "src\Cpnucleo.Application\Cpnucleo.Application.csproj", "{67EB6264-50E6-4B64-821C-74EA29A7E920}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.MVC.GRPC", "src\Cpnucleo.MVC.GRPC\Cpnucleo.MVC.GRPC.csproj", "{8CA2BD59-B413-4AD0-A3DF-FD9A14FD0864}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67EB6264-50E6-4B64-821C-74EA29A7E920}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CA2BD59-B413-4AD0-A3DF-FD9A14FD0864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA2BD59-B413-4AD0-A3DF-FD9A14FD0864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA2BD59-B413-4AD0-A3DF-FD9A14FD0864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA2BD59-B413-4AD0-A3DF-FD9A14FD0864}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +136,7 @@ Global
 		{CAE8B644-8FC6-4923-8088-5CA97528B369} = {27786067-7F33-4B64-BA82-22B8C6086450}
 		{5AF7028A-8D26-4F15-BB4D-15E9444EF5FE} = {71EC472F-C43B-4999-8C29-D624B0616E10}
 		{67EB6264-50E6-4B64-821C-74EA29A7E920} = {5AF7028A-8D26-4F15-BB4D-15E9444EF5FE}
+		{8CA2BD59-B413-4AD0-A3DF-FD9A14FD0864} = {12A4173B-9423-4137-AC9C-D07D892493C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {675F3075-5730-40F7-A628-6AE3BDBDFBB1}
