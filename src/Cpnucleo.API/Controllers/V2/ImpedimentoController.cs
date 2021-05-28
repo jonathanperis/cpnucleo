@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Impedimento;
+﻿using Cpnucleo.Domain.Entities;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Impedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Impedimento;
-using Cpnucleo.Domain.Entities;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Impedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Impedimento;
 using MediatR;

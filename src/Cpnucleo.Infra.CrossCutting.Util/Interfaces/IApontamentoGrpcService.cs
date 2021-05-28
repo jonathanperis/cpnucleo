@@ -1,13 +1,35 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System;
-using System.Collections.Generic;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
+using ProtoBuf.Grpc;
+using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    public interface IApontamentoGrpcService : IGenericGrpcService<ApontamentoViewModel>
+    [ServiceContract]
+    public interface IApontamentoGrpcService
     {
-        Task<IEnumerable<ApontamentoViewModel>> GetByRecursoAsync(Guid idRecurso);
-        Task<int> GetTotalHorasPorRecursoAsync(Guid idRecurso, Guid id);
+        [OperationContract]
+        Task<CreateApontamentoResponse> AddAsync(CreateApontamentoComand command, CallContext context = default);
+
+        [OperationContract]
+        Task<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoComand command, CallContext context = default);
+
+        [OperationContract]
+        Task<GetApontamentoResponse> GetAsync(GetApontamentoQuery query, CallContext context = default);
+
+        [OperationContract]
+        Task<ListApontamentoResponse> AllAsync(ListApontamentoQuery query, CallContext context = default);
+
+        [OperationContract]
+        Task<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoComand command, CallContext context = default);
+
+        [OperationContract]
+        Task<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query, CallContext context = default);
+
+        [OperationContract]
+        Task<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query, CallContext context = default);
     }
 }

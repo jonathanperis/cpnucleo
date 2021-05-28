@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -24,14 +24,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_impedimentoView == null)
+                {
                     _impedimentoView = new ImpedimentoView();
+                }
 
                 return _impedimentoView;
             }
-            set
-            {
-                _impedimentoView = value;
-            }
+            set => _impedimentoView = value;
         }
 
         [HttpGet]
@@ -83,7 +82,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(id);
+                ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(id);
 
                 return View(ImpedimentoView);
             }
@@ -101,7 +100,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
+                    ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
 
                     return View(ImpedimentoView);
                 }
@@ -123,7 +122,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(id);
+                ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(id);
 
                 return View(ImpedimentoView);
             }
@@ -141,7 +140,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoView.Impedimento  = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
+                    ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
 
                     return View(ImpedimentoView);
                 }

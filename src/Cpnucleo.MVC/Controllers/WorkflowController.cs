@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -24,14 +24,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_workflowView == null)
+                {
                     _workflowView = new WorkflowView();
+                }
 
                 return _workflowView;
             }
-            set
-            {
-                _workflowView = value;
-            }
+            set => _workflowView = value;
         }
 
         [HttpGet]
@@ -83,7 +82,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                WorkflowView.Workflow  = await _workflowAppService.GetAsync(id);
+                WorkflowView.Workflow = await _workflowAppService.GetAsync(id);
 
                 return View(WorkflowView);
             }
@@ -101,7 +100,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    WorkflowView.Workflow  = await _workflowAppService.GetAsync(obj.Workflow.Id);
+                    WorkflowView.Workflow = await _workflowAppService.GetAsync(obj.Workflow.Id);
 
                     return View(WorkflowView);
                 }
@@ -123,7 +122,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                WorkflowView.Workflow  = await _workflowAppService.GetAsync(id);
+                WorkflowView.Workflow = await _workflowAppService.GetAsync(id);
 
                 return View(WorkflowView);
             }
@@ -141,7 +140,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    WorkflowView.Workflow  = await _workflowAppService.GetAsync(obj.Workflow.Id);
+                    WorkflowView.Workflow = await _workflowAppService.GetAsync(obj.Workflow.Id);
 
                     return View(WorkflowView);
                 }

@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
+﻿using Cpnucleo.Domain.Entities;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Tarefa;
-using Cpnucleo.Domain.Entities;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Tarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa;
 using MediatR;

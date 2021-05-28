@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using System.Collections.Generic;
 
 namespace Cpnucleo.MVC.Models
 {
