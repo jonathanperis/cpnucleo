@@ -1,5 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,9 +12,9 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
     //[Authorize]
     public class ListarModel : PageBase
     {
-        private readonly ICrudService<SistemaViewModel> _sistemaService;
+        private readonly ISistemaService _sistemaService;
 
-        public ListarModel(ICrudService<SistemaViewModel> sistemaService)
+        public ListarModel(ISistemaService sistemaService)
         {
             _sistemaService = sistemaService;
         }
@@ -25,7 +27,9 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                await _sistemaService.AllAsync(Token, "false", new SistemaViewModel { Id = Guid.NewGuid(), DataInclusao = DateTime.Now, Nome = "Nome Teste", Descricao = "Descrição Teste" });
+                ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { GetDependencies = true });
+
+                Lista = response.Sistemas;
 
                 return Page();
             }
