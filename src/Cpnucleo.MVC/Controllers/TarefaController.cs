@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -19,10 +19,10 @@ namespace Cpnucleo.MVC.Controllers
 
         private TarefaView _tarefaView;
 
-        public TarefaController(ITarefaAppService tarefaAppService, 
-                                ISistemaAppService sistemaAppService, 
-                                IProjetoAppService projetoAppService, 
-                                IWorkflowAppService workflowAppService, 
+        public TarefaController(ITarefaAppService tarefaAppService,
+                                ISistemaAppService sistemaAppService,
+                                IProjetoAppService projetoAppService,
+                                IWorkflowAppService workflowAppService,
                                 ITipoTarefaAppService tipoTarefaAppService)
         {
             _tarefaAppService = tarefaAppService;
@@ -37,14 +37,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_tarefaView == null)
+                {
                     _tarefaView = new TarefaView();
+                }
 
                 return _tarefaView;
             }
-            set
-            {
-                _tarefaView = value;
-            }
+            set => _tarefaView = value;
         }
 
         [HttpGet]
@@ -87,8 +86,8 @@ namespace Cpnucleo.MVC.Controllers
                     TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
                     TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
                     TarefaView.SelectTipoTarefas = new SelectList(await _tipoTarefaAppService.AllAsync(), "Id", "Nome");
-                    
-                    TarefaView.User = HttpContext.User;  
+
+                    TarefaView.User = HttpContext.User;
 
                     return View(TarefaView);
                 }
@@ -110,13 +109,13 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                TarefaView.Tarefa  = await _tarefaAppService.GetAsync(id);
-                
+                TarefaView.Tarefa = await _tarefaAppService.GetAsync(id);
+
                 TarefaView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
                 TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
                 TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
                 TarefaView.SelectTipoTarefas = new SelectList(await _tipoTarefaAppService.AllAsync(), "Id", "Nome");
-                
+
                 return View(TarefaView);
             }
             catch (Exception ex)
@@ -133,8 +132,8 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    TarefaView.Tarefa  = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
-                    
+                    TarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
+
                     TarefaView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
                     TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
                     TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
@@ -160,7 +159,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                TarefaView.Tarefa  = await _tarefaAppService.GetAsync(id);
+                TarefaView.Tarefa = await _tarefaAppService.GetAsync(id);
 
                 return View(TarefaView);
             }
@@ -178,7 +177,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    TarefaView.Tarefa  = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
+                    TarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
 
                     return View(TarefaView);
                 }

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Security.Claims;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Models
 {

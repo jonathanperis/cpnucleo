@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Claims;
-using System.Text;
+﻿using Cpnucleo.GRPC.Services;
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ProtoBuf.Grpc.Server;
+using System;
+using System.Security.Claims;
+using System.Text;
 
 namespace Cpnucleo.GRPC
 {
@@ -82,17 +83,17 @@ namespace Cpnucleo.GRPC
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<SistemaService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<ProjetoService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<ImpedimentoService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<TipoTarefaService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<TarefaService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<ApontamentoService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<WorkflowService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<RecursoService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<ImpedimentoTarefaService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<RecursoProjetoService>().RequireCors("AllowAll");
-                //endpoints.MapGrpcService<RecursoTarefaService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<SistemaGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<ProjetoGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<ImpedimentoGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<TipoTarefaGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<TarefaGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<ApontamentoGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<WorkflowGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<RecursoGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<ImpedimentoTarefaGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<RecursoProjetoGrpcService>().RequireCors("AllowAll");
+                endpoints.MapGrpcService<RecursoTarefaGrpcService>().RequireCors("AllowAll");
 
                 endpoints.MapGet("/", async context =>
                 {
