@@ -1,14 +1,18 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
+using Cpnucleo.RazorPages.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
+using ProtoBuf.Grpc.Client;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
-    internal class SistemaService : GrpcService, ICrudService<SistemaViewModel>
+    internal class SistemaService : GrpcService, ISistemaService
     {
-        //private ISistemaGrpcService _client;
+        private ISistemaGrpcService _sistemaGrpcService;
 
         public SistemaService(IConfiguration configuration)
             : base(configuration)
@@ -16,26 +20,40 @@ namespace Cpnucleo.RazorPages.Services
 
         }
 
-        public async Task<IEnumerable<SistemaViewModel>> AllAsync(string token, string getDependencies, SistemaViewModel viewModel)
+        public async Task<CreateSistemaResponse> AddAsync(string token, CreateSistemaCommand command)
         {
-            //_client = InitializeAuthenticatedChannel(token);
-
-            //var lista = new List<SistemaViewModel>();
-            //lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Teste 1", Descricao = "Descrição 1", DataInclusao = System.DateTime.Now, Sucesso = true, Workflow = new WorkflowViewModel { Id = System.Guid.NewGuid(), Nome = "Teste Workflow" } });
-            //lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Teste 2", Descricao = "Descrição 2", DataInclusao = System.DateTime.Now, Sucesso = false });
-            //lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Teste 3", Descricao = "Descrição 3", DataInclusao = System.DateTime.Now, Sucesso = true });
-            //lista.Add(new SistemaViewModel { Id = System.Guid.NewGuid(), Descricao = "Descrição 4", DataInclusao = System.DateTime.Now, Teste2 = "Teste 2" });
-
-            //return await _client.AllAsync(lista);
-
-            throw new System.NotImplementedException();
+            _sistemaGrpcService = InitializeAuthenticatedChannel(token);
+            return await _sistemaGrpcService.AddAsync(command);
         }
 
-        //private ISistemaGrpcService InitializeAuthenticatedChannel(string token)
-        //{
-        //    _channel = CreateAuthenticatedChannel(token);
-        //    //_channel = GrpcChannel.ForAddress("https://localhost:5021");
-        //    return _channel.CreateGrpcService<ISistemaGrpcService>();
-        //}
+        public async Task<ListSistemaResponse> AllAsync(string token, ListSistemaQuery query)
+        {
+            _sistemaGrpcService = InitializeAuthenticatedChannel(token);
+            return await _sistemaGrpcService.AllAsync(query);
+        }
+
+        public async Task<GetSistemaResponse> GetAsync(string token, GetSistemaQuery query)
+        {
+            _sistemaGrpcService = InitializeAuthenticatedChannel(token);
+            return await _sistemaGrpcService.GetAsync(query);
+        }
+
+        public async Task<RemoveSistemaResponse> RemoveAsync(string token, RemoveSistemaCommand command)
+        {
+            _sistemaGrpcService = InitializeAuthenticatedChannel(token);
+            return await _sistemaGrpcService.RemoveAsync(command);
+        }
+
+        public async Task<UpdateSistemaResponse> UpdateAsync(string token, UpdateSistemaCommand command)
+        {
+            _sistemaGrpcService = InitializeAuthenticatedChannel(token);
+            return await _sistemaGrpcService.UpdateAsync(command);
+        }
+
+        private ISistemaGrpcService InitializeAuthenticatedChannel(string token)
+        {
+            _channel = CreateAuthenticatedChannel(token);
+            return _channel.CreateGrpcService<ISistemaGrpcService>();
+        }
     }
 }
