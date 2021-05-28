@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -17,8 +17,8 @@ namespace Cpnucleo.MVC.Controllers
 
         private RecursoProjetoView _recursoProjetoView;
 
-        public RecursoProjetoController(IRecursoProjetoAppService recursoProjetoAppService, 
-                                        IRecursoAppService recursoAppService, 
+        public RecursoProjetoController(IRecursoProjetoAppService recursoProjetoAppService,
+                                        IRecursoAppService recursoAppService,
                                         IProjetoAppService projetoAppService)
         {
             _recursoProjetoAppService = recursoProjetoAppService;
@@ -31,14 +31,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_recursoProjetoView == null)
+                {
                     _recursoProjetoView = new RecursoProjetoView();
+                }
 
                 return _recursoProjetoView;
             }
-            set
-            {
-                _recursoProjetoView = value;
-            }
+            set => _recursoProjetoView = value;
         }
 
         [HttpGet]
@@ -98,7 +97,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(id);
+                RecursoProjetoView.RecursoProjeto = await _recursoProjetoAppService.GetAsync(id);
                 RecursoProjetoView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
                 return View(RecursoProjetoView);
@@ -117,7 +116,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(obj.RecursoProjeto.Id);
+                    RecursoProjetoView.RecursoProjeto = await _recursoProjetoAppService.GetAsync(obj.RecursoProjeto.Id);
                     RecursoProjetoView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
                     return View(RecursoProjetoView);
@@ -140,7 +139,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(id);
+                RecursoProjetoView.RecursoProjeto = await _recursoProjetoAppService.GetAsync(id);
 
                 return View(RecursoProjetoView);
             }
@@ -158,7 +157,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoProjetoView.RecursoProjeto  = await _recursoProjetoAppService.GetAsync(obj.RecursoProjeto.Id);
+                    RecursoProjetoView.RecursoProjeto = await _recursoProjetoAppService.GetAsync(obj.RecursoProjeto.Id);
 
                     return View(RecursoProjetoView);
                 }

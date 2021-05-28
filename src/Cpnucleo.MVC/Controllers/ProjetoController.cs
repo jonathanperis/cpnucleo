@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -16,7 +16,7 @@ namespace Cpnucleo.MVC.Controllers
 
         private ProjetoView _projetoView;
 
-        public ProjetoController(IProjetoAppService projetoAppService, 
+        public ProjetoController(IProjetoAppService projetoAppService,
                                  ISistemaAppService sistemaAppService)
         {
             _projetoAppService = projetoAppService;
@@ -28,14 +28,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_projetoView == null)
+                {
                     _projetoView = new ProjetoView();
+                }
 
                 return _projetoView;
             }
-            set
-            {
-                _projetoView = value;
-            }
+            set => _projetoView = value;
         }
 
         [HttpGet]
@@ -91,7 +90,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ProjetoView.Projeto  = await _projetoAppService.GetAsync(id);
+                ProjetoView.Projeto = await _projetoAppService.GetAsync(id);
                 ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
 
                 return View(ProjetoView);
@@ -110,7 +109,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ProjetoView.Projeto  = await _projetoAppService.GetAsync(obj.Projeto.Id);
+                    ProjetoView.Projeto = await _projetoAppService.GetAsync(obj.Projeto.Id);
                     ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
 
                     return View(ProjetoView);
@@ -133,7 +132,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ProjetoView.Projeto  = await _projetoAppService.GetAsync(id);
+                ProjetoView.Projeto = await _projetoAppService.GetAsync(id);
 
                 return View(ProjetoView);
             }
@@ -151,7 +150,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ProjetoView.Projeto  = await _projetoAppService.GetAsync(obj.Projeto.Id);
+                    ProjetoView.Projeto = await _projetoAppService.GetAsync(obj.Projeto.Id);
 
                     return View(ProjetoView);
                 }

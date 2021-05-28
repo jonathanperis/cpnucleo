@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace Cpnucleo.MVC.Models
 {

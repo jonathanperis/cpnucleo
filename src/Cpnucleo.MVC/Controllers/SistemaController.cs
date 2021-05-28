@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -24,14 +24,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_sistemaView == null)
+                {
                     _sistemaView = new SistemaView();
+                }
 
                 return _sistemaView;
             }
-            set
-            {
-                _sistemaView = value;
-            }
+            set => _sistemaView = value;
         }
 
         [HttpGet]
@@ -83,7 +82,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                SistemaView.Sistema  = await _sistemaAppService.GetAsync(id);
+                SistemaView.Sistema = await _sistemaAppService.GetAsync(id);
 
                 return View(SistemaView);
             }
@@ -101,7 +100,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    SistemaView.Sistema  = await _sistemaAppService.GetAsync(obj.Sistema.Id);
+                    SistemaView.Sistema = await _sistemaAppService.GetAsync(obj.Sistema.Id);
 
                     return View(SistemaView);
                 }
@@ -123,7 +122,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                SistemaView.Sistema  = await _sistemaAppService.GetAsync(id);
+                SistemaView.Sistema = await _sistemaAppService.GetAsync(id);
 
                 return View(SistemaView);
             }
@@ -141,7 +140,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    SistemaView.Sistema  = await _sistemaAppService.GetAsync(obj.Sistema.Id);
+                    SistemaView.Sistema = await _sistemaAppService.GetAsync(obj.Sistema.Id);
 
                     return View(SistemaView);
                 }

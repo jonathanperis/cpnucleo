@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -17,8 +17,8 @@ namespace Cpnucleo.MVC.Controllers
 
         private RecursoTarefaView _recursoTarefaView;
 
-        public RecursoTarefaController(IRecursoTarefaAppService recursoTarefaAppService, 
-                                       IRecursoAppService recursoAppService, 
+        public RecursoTarefaController(IRecursoTarefaAppService recursoTarefaAppService,
+                                       IRecursoAppService recursoAppService,
                                        ITarefaAppService tarefaAppService)
         {
             _recursoTarefaAppService = recursoTarefaAppService;
@@ -31,14 +31,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_recursoTarefaView == null)
+                {
                     _recursoTarefaView = new RecursoTarefaView();
+                }
 
                 return _recursoTarefaView;
             }
-            set
-            {
-                _recursoTarefaView = value;
-            }
+            set => _recursoTarefaView = value;
         }
 
         [HttpGet]
@@ -98,7 +97,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoTarefaView.RecursoTarefa  = await _recursoTarefaAppService.GetAsync(id);
+                RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(id);
                 RecursoTarefaView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
                 return View(RecursoTarefaView);
@@ -117,7 +116,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoTarefaView.RecursoTarefa  = await _recursoTarefaAppService.GetAsync(obj.RecursoTarefa.Id);
+                    RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(obj.RecursoTarefa.Id);
                     RecursoTarefaView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
 
                     return View(RecursoTarefaView);
@@ -140,7 +139,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoTarefaView.RecursoTarefa  = await _recursoTarefaAppService.GetAsync(id);
+                RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(id);
 
                 return View(RecursoTarefaView);
             }
@@ -158,7 +157,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoTarefaView.RecursoTarefa  = await _recursoTarefaAppService.GetAsync(obj.RecursoTarefa.Id);
+                    RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(obj.RecursoTarefa.Id);
 
                     return View(RecursoTarefaView);
                 }

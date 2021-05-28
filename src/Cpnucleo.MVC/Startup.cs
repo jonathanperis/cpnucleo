@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Cpnucleo.MVC.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Profiling.Storage;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Cpnucleo.MVC
 {
@@ -60,8 +60,8 @@ namespace Cpnucleo.MVC
                 // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
                 // (defaults to true, and connection opening/closing is tracked)
                 options.TrackConnectionOpenClose = true;
-            });            
-            
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -90,8 +90,8 @@ namespace Cpnucleo.MVC
             };
 
             app.UseMiniProfiler();
-            
-            app.UseRequestLocalization(localizationOptions);            
+
+            app.UseRequestLocalization(localizationOptions);
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -1,14 +1,14 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.MVC.Models;
-using Microsoft.AspNetCore.Authorization;
 using Cpnucleo.MVC.Services;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -22,8 +22,8 @@ namespace Cpnucleo.MVC.Controllers
 
         private ApontamentoView _apontamentoView;
 
-        public ApontamentoController(IApontamentoAppService apontamentoAppService, 
-                                     ITarefaAppService tarefaAppService, 
+        public ApontamentoController(IApontamentoAppService apontamentoAppService,
+                                     ITarefaAppService tarefaAppService,
                                      IWorkflowAppService workflowAppService,
                                      IImpedimentoTarefaAppService impedimentoTarefaAppService)
         {
@@ -38,14 +38,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_apontamentoView == null)
+                {
                     _apontamentoView = new ApontamentoView();
+                }
 
                 return _apontamentoView;
             }
-            set
-            {
-                _apontamentoView = value;
-            }
+            set => _apontamentoView = value;
         }
 
         [HttpGet]
@@ -97,14 +96,14 @@ namespace Cpnucleo.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
-        }        
+        }
 
         [HttpGet]
         public async Task<IActionResult> Remover(Guid id)
         {
             try
             {
-                ApontamentoView.Apontamento  = await _apontamentoAppService.GetAsync(id);
+                ApontamentoView.Apontamento = await _apontamentoAppService.GetAsync(id);
 
                 return View(ApontamentoView);
             }
@@ -122,7 +121,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ApontamentoView.Apontamento  = await _apontamentoAppService.GetAsync(obj.Apontamento.Id);
+                    ApontamentoView.Apontamento = await _apontamentoAppService.GetAsync(obj.Apontamento.Id);
 
                     return View(ApontamentoView);
                 }
@@ -151,7 +150,7 @@ namespace Cpnucleo.MVC.Controllers
                 foreach (WorkflowViewModel item in ApontamentoView.ListaWorkflow)
                 {
                     item.TamanhoColuna = _workflowAppService.GetTamanhoColuna(colunas);
-                }                
+                }
 
                 await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
 
@@ -174,7 +173,7 @@ namespace Cpnucleo.MVC.Controllers
                     ApontamentoView.ListaWorkflow = await _workflowAppService.AllAsync();
                     ApontamentoView.ListaTarefas = await _tarefaAppService.AllAsync(true);
 
-                    await PreencherDadosAdicionais (ApontamentoView.ListaTarefas);
+                    await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
 
                     return Json(new { success = false, message = "", body = ApontamentoView });
                 }
@@ -194,7 +193,7 @@ namespace Cpnucleo.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return Json(new { success = false, message = ex.Message });
             }
-        }    
+        }
 
         private async Task<IEnumerable<TarefaViewModel>> PreencherDadosAdicionais(IEnumerable<TarefaViewModel> lista)
         {
@@ -203,7 +202,7 @@ namespace Cpnucleo.MVC.Controllers
             foreach (TarefaViewModel item in lista)
             {
                 item.Workflow.TamanhoColuna = _workflowAppService.GetTamanhoColuna(colunas);
-                
+
                 item.HorasConsumidas = await _apontamentoAppService.GetTotalHorasPorRecursoAsync(item.IdRecurso, item.Id);
                 item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
@@ -228,6 +227,6 @@ namespace Cpnucleo.MVC.Controllers
             }
 
             return lista;
-        }         
+        }
     }
 }

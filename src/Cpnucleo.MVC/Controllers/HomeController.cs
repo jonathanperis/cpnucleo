@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
-using Microsoft.AspNetCore.Mvc;
-using Cpnucleo.MVC.Models;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+using Cpnucleo.MVC.Models;
+using Cpnucleo.MVC.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using System.Threading.Tasks;
-using Cpnucleo.Domain.Entities;
-using Cpnucleo.MVC.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -20,7 +20,7 @@ namespace Cpnucleo.MVC.Controllers
         private readonly ICryptographyManager _cryptographyManager;
         private readonly IConfiguration _configuration;
 
-        public HomeController(IUnitOfWork unitOfWork, 
+        public HomeController(IUnitOfWork unitOfWork,
                                 ICryptographyManager cryptographyManager,
                                 IConfiguration configuration)
         {
@@ -36,14 +36,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_viewModel == null)
+                {
                     _viewModel = new HomeView();
+                }
 
                 return _viewModel;
             }
-            set
-            {
-                _viewModel = value;
-            }
+            set => _viewModel = value;
         }
 
         [HttpGet]

@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.MVC.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -18,7 +18,7 @@ namespace Cpnucleo.MVC.Controllers
         private ImpedimentoTarefaView _impedimentoTarefaView;
 
         public ImpedimentoTarefaController(IImpedimentoTarefaAppService impedimentoTarefaAppService,
-                                           ITarefaAppService tarefaAppService, 
+                                           ITarefaAppService tarefaAppService,
                                            IImpedimentoAppService impedimentoAppService)
         {
             _impedimentoTarefaAppService = impedimentoTarefaAppService;
@@ -31,14 +31,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_impedimentoTarefaView == null)
+                {
                     _impedimentoTarefaView = new ImpedimentoTarefaView();
+                }
 
                 return _impedimentoTarefaView;
             }
-            set
-            {
-                _impedimentoTarefaView = value;
-            }
+            set => _impedimentoTarefaView = value;
         }
 
         [HttpGet]
@@ -98,7 +97,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(id);
+                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(id);
                 ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
 
                 return View(ImpedimentoTarefaView);
@@ -117,7 +116,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
+                    ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
                     ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
 
                     return View(ImpedimentoTarefaView);
@@ -140,7 +139,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(id);
+                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(id);
 
                 return View(ImpedimentoTarefaView);
             }
@@ -158,7 +157,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoTarefaView.ImpedimentoTarefa  = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
+                    ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
 
                     return View(ImpedimentoTarefaView);
                 }

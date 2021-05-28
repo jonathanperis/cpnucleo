@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Cpnucleo.Application.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 
 namespace Cpnucleo.MVC.Controllers
 {
@@ -16,7 +16,7 @@ namespace Cpnucleo.MVC.Controllers
 
         private RecursoView _recursoView;
 
-        public RecursoController(IRecursoAppService recursoAppService, 
+        public RecursoController(IRecursoAppService recursoAppService,
                                  ICryptographyManager cryptographyManager)
         {
             _recursoAppService = recursoAppService;
@@ -28,14 +28,13 @@ namespace Cpnucleo.MVC.Controllers
             get
             {
                 if (_recursoView == null)
+                {
                     _recursoView = new RecursoView();
+                }
 
                 return _recursoView;
             }
-            set
-            {
-                _recursoView = value;
-            }
+            set => _recursoView = value;
         }
 
         [HttpGet]
@@ -92,7 +91,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoView.Recurso  = await _recursoAppService.GetAsync(id);
+                RecursoView.Recurso = await _recursoAppService.GetAsync(id);
 
                 RecursoView.Recurso.Senha = null;
                 RecursoView.Recurso.Salt = null;
@@ -113,10 +112,10 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoView.Recurso  = await _recursoAppService.GetAsync(obj.Recurso.Id);
+                    RecursoView.Recurso = await _recursoAppService.GetAsync(obj.Recurso.Id);
 
                     RecursoView.Recurso.Senha = null;
-                    RecursoView.Recurso.Salt = null;                    
+                    RecursoView.Recurso.Salt = null;
 
                     return View(RecursoView);
                 }
@@ -143,10 +142,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoView.Recurso  = await _recursoAppService.GetAsync(id);
+                RecursoView.Recurso = await _recursoAppService.GetAsync(id);
 
                 RecursoView.Recurso.Senha = null;
-                RecursoView.Recurso.Salt = null;                
+                RecursoView.Recurso.Salt = null;
 
                 return View(RecursoView);
             }
@@ -164,10 +163,10 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoView.Recurso  = await _recursoAppService.GetAsync(obj.Recurso.Id);
+                    RecursoView.Recurso = await _recursoAppService.GetAsync(obj.Recurso.Id);
 
                     RecursoView.Recurso.Senha = null;
-                    RecursoView.Recurso.Salt = null;                    
+                    RecursoView.Recurso.Salt = null;
 
                     return View(RecursoView);
                 }

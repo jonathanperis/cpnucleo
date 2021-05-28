@@ -1,8 +1,7 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using Grpc.Core;
+﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services
 {
@@ -18,7 +17,7 @@ namespace Cpnucleo.RazorPages.Services
 
         protected GrpcChannel CreateAuthenticatedChannel(string token)
         {
-            var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+            CallCredentials credentials = CallCredentials.FromInterceptor((context, metadata) =>
             {
                 if (!string.IsNullOrEmpty(token))
                 {
@@ -37,14 +36,14 @@ namespace Cpnucleo.RazorPages.Services
 
             //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO: END                 
 
-            _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"], 
+            _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"],
                 new GrpcChannelOptions
                 {
                     //HttpHandler = new GrpcWebHandler(httpHandler), //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO
                     Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
-                });    
+                });
 
-            return _channel;        
+            return _channel;
         }
     }
 }

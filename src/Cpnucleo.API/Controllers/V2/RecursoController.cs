@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Recurso;
+﻿using Cpnucleo.Domain.Entities;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Recurso;
-using Cpnucleo.Domain.Entities;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
 using MediatR;

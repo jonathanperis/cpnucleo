@@ -1,10 +1,9 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
