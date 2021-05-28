@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface ISistemaGrpcService
     {
         [OperationContract]
-        Task<CreateSistemaResponse> AddAsync(CreateSistemaComand command, CallContext context = default);
+        Task<CreateSistemaResponse> AddAsync(CreateSistemaCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateSistemaResponse> UpdateAsync(UpdateSistemaComand command, CallContext context = default);
+        Task<UpdateSistemaResponse> UpdateAsync(UpdateSistemaCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetSistemaResponse> GetAsync(GetSistemaQuery query, CallContext context = default);
@@ -24,6 +24,6 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListSistemaResponse> AllAsync(ListSistemaQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveSistemaResponse> RemoveAsync(RemoveSistemaComand command, CallContext context = default);
+        Task<RemoveSistemaResponse> RemoveAsync(RemoveSistemaCommand command, CallContext context = default);
     }
 }

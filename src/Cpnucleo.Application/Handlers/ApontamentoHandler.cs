@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class ApontamentoHandler :
-        IRequestHandler<CreateApontamentoComand, CreateApontamentoResponse>,
+        IRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse>,
         IRequestHandler<GetApontamentoQuery, GetApontamentoResponse>,
         IRequestHandler<ListApontamentoQuery, ListApontamentoResponse>,
-        IRequestHandler<RemoveApontamentoComand, RemoveApontamentoResponse>,
-        IRequestHandler<UpdateApontamentoComand, UpdateApontamentoResponse>
+        IRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse>,
+        IRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateApontamentoResponse> Handle(CreateApontamentoComand request, CancellationToken cancellationToken)
+        public async Task<CreateApontamentoResponse> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken)
         {
             CreateApontamentoResponse result = new CreateApontamentoResponse
             {
@@ -73,7 +73,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveApontamentoResponse> Handle(RemoveApontamentoComand request, CancellationToken cancellationToken)
+        public async Task<RemoveApontamentoResponse> Handle(RemoveApontamentoCommand request, CancellationToken cancellationToken)
         {
             RemoveApontamentoResponse result = new RemoveApontamentoResponse
             {
@@ -96,7 +96,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateApontamentoResponse> Handle(UpdateApontamentoComand request, CancellationToken cancellationToken)
+        public async Task<UpdateApontamentoResponse> Handle(UpdateApontamentoCommand request, CancellationToken cancellationToken)
         {
             UpdateApontamentoResponse result = new UpdateApontamentoResponse
             {

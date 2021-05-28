@@ -17,11 +17,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class TarefaHandler :
-        IRequestHandler<CreateTarefaComand, CreateTarefaResponse>,
+        IRequestHandler<CreateTarefaCommand, CreateTarefaResponse>,
         IRequestHandler<GetTarefaQuery, GetTarefaResponse>,
         IRequestHandler<ListTarefaQuery, ListTarefaResponse>,
-        IRequestHandler<RemoveTarefaComand, RemoveTarefaResponse>,
-        IRequestHandler<UpdateTarefaComand, UpdateTarefaResponse>,
+        IRequestHandler<RemoveTarefaCommand, RemoveTarefaResponse>,
+        IRequestHandler<UpdateTarefaCommand, UpdateTarefaResponse>,
         IRequestHandler<GetByRecursoQuery, GetByRecursoResponse>,
         IRequestHandler<UpdateByWorkflowCommand, UpdateByWorkflowResponse>
     {
@@ -34,7 +34,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateTarefaResponse> Handle(CreateTarefaComand request, CancellationToken cancellationToken)
+        public async Task<CreateTarefaResponse> Handle(CreateTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateTarefaResponse result = new CreateTarefaResponse
             {
@@ -79,7 +79,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveTarefaResponse> Handle(RemoveTarefaComand request, CancellationToken cancellationToken)
+        public async Task<RemoveTarefaResponse> Handle(RemoveTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveTarefaResponse result = new RemoveTarefaResponse
             {
@@ -102,7 +102,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateTarefaResponse> Handle(UpdateTarefaComand request, CancellationToken cancellationToken)
+        public async Task<UpdateTarefaResponse> Handle(UpdateTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateTarefaResponse result = new UpdateTarefaResponse
             {

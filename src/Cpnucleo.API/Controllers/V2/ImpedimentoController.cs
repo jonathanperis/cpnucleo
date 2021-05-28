@@ -107,7 +107,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Impedimento), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateImpedimentoResponse>> Post([FromBody] CreateImpedimentoComand request)
+        public async Task<ActionResult<CreateImpedimentoResponse>> Post([FromBody] CreateImpedimentoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -148,7 +148,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateImpedimentoResponse>> Put(Guid id, [FromBody] UpdateImpedimentoComand request)
+        public async Task<ActionResult<UpdateImpedimentoResponse>> Put(Guid id, [FromBody] UpdateImpedimentoCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RemoveImpedimentoResponse>> Delete(Guid id)
         {
-            RemoveImpedimentoResponse result = await _mediator.Send(new RemoveImpedimentoComand
+            RemoveImpedimentoResponse result = await _mediator.Send(new RemoveImpedimentoCommand
             {
                 Id = id
             });

@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Domain.Handlers
 {
     internal class RecursoProjetoHandler :
-        IRequestHandler<CreateRecursoProjetoComand, CreateRecursoProjetoResponse>,
+        IRequestHandler<CreateRecursoProjetoCommand, CreateRecursoProjetoResponse>,
         IRequestHandler<GetRecursoProjetoQuery, GetRecursoProjetoResponse>,
         IRequestHandler<ListRecursoProjetoQuery, ListRecursoProjetoResponse>,
-        IRequestHandler<RemoveRecursoProjetoComand, RemoveRecursoProjetoResponse>,
-        IRequestHandler<UpdateRecursoProjetoComand, UpdateRecursoProjetoResponse>,
+        IRequestHandler<RemoveRecursoProjetoCommand, RemoveRecursoProjetoResponse>,
+        IRequestHandler<UpdateRecursoProjetoCommand, UpdateRecursoProjetoResponse>,
         IRequestHandler<GetByProjetoQuery, GetByProjetoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Domain.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateRecursoProjetoResponse> Handle(CreateRecursoProjetoComand request, CancellationToken cancellationToken)
+        public async Task<CreateRecursoProjetoResponse> Handle(CreateRecursoProjetoCommand request, CancellationToken cancellationToken)
         {
             CreateRecursoProjetoResponse result = new CreateRecursoProjetoResponse
             {
@@ -74,7 +74,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<RemoveRecursoProjetoResponse> Handle(RemoveRecursoProjetoComand request, CancellationToken cancellationToken)
+        public async Task<RemoveRecursoProjetoResponse> Handle(RemoveRecursoProjetoCommand request, CancellationToken cancellationToken)
         {
             RemoveRecursoProjetoResponse result = new RemoveRecursoProjetoResponse
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.Domain.Handlers
             return result;
         }
 
-        public async Task<UpdateRecursoProjetoResponse> Handle(UpdateRecursoProjetoComand request, CancellationToken cancellationToken)
+        public async Task<UpdateRecursoProjetoResponse> Handle(UpdateRecursoProjetoCommand request, CancellationToken cancellationToken)
         {
             UpdateRecursoProjetoResponse result = new UpdateRecursoProjetoResponse
             {

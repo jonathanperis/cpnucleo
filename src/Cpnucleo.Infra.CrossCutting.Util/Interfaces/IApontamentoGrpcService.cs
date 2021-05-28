@@ -12,10 +12,10 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
     public interface IApontamentoGrpcService
     {
         [OperationContract]
-        Task<CreateApontamentoResponse> AddAsync(CreateApontamentoComand command, CallContext context = default);
+        Task<CreateApontamentoResponse> AddAsync(CreateApontamentoCommand command, CallContext context = default);
 
         [OperationContract]
-        Task<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoComand command, CallContext context = default);
+        Task<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetApontamentoResponse> GetAsync(GetApontamentoQuery query, CallContext context = default);
@@ -24,7 +24,7 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         Task<ListApontamentoResponse> AllAsync(ListApontamentoQuery query, CallContext context = default);
 
         [OperationContract]
-        Task<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoComand command, CallContext context = default);
+        Task<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command, CallContext context = default);
 
         [OperationContract]
         Task<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query, CallContext context = default);
