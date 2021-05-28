@@ -1,5 +1,6 @@
 using Cpnucleo.Infra.CrossCutting.IoC;
 using Cpnucleo.MVC.Configuration;
+using Cpnucleo.RazorPages.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,7 @@ namespace Cpnucleo.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvcConfigSetup();
             services.AddCpnucleoSetup();
 
             services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");

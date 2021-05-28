@@ -1,5 +1,8 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
 using Cpnucleo.MVC.Models;
+using Cpnucleo.RazorPages.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.MVC.Controllers
 {
-    [Authorize]
-    public class SistemaController : Controller
+    //[Authorize]
+    public class SistemaController : BaseController
     {
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly ISistemaService _sistemaService;
 
         private SistemaView _sistemaView;
 
-        public SistemaController(ISistemaAppService sistemaAppService)
+        public SistemaController(ISistemaService sistemaService)
         {
-            _sistemaAppService = sistemaAppService;
+            _sistemaService = sistemaService;
         }
 
         public SistemaView SistemaView
@@ -38,7 +41,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                SistemaView.Lista = await _sistemaAppService.AllAsync();
+                ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { GetDependencies = true });
+                SistemaView.Lista = response.Sistemas;
 
                 return View(SistemaView);
             }
@@ -65,8 +69,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _sistemaAppService.AddAsync(obj.Sistema);
-                await _sistemaAppService.SaveChangesAsync();
+                await _sistemaService.AddAsync(Token, new CreateSistemaCommand { Sistema = obj.Sistema });
 
                 return RedirectToAction("Listar");
             }
@@ -82,7 +85,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                SistemaView.Sistema = await _sistemaAppService.GetAsync(id);
+                GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = id });
+                SistemaView.Sistema = response.Sistema;
 
                 return View(SistemaView);
             }
@@ -100,13 +104,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    SistemaView.Sistema = await _sistemaAppService.GetAsync(obj.Sistema.Id);
+                    GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = obj.Sistema.Id });
+                    SistemaView.Sistema = response.Sistema;
 
                     return View(SistemaView);
                 }
 
-                _sistemaAppService.Update(obj.Sistema);
-                await _sistemaAppService.SaveChangesAsync();
+                await _sistemaService.UpdateAsync(Token, new UpdateSistemaCommand { Sistema = obj.Sistema });
 
                 return RedirectToAction("Listar");
             }
@@ -122,7 +126,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                SistemaView.Sistema = await _sistemaAppService.GetAsync(id);
+                GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = id });
+                SistemaView.Sistema = response.Sistema;
 
                 return View(SistemaView);
             }
@@ -140,13 +145,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    SistemaView.Sistema = await _sistemaAppService.GetAsync(obj.Sistema.Id);
+                    GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = obj.Sistema.Id });
+                    SistemaView.Sistema = response.Sistema;
 
                     return View(SistemaView);
                 }
 
-                await _sistemaAppService.RemoveAsync(obj.Sistema.Id);
-                await _sistemaAppService.SaveChangesAsync();
+                await _sistemaService.RemoveAsync(Token, new RemoveSistemaCommand { Id = obj.Sistema.Id });
 
                 return RedirectToAction("Listar");
             }
