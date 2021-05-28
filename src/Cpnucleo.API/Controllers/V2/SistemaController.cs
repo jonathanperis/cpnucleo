@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Domain.Commands.Requests.Sistema;
-using Cpnucleo.Domain.Commands.Responses.Sistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Queries.Requests.Sistema;
-using Cpnucleo.Domain.Queries.Responses.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

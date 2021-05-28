@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Domain.Commands.Requests.ImpedimentoTarefa;
-using Cpnucleo.Domain.Commands.Responses.ImpedimentoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.ImpedimentoTarefa;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Queries.Requests.ImpedimentoTarefa;
-using Cpnucleo.Domain.Queries.Responses.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -1,14 +1,14 @@
 ﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Cpnucleo.RazorPages.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema
 {
-    [Authorize]
+    //[Authorize]
     public class ListarModel : PageBase
     {
         private readonly ICrudService<SistemaViewModel> _sistemaService;
@@ -26,15 +26,7 @@ namespace Cpnucleo.RazorPages.Pages.Sistema
         {
             try
             {
-                var result = await _sistemaService.ListarAsync(Token);
-
-                if (!result.sucess)
-                {
-                    ModelState.AddModelError(string.Empty, $"{result.code} - {result.message}");
-                    return Page();
-                }
-
-                Lista = result.response;
+                await _sistemaService.AllAsync(Token, "false", new SistemaViewModel { Id = Guid.NewGuid(), DataInclusao = DateTime.Now, Nome = "Nome Teste", Descricao = "Descrição Teste" });
 
                 return Page();
             }

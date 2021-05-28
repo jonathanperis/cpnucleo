@@ -8,7 +8,6 @@ namespace Cpnucleo.Domain.Configuration
     {
         public static void AddDomainSetup(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
         }
     }
 }

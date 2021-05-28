@@ -1,66 +1,51 @@
-﻿using AutoMapper;
-using Cpnucleo.Domain.UoW;
-using Cpnucleo.GRPC.Protos;
-using Cpnucleo.GRPC.Protos.SistemaProto;
-using Cpnucleo.Domain.Entities;
-using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using Cpnucleo.Infra.CrossCutting.Util;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.Application.Interfaces;
+using ProtoBuf.Grpc;
+using System.Linq;
 
 namespace Cpnucleo.GRPC
 {
-    [Authorize]    
-    public class SistemaService : SistemaProto.SistemaProtoBase
+    //[Authorize]    
+    public class SistemaService : ISistemaGrpcService
     {
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ISistemaAppService _sistemaAppService;
 
-        public SistemaService(IMapper mapper, IUnitOfWork unitOfWork)
+        public SistemaService(ISistemaAppService sistemaAppService)
         {
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
+            _sistemaAppService = sistemaAppService;
         }
 
-        public override async Task<SistemaModel> Incluir(SistemaModel request, ServerCallContext context)
+        public async Task<SistemaViewModel> AddAsync(SistemaViewModel viewModel, CallContext context = default)
         {
-            SistemaModel result = _mapper.Map<SistemaModel>(_mapper.Map<Apontamento>(request));
-
-            return await Task.FromResult(result);
+            throw new NotImplementedException();
         }
 
-        public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
+        public async Task<IEnumerable<SistemaViewModel>> AllAsync(IEnumerable<SistemaViewModel> viewModels, CallContext context = default)
         {
-            ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<SistemaModel>>(_unitOfWork.SistemaRepository.All()));
+            var a = viewModels.FirstOrDefault();
 
-            return await Task.FromResult(result);
+            await _sistemaAppService.AddAsync(a);
+
+            throw new NotImplementedException();
         }
 
-        public override async Task<SistemaModel> Consultar(BaseRequest request, ServerCallContext context)
+        public async Task<SistemaViewModel> GetAsync(string id, CallContext context = default)
         {
-            Guid id = new Guid(request.Id);
-            SistemaModel result = _mapper.Map<SistemaModel>(_unitOfWork.SistemaRepository.Get(id));
-
-            return await Task.FromResult(result);
+            throw new NotImplementedException();
         }
 
-        public override async Task<BaseReply> Alterar(SistemaModel request, ServerCallContext context)
+        public async Task RemoveAsync(string id, CallContext context = default)
         {
-            return await Task.FromResult(new BaseReply
-            {
-                Sucesso = _unitOfWork.SistemaRepository.Update(_mapper.Map<Sistema>(request))
-            });
+            throw new NotImplementedException();
         }
 
-        public override async Task<BaseReply> Remover(BaseRequest request, ServerCallContext context)
+        public void Update(SistemaViewModel viewModel, CallContext context = default)
         {
-            return await Task.FromResult(new BaseReply
-            {
-                Sucesso = _unitOfWork.SistemaRepository.Remove(new Guid(request.Id))
-            });
+            throw new NotImplementedException();
         }
     }
 }

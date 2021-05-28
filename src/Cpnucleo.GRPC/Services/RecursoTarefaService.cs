@@ -34,7 +34,7 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
             ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_unitOfWork.RecursoTarefaRepository.All()));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_unitOfWork.RecursoTarefaRepository.AllAsync()));
 
             return await Task.FromResult(result);
         }
@@ -42,7 +42,7 @@ namespace Cpnucleo.GRPC
         public override async Task<RecursoTarefaModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            RecursoTarefaModel result = _mapper.Map<RecursoTarefaModel>(_unitOfWork.RecursoTarefaRepository.Get(id));
+            RecursoTarefaModel result = _mapper.Map<RecursoTarefaModel>(_unitOfWork.RecursoTarefaRepository.GetAsync(id));
 
             return await Task.FromResult(result);
         }
@@ -67,7 +67,7 @@ namespace Cpnucleo.GRPC
         {
             Guid id = new Guid(request.Id);
             ListarPorTarefaReply result = new ListarPorTarefaReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_unitOfWork.RecursoTarefaRepository.GetByTarefa(id)));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoTarefaModel>>(_unitOfWork.RecursoTarefaRepository.GetByTarefaAsync(id)));
 
             return await Task.FromResult(result);
         }

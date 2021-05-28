@@ -34,7 +34,7 @@ namespace Cpnucleo.GRPC
         public override async Task<ListarReply> Listar(Empty request, ServerCallContext context)
         {
             ListarReply result = new ListarReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoProjetoModel>>(_unitOfWork.RecursoProjetoRepository.All()));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoProjetoModel>>(_unitOfWork.RecursoProjetoRepository.AllAsync()));
 
             return await Task.FromResult(result);
         }
@@ -42,7 +42,7 @@ namespace Cpnucleo.GRPC
         public override async Task<RecursoProjetoModel> Consultar(BaseRequest request, ServerCallContext context)
         {
             Guid id = new Guid(request.Id);
-            RecursoProjetoModel result = _mapper.Map<RecursoProjetoModel>(_unitOfWork.RecursoProjetoRepository.Get(id));
+            RecursoProjetoModel result = _mapper.Map<RecursoProjetoModel>(_unitOfWork.RecursoProjetoRepository.GetAsync(id));
 
             return await Task.FromResult(result);
         }
@@ -67,7 +67,7 @@ namespace Cpnucleo.GRPC
         {
             Guid id = new Guid(request.Id);
             ListarPorProjetoReply result = new ListarPorProjetoReply();
-            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoProjetoModel>>(_unitOfWork.RecursoProjetoRepository.GetByProjeto(id)));
+            result.Lista.AddRange(_mapper.Map<IEnumerable<RecursoProjetoModel>>(_unitOfWork.RecursoProjetoRepository.GetByProjetoAsync(id)));
 
             return await Task.FromResult(result);
         }
