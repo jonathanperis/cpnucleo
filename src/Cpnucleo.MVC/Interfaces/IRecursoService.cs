@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface IRecursoService
     {

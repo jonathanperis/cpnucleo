@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoProjeto;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface IRecursoProjetoService
     {

@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoTarefa;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface IRecursoTarefaService
     {

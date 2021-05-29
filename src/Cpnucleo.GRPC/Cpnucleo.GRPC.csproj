@@ -6,20 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\ApontamentoService.cs" />
-    <Compile Remove="Services\ImpedimentoService.cs" />
-    <Compile Remove="Services\ImpedimentoTarefaService.cs" />
-    <Compile Remove="Services\ProjetoService.cs" />
-    <Compile Remove="Services\RecursoProjetoService.cs" />
-    <Compile Remove="Services\RecursoService.cs" />
-    <Compile Remove="Services\RecursoTarefaService.cs" />
-    <Compile Remove="Services\TarefaService.cs" />
-    <Compile Remove="Services\TipoTarefaService.cs" />
-    <Compile Remove="Services\TokenService.cs" />
-    <Compile Remove="Services\WorkflowService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="protobuf-net.Grpc.AspNetCore" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
   </ItemGroup>
@@ -31,19 +17,4 @@
     <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Protobuf Include="Protos\base.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\apontamento.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\impedimentoTarefa.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\recursoTarefa.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\recursoProjeto.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\recurso.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\impedimento.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\workflow.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\tarefa.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\tipoTarefa.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\sistema.proto" GrpcServices="Both" />
-    <Protobuf Include="Protos\projeto.proto" GrpcServices="Both" />
-  </ItemGroup>
-
 </Project>

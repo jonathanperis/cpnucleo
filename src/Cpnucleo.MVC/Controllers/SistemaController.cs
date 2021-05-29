@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.MVC.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class SistemaController : BaseController
     {
         private readonly ISistemaService _sistemaService;
@@ -41,7 +41,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { GetDependencies = true });
+                ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { });
                 SistemaView.Lista = response.Sistemas;
 
                 return View(SistemaView);

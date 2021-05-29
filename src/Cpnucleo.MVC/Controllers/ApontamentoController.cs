@@ -1,36 +1,35 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Cpnucleo.MVC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class ApontamentoController : Controller
+    public class ApontamentoController : BaseController
     {
-        private readonly IApontamentoAppService _apontamentoAppService;
-        private readonly ITarefaAppService _tarefaAppService;
-        private readonly IWorkflowAppService _workflowAppService;
-        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
+        private readonly IApontamentoService _apontamentoService;
+        private readonly ITarefaService _tarefaService;
+        private readonly IWorkflowService _workflowService;
 
         private ApontamentoView _apontamentoView;
 
-        public ApontamentoController(IApontamentoAppService apontamentoAppService,
-                                     ITarefaAppService tarefaAppService,
-                                     IWorkflowAppService workflowAppService,
-                                     IImpedimentoTarefaAppService impedimentoTarefaAppService)
+        public ApontamentoController(IApontamentoService apontamentoService,
+                                     ITarefaService tarefaService,
+                                     IWorkflowService workflowService)
         {
-            _apontamentoAppService = apontamentoAppService;
-            _tarefaAppService = tarefaAppService;
-            _workflowAppService = workflowAppService;
-            _impedimentoTarefaAppService = impedimentoTarefaAppService;
+            _apontamentoService = apontamentoService;
+            _tarefaService = tarefaService;
+            _workflowService = workflowService;
         }
 
         public ApontamentoView ApontamentoView
@@ -55,10 +54,10 @@ namespace Cpnucleo.MVC.Controllers
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new(retorno);
 
-                ApontamentoView.Lista = await _apontamentoAppService.GetByRecursoAsync(idRecurso);
-                ApontamentoView.ListaTarefas = await _tarefaAppService.GetByRecursoAsync(idRecurso);
+                GetByRecursoResponse response = await _apontamentoService.GetByRecursoAsync(Token, new GetByRecursoQuery { IdRecurso = idRecurso });
+                ApontamentoView.Lista = response.Apontamentos;
 
-                await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
+                await CarregarTarefasByRecurso(idRecurso);
 
                 return View(ApontamentoView);
             }
@@ -79,15 +78,15 @@ namespace Cpnucleo.MVC.Controllers
                     string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                     Guid idRecurso = new(retorno);
 
-                    ApontamentoView.Lista = await _apontamentoAppService.GetByRecursoAsync(idRecurso);
-                    ApontamentoView.ListaTarefas = await _tarefaAppService.GetByRecursoAsync(idRecurso);
+                    GetByRecursoResponse response = await _apontamentoService.GetByRecursoAsync(Token, new GetByRecursoQuery { IdRecurso = idRecurso });
+                    ApontamentoView.Lista = response.Apontamentos;
 
-                    await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
+                    await CarregarTarefasByRecurso(idRecurso);
 
                     return View(ApontamentoView);
                 }
 
-                await _apontamentoAppService.AddAsync(obj.Apontamento);
+                await _apontamentoService.AddAsync(Token, new CreateApontamentoCommand { Apontamento = obj.Apontamento });
 
                 return RedirectToAction("Listar");
             }
@@ -103,7 +102,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ApontamentoView.Apontamento = await _apontamentoAppService.GetAsync(id);
+                GetApontamentoResponse response = await _apontamentoService.GetAsync(Token, new GetApontamentoQuery { Id = id });
+                ApontamentoView.Apontamento = response.Apontamento;
 
                 return View(ApontamentoView);
             }
@@ -121,12 +121,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ApontamentoView.Apontamento = await _apontamentoAppService.GetAsync(obj.Apontamento.Id);
+                    GetApontamentoResponse response = await _apontamentoService.GetAsync(Token, new GetApontamentoQuery { Id = obj.Apontamento.Id });
+                    ApontamentoView.Apontamento = response.Apontamento;
 
                     return View(ApontamentoView);
                 }
 
-                await _apontamentoAppService.RemoveAsync(obj.Apontamento.Id);
+                await _apontamentoService.RemoveAsync(Token, new RemoveApontamentoCommand { Id = obj.Apontamento.Id });
 
                 return RedirectToAction("Listar");
             }
@@ -142,17 +143,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ApontamentoView.ListaWorkflow = await _workflowAppService.AllAsync();
-                ApontamentoView.ListaTarefas = await _tarefaAppService.AllAsync(true);
-
-                int colunas = await _workflowAppService.GetQuantidadeColunasAsync();
-
-                foreach (WorkflowViewModel item in ApontamentoView.ListaWorkflow)
-                {
-                    item.TamanhoColuna = _workflowAppService.GetTamanhoColuna(colunas);
-                }
-
-                await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
+                await CarregarWorkflows();
+                await CarregarTarefas();
 
                 return View(ApontamentoView);
             }
@@ -170,21 +162,22 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ApontamentoView.ListaWorkflow = await _workflowAppService.AllAsync();
-                    ApontamentoView.ListaTarefas = await _tarefaAppService.AllAsync(true);
-
-                    await PreencherDadosAdicionais(ApontamentoView.ListaTarefas);
+                    await CarregarWorkflows();
+                    await CarregarTarefas();
 
                     return Json(new { success = false, message = "", body = ApontamentoView });
                 }
 
-                TarefaViewModel tarefa = await _tarefaAppService.GetAsync(idTarefa);
-                WorkflowViewModel workflow = await _workflowAppService.GetAsync(idWorkflow);
+                Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetTarefaResponse getTarefaResponse = await _tarefaService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetTarefaQuery { Id = idTarefa });
+                TarefaViewModel tarefa = getTarefaResponse.Tarefa;
+
+                Infra.CrossCutting.Util.Queries.Responses.Workflow.GetWorkflowResponse getWorkflowResponse = await _workflowService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Workflow.GetWorkflowQuery { Id = idWorkflow });
+                WorkflowViewModel workflow = getWorkflowResponse.Workflow;
 
                 tarefa.IdWorkflow = workflow.Id;
                 tarefa.Workflow = workflow;
 
-                _tarefaAppService.Update(tarefa);
+                await _tarefaService.UpdateAsync(Token, new UpdateTarefaCommand { Tarefa = tarefa });
 
                 return Json(new { success = true });
             }
@@ -195,38 +188,22 @@ namespace Cpnucleo.MVC.Controllers
             }
         }
 
-        private async Task<IEnumerable<TarefaViewModel>> PreencherDadosAdicionais(IEnumerable<TarefaViewModel> lista)
+        private async Task CarregarTarefasByRecurso(Guid idRecurso)
         {
-            int colunas = await _workflowAppService.GetQuantidadeColunasAsync();
+            Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetByRecursoResponse response = await _tarefaService.GetByRecursoAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetByRecursoQuery { IdRecurso = idRecurso });
+            ApontamentoView.ListaTarefas = response.Tarefas;
+        }
 
-            foreach (TarefaViewModel item in lista)
-            {
-                item.Workflow.TamanhoColuna = _workflowAppService.GetTamanhoColuna(colunas);
+        private async Task CarregarWorkflows()
+        {
+            Infra.CrossCutting.Util.Queries.Responses.Workflow.ListWorkflowResponse response = await _workflowService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Workflow.ListWorkflowQuery { });
+            ApontamentoView.ListaWorkflow = response.Workflows;
+        }
 
-                item.HorasConsumidas = await _apontamentoAppService.GetTotalHorasPorRecursoAsync(item.IdRecurso, item.Id);
-                item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
-
-                IEnumerable<ImpedimentoTarefaViewModel> tarefas = await _impedimentoTarefaAppService.GetByTarefaAsync(item.Id);
-
-                if (tarefas.Any())
-                {
-                    item.TipoTarefa.Element = "warning-element";
-                }
-                else if (DateTime.Now.Date >= item.DataInicio && DateTime.Now.Date <= item.DataTermino)
-                {
-                    item.TipoTarefa.Element = "success-element";
-                }
-                else if (DateTime.Now.Date > item.DataTermino)
-                {
-                    item.TipoTarefa.Element = "danger-element";
-                }
-                else
-                {
-                    item.TipoTarefa.Element = "info-element";
-                }
-            }
-
-            return lista;
+        private async Task CarregarTarefas()
+        {
+            Infra.CrossCutting.Util.Queries.Responses.Tarefa.ListTarefaResponse response = await _tarefaService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.ListTarefaQuery { GetDependencies = true });
+            ApontamentoView.ListaTarefas = response.Tarefas;
         }
     }
 }

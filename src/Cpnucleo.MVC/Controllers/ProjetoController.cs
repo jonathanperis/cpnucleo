@@ -1,4 +1,9 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +14,17 @@ using System.Threading.Tasks;
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class ProjetoController : Controller
+    public class ProjetoController : BaseController
     {
-        private readonly IProjetoAppService _projetoAppService;
-        private readonly ISistemaAppService _sistemaAppService;
+        private readonly IProjetoService _projetoService;
+        private readonly ISistemaService _sistemaService;
 
         private ProjetoView _projetoView;
 
-        public ProjetoController(IProjetoAppService projetoAppService,
-                                 ISistemaAppService sistemaAppService)
+        public ProjetoController(IProjetoService projetoService, ISistemaService sistemaService)
         {
-            _projetoAppService = projetoAppService;
-            _sistemaAppService = sistemaAppService;
+            _projetoService = projetoService;
+            _sistemaService = sistemaService;
         }
 
         public ProjetoView ProjetoView
@@ -42,7 +46,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ProjetoView.Lista = await _projetoAppService.AllAsync(true);
+                ListProjetoResponse response = await _projetoService.AllAsync(Token, new ListProjetoQuery { GetDependencies = true });
+                ProjetoView.Lista = response.Projetos;
 
                 return View(ProjetoView);
             }
@@ -56,7 +61,7 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir()
         {
-            ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
+            await CarregarSelectSistemas();
 
             return View(ProjetoView);
         }
@@ -68,13 +73,12 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
+                    await CarregarSelectSistemas();
 
                     return View(ProjetoView);
                 }
 
-                await _projetoAppService.AddAsync(obj.Projeto);
-                await _projetoAppService.SaveChangesAsync();
+                await _projetoService.AddAsync(Token, new CreateProjetoCommand { Projeto = obj.Projeto });
 
                 return RedirectToAction("Listar");
             }
@@ -90,8 +94,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ProjetoView.Projeto = await _projetoAppService.GetAsync(id);
-                ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
+                GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = id });
+                ProjetoView.Projeto = response.Projeto;
+
+                await CarregarSelectSistemas();
 
                 return View(ProjetoView);
             }
@@ -109,14 +115,15 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ProjetoView.Projeto = await _projetoAppService.GetAsync(obj.Projeto.Id);
-                    ProjetoView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
+                    GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = obj.Projeto.Id });
+                    ProjetoView.Projeto = response.Projeto;
+
+                    await CarregarSelectSistemas();
 
                     return View(ProjetoView);
                 }
 
-                _projetoAppService.Update(obj.Projeto);
-                await _projetoAppService.SaveChangesAsync();
+                await _projetoService.UpdateAsync(Token, new UpdateProjetoCommand { Projeto = obj.Projeto });
 
                 return RedirectToAction("Listar");
             }
@@ -132,7 +139,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ProjetoView.Projeto = await _projetoAppService.GetAsync(id);
+                GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = id });
+                ProjetoView.Projeto = response.Projeto;
 
                 return View(ProjetoView);
             }
@@ -150,13 +158,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ProjetoView.Projeto = await _projetoAppService.GetAsync(obj.Projeto.Id);
+                    GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = obj.Projeto.Id });
+                    ProjetoView.Projeto = response.Projeto;
 
                     return View(ProjetoView);
                 }
 
-                await _projetoAppService.RemoveAsync(obj.Projeto.Id);
-                await _projetoAppService.SaveChangesAsync();
+                await _projetoService.RemoveAsync(Token, new RemoveProjetoCommand { Id = obj.Projeto.Id });
 
                 return RedirectToAction("Listar");
             }
@@ -165,6 +173,12 @@ namespace Cpnucleo.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
+        }
+
+        private async Task CarregarSelectSistemas()
+        {
+            ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { });
+            ProjetoView.SelectSistemas = new SelectList(response.Sistemas, "Id", "Nome");
         }
     }
 }
