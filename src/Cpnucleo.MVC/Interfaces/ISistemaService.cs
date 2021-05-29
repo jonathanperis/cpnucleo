@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface ISistemaService
     {

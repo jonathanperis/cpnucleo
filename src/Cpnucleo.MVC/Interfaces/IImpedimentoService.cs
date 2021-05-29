@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Impedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Impedimento;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface IImpedimentoService
     {

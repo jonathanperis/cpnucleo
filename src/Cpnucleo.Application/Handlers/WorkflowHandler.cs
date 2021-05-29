@@ -70,6 +70,8 @@ namespace Cpnucleo.Domain.Handlers
             result.Workflows = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies));
             result.Status = OperationResult.Success;
 
+            await PreencherDadosAdicionaisAsync(result.Workflows);
+
             return result;
         }
 
@@ -110,6 +112,16 @@ namespace Cpnucleo.Domain.Handlers
             result.Status = success ? OperationResult.Success : OperationResult.Failed;
 
             return result;
+        }
+
+        private async Task PreencherDadosAdicionaisAsync(IEnumerable<WorkflowViewModel> lista)
+        {
+            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
+
+            foreach (WorkflowViewModel item in lista)
+            {
+                item.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            }
         }
     }
 }

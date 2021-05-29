@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface IApontamentoService
     {

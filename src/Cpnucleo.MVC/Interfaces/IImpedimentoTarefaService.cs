@@ -4,7 +4,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.RazorPages.Interfaces
+namespace Cpnucleo.MVC.Interfaces
 {
     public interface IImpedimentoTarefaService
     {
