@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Impedimento;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,15 +11,15 @@ using System.Threading.Tasks;
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class ImpedimentoController : Controller
+    public class ImpedimentoController : BaseController
     {
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly IImpedimentoService _impedimentoService;
 
         private ImpedimentoView _impedimentoView;
 
-        public ImpedimentoController(IImpedimentoAppService impedimentoAppService)
+        public ImpedimentoController(IImpedimentoService impedimentoService)
         {
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoService = impedimentoService;
         }
 
         public ImpedimentoView ImpedimentoView
@@ -38,7 +41,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoView.Lista = await _impedimentoAppService.AllAsync();
+                ListImpedimentoResponse response = await _impedimentoService.AllAsync(Token, new ListImpedimentoQuery { });
+                ImpedimentoView.Lista = response.Impedimentos;
 
                 return View(ImpedimentoView);
             }
@@ -65,8 +69,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _impedimentoAppService.AddAsync(obj.Impedimento);
-                await _impedimentoAppService.SaveChangesAsync();
+                await _impedimentoService.AddAsync(Token, new CreateImpedimentoCommand { Impedimento = obj.Impedimento });
 
                 return RedirectToAction("Listar");
             }
@@ -82,7 +85,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(id);
+                GetImpedimentoResponse response = await _impedimentoService.GetAsync(Token, new GetImpedimentoQuery { Id = id });
+                ImpedimentoView.Impedimento = response.Impedimento;
 
                 return View(ImpedimentoView);
             }
@@ -100,13 +104,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
+                    GetImpedimentoResponse response = await _impedimentoService.GetAsync(Token, new GetImpedimentoQuery { Id = obj.Impedimento.Id });
+                    ImpedimentoView.Impedimento = response.Impedimento;
 
                     return View(ImpedimentoView);
                 }
 
-                _impedimentoAppService.Update(obj.Impedimento);
-                await _impedimentoAppService.SaveChangesAsync();
+                await _impedimentoService.UpdateAsync(Token, new UpdateImpedimentoCommand { Impedimento = obj.Impedimento });
 
                 return RedirectToAction("Listar");
             }
@@ -122,7 +126,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(id);
+                GetImpedimentoResponse response = await _impedimentoService.GetAsync(Token, new GetImpedimentoQuery { Id = id });
+                ImpedimentoView.Impedimento = response.Impedimento;
 
                 return View(ImpedimentoView);
             }
@@ -140,13 +145,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoView.Impedimento = await _impedimentoAppService.GetAsync(obj.Impedimento.Id);
+                    GetImpedimentoResponse response = await _impedimentoService.GetAsync(Token, new GetImpedimentoQuery { Id = obj.Impedimento.Id });
+                    ImpedimentoView.Impedimento = response.Impedimento;
 
                     return View(ImpedimentoView);
                 }
 
-                await _impedimentoAppService.RemoveAsync(obj.Impedimento.Id);
-                await _impedimentoAppService.SaveChangesAsync();
+                await _impedimentoService.RemoveAsync(Token, new RemoveImpedimentoCommand { Id = obj.Impedimento.Id });
 
                 return RedirectToAction("Listar");
             }
