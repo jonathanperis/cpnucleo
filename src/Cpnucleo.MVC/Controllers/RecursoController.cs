@@ -1,5 +1,7 @@
-﻿using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +11,15 @@ using System.Threading.Tasks;
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class RecursoController : Controller
+    public class RecursoController : BaseController
     {
-        private readonly IRecursoAppService _recursoAppService;
-        private readonly ICryptographyManager _cryptographyManager;
+        private readonly IRecursoService _recursoService;
 
         private RecursoView _recursoView;
 
-        public RecursoController(IRecursoAppService recursoAppService,
-                                 ICryptographyManager cryptographyManager)
+        public RecursoController(IRecursoService recursoService)
         {
-            _recursoAppService = recursoAppService;
-            _cryptographyManager = cryptographyManager;
+            _recursoService = recursoService;
         }
 
         public RecursoView RecursoView
@@ -42,7 +41,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoView.Lista = await _recursoAppService.AllAsync();
+                ListRecursoResponse response = await _recursoService.AllAsync(Token, new ListRecursoQuery { });
+                RecursoView.Lista = response.Recursos;
 
                 return View(RecursoView);
             }
@@ -69,13 +69,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                _cryptographyManager.CryptPbkdf2(obj.Recurso.Senha, out string senhaCrypt, out string salt);
-
-                obj.Recurso.Senha = senhaCrypt;
-                obj.Recurso.Salt = salt;
-
-                await _recursoAppService.AddAsync(obj.Recurso);
-                await _recursoAppService.SaveChangesAsync();
+                await _recursoService.AddAsync(Token, new CreateRecursoCommand { Recurso = obj.Recurso });
 
                 return RedirectToAction("Listar");
             }
@@ -91,10 +85,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoView.Recurso = await _recursoAppService.GetAsync(id);
-
-                RecursoView.Recurso.Senha = null;
-                RecursoView.Recurso.Salt = null;
+                GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = id });
+                RecursoView.Recurso = response.Recurso;
 
                 return View(RecursoView);
             }
@@ -112,21 +104,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoView.Recurso = await _recursoAppService.GetAsync(obj.Recurso.Id);
-
-                    RecursoView.Recurso.Senha = null;
-                    RecursoView.Recurso.Salt = null;
+                    GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = obj.Recurso.Id });
+                    RecursoView.Recurso = response.Recurso;
 
                     return View(RecursoView);
                 }
 
-                _cryptographyManager.CryptPbkdf2(obj.Recurso.Senha, out string senhaCrypt, out string salt);
-
-                obj.Recurso.Senha = senhaCrypt;
-                obj.Recurso.Salt = salt;
-
-                _recursoAppService.Update(obj.Recurso);
-                await _recursoAppService.SaveChangesAsync();
+                await _recursoService.UpdateAsync(Token, new UpdateRecursoCommand { Recurso = obj.Recurso });
 
                 return RedirectToAction("Listar");
             }
@@ -142,10 +126,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoView.Recurso = await _recursoAppService.GetAsync(id);
-
-                RecursoView.Recurso.Senha = null;
-                RecursoView.Recurso.Salt = null;
+                GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = id });
+                RecursoView.Recurso = response.Recurso;
 
                 return View(RecursoView);
             }
@@ -163,16 +145,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoView.Recurso = await _recursoAppService.GetAsync(obj.Recurso.Id);
-
-                    RecursoView.Recurso.Senha = null;
-                    RecursoView.Recurso.Salt = null;
+                    GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = obj.Recurso.Id });
+                    RecursoView.Recurso = response.Recurso;
 
                     return View(RecursoView);
                 }
 
-                await _recursoAppService.RemoveAsync(obj.Recurso.Id);
-                await _recursoAppService.SaveChangesAsync();
+                await _recursoService.RemoveAsync(Token, new RemoveRecursoCommand { Id = obj.Recurso.Id });
 
                 return RedirectToAction("Listar");
             }

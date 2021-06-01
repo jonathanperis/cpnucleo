@@ -41,6 +41,11 @@ namespace Cpnucleo.Domain.Handlers
                 Status = OperationResult.Failed
             };
 
+            _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
+
+            request.Recurso.Senha = senhaCrypt;
+            request.Recurso.Salt = salt;
+
             Recurso obj = await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(request.Recurso));
             result.Recurso = _mapper.Map<RecursoViewModel>(obj);
 
@@ -59,6 +64,10 @@ namespace Cpnucleo.Domain.Handlers
             };
 
             result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(request.Id));
+
+            result.Recurso.Senha = null;
+            result.Recurso.Salt = null;
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -72,6 +81,13 @@ namespace Cpnucleo.Domain.Handlers
             };
 
             result.Recursos = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies));
+
+            foreach (RecursoViewModel item in result.Recursos)
+            {
+                item.Senha = null;
+                item.Salt = null;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -106,6 +122,11 @@ namespace Cpnucleo.Domain.Handlers
             {
                 Status = OperationResult.Failed
             };
+
+            _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
+
+            request.Recurso.Senha = senhaCrypt;
+            request.Recurso.Salt = salt;
 
             _unitOfWork.RecursoRepository.Update(_mapper.Map<Recurso>(request.Recurso));
 
