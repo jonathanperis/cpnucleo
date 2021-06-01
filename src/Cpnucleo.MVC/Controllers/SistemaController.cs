@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
-using Cpnucleo.RazorPages.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
