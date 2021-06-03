@@ -1,8 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Impedimento;
-using MediatR;
+﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Impedimento
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento
 {
     [DataContract]
     public class ListImpedimentoQuery : IRequest<ListImpedimentoResponse>

@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Tarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso
 {
     [DataContract]
     public class GetByRecursoQuery : IRequest<GetByRecursoResponse>

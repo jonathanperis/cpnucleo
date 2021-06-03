@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Recurso
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso
 {
     [DataContract]
     public class RemoveRecursoResponse

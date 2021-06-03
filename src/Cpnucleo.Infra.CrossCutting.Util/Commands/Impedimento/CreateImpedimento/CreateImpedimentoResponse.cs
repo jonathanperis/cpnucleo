@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Impedimento
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.CreateImpedimento
 {
     [DataContract]
     public class CreateImpedimentoResponse

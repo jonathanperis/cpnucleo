@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow
 {
     [DataContract]
     public class ListWorkflowResponse

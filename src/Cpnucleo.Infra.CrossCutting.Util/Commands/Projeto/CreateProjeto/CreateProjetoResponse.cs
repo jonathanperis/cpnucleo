@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Projeto
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto
 {
     [DataContract]
     public class CreateProjetoResponse

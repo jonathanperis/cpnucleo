@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoTarefa;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoTarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa
 {
     [DataContract]
     public class RemoveRecursoTarefaCommand : IRequest<RemoveRecursoTarefaResponse>

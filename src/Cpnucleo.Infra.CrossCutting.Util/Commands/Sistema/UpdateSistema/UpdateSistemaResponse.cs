@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema
 {
     [DataContract]
     public class UpdateSistemaResponse

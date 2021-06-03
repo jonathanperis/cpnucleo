@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa
 {
     [DataContract]
     public class GetTarefaResponse

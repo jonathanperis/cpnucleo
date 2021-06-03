@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Impedimento;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Impedimento
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento
 {
     [DataContract]
     public class RemoveImpedimentoCommand : IRequest<RemoveImpedimentoResponse>

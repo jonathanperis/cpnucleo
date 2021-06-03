@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema
 {
     [DataContract]
     public class RemoveSistemaCommand : IRequest<RemoveSistemaResponse>

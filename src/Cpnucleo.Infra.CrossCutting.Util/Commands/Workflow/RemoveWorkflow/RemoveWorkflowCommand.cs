@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Workflow;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Workflow
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow
 {
     [DataContract]
     public class RemoveWorkflowCommand : IRequest<RemoveWorkflowResponse>

@@ -1,8 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
-using MediatR;
+﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso
 {
     [DataContract]
     public class ListRecursoQuery : IRequest<ListRecursoResponse>

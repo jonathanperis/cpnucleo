@@ -1,8 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
-using MediatR;
+﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema
 {
     [DataContract]
     public class ListSistemaQuery : IRequest<ListSistemaResponse>

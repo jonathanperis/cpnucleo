@@ -1,8 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Projeto;
-using MediatR;
+﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Projeto
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
 {
     [DataContract]
     public class ListProjetoQuery : IRequest<ListProjetoResponse>

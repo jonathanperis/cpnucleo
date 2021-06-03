@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Projeto
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto
 {
     [DataContract]
     public class RemoveProjetoResponse

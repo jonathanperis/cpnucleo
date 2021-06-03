@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso
 {
     [DataContract]
     public class ListRecursoResponse
