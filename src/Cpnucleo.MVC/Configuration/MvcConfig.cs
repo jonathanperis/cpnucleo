@@ -1,5 +1,5 @@
-﻿using Cpnucleo.MVC.Services;
-using Cpnucleo.MVC.Interfaces;
+﻿using Cpnucleo.MVC.Interfaces;
+using Cpnucleo.MVC.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.MVC.Configuration
