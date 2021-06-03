@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.MVC.Services;
-using Cpnucleo.RazorPages.Interfaces;
+using Cpnucleo.MVC.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cpnucleo.RazorPages.Configuration
+namespace Cpnucleo.MVC.Configuration
 {
     public static class MvcConfig
     {

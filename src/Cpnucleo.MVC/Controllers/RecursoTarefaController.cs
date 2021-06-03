@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoTarefa;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +12,21 @@ using System.Threading.Tasks;
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class RecursoTarefaController : Controller
+    public class RecursoTarefaController : BaseController
     {
-        private readonly IRecursoTarefaAppService _recursoTarefaAppService;
-        private readonly IRecursoAppService _recursoAppService;
-        private readonly ITarefaAppService _tarefaAppService;
+        private readonly IRecursoTarefaService _recursoTarefaService;
+        private readonly IRecursoService _recursoService;
+        private readonly ITarefaService _TarefaService;
 
         private RecursoTarefaView _recursoTarefaView;
 
-        public RecursoTarefaController(IRecursoTarefaAppService recursoTarefaAppService,
-                                       IRecursoAppService recursoAppService,
-                                       ITarefaAppService tarefaAppService)
+        public RecursoTarefaController(IRecursoTarefaService recursoTarefaService,
+                                        IRecursoService recursoService,
+                                        ITarefaService TarefaService)
         {
-            _recursoTarefaAppService = recursoTarefaAppService;
-            _recursoAppService = recursoAppService;
-            _tarefaAppService = tarefaAppService;
+            _recursoTarefaService = recursoTarefaService;
+            _recursoService = recursoService;
+            _TarefaService = TarefaService;
         }
 
         public RecursoTarefaView RecursoTarefaView
@@ -45,7 +48,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoTarefaView.Lista = await _recursoTarefaAppService.GetByTarefaAsync(idTarefa);
+                GetByTarefaResponse response = await _recursoTarefaService.GetByTarefaAsync(Token, new GetByTarefaQuery { IdTarefa = idTarefa });
+                RecursoTarefaView.Lista = response.RecursoTarefas;
 
                 ViewData["idTarefa"] = idTarefa;
 
@@ -61,8 +65,8 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir(Guid idTarefa)
         {
-            RecursoTarefaView.Tarefa = await _tarefaAppService.GetAsync(idTarefa);
-            RecursoTarefaView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
+            await ObterTarefa(idTarefa);
+            await CarregarSelectRecursos();
 
             return View(RecursoTarefaView);
         }
@@ -74,14 +78,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoTarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
-                    RecursoTarefaView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
+                    await ObterTarefa(obj.Tarefa.Id);
+                    await CarregarSelectRecursos();
 
                     return View(RecursoTarefaView);
                 }
 
-                await _recursoTarefaAppService.AddAsync(obj.RecursoTarefa);
-                await _recursoTarefaAppService.SaveChangesAsync();
+                await _recursoTarefaService.AddAsync(Token, new CreateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -97,8 +100,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(id);
-                RecursoTarefaView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
+                GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = id });
+                RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
+
+                await CarregarSelectRecursos();
 
                 return View(RecursoTarefaView);
             }
@@ -116,14 +121,15 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(obj.RecursoTarefa.Id);
-                    RecursoTarefaView.SelectRecursos = new SelectList(await _recursoAppService.AllAsync(), "Id", "Nome");
+                    GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
+                    RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
+
+                    await CarregarSelectRecursos();
 
                     return View(RecursoTarefaView);
                 }
 
-                _recursoTarefaAppService.Update(obj.RecursoTarefa);
-                await _recursoTarefaAppService.SaveChangesAsync();
+                await _recursoTarefaService.UpdateAsync(Token, new UpdateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -139,7 +145,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(id);
+                GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = id });
+                RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
 
                 return View(RecursoTarefaView);
             }
@@ -157,13 +164,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    RecursoTarefaView.RecursoTarefa = await _recursoTarefaAppService.GetAsync(obj.RecursoTarefa.Id);
+                    GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
+                    RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
 
                     return View(RecursoTarefaView);
                 }
 
-                await _recursoTarefaAppService.RemoveAsync(obj.RecursoTarefa.Id);
-                await _recursoTarefaAppService.SaveChangesAsync();
+                await _recursoTarefaService.RemoveAsync(Token, new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -172,6 +179,18 @@ namespace Cpnucleo.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
+        }
+
+        private async Task ObterTarefa(Guid idTarefa)
+        {
+            Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetTarefaResponse response = await _TarefaService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetTarefaQuery { Id = idTarefa });
+            RecursoTarefaView.Tarefa = response.Tarefa;
+        }
+
+        private async Task CarregarSelectRecursos()
+        {
+            Infra.CrossCutting.Util.Queries.Responses.Recurso.ListRecursoResponse response = await _recursoService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Recurso.ListRecursoQuery { });
+            RecursoTarefaView.SelectRecursos = new SelectList(response.Recursos, "Id", "Nome");
         }
     }
 }

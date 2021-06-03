@@ -3,7 +3,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
-using Cpnucleo.RazorPages.Interfaces;
+using Cpnucleo.MVC.Interfaces;
 using Microsoft.Extensions.Configuration;
 using ProtoBuf.Grpc.Client;
 using System.Threading.Tasks;
