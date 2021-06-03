@@ -23,10 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<ApontamentoViewModel> AddAsync(ApontamentoViewModel viewModel)
         {
-            ApontamentoViewModel response = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(viewModel)));
+            ApontamentoViewModel result = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(viewModel)));
             await _unitOfWork.SaveChangesAsync();
 
-            return response;
+            return result;
         }
 
         public async Task<IEnumerable<ApontamentoViewModel>> AllAsync(bool getDependencies = false)
