@@ -1,6 +1,8 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.MVC.Services
@@ -29,17 +31,17 @@ namespace Cpnucleo.MVC.Services
 
             //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO: BEGIN
 
-            //var httpHandler = new HttpClientHandler
-            //{
-            //    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            //};
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
 
             //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO: END                 
 
             _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"],
                 new GrpcChannelOptions
                 {
-                    //HttpHandler = new GrpcWebHandler(httpHandler), //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO
+                    HttpHandler = new GrpcWebHandler(httpHandler), //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO
                     Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
                 });
 
