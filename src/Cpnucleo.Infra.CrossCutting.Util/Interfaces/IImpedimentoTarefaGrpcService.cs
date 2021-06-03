@@ -1,7 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 using ProtoBuf.Grpc;
 using System.ServiceModel;
 using System.Threading.Tasks;

@@ -1,10 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateByWorkflow
 {
     [DataContract]
     public class UpdateByWorkflowCommand : IRequest<UpdateByWorkflowResponse>

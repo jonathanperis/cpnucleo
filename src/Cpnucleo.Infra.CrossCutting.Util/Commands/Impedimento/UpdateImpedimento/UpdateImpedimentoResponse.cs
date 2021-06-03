@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Impedimento
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento
 {
     [DataContract]
     public class UpdateImpedimentoResponse

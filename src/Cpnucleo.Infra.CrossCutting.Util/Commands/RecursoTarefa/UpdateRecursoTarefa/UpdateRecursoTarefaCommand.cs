@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoTarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa
 {
     [DataContract]
     public class UpdateRecursoTarefaCommand : IRequest<UpdateRecursoTarefaResponse>

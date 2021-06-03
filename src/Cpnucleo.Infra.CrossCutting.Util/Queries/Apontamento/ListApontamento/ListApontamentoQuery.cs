@@ -1,8 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
-using MediatR;
+﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento
 {
     [DataContract]
     public class ListApontamentoQuery : IRequest<ListApontamentoResponse>

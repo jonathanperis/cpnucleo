@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow
 {
     [DataContract]
     public class GetWorkflowQuery : IRequest<GetWorkflowResponse>

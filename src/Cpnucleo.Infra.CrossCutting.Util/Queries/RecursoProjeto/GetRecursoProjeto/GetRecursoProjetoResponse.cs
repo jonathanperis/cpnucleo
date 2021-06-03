@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoProjeto
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto
 {
     [DataContract]
     public class GetRecursoProjetoResponse

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa
 {
     [DataContract]
     public class ListTarefaResponse

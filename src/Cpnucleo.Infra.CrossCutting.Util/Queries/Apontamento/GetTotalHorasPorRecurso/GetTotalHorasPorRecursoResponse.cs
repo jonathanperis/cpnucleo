@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetTotalHorasPorRecurso
 {
     [DataContract]
     public class GetTotalHorasPorRecursoResponse

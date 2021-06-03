@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Workflow
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow
 {
     [DataContract]
     public class UpdateWorkflowResponse

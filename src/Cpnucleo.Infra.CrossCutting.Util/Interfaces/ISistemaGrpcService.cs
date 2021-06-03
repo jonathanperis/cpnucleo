@@ -1,7 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 using ProtoBuf.Grpc;
 using System.ServiceModel;
 using System.Threading.Tasks;

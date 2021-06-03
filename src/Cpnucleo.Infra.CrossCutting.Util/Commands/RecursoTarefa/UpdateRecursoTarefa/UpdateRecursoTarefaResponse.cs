@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoTarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa
 {
     [DataContract]
     public class UpdateRecursoTarefaResponse

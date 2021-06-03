@@ -1,9 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Recurso;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Recurso
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso
 {
     [DataContract]
     public class RemoveRecursoCommand : IRequest<RemoveRecursoResponse>

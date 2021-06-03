@@ -1,8 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
-using MediatR;
+﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa
 {
     [DataContract]
     public class ListImpedimentoTarefaQuery : IRequest<ListImpedimentoTarefaResponse>

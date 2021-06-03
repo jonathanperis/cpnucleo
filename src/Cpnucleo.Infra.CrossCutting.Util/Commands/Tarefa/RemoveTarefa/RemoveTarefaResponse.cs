@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Tarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa
 {
     [DataContract]
     public class RemoveTarefaResponse

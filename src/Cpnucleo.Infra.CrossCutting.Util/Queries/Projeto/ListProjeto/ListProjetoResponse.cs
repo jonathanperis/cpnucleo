@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Projeto
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
 {
     [DataContract]
     public class ListProjetoResponse

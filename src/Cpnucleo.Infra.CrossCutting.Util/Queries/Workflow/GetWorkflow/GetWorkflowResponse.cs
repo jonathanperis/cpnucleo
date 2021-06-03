@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow
 {
     [DataContract]
     public class GetWorkflowResponse
