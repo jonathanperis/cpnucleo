@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +12,21 @@ using System.Threading.Tasks;
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class ImpedimentoTarefaController : Controller
+    public class ImpedimentoTarefaController : BaseController
     {
-        private readonly IImpedimentoTarefaAppService _impedimentoTarefaAppService;
-        private readonly ITarefaAppService _tarefaAppService;
-        private readonly IImpedimentoAppService _impedimentoAppService;
+        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
+        private readonly ITarefaService _tarefaService;
+        private readonly IImpedimentoService _impedimentoService;
 
         private ImpedimentoTarefaView _impedimentoTarefaView;
 
-        public ImpedimentoTarefaController(IImpedimentoTarefaAppService impedimentoTarefaAppService,
-                                           ITarefaAppService tarefaAppService,
-                                           IImpedimentoAppService impedimentoAppService)
+        public ImpedimentoTarefaController(IImpedimentoTarefaService impedimentoTarefaService,
+                                           ITarefaService tarefaService,
+                                           IImpedimentoService impedimentoService)
         {
-            _impedimentoTarefaAppService = impedimentoTarefaAppService;
-            _tarefaAppService = tarefaAppService;
-            _impedimentoAppService = impedimentoAppService;
+            _impedimentoTarefaService = impedimentoTarefaService;
+            _tarefaService = tarefaService;
+            _impedimentoService = impedimentoService;
         }
 
         public ImpedimentoTarefaView ImpedimentoTarefaView
@@ -45,7 +48,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoTarefaView.Lista = await _impedimentoTarefaAppService.GetByTarefaAsync(idTarefa);
+                GetByTarefaResponse response = await _impedimentoTarefaService.GetByTarefaAsync(Token, new GetByTarefaQuery { IdTarefa = idTarefa });
+                ImpedimentoTarefaView.Lista = response.ImpedimentoTarefas;
 
                 ViewData["idTarefa"] = idTarefa;
 
@@ -61,8 +65,8 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir(Guid idTarefa)
         {
-            ImpedimentoTarefaView.Tarefa = await _tarefaAppService.GetAsync(idTarefa);
-            ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
+            await ObterTarefa(idTarefa);
+            await CarregarSelectImpedimentos();
 
             return View(ImpedimentoTarefaView);
         }
@@ -74,14 +78,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoTarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
-                    ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
+                    await ObterTarefa(obj.Tarefa.Id);
+                    await CarregarSelectImpedimentos();
 
                     return View(ImpedimentoTarefaView);
                 }
 
-                await _impedimentoTarefaAppService.AddAsync(obj.ImpedimentoTarefa);
-                await _impedimentoTarefaAppService.SaveChangesAsync();
+                await _impedimentoTarefaService.AddAsync(Token, new CreateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -97,8 +100,10 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(id);
-                ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
+                GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = id });
+                ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
+
+                await CarregarSelectImpedimentos();
 
                 return View(ImpedimentoTarefaView);
             }
@@ -116,14 +121,15 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
-                    ImpedimentoTarefaView.SelectImpedimentos = new SelectList(await _impedimentoAppService.AllAsync(), "Id", "Nome");
+                    GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
+                    ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
+
+                    await CarregarSelectImpedimentos();
 
                     return View(ImpedimentoTarefaView);
                 }
 
-                _impedimentoTarefaAppService.Update(obj.ImpedimentoTarefa);
-                await _impedimentoTarefaAppService.SaveChangesAsync();
+                await _impedimentoTarefaService.UpdateAsync(Token, new UpdateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -139,7 +145,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(id);
+                GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = id });
+                ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
 
                 return View(ImpedimentoTarefaView);
             }
@@ -157,13 +164,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaAppService.GetAsync(obj.ImpedimentoTarefa.Id);
+                    GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
+                    ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
 
                     return View(ImpedimentoTarefaView);
                 }
 
-                await _impedimentoTarefaAppService.RemoveAsync(obj.ImpedimentoTarefa.Id);
-                await _impedimentoTarefaAppService.SaveChangesAsync();
+                await _impedimentoTarefaService.RemoveAsync(Token, new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -172,6 +179,18 @@ namespace Cpnucleo.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
+        }
+
+        private async Task ObterTarefa(Guid idTarefa)
+        {
+            Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetTarefaResponse response = await _tarefaService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetTarefaQuery { Id = idTarefa });
+            ImpedimentoTarefaView.Tarefa = response.Tarefa;
+        }
+
+        private async Task CarregarSelectImpedimentos()
+        {
+            Infra.CrossCutting.Util.Queries.Responses.Impedimento.ListImpedimentoResponse response = await _impedimentoService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Impedimento.ListImpedimentoQuery { });
+            ImpedimentoTarefaView.SelectImpedimentos = new SelectList(response.Impedimentos, "Id", "Nome");
         }
     }
 }

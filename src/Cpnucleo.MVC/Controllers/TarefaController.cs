@@ -1,4 +1,15 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,27 +20,27 @@ using System.Threading.Tasks;
 namespace Cpnucleo.MVC.Controllers
 {
     [Authorize]
-    public class TarefaController : Controller
+    public class TarefaController : BaseController
     {
-        private readonly ITarefaAppService _tarefaAppService;
-        private readonly ISistemaAppService _sistemaAppService;
-        private readonly IProjetoAppService _projetoAppService;
-        private readonly IWorkflowAppService _workflowAppService;
-        private readonly ITipoTarefaAppService _tipoTarefaAppService;
+        private readonly ITarefaService _tarefaService;
+        private readonly ISistemaService _sistemaService;
+        private readonly IProjetoService _projetoService;
+        private readonly IWorkflowService _workflowService;
+        private readonly ITipoTarefaService _tipoTarefaService;
 
         private TarefaView _tarefaView;
 
-        public TarefaController(ITarefaAppService tarefaAppService,
-                                ISistemaAppService sistemaAppService,
-                                IProjetoAppService projetoAppService,
-                                IWorkflowAppService workflowAppService,
-                                ITipoTarefaAppService tipoTarefaAppService)
+        public TarefaController(ITarefaService tarefaService,
+                                ISistemaService sistemaService,
+                                IProjetoService projetoService,
+                                IWorkflowService workflowService,
+                                ITipoTarefaService tipoTarefaService)
         {
-            _tarefaAppService = tarefaAppService;
-            _sistemaAppService = sistemaAppService;
-            _projetoAppService = projetoAppService;
-            _workflowAppService = workflowAppService;
-            _tipoTarefaAppService = tipoTarefaAppService;
+            _tarefaService = tarefaService;
+            _sistemaService = sistemaService;
+            _projetoService = projetoService;
+            _workflowService = workflowService;
+            _tipoTarefaService = tipoTarefaService;
         }
 
         public TarefaView TarefaView
@@ -51,7 +62,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                TarefaView.Lista = await _tarefaAppService.AllAsync(true);
+                ListTarefaResponse response = await _tarefaService.AllAsync(Token, new ListTarefaQuery { GetDependencies = true });
+                TarefaView.Lista = response.Tarefas;
 
                 return View(TarefaView);
             }
@@ -65,10 +77,10 @@ namespace Cpnucleo.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Incluir()
         {
-            TarefaView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
-            TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
-            TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
-            TarefaView.SelectTipoTarefas = new SelectList(await _tipoTarefaAppService.AllAsync(), "Id", "Nome");
+            await CarregarSelectSistemas();
+            await CarregarSelectProjetos();
+            await CarregarSelectWorkflows();
+            await CarregarSelectTipoTarefas();
 
             TarefaView.User = HttpContext.User;
 
@@ -82,18 +94,17 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    TarefaView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
-                    TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
-                    TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
-                    TarefaView.SelectTipoTarefas = new SelectList(await _tipoTarefaAppService.AllAsync(), "Id", "Nome");
+                    await CarregarSelectSistemas();
+                    await CarregarSelectProjetos();
+                    await CarregarSelectWorkflows();
+                    await CarregarSelectTipoTarefas();
 
                     TarefaView.User = HttpContext.User;
 
                     return View(TarefaView);
                 }
 
-                await _tarefaAppService.AddAsync(obj.Tarefa);
-                await _tarefaAppService.SaveChangesAsync();
+                await _tarefaService.AddAsync(Token, new CreateTarefaCommand { Tarefa = obj.Tarefa });
 
                 return RedirectToAction("Listar");
             }
@@ -109,12 +120,13 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                TarefaView.Tarefa = await _tarefaAppService.GetAsync(id);
+                GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = id });
+                TarefaView.Tarefa = response.Tarefa;
 
-                TarefaView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
-                TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
-                TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
-                TarefaView.SelectTipoTarefas = new SelectList(await _tipoTarefaAppService.AllAsync(), "Id", "Nome");
+                await CarregarSelectSistemas();
+                await CarregarSelectProjetos();
+                await CarregarSelectWorkflows();
+                await CarregarSelectTipoTarefas();
 
                 return View(TarefaView);
             }
@@ -132,18 +144,18 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    TarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
+                    GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = obj.Tarefa.Id });
+                    TarefaView.Tarefa = response.Tarefa;
 
-                    TarefaView.SelectSistemas = new SelectList(await _sistemaAppService.AllAsync(), "Id", "Nome");
-                    TarefaView.SelectProjetos = new SelectList(await _projetoAppService.AllAsync(), "Id", "Nome");
-                    TarefaView.SelectWorkflows = new SelectList(await _workflowAppService.AllAsync(), "Id", "Nome");
-                    TarefaView.SelectTipoTarefas = new SelectList(await _tipoTarefaAppService.AllAsync(), "Id", "Nome");
+                    await CarregarSelectSistemas();
+                    await CarregarSelectProjetos();
+                    await CarregarSelectWorkflows();
+                    await CarregarSelectTipoTarefas();
 
                     return View(TarefaView);
                 }
 
-                _tarefaAppService.Update(obj.Tarefa);
-                await _tarefaAppService.SaveChangesAsync();
+                await _tarefaService.UpdateAsync(Token, new UpdateTarefaCommand { Tarefa = obj.Tarefa });
 
                 return RedirectToAction("Listar");
             }
@@ -159,7 +171,8 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                TarefaView.Tarefa = await _tarefaAppService.GetAsync(id);
+                GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = id });
+                TarefaView.Tarefa = response.Tarefa;
 
                 return View(TarefaView);
             }
@@ -177,13 +190,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    TarefaView.Tarefa = await _tarefaAppService.GetAsync(obj.Tarefa.Id);
+                    GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = obj.Tarefa.Id });
+                    TarefaView.Tarefa = response.Tarefa;
 
                     return View(TarefaView);
                 }
 
-                await _tarefaAppService.RemoveAsync(obj.Tarefa.Id);
-                await _tarefaAppService.SaveChangesAsync();
+                await _tarefaService.RemoveAsync(Token, new RemoveTarefaCommand { Id = obj.Tarefa.Id });
 
                 return RedirectToAction("Listar");
             }
@@ -192,6 +205,30 @@ namespace Cpnucleo.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
+        }
+
+        private async Task CarregarSelectSistemas()
+        {
+            ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { });
+            TarefaView.SelectSistemas = new SelectList(response.Sistemas, "Id", "Nome");
+        }
+
+        private async Task CarregarSelectProjetos()
+        {
+            ListProjetoResponse response = await _projetoService.AllAsync(Token, new ListProjetoQuery { });
+            TarefaView.SelectProjetos = new SelectList(response.Projetos, "Id", "Nome");
+        }
+
+        private async Task CarregarSelectWorkflows()
+        {
+            ListWorkflowResponse response = await _workflowService.AllAsync(Token, new ListWorkflowQuery { });
+            TarefaView.SelectWorkflows = new SelectList(response.Workflows, "Id", "Nome");
+        }
+
+        private async Task CarregarSelectTipoTarefas()
+        {
+            ListTipoTarefaResponse response = await _tipoTarefaService.AllAsync(Token, new ListTipoTarefaQuery { });
+            TarefaView.SelectTipoTarefas = new SelectList(response.TipoTarefas, "Id", "Nome");
         }
     }
 }

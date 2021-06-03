@@ -25,5 +25,8 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 
         [OperationContract]
         Task<RemoveRecursoResponse> RemoveAsync(RemoveRecursoCommand command, CallContext context = default);
+
+        [OperationContract]
+        Task<AuthResponse> AuthAsync(AuthQuery query, CallContext context = default);
     }
 }
