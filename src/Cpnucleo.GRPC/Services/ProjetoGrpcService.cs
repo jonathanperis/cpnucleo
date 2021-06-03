@@ -1,8 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Projeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;

@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
 using ProtoBuf.Grpc;

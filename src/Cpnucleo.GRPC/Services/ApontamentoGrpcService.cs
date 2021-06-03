@@ -1,8 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Apontamento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetTotalHorasPorRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;
