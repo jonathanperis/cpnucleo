@@ -41,7 +41,7 @@ namespace Cpnucleo.MVC.Services
             _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"],
                 new GrpcChannelOptions
                 {
-                    HttpHandler = new GrpcWebHandler(httpHandler), //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO
+                    HttpHandler = new GrpcWebHandler(new HttpClientHandler()), //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO
                     Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
                 });
 
