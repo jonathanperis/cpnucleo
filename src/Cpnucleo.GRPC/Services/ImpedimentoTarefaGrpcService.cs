@@ -4,11 +4,13 @@ using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
+    [Authorize]
     public class ImpedimentoTarefaGrpcService : IImpedimentoTarefaGrpcService
     {
         private readonly IMediator _mediator;

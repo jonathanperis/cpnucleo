@@ -67,19 +67,7 @@ namespace Cpnucleo.Domain.Handlers
                 Status = OperationResult.Failed
             };
 
-            //result.Sistemas = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies));
-
-            List<SistemaViewModel> temp = new List<SistemaViewModel>
-            {
-                new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Sistema 1", Descricao = "Descrição 1", DataInclusao = System.DateTime.Now },
-                new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Sistema 2", Descricao = "Descrição 2", DataInclusao = System.DateTime.Now },
-                new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Sistema 3", Descricao = "Descrição 3", DataInclusao = System.DateTime.Now },
-                new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Sistema 4", Descricao = "Descrição 4", DataInclusao = System.DateTime.Now },
-                new SistemaViewModel { Id = System.Guid.NewGuid(), Nome = "Sistema 5", Descricao = "Descrição 5", DataInclusao = System.DateTime.Now }
-            };
-
-            result.Sistemas = temp;
-
+            result.Sistemas = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies));
             result.Status = OperationResult.Success;
 
             return result;
