@@ -31,7 +31,7 @@ namespace Cpnucleo.MVC.Services
 
             //@@JONATHAN - 08/02/2020 - PALIATIVO APENAS PARA CHAMADAS SEM CERTIFICADO: BEGIN
 
-            var httpHandler = new HttpClientHandler
+            HttpClientHandler httpHandler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
             };
