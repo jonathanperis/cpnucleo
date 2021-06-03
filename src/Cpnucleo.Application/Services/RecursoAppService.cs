@@ -30,33 +30,33 @@ namespace Cpnucleo.Application.Services
             viewModel.Senha = senhaCrypt;
             viewModel.Salt = salt;
 
-            RecursoViewModel response = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(viewModel)));
+            RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(viewModel)));
             await _unitOfWork.SaveChangesAsync();
 
-            return response;
+            return result;
         }
 
         public async Task<IEnumerable<RecursoViewModel>> AllAsync(bool getDependencies = false)
         {
-            IEnumerable<RecursoViewModel> response = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(getDependencies));
+            IEnumerable<RecursoViewModel> result = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(getDependencies));
 
-            foreach (RecursoViewModel item in response)
+            foreach (RecursoViewModel item in result)
             {
                 item.Senha = null;
                 item.Salt = null;
             }
 
-            return response;
+            return result;
         }
 
         public async Task<RecursoViewModel> GetAsync(Guid id)
         {
-            RecursoViewModel response = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(id));
+            RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(id));
 
-            response.Senha = null;
-            response.Salt = null;
+            result.Senha = null;
+            result.Salt = null;
 
-            return response;
+            return result;
         }
 
         public async Task RemoveAsync(Guid id)

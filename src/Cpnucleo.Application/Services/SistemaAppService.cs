@@ -23,10 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<SistemaViewModel> AddAsync(SistemaViewModel viewModel)
         {
-            SistemaViewModel response = _mapper.Map<SistemaViewModel>(await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Sistema>(viewModel)));
+            SistemaViewModel result = _mapper.Map<SistemaViewModel>(await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Sistema>(viewModel)));
             await _unitOfWork.SaveChangesAsync();
 
-            return response;
+            return result;
         }
 
         public async Task<IEnumerable<SistemaViewModel>> AllAsync(bool getDependencies = false)

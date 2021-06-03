@@ -24,19 +24,19 @@ namespace Cpnucleo.Application.Services
 
         public async Task<TarefaViewModel> AddAsync(TarefaViewModel viewModel)
         {
-            TarefaViewModel response = _mapper.Map<TarefaViewModel>(await _unitOfWork.TarefaRepository.AddAsync(_mapper.Map<Tarefa>(viewModel)));
+            TarefaViewModel result = _mapper.Map<TarefaViewModel>(await _unitOfWork.TarefaRepository.AddAsync(_mapper.Map<Tarefa>(viewModel)));
             await _unitOfWork.SaveChangesAsync();
 
-            return response;
+            return result;
         }
 
         public async Task<IEnumerable<TarefaViewModel>> AllAsync(bool getDependencies = false)
         {
-            IEnumerable<TarefaViewModel> response = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.AllAsync(getDependencies));
+            IEnumerable<TarefaViewModel> result = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.AllAsync(getDependencies));
 
-            await PreencherDadosAdicionaisAsync(response);
+            await PreencherDadosAdicionaisAsync(result);
 
-            return response;
+            return result;
         }
 
         public async Task<TarefaViewModel> GetAsync(Guid id)
@@ -46,11 +46,11 @@ namespace Cpnucleo.Application.Services
 
         public async Task<IEnumerable<TarefaViewModel>> GetByRecursoAsync(Guid idRecurso)
         {
-            IEnumerable<TarefaViewModel> response = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.GetByRecursoAsync(idRecurso));
+            IEnumerable<TarefaViewModel> result = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.GetByRecursoAsync(idRecurso));
 
-            await PreencherDadosAdicionaisAsync(response);
+            await PreencherDadosAdicionaisAsync(result);
 
-            return response;
+            return result;
         }
 
         public async Task RemoveAsync(Guid id)

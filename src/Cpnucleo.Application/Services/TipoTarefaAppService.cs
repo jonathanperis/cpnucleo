@@ -23,10 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<TipoTarefaViewModel> AddAsync(TipoTarefaViewModel viewModel)
         {
-            TipoTarefaViewModel response = _mapper.Map<TipoTarefaViewModel>(await _unitOfWork.TipoTarefaRepository.AddAsync(_mapper.Map<TipoTarefa>(viewModel)));
+            TipoTarefaViewModel result = _mapper.Map<TipoTarefaViewModel>(await _unitOfWork.TipoTarefaRepository.AddAsync(_mapper.Map<TipoTarefa>(viewModel)));
             await _unitOfWork.SaveChangesAsync();
 
-            return response;
+            return result;
         }
 
         public async Task<IEnumerable<TipoTarefaViewModel>> AllAsync(bool getDependencies = false)

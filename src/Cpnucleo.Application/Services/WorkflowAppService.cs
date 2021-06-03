@@ -23,19 +23,19 @@ namespace Cpnucleo.Application.Services
 
         public async Task<WorkflowViewModel> AddAsync(WorkflowViewModel viewModel)
         {
-            WorkflowViewModel response = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(viewModel)));
+            WorkflowViewModel result = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(viewModel)));
             await _unitOfWork.SaveChangesAsync();
 
-            return response;
+            return result;
         }
 
         public async Task<IEnumerable<WorkflowViewModel>> AllAsync(bool getDependencies = false)
         {
-            IEnumerable<WorkflowViewModel> response = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(getDependencies));
+            IEnumerable<WorkflowViewModel> result = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(getDependencies));
 
-            await PreencherDadosAdicionaisAsync(response);
+            await PreencherDadosAdicionaisAsync(result);
 
-            return response;
+            return result;
         }
 
         public async Task<WorkflowViewModel> GetAsync(Guid id)
