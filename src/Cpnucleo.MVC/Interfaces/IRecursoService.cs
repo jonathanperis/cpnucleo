@@ -17,5 +17,7 @@ namespace Cpnucleo.MVC.Interfaces
         Task<ListRecursoResponse> AllAsync(string token, ListRecursoQuery query);
 
         Task<RemoveRecursoResponse> RemoveAsync(string token, RemoveRecursoCommand command);
+
+        Task<AuthResponse> AuthAsync(AuthQuery query);
     }
 }

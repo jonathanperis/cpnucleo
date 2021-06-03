@@ -1,6 +1,7 @@
-﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.UoW;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.Infra.CrossCutting.Util;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
+using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Cpnucleo.MVC.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -16,20 +17,16 @@ namespace Cpnucleo.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ICryptographyManager _cryptographyManager;
+        private readonly IRecursoService _recursoService;
         private readonly IConfiguration _configuration;
 
-        public HomeController(IUnitOfWork unitOfWork,
-                                ICryptographyManager cryptographyManager,
-                                IConfiguration configuration)
+        private HomeView _viewModel;
+
+        public HomeController(IRecursoService recursoService, IConfiguration configuration)
         {
-            _unitOfWork = unitOfWork;
-            _cryptographyManager = cryptographyManager;
+            _recursoService = recursoService;
             _configuration = configuration;
         }
-
-        private HomeView _viewModel;
 
         public HomeView ViewModel
         {
@@ -78,19 +75,9 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                bool valido = false;
+                AuthResponse response = await _recursoService.AuthAsync(new AuthQuery { Login = obj.Usuario, Senha = obj.Senha });
 
-                Recurso recurso = await _unitOfWork.RecursoRepository.GetByLoginAsync(obj.Usuario);
-
-                if (recurso == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
-                    return View();
-                }
-
-                valido = _cryptographyManager.VerifyPbkdf2(obj.Senha, recurso.Senha, recurso.Salt);
-
-                if (!valido)
+                if (response.Status == OperationResult.Failed)
                 {
                     ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                     return View();
@@ -99,7 +86,7 @@ namespace Cpnucleo.MVC.Controllers
                 {
                     IEnumerable<Claim> claims = new[]
                     {
-                        new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString())
+                        new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString())
                     };
 
                     ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
@@ -107,13 +94,13 @@ namespace Cpnucleo.MVC.Controllers
                     int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
 
                     await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    principal,
-                    new AuthenticationProperties
-                    {
-                        IsPersistent = true,
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
-                    });
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal,
+                        new AuthenticationProperties
+                        {
+                            IsPersistent = true,
+                            ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
+                        });
 
                     return RedirectToLocal(returnUrl);
                 }
