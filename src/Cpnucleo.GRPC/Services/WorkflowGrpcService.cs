@@ -1,8 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Workflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;

@@ -1,8 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Tarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;

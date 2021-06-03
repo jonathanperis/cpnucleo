@@ -1,9 +1,11 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
