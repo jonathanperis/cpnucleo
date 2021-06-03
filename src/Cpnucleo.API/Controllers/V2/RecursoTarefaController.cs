@@ -1,13 +1,10 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoTarefa;
-using MediatR;
+using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.API.Controllers.V2
@@ -19,86 +16,98 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class RecursoTarefaController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RecursoTarefaController(IMediator mediator)
+        public RecursoTarefaController(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Listar Recursos de Tarefa
+        /// Listar recursos de tarefa
         /// </summary>
         /// <remarks>
-        /// # Listar Recursos de Tarefa
+        /// # Listar recursos de tarefa
         /// 
-        /// Lista Recursos de Tarefa da base de dados.
+        /// Lista recursos de tarefa da base de dados.
         /// </remarks>
         /// <param name="getDependencies">Listar dependências do objeto</param>        
-        /// <response code="200">Retorna uma lista de Recursos de Tarefa</response>
+        /// <response code="200">Retorna uma lista de recursos de tarefa</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ListRecursoTarefaResponse> Get(bool getDependencies = false)
+        public async Task<IEnumerable<RecursoTarefa>> Get(bool getDependencies = false)
         {
-            return await _mediator.Send(new ListRecursoTarefaQuery
-            {
-                GetDependencies = getDependencies
-            });
+            return await _unitOfWork.RecursoTarefaRepository.AllAsync(getDependencies);
         }
 
         /// <summary>
-        /// Consultar Recurso de Tarefa
+        /// Listar recursos de tarefa por id tarefa
         /// </summary>
         /// <remarks>
-        /// # Consultar Recurso de Tarefa
+        /// # Listar recursos de tarefa id tarefa
         /// 
-        /// Consulta um Recurso de Tarefa na base de dados.
+        /// Lista recursos de tarefa id tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do Recurso de Tarefa</param>        
-        /// <response code="200">Retorna um Recurso de Tarefa</response>
-        /// <response code="404">Recurso de Tarefa não encontrado</response>
+        /// <param name="idTarefa">Id da tarefa</param>        
+        /// <response code="200">Retorna uma lista de recursos de tarefa</response>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="500">Erro no processamento da requisição</response>
+        [HttpGet("GetByTarefa/{idTarefa}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IEnumerable<RecursoTarefa>> GetByTarefa(Guid idTarefa)
+        {
+            return await _unitOfWork.RecursoTarefaRepository.GetByTarefaAsync(idTarefa);
+        }
+
+        /// <summary>
+        /// Consultar recurso de tarefa
+        /// </summary>
+        /// <remarks>
+        /// # Consultar recurso de tarefa
+        /// 
+        /// Consulta um recurso de tarefa na base de dados.
+        /// </remarks>
+        /// <param name="id">Id do recurso de tarefa</param>        
+        /// <response code="200">Retorna um recurso de tarefa</response>
+        /// <response code="404">Recurso de tarefa não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}", Name = "GetRecursoTarefa")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetRecursoTarefaResponse>> Get(Guid id)
+        public async Task<ActionResult<RecursoTarefa>> Get(Guid id)
         {
-            GetRecursoTarefaResponse result = await _mediator.Send(new GetRecursoTarefaQuery
-            {
-                Id = id
-            });
+            RecursoTarefa recursoTarefa = await _unitOfWork.RecursoTarefaRepository.GetAsync(id);
 
-            if (result.RecursoTarefa == null)
+            if (recursoTarefa == null)
             {
-                return NotFound(result);
+                return NotFound();
             }
 
-            return Ok(result);
+            return Ok(recursoTarefa);
         }
 
         /// <summary>
-        /// Incluir Recurso de Tarefa
+        /// Incluir recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Incluir Recurso de Tarefa
+        /// # Incluir recurso de tarefa
         /// 
-        /// Inclui um Recurso de Tarefa na base de dados.
+        /// Inclui um recurso de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /RecursoTarefa
+        ///     POST /recursoTarefa
         ///     {
-        ///       "RecursoTarefa": {
-        ///         "nome": "Novo RecursoTarefa",
-        ///         "descricao": "Descrição do novo RecursoTarefa"
-        ///       }
+        ///        "percentualTarefa": 15,
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="request">Recurso de Tarefa</param>        
-        /// <response code="201">Recurso de Tarefa cadastrado com sucesso</response>
+        /// <param name="obj">Recurso de tarefa</param>        
+        /// <response code="201">Recurso de tarefa cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         /// <response code="401">Acesso não autorizado</response>
@@ -107,93 +116,129 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(RecursoTarefa), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateRecursoTarefaResponse>> Post([FromBody] CreateRecursoTarefaCommand request)
+        public async Task<ActionResult<RecursoTarefa>> Post([FromBody] RecursoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CreateRecursoTarefaResponse result = await _mediator.Send(request);
+            try
+            {
+                obj = await _unitOfWork.RecursoTarefaRepository.AddAsync(obj);
 
-            return CreatedAtRoute("GetRecursoTarefa", new { id = result.RecursoTarefa.Id }, result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (await ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetRecursoTarefa", new { id = obj.Id }, obj);
         }
 
         /// <summary>
-        /// Alterar Recurso de Tarefa
+        /// Alterar recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Alterar Recurso de Tarefa
+        /// # Alterar recurso de tarefa
         /// 
-        /// Altera um Recurso de Tarefa na base de dados.
+        /// Altera um recurso de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /RecursoTarefa
+        ///     PUT /recursoTarefa
         ///     {
-        ///       "RecursoTarefa": {
-        ///           "nome": "RecursoTarefa de Teste - 2",
-        ///           "descricao": "Descrição do RecursoTarefa de Teste - 2",
-        ///           "id": "b98631f9-89b4-4414-2353-08d7555e3dd6",
-        ///           "dataInclusao": "2019-10-20T13:05:57"
-        ///       }
+        ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "percentualTarefa": 15,
+        ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do Recurso de Tarefa</param>        
-        /// <param name="request">Recurso de Tarefa</param>        
-        /// <response code="200">Recurso de Tarefa alterado com sucesso</response>
+        /// <param name="id">Id do recurso de tarefa</param>        
+        /// <param name="obj">Recurso de tarefa</param>        
+        /// <response code="204">Recurso de tarefa alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateRecursoTarefaResponse>> Put(Guid id, [FromBody] UpdateRecursoTarefaCommand request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] RecursoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != request.RecursoTarefa.Id)
+            if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            UpdateRecursoTarefaResponse result = await _mediator.Send(request);
+            try
+            {
+                _unitOfWork.RecursoTarefaRepository.Update(obj);
 
-            return Ok(result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (!await ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         /// <summary>
-        /// Remover Recurso de Tarefa
+        /// Remover recurso de tarefa
         /// </summary>
         /// <remarks>
-        /// # Remover Recurso de Tarefa
+        /// # Remover recurso de tarefa
         /// 
-        /// Remove um Recurso de Tarefa da base de dados.
+        /// Remove um recurso de tarefa da base de dados.
         /// </remarks>
-        /// <param name="id">Id do Recurso de Tarefa</param>        
-        /// <response code="200">Recurso de Tarefa removido com sucesso</response>
-        /// <response code="404">Recurso de Tarefa não encontrado</response>
+        /// <param name="id">Id do recurso de tarefa</param>        
+        /// <response code="204">Recurso de tarefa removido com sucesso</response>
+        /// <response code="404">Recurso de tarefa não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RemoveRecursoTarefaResponse>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            RemoveRecursoTarefaResponse result = await _mediator.Send(new RemoveRecursoTarefaCommand
-            {
-                Id = id
-            });
+            RecursoTarefa obj = await _unitOfWork.RecursoTarefaRepository.GetAsync(id);
 
-            if (result == null)
+            if (obj == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            await _unitOfWork.RecursoTarefaRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> ObjExists(Guid id)
+        {
+            return await _unitOfWork.RecursoTarefaRepository.GetAsync(id) != null;
         }
     }
 }

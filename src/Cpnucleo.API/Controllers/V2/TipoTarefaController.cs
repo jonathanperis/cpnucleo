@@ -1,13 +1,10 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.TipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.TipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.TipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.TipoTarefa;
-using MediatR;
+using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.API.Controllers.V2
@@ -19,86 +16,78 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class TipoTarefaController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TipoTarefaController(IMediator mediator)
+        public TipoTarefaController(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Listar Tipos de Tarefa
+        /// Listar tipo de tarefas
         /// </summary>
         /// <remarks>
-        /// # Listar Tipos de Tarefa
+        /// # Listar tipos de Tarefas
         /// 
-        /// Lista Tipos de Tarefa da base de dados.
+        /// Lista tipos de tarefas da base de dados.
         /// </remarks>
         /// <param name="getDependencies">Listar dependências do objeto</param>        
-        /// <response code="200">Retorna uma lista de Tipos de Tarefa</response>
+        /// <response code="200">Retorna uma lista de tipos de tarefas</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ListTipoTarefaResponse> Get(bool getDependencies = false)
+        public async Task<IEnumerable<TipoTarefa>> Get(bool getDependencies = false)
         {
-            return await _mediator.Send(new ListTipoTarefaQuery
-            {
-                GetDependencies = getDependencies
-            });
+            return await _unitOfWork.TipoTarefaRepository.AllAsync(getDependencies);
         }
 
         /// <summary>
-        /// Consultar Tipo de Tarefa
+        /// Consultar tipo de tarefa
         /// </summary>
         /// <remarks>
-        /// # Consultar Tipo de Tarefa
+        /// # Consultar tipo de tarefa
         /// 
-        /// Consulta um Tipo de Tarefa na base de dados.
+        /// Consulta um tipo de tarefa na base de dados.
         /// </remarks>
-        /// <param name="id">Id do Tipo de Tarefa</param>        
-        /// <response code="200">Retorna um Tipo de Tarefa</response>
-        /// <response code="404">Tipo de Tarefa não encontrado</response>
+        /// <param name="id">Id do tipo de tarefa</param>        
+        /// <response code="200">Retorna um tipo de tarefa</response>
+        /// <response code="404">Tipo de tarefa não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}", Name = "GetTipoTarefa")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetTipoTarefaResponse>> Get(Guid id)
+        public async Task<ActionResult<TipoTarefa>> Get(Guid id)
         {
-            GetTipoTarefaResponse result = await _mediator.Send(new GetTipoTarefaQuery
-            {
-                Id = id
-            });
+            TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.GetAsync(id);
 
-            if (result.TipoTarefa == null)
+            if (tipoTarefa == null)
             {
-                return NotFound(result);
+                return NotFound();
             }
 
-            return Ok(result);
+            return Ok(tipoTarefa);
         }
 
         /// <summary>
-        /// Incluir Tipo de Tarefa
+        /// Incluir tipo de tarefa
         /// </summary>
         /// <remarks>
-        /// # Incluir Tipo de Tarefa
+        /// # Incluir tipo de tarefa
         /// 
-        /// Inclui um Tipo de Tarefa na base de dados.
+        /// Inclui um tipo de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /TipoTarefa
+        ///     POST /tipoTarefa
         ///     {
-        ///       "TipoTarefa": {
-        ///         "nome": "Novo TipoTarefa",
-        ///         "descricao": "Descrição do novo TipoTarefa"
-        ///       }
+        ///        "nome": "Novo tipoTarefa",
+        ///        "descricao": "Descrição do novo tipoTarefa"
         ///     }
         /// </remarks>
-        /// <param name="request">Tipo de Tarefa</param>        
-        /// <response code="201">Tipo de Tarefa cadastrado com sucesso</response>
+        /// <param name="obj">Tipo de tarefa</param>        
+        /// <response code="201">Tipo de tarefa cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
         /// <response code="401">Acesso não autorizado</response>
@@ -107,93 +96,128 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(TipoTarefa), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateTipoTarefaResponse>> Post([FromBody] CreateTipoTarefaCommand request)
+        public async Task<ActionResult<TipoTarefa>> Post([FromBody] TipoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CreateTipoTarefaResponse result = await _mediator.Send(request);
+            try
+            {
+                obj = await _unitOfWork.TipoTarefaRepository.AddAsync(obj);
 
-            return CreatedAtRoute("GetTipoTarefa", new { id = result.TipoTarefa.Id }, result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (await ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetTipoTarefa", new { id = obj.Id }, obj);
         }
 
         /// <summary>
-        /// Alterar Tipo de Tarefa
+        /// Alterar tipo de tarefa
         /// </summary>
         /// <remarks>
-        /// # Alterar Tipo de Tarefa
+        /// # Alterar tipo de tarefa
         /// 
-        /// Altera um Tipo de Tarefa na base de dados.
+        /// Altera um tipo de tarefa na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /TipoTarefa
+        ///     PUT /tipoTarefa
         ///     {
-        ///       "TipoTarefa": {
-        ///           "nome": "TipoTarefa de Teste - 2",
-        ///           "descricao": "Descrição do TipoTarefa de Teste - 2",
-        ///           "id": "b98631f9-89b4-4414-2353-08d7555e3dd6",
-        ///           "dataInclusao": "2019-10-20T13:05:57"
-        ///       }
+        ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Novo tipoTarefa - alterado",
+        ///        "descricao": "Descrição do novo tipoTarefa - alterado",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do Tipo de Tarefa</param>        
-        /// <param name="request">Tipo de Tarefa</param>        
-        /// <response code="200">Tipo de Tarefa alterado com sucesso</response>
+        /// <param name="id">Id do tipo de tarefa</param>        
+        /// <param name="obj">Tipo de tarefa</param>        
+        /// <response code="204">Tipo de tarefa alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateTipoTarefaResponse>> Put(Guid id, [FromBody] UpdateTipoTarefaCommand request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] TipoTarefa obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != request.TipoTarefa.Id)
+            if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            UpdateTipoTarefaResponse result = await _mediator.Send(request);
+            try
+            {
+                _unitOfWork.TipoTarefaRepository.Update(obj);
 
-            return Ok(result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (!await ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         /// <summary>
-        /// Remover Tipo de Tarefa
+        /// Remover tipo de tarefa
         /// </summary>
         /// <remarks>
-        /// # Remover Tipo de Tarefa
+        /// # Remover tipo de tarefa
         /// 
-        /// Remove um Tipo de Tarefa da base de dados.
+        /// Remove um tipo de tarefa da base de dados.
         /// </remarks>
-        /// <param name="id">Id do Tipo de Tarefa</param>        
-        /// <response code="200">Tipo de Tarefa removido com sucesso</response>
-        /// <response code="404">Tipo de Tarefa não encontrado</response>
+        /// <param name="id">Id do tipo de tarefa</param>        
+        /// <response code="204">Tipo de tarefa removido com sucesso</response>
+        /// <response code="404">Tipo de tarefa não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RemoveTipoTarefaResponse>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            RemoveTipoTarefaResponse result = await _mediator.Send(new RemoveTipoTarefaCommand
-            {
-                Id = id
-            });
+            TipoTarefa obj = await _unitOfWork.TipoTarefaRepository.GetAsync(id);
 
-            if (result == null)
+            if (obj == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            await _unitOfWork.TipoTarefaRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> ObjExists(Guid id)
+        {
+            return await _unitOfWork.TipoTarefaRepository.GetAsync(id) != null;
         }
     }
 }

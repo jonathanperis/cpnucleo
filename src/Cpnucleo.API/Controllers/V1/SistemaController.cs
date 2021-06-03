@@ -12,7 +12,6 @@ namespace Cpnucleo.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1", Deprecated = true)]
-    //[Authorize]
     public class SistemaController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
