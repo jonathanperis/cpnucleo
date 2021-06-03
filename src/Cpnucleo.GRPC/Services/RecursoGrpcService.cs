@@ -28,6 +28,11 @@ namespace Cpnucleo.GRPC.Services
             return await _mediator.Send(query);
         }
 
+        public async Task<AuthResponse> AuthAsync(AuthQuery query, CallContext context = default)
+        {
+            return await _mediator.Send(query);
+        }
+
         public async Task<GetRecursoResponse> GetAsync(GetRecursoQuery query, CallContext context = default)
         {
             return await _mediator.Send(query);
