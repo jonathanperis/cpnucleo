@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTipoTarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa
 {
     [DataContract]
     public class GetTipoTarefaQuery : IRequest<GetTipoTarefaResponse>
