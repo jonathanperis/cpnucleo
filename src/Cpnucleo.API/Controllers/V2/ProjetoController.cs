@@ -1,13 +1,10 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Projeto;
-using MediatR;
+using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.API.Controllers.V2
@@ -19,85 +16,77 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class ProjetoController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProjetoController(IMediator mediator)
+        public ProjetoController(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Listar Projetos
+        /// Listar projetos
         /// </summary>
         /// <remarks>
-        /// # Listar Projetos
+        /// # Listar projetos
         /// 
-        /// Lista Projetos da base de dados.
+        /// Lista projetos da base de dados.
         /// </remarks>
         /// <param name="getDependencies">Listar dependências do objeto</param>        
-        /// <response code="200">Retorna uma lista de Projetos</response>
+        /// <response code="200">Retorna uma lista de projetos</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ListProjetoResponse> Get(bool getDependencies = false)
+        public async Task<IEnumerable<Projeto>> Get(bool getDependencies = false)
         {
-            return await _mediator.Send(new ListProjetoQuery
-            {
-                GetDependencies = getDependencies
-            });
+            return await _unitOfWork.ProjetoRepository.AllAsync(getDependencies);
         }
 
         /// <summary>
-        /// Consultar Projeto
+        /// Consultar projeto
         /// </summary>
         /// <remarks>
-        /// # Consultar Projeto
+        /// # Consultar projeto
         /// 
-        /// Consulta um Projeto na base de dados.
+        /// Consulta um projeto na base de dados.
         /// </remarks>
-        /// <param name="id">Id do Projeto</param>        
-        /// <response code="200">Retorna um Projeto</response>
+        /// <param name="id">Id do projeto</param>        
+        /// <response code="200">Retorna um projeto</response>
         /// <response code="404">Projeto não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}", Name = "GetProjeto")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetProjetoResponse>> Get(Guid id)
+        public async Task<ActionResult<Projeto>> Get(Guid id)
         {
-            GetProjetoResponse result = await _mediator.Send(new GetProjetoQuery
-            {
-                Id = id
-            });
+            Projeto projeto = await _unitOfWork.ProjetoRepository.GetAsync(id);
 
-            if (result.Projeto == null)
+            if (projeto == null)
             {
-                return NotFound(result);
+                return NotFound();
             }
 
-            return Ok(result);
+            return Ok(projeto);
         }
 
         /// <summary>
-        /// Incluir Projeto
+        /// Incluir projeto
         /// </summary>
         /// <remarks>
-        /// # Incluir Projeto
+        /// # Incluir projeto
         /// 
-        /// Inclui um Projeto na base de dados.
+        /// Inclui um projeto na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /Projeto
+        ///     POST /projeto
         ///     {
-        ///       "Projeto": {
-        ///         "nome": "Novo Projeto",
-        ///         "descricao": "Descrição do novo Projeto"
-        ///       }
+        ///        "nome": "Novo projeto",
+        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
         ///     }
         /// </remarks>
-        /// <param name="request">Projeto</param>        
+        /// <param name="obj">Projeto</param>        
         /// <response code="201">Projeto cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -107,93 +96,128 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Projeto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateProjetoResponse>> Post([FromBody] CreateProjetoCommand request)
+        public async Task<ActionResult<Projeto>> Post([FromBody] Projeto obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CreateProjetoResponse result = await _mediator.Send(request);
+            try
+            {
+                obj = await _unitOfWork.ProjetoRepository.AddAsync(obj);
 
-            return CreatedAtRoute("GetProjeto", new { id = result.Projeto.Id }, result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (await ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetProjeto", new { id = obj.Id }, obj);
         }
 
         /// <summary>
-        /// Alterar Projeto
+        /// Alterar projeto
         /// </summary>
         /// <remarks>
-        /// # Alterar Projeto
+        /// # Alterar projeto
         /// 
-        /// Altera um Projeto na base de dados.
+        /// Altera um projeto na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /Projeto
+        ///     PUT /projeto
         ///     {
-        ///       "Projeto": {
-        ///           "nome": "Projeto de Teste - 2",
-        ///           "descricao": "Descrição do Projeto de Teste - 2",
-        ///           "id": "b98631f9-89b4-4414-2353-08d7555e3dd6",
-        ///           "dataInclusao": "2019-10-20T13:05:57"
-        ///       }
+        ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Novo projeto - alterado",
+        ///        "idSistema": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do Projeto</param>        
-        /// <param name="request">Projeto</param>        
-        /// <response code="200">Projeto alterado com sucesso</response>
+        /// <param name="id">Id do projeto</param>        
+        /// <param name="obj">Projeto</param>        
+        /// <response code="204">Projeto alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateProjetoResponse>> Put(Guid id, [FromBody] UpdateProjetoCommand request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Projeto obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != request.Projeto.Id)
+            if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            UpdateProjetoResponse result = await _mediator.Send(request);
+            try
+            {
+                _unitOfWork.ProjetoRepository.Update(obj);
 
-            return Ok(result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (!await ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         /// <summary>
-        /// Remover Projeto
+        /// Remover projeto
         /// </summary>
         /// <remarks>
-        /// # Remover Projeto
+        /// # Remover projeto
         /// 
-        /// Remove um Projeto da base de dados.
+        /// Remove um projeto da base de dados.
         /// </remarks>
-        /// <param name="id">Id do Projeto</param>        
-        /// <response code="200">Projeto removido com sucesso</response>
+        /// <param name="id">Id do projeto</param>        
+        /// <response code="204">Projeto removido com sucesso</response>
         /// <response code="404">Projeto não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RemoveProjetoResponse>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            RemoveProjetoResponse result = await _mediator.Send(new RemoveProjetoCommand
-            {
-                Id = id
-            });
+            Projeto obj = await _unitOfWork.ProjetoRepository.GetAsync(id);
 
-            if (result == null)
+            if (obj == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            await _unitOfWork.ProjetoRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> ObjExists(Guid id)
+        {
+            return await _unitOfWork.ProjetoRepository.GetAsync(id) != null;
         }
     }
 }

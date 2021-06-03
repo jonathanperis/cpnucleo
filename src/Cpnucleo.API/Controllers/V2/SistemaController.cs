@@ -1,28 +1,26 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
-using MediatR;
+using Cpnucleo.Domain.UoW;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.API.Controllers.V2
+namespace Cpnucleo.Controllers.V2
 {
     [Produces("application/json")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("2")]
-    // [Authorize]
+    [Authorize]
     public class SistemaController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public SistemaController(IMediator mediator)
+        public SistemaController(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -39,12 +37,9 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ListSistemaResponse> Get(bool getDependencies = false)
+        public async Task<IEnumerable<Sistema>> Get(bool getDependencies = false)
         {
-            return await _mediator.Send(new ListSistemaQuery
-            {
-                GetDependencies = getDependencies
-            });
+            return await _unitOfWork.SistemaRepository.AllAsync(getDependencies);
         }
 
         /// <summary>
@@ -63,19 +58,16 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}", Name = "GetSistema")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetSistemaResponse>> Get(Guid id)
+        public async Task<ActionResult<Sistema>> Get(Guid id)
         {
-            GetSistemaResponse result = await _mediator.Send(new GetSistemaQuery
-            {
-                Id = id
-            });
+            Sistema sistema = await _unitOfWork.SistemaRepository.GetAsync(id);
 
-            if (result.Sistema == null)
+            if (sistema == null)
             {
-                return NotFound(result);
+                return NotFound();
             }
 
-            return Ok(result);
+            return Ok(sistema);
         }
 
         /// <summary>
@@ -90,13 +82,11 @@ namespace Cpnucleo.API.Controllers.V2
         ///
         ///     POST /sistema
         ///     {
-        ///       "sistema": {
-        ///         "nome": "Novo sistema",
-        ///         "descricao": "Descrição do novo sistema"
-        ///       }
+        ///        "nome": "Novo sistema",
+        ///        "descricao": "Descrição do novo sistema"
         ///     }
         /// </remarks>
-        /// <param name="request">Sistema</param>        
+        /// <param name="obj">Sistema</param>        
         /// <response code="201">Sistema cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -106,16 +96,32 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Sistema), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateSistemaResponse>> Post([FromBody] CreateSistemaCommand request)
+        public async Task<ActionResult<Sistema>> Post([FromBody] Sistema obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CreateSistemaResponse result = await _mediator.Send(request);
+            try
+            {
+                obj = await _unitOfWork.SistemaRepository.AddAsync(obj);
 
-            return CreatedAtRoute("GetSistema", new { id = result.Sistema.Id }, result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (await ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetSistema", new { id = obj.Id }, obj);
         }
 
         /// <summary>
@@ -130,38 +136,52 @@ namespace Cpnucleo.API.Controllers.V2
         ///
         ///     PUT /sistema
         ///     {
-        ///       "sistema": {
-        ///           "nome": "Sistema de Teste - 2",
-        ///           "descricao": "Descrição do Sistema de Teste - 2",
-        ///           "id": "b98631f9-89b4-4414-2353-08d7555e3dd6",
-        ///           "dataInclusao": "2019-10-20T13:05:57"
-        ///       }
+        ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Novo sistema - alterado",
+        ///        "descricao": "Descrição do novo sistema - alterado",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
         /// <param name="id">Id do sistema</param>        
-        /// <param name="request">Sistema</param>        
-        /// <response code="200">Sistema alterado com sucesso</response>
+        /// <param name="obj">Sistema</param>        
+        /// <response code="204">Sistema alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateSistemaResponse>> Put(Guid id, [FromBody] UpdateSistemaCommand request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Sistema obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != request.Sistema.Id)
+            if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            UpdateSistemaResponse result = await _mediator.Send(request);
+            try
+            {
+                _unitOfWork.SistemaRepository.Update(obj);
 
-            return Ok(result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (!await ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         /// <summary>
@@ -173,26 +193,31 @@ namespace Cpnucleo.API.Controllers.V2
         /// Remove um sistema da base de dados.
         /// </remarks>
         /// <param name="id">Id do sistema</param>        
-        /// <response code="200">Sistema removido com sucesso</response>
+        /// <response code="204">Sistema removido com sucesso</response>
         /// <response code="404">Sistema não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RemoveSistemaResponse>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            RemoveSistemaResponse result = await _mediator.Send(new RemoveSistemaCommand
-            {
-                Id = id
-            });
+            Sistema obj = await _unitOfWork.SistemaRepository.GetAsync(id);
 
-            if (result == null)
+            if (obj == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            await _unitOfWork.SistemaRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> ObjExists(Guid id)
+        {
+            return await _unitOfWork.SistemaRepository.GetAsync(id) != null;
         }
     }
 }
