@@ -9,7 +9,7 @@ A sample solution that implements the best praticles when building a .NET 5 proj
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20Pages%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=7)
 
-- [Cpnucleo MVC](https://cpnucleo-mvc.azurewebsites.net)
+- [Cpnucleo MVC](https://cpnucleo-mvc.azurewebsites.net) (Uses gRPC. It is currently not working in the Azure environment.)
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20MVC%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=9)
 
