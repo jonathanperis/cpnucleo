@@ -2,10 +2,13 @@
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Util;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateByWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using MediatR;
 using System;

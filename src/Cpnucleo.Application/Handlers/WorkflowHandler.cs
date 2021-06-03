@@ -2,10 +2,11 @@
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Util;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using MediatR;
 using System.Collections.Generic;

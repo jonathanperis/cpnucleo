@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.Runtime.Serialization;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTipoTarefa
+namespace Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa
 {
     [DataContract]
     public class ListTipoTarefaQuery : IRequest<ListTipoTarefaResponse>

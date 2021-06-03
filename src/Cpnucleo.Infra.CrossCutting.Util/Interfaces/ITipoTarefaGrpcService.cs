@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.CreateTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.RemoveTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
 using ProtoBuf.Grpc;
 using System.ServiceModel;
 using System.Threading.Tasks;
