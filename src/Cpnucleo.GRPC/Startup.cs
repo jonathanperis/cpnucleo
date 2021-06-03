@@ -76,6 +76,7 @@ namespace Cpnucleo.GRPC
             }
 
             app.UseRouting();
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCors();
 
             app.UseAuthentication();
@@ -97,7 +98,7 @@ namespace Cpnucleo.GRPC
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("If you're looking for clients that implements this GRPC service, please look to https://cpnucleo-pages-grpc.azurewebsites.net");
+                    await context.Response.WriteAsync("If you're looking for clients that implements this GRPC service, please look to https://cpnucleo-mvc.azurewebsites.net");
                 });
             });
         }
