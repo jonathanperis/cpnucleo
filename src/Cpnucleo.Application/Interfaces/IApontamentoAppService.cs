@@ -8,6 +8,5 @@ namespace Cpnucleo.Application.Interfaces
     public interface IApontamentoAppService : IGenericAppService<ApontamentoViewModel>
     {
         Task<IEnumerable<ApontamentoViewModel>> GetByRecursoAsync(Guid idRecurso);
-        Task<int> GetTotalHorasPorRecursoAsync(Guid idRecurso, Guid id);
     }
 }

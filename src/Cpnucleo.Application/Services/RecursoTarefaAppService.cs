@@ -23,7 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<RecursoTarefaViewModel> AddAsync(RecursoTarefaViewModel viewModel)
         {
-            return _mapper.Map<RecursoTarefaViewModel>(await _unitOfWork.RecursoTarefaRepository.AddAsync(_mapper.Map<RecursoTarefa>(viewModel)));
+            RecursoTarefaViewModel response = _mapper.Map<RecursoTarefaViewModel>(await _unitOfWork.RecursoTarefaRepository.AddAsync(_mapper.Map<RecursoTarefa>(viewModel)));
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<RecursoTarefaViewModel>> AllAsync(bool getDependencies = false)
@@ -44,16 +47,13 @@ namespace Cpnucleo.Application.Services
         public async Task RemoveAsync(Guid id)
         {
             await _unitOfWork.RecursoTarefaRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Update(RecursoTarefaViewModel viewModel)
+        public async Task UpdateAsync(RecursoTarefaViewModel viewModel)
         {
             _unitOfWork.RecursoTarefaRepository.Update(_mapper.Map<RecursoTarefa>(viewModel));
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public void Dispose()

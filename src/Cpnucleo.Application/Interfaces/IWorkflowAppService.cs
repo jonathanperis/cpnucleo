@@ -5,7 +5,5 @@ namespace Cpnucleo.Application.Interfaces
 {
     public interface IWorkflowAppService : IGenericAppService<WorkflowViewModel>
     {
-        Task<int> GetQuantidadeColunasAsync();
-        string GetTamanhoColuna(int colunas);
     }
 }
