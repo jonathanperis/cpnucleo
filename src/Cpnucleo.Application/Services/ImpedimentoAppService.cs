@@ -23,7 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<ImpedimentoViewModel> AddAsync(ImpedimentoViewModel viewModel)
         {
-            return _mapper.Map<ImpedimentoViewModel>(await _unitOfWork.ImpedimentoRepository.AddAsync(_mapper.Map<Impedimento>(viewModel)));
+            ImpedimentoViewModel response = _mapper.Map<ImpedimentoViewModel>(await _unitOfWork.ImpedimentoRepository.AddAsync(_mapper.Map<Impedimento>(viewModel)));
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<ImpedimentoViewModel>> AllAsync(bool getDependencies = false)
@@ -39,16 +42,13 @@ namespace Cpnucleo.Application.Services
         public async Task RemoveAsync(Guid id)
         {
             await _unitOfWork.ImpedimentoRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Update(ImpedimentoViewModel viewModel)
+        public async Task UpdateAsync(ImpedimentoViewModel viewModel)
         {
             _unitOfWork.ImpedimentoRepository.Update(_mapper.Map<Impedimento>(viewModel));
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public void Dispose()

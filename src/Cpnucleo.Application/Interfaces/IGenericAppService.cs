@@ -8,14 +8,12 @@ namespace Cpnucleo.Application.Interfaces
     {
         Task<TViewModel> AddAsync(TViewModel viewModel);
 
-        void Update(TViewModel entity);
+        Task UpdateAsync(TViewModel entity);
 
         Task<TViewModel> GetAsync(Guid id);
 
         Task<IEnumerable<TViewModel>> AllAsync(bool getDependencies = false);
 
         Task RemoveAsync(Guid id);
-
-        Task<bool> SaveChangesAsync();
     }
 }

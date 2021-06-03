@@ -23,7 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<ApontamentoViewModel> AddAsync(ApontamentoViewModel viewModel)
         {
-            return _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(viewModel)));
+            ApontamentoViewModel response = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(viewModel)));
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<ApontamentoViewModel>> AllAsync(bool getDependencies = false)
@@ -44,26 +47,18 @@ namespace Cpnucleo.Application.Services
         public async Task RemoveAsync(Guid id)
         {
             await _unitOfWork.ApontamentoRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Update(ApontamentoViewModel viewModel)
+        public async Task UpdateAsync(ApontamentoViewModel viewModel)
         {
             _unitOfWork.ApontamentoRepository.Update(_mapper.Map<Apontamento>(viewModel));
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-        }
-
-        public Task<int> GetTotalHorasPorRecursoAsync(Guid idRecurso, Guid id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

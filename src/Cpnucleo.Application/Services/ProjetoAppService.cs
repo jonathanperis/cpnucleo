@@ -23,7 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<ProjetoViewModel> AddAsync(ProjetoViewModel viewModel)
         {
-            return _mapper.Map<ProjetoViewModel>(await _unitOfWork.ProjetoRepository.AddAsync(_mapper.Map<Projeto>(viewModel)));
+            ProjetoViewModel response = _mapper.Map<ProjetoViewModel>(await _unitOfWork.ProjetoRepository.AddAsync(_mapper.Map<Projeto>(viewModel)));
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<ProjetoViewModel>> AllAsync(bool getDependencies = false)
@@ -39,16 +42,13 @@ namespace Cpnucleo.Application.Services
         public async Task RemoveAsync(Guid id)
         {
             await _unitOfWork.ProjetoRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Update(ProjetoViewModel viewModel)
+        public async Task UpdateAsync(ProjetoViewModel viewModel)
         {
             _unitOfWork.ProjetoRepository.Update(_mapper.Map<Projeto>(viewModel));
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public void Dispose()

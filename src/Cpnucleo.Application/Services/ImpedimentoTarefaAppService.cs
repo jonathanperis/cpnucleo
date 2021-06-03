@@ -23,7 +23,10 @@ namespace Cpnucleo.Application.Services
 
         public async Task<ImpedimentoTarefaViewModel> AddAsync(ImpedimentoTarefaViewModel viewModel)
         {
-            return _mapper.Map<ImpedimentoTarefaViewModel>(await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(_mapper.Map<ImpedimentoTarefa>(viewModel)));
+            ImpedimentoTarefaViewModel response = _mapper.Map<ImpedimentoTarefaViewModel>(await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(_mapper.Map<ImpedimentoTarefa>(viewModel)));
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<ImpedimentoTarefaViewModel>> AllAsync(bool getDependencies = false)
@@ -44,16 +47,13 @@ namespace Cpnucleo.Application.Services
         public async Task RemoveAsync(Guid id)
         {
             await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Update(ImpedimentoTarefaViewModel viewModel)
+        public async Task UpdateAsync(ImpedimentoTarefaViewModel viewModel)
         {
             _unitOfWork.ImpedimentoTarefaRepository.Update(_mapper.Map<ImpedimentoTarefa>(viewModel));
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public void Dispose()

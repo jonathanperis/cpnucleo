@@ -23,12 +23,19 @@ namespace Cpnucleo.Application.Services
 
         public async Task<WorkflowViewModel> AddAsync(WorkflowViewModel viewModel)
         {
-            return _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(viewModel)));
+            WorkflowViewModel response = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(viewModel)));
+            await _unitOfWork.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<IEnumerable<WorkflowViewModel>> AllAsync(bool getDependencies = false)
         {
-            return _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(getDependencies));
+            IEnumerable<WorkflowViewModel> response = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(getDependencies));
+
+            await PreencherDadosAdicionaisAsync(response);
+
+            return response;
         }
 
         public async Task<WorkflowViewModel> GetAsync(Guid id)
@@ -36,34 +43,31 @@ namespace Cpnucleo.Application.Services
             return _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.GetAsync(id));
         }
 
-        public async Task<int> GetQuantidadeColunasAsync()
-        {
-            return await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
-        }
-
-        public string GetTamanhoColuna(int colunas)
-        {
-            return _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
-        }
-
         public async Task RemoveAsync(Guid id)
         {
             await _unitOfWork.WorkflowRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        public void Update(WorkflowViewModel viewModel)
+        public async Task UpdateAsync(WorkflowViewModel viewModel)
         {
             _unitOfWork.WorkflowRepository.Update(_mapper.Map<Workflow>(viewModel));
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
+        }
+
+        private async Task PreencherDadosAdicionaisAsync(IEnumerable<WorkflowViewModel> lista)
+        {
+            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
+
+            foreach (WorkflowViewModel item in lista)
+            {
+                item.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            }
         }
     }
 }
