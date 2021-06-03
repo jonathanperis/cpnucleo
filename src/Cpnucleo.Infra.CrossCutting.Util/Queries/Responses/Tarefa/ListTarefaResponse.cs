@@ -10,7 +10,7 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Tarefa
         [DataMember(Order = 1)]
         public OperationResult Status { get; set; }
 
-        [DataMember(Order = 1)]
+        [DataMember(Order = 2)]
         public IEnumerable<TarefaViewModel> Tarefas { get; set; }
     }
 }

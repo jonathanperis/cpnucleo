@@ -4,11 +4,13 @@ using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
+    [Authorize]
     public class WorkflowGrpcService : IWorkflowGrpcService
     {
         private readonly IMediator _mediator;
