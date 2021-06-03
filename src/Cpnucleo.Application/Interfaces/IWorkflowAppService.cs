@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.Application.Interfaces
 {
