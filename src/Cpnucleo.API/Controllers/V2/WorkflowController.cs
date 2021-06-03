@@ -1,13 +1,10 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Workflow;
-using MediatR;
+using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.API.Controllers.V2
@@ -19,85 +16,90 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class WorkflowController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public WorkflowController(IMediator mediator)
+        public WorkflowController(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Listar Workflows
+        /// Listar workflows
         /// </summary>
         /// <remarks>
-        /// # Listar Workflows
+        /// # Listar workflows
         /// 
-        /// Lista Workflows da base de dados.
+        /// Lista workflows da base de dados.
         /// </remarks>
         /// <param name="getDependencies">Listar dependências do objeto</param>        
-        /// <response code="200">Retorna uma lista de Workflows</response>
+        /// <response code="200">Retorna uma lista de workflows</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ListWorkflowResponse> Get(bool getDependencies = false)
+        public async Task<IEnumerable<Workflow>> Get(bool getDependencies = false)
         {
-            return await _mediator.Send(new ListWorkflowQuery
+            IEnumerable<Workflow> result = await _unitOfWork.WorkflowRepository.AllAsync(getDependencies);
+
+            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
+
+            foreach (Workflow item in result)
             {
-                GetDependencies = getDependencies
-            });
+                item.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            }
+
+            return result;
         }
 
         /// <summary>
-        /// Consultar Workflow
+        /// Consultar workflow
         /// </summary>
         /// <remarks>
-        /// # Consultar Workflow
+        /// # Consultar workflow
         /// 
-        /// Consulta um Workflow na base de dados.
+        /// Consulta um workflow na base de dados.
         /// </remarks>
-        /// <param name="id">Id do Workflow</param>        
-        /// <response code="200">Retorna um Workflow</response>
+        /// <param name="id">Id do workflow</param>        
+        /// <response code="200">Retorna um workflow</response>
         /// <response code="404">Workflow não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}", Name = "GetWorkflow")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetWorkflowResponse>> Get(Guid id)
+        public async Task<ActionResult<Workflow>> Get(Guid id)
         {
-            GetWorkflowResponse result = await _mediator.Send(new GetWorkflowQuery
-            {
-                Id = id
-            });
+            Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(id);
 
-            if (result.Workflow == null)
+            if (workflow == null)
             {
-                return NotFound(result);
+                return NotFound();
             }
 
-            return Ok(result);
+            int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
+
+            workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+
+            return Ok(workflow);
         }
 
         /// <summary>
-        /// Incluir Workflow
+        /// Incluir workflow
         /// </summary>
         /// <remarks>
-        /// # Incluir Workflow
+        /// # Incluir workflow
         /// 
-        /// Inclui um Workflow na base de dados.
+        /// Inclui um workflow na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /Workflow
+        ///     POST /workflow
         ///     {
-        ///       "Workflow": {
-        ///         "nome": "Novo Workflow",
-        ///         "descricao": "Descrição do novo Workflow"
-        ///       }
+        ///        "nome": "Novo workflow",
+        ///        "ordem": "3"
         ///     }
         /// </remarks>
-        /// <param name="request">Workflow</param>        
+        /// <param name="obj">Workflow</param>        
         /// <response code="201">Workflow cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -107,93 +109,128 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Workflow), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateWorkflowResponse>> Post([FromBody] CreateWorkflowCommand request)
+        public async Task<ActionResult<Workflow>> Post([FromBody] Workflow obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CreateWorkflowResponse result = await _mediator.Send(request);
+            try
+            {
+                obj = await _unitOfWork.WorkflowRepository.AddAsync(obj);
 
-            return CreatedAtRoute("GetWorkflow", new { id = result.Workflow.Id }, result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (await ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetWorkflow", new { id = obj.Id }, obj);
         }
 
         /// <summary>
-        /// Alterar Workflow
+        /// Alterar workflow
         /// </summary>
         /// <remarks>
-        /// # Alterar Workflow
+        /// # Alterar workflow
         /// 
-        /// Altera um Workflow na base de dados.
+        /// Altera um workflow na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /Workflow
+        ///     PUT /workflow
         ///     {
-        ///       "Workflow": {
-        ///           "nome": "Workflow de Teste - 2",
-        ///           "descricao": "Descrição do Workflow de Teste - 2",
-        ///           "id": "b98631f9-89b4-4414-2353-08d7555e3dd6",
-        ///           "dataInclusao": "2019-10-20T13:05:57"
-        ///       }
+        ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Novo workflow - alterado",
+        ///        "ordem": "3,
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do Workflow</param>        
-        /// <param name="request">Workflow</param>        
-        /// <response code="200">Workflow alterado com sucesso</response>
+        /// <param name="id">Id do workflow</param>        
+        /// <param name="obj">Workflow</param>        
+        /// <response code="204">Workflow alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateWorkflowResponse>> Put(Guid id, [FromBody] UpdateWorkflowCommand request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Workflow obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != request.Workflow.Id)
+            if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            UpdateWorkflowResponse result = await _mediator.Send(request);
+            try
+            {
+                _unitOfWork.WorkflowRepository.Update(obj);
 
-            return Ok(result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (!await ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         /// <summary>
-        /// Remover Workflow
+        /// Remover workflow
         /// </summary>
         /// <remarks>
-        /// # Remover Workflow
+        /// # Remover workflow
         /// 
-        /// Remove um Workflow da base de dados.
+        /// Remove um workflow da base de dados.
         /// </remarks>
-        /// <param name="id">Id do Workflow</param>        
-        /// <response code="200">Workflow removido com sucesso</response>
+        /// <param name="id">Id do workflow</param>        
+        /// <response code="204">Workflow removido com sucesso</response>
         /// <response code="404">Workflow não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RemoveWorkflowResponse>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            RemoveWorkflowResponse result = await _mediator.Send(new RemoveWorkflowCommand
-            {
-                Id = id
-            });
+            Workflow obj = await _unitOfWork.WorkflowRepository.GetAsync(id);
 
-            if (result == null)
+            if (obj == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            await _unitOfWork.WorkflowRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> ObjExists(Guid id)
+        {
+            return await _unitOfWork.WorkflowRepository.GetAsync(id) != null;
         }
     }
 }

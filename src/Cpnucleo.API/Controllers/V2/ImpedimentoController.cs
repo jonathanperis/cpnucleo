@@ -1,13 +1,10 @@
 ﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Impedimento;
-using MediatR;
+using Cpnucleo.Domain.UoW;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.API.Controllers.V2
@@ -19,85 +16,76 @@ namespace Cpnucleo.API.Controllers.V2
     [Authorize]
     public class ImpedimentoController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ImpedimentoController(IMediator mediator)
+        public ImpedimentoController(IUnitOfWork unitOfWork)
         {
-            _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Listar Impedimentos
+        /// Listar impedimentos
         /// </summary>
         /// <remarks>
-        /// # Listar Impedimentos
+        /// # Listar impedimentos
         /// 
-        /// Lista Impedimentos da base de dados.
+        /// Lista impedimentos da base de dados.
         /// </remarks>
         /// <param name="getDependencies">Listar dependências do objeto</param>        
-        /// <response code="200">Retorna uma lista de Impedimentos</response>
+        /// <response code="200">Retorna uma lista de impedimentos</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ListImpedimentoResponse> Get(bool getDependencies = false)
+        public async Task<IEnumerable<Impedimento>> Get(bool getDependencies = false)
         {
-            return await _mediator.Send(new ListImpedimentoQuery
-            {
-                GetDependencies = getDependencies
-            });
+            return await _unitOfWork.ImpedimentoRepository.AllAsync(getDependencies);
         }
 
         /// <summary>
-        /// Consultar Impedimento
+        /// Consultar impedimento
         /// </summary>
         /// <remarks>
-        /// # Consultar Impedimento
+        /// # Consultar impedimento
         /// 
-        /// Consulta um Impedimento na base de dados.
+        /// Consulta um impedimento na base de dados.
         /// </remarks>
-        /// <param name="id">Id do Impedimento</param>        
-        /// <response code="200">Retorna um Impedimento</response>
+        /// <param name="id">Id do impedimento</param>        
+        /// <response code="200">Retorna um impedimento</response>
         /// <response code="404">Impedimento não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet("{id}", Name = "GetImpedimento")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GetImpedimentoResponse>> Get(Guid id)
+        public async Task<ActionResult<Impedimento>> Get(Guid id)
         {
-            GetImpedimentoResponse result = await _mediator.Send(new GetImpedimentoQuery
-            {
-                Id = id
-            });
+            Impedimento impedimento = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
 
-            if (result.Impedimento == null)
+            if (impedimento == null)
             {
-                return NotFound(result);
+                return NotFound();
             }
 
-            return Ok(result);
+            return Ok(impedimento);
         }
 
         /// <summary>
-        /// Incluir Impedimento
+        /// Incluir impedimento
         /// </summary>
         /// <remarks>
-        /// # Incluir Impedimento
+        /// # Incluir impedimento
         /// 
-        /// Inclui um Impedimento na base de dados.
+        /// Inclui um impedimento na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     POST /Impedimento
+        ///     POST /impedimento
         ///     {
-        ///       "Impedimento": {
-        ///         "nome": "Novo Impedimento",
-        ///         "descricao": "Descrição do novo Impedimento"
-        ///       }
+        ///        "nome": "Novo impedimento"
         ///     }
         /// </remarks>
-        /// <param name="request">Impedimento</param>        
+        /// <param name="obj">Impedimento</param>        
         /// <response code="201">Impedimento cadastrado com sucesso</response>
         /// <response code="400">Objetos não preenchidos corretamente</response>
         /// <response code="409">Guid informado já consta na base de dados</response>
@@ -107,93 +95,127 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Impedimento), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<CreateImpedimentoResponse>> Post([FromBody] CreateImpedimentoCommand request)
+        public async Task<ActionResult<Impedimento>> Post([FromBody] Impedimento obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            CreateImpedimentoResponse result = await _mediator.Send(request);
+            try
+            {
+                obj = await _unitOfWork.ImpedimentoRepository.AddAsync(obj);
 
-            return CreatedAtRoute("GetImpedimento", new { id = result.Impedimento.Id }, result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (await ObjExists(obj.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetImpedimento", new { id = obj.Id }, obj);
         }
 
         /// <summary>
-        /// Alterar Impedimento
+        /// Alterar impedimento
         /// </summary>
         /// <remarks>
-        /// # Alterar Impedimento
+        /// # Alterar impedimento
         /// 
-        /// Altera um Impedimento na base de dados.
+        /// Altera um impedimento na base de dados.
         /// 
         /// # Sample request:
         ///
-        ///     PUT /Impedimento
+        ///     PUT /impedimento
         ///     {
-        ///       "Impedimento": {
-        ///           "nome": "Impedimento de Teste - 2",
-        ///           "descricao": "Descrição do Impedimento de Teste - 2",
-        ///           "id": "b98631f9-89b4-4414-2353-08d7555e3dd6",
-        ///           "dataInclusao": "2019-10-20T13:05:57"
-        ///       }
+        ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
+        ///        "nome": "Novo impedimento - alterado",
+        ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
         ///     }
         /// </remarks>
-        /// <param name="id">Id do Impedimento</param>        
-        /// <param name="request">Impedimento</param>        
-        /// <response code="200">Impedimento alterado com sucesso</response>
+        /// <param name="id">Id do impedimento</param>        
+        /// <param name="obj">Impedimento</param>        
+        /// <response code="204">Impedimento alterado com sucesso</response>
         /// <response code="400">ID informado não é válido</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateImpedimentoResponse>> Put(Guid id, [FromBody] UpdateImpedimentoCommand request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Impedimento obj)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != request.Impedimento.Id)
+            if (id != obj.Id)
             {
                 return BadRequest();
             }
 
-            UpdateImpedimentoResponse result = await _mediator.Send(request);
+            try
+            {
+                _unitOfWork.ImpedimentoRepository.Update(obj);
 
-            return Ok(result);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                if (!await ObjExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         /// <summary>
-        /// Remover Impedimento
+        /// Remover impedimento
         /// </summary>
         /// <remarks>
-        /// # Remover Impedimento
+        /// # Remover impedimento
         /// 
-        /// Remove um Impedimento da base de dados.
+        /// Remove um impedimento da base de dados.
         /// </remarks>
-        /// <param name="id">Id do Impedimento</param>        
-        /// <response code="200">Impedimento removido com sucesso</response>
+        /// <param name="id">Id do impedimento</param>        
+        /// <response code="204">Impedimento removido com sucesso</response>
         /// <response code="404">Impedimento não encontrado</response>
         /// <response code="401">Acesso não autorizado</response>
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RemoveImpedimentoResponse>> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            RemoveImpedimentoResponse result = await _mediator.Send(new RemoveImpedimentoCommand
-            {
-                Id = id
-            });
+            Impedimento obj = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
 
-            if (result == null)
+            if (obj == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            await _unitOfWork.ImpedimentoRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> ObjExists(Guid id)
+        {
+            return await _unitOfWork.ImpedimentoRepository.GetAsync(id) != null;
         }
     }
 }

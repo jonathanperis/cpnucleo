@@ -12,7 +12,7 @@ namespace Cpnucleo.RazorPages.Configuration
         {
             services
                 .AddRefitClient<ICpnucleoApiService>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v1"));
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2"));
         }
     }
 }
