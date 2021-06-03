@@ -37,8 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Blazor", "src\Cpnu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3249E531-CFB2-4B20-BBEF-12ACD8812F59}"
 	ProjectSection(SolutionItems) = preProject
-		directory.build.props = directory.build.props
-		directory.packages.props = directory.packages.props
 		global.json = global.json
 	EndProjectSection
 EndProject
