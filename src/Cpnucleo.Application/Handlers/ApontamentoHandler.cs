@@ -19,7 +19,8 @@ namespace Cpnucleo.Domain.Handlers
         IRequestHandler<GetApontamentoQuery, GetApontamentoResponse>,
         IRequestHandler<ListApontamentoQuery, ListApontamentoResponse>,
         IRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse>,
-        IRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse>
+        IRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse>,
+        IRequestHandler<GetByRecursoQuery, GetByRecursoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -108,6 +109,19 @@ namespace Cpnucleo.Domain.Handlers
             bool success = await _unitOfWork.SaveChangesAsync();
 
             result.Status = success ? OperationResult.Success : OperationResult.Failed;
+
+            return result;
+        }
+
+        public async Task<GetByRecursoResponse> Handle(GetByRecursoQuery request, CancellationToken cancellationToken)
+        {
+            GetByRecursoResponse result = new GetByRecursoResponse
+            {
+                Status = OperationResult.Failed
+            };
+
+            result.Apontamentos = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(request.IdRecurso));
+            result.Status = OperationResult.Success;
 
             return result;
         }

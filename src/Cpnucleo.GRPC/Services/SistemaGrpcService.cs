@@ -4,12 +4,13 @@ using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Sistema;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
-    //[Authorize]
+    [Authorize]
     public class SistemaGrpcService : ISistemaGrpcService
     {
         private readonly IMediator _mediator;

@@ -4,12 +4,13 @@ using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using ProtoBuf.Grpc;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
-    //[Authorize]
+    [Authorize]
     public class ApontamentoGrpcService : IApontamentoGrpcService
     {
         private readonly IMediator _mediator;

@@ -34,6 +34,7 @@ namespace Cpnucleo.MVC.Services
 
         public async Task<AuthResponse> AuthAsync(AuthQuery query)
         {
+            _RecursoGrpcService = InitializeAuthenticatedChannel(string.Empty);
             return await _RecursoGrpcService.AuthAsync(query);
         }
 
