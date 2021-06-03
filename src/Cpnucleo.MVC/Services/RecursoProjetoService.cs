@@ -1,8 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.RemoveRecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.ListRecursoProjeto;
 using Cpnucleo.MVC.Interfaces;
 using Microsoft.Extensions.Configuration;
 using ProtoBuf.Grpc.Client;

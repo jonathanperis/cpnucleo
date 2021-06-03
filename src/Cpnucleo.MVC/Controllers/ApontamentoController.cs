@@ -1,7 +1,12 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Apontamento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
@@ -168,10 +173,10 @@ namespace Cpnucleo.MVC.Controllers
                     return Json(new { success = false, message = "", body = ApontamentoView });
                 }
 
-                Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetTarefaResponse getTarefaResponse = await _tarefaService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetTarefaQuery { Id = idTarefa });
+                GetTarefaResponse getTarefaResponse = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = idTarefa });
                 TarefaViewModel tarefa = getTarefaResponse.Tarefa;
 
-                Infra.CrossCutting.Util.Queries.Responses.Workflow.GetWorkflowResponse getWorkflowResponse = await _workflowService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Workflow.GetWorkflowQuery { Id = idWorkflow });
+                GetWorkflowResponse getWorkflowResponse = await _workflowService.GetAsync(Token, new GetWorkflowQuery { Id = idWorkflow });
                 WorkflowViewModel workflow = getWorkflowResponse.Workflow;
 
                 tarefa.IdWorkflow = workflow.Id;
@@ -190,19 +195,19 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task CarregarTarefasByRecurso(Guid idRecurso)
         {
-            Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetByRecursoResponse response = await _tarefaService.GetByRecursoAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetByRecursoQuery { IdRecurso = idRecurso });
+            Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso.GetByRecursoResponse response = await _tarefaService.GetByRecursoAsync(Token, new Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso.GetByRecursoQuery { IdRecurso = idRecurso });
             ApontamentoView.ListaTarefas = response.Tarefas;
         }
 
         private async Task CarregarWorkflows()
         {
-            Infra.CrossCutting.Util.Queries.Responses.Workflow.ListWorkflowResponse response = await _workflowService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Workflow.ListWorkflowQuery { });
+            ListWorkflowResponse response = await _workflowService.AllAsync(Token, new ListWorkflowQuery { });
             ApontamentoView.ListaWorkflow = response.Workflows;
         }
 
         private async Task CarregarTarefas()
         {
-            Infra.CrossCutting.Util.Queries.Responses.Tarefa.ListTarefaResponse response = await _tarefaService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.ListTarefaQuery { GetDependencies = true });
+            ListTarefaResponse response = await _tarefaService.AllAsync(Token, new ListTarefaQuery { GetDependencies = true });
             ApontamentoView.ListaTarefas = response.Tarefas;
         }
     }

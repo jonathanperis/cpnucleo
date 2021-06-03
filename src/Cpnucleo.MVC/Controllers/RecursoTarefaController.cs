@@ -1,6 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.CreateRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
 using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -183,13 +187,13 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task ObterTarefa(Guid idTarefa)
         {
-            Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetTarefaResponse response = await _TarefaService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetTarefaQuery { Id = idTarefa });
+            GetTarefaResponse response = await _TarefaService.GetAsync(Token, new GetTarefaQuery { Id = idTarefa });
             RecursoTarefaView.Tarefa = response.Tarefa;
         }
 
         private async Task CarregarSelectRecursos()
         {
-            Infra.CrossCutting.Util.Queries.Responses.Recurso.ListRecursoResponse response = await _recursoService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Recurso.ListRecursoQuery { });
+            ListRecursoResponse response = await _recursoService.AllAsync(Token, new ListRecursoQuery { });
             RecursoTarefaView.SelectRecursos = new SelectList(response.Recursos, "Id", "Nome");
         }
     }
