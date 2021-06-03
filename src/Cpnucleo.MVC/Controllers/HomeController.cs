@@ -1,6 +1,5 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
 using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Cpnucleo.MVC.Services;

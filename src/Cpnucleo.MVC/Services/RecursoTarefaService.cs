@@ -1,8 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Responses.RecursoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.CreateRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.ListRecursoTarefa;
 using Cpnucleo.MVC.Interfaces;
 using Microsoft.Extensions.Configuration;
 using ProtoBuf.Grpc.Client;

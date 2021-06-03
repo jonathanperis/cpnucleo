@@ -1,6 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.RecursoProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.RemoveRecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
 using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -183,13 +187,13 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task ObterProjeto(Guid idProjeto)
         {
-            Infra.CrossCutting.Util.Queries.Responses.Projeto.GetProjetoResponse response = await _projetoService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Projeto.GetProjetoQuery { Id = idProjeto });
+            GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = idProjeto });
             RecursoProjetoView.Projeto = response.Projeto;
         }
 
         private async Task CarregarSelectRecursos()
         {
-            Infra.CrossCutting.Util.Queries.Responses.Recurso.ListRecursoResponse response = await _recursoService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Recurso.ListRecursoQuery { });
+            ListRecursoResponse response = await _recursoService.AllAsync(Token, new ListRecursoQuery { });
             RecursoProjetoView.SelectRecursos = new SelectList(response.Recursos, "Id", "Nome");
         }
     }

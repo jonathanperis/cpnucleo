@@ -1,6 +1,10 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Requests.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Requests.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Responses.ImpedimentoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
 using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -183,13 +187,13 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task ObterTarefa(Guid idTarefa)
         {
-            Infra.CrossCutting.Util.Queries.Responses.Tarefa.GetTarefaResponse response = await _tarefaService.GetAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Tarefa.GetTarefaQuery { Id = idTarefa });
+            GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = idTarefa });
             ImpedimentoTarefaView.Tarefa = response.Tarefa;
         }
 
         private async Task CarregarSelectImpedimentos()
         {
-            Infra.CrossCutting.Util.Queries.Responses.Impedimento.ListImpedimentoResponse response = await _impedimentoService.AllAsync(Token, new Infra.CrossCutting.Util.Queries.Requests.Impedimento.ListImpedimentoQuery { });
+            ListImpedimentoResponse response = await _impedimentoService.AllAsync(Token, new ListImpedimentoQuery { });
             ImpedimentoTarefaView.SelectImpedimentos = new SelectList(response.Impedimentos, "Id", "Nome");
         }
     }
