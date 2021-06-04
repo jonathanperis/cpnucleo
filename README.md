@@ -5,11 +5,11 @@ A sample solution that implements the best praticles when building a .NET 5 proj
 
 # Build Status
 
-- [Cpnucleo Pages](https://cpnucleo-pages.azurewebsites.net)
+- [Cpnucleo Pages](https://cpnucleo-pages.azurewebsites.net) (Uses API Cpnucleo as backend)
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20Pages%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=7)
 
-- [Cpnucleo MVC](https://cpnucleo-mvc.azurewebsites.net)
+- [Cpnucleo MVC](https://cpnucleo-mvc.azurewebsites.net) (Uses gRPC Cpnucleo as backend)
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20MVC%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=9)
 
@@ -17,7 +17,7 @@ A sample solution that implements the best praticles when building a .NET 5 proj
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/API%20-%20Cpnucleo%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=8)
 
-- [GRPC Cpnucleo](https://grpc-cpnucleo.azurewebsites.net)
+- [gRPC Cpnucleo](https://grpc-cpnucleo.azurewebsites.net)
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/GRPC%20-%20Cpnucleo%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=11)
 
