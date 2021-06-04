@@ -82,7 +82,7 @@ namespace Cpnucleo.GRPC
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapMagicOnionService();
+                endpoints.MapMagicOnionService().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
                 {
