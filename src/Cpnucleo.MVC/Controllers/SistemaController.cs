@@ -1,12 +1,14 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +17,14 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class SistemaController : BaseController
     {
-        private readonly ISistemaService _sistemaService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
 
         private SistemaView _sistemaView;
 
-        public SistemaController(ISistemaService sistemaService)
+        public SistemaController(IConfiguration configuration)
+            : base(configuration)
         {
-            _sistemaService = sistemaService;
+            _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
         }
 
         public SistemaView SistemaView
@@ -43,7 +46,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { });
+                ListSistemaResponse response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
                 SistemaView.Lista = response.Sistemas;
 
                 return View(SistemaView);
@@ -71,7 +74,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _sistemaService.AddAsync(Token, new CreateSistemaCommand { Sistema = obj.Sistema });
+                await _sistemaGrpcService.AddAsync(new CreateSistemaCommand { Sistema = obj.Sistema });
 
                 return RedirectToAction("Listar");
             }
@@ -87,7 +90,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = id });
+                GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
                 SistemaView.Sistema = response.Sistema;
 
                 return View(SistemaView);
@@ -106,13 +109,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = obj.Sistema.Id });
+                    GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
                     SistemaView.Sistema = response.Sistema;
 
                     return View(SistemaView);
                 }
 
-                await _sistemaService.UpdateAsync(Token, new UpdateSistemaCommand { Sistema = obj.Sistema });
+                await _sistemaGrpcService.UpdateAsync(new UpdateSistemaCommand { Sistema = obj.Sistema });
 
                 return RedirectToAction("Listar");
             }
@@ -128,7 +131,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = id });
+                GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
                 SistemaView.Sistema = response.Sistema;
 
                 return View(SistemaView);
@@ -147,13 +150,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetSistemaResponse response = await _sistemaService.GetAsync(Token, new GetSistemaQuery { Id = obj.Sistema.Id });
+                    GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
                     SistemaView.Sistema = response.Sistema;
 
                     return View(SistemaView);
                 }
 
-                await _sistemaService.RemoveAsync(Token, new RemoveSistemaCommand { Id = obj.Sistema.Id });
+                await _sistemaGrpcService.RemoveAsync(new RemoveSistemaCommand { Id = obj.Sistema.Id });
 
                 return RedirectToAction("Listar");
             }

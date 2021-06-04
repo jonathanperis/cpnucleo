@@ -3,28 +3,20 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IProjetoGrpcService
+    public interface IProjetoGrpcService : IService<IProjetoGrpcService>
     {
-        [OperationContract]
-        Task<CreateProjetoResponse> AddAsync(CreateProjetoCommand command, CallContext context = default);
+        UnaryResult<CreateProjetoResponse> AddAsync(CreateProjetoCommand command);
 
-        [OperationContract]
-        Task<UpdateProjetoResponse> UpdateAsync(UpdateProjetoCommand command, CallContext context = default);
+        UnaryResult<UpdateProjetoResponse> UpdateAsync(UpdateProjetoCommand command);
 
-        [OperationContract]
-        Task<GetProjetoResponse> GetAsync(GetProjetoQuery query, CallContext context = default);
+        UnaryResult<GetProjetoResponse> GetAsync(GetProjetoQuery query);
 
-        [OperationContract]
-        Task<ListProjetoResponse> AllAsync(ListProjetoQuery query, CallContext context = default);
+        UnaryResult<ListProjetoResponse> AllAsync(ListProjetoQuery query);
 
-        [OperationContract]
-        Task<RemoveProjetoResponse> RemoveAsync(RemoveProjetoCommand command, CallContext context = default);
+        UnaryResult<RemoveProjetoResponse> RemoveAsync(RemoveProjetoCommand command);
     }
 }

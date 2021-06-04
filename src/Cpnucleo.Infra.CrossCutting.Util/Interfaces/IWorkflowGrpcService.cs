@@ -3,28 +3,20 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IWorkflowGrpcService
+    public interface IWorkflowGrpcService : IService<IWorkflowGrpcService>
     {
-        [OperationContract]
-        Task<CreateWorkflowResponse> AddAsync(CreateWorkflowCommand command, CallContext context = default);
+        UnaryResult<CreateWorkflowResponse> AddAsync(CreateWorkflowCommand command);
 
-        [OperationContract]
-        Task<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowCommand command, CallContext context = default);
+        UnaryResult<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowCommand command);
 
-        [OperationContract]
-        Task<GetWorkflowResponse> GetAsync(GetWorkflowQuery query, CallContext context = default);
+        UnaryResult<GetWorkflowResponse> GetAsync(GetWorkflowQuery query);
 
-        [OperationContract]
-        Task<ListWorkflowResponse> AllAsync(ListWorkflowQuery query, CallContext context = default);
+        UnaryResult<ListWorkflowResponse> AllAsync(ListWorkflowQuery query);
 
-        [OperationContract]
-        Task<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowCommand command, CallContext context = default);
+        UnaryResult<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowCommand command);
     }
 }

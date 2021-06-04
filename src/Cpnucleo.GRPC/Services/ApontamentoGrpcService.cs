@@ -6,15 +6,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetTotalHorasPorRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class ApontamentoGrpcService : IApontamentoGrpcService
+    public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApontamentoGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -23,37 +23,37 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateApontamentoResponse> AddAsync(CreateApontamentoCommand command, CallContext context = default)
+        public async UnaryResult<CreateApontamentoResponse> AddAsync(CreateApontamentoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListApontamentoResponse> AllAsync(ListApontamentoQuery query, CallContext context = default)
+        public async UnaryResult<ListApontamentoResponse> AllAsync(ListApontamentoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetApontamentoResponse> GetAsync(GetApontamentoQuery query, CallContext context = default)
+        public async UnaryResult<GetApontamentoResponse> GetAsync(GetApontamentoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query, CallContext context = default)
+        public async UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query, CallContext context = default)
+        public async UnaryResult<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command, CallContext context = default)
+        public async UnaryResult<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoCommand command, CallContext context = default)
+        public async UnaryResult<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoCommand command)
         {
             return await _mediator.Send(command);
         }

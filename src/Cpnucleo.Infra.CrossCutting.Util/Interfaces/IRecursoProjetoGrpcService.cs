@@ -4,31 +4,22 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProj
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.ListRecursoProjeto;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IRecursoProjetoGrpcService
+    public interface IRecursoProjetoGrpcService : IService<IRecursoProjetoGrpcService>
     {
-        [OperationContract]
-        Task<CreateRecursoProjetoResponse> AddAsync(CreateRecursoProjetoCommand command, CallContext context = default);
+        UnaryResult<CreateRecursoProjetoResponse> AddAsync(CreateRecursoProjetoCommand command);
 
-        [OperationContract]
-        Task<UpdateRecursoProjetoResponse> UpdateAsync(UpdateRecursoProjetoCommand command, CallContext context = default);
+        UnaryResult<UpdateRecursoProjetoResponse> UpdateAsync(UpdateRecursoProjetoCommand command);
 
-        [OperationContract]
-        Task<GetRecursoProjetoResponse> GetAsync(GetRecursoProjetoQuery query, CallContext context = default);
+        UnaryResult<GetRecursoProjetoResponse> GetAsync(GetRecursoProjetoQuery query);
 
-        [OperationContract]
-        Task<ListRecursoProjetoResponse> AllAsync(ListRecursoProjetoQuery query, CallContext context = default);
+        UnaryResult<ListRecursoProjetoResponse> AllAsync(ListRecursoProjetoQuery query);
 
-        [OperationContract]
-        Task<RemoveRecursoProjetoResponse> RemoveAsync(RemoveRecursoProjetoCommand command, CallContext context = default);
+        UnaryResult<RemoveRecursoProjetoResponse> RemoveAsync(RemoveRecursoProjetoCommand command);
 
-        [OperationContract]
-        Task<GetByProjetoResponse> GetByProjetoAsync(GetByProjetoQuery query, CallContext context = default);
+        UnaryResult<GetByProjetoResponse> GetByProjetoAsync(GetByProjetoQuery query);
     }
 }

@@ -5,15 +5,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.ListRecursoProjeto;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class RecursoProjetoGrpcService : IRecursoProjetoGrpcService
+    public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>, IRecursoProjetoGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -22,32 +22,32 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateRecursoProjetoResponse> AddAsync(CreateRecursoProjetoCommand command, CallContext context = default)
+        public async UnaryResult<CreateRecursoProjetoResponse> AddAsync(CreateRecursoProjetoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListRecursoProjetoResponse> AllAsync(ListRecursoProjetoQuery query, CallContext context = default)
+        public async UnaryResult<ListRecursoProjetoResponse> AllAsync(ListRecursoProjetoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetRecursoProjetoResponse> GetAsync(GetRecursoProjetoQuery query, CallContext context = default)
+        public async UnaryResult<GetRecursoProjetoResponse> GetAsync(GetRecursoProjetoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetByProjetoResponse> GetByProjetoAsync(GetByProjetoQuery query, CallContext context = default)
+        public async UnaryResult<GetByProjetoResponse> GetByProjetoAsync(GetByProjetoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveRecursoProjetoResponse> RemoveAsync(RemoveRecursoProjetoCommand command, CallContext context = default)
+        public async UnaryResult<RemoveRecursoProjetoResponse> RemoveAsync(RemoveRecursoProjetoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateRecursoProjetoResponse> UpdateAsync(UpdateRecursoProjetoCommand command, CallContext context = default)
+        public async UnaryResult<UpdateRecursoProjetoResponse> UpdateAsync(UpdateRecursoProjetoCommand command)
         {
             return await _mediator.Send(command);
         }

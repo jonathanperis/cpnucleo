@@ -3,28 +3,20 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface ISistemaGrpcService
+    public interface ISistemaGrpcService : IService<ISistemaGrpcService>
     {
-        [OperationContract]
-        Task<CreateSistemaResponse> AddAsync(CreateSistemaCommand command, CallContext context = default);
+        UnaryResult<CreateSistemaResponse> AddAsync(CreateSistemaCommand command);
 
-        [OperationContract]
-        Task<UpdateSistemaResponse> UpdateAsync(UpdateSistemaCommand command, CallContext context = default);
+        UnaryResult<UpdateSistemaResponse> UpdateAsync(UpdateSistemaCommand command);
 
-        [OperationContract]
-        Task<GetSistemaResponse> GetAsync(GetSistemaQuery query, CallContext context = default);
+        UnaryResult<GetSistemaResponse> GetAsync(GetSistemaQuery query);
 
-        [OperationContract]
-        Task<ListSistemaResponse> AllAsync(ListSistemaQuery query, CallContext context = default);
+        UnaryResult<ListSistemaResponse> AllAsync(ListSistemaQuery query);
 
-        [OperationContract]
-        Task<RemoveSistemaResponse> RemoveAsync(RemoveSistemaCommand command, CallContext context = default);
+        UnaryResult<RemoveSistemaResponse> RemoveAsync(RemoveSistemaCommand command);
     }
 }

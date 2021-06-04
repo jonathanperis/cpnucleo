@@ -1,5 +1,4 @@
-﻿using Cpnucleo.GRPC.Services;
-using Cpnucleo.Infra.CrossCutting.IoC;
+﻿using Cpnucleo.Infra.CrossCutting.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using ProtoBuf.Grpc.Server;
 using System;
 using System.Security.Claims;
 using System.Text;
@@ -30,7 +28,8 @@ namespace Cpnucleo.GRPC
         {
             services.AddCpnucleoSetup();
 
-            services.AddCodeFirstGrpc();
+            services.AddGrpc();
+            services.AddMagicOnion();
 
             services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             {
@@ -76,7 +75,6 @@ namespace Cpnucleo.GRPC
             }
 
             app.UseRouting();
-            app.UseGrpcWeb();
             app.UseCors();
 
             app.UseAuthentication();
@@ -84,17 +82,7 @@ namespace Cpnucleo.GRPC
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<SistemaGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ProjetoGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ImpedimentoGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<TipoTarefaGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<TarefaGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ApontamentoGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<WorkflowGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<RecursoGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<ImpedimentoTarefaGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<RecursoProjetoGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
-                endpoints.MapGrpcService<RecursoTarefaGrpcService>().EnableGrpcWeb().RequireCors("AllowAll");
+                endpoints.MapMagicOnionService();
 
                 endpoints.MapGet("/", async context =>
                 {
