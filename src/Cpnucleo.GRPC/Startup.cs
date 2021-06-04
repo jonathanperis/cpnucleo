@@ -75,6 +75,7 @@ namespace Cpnucleo.GRPC
             }
 
             app.UseRouting();
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseCors();
 
             app.UseAuthentication();
@@ -82,7 +83,7 @@ namespace Cpnucleo.GRPC
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapMagicOnionService().EnableGrpcWeb();
+                endpoints.MapMagicOnionService().RequireCors("AllowAll");
 
                 endpoints.MapGet("/", async context =>
                 {
