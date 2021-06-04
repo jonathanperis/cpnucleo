@@ -25,15 +25,15 @@ namespace Cpnucleo.MVC.Controllers
 
         protected GrpcChannel CreateAuthenticatedChannel()
         {
-            CallCredentials credentials = CallCredentials.FromInterceptor((context, metadata) =>
-            {
-                if (!string.IsNullOrEmpty(Token))
-                {
-                    metadata.Add("Authorization", $"Bearer {Token}");
-                }
+            //CallCredentials credentials = CallCredentials.FromInterceptor((context, metadata) =>
+            //{
+            //    if (!string.IsNullOrEmpty(Token))
+            //    {
+            //        metadata.Add("Authorization", $"Bearer {Token}");
+            //    }
 
-                return Task.CompletedTask;
-            });
+            //    return Task.CompletedTask;
+            //});
 
             GrpcWebHandler handler = new(GrpcWebMode.GrpcWeb,
                 new HttpClientHandler
@@ -46,7 +46,7 @@ namespace Cpnucleo.MVC.Controllers
             _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"],
                 new GrpcChannelOptions
                 {
-                    Credentials = ChannelCredentials.Create(new SslCredentials(), credentials),
+                    //Credentials = ChannelCredentials.Create(new SslCredentials(), credentials),
                     HttpClient = new HttpClient(handler)
                 });
 

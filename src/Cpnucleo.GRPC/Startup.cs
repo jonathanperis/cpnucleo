@@ -80,9 +80,9 @@ namespace Cpnucleo.GRPC
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
             app.UseEndpoints(endpoints =>
             {
-                app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
                 endpoints.MapMagicOnionService().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
