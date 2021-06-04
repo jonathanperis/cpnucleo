@@ -1,15 +1,17 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -18,19 +20,18 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class ImpedimentoTarefaController : BaseController
     {
-        private readonly IImpedimentoTarefaService _impedimentoTarefaService;
-        private readonly ITarefaService _tarefaService;
-        private readonly IImpedimentoService _impedimentoService;
+        private readonly IImpedimentoTarefaGrpcService _impedimentoTarefaGrpcService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
+        private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
         private ImpedimentoTarefaView _impedimentoTarefaView;
 
-        public ImpedimentoTarefaController(IImpedimentoTarefaService impedimentoTarefaService,
-                                           ITarefaService tarefaService,
-                                           IImpedimentoService impedimentoService)
+        public ImpedimentoTarefaController(IConfiguration configuration)
+            : base(configuration)
         {
-            _impedimentoTarefaService = impedimentoTarefaService;
-            _tarefaService = tarefaService;
-            _impedimentoService = impedimentoService;
+            _impedimentoTarefaGrpcService = MagicOnionClient.Create<IImpedimentoTarefaGrpcService>(CreateAuthenticatedChannel());
+            _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
+            _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel());
         }
 
         public ImpedimentoTarefaView ImpedimentoTarefaView
@@ -52,7 +53,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetByTarefaResponse response = await _impedimentoTarefaService.GetByTarefaAsync(Token, new GetByTarefaQuery { IdTarefa = idTarefa });
+                GetByTarefaResponse response = await _impedimentoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
                 ImpedimentoTarefaView.Lista = response.ImpedimentoTarefas;
 
                 ViewData["idTarefa"] = idTarefa;
@@ -88,7 +89,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(ImpedimentoTarefaView);
                 }
 
-                await _impedimentoTarefaService.AddAsync(Token, new CreateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
+                await _impedimentoTarefaGrpcService.AddAsync(new CreateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -104,7 +105,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = id });
+                GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
                 ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
 
                 await CarregarSelectImpedimentos();
@@ -125,7 +126,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
+                    GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
                     ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
 
                     await CarregarSelectImpedimentos();
@@ -133,7 +134,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(ImpedimentoTarefaView);
                 }
 
-                await _impedimentoTarefaService.UpdateAsync(Token, new UpdateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
+                await _impedimentoTarefaGrpcService.UpdateAsync(new UpdateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -149,7 +150,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = id });
+                GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
                 ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
 
                 return View(ImpedimentoTarefaView);
@@ -168,13 +169,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetImpedimentoTarefaResponse response = await _impedimentoTarefaService.GetAsync(Token, new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
+                    GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
                     ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
 
                     return View(ImpedimentoTarefaView);
                 }
 
-                await _impedimentoTarefaService.RemoveAsync(Token, new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
+                await _impedimentoTarefaGrpcService.RemoveAsync(new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
             }
@@ -187,13 +188,13 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task ObterTarefa(Guid idTarefa)
         {
-            GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = idTarefa });
+            GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
             ImpedimentoTarefaView.Tarefa = response.Tarefa;
         }
 
         private async Task CarregarSelectImpedimentos()
         {
-            ListImpedimentoResponse response = await _impedimentoService.AllAsync(Token, new ListImpedimentoQuery { });
+            ListImpedimentoResponse response = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
             ImpedimentoTarefaView.SelectImpedimentos = new SelectList(response.Impedimentos, "Id", "Nome");
         }
     }

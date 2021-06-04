@@ -4,31 +4,22 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface ITarefaGrpcService
+    public interface ITarefaGrpcService : IService<ITarefaGrpcService>
     {
-        [OperationContract]
-        Task<CreateTarefaResponse> AddAsync(CreateTarefaCommand command, CallContext context = default);
+        UnaryResult<CreateTarefaResponse> AddAsync(CreateTarefaCommand command);
 
-        [OperationContract]
-        Task<UpdateTarefaResponse> UpdateAsync(UpdateTarefaCommand command, CallContext context = default);
+        UnaryResult<UpdateTarefaResponse> UpdateAsync(UpdateTarefaCommand command);
 
-        [OperationContract]
-        Task<GetTarefaResponse> GetAsync(GetTarefaQuery query, CallContext context = default);
+        UnaryResult<GetTarefaResponse> GetAsync(GetTarefaQuery query);
 
-        [OperationContract]
-        Task<ListTarefaResponse> AllAsync(ListTarefaQuery query, CallContext context = default);
+        UnaryResult<ListTarefaResponse> AllAsync(ListTarefaQuery query);
 
-        [OperationContract]
-        Task<RemoveTarefaResponse> RemoveAsync(RemoveTarefaCommand command, CallContext context = default);
+        UnaryResult<RemoveTarefaResponse> RemoveAsync(RemoveTarefaCommand command);
 
-        [OperationContract]
-        Task<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query);
+        UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query);
     }
 }

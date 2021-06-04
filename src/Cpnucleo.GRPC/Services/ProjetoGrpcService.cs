@@ -4,15 +4,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class ProjetoGrpcService : IProjetoGrpcService
+    public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -21,27 +21,27 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateProjetoResponse> AddAsync(CreateProjetoCommand command, CallContext context = default)
+        public async UnaryResult<CreateProjetoResponse> AddAsync(CreateProjetoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListProjetoResponse> AllAsync(ListProjetoQuery query, CallContext context = default)
+        public async UnaryResult<ListProjetoResponse> AllAsync(ListProjetoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetProjetoResponse> GetAsync(GetProjetoQuery query, CallContext context = default)
+        public async UnaryResult<GetProjetoResponse> GetAsync(GetProjetoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveProjetoResponse> RemoveAsync(RemoveProjetoCommand command, CallContext context = default)
+        public async UnaryResult<RemoveProjetoResponse> RemoveAsync(RemoveProjetoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateProjetoResponse> UpdateAsync(UpdateProjetoCommand command, CallContext context = default)
+        public async UnaryResult<UpdateProjetoResponse> UpdateAsync(UpdateProjetoCommand command)
         {
             return await _mediator.Send(command);
         }

@@ -5,15 +5,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.ListRecursoTarefa;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class RecursoTarefaGrpcService : IRecursoTarefaGrpcService
+    public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, IRecursoTarefaGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -22,32 +22,32 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaCommand command, CallContext context = default)
+        public async UnaryResult<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListRecursoTarefaResponse> AllAsync(ListRecursoTarefaQuery query, CallContext context = default)
+        public async UnaryResult<ListRecursoTarefaResponse> AllAsync(ListRecursoTarefaQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetRecursoTarefaResponse> GetAsync(GetRecursoTarefaQuery query, CallContext context = default)
+        public async UnaryResult<GetRecursoTarefaResponse> GetAsync(GetRecursoTarefaQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query)
+        public async UnaryResult<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaCommand command, CallContext context = default)
+        public async UnaryResult<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaCommand command, CallContext context = default)
+        public async UnaryResult<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaCommand command)
         {
             return await _mediator.Send(command);
         }

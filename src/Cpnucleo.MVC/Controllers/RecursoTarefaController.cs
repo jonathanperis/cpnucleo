@@ -1,15 +1,17 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.CreateRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -18,19 +20,18 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class RecursoTarefaController : BaseController
     {
-        private readonly IRecursoTarefaService _recursoTarefaService;
-        private readonly IRecursoService _recursoService;
-        private readonly ITarefaService _TarefaService;
+        private readonly IRecursoTarefaGrpcService _recursoTarefaGrpcService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
+        private readonly ITarefaGrpcService _TarefaGrpcService;
 
         private RecursoTarefaView _recursoTarefaView;
 
-        public RecursoTarefaController(IRecursoTarefaService recursoTarefaService,
-                                        IRecursoService recursoService,
-                                        ITarefaService TarefaService)
+        public RecursoTarefaController(IConfiguration configuration)
+            : base(configuration)
         {
-            _recursoTarefaService = recursoTarefaService;
-            _recursoService = recursoService;
-            _TarefaService = TarefaService;
+            _recursoTarefaGrpcService = MagicOnionClient.Create<IRecursoTarefaGrpcService>(CreateAuthenticatedChannel());
+            _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
+            _TarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
         }
 
         public RecursoTarefaView RecursoTarefaView
@@ -52,7 +53,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetByTarefaResponse response = await _recursoTarefaService.GetByTarefaAsync(Token, new GetByTarefaQuery { IdTarefa = idTarefa });
+                GetByTarefaResponse response = await _recursoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
                 RecursoTarefaView.Lista = response.RecursoTarefas;
 
                 ViewData["idTarefa"] = idTarefa;
@@ -88,7 +89,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(RecursoTarefaView);
                 }
 
-                await _recursoTarefaService.AddAsync(Token, new CreateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
+                await _recursoTarefaGrpcService.AddAsync(new CreateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -104,7 +105,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = id });
+                GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
                 RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
 
                 await CarregarSelectRecursos();
@@ -125,7 +126,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
+                    GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
                     RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
 
                     await CarregarSelectRecursos();
@@ -133,7 +134,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(RecursoTarefaView);
                 }
 
-                await _recursoTarefaService.UpdateAsync(Token, new UpdateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
+                await _recursoTarefaGrpcService.UpdateAsync(new UpdateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -149,7 +150,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = id });
+                GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
                 RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
 
                 return View(RecursoTarefaView);
@@ -168,13 +169,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetRecursoTarefaResponse response = await _recursoTarefaService.GetAsync(Token, new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
+                    GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
                     RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
 
                     return View(RecursoTarefaView);
                 }
 
-                await _recursoTarefaService.RemoveAsync(Token, new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
+                await _recursoTarefaGrpcService.RemoveAsync(new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
 
                 return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
             }
@@ -187,13 +188,13 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task ObterTarefa(Guid idTarefa)
         {
-            GetTarefaResponse response = await _TarefaService.GetAsync(Token, new GetTarefaQuery { Id = idTarefa });
+            GetTarefaResponse response = await _TarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
             RecursoTarefaView.Tarefa = response.Tarefa;
         }
 
         private async Task CarregarSelectRecursos()
         {
-            ListRecursoResponse response = await _recursoService.AllAsync(Token, new ListRecursoQuery { });
+            ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
             RecursoTarefaView.SelectRecursos = new SelectList(response.Recursos, "Id", "Nome");
         }
     }

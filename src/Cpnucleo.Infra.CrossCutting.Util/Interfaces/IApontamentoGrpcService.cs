@@ -5,34 +5,24 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetTotalHorasPorRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IApontamentoGrpcService
+    public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
     {
-        [OperationContract]
-        Task<CreateApontamentoResponse> AddAsync(CreateApontamentoCommand command, CallContext context = default);
+        UnaryResult<CreateApontamentoResponse> AddAsync(CreateApontamentoCommand command);
 
-        [OperationContract]
-        Task<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoCommand command, CallContext context = default);
+        UnaryResult<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoCommand command);
 
-        [OperationContract]
-        Task<GetApontamentoResponse> GetAsync(GetApontamentoQuery query, CallContext context = default);
+        UnaryResult<GetApontamentoResponse> GetAsync(GetApontamentoQuery query);
 
-        [OperationContract]
-        Task<ListApontamentoResponse> AllAsync(ListApontamentoQuery query, CallContext context = default);
+        UnaryResult<ListApontamentoResponse> AllAsync(ListApontamentoQuery query);
 
-        [OperationContract]
-        Task<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command, CallContext context = default);
+        UnaryResult<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command);
 
-        [OperationContract]
-        Task<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query, CallContext context = default);
+        UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query);
 
-        [OperationContract]
-        Task<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query, CallContext context = default);
+        UnaryResult<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query);
     }
 }

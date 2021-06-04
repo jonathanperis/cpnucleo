@@ -1,14 +1,16 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -17,15 +19,16 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class ProjetoController : BaseController
     {
-        private readonly IProjetoService _projetoService;
-        private readonly ISistemaService _sistemaService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
 
         private ProjetoView _projetoView;
 
-        public ProjetoController(IProjetoService projetoService, ISistemaService sistemaService)
+        public ProjetoController(IConfiguration configuration)
+            : base(configuration)
         {
-            _projetoService = projetoService;
-            _sistemaService = sistemaService;
+            _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel());
+            _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
         }
 
         public ProjetoView ProjetoView
@@ -47,7 +50,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ListProjetoResponse response = await _projetoService.AllAsync(Token, new ListProjetoQuery { GetDependencies = true });
+                ListProjetoResponse response = await _projetoGrpcService.AllAsync(new ListProjetoQuery { GetDependencies = true });
                 ProjetoView.Lista = response.Projetos;
 
                 return View(ProjetoView);
@@ -79,7 +82,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(ProjetoView);
                 }
 
-                await _projetoService.AddAsync(Token, new CreateProjetoCommand { Projeto = obj.Projeto });
+                await _projetoGrpcService.AddAsync(new CreateProjetoCommand { Projeto = obj.Projeto });
 
                 return RedirectToAction("Listar");
             }
@@ -95,7 +98,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = id });
+                GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
                 ProjetoView.Projeto = response.Projeto;
 
                 await CarregarSelectSistemas();
@@ -116,7 +119,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = obj.Projeto.Id });
+                    GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
                     ProjetoView.Projeto = response.Projeto;
 
                     await CarregarSelectSistemas();
@@ -124,7 +127,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(ProjetoView);
                 }
 
-                await _projetoService.UpdateAsync(Token, new UpdateProjetoCommand { Projeto = obj.Projeto });
+                await _projetoGrpcService.UpdateAsync(new UpdateProjetoCommand { Projeto = obj.Projeto });
 
                 return RedirectToAction("Listar");
             }
@@ -140,7 +143,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = id });
+                GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
                 ProjetoView.Projeto = response.Projeto;
 
                 return View(ProjetoView);
@@ -159,13 +162,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetProjetoResponse response = await _projetoService.GetAsync(Token, new GetProjetoQuery { Id = obj.Projeto.Id });
+                    GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
                     ProjetoView.Projeto = response.Projeto;
 
                     return View(ProjetoView);
                 }
 
-                await _projetoService.RemoveAsync(Token, new RemoveProjetoCommand { Id = obj.Projeto.Id });
+                await _projetoGrpcService.RemoveAsync(new RemoveProjetoCommand { Id = obj.Projeto.Id });
 
                 return RedirectToAction("Listar");
             }
@@ -178,7 +181,7 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task CarregarSelectSistemas()
         {
-            ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { });
+            ListSistemaResponse response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
             ProjetoView.SelectSistemas = new SelectList(response.Sistemas, "Id", "Nome");
         }
     }

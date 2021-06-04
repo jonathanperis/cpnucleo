@@ -3,28 +3,20 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IImpedimentoGrpcService
+    public interface IImpedimentoGrpcService : IService<IImpedimentoGrpcService>
     {
-        [OperationContract]
-        Task<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command, CallContext context = default);
+        UnaryResult<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command);
 
-        [OperationContract]
-        Task<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command, CallContext context = default);
+        UnaryResult<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command);
 
-        [OperationContract]
-        Task<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query, CallContext context = default);
+        UnaryResult<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query);
 
-        [OperationContract]
-        Task<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query, CallContext context = default);
+        UnaryResult<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query);
 
-        [OperationContract]
-        Task<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command, CallContext context = default);
+        UnaryResult<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command);
     }
 }

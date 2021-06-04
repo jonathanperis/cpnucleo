@@ -1,12 +1,14 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +17,14 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class RecursoController : BaseController
     {
-        private readonly IRecursoService _recursoService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
 
         private RecursoView _recursoView;
 
-        public RecursoController(IRecursoService recursoService)
+        public RecursoController(IConfiguration configuration)
+            : base(configuration)
         {
-            _recursoService = recursoService;
+            _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
         }
 
         public RecursoView RecursoView
@@ -43,7 +46,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ListRecursoResponse response = await _recursoService.AllAsync(Token, new ListRecursoQuery { });
+                ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
                 RecursoView.Lista = response.Recursos;
 
                 return View(RecursoView);
@@ -71,7 +74,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _recursoService.AddAsync(Token, new CreateRecursoCommand { Recurso = obj.Recurso });
+                await _recursoGrpcService.AddAsync(new CreateRecursoCommand { Recurso = obj.Recurso });
 
                 return RedirectToAction("Listar");
             }
@@ -87,7 +90,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = id });
+                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
                 RecursoView.Recurso = response.Recurso;
 
                 return View(RecursoView);
@@ -106,13 +109,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = obj.Recurso.Id });
+                    GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
                     RecursoView.Recurso = response.Recurso;
 
                     return View(RecursoView);
                 }
 
-                await _recursoService.UpdateAsync(Token, new UpdateRecursoCommand { Recurso = obj.Recurso });
+                await _recursoGrpcService.UpdateAsync(new UpdateRecursoCommand { Recurso = obj.Recurso });
 
                 return RedirectToAction("Listar");
             }
@@ -128,7 +131,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = id });
+                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
                 RecursoView.Recurso = response.Recurso;
 
                 return View(RecursoView);
@@ -147,13 +150,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetRecursoResponse response = await _recursoService.GetAsync(Token, new GetRecursoQuery { Id = obj.Recurso.Id });
+                    GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
                     RecursoView.Recurso = response.Recurso;
 
                     return View(RecursoView);
                 }
 
-                await _recursoService.RemoveAsync(Token, new RemoveRecursoCommand { Id = obj.Recurso.Id });
+                await _recursoGrpcService.RemoveAsync(new RemoveRecursoCommand { Id = obj.Recurso.Id });
 
                 return RedirectToAction("Listar");
             }

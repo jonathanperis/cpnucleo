@@ -1,17 +1,19 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -20,25 +22,22 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class TarefaController : BaseController
     {
-        private readonly ITarefaService _tarefaService;
-        private readonly ISistemaService _sistemaService;
-        private readonly IProjetoService _projetoService;
-        private readonly IWorkflowService _workflowService;
-        private readonly ITipoTarefaService _tipoTarefaService;
+        private readonly ITarefaGrpcService _tarefaGrpcService;
+        private readonly ISistemaGrpcService _sistemaGrpcService;
+        private readonly IProjetoGrpcService _projetoGrpcService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
+        private readonly ITipoTarefaGrpcService _tipoTarefaGrpcService;
 
         private TarefaView _tarefaView;
 
-        public TarefaController(ITarefaService tarefaService,
-                                ISistemaService sistemaService,
-                                IProjetoService projetoService,
-                                IWorkflowService workflowService,
-                                ITipoTarefaService tipoTarefaService)
+        public TarefaController(IConfiguration configuration)
+            : base(configuration)
         {
-            _tarefaService = tarefaService;
-            _sistemaService = sistemaService;
-            _projetoService = projetoService;
-            _workflowService = workflowService;
-            _tipoTarefaService = tipoTarefaService;
+            _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
+            _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
+            _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel());
+            _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
+            _tipoTarefaGrpcService = MagicOnionClient.Create<ITipoTarefaGrpcService>(CreateAuthenticatedChannel());
         }
 
         public TarefaView TarefaView
@@ -60,7 +59,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ListTarefaResponse response = await _tarefaService.AllAsync(Token, new ListTarefaQuery { GetDependencies = true });
+                ListTarefaResponse response = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
                 TarefaView.Lista = response.Tarefas;
 
                 return View(TarefaView);
@@ -102,7 +101,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(TarefaView);
                 }
 
-                await _tarefaService.AddAsync(Token, new CreateTarefaCommand { Tarefa = obj.Tarefa });
+                await _tarefaGrpcService.AddAsync(new CreateTarefaCommand { Tarefa = obj.Tarefa });
 
                 return RedirectToAction("Listar");
             }
@@ -118,7 +117,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = id });
+                GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
                 TarefaView.Tarefa = response.Tarefa;
 
                 await CarregarSelectSistemas();
@@ -142,7 +141,7 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = obj.Tarefa.Id });
+                    GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
                     TarefaView.Tarefa = response.Tarefa;
 
                     await CarregarSelectSistemas();
@@ -153,7 +152,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View(TarefaView);
                 }
 
-                await _tarefaService.UpdateAsync(Token, new UpdateTarefaCommand { Tarefa = obj.Tarefa });
+                await _tarefaGrpcService.UpdateAsync(new UpdateTarefaCommand { Tarefa = obj.Tarefa });
 
                 return RedirectToAction("Listar");
             }
@@ -169,7 +168,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = id });
+                GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
                 TarefaView.Tarefa = response.Tarefa;
 
                 return View(TarefaView);
@@ -188,13 +187,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetTarefaResponse response = await _tarefaService.GetAsync(Token, new GetTarefaQuery { Id = obj.Tarefa.Id });
+                    GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
                     TarefaView.Tarefa = response.Tarefa;
 
                     return View(TarefaView);
                 }
 
-                await _tarefaService.RemoveAsync(Token, new RemoveTarefaCommand { Id = obj.Tarefa.Id });
+                await _tarefaGrpcService.RemoveAsync(new RemoveTarefaCommand { Id = obj.Tarefa.Id });
 
                 return RedirectToAction("Listar");
             }
@@ -207,25 +206,25 @@ namespace Cpnucleo.MVC.Controllers
 
         private async Task CarregarSelectSistemas()
         {
-            ListSistemaResponse response = await _sistemaService.AllAsync(Token, new ListSistemaQuery { });
+            ListSistemaResponse response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
             TarefaView.SelectSistemas = new SelectList(response.Sistemas, "Id", "Nome");
         }
 
         private async Task CarregarSelectProjetos()
         {
-            ListProjetoResponse response = await _projetoService.AllAsync(Token, new ListProjetoQuery { });
+            ListProjetoResponse response = await _projetoGrpcService.AllAsync(new ListProjetoQuery { });
             TarefaView.SelectProjetos = new SelectList(response.Projetos, "Id", "Nome");
         }
 
         private async Task CarregarSelectWorkflows()
         {
-            ListWorkflowResponse response = await _workflowService.AllAsync(Token, new ListWorkflowQuery { });
+            ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
             TarefaView.SelectWorkflows = new SelectList(response.Workflows, "Id", "Nome");
         }
 
         private async Task CarregarSelectTipoTarefas()
         {
-            ListTipoTarefaResponse response = await _tipoTarefaService.AllAsync(Token, new ListTipoTarefaQuery { });
+            ListTipoTarefaResponse response = await _tipoTarefaGrpcService.AllAsync(new ListTipoTarefaQuery { });
             TarefaView.SelectTipoTarefas = new SelectList(response.TipoTarefas, "Id", "Nome");
         }
     }
