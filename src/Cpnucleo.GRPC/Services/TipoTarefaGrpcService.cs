@@ -4,15 +4,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class TipoTarefaGrpcService : ITipoTarefaGrpcService
+    public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoTarefaGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -21,27 +21,27 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateTipoTarefaResponse> AddAsync(CreateTipoTarefaCommand command, CallContext context = default)
+        public async UnaryResult<CreateTipoTarefaResponse> AddAsync(CreateTipoTarefaCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListTipoTarefaResponse> AllAsync(ListTipoTarefaQuery query, CallContext context = default)
+        public async UnaryResult<ListTipoTarefaResponse> AllAsync(ListTipoTarefaQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetTipoTarefaResponse> GetAsync(GetTipoTarefaQuery query, CallContext context = default)
+        public async UnaryResult<GetTipoTarefaResponse> GetAsync(GetTipoTarefaQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveTipoTarefaResponse> RemoveAsync(RemoveTipoTarefaCommand command, CallContext context = default)
+        public async UnaryResult<RemoveTipoTarefaResponse> RemoveAsync(RemoveTipoTarefaCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateTipoTarefaResponse> UpdateAsync(UpdateTipoTarefaCommand command, CallContext context = default)
+        public async UnaryResult<UpdateTipoTarefaResponse> UpdateAsync(UpdateTipoTarefaCommand command)
         {
             return await _mediator.Send(command);
         }

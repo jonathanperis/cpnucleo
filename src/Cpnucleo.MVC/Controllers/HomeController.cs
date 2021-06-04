@@ -1,8 +1,9 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
 using Cpnucleo.MVC.Services;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -14,17 +15,18 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.MVC.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly IRecursoService _recursoService;
+        private readonly IRecursoGrpcService _recursoGrpcService;
         private readonly IConfiguration _configuration;
 
         private HomeView _viewModel;
 
-        public HomeController(IRecursoService recursoService, IConfiguration configuration)
+        public HomeController(IConfiguration configuration)
+            : base(configuration)
         {
-            _recursoService = recursoService;
             _configuration = configuration;
+            _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
         }
 
         public HomeView ViewModel
@@ -74,7 +76,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                AuthResponse response = await _recursoService.AuthAsync(new AuthQuery { Login = obj.Usuario, Senha = obj.Senha });
+                AuthResponse response = await _recursoGrpcService.AuthAsync(new AuthQuery { Login = obj.Usuario, Senha = obj.Senha });
 
                 if (response.Status == OperationResult.Failed)
                 {

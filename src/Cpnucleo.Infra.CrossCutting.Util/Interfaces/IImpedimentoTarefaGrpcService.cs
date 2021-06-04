@@ -4,31 +4,22 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedime
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IImpedimentoTarefaGrpcService
+    public interface IImpedimentoTarefaGrpcService : IService<IImpedimentoTarefaGrpcService>
     {
-        [OperationContract]
-        Task<CreateImpedimentoTarefaResponse> AddAsync(CreateImpedimentoTarefaCommand command, CallContext context = default);
+        UnaryResult<CreateImpedimentoTarefaResponse> AddAsync(CreateImpedimentoTarefaCommand command);
 
-        [OperationContract]
-        Task<UpdateImpedimentoTarefaResponse> UpdateAsync(UpdateImpedimentoTarefaCommand command, CallContext context = default);
+        UnaryResult<UpdateImpedimentoTarefaResponse> UpdateAsync(UpdateImpedimentoTarefaCommand command);
 
-        [OperationContract]
-        Task<GetImpedimentoTarefaResponse> GetAsync(GetImpedimentoTarefaQuery query, CallContext context = default);
+        UnaryResult<GetImpedimentoTarefaResponse> GetAsync(GetImpedimentoTarefaQuery query);
 
-        [OperationContract]
-        Task<ListImpedimentoTarefaResponse> AllAsync(ListImpedimentoTarefaQuery query, CallContext context = default);
+        UnaryResult<ListImpedimentoTarefaResponse> AllAsync(ListImpedimentoTarefaQuery query);
 
-        [OperationContract]
-        Task<RemoveImpedimentoTarefaResponse> RemoveAsync(RemoveImpedimentoTarefaCommand command, CallContext context = default);
+        UnaryResult<RemoveImpedimentoTarefaResponse> RemoveAsync(RemoveImpedimentoTarefaCommand command);
 
-        [OperationContract]
-        Task<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query, CallContext context = default);
+        UnaryResult<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query);
     }
 }

@@ -5,18 +5,8 @@ using System.Runtime.Serialization;
 namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     [DataContract]
-    public class RecursoTarefaViewModel
+    public class RecursoTarefaViewModel : BaseViewModel
     {
-        [Key]
-        [Display(Name = "Id")]
-        [DataMember(Order = 1)]
-        public Guid Id { get; set; }
-
-        [Display(Name = "Data de Inclusão")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        [DataMember(Order = 2)]
-        public DateTime DataInclusao { get; set; }
-
         [Display(Name = "Recurso")]
         [Required(ErrorMessage = "Necessário informar o {0}.")]
         [DataMember(Order = 3)]

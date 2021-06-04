@@ -4,15 +4,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class ImpedimentoGrpcService : IImpedimentoGrpcService
+    public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImpedimentoGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -21,27 +21,27 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command, CallContext context = default)
+        public async UnaryResult<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query, CallContext context = default)
+        public async UnaryResult<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query, CallContext context = default)
+        public async UnaryResult<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command, CallContext context = default)
+        public async UnaryResult<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command, CallContext context = default)
+        public async UnaryResult<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command)
         {
             return await _mediator.Send(command);
         }

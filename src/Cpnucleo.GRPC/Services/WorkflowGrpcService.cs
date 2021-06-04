@@ -4,15 +4,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+using MagicOnion;
+using MagicOnion.Server;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using ProtoBuf.Grpc;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.GRPC.Services
 {
     [Authorize]
-    public class WorkflowGrpcService : IWorkflowGrpcService
+    public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowGrpcService
     {
         private readonly IMediator _mediator;
 
@@ -21,27 +21,27 @@ namespace Cpnucleo.GRPC.Services
             _mediator = mediator;
         }
 
-        public async Task<CreateWorkflowResponse> AddAsync(CreateWorkflowCommand command, CallContext context = default)
+        public async UnaryResult<CreateWorkflowResponse> AddAsync(CreateWorkflowCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<ListWorkflowResponse> AllAsync(ListWorkflowQuery query, CallContext context = default)
+        public async UnaryResult<ListWorkflowResponse> AllAsync(ListWorkflowQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<GetWorkflowResponse> GetAsync(GetWorkflowQuery query, CallContext context = default)
+        public async UnaryResult<GetWorkflowResponse> GetAsync(GetWorkflowQuery query)
         {
             return await _mediator.Send(query);
         }
 
-        public async Task<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowCommand command, CallContext context = default)
+        public async UnaryResult<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowCommand command, CallContext context = default)
+        public async UnaryResult<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowCommand command)
         {
             return await _mediator.Send(command);
         }

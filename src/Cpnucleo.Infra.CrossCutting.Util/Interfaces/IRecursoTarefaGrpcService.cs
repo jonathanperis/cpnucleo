@@ -4,31 +4,22 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTaref
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.ListRecursoTarefa;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IRecursoTarefaGrpcService
+    public interface IRecursoTarefaGrpcService : IService<IRecursoTarefaGrpcService>
     {
-        [OperationContract]
-        Task<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaCommand command, CallContext context = default);
+        UnaryResult<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaCommand command);
 
-        [OperationContract]
-        Task<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaCommand command, CallContext context = default);
+        UnaryResult<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaCommand command);
 
-        [OperationContract]
-        Task<GetRecursoTarefaResponse> GetAsync(GetRecursoTarefaQuery query, CallContext context = default);
+        UnaryResult<GetRecursoTarefaResponse> GetAsync(GetRecursoTarefaQuery query);
 
-        [OperationContract]
-        Task<ListRecursoTarefaResponse> AllAsync(ListRecursoTarefaQuery query, CallContext context = default);
+        UnaryResult<ListRecursoTarefaResponse> AllAsync(ListRecursoTarefaQuery query);
 
-        [OperationContract]
-        Task<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaCommand command, CallContext context = default);
+        UnaryResult<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaCommand command);
 
-        [OperationContract]
-        Task<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query);
+        UnaryResult<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query);
     }
 }

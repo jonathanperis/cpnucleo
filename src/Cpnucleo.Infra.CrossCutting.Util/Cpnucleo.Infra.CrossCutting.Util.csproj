@@ -8,7 +8,7 @@
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="protobuf-net.Grpc" Version="1.0.152" />
+    <PackageReference Include="MagicOnion.Abstractions" Version="4.3.1" />
   </ItemGroup>
 
 </Project>

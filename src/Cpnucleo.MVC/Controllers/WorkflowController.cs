@@ -1,12 +1,14 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
+using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
-using Cpnucleo.MVC.Interfaces;
 using Cpnucleo.MVC.Models;
+using MagicOnion.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +17,14 @@ namespace Cpnucleo.MVC.Controllers
     [Authorize]
     public class WorkflowController : BaseController
     {
-        private readonly IWorkflowService _workflowService;
+        private readonly IWorkflowGrpcService _workflowGrpcService;
 
         private WorkflowView _workflowView;
 
-        public WorkflowController(IWorkflowService workflowService)
+        public WorkflowController(IConfiguration configuration)
+            : base(configuration)
         {
-            _workflowService = workflowService;
+            _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
         }
 
         public WorkflowView WorkflowView
@@ -43,7 +46,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                ListWorkflowResponse response = await _workflowService.AllAsync(Token, new ListWorkflowQuery { });
+                ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
                 WorkflowView.Lista = response.Workflows;
 
                 return View(WorkflowView);
@@ -71,7 +74,7 @@ namespace Cpnucleo.MVC.Controllers
                     return View();
                 }
 
-                await _workflowService.AddAsync(Token, new CreateWorkflowCommand { Workflow = obj.Workflow });
+                await _workflowGrpcService.AddAsync(new CreateWorkflowCommand { Workflow = obj.Workflow });
 
                 return RedirectToAction("Listar");
             }
@@ -87,7 +90,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetWorkflowResponse response = await _workflowService.GetAsync(Token, new GetWorkflowQuery { Id = id });
+                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
                 WorkflowView.Workflow = response.Workflow;
 
                 return View(WorkflowView);
@@ -106,13 +109,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetWorkflowResponse response = await _workflowService.GetAsync(Token, new GetWorkflowQuery { Id = obj.Workflow.Id });
+                    GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
                     WorkflowView.Workflow = response.Workflow;
 
                     return View(WorkflowView);
                 }
 
-                await _workflowService.UpdateAsync(Token, new UpdateWorkflowCommand { Workflow = obj.Workflow });
+                await _workflowGrpcService.UpdateAsync(new UpdateWorkflowCommand { Workflow = obj.Workflow });
 
                 return RedirectToAction("Listar");
             }
@@ -128,7 +131,7 @@ namespace Cpnucleo.MVC.Controllers
         {
             try
             {
-                GetWorkflowResponse response = await _workflowService.GetAsync(Token, new GetWorkflowQuery { Id = id });
+                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
                 WorkflowView.Workflow = response.Workflow;
 
                 return View(WorkflowView);
@@ -147,13 +150,13 @@ namespace Cpnucleo.MVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    GetWorkflowResponse response = await _workflowService.GetAsync(Token, new GetWorkflowQuery { Id = obj.Workflow.Id });
+                    GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
                     WorkflowView.Workflow = response.Workflow;
 
                     return View(WorkflowView);
                 }
 
-                await _workflowService.RemoveAsync(Token, new RemoveWorkflowCommand { Id = obj.Workflow.Id });
+                await _workflowGrpcService.RemoveAsync(new RemoveWorkflowCommand { Id = obj.Workflow.Id });
 
                 return RedirectToAction("Listar");
             }

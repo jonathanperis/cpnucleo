@@ -4,31 +4,22 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using ProtoBuf.Grpc;
-using System.ServiceModel;
-using System.Threading.Tasks;
+using MagicOnion;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
 {
-    [ServiceContract]
-    public interface IRecursoGrpcService
+    public interface IRecursoGrpcService : IService<IRecursoGrpcService>
     {
-        [OperationContract]
-        Task<CreateRecursoResponse> AddAsync(CreateRecursoCommand command, CallContext context = default);
+        UnaryResult<CreateRecursoResponse> AddAsync(CreateRecursoCommand command);
 
-        [OperationContract]
-        Task<UpdateRecursoResponse> UpdateAsync(UpdateRecursoCommand command, CallContext context = default);
+        UnaryResult<UpdateRecursoResponse> UpdateAsync(UpdateRecursoCommand command);
 
-        [OperationContract]
-        Task<GetRecursoResponse> GetAsync(GetRecursoQuery query, CallContext context = default);
+        UnaryResult<GetRecursoResponse> GetAsync(GetRecursoQuery query);
 
-        [OperationContract]
-        Task<ListRecursoResponse> AllAsync(ListRecursoQuery query, CallContext context = default);
+        UnaryResult<ListRecursoResponse> AllAsync(ListRecursoQuery query);
 
-        [OperationContract]
-        Task<RemoveRecursoResponse> RemoveAsync(RemoveRecursoCommand command, CallContext context = default);
+        UnaryResult<RemoveRecursoResponse> RemoveAsync(RemoveRecursoCommand command);
 
-        [OperationContract]
-        Task<AuthResponse> AuthAsync(AuthQuery query, CallContext context = default);
+        UnaryResult<AuthResponse> AuthAsync(AuthQuery query);
     }
 }
