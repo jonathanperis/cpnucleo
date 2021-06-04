@@ -82,7 +82,8 @@ namespace Cpnucleo.GRPC
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapMagicOnionService();
+                app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+                endpoints.MapMagicOnionService().EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
                 {
