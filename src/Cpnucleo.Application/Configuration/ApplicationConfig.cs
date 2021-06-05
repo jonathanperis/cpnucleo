@@ -1,9 +1,16 @@
 ﻿using AutoMapper;
+using Cpnucleo.Application.Handlers;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Entities;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using MediatR;
+using MessagePipe;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -16,18 +23,26 @@ namespace Cpnucleo.Application.Configuration
             services.AddAutoMapper(typeof(ViewModelToEntityProfile), typeof(EntityToViewModelProfile));
 
             services
-                .AddScoped<IApontamentoAppService, ApontamentoAppService>()
-                .AddScoped<IImpedimentoAppService, ImpedimentoAppService>()
-                .AddScoped<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
-                .AddScoped<IProjetoAppService, ProjetoAppService>()
-                .AddScoped<IRecursoAppService, RecursoAppService>()
-                .AddScoped<IRecursoProjetoAppService, RecursoProjetoAppService>()
-                .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>()
-                .AddScoped<ISistemaAppService, SistemaAppService>()
-                .AddScoped<ITarefaAppService, TarefaAppService>()
-                .AddScoped<ITipoTarefaAppService, TipoTarefaAppService>()
-                .AddScoped<IWorkflowAppService, WorkflowAppService>();
+                .AddSingleton<IApontamentoAppService, ApontamentoAppService>()
+                .AddSingleton<IImpedimentoAppService, ImpedimentoAppService>()
+                .AddSingleton<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
+                .AddSingleton<IProjetoAppService, ProjetoAppService>()
+                .AddSingleton<IRecursoAppService, RecursoAppService>()
+                .AddSingleton<IRecursoProjetoAppService, RecursoProjetoAppService>()
+                .AddSingleton<IRecursoTarefaAppService, RecursoTarefaAppService>()
+                .AddSingleton<ISistemaAppService, SistemaAppService>()
+                .AddSingleton<ITarefaAppService, TarefaAppService>()
+                .AddSingleton<ITipoTarefaAppService, TipoTarefaAppService>()
+                .AddSingleton<IWorkflowAppService, WorkflowAppService>();
 
+            //services
+            //    .AddSingleton<IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse>, SistemaHandler>()
+            //    .AddSingleton<IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse>, SistemaHandler>()
+            //    .AddSingleton<IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse>, SistemaHandler>()
+            //    .AddSingleton<IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse>, SistemaHandler>()
+            //    .AddSingleton<IAsyncRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse>, SistemaHandler>();
+
+            services.AddMessagePipe();
             services.AddMediatR(Assembly.GetExecutingAssembly());
         }
     }
