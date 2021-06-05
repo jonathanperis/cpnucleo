@@ -4,8 +4,8 @@ pr:
 - master
 
 variables:
-  solution: 'Cpnucleo.sln'
-  project: 'src/Cpnucleo.MVC/.csproj'
+  solution: '**/*.sln'
+  project: '**/Cpnucleo.MVC/*.csproj'
   buildConfiguration: 'Release'  
 
 pool:
