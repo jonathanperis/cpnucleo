@@ -14,9 +14,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class RecursoTarefaHandler :
+    public class RecursoTarefaHandler :
         IRequestHandler<CreateRecursoTarefaCommand, CreateRecursoTarefaResponse>,
         IRequestHandler<GetRecursoTarefaQuery, GetRecursoTarefaResponse>,
         IRequestHandler<ListRecursoTarefaQuery, ListRecursoTarefaResponse>,

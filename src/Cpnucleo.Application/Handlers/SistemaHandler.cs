@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class SistemaHandler :
+    public class SistemaHandler :
         IRequestHandler<CreateSistemaCommand, CreateSistemaResponse>,
         IRequestHandler<GetSistemaQuery, GetSistemaResponse>,
         IRequestHandler<ListSistemaQuery, ListSistemaResponse>,
