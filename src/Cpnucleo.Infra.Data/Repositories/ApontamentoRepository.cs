@@ -25,7 +25,7 @@ namespace Cpnucleo.Infra.Data.Repositories
                 .ToList();
         }
 
-        public async Task<int> GetTotalHorasPorRecursoAsync(Guid idRecurso, Guid idTarefa)
+        public async Task<int> GetTotalHorasByRecursoAsync(Guid idRecurso, Guid idTarefa)
         {
             IEnumerable<Apontamento> result = await AllAsync(true);
 

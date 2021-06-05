@@ -4,7 +4,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetTotalHorasPorRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
 using MagicOnion;
 using MagicOnion.Server;
@@ -39,11 +38,6 @@ namespace Cpnucleo.GRPC.Services
         }
 
         public async UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query)
-        {
-            return await _mediator.Send(query);
-        }
-
-        public async UnaryResult<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query)
         {
             return await _mediator.Send(query);
         }

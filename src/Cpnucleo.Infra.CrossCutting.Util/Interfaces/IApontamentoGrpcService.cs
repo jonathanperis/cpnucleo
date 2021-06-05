@@ -3,7 +3,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetTotalHorasPorRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
 using MagicOnion;
 
@@ -22,7 +21,5 @@ namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces
         UnaryResult<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command);
 
         UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query);
-
-        UnaryResult<GetTotalHorasPorRecursoResponse> GetTotalHorasPorRecursoAsync(GetTotalHorasPorRecursoQuery query);
     }
 }

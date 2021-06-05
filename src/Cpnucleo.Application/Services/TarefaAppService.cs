@@ -78,7 +78,7 @@ namespace Cpnucleo.Application.Services
             {
                 item.Workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
 
-                item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasPorRecursoAsync(item.IdRecurso, item.Id);
+                item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
                 item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
                 IEnumerable<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(item.Id);
