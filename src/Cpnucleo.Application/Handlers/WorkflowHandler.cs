@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class WorkflowHandler :
+    public class WorkflowHandler :
         IRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse>,
         IRequestHandler<GetWorkflowQuery, GetWorkflowResponse>,
         IRequestHandler<ListWorkflowQuery, ListWorkflowResponse>,

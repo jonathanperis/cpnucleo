@@ -15,9 +15,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class RecursoHandler :
+    public class RecursoHandler :
         IRequestHandler<CreateRecursoCommand, CreateRecursoResponse>,
         IRequestHandler<GetRecursoQuery, GetRecursoResponse>,
         IRequestHandler<ListRecursoQuery, ListRecursoResponse>,
