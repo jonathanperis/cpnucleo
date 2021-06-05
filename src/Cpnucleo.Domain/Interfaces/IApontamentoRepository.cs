@@ -7,7 +7,7 @@ namespace Cpnucleo.Domain.Interfaces
 {
     public interface IApontamentoRepository : IGenericRepository<Apontamento>
     {
-        Task<int> GetTotalHorasPorRecursoAsync(Guid idRecurso, Guid idTarefa);
+        Task<int> GetTotalHorasByRecursoAsync(Guid idRecurso, Guid idTarefa);
 
         Task<IEnumerable<Apontamento>> GetByRecursoAsync(Guid idRecurso);
     }
