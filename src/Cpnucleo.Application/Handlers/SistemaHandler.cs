@@ -38,6 +38,7 @@ namespace Cpnucleo.Domain.Handlers
                 Status = OperationResult.Failed
             };
 
+
             Sistema obj = await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Sistema>(request.Sistema));
             result.Sistema = _mapper.Map<SistemaViewModel>(obj);
 
