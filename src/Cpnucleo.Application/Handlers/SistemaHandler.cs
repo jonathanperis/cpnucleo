@@ -8,19 +8,19 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cpnucleo.Application.Handlers
 {
-    public class SistemaHandler :
-        IRequestHandler<CreateSistemaCommand, CreateSistemaResponse>,
-        IRequestHandler<GetSistemaQuery, GetSistemaResponse>,
-        IRequestHandler<ListSistemaQuery, ListSistemaResponse>,
-        IRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse>,
-        IRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse>
+    internal class SistemaHandler :
+        IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse>,
+        IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse>,
+        IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse>,
+        IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse>,
+        IAsyncRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateSistemaResponse> Handle(CreateSistemaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateSistemaResponse> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
         {
             CreateSistemaResponse result = new CreateSistemaResponse
             {
@@ -48,7 +48,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetSistemaResponse> Handle(GetSistemaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetSistemaResponse> InvokeAsync(GetSistemaQuery request, CancellationToken cancellationToken = default)
         {
             GetSistemaResponse result = new GetSistemaResponse
             {
@@ -69,7 +69,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListSistemaResponse> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListSistemaResponse> InvokeAsync(ListSistemaQuery request, CancellationToken cancellationToken = default)
         {
             ListSistemaResponse result = new ListSistemaResponse
             {
@@ -82,7 +82,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveSistemaResponse> Handle(RemoveSistemaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveSistemaResponse> InvokeAsync(RemoveSistemaCommand request, CancellationToken cancellationToken = default)
         {
             RemoveSistemaResponse result = new RemoveSistemaResponse
             {
@@ -107,7 +107,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateSistemaResponse> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateSistemaResponse> InvokeAsync(UpdateSistemaCommand request, CancellationToken cancellationToken = default)
         {
             UpdateSistemaResponse result = new UpdateSistemaResponse
             {
