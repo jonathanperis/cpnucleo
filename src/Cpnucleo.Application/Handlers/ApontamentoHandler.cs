@@ -14,9 +14,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class ApontamentoHandler :
+    public class ApontamentoHandler :
         IRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse>,
         IRequestHandler<GetApontamentoQuery, GetApontamentoResponse>,
         IRequestHandler<ListApontamentoQuery, ListApontamentoResponse>,

@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class ProjetoHandler :
+    public class ProjetoHandler :
         IRequestHandler<CreateProjetoCommand, CreateProjetoResponse>,
         IRequestHandler<GetProjetoQuery, GetProjetoResponse>,
         IRequestHandler<ListProjetoQuery, ListProjetoResponse>,

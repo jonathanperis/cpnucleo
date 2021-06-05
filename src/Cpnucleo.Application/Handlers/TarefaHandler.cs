@@ -17,9 +17,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class TarefaHandler :
+    public class TarefaHandler :
         IRequestHandler<CreateTarefaCommand, CreateTarefaResponse>,
         IRequestHandler<GetTarefaQuery, GetTarefaResponse>,
         IRequestHandler<ListTarefaQuery, ListTarefaResponse>,

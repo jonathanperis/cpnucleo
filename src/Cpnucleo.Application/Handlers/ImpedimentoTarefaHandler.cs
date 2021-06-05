@@ -14,9 +14,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cpnucleo.Domain.Handlers
+namespace Cpnucleo.Application.Handlers
 {
-    internal class ImpedimentoTarefaHandler :
+    public class ImpedimentoTarefaHandler :
         IRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse>,
         IRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse>,
         IRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse>,
