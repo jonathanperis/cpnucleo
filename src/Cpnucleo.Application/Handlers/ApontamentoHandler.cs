@@ -58,6 +58,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Apontamento = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.GetAsync(request.Id));
+
+            if (result.Apontamento == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -87,7 +95,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.ApontamentoRepository.RemoveAsync(request.Id);

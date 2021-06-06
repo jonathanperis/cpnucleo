@@ -56,6 +56,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.TipoTarefa = _mapper.Map<TipoTarefaViewModel>(await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id));
+
+            if (result.TipoTarefa == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -85,7 +93,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.TipoTarefaRepository.RemoveAsync(request.Id);

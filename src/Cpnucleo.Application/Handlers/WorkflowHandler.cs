@@ -56,6 +56,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Workflow = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.GetAsync(request.Id));
+
+            if (result.Workflow == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -87,7 +95,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.WorkflowRepository.RemoveAsync(request.Id);
