@@ -53,6 +53,9 @@ namespace Cpnucleo.Application.Handlers
 
             await _unitOfWork.SaveChangesAsync();
 
+            result.Recurso.Senha = null;
+            result.Recurso.Salt = null;
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -66,6 +69,13 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(request.Id));
+
+            if (result.Recurso == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
 
             result.Recurso.Senha = null;
             result.Recurso.Salt = null;
@@ -106,7 +116,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.RecursoRepository.RemoveAsync(request.Id);
@@ -150,6 +162,8 @@ namespace Cpnucleo.Application.Handlers
 
             if (result.Recurso == null)
             {
+                result.Status = OperationResult.NotFound;
+
                 return result;
             }
 

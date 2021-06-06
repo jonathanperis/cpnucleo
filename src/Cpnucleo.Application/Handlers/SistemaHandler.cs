@@ -56,6 +56,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Sistema = _mapper.Map<SistemaViewModel>(await _unitOfWork.SistemaRepository.GetAsync(request.Id));
+
+            if (result.Sistema == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -85,7 +93,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.SistemaRepository.RemoveAsync(request.Id);

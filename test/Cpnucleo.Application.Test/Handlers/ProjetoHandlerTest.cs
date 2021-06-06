@@ -220,7 +220,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
-            Assert.True(response2.Status == OperationResult.Success);
+            Assert.True(response2.Status == OperationResult.NotFound);
             Assert.True(response2.Projeto == null);
         }
 
@@ -266,7 +266,7 @@ namespace Cpnucleo.Application.Test.Handlers
                     Id = projetoId,
                     Nome = "Projeto de teste - alterado",
                     DataInclusao = dataInclusao,
-                    IdSistema = sistemaId,
+                    IdSistema = sistemaId
                 }
             };
 

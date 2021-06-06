@@ -56,6 +56,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Projeto = _mapper.Map<ProjetoViewModel>(await _unitOfWork.ProjetoRepository.GetAsync(request.Id));
+
+            if (result.Projeto == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -85,7 +93,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.ProjetoRepository.RemoveAsync(request.Id);

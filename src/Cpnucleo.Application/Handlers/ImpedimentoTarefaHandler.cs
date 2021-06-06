@@ -58,6 +58,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.ImpedimentoTarefa = _mapper.Map<ImpedimentoTarefaViewModel>(await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id));
+
+            if (result.ImpedimentoTarefa == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -87,7 +95,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(request.Id);
