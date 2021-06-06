@@ -15,5 +15,7 @@ namespace Cpnucleo.Domain.Interfaces
         Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false);
 
         Task RemoveAsync(Guid id);
+
+        void Detatch(TEntity entity);
     }
 }

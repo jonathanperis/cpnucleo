@@ -73,6 +73,11 @@ namespace Cpnucleo.Infra.Data.Repositories
             Update(entity);
         }
 
+        public void Detatch(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
+        }
+
         public void Dispose()
         {
             _context.Dispose();

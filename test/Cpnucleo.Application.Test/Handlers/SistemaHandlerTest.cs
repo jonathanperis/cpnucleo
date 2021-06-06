@@ -143,16 +143,19 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid sistemaId = Guid.NewGuid();
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
+            Sistema sistema = new()
             {
                 Id = sistemaId,
                 Nome = "Sistema de teste",
                 Descricao = "Descrição do sistema de teste",
                 DataInclusao = DateTime.Now,
                 Ativo = true,
-            });
+            };
 
+            await unitOfWork.SistemaRepository.AddAsync(sistema);
             await unitOfWork.SaveChangesAsync();
+
+            unitOfWork.SistemaRepository.Detatch(sistema);
 
             RemoveSistemaCommand request = new()
             {
@@ -185,20 +188,23 @@ namespace Cpnucleo.Application.Test.Handlers
             Guid sistemaId = Guid.NewGuid();
             DateTime dataInclusao = DateTime.Now;
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
+            Sistema sistema = new()
             {
                 Id = sistemaId,
                 Nome = "Sistema de teste",
                 Descricao = "Descrição do sistema de teste",
                 DataInclusao = dataInclusao,
                 Ativo = true,
-            });
+            };
 
+            await unitOfWork.SistemaRepository.AddAsync(sistema);
             await unitOfWork.SaveChangesAsync();
+
+            unitOfWork.SistemaRepository.Detatch(sistema);
 
             UpdateSistemaCommand request = new()
             {
-                Sistema = new SistemaViewModel 
+                Sistema = new SistemaViewModel
                 {
                     Id = sistemaId,
                     Nome = "Sistema de teste - alterado",
@@ -219,6 +225,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
+            Assert.True(response2.Status == OperationResult.Success);
             Assert.True(response2.Sistema != null);
             Assert.True(response2.Sistema.Id == sistemaId);
             Assert.True(response2.Sistema.DataInclusao.Ticks == dataInclusao.Ticks);
