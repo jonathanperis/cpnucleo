@@ -13,7 +13,7 @@ namespace Cpnucleo.Infra.Data.Context
             _configuration = configuration;
         }
 
-        public CpnucleoContext(DbContextOptions<CpnucleoContext> options) 
+        public CpnucleoContext(DbContextOptions<CpnucleoContext> options)
             : base(options)
         {
         }
