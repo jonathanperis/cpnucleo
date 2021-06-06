@@ -4,13 +4,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infra.Data.Context
 {
-    internal class CpnucleoContext : DbContext
+    public class CpnucleoContext : DbContext
     {
         private readonly IConfiguration _configuration;
 
         public CpnucleoContext(IConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        public CpnucleoContext(DbContextOptions<CpnucleoContext> options) 
+            : base(options)
+        {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,9 +37,12 @@ namespace Cpnucleo.Infra.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging();
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                    .UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
+                    .EnableSensitiveDataLogging();
+            }
         }
     }
 }
