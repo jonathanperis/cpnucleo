@@ -16,17 +16,17 @@ namespace Cpnucleo.Application.Configuration
             services.AddAutoMapper(typeof(ViewModelToEntityProfile), typeof(EntityToViewModelProfile));
 
             services
-                .AddSingleton<IApontamentoAppService, ApontamentoAppService>()
-                .AddSingleton<IImpedimentoAppService, ImpedimentoAppService>()
-                .AddSingleton<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
-                .AddSingleton<IProjetoAppService, ProjetoAppService>()
-                .AddSingleton<IRecursoAppService, RecursoAppService>()
-                .AddSingleton<IRecursoProjetoAppService, RecursoProjetoAppService>()
-                .AddSingleton<IRecursoTarefaAppService, RecursoTarefaAppService>()
-                .AddSingleton<ISistemaAppService, SistemaAppService>()
-                .AddSingleton<ITarefaAppService, TarefaAppService>()
-                .AddSingleton<ITipoTarefaAppService, TipoTarefaAppService>()
-                .AddSingleton<IWorkflowAppService, WorkflowAppService>();
+                .AddScoped<IApontamentoAppService, ApontamentoAppService>()
+                .AddScoped<IImpedimentoAppService, ImpedimentoAppService>()
+                .AddScoped<IImpedimentoTarefaAppService, ImpedimentoTarefaAppService>()
+                .AddScoped<IProjetoAppService, ProjetoAppService>()
+                .AddScoped<IRecursoAppService, RecursoAppService>()
+                .AddScoped<IRecursoProjetoAppService, RecursoProjetoAppService>()
+                .AddScoped<IRecursoTarefaAppService, RecursoTarefaAppService>()
+                .AddScoped<ISistemaAppService, SistemaAppService>()
+                .AddScoped<ITarefaAppService, TarefaAppService>()
+                .AddScoped<ITipoTarefaAppService, TipoTarefaAppService>()
+                .AddScoped<IWorkflowAppService, WorkflowAppService>();
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
         }

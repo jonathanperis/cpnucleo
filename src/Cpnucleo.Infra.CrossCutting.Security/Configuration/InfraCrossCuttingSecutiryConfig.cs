@@ -7,7 +7,7 @@ namespace Cpnucleo.Infra.CrossCutting.Security.Configuration
     {
         public static void AddInfraCrossCuttingSecutirySetup(this IServiceCollection services)
         {
-            services.AddSingleton<ICryptographyManager, CryptographyManager>();
+            services.AddScoped<ICryptographyManager, CryptographyManager>();
         }
     }
 }
