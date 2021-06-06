@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
-using Cpnucleo.Application.Handlers;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Entities;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using MediatR;
 using MessagePipe;
@@ -34,13 +28,6 @@ namespace Cpnucleo.Application.Configuration
                 .AddSingleton<ITarefaAppService, TarefaAppService>()
                 .AddSingleton<ITipoTarefaAppService, TipoTarefaAppService>()
                 .AddSingleton<IWorkflowAppService, WorkflowAppService>();
-
-            //services
-            //    .AddSingleton<IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse>, SistemaHandler>()
-            //    .AddSingleton<IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse>, SistemaHandler>()
-            //    .AddSingleton<IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse>, SistemaHandler>()
-            //    .AddSingleton<IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse>, SistemaHandler>()
-            //    .AddSingleton<IAsyncRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse>, SistemaHandler>();
 
             services.AddMessagePipe();
             services.AddMediatR(Assembly.GetExecutingAssembly());
