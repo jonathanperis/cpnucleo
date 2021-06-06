@@ -9,8 +9,8 @@ namespace Cpnucleo.Infra.Data.Configuration
     {
         public static void AddInfraDataSetup(this IServiceCollection services)
         {
-            services.AddSingleton<CpnucleoContext>();
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<CpnucleoContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }
 }
