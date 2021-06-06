@@ -2,6 +2,7 @@
 using Cpnucleo.Domain.Interfaces;
 using Cpnucleo.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Cpnucleo.Infra.Data.Repositories
             entity.Ativo = true;
             entity.DataInclusao = DateTime.Now;
 
-            Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<TEntity> result = await _context.AddAsync(entity);
+            EntityEntry<TEntity> result = await _context.AddAsync(entity);
 
             return result.Entity;
         }

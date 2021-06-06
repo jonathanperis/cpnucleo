@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Infra.Data.UoW
 {
-    internal class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly CpnucleoContext _context;
 
