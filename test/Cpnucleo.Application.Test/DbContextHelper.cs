@@ -6,18 +6,18 @@ using System;
 
 namespace Cpnucleo.Application.Test
 {
-    public class DbContextHelper
+    internal class DbContextHelper
     {
         public static IUnitOfWork GetContext()
         {
-            var options = new DbContextOptionsBuilder<CpnucleoContext>()
+            DbContextOptions<CpnucleoContext> options = new DbContextOptionsBuilder<CpnucleoContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new CpnucleoContext(options);
+            CpnucleoContext context = new CpnucleoContext(options);
             context.SaveChanges();
 
-            var unitOfWork = new UnitOfWork(context);
+            UnitOfWork unitOfWork = new UnitOfWork(context);
 
             return unitOfWork;
         }
