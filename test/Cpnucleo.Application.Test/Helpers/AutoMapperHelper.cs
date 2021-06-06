@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Configuration;
 
-namespace Cpnucleo.Application.Test
+namespace Cpnucleo.Application.Test.Helpers
 {
     internal class AutoMapperHelper
     {

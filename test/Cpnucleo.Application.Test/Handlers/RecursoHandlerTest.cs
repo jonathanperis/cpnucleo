@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Handlers;
+using Cpnucleo.Application.Test.Helpers;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
@@ -9,7 +10,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Linq;
 using System.Threading;
@@ -30,13 +30,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             CreateRecursoCommand request = new()
             {
-                Recurso = new RecursoViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "Recurso de teste",
-                    Login = "usuario.teste",
-                    Senha = "12345678",
-                }
+                Recurso = MockViewModelHelper.GetNewRecurso()
             };
 
             // Act
@@ -62,16 +56,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid recursoId = Guid.NewGuid();
 
-            await unitOfWork.RecursoRepository.AddAsync(new Recurso
-            {
-                Id = recursoId,
-                Nome = "Recurso de teste",
-                Login = "usuario.teste",
-                Senha = "12345678",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
+            await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
             await unitOfWork.SaveChangesAsync();
 
             GetRecursoQuery request = new()
@@ -102,35 +87,9 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid recursoId = Guid.NewGuid();
 
-            await unitOfWork.RecursoRepository.AddAsync(new Recurso
-            {
-                Id = recursoId,
-                Nome = "Recurso de teste 1",
-                Login = "usuario.teste",
-                Senha = "12345678",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.RecursoRepository.AddAsync(new Recurso
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Recurso de teste 2",
-                Login = "usuario.teste",
-                Senha = "12345678",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.RecursoRepository.AddAsync(new Recurso
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Recurso de teste 3",
-                Login = "usuario.teste",
-                Senha = "12345678",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
+            await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso());
+            await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso());
 
             await unitOfWork.SaveChangesAsync();
 
@@ -157,15 +116,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid recursoId = Guid.NewGuid();
 
-            Recurso recurso = new()
-            {
-                Id = recursoId,
-                Nome = "Recurso de teste",
-                Login = "usuario.teste",
-                Senha = "12345678",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            };
+            Recurso recurso = MockEntityHelper.GetNewRecurso(recursoId);
 
             await unitOfWork.RecursoRepository.AddAsync(recurso);
             await unitOfWork.SaveChangesAsync();
@@ -204,15 +155,7 @@ namespace Cpnucleo.Application.Test.Handlers
             Guid recursoId = Guid.NewGuid();
             DateTime dataInclusao = DateTime.Now;
 
-            Recurso recurso = new()
-            {
-                Id = recursoId,
-                Nome = "Recurso de teste",
-                Login = "usuario.teste",
-                Senha = "12345678",
-                DataInclusao = dataInclusao,
-                Ativo = true,
-            };
+            Recurso recurso = MockEntityHelper.GetNewRecurso(recursoId);
 
             await unitOfWork.RecursoRepository.AddAsync(recurso);
             await unitOfWork.SaveChangesAsync();
@@ -221,14 +164,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             UpdateRecursoCommand request = new()
             {
-                Recurso = new RecursoViewModel
-                {
-                    Id = recursoId,
-                    Nome = "Recurso de teste - alterado",
-                    Login = "usuario.teste",
-                    Senha = "12345678",
-                    DataInclusao = dataInclusao
-                }
+                Recurso = MockViewModelHelper.GetNewRecurso(recursoId, dataInclusao)
             };
 
             GetRecursoQuery request2 = new()

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Handlers;
+using Cpnucleo.Application.Test.Helpers;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Util;
@@ -8,7 +9,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Linq;
 using System.Threading;
@@ -28,25 +28,12 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid sistemaId = Guid.NewGuid();
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
-            {
-                Id = sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
+            await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
             await unitOfWork.SaveChangesAsync();
 
             CreateProjetoCommand request = new()
             {
-                Projeto = new ProjetoViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "Projeto de teste",
-                    IdSistema = sistemaId,
-                }
+                Projeto = MockViewModelHelper.GetNewProjeto(sistemaId)
             };
 
             // Act
@@ -69,26 +56,11 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid sistemaId = Guid.NewGuid();
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
-            {
-                Id = sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
 
             Guid projetoId = Guid.NewGuid();
 
-            await unitOfWork.ProjetoRepository.AddAsync(new Projeto
-            {
-                Id = projetoId,
-                Nome = "Projeto de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-                IdSistema = sistemaId
-            });
-
+            await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
             await unitOfWork.SaveChangesAsync();
 
             GetProjetoQuery request = new()
@@ -116,43 +88,13 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid sistemaId = Guid.NewGuid();
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
-            {
-                Id = sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
 
             Guid projetoId = Guid.NewGuid();
 
-            await unitOfWork.ProjetoRepository.AddAsync(new Projeto
-            {
-                Id = projetoId,
-                Nome = "Projeto de teste 1",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-                IdSistema = sistemaId
-            });
-
-            await unitOfWork.ProjetoRepository.AddAsync(new Projeto
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Projeto de teste 2",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-                IdSistema = sistemaId
-            });
-
-            await unitOfWork.ProjetoRepository.AddAsync(new Projeto
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Projeto de teste 3",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-                IdSistema = sistemaId
-            });
+            await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
+            await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId));
+            await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId));
 
             await unitOfWork.SaveChangesAsync();
 
@@ -178,25 +120,11 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid sistemaId = Guid.NewGuid();
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
-            {
-                Id = sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
 
             Guid projetoId = Guid.NewGuid();
 
-            Projeto projeto = new()
-            {
-                Id = projetoId,
-                Nome = "Projeto de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-                IdSistema = sistemaId
-            };
+            Projeto projeto = MockEntityHelper.GetNewProjeto(sistemaId, projetoId);
 
             await unitOfWork.ProjetoRepository.AddAsync(projeto);
             await unitOfWork.SaveChangesAsync();
@@ -233,26 +161,12 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid sistemaId = Guid.NewGuid();
 
-            await unitOfWork.SistemaRepository.AddAsync(new Sistema
-            {
-                Id = sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
 
             Guid projetoId = Guid.NewGuid();
             DateTime dataInclusao = DateTime.Now;
 
-            Projeto projeto = new()
-            {
-                Id = projetoId,
-                Nome = "Projeto de teste",
-                DataInclusao = dataInclusao,
-                Ativo = true,
-                IdSistema = sistemaId
-            };
+            Projeto projeto = MockEntityHelper.GetNewProjeto(sistemaId, projetoId);
 
             await unitOfWork.ProjetoRepository.AddAsync(projeto);
             await unitOfWork.SaveChangesAsync();
@@ -261,13 +175,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             UpdateProjetoCommand request = new()
             {
-                Projeto = new ProjetoViewModel
-                {
-                    Id = projetoId,
-                    Nome = "Projeto de teste - alterado",
-                    DataInclusao = dataInclusao,
-                    IdSistema = sistemaId
-                }
+                Projeto = MockViewModelHelper.GetNewProjeto(sistemaId, projetoId, dataInclusao)
             };
 
             GetProjetoQuery request2 = new()
