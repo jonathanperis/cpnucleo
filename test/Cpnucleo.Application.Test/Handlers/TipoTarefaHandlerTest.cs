@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Handlers;
+using Cpnucleo.Application.Test.Helpers;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Util;
@@ -8,7 +9,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.RemoveTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Linq;
 using System.Threading;
@@ -28,13 +28,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             CreateTipoTarefaCommand request = new()
             {
-                TipoTarefa = new TipoTarefaViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "TipoTarefa de teste",
-                    Element = "success-element",
-                    Image = "success.png"
-                }
+                TipoTarefa = MockViewModelHelper.GetNewTipoTarefa()
             };
 
             // Act
@@ -57,16 +51,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid tipoTarefaId = Guid.NewGuid();
 
-            await unitOfWork.TipoTarefaRepository.AddAsync(new TipoTarefa
-            {
-                Id = tipoTarefaId,
-                Nome = "TipoTarefa de teste",
-                Element = "success-element",
-                Image = "success.png",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
+            await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
             await unitOfWork.SaveChangesAsync();
 
             GetTipoTarefaQuery request = new()
@@ -94,35 +79,9 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid tipoTarefaId = Guid.NewGuid();
 
-            await unitOfWork.TipoTarefaRepository.AddAsync(new TipoTarefa
-            {
-                Id = tipoTarefaId,
-                Nome = "TipoTarefa de teste 1",
-                Element = "success-element",
-                Image = "success.png",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.TipoTarefaRepository.AddAsync(new TipoTarefa
-            {
-                Id = Guid.NewGuid(),
-                Nome = "TipoTarefa de teste 2",
-                Element = "success-element",
-                Image = "success.png",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.TipoTarefaRepository.AddAsync(new TipoTarefa
-            {
-                Id = Guid.NewGuid(),
-                Nome = "TipoTarefa de teste 3",
-                Element = "success-element",
-                Image = "success.png",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
+            await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa());
+            await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa());
 
             await unitOfWork.SaveChangesAsync();
 
@@ -148,15 +107,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid tipoTarefaId = Guid.NewGuid();
 
-            TipoTarefa tipoTarefa = new()
-            {
-                Id = tipoTarefaId,
-                Nome = "TipoTarefa de teste",
-                Element = "success-element",
-                Image = "success.png",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            };
+            TipoTarefa tipoTarefa = MockEntityHelper.GetNewTipoTarefa(tipoTarefaId);
 
             await unitOfWork.TipoTarefaRepository.AddAsync(tipoTarefa);
             await unitOfWork.SaveChangesAsync();
@@ -194,15 +145,7 @@ namespace Cpnucleo.Application.Test.Handlers
             Guid tipoTarefaId = Guid.NewGuid();
             DateTime dataInclusao = DateTime.Now;
 
-            TipoTarefa tipoTarefa = new()
-            {
-                Id = tipoTarefaId,
-                Nome = "TipoTarefa de teste",
-                Element = "success-element",
-                Image = "success.png",
-                DataInclusao = dataInclusao,
-                Ativo = true,
-            };
+            TipoTarefa tipoTarefa = MockEntityHelper.GetNewTipoTarefa(tipoTarefaId);
 
             await unitOfWork.TipoTarefaRepository.AddAsync(tipoTarefa);
             await unitOfWork.SaveChangesAsync();
@@ -211,13 +154,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             UpdateTipoTarefaCommand request = new()
             {
-                TipoTarefa = new TipoTarefaViewModel
-                {
-                    Id = tipoTarefaId,
-                    Nome = "TipoTarefa de teste - alterado",
-
-                    DataInclusao = dataInclusao
-                }
+                TipoTarefa = MockViewModelHelper.GetNewTipoTarefa(tipoTarefaId, dataInclusao)
             };
 
             GetTipoTarefaQuery request2 = new()

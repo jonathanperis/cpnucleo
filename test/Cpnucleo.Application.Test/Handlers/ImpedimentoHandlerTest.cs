@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Handlers;
+using Cpnucleo.Application.Test.Helpers;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Util;
@@ -8,7 +9,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Linq;
 using System.Threading;
@@ -28,11 +28,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             CreateImpedimentoCommand request = new()
             {
-                Impedimento = new ImpedimentoViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "Impedimento de teste",
-                }
+                Impedimento = MockViewModelHelper.GetNewImpedimento()
             };
 
             // Act
@@ -55,14 +51,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid impedimentoId = Guid.NewGuid();
 
-            await unitOfWork.ImpedimentoRepository.AddAsync(new Impedimento
-            {
-                Id = impedimentoId,
-                Nome = "Impedimento de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
+            await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento(impedimentoId));
             await unitOfWork.SaveChangesAsync();
 
             GetImpedimentoQuery request = new()
@@ -90,29 +79,9 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid impedimentoId = Guid.NewGuid();
 
-            await unitOfWork.ImpedimentoRepository.AddAsync(new Impedimento
-            {
-                Id = impedimentoId,
-                Nome = "Impedimento de teste 1",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.ImpedimentoRepository.AddAsync(new Impedimento
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Impedimento de teste 2",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.ImpedimentoRepository.AddAsync(new Impedimento
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Impedimento de teste 3",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento(impedimentoId));
+            await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento());
+            await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento());
 
             await unitOfWork.SaveChangesAsync();
 
@@ -138,13 +107,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid impedimentoId = Guid.NewGuid();
 
-            Impedimento impedimento = new()
-            {
-                Id = impedimentoId,
-                Nome = "Impedimento de teste",
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            };
+            Impedimento impedimento = MockEntityHelper.GetNewImpedimento(impedimentoId);
 
             await unitOfWork.ImpedimentoRepository.AddAsync(impedimento);
             await unitOfWork.SaveChangesAsync();
@@ -182,13 +145,7 @@ namespace Cpnucleo.Application.Test.Handlers
             Guid impedimentoId = Guid.NewGuid();
             DateTime dataInclusao = DateTime.Now;
 
-            Impedimento impedimento = new()
-            {
-                Id = impedimentoId,
-                Nome = "Impedimento de teste",
-                DataInclusao = dataInclusao,
-                Ativo = true,
-            };
+            Impedimento impedimento = MockEntityHelper.GetNewImpedimento(impedimentoId);
 
             await unitOfWork.ImpedimentoRepository.AddAsync(impedimento);
             await unitOfWork.SaveChangesAsync();
@@ -197,12 +154,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             UpdateImpedimentoCommand request = new()
             {
-                Impedimento = new ImpedimentoViewModel
-                {
-                    Id = impedimentoId,
-                    Nome = "Impedimento de teste - alterado",
-                    DataInclusao = dataInclusao
-                }
+                Impedimento = MockViewModelHelper.GetNewImpedimento(impedimentoId, dataInclusao)
             };
 
             GetImpedimentoQuery request2 = new()
