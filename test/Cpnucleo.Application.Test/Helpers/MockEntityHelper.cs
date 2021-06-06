@@ -5,13 +5,36 @@ namespace Cpnucleo.Application.Test.Helpers
 {
     internal class MockEntityHelper
     {
-        public static Sistema GetNewSistema(Guid sistemaId = default)
+        public static Apontamento GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
         {
-            return new Sistema
+            return new Apontamento
             {
-                Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
+                Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
+                Descricao = "Descrição do Apontamento de teste",
+                DataApontamento = DateTime.Now,
+                QtdHoras = 8,
+                IdTarefa = tarefaId,
+                IdRecurso = recursoId,
+            };
+        }
+
+        public static Impedimento GetNewImpedimento(Guid impedimentoId = default)
+        {
+            return new Impedimento
+            {
+                Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId,
+                Nome = "Impedimento de teste",
+            };
+        }
+
+        internal static ImpedimentoTarefa GetNewImpedimentoTarefa(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default)
+        {
+            return new ImpedimentoTarefa
+            {
+                Id = impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId,
+                Descricao = "Descrição do Impedimento Tarefa de teste",
+                IdTarefa = tarefaId,
+                IdImpedimento = impedimentoId
             };
         }
 
@@ -22,27 +45,6 @@ namespace Cpnucleo.Application.Test.Helpers
                 Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId,
                 Nome = "Projeto de teste",
                 IdSistema = sistemaId
-            };
-        }
-
-        public static Workflow GetNewWorkflow(Guid workflowId = default)
-        {
-            return new Workflow
-            {
-                Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
-                Nome = "Workflow de teste",
-                Ordem = 1,
-            };
-        }
-
-        public static TipoTarefa GetNewTipoTarefa(Guid tipoTarefaId = default)
-        {
-            return new TipoTarefa
-            {
-                Id = tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId,
-                Nome = "TipoTarefa de teste",
-                Element = "success-element",
-                Image = "success.png",
             };
         }
 
@@ -57,25 +59,34 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        public static Impedimento GetNewImpedimento(Guid impedimentoId = default)
+        internal static RecursoProjeto GetNewRecursoProjeto(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default)
         {
-            return new Impedimento
+            return new RecursoProjeto
             {
-                Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId,
-                Nome = "Impedimento de teste",
+                Id = recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId,
+                IdProjeto = projetoId,
+                IdRecurso = recursoId
             };
         }
 
-        public static Apontamento GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
+        internal static RecursoTarefa GetNewRecursoTarefa(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default)
         {
-            return new Apontamento
+            return new RecursoTarefa
             {
-                Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
-                Descricao = "Descrição do Apontamento de teste",
-                DataApontamento = DateTime.Now,
-                QtdHoras = 8,
+                Id = recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId,
+                PercentualTarefa = 25,
                 IdTarefa = tarefaId,
                 IdRecurso = recursoId,
+            };
+        }
+
+        public static Sistema GetNewSistema(Guid sistemaId = default)
+        {
+            return new Sistema
+            {
+                Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
+                Nome = "Sistema de teste",
+                Descricao = "Descrição do sistema de teste",
             };
         }
 
@@ -92,6 +103,27 @@ namespace Cpnucleo.Application.Test.Helpers
                 IdWorkflow = workflowId,
                 IdRecurso = recursoId,
                 IdTipoTarefa = tipoTarefaId,
+            };
+        }
+
+        public static TipoTarefa GetNewTipoTarefa(Guid tipoTarefaId = default)
+        {
+            return new TipoTarefa
+            {
+                Id = tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId,
+                Nome = "TipoTarefa de teste",
+                Element = "success-element",
+                Image = "success.png",
+            };
+        }
+
+        public static Workflow GetNewWorkflow(Guid workflowId = default)
+        {
+            return new Workflow
+            {
+                Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
+                Nome = "Workflow de teste",
+                Ordem = 1,
             };
         }
     }
