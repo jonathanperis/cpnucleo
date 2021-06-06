@@ -56,6 +56,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Impedimento = _mapper.Map<ImpedimentoViewModel>(await _unitOfWork.ImpedimentoRepository.GetAsync(request.Id));
+
+            if (result.Impedimento == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -85,7 +93,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.ImpedimentoRepository.RemoveAsync(request.Id);

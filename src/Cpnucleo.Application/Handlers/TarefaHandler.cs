@@ -62,6 +62,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.Tarefa = _mapper.Map<TarefaViewModel>(await _unitOfWork.TarefaRepository.GetAsync(request.Id));
+
+            if (result.Tarefa == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -93,7 +101,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.TarefaRepository.RemoveAsync(request.Id);

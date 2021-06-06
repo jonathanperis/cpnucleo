@@ -58,6 +58,14 @@ namespace Cpnucleo.Application.Handlers
             };
 
             result.RecursoProjeto = _mapper.Map<RecursoProjetoViewModel>(await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id));
+
+            if (result.RecursoProjeto == null)
+            {
+                result.Status = OperationResult.NotFound;
+
+                return result;
+            }
+
             result.Status = OperationResult.Success;
 
             return result;
@@ -87,7 +95,9 @@ namespace Cpnucleo.Application.Handlers
 
             if (obj == null)
             {
-                return null;
+                result.Status = OperationResult.NotFound;
+
+                return result;
             }
 
             await _unitOfWork.RecursoProjetoRepository.RemoveAsync(request.Id);

@@ -174,7 +174,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
-            Assert.True(response2.Status == OperationResult.Success);
+            Assert.True(response2.Status == OperationResult.NotFound);
             Assert.True(response2.Sistema == null);
         }
 
