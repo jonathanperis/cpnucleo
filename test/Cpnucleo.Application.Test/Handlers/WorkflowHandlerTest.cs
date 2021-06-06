@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cpnucleo.Application.Handlers;
+using Cpnucleo.Application.Test.Helpers;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Util;
@@ -8,7 +9,6 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using System;
 using System.Linq;
 using System.Threading;
@@ -28,12 +28,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             CreateWorkflowCommand request = new()
             {
-                Workflow = new WorkflowViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = "Workflow de teste",
-                    Ordem = 1,
-                }
+                Workflow = MockViewModelHelper.GetNewWorkflow()
             };
 
             // Act
@@ -56,15 +51,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid workflowId = Guid.NewGuid();
 
-            await unitOfWork.WorkflowRepository.AddAsync(new Workflow
-            {
-                Id = workflowId,
-                Nome = "Workflow de teste",
-                Ordem = 1,
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
+            await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
             await unitOfWork.SaveChangesAsync();
 
             GetWorkflowQuery request = new()
@@ -92,32 +79,9 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid workflowId = Guid.NewGuid();
 
-            await unitOfWork.WorkflowRepository.AddAsync(new Workflow
-            {
-                Id = workflowId,
-                Nome = "Workflow de teste 1",
-                Ordem = 1,
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.WorkflowRepository.AddAsync(new Workflow
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Workflow de teste 2",
-                Ordem = 1,
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
-
-            await unitOfWork.WorkflowRepository.AddAsync(new Workflow
-            {
-                Id = Guid.NewGuid(),
-                Nome = "Workflow de teste 3",
-                Ordem = 1,
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            });
+            await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
+            await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow());
+            await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow());
 
             await unitOfWork.SaveChangesAsync();
 
@@ -144,14 +108,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             Guid workflowId = Guid.NewGuid();
 
-            Workflow workflow = new()
-            {
-                Id = workflowId,
-                Nome = "Workflow de teste",
-                Ordem = 1,
-                DataInclusao = DateTime.Now,
-                Ativo = true,
-            };
+            Workflow workflow = MockEntityHelper.GetNewWorkflow(workflowId);
 
             await unitOfWork.WorkflowRepository.AddAsync(workflow);
             await unitOfWork.SaveChangesAsync();
@@ -189,14 +146,7 @@ namespace Cpnucleo.Application.Test.Handlers
             Guid workflowId = Guid.NewGuid();
             DateTime dataInclusao = DateTime.Now;
 
-            Workflow workflow = new()
-            {
-                Id = workflowId,
-                Nome = "Workflow de teste",
-                Ordem = 1,
-                DataInclusao = dataInclusao,
-                Ativo = true,
-            };
+            Workflow workflow = MockEntityHelper.GetNewWorkflow(workflowId);
 
             await unitOfWork.WorkflowRepository.AddAsync(workflow);
             await unitOfWork.SaveChangesAsync();
@@ -205,13 +155,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             UpdateWorkflowCommand request = new()
             {
-                Workflow = new WorkflowViewModel
-                {
-                    Id = workflowId,
-                    Nome = "Workflow de teste - alterado",
-
-                    DataInclusao = dataInclusao
-                }
+                Workflow = MockViewModelHelper.GetNewWorkflow(workflowId, dataInclusao)
             };
 
             GetWorkflowQuery request2 = new()

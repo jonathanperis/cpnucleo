@@ -4,7 +4,7 @@ using Cpnucleo.Infra.Data.UoW;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace Cpnucleo.Application.Test
+namespace Cpnucleo.Application.Test.Helpers
 {
     internal class DbContextHelper
     {
