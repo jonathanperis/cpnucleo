@@ -5,14 +5,39 @@ namespace Cpnucleo.Application.Test.Helpers
 {
     internal class MockViewModelHelper
     {
-        public static SistemaViewModel GetNewSistema(Guid sistemaId = default, DateTime dataInclusao = default)
+        public static ApontamentoViewModel GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default, DateTime dataInclusao = default)
         {
-            return new SistemaViewModel
+            return new ApontamentoViewModel
             {
-                Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
-                Nome = "Sistema de teste",
-                Descricao = "Descrição do sistema de teste",
+                Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
+                Descricao = "Descrição do Apontamento de teste",
+                DataApontamento = DateTime.Now,
+                QtdHoras = 8,
+                IdTarefa = tarefaId,
+                IdRecurso = recursoId,
                 DataInclusao = dataInclusao
+            };
+        }
+
+        public static ImpedimentoViewModel GetNewImpedimento(Guid impedimentoId = default, DateTime dataInclusao = default)
+        {
+            return new ImpedimentoViewModel
+            {
+                Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId,
+                Nome = "Impedimento de teste",
+                DataInclusao = dataInclusao
+            };
+        }
+
+        internal static ImpedimentoTarefaViewModel GetNewImpedimentoTarefa(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default, DateTime dataInclusao = default)
+        {
+            return new ImpedimentoTarefaViewModel
+            {
+                Id = impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId,
+                Descricao = "Descrição do Impedimento Tarefa de teste",
+                DataInclusao = dataInclusao,
+                IdTarefa = tarefaId,
+                IdImpedimento = impedimentoId
             };
         }
 
@@ -23,29 +48,6 @@ namespace Cpnucleo.Application.Test.Helpers
                 Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId,
                 Nome = "Projeto de teste",
                 IdSistema = sistemaId,
-                DataInclusao = dataInclusao
-            };
-        }
-
-        public static WorkflowViewModel GetNewWorkflow(Guid workflowId = default, DateTime dataInclusao = default)
-        {
-            return new WorkflowViewModel
-            {
-                Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
-                Nome = "Workflow de teste",
-                Ordem = 1,
-                DataInclusao = dataInclusao
-            };
-        }
-
-        public static TipoTarefaViewModel GetNewTipoTarefa(Guid tipoTarefaId = default, DateTime dataInclusao = default)
-        {
-            return new TipoTarefaViewModel
-            {
-                Id = tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId,
-                Nome = "TipoTarefa de teste",
-                Element = "success-element",
-                Image = "success.png",
                 DataInclusao = dataInclusao
             };
         }
@@ -62,26 +64,75 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        public static ImpedimentoViewModel GetNewImpedimento(Guid impedimentoId = default, DateTime dataInclusao = default)
+        internal static RecursoProjetoViewModel GetNewRecursoProjeto(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default, DateTime dataInclusao = default)
         {
-            return new ImpedimentoViewModel
+            return new RecursoProjetoViewModel
             {
-                Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId,
-                Nome = "Impedimento de teste",
+                Id = recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId,
+                IdProjeto = projetoId,
+                IdRecurso = recursoId,
                 DataInclusao = dataInclusao
             };
         }
 
-        public static ApontamentoViewModel GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default, DateTime dataInclusao = default)
+        internal static RecursoTarefaViewModel GetNewRecursoTarefa(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default, DateTime dataInclusao = default)
         {
-            return new ApontamentoViewModel
+            return new RecursoTarefaViewModel
             {
-                Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
-                Descricao = "Descrição do Apontamento de teste",
-                DataApontamento = DateTime.Now,
-                QtdHoras = 8,
+                Id = recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId,
                 IdTarefa = tarefaId,
                 IdRecurso = recursoId,
+                DataInclusao = dataInclusao
+            };
+        }
+
+        public static SistemaViewModel GetNewSistema(Guid sistemaId = default, DateTime dataInclusao = default)
+        {
+            return new SistemaViewModel
+            {
+                Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
+                Nome = "Sistema de teste",
+                Descricao = "Descrição do sistema de teste",
+                DataInclusao = dataInclusao
+            };
+        }
+
+        internal static TarefaViewModel GetNewTarefa(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId = default, DateTime dataInclusao = default)
+        {
+            return new TarefaViewModel
+            {
+                Id = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId,
+                Nome = "Tarefa de teste",
+                DataInicio = DateTime.Now,
+                DataTermino = DateTime.Now.AddDays(5),
+                QtdHoras = 40,
+                IdProjeto = projetoId,
+                IdWorkflow = workflowId,
+                IdRecurso = recursoId,
+                IdTipoTarefa = tipoTarefaId,
+                DataInclusao = dataInclusao
+            };
+        }
+
+        public static TipoTarefaViewModel GetNewTipoTarefa(Guid tipoTarefaId = default, DateTime dataInclusao = default)
+        {
+            return new TipoTarefaViewModel
+            {
+                Id = tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId,
+                Nome = "TipoTarefa de teste",
+                Element = "success-element",
+                Image = "success.png",
+                DataInclusao = dataInclusao
+            };
+        }
+
+        public static WorkflowViewModel GetNewWorkflow(Guid workflowId = default, DateTime dataInclusao = default)
+        {
+            return new WorkflowViewModel
+            {
+                Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
+                Nome = "Workflow de teste",
+                Ordem = 1,
                 DataInclusao = dataInclusao
             };
         }
