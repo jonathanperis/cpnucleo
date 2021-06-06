@@ -16,7 +16,7 @@ name: $(date:yyyyMMdd)$(rev:.r)
 steps:
 
 - task: UseDotNet@2
-  displayName: Define .NET Version
+  displayName: Install .NET SDK
   inputs:
     version: '5.0.x'
 
