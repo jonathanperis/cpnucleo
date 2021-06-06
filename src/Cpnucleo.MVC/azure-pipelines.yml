@@ -16,6 +16,7 @@ name: $(date:yyyyMMdd)$(rev:.r)
 steps:
 
 - task: UseDotNet@2
+  displayName: Define .NET Version
   inputs:
     version: '5.0.x'
 
@@ -31,6 +32,12 @@ steps:
     command: 'build'
     projects: '$(solution)'
     arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: 'test'
+    projects: '**/*.Test/*.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: Publish
