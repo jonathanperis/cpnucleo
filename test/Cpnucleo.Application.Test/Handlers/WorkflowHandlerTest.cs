@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             WorkflowHandler handler = new(unitOfWork, mapper);
-            CreateWorkflowResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -61,7 +61,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             WorkflowHandler handler = new(unitOfWork, mapper);
-            GetWorkflowResponse response = await handler.Handle(request, CancellationToken.None);
+            GetWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -89,7 +89,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             WorkflowHandler handler = new(unitOfWork, mapper);
-            ListWorkflowResponse response = await handler.Handle(request, CancellationToken.None);
+            ListWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -127,8 +127,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             WorkflowHandler handler = new(unitOfWork, mapper);
-            RemoveWorkflowResponse response = await handler.Handle(request, CancellationToken.None);
-            GetWorkflowResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetWorkflowResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -165,8 +165,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             WorkflowHandler handler = new(unitOfWork, mapper);
-            UpdateWorkflowResponse response = await handler.Handle(request, CancellationToken.None);
-            GetWorkflowResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetWorkflowResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

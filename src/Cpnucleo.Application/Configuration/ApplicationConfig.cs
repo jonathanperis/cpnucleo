@@ -3,10 +3,8 @@ using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
 using MessagePipe;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Cpnucleo.Application.Configuration
 {
@@ -30,7 +28,6 @@ namespace Cpnucleo.Application.Configuration
                 .AddSingleton<IWorkflowAppService, WorkflowAppService>();
 
             services.AddMessagePipe();
-            services.AddMediatR(Assembly.GetExecutingAssembly());
         }
     }
 

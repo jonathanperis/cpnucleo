@@ -9,7 +9,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,12 +17,12 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class ImpedimentoTarefaHandler :
-        IRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse>,
-        IRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse>,
-        IRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse>,
-        IRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse>,
-        IRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse>,
-        IRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
+        IAsyncRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse>,
+        IAsyncRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse>,
+        IAsyncRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse>,
+        IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse>,
+        IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse>,
+        IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateImpedimentoTarefaResponse> Handle(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateImpedimentoTarefaResponse> InvokeAsync(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateImpedimentoTarefaResponse result = new CreateImpedimentoTarefaResponse
             {
@@ -50,7 +50,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetImpedimentoTarefaResponse> Handle(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetImpedimentoTarefaResponse> InvokeAsync(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
         {
             GetImpedimentoTarefaResponse result = new GetImpedimentoTarefaResponse
             {
@@ -71,7 +71,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListImpedimentoTarefaResponse> Handle(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListImpedimentoTarefaResponse> InvokeAsync(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
         {
             ListImpedimentoTarefaResponse result = new ListImpedimentoTarefaResponse
             {
@@ -84,7 +84,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveImpedimentoTarefaResponse> Handle(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveImpedimentoTarefaResponse> InvokeAsync(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveImpedimentoTarefaResponse result = new RemoveImpedimentoTarefaResponse
             {
@@ -109,7 +109,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateImpedimentoTarefaResponse> Handle(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateImpedimentoTarefaResponse> InvokeAsync(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateImpedimentoTarefaResponse result = new UpdateImpedimentoTarefaResponse
             {
@@ -125,7 +125,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetByTarefaResponse> Handle(GetByTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetByTarefaResponse> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
         {
             GetByTarefaResponse result = new GetByTarefaResponse
             {

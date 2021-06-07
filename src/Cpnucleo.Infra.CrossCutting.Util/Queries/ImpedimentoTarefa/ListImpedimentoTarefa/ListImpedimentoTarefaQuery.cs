@@ -1,10 +1,9 @@
-﻿using MediatR;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa
 {
     [DataContract]
-    public class ListImpedimentoTarefaQuery : IRequest<ListImpedimentoTarefaResponse>
+    public class ListImpedimentoTarefaQuery
     {
         [DataMember(Order = 1)]
         public bool GetDependencies { get; set; }

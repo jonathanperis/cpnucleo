@@ -1,10 +1,9 @@
-﻿using MediatR;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento
 {
     [DataContract]
-    public class ListApontamentoQuery : IRequest<ListApontamentoResponse>
+    public class ListApontamentoQuery
     {
         [DataMember(Order = 1)]
         public bool GetDependencies { get; set; }

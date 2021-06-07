@@ -8,7 +8,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class TipoTarefaHandler :
-        IRequestHandler<CreateTipoTarefaCommand, CreateTipoTarefaResponse>,
-        IRequestHandler<GetTipoTarefaQuery, GetTipoTarefaResponse>,
-        IRequestHandler<ListTipoTarefaQuery, ListTipoTarefaResponse>,
-        IRequestHandler<RemoveTipoTarefaCommand, RemoveTipoTarefaResponse>,
-        IRequestHandler<UpdateTipoTarefaCommand, UpdateTipoTarefaResponse>
+        IAsyncRequestHandler<CreateTipoTarefaCommand, CreateTipoTarefaResponse>,
+        IAsyncRequestHandler<GetTipoTarefaQuery, GetTipoTarefaResponse>,
+        IAsyncRequestHandler<ListTipoTarefaQuery, ListTipoTarefaResponse>,
+        IAsyncRequestHandler<RemoveTipoTarefaCommand, RemoveTipoTarefaResponse>,
+        IAsyncRequestHandler<UpdateTipoTarefaCommand, UpdateTipoTarefaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateTipoTarefaResponse> Handle(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateTipoTarefaResponse> InvokeAsync(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateTipoTarefaResponse result = new CreateTipoTarefaResponse
             {
@@ -48,7 +48,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetTipoTarefaResponse> Handle(GetTipoTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetTipoTarefaResponse> InvokeAsync(GetTipoTarefaQuery request, CancellationToken cancellationToken)
         {
             GetTipoTarefaResponse result = new GetTipoTarefaResponse
             {
@@ -69,7 +69,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListTipoTarefaResponse> Handle(ListTipoTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListTipoTarefaResponse> InvokeAsync(ListTipoTarefaQuery request, CancellationToken cancellationToken)
         {
             ListTipoTarefaResponse result = new ListTipoTarefaResponse
             {
@@ -82,7 +82,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveTipoTarefaResponse> Handle(RemoveTipoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveTipoTarefaResponse> InvokeAsync(RemoveTipoTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveTipoTarefaResponse result = new RemoveTipoTarefaResponse
             {
@@ -107,7 +107,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateTipoTarefaResponse> Handle(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateTipoTarefaResponse> InvokeAsync(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateTipoTarefaResponse result = new UpdateTipoTarefaResponse
             {

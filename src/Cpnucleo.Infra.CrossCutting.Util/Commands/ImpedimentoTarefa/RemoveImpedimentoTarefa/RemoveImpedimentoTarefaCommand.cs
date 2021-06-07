@@ -1,11 +1,10 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa
 {
     [DataContract]
-    public class RemoveImpedimentoTarefaCommand : IRequest<RemoveImpedimentoTarefaResponse>
+    public class RemoveImpedimentoTarefaCommand
     {
         [DataMember(Order = 1)]
         public Guid Id { get; set; }

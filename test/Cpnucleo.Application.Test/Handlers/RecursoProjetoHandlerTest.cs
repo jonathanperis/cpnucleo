@@ -47,7 +47,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoProjetoHandler handler = new(unitOfWork, mapper);
-            CreateRecursoProjetoResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateRecursoProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -87,7 +87,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoProjetoHandler handler = new(unitOfWork, mapper);
-            GetRecursoProjetoResponse response = await handler.Handle(request, CancellationToken.None);
+            GetRecursoProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -126,7 +126,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoProjetoHandler handler = new(unitOfWork, mapper);
-            ListRecursoProjetoResponse response = await handler.Handle(request, CancellationToken.None);
+            ListRecursoProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -174,8 +174,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoProjetoHandler handler = new(unitOfWork, mapper);
-            RemoveRecursoProjetoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetRecursoProjetoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveRecursoProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetRecursoProjetoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -223,8 +223,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoProjetoHandler handler = new(unitOfWork, mapper);
-            UpdateRecursoProjetoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetRecursoProjetoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateRecursoProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetRecursoProjetoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

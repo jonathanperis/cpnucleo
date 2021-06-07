@@ -1,10 +1,9 @@
-﻿using MediatR;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth
 {
     [DataContract]
-    public class AuthQuery : IRequest<AuthResponse>
+    public class AuthQuery
     {
         [DataMember(Order = 1)]
         public string Login { get; set; }
