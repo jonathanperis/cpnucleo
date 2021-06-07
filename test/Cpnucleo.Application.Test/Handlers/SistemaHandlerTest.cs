@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             SistemaHandler handler = new(unitOfWork, mapper);
-            CreateSistemaResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -61,7 +61,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             SistemaHandler handler = new(unitOfWork, mapper);
-            GetSistemaResponse response = await handler.Handle(request, CancellationToken.None);
+            GetSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -89,7 +89,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             SistemaHandler handler = new(unitOfWork, mapper);
-            ListSistemaResponse response = await handler.Handle(request, CancellationToken.None);
+            ListSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -126,8 +126,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             SistemaHandler handler = new(unitOfWork, mapper);
-            RemoveSistemaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetSistemaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -164,8 +164,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             SistemaHandler handler = new(unitOfWork, mapper);
-            UpdateSistemaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetSistemaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

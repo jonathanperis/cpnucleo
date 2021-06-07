@@ -1,10 +1,9 @@
-﻿using MediatR;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento
 {
     [DataContract]
-    public class ListImpedimentoQuery : IRequest<ListImpedimentoResponse>
+    public class ListImpedimentoQuery
     {
         [DataMember(Order = 1)]
         public bool GetDependencies { get; set; }

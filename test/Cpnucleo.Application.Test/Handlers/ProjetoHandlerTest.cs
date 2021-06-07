@@ -38,7 +38,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ProjetoHandler handler = new(unitOfWork, mapper);
-            CreateProjetoResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -70,7 +70,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ProjetoHandler handler = new(unitOfWork, mapper);
-            GetProjetoResponse response = await handler.Handle(request, CancellationToken.None);
+            GetProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -102,7 +102,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ProjetoHandler handler = new(unitOfWork, mapper);
-            ListProjetoResponse response = await handler.Handle(request, CancellationToken.None);
+            ListProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -143,8 +143,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ProjetoHandler handler = new(unitOfWork, mapper);
-            RemoveProjetoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetProjetoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetProjetoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -185,8 +185,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ProjetoHandler handler = new(unitOfWork, mapper);
-            UpdateProjetoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetProjetoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetProjetoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

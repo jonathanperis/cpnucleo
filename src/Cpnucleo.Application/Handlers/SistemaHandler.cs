@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Cpnucleo.Application.Handlers
 {
-    internal class SistemaHandler :
+    public class SistemaHandler :
         IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse>,
         IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse>,
         IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse>,

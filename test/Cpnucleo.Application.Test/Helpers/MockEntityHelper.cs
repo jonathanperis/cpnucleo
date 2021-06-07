@@ -3,7 +3,7 @@ using System;
 
 namespace Cpnucleo.Application.Test.Helpers
 {
-    internal class MockEntityHelper
+    public class MockEntityHelper
     {
         public static Apontamento GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
         {
@@ -27,7 +27,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static ImpedimentoTarefa GetNewImpedimentoTarefa(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default)
+        public static ImpedimentoTarefa GetNewImpedimentoTarefa(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default)
         {
             return new ImpedimentoTarefa
             {
@@ -59,7 +59,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static RecursoProjeto GetNewRecursoProjeto(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default)
+        public static RecursoProjeto GetNewRecursoProjeto(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default)
         {
             return new RecursoProjeto
             {
@@ -69,7 +69,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static RecursoTarefa GetNewRecursoTarefa(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default)
+        public static RecursoTarefa GetNewRecursoTarefa(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default)
         {
             return new RecursoTarefa
             {

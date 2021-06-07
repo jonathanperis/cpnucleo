@@ -53,7 +53,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ApontamentoHandler handler = new(unitOfWork, mapper);
-            CreateApontamentoResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -99,7 +99,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ApontamentoHandler handler = new(unitOfWork, mapper);
-            GetApontamentoResponse response = await handler.Handle(request, CancellationToken.None);
+            GetApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -144,7 +144,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ApontamentoHandler handler = new(unitOfWork, mapper);
-            ListApontamentoResponse response = await handler.Handle(request, CancellationToken.None);
+            ListApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -198,8 +198,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ApontamentoHandler handler = new(unitOfWork, mapper);
-            RemoveApontamentoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetApontamentoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetApontamentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -253,8 +253,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ApontamentoHandler handler = new(unitOfWork, mapper);
-            UpdateApontamentoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetApontamentoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetApontamentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

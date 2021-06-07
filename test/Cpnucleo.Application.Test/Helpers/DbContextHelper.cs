@@ -6,7 +6,7 @@ using System;
 
 namespace Cpnucleo.Application.Test.Helpers
 {
-    internal class DbContextHelper
+    public class DbContextHelper
     {
         public static IUnitOfWork GetContext()
         {

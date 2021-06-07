@@ -9,7 +9,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.ListRecursoTarefa;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,12 +17,12 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class RecursoTarefaHandler :
-        IRequestHandler<CreateRecursoTarefaCommand, CreateRecursoTarefaResponse>,
-        IRequestHandler<GetRecursoTarefaQuery, GetRecursoTarefaResponse>,
-        IRequestHandler<ListRecursoTarefaQuery, ListRecursoTarefaResponse>,
-        IRequestHandler<RemoveRecursoTarefaCommand, RemoveRecursoTarefaResponse>,
-        IRequestHandler<UpdateRecursoTarefaCommand, UpdateRecursoTarefaResponse>,
-        IRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
+        IAsyncRequestHandler<CreateRecursoTarefaCommand, CreateRecursoTarefaResponse>,
+        IAsyncRequestHandler<GetRecursoTarefaQuery, GetRecursoTarefaResponse>,
+        IAsyncRequestHandler<ListRecursoTarefaQuery, ListRecursoTarefaResponse>,
+        IAsyncRequestHandler<RemoveRecursoTarefaCommand, RemoveRecursoTarefaResponse>,
+        IAsyncRequestHandler<UpdateRecursoTarefaCommand, UpdateRecursoTarefaResponse>,
+        IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateRecursoTarefaResponse> Handle(CreateRecursoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateRecursoTarefaResponse> InvokeAsync(CreateRecursoTarefaCommand request, CancellationToken cancellationToken)
         {
             CreateRecursoTarefaResponse result = new CreateRecursoTarefaResponse
             {
@@ -50,7 +50,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetRecursoTarefaResponse> Handle(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetRecursoTarefaResponse> InvokeAsync(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
         {
             GetRecursoTarefaResponse result = new GetRecursoTarefaResponse
             {
@@ -71,7 +71,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListRecursoTarefaResponse> Handle(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListRecursoTarefaResponse> InvokeAsync(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
         {
             ListRecursoTarefaResponse result = new ListRecursoTarefaResponse
             {
@@ -84,7 +84,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveRecursoTarefaResponse> Handle(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveRecursoTarefaResponse> InvokeAsync(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
         {
             RemoveRecursoTarefaResponse result = new RemoveRecursoTarefaResponse
             {
@@ -109,7 +109,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateRecursoTarefaResponse> Handle(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateRecursoTarefaResponse> InvokeAsync(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
         {
             UpdateRecursoTarefaResponse result = new UpdateRecursoTarefaResponse
             {
@@ -125,7 +125,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetByTarefaResponse> Handle(GetByTarefaQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetByTarefaResponse> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
         {
             GetByTarefaResponse result = new GetByTarefaResponse
             {

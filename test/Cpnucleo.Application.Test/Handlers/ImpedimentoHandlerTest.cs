@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoHandler handler = new(unitOfWork, mapper);
-            CreateImpedimentoResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -61,7 +61,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoHandler handler = new(unitOfWork, mapper);
-            GetImpedimentoResponse response = await handler.Handle(request, CancellationToken.None);
+            GetImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -89,7 +89,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoHandler handler = new(unitOfWork, mapper);
-            ListImpedimentoResponse response = await handler.Handle(request, CancellationToken.None);
+            ListImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -126,8 +126,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoHandler handler = new(unitOfWork, mapper);
-            RemoveImpedimentoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetImpedimentoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetImpedimentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -164,8 +164,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoHandler handler = new(unitOfWork, mapper);
-            UpdateImpedimentoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetImpedimentoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetImpedimentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

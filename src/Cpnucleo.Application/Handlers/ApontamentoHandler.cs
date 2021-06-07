@@ -9,7 +9,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,12 +17,12 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class ApontamentoHandler :
-        IRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse>,
-        IRequestHandler<GetApontamentoQuery, GetApontamentoResponse>,
-        IRequestHandler<ListApontamentoQuery, ListApontamentoResponse>,
-        IRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse>,
-        IRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse>,
-        IRequestHandler<GetByRecursoQuery, GetByRecursoResponse>
+        IAsyncRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse>,
+        IAsyncRequestHandler<GetApontamentoQuery, GetApontamentoResponse>,
+        IAsyncRequestHandler<ListApontamentoQuery, ListApontamentoResponse>,
+        IAsyncRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse>,
+        IAsyncRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse>,
+        IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateApontamentoResponse> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateApontamentoResponse> InvokeAsync(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
         {
             CreateApontamentoResponse result = new CreateApontamentoResponse
             {
@@ -50,7 +50,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetApontamentoResponse> Handle(GetApontamentoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetApontamentoResponse> InvokeAsync(GetApontamentoQuery request, CancellationToken cancellationToken = default)
         {
             GetApontamentoResponse result = new GetApontamentoResponse
             {
@@ -71,7 +71,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListApontamentoResponse> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListApontamentoResponse> InvokeAsync(ListApontamentoQuery request, CancellationToken cancellationToken)
         {
             ListApontamentoResponse result = new ListApontamentoResponse
             {
@@ -84,7 +84,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveApontamentoResponse> Handle(RemoveApontamentoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveApontamentoResponse> InvokeAsync(RemoveApontamentoCommand request, CancellationToken cancellationToken = default)
         {
             RemoveApontamentoResponse result = new RemoveApontamentoResponse
             {
@@ -109,7 +109,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateApontamentoResponse> Handle(UpdateApontamentoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateApontamentoResponse> InvokeAsync(UpdateApontamentoCommand request, CancellationToken cancellationToken = default)
         {
             UpdateApontamentoResponse result = new UpdateApontamentoResponse
             {
@@ -125,7 +125,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetByRecursoResponse> Handle(GetByRecursoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetByRecursoResponse> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
         {
             GetByRecursoResponse result = new GetByRecursoResponse
             {

@@ -3,7 +3,7 @@ using System;
 
 namespace Cpnucleo.Application.Test.Helpers
 {
-    internal class MockViewModelHelper
+    public class MockViewModelHelper
     {
         public static ApontamentoViewModel GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default, DateTime dataInclusao = default)
         {
@@ -29,7 +29,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static ImpedimentoTarefaViewModel GetNewImpedimentoTarefa(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default, DateTime dataInclusao = default)
+        public static ImpedimentoTarefaViewModel GetNewImpedimentoTarefa(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default, DateTime dataInclusao = default)
         {
             return new ImpedimentoTarefaViewModel
             {
@@ -64,7 +64,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static RecursoProjetoViewModel GetNewRecursoProjeto(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default, DateTime dataInclusao = default)
+        public static RecursoProjetoViewModel GetNewRecursoProjeto(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default, DateTime dataInclusao = default)
         {
             return new RecursoProjetoViewModel
             {
@@ -75,7 +75,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static RecursoTarefaViewModel GetNewRecursoTarefa(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default, DateTime dataInclusao = default)
+        public static RecursoTarefaViewModel GetNewRecursoTarefa(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default, DateTime dataInclusao = default)
         {
             return new RecursoTarefaViewModel
             {
@@ -97,7 +97,7 @@ namespace Cpnucleo.Application.Test.Helpers
             };
         }
 
-        internal static TarefaViewModel GetNewTarefa(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId = default, DateTime dataInclusao = default)
+        public static TarefaViewModel GetNewTarefa(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId = default, DateTime dataInclusao = default)
         {
             return new TarefaViewModel
             {

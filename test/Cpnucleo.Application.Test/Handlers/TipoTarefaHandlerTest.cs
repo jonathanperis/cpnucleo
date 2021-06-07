@@ -33,7 +33,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TipoTarefaHandler handler = new(unitOfWork, mapper);
-            CreateTipoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -61,7 +61,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TipoTarefaHandler handler = new(unitOfWork, mapper);
-            GetTipoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            GetTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -89,7 +89,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TipoTarefaHandler handler = new(unitOfWork, mapper);
-            ListTipoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            ListTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -126,8 +126,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TipoTarefaHandler handler = new(unitOfWork, mapper);
-            RemoveTipoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetTipoTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetTipoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -164,8 +164,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TipoTarefaHandler handler = new(unitOfWork, mapper);
-            UpdateTipoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetTipoTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetTipoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

@@ -56,7 +56,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-            CreateImpedimentoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -105,7 +105,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-            GetImpedimentoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            GetImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -153,7 +153,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-            ListImpedimentoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            ListImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -210,8 +210,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-            RemoveImpedimentoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetImpedimentoTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetImpedimentoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -268,8 +268,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-            UpdateImpedimentoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetImpedimentoTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetImpedimentoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

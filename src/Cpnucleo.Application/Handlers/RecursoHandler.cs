@@ -10,7 +10,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,12 +18,12 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class RecursoHandler :
-        IRequestHandler<CreateRecursoCommand, CreateRecursoResponse>,
-        IRequestHandler<GetRecursoQuery, GetRecursoResponse>,
-        IRequestHandler<ListRecursoQuery, ListRecursoResponse>,
-        IRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse>,
-        IRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse>,
-        IRequestHandler<AuthQuery, AuthResponse>
+        IAsyncRequestHandler<CreateRecursoCommand, CreateRecursoResponse>,
+        IAsyncRequestHandler<GetRecursoQuery, GetRecursoResponse>,
+        IAsyncRequestHandler<ListRecursoQuery, ListRecursoResponse>,
+        IAsyncRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse>,
+        IAsyncRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse>,
+        IAsyncRequestHandler<AuthQuery, AuthResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -36,7 +36,7 @@ namespace Cpnucleo.Application.Handlers
             _cryptographyManager = cryptographyManager;
         }
 
-        public async Task<CreateRecursoResponse> Handle(CreateRecursoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateRecursoResponse> InvokeAsync(CreateRecursoCommand request, CancellationToken cancellationToken)
         {
             CreateRecursoResponse result = new CreateRecursoResponse
             {
@@ -61,7 +61,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetRecursoResponse> Handle(GetRecursoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetRecursoResponse> InvokeAsync(GetRecursoQuery request, CancellationToken cancellationToken)
         {
             GetRecursoResponse result = new GetRecursoResponse
             {
@@ -85,7 +85,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListRecursoResponse> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListRecursoResponse> InvokeAsync(ListRecursoQuery request, CancellationToken cancellationToken)
         {
             ListRecursoResponse result = new ListRecursoResponse
             {
@@ -105,7 +105,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveRecursoResponse> Handle(RemoveRecursoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveRecursoResponse> InvokeAsync(RemoveRecursoCommand request, CancellationToken cancellationToken)
         {
             RemoveRecursoResponse result = new RemoveRecursoResponse
             {
@@ -130,7 +130,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateRecursoResponse> Handle(UpdateRecursoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateRecursoResponse> InvokeAsync(UpdateRecursoCommand request, CancellationToken cancellationToken)
         {
             UpdateRecursoResponse result = new UpdateRecursoResponse
             {
@@ -151,7 +151,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<AuthResponse> Handle(AuthQuery request, CancellationToken cancellationToken)
+        public async ValueTask<AuthResponse> InvokeAsync(AuthQuery request, CancellationToken cancellationToken)
         {
             AuthResponse result = new AuthResponse
             {

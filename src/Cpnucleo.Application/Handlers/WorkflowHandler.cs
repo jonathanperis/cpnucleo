@@ -8,7 +8,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class WorkflowHandler :
-        IRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse>,
-        IRequestHandler<GetWorkflowQuery, GetWorkflowResponse>,
-        IRequestHandler<ListWorkflowQuery, ListWorkflowResponse>,
-        IRequestHandler<RemoveWorkflowCommand, RemoveWorkflowResponse>,
-        IRequestHandler<UpdateWorkflowCommand, UpdateWorkflowResponse>
+        IAsyncRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse>,
+        IAsyncRequestHandler<GetWorkflowQuery, GetWorkflowResponse>,
+        IAsyncRequestHandler<ListWorkflowQuery, ListWorkflowResponse>,
+        IAsyncRequestHandler<RemoveWorkflowCommand, RemoveWorkflowResponse>,
+        IAsyncRequestHandler<UpdateWorkflowCommand, UpdateWorkflowResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateWorkflowResponse> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateWorkflowResponse> InvokeAsync(CreateWorkflowCommand request, CancellationToken cancellationToken)
         {
             CreateWorkflowResponse result = new CreateWorkflowResponse
             {
@@ -48,7 +48,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetWorkflowResponse> Handle(GetWorkflowQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetWorkflowResponse> InvokeAsync(GetWorkflowQuery request, CancellationToken cancellationToken)
         {
             GetWorkflowResponse result = new GetWorkflowResponse
             {
@@ -69,7 +69,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListWorkflowResponse> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListWorkflowResponse> InvokeAsync(ListWorkflowQuery request, CancellationToken cancellationToken)
         {
             ListWorkflowResponse result = new ListWorkflowResponse
             {
@@ -84,7 +84,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveWorkflowResponse> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveWorkflowResponse> InvokeAsync(RemoveWorkflowCommand request, CancellationToken cancellationToken)
         {
             RemoveWorkflowResponse result = new RemoveWorkflowResponse
             {
@@ -109,7 +109,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateWorkflowResponse> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateWorkflowResponse> InvokeAsync(UpdateWorkflowCommand request, CancellationToken cancellationToken)
         {
             UpdateWorkflowResponse result = new UpdateWorkflowResponse
             {
