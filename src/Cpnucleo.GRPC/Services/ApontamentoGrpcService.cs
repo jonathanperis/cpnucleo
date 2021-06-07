@@ -22,11 +22,11 @@ namespace Cpnucleo.GRPC.Services
         private readonly IAsyncRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse> _removeApontamentoCommand;
         private readonly IAsyncRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse> _updateApontamentoCommand;
 
-        public ApontamentoGrpcService(IAsyncRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse> createApontamentoCommand, 
-                                      IAsyncRequestHandler<ListApontamentoQuery, ListApontamentoResponse> listApontamentoQuery, 
-                                      IAsyncRequestHandler<GetApontamentoQuery, GetApontamentoResponse> getApontamentoQuery, 
-                                      IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse> getByRecursoQuery, 
-                                      IAsyncRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse> removeApontamentoCommand, 
+        public ApontamentoGrpcService(IAsyncRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse> createApontamentoCommand,
+                                      IAsyncRequestHandler<ListApontamentoQuery, ListApontamentoResponse> listApontamentoQuery,
+                                      IAsyncRequestHandler<GetApontamentoQuery, GetApontamentoResponse> getApontamentoQuery,
+                                      IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse> getByRecursoQuery,
+                                      IAsyncRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse> removeApontamentoCommand,
                                       IAsyncRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse> updateApontamentoCommand)
         {
             _createApontamentoCommand = createApontamentoCommand;
