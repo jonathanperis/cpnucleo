@@ -27,7 +27,10 @@ namespace Cpnucleo.Application.Configuration
                 .AddScoped<ITipoTarefaAppService, TipoTarefaAppService>()
                 .AddScoped<IWorkflowAppService, WorkflowAppService>();
 
-            services.AddMessagePipe();
+            services.AddMessagePipe(options =>
+            {
+                options.InstanceLifetime = InstanceLifetime.Scoped;
+            });
         }
     }
 
