@@ -20,10 +20,10 @@ namespace Cpnucleo.GRPC.Services
         private readonly IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse> _removeSistemaCommand;
         private readonly IAsyncRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse> _updateSistemaCommand;
 
-        public SistemaGrpcService(IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse> createSistemaCommand, 
-                                  IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse> listSistemaQuery, 
-                                  IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse> getSistemaQuery, 
-                                  IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse> removeSistemaCommand, 
+        public SistemaGrpcService(IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse> createSistemaCommand,
+                                  IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse> listSistemaQuery,
+                                  IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse> getSistemaQuery,
+                                  IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse> removeSistemaCommand,
                                   IAsyncRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse> updateSistemaCommand)
         {
             _createSistemaCommand = createSistemaCommand;

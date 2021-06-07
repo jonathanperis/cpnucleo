@@ -22,11 +22,11 @@ namespace Cpnucleo.GRPC.Services
         private readonly IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse> _removeImpedimentoTarefaCommand;
         private readonly IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse> _updateImpedimentoTarefaCommand;
 
-        public ImpedimentoTarefaGrpcService(IAsyncRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse> createImpedimentoTarefaCommand, 
-                                            IAsyncRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse> listImpedimentoTarefaQuery, 
-                                            IAsyncRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse> getImpedimentoTarefaQuery, 
-                                            IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse> getByTarefaQuery, 
-                                            IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse> removeImpedimentoTarefaCommand, 
+        public ImpedimentoTarefaGrpcService(IAsyncRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse> createImpedimentoTarefaCommand,
+                                            IAsyncRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse> listImpedimentoTarefaQuery,
+                                            IAsyncRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse> getImpedimentoTarefaQuery,
+                                            IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse> getByTarefaQuery,
+                                            IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse> removeImpedimentoTarefaCommand,
                                             IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse> updateImpedimentoTarefaCommand)
         {
             _createImpedimentoTarefaCommand = createImpedimentoTarefaCommand;
