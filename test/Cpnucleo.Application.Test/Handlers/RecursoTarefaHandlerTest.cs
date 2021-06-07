@@ -53,7 +53,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoTarefaHandler handler = new(unitOfWork, mapper);
-            CreateRecursoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -99,7 +99,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoTarefaHandler handler = new(unitOfWork, mapper);
-            GetRecursoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            GetRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -144,7 +144,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoTarefaHandler handler = new(unitOfWork, mapper);
-            ListRecursoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            ListRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -198,8 +198,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoTarefaHandler handler = new(unitOfWork, mapper);
-            RemoveRecursoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetRecursoTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetRecursoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -253,8 +253,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoTarefaHandler handler = new(unitOfWork, mapper);
-            UpdateRecursoTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetRecursoTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetRecursoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

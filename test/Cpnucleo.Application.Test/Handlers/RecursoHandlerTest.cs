@@ -35,7 +35,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoHandler handler = new(unitOfWork, mapper, manager);
-            CreateRecursoResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -66,7 +66,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoHandler handler = new(unitOfWork, mapper, manager);
-            GetRecursoResponse response = await handler.Handle(request, CancellationToken.None);
+            GetRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -97,7 +97,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoHandler handler = new(unitOfWork, mapper, manager);
-            ListRecursoResponse response = await handler.Handle(request, CancellationToken.None);
+            ListRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -135,8 +135,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoHandler handler = new(unitOfWork, mapper, manager);
-            RemoveRecursoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetRecursoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetRecursoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -174,8 +174,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             RecursoHandler handler = new(unitOfWork, mapper, manager);
-            UpdateRecursoResponse response = await handler.Handle(request, CancellationToken.None);
-            GetRecursoResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetRecursoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

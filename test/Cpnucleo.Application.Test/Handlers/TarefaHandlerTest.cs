@@ -50,7 +50,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TarefaHandler handler = new(unitOfWork, mapper);
-            CreateTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            CreateTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -93,7 +93,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TarefaHandler handler = new(unitOfWork, mapper);
-            GetTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            GetTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -135,7 +135,7 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TarefaHandler handler = new(unitOfWork, mapper);
-            ListTarefaResponse response = await handler.Handle(request, CancellationToken.None);
+            ListTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -186,8 +186,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TarefaHandler handler = new(unitOfWork, mapper);
-            RemoveTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            RemoveTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);
@@ -238,8 +238,8 @@ namespace Cpnucleo.Application.Test.Handlers
 
             // Act
             TarefaHandler handler = new(unitOfWork, mapper);
-            UpdateTarefaResponse response = await handler.Handle(request, CancellationToken.None);
-            GetTarefaResponse response2 = await handler.Handle(request2, CancellationToken.None);
+            UpdateTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+            GetTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
             // Assert
             Assert.True(response.Status == OperationResult.Success);

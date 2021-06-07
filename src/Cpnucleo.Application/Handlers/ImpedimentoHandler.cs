@@ -8,7 +8,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class ImpedimentoHandler :
-        IRequestHandler<CreateImpedimentoCommand, CreateImpedimentoResponse>,
-        IRequestHandler<GetImpedimentoQuery, GetImpedimentoResponse>,
-        IRequestHandler<ListImpedimentoQuery, ListImpedimentoResponse>,
-        IRequestHandler<RemoveImpedimentoCommand, RemoveImpedimentoResponse>,
-        IRequestHandler<UpdateImpedimentoCommand, UpdateImpedimentoResponse>
+        IAsyncRequestHandler<CreateImpedimentoCommand, CreateImpedimentoResponse>,
+        IAsyncRequestHandler<GetImpedimentoQuery, GetImpedimentoResponse>,
+        IAsyncRequestHandler<ListImpedimentoQuery, ListImpedimentoResponse>,
+        IAsyncRequestHandler<RemoveImpedimentoCommand, RemoveImpedimentoResponse>,
+        IAsyncRequestHandler<UpdateImpedimentoCommand, UpdateImpedimentoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateImpedimentoResponse> Handle(CreateImpedimentoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateImpedimentoResponse> InvokeAsync(CreateImpedimentoCommand request, CancellationToken cancellationToken)
         {
             CreateImpedimentoResponse result = new CreateImpedimentoResponse
             {
@@ -48,7 +48,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetImpedimentoResponse> Handle(GetImpedimentoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetImpedimentoResponse> InvokeAsync(GetImpedimentoQuery request, CancellationToken cancellationToken)
         {
             GetImpedimentoResponse result = new GetImpedimentoResponse
             {
@@ -69,7 +69,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListImpedimentoResponse> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListImpedimentoResponse> InvokeAsync(ListImpedimentoQuery request, CancellationToken cancellationToken)
         {
             ListImpedimentoResponse result = new ListImpedimentoResponse
             {
@@ -82,7 +82,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveImpedimentoResponse> Handle(RemoveImpedimentoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveImpedimentoResponse> InvokeAsync(RemoveImpedimentoCommand request, CancellationToken cancellationToken)
         {
             RemoveImpedimentoResponse result = new RemoveImpedimentoResponse
             {
@@ -107,7 +107,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateImpedimentoResponse> Handle(UpdateImpedimentoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateImpedimentoResponse> InvokeAsync(UpdateImpedimentoCommand request, CancellationToken cancellationToken)
         {
             UpdateImpedimentoResponse result = new UpdateImpedimentoResponse
             {

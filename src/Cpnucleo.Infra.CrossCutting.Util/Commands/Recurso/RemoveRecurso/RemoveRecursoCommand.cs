@@ -1,11 +1,10 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso
 {
     [DataContract]
-    public class RemoveRecursoCommand : IRequest<RemoveRecursoResponse>
+    public class RemoveRecursoCommand
     {
         [DataMember(Order = 1)]
         public Guid Id { get; set; }

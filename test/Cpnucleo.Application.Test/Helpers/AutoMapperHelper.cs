@@ -3,7 +3,7 @@ using Cpnucleo.Application.Configuration;
 
 namespace Cpnucleo.Application.Test.Helpers
 {
-    internal class AutoMapperHelper
+    public class AutoMapperHelper
     {
         public static IMapper GetMappings()
         {

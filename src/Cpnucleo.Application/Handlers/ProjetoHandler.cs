@@ -8,7 +8,7 @@ using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MediatR;
+using MessagePipe;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +16,11 @@ using System.Threading.Tasks;
 namespace Cpnucleo.Application.Handlers
 {
     public class ProjetoHandler :
-        IRequestHandler<CreateProjetoCommand, CreateProjetoResponse>,
-        IRequestHandler<GetProjetoQuery, GetProjetoResponse>,
-        IRequestHandler<ListProjetoQuery, ListProjetoResponse>,
-        IRequestHandler<RemoveProjetoCommand, RemoveProjetoResponse>,
-        IRequestHandler<UpdateProjetoCommand, UpdateProjetoResponse>
+        IAsyncRequestHandler<CreateProjetoCommand, CreateProjetoResponse>,
+        IAsyncRequestHandler<GetProjetoQuery, GetProjetoResponse>,
+        IAsyncRequestHandler<ListProjetoQuery, ListProjetoResponse>,
+        IAsyncRequestHandler<RemoveProjetoCommand, RemoveProjetoResponse>,
+        IAsyncRequestHandler<UpdateProjetoCommand, UpdateProjetoResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace Cpnucleo.Application.Handlers
             _mapper = mapper;
         }
 
-        public async Task<CreateProjetoResponse> Handle(CreateProjetoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<CreateProjetoResponse> InvokeAsync(CreateProjetoCommand request, CancellationToken cancellationToken)
         {
             CreateProjetoResponse result = new CreateProjetoResponse
             {
@@ -48,7 +48,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<GetProjetoResponse> Handle(GetProjetoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<GetProjetoResponse> InvokeAsync(GetProjetoQuery request, CancellationToken cancellationToken)
         {
             GetProjetoResponse result = new GetProjetoResponse
             {
@@ -69,7 +69,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<ListProjetoResponse> Handle(ListProjetoQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ListProjetoResponse> InvokeAsync(ListProjetoQuery request, CancellationToken cancellationToken)
         {
             ListProjetoResponse result = new ListProjetoResponse
             {
@@ -82,7 +82,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<RemoveProjetoResponse> Handle(RemoveProjetoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<RemoveProjetoResponse> InvokeAsync(RemoveProjetoCommand request, CancellationToken cancellationToken)
         {
             RemoveProjetoResponse result = new RemoveProjetoResponse
             {
@@ -107,7 +107,7 @@ namespace Cpnucleo.Application.Handlers
             return result;
         }
 
-        public async Task<UpdateProjetoResponse> Handle(UpdateProjetoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<UpdateProjetoResponse> InvokeAsync(UpdateProjetoCommand request, CancellationToken cancellationToken)
         {
             UpdateProjetoResponse result = new UpdateProjetoResponse
             {
