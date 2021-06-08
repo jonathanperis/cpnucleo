@@ -2,7 +2,6 @@
 using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -45,7 +44,7 @@ namespace Cpnucleo.API.Controllers.V2
         /// <response code="500">Erro no processamento da requisição</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize]
+        //[Authorize]
         public async Task<IEnumerable<Recurso>> Get(bool getDependencies = false)
         {
             return await _unitOfWork.RecursoRepository.AllAsync(getDependencies);
@@ -67,7 +66,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpGet("{id}", Name = "GetRecurso")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<Recurso>> Get(Guid id)
         {
             Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(id);
@@ -111,7 +110,7 @@ namespace Cpnucleo.API.Controllers.V2
         [ProducesResponseType(typeof(Recurso), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<Recurso>> Post([FromBody] Recurso obj)
         {
             if (!ModelState.IsValid)
@@ -234,7 +233,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Put(Guid id, [FromBody] Recurso obj)
         {
             if (!ModelState.IsValid)
@@ -289,7 +288,7 @@ namespace Cpnucleo.API.Controllers.V2
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
             Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(id);

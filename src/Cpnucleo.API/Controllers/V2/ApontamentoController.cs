@@ -1,6 +1,5 @@
 ﻿using Cpnucleo.Domain.Entities;
 using Cpnucleo.Domain.UoW;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,7 +12,7 @@ namespace Cpnucleo.API.Controllers.V2
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("2")]
-    [Authorize]
+    //[Authorize]
     public class ApontamentoController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
