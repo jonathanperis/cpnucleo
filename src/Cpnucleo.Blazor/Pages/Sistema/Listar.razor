@@ -27,10 +27,10 @@
                         <table class="table table-striped table-bordered table-hover table-datatable">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Nome</th>
-                                    <th>Descrição</th>
-                                    <th>Data de Inclusão</th>                                
+                                    <th><DisplayName For="@(() => sistema.Id)" /></th>
+                                    <th><DisplayName For="@(() => sistema.Nome)" /></th>
+                                    <th><DisplayName For="@(() => sistema.Descricao)" /></th>
+                                    <th><DisplayName For="@(() => sistema.DataInclusao)" /></th>                                
                                     @if (sistemas.Count() > 0)
                                     {
                                         <th class="no-sort"></th>
@@ -60,10 +60,10 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Nome</th>
-                                    <th>Descrição</th>
-                                    <th>Data de Inclusão</th>                                
+                                    <th><DisplayName For="@(() => sistema.Id)" /></th>
+                                    <th><DisplayName For="@(() => sistema.Nome)" /></th>
+                                    <th><DisplayName For="@(() => sistema.Descricao)" /></th>
+                                    <th><DisplayName For="@(() => sistema.DataInclusao)" /></th>
                                     @if (sistemas.Count() > 0)
                                     {
                                         <th></th>
@@ -80,6 +80,7 @@
 </div>
 
 @code {
+    private SistemaViewModel sistema;
     private IEnumerable<SistemaViewModel> sistemas;
 
     protected override async Task OnInitializedAsync()

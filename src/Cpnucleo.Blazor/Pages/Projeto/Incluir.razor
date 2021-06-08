@@ -1,11 +1,11 @@
-@page "/sistema/remover/{id:guid}"
+@page "/projeto/incluir"
 @inject ICpnucleoApiService cpnucleoApiService;
 @inject NavigationManager navigationManager
 
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>Remoção de Sistema</h5>
+            <h5>Inclusão de Projeto</h5>
             <div class="ibox-tools">
                 <a class="fullscreen-link">
                     <i class="fa fa-expand"></i>
@@ -15,9 +15,9 @@
         <div class="ibox-content">
 
             <EditForm class="form-horizontal" Model="@model" OnValidSubmit="@HandleValidSubmit">
-                <DataAnnotationsValidator />     
+                <DataAnnotationsValidator />
 
-                @if (model.Id == Guid.Empty)
+                @if (sistemas == null)
                 {
                     <p><em>Carregando...</em></p>
                 }
@@ -26,26 +26,31 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Nome">                            
-                            <p class="form-control-static">@model.Nome</p>
+                            <InputText class="form-control" @bind-Value="model.Nome" />
+                            <ValidationMessage For="@(() => model.Nome)" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Descricao)" /></label>
+                        <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Sistema)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Descricao">                            
-                            <p class="form-control-static">@model.Descricao</p>
+                            <InputSelect class="form-control m-b" @bind-Value="model.IdSistema">
+                                @foreach (var item in sistemas)
+                                    {
+                                    <option value="@item.Id">@item.Nome</option>
+                                    }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => model.IdSistema)" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                            <a class="btn btn-white" role="button" href="/sistema/listar">Voltar</a>                            
-                            <button class="btn btn-primary" type="submit">Remover</button>
+                            <a class="btn btn-white" role="button" href="/projeto/listar">Voltar</a>
+                            <button class="btn btn-primary" type="submit">Incluir</button>
                         </div>
                     </div>
-                }        
+                }
 
             </EditForm>
         </div>
@@ -53,20 +58,18 @@
 </div>
 
 @code {
-    [Parameter]
-    public Guid Id { get; set; }
-
-    private SistemaViewModel model = new SistemaViewModel();
+    private ProjetoViewModel model = new ProjetoViewModel();
+    private IEnumerable<SistemaViewModel> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", "", Id);
+        sistemas = await cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", "");
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("sistema", "", Id);
+        await cpnucleoApiService.PostAsync<ProjetoViewModel>("projeto", "", model);
 
-        navigationManager.NavigateTo("/sistema/listar");
+        navigationManager.NavigateTo("/projeto/listar");
     }
 }

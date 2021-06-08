@@ -1,11 +1,11 @@
-@page "/sistema/remover/{id:guid}"
+@page "/projeto/alterar/{id:guid}"
 @inject ICpnucleoApiService cpnucleoApiService;
 @inject NavigationManager navigationManager
 
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>Remoção de Sistema</h5>
+            <h5>Alteração de Sistema</h5>
             <div class="ibox-tools">
                 <a class="fullscreen-link">
                     <i class="fa fa-expand"></i>
@@ -24,25 +24,25 @@
                 else
                 {
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
+                        <label class="col-sm-2 control-label">Nome</label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Nome">                            
-                            <p class="form-control-static">@model.Nome</p>
+                            <InputText class="form-control" @bind-Value="model.Nome" />
+                            <ValidationMessage For="@(() => model.Nome)" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Descricao)" /></label>
+                        <label class="col-sm-2 control-label">Descrição</label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Descricao">                            
-                            <p class="form-control-static">@model.Descricao</p>
+                            <InputText class="form-control" @bind-Value="model.Descricao" />                        
+                            <ValidationMessage For="@(() => model.Descricao)" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                            <a class="btn btn-white" role="button" href="/sistema/listar">Voltar</a>                            
-                            <button class="btn btn-primary" type="submit">Remover</button>
+                            <a class="btn btn-white" role="button" href="/sistema/listar">Voltar</a>
+                            <button class="btn btn-primary" type="submit">Alterar</button>
                         </div>
                     </div>
                 }        
@@ -65,7 +65,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("sistema", "", Id);
+        await cpnucleoApiService.PutAsync("sistema", "", Id, model);
 
         navigationManager.NavigateTo("/sistema/listar");
     }

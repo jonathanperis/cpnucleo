@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.MVC", "src\Cpnucle
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Application", "3 - Application", "{065177B7-0506-4914-88AA-C5B5B6F538BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Application.Test", "test\Cpnucleo.Application.Test\Cpnucleo.Application.Test.csproj", "{B26E12FF-3739-454C-A2FE-6597A55069A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Application.Test", "test\Cpnucleo.Application.Test\Cpnucleo.Application.Test.csproj", "{B26E12FF-3739-454C-A2FE-6597A55069A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
