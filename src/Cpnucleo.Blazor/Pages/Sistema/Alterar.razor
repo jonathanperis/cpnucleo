@@ -56,11 +56,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private Sistema model = new Sistema();
+    private SistemaViewModel model = new SistemaViewModel();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<Sistema>("sistema", "", Id);
+        model = await cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", "", Id);
     }
 
     private async Task HandleValidSubmit()

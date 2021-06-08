@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -9,6 +9,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.7" PrivateAssets="all" />
     <PackageReference Include="Refit" Version="6.0.38" />
     <PackageReference Include="Refit.HttpClientFactory" Version="6.0.38" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
   </ItemGroup>
 
 </Project>

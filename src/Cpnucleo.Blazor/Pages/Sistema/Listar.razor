@@ -80,11 +80,11 @@
 </div>
 
 @code {
-    private IEnumerable<Sistema> sistemas;
+    private IEnumerable<SistemaViewModel> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiService.GetAsync<IEnumerable<Sistema>>("sistema", "");
+        sistemas = await cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Sistemas");
     }
