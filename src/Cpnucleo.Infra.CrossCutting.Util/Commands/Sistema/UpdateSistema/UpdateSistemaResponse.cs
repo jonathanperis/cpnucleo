@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+
+[DataContract]
+public class UpdateSistemaResponse
 {
-    [DataContract]
-    public class UpdateSistemaResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

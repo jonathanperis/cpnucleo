@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
+
+[DataContract]
+public class UpdateTarefaResponse
 {
-    [DataContract]
-    public class UpdateTarefaResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

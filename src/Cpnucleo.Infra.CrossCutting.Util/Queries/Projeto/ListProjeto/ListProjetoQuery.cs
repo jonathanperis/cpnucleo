@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
+
+[DataContract]
+public class ListProjetoQuery
 {
-    [DataContract]
-    public class ListProjetoQuery
-    {
-        [DataMember(Order = 1)]
-        public bool GetDependencies { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public bool GetDependencies { get; set; }
 }
