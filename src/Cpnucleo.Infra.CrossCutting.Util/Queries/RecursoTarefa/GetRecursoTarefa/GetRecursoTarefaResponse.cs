@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa
 {
     [DataContract]
     public class GetRecursoTarefaResponse

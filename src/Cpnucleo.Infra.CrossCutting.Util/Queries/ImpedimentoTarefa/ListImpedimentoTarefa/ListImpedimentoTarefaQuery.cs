@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa
 {
     [DataContract]
     public class ListImpedimentoTarefaQuery

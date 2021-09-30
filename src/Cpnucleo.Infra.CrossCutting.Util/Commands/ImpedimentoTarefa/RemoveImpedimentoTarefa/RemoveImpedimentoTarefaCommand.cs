@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa
 {
     [DataContract]
     public class RemoveImpedimentoTarefaCommand

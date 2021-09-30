@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento
 {
     [DataContract]
     public class GetApontamentoResponse

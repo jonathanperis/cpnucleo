@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa
 {
     [DataContract]
     public class GetTarefaQuery

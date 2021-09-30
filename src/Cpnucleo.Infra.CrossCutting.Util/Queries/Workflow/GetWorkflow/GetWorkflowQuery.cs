@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow
 {
     [DataContract]
     public class GetWorkflowQuery

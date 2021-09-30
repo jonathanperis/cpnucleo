@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa
 {
     [DataContract]
     public class ListTipoTarefaQuery
