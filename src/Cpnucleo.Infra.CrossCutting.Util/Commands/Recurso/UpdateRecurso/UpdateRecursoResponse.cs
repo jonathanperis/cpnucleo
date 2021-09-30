@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
+
+[DataContract]
+public class UpdateRecursoResponse
 {
-    [DataContract]
-    public class UpdateRecursoResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

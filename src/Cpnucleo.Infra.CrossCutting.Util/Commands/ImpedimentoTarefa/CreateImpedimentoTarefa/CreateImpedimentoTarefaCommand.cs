@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
+
+[DataContract]
+public class CreateImpedimentoTarefaCommand
 {
-    [DataContract]
-    public class CreateImpedimentoTarefaCommand
-    {
-        [DataMember(Order = 1)]
-        public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
 }

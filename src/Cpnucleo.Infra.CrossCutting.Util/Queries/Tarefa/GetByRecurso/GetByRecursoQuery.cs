@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
+
+[DataContract]
+public class GetByRecursoQuery
 {
-    [DataContract]
-    public class GetByRecursoQuery
-    {
-        [DataMember(Order = 1)]
-        public Guid IdRecurso { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public Guid IdRecurso { get; set; }
 }

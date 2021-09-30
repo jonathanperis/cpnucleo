@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
+
+[DataContract]
+public class UpdateProjetoCommand
 {
-    [DataContract]
-    public class UpdateProjetoCommand
-    {
-        [DataMember(Order = 1)]
-        public ProjetoViewModel Projeto { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public ProjetoViewModel Projeto { get; set; }
 }

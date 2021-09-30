@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
+
+[DataContract]
+public class CreateWorkflowCommand
 {
-    [DataContract]
-    public class CreateWorkflowCommand
-    {
-        [DataMember(Order = 1)]
-        public WorkflowViewModel Workflow { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public WorkflowViewModel Workflow { get; set; }
 }

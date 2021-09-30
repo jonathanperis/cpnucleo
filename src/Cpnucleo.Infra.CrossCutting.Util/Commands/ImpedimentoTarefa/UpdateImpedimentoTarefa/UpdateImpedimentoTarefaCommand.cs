@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
+
+[DataContract]
+public class UpdateImpedimentoTarefaCommand
 {
-    [DataContract]
-    public class UpdateImpedimentoTarefaCommand
-    {
-        [DataMember(Order = 1)]
-        public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
 }

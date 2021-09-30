@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
+
+[DataContract]
+public class RemoveProjetoResponse
 {
-    [DataContract]
-    public class RemoveProjetoResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

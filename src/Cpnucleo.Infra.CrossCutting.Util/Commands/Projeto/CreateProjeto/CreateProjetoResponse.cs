@@ -1,12 +1,11 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto
-{
-    [DataContract]
-    public class CreateProjetoResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
 
-        [DataMember(Order = 2)]
-        public ProjetoViewModel Projeto { get; set; }
-    }
+[DataContract]
+public class CreateProjetoResponse
+{
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
+
+    [DataMember(Order = 2)]
+    public ProjetoViewModel Projeto { get; set; }
 }

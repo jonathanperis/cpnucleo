@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
+
+[DataContract]
+public class GetApontamentoQuery
 {
-    [DataContract]
-    public class GetApontamentoQuery
-    {
-        [DataMember(Order = 1)]
-        public Guid Id { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public Guid Id { get; set; }
 }

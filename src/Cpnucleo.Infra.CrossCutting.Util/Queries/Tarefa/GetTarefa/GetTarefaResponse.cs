@@ -1,12 +1,11 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa
-{
-    [DataContract]
-    public class GetTarefaResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
 
-        [DataMember(Order = 2)]
-        public TarefaViewModel Tarefa { get; set; }
-    }
+[DataContract]
+public class GetTarefaResponse
+{
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
+
+    [DataMember(Order = 2)]
+    public TarefaViewModel Tarefa { get; set; }
 }
