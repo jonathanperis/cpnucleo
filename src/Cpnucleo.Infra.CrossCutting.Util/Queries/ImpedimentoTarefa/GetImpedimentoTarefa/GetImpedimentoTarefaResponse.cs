@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa
 {
     [DataContract]
     public class GetImpedimentoTarefaResponse

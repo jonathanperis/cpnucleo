@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
 {
     [DataContract]
     public class ListProjetoResponse

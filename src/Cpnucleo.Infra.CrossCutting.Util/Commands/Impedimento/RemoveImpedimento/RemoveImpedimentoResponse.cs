@@ -1,11 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento
+[DataContract]
+public class RemoveImpedimentoResponse
 {
-    [DataContract]
-    public class RemoveImpedimentoResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

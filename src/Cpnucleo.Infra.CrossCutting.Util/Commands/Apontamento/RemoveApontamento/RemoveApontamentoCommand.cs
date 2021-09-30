@@ -1,12 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
 
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento
+[DataContract]
+public class RemoveApontamentoCommand
 {
-    [DataContract]
-    public class RemoveApontamentoCommand
-    {
-        [DataMember(Order = 1)]
-        public Guid Id { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public Guid Id { get; set; }
 }

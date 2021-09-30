@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema
 {
     [DataContract]
     public class ListSistemaQuery

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso
 {
     [DataContract]
     public class GetRecursoQuery

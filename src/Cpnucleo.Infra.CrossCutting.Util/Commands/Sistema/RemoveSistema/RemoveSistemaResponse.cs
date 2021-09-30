@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema
 {
     [DataContract]
     public class RemoveSistemaResponse

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento
 {
     [DataContract]
     public class GetImpedimentoQuery

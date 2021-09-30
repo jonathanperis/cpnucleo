@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth
 {
     [DataContract]
     public class AuthResponse

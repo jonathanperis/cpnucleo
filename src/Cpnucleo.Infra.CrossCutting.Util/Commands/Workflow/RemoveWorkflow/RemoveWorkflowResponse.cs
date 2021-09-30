@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow
 {
     [DataContract]
     public class RemoveWorkflowResponse
