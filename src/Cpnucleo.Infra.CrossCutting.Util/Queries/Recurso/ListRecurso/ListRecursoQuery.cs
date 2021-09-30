@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso
 {
     [DataContract]
     public class ListRecursoQuery

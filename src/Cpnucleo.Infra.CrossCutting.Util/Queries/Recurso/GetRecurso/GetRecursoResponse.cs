@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso
 {
     [DataContract]
     public class GetRecursoResponse

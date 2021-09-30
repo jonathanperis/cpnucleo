@@ -1,12 +1,9 @@
-﻿using System.Runtime.Serialization;
+﻿namespace Cpnucleo.Infra.CrossCutting.Util;
 
-namespace Cpnucleo.Infra.CrossCutting.Util
+[DataContract]
+public enum OperationResult
 {
-    [DataContract]
-    public enum OperationResult
-    {
-        Failed,
-        Success,
-        NotFound,
-    }
+    Failed,
+    Success,
+    NotFound,
 }

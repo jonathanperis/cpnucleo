@@ -1,7 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-
 namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels
 {
     [DataContract]

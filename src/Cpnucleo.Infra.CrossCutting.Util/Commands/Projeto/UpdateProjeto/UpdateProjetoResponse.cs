@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto
 {
     [DataContract]
     public class UpdateProjetoResponse

@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto
 {
     [DataContract]
     public class ListProjetoQuery
