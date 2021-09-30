@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto;
+
+[DataContract]
+public class UpdateRecursoProjetoResponse
 {
-    [DataContract]
-    public class UpdateRecursoProjetoResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
+
+[DataContract]
+public class UpdateWorkflowResponse
 {
-    [DataContract]
-    public class UpdateWorkflowResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

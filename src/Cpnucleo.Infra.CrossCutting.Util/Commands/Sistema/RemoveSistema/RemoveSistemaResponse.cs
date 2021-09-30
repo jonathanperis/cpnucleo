@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
+
+[DataContract]
+public class RemoveSistemaResponse
 {
-    [DataContract]
-    public class RemoveSistemaResponse
-    {
-        [DataMember(Order = 1)]
-        public OperationResult Status { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public OperationResult Status { get; set; }
 }

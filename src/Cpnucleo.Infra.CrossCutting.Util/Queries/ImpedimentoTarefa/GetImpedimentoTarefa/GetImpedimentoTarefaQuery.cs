@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
+
+[DataContract]
+public class GetImpedimentoTarefaQuery
 {
-    [DataContract]
-    public class GetImpedimentoTarefaQuery
-    {
-        [DataMember(Order = 1)]
-        public Guid Id { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public Guid Id { get; set; }
 }

@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto;
+
+[DataContract]
+public class CreateRecursoProjetoCommand
 {
-    [DataContract]
-    public class CreateRecursoProjetoCommand
-    {
-        [DataMember(Order = 1)]
-        public RecursoProjetoViewModel RecursoProjeto { get; set; }
-    }
+    [DataMember(Order = 1)]
+    public RecursoProjetoViewModel RecursoProjeto { get; set; }
 }
