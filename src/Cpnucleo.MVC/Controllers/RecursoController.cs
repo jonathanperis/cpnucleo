@@ -1,170 +1,161 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using Cpnucleo.MVC.Models;
-using MagicOnion.Client;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers
+namespace Cpnucleo.MVC.Controllers;
+
+[Authorize]
+public class RecursoController : BaseController
 {
-    [Authorize]
-    public class RecursoController : BaseController
+    private readonly IRecursoGrpcService _recursoGrpcService;
+
+    private RecursoView _recursoView;
+
+    public RecursoController(IConfiguration configuration)
+        : base(configuration)
     {
-        private readonly IRecursoGrpcService _recursoGrpcService;
+        _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
+    }
 
-        private RecursoView _recursoView;
-
-        public RecursoController(IConfiguration configuration)
-            : base(configuration)
+    public RecursoView RecursoView
+    {
+        get
         {
-            _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
-        }
-
-        public RecursoView RecursoView
-        {
-            get
+            if (_recursoView == null)
             {
-                if (_recursoView == null)
-                {
-                    _recursoView = new RecursoView();
-                }
-
-                return _recursoView;
+                _recursoView = new RecursoView();
             }
-            set => _recursoView = value;
+
+            return _recursoView;
         }
+        set => _recursoView = value;
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Listar()
+    [HttpGet]
+    public async Task<IActionResult> Listar()
+    {
+        try
         {
-            try
-            {
-                ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
-                RecursoView.Lista = response.Recursos;
+            ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
+            RecursoView.Lista = response.Recursos;
 
-                return View(RecursoView);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+            return View(RecursoView);
         }
-
-        [HttpGet]
-        public IActionResult Incluir()
+        catch (Exception ex)
         {
+            ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Incluir(RecursoView obj)
+    [HttpGet]
+    public IActionResult Incluir()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Incluir(RecursoView obj)
+    {
+        try
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return View();
-                }
-
-                await _recursoGrpcService.AddAsync(new CreateRecursoCommand { Recurso = obj.Recurso });
-
-                return RedirectToAction("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> Alterar(Guid id)
+            await _recursoGrpcService.AddAsync(new CreateRecursoCommand { Recurso = obj.Recurso });
+
+            return RedirectToAction("Listar");
+        }
+        catch (Exception ex)
         {
-            try
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Alterar(Guid id)
+    {
+        try
+        {
+            GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
+            RecursoView.Recurso = response.Recurso;
+
+            return View(RecursoView);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Alterar(RecursoView obj)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
-                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
+                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
                 RecursoView.Recurso = response.Recurso;
 
                 return View(RecursoView);
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+
+            await _recursoGrpcService.UpdateAsync(new UpdateRecursoCommand { Recurso = obj.Recurso });
+
+            return RedirectToAction("Listar");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Alterar(RecursoView obj)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
-                    RecursoView.Recurso = response.Recurso;
-
-                    return View(RecursoView);
-                }
-
-                await _recursoGrpcService.UpdateAsync(new UpdateRecursoCommand { Recurso = obj.Recurso });
-
-                return RedirectToAction("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
         }
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Remover(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Remover(Guid id)
+    {
+        try
         {
-            try
+            GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
+            RecursoView.Recurso = response.Recurso;
+
+            return View(RecursoView);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Remover(RecursoView obj)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
-                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
+                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
                 RecursoView.Recurso = response.Recurso;
 
                 return View(RecursoView);
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+
+            await _recursoGrpcService.RemoveAsync(new RemoveRecursoCommand { Id = obj.Recurso.Id });
+
+            return RedirectToAction("Listar");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Remover(RecursoView obj)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
-                    RecursoView.Recurso = response.Recurso;
-
-                    return View(RecursoView);
-                }
-
-                await _recursoGrpcService.RemoveAsync(new RemoveRecursoCommand { Id = obj.Recurso.Id });
-
-                return RedirectToAction("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
         }
     }
 }

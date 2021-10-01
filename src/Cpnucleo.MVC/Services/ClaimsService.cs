@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
-namespace Cpnucleo.MVC.Services
+namespace Cpnucleo.MVC.Services;
+
+public static class ClaimsService
 {
-    public static class ClaimsService
+    public static ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
     {
-        public static ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
-        {
-            ClaimsIdentity identities = new ClaimsIdentity(claims, "Cookie");
+        ClaimsIdentity identities = new ClaimsIdentity(claims, "Cookie");
 
-            return new ClaimsPrincipal(new[] { identities });
-        }
+        return new ClaimsPrincipal(new[] { identities });
+    }
 
-        public static string ReadClaimsPrincipal(ClaimsPrincipal principal, string type)
-        {
-            return principal.Claims.SingleOrDefault(x => x.Type == type)?.Value;
-        }
+    public static string ReadClaimsPrincipal(ClaimsPrincipal principal, string type)
+    {
+        return principal.Claims.SingleOrDefault(x => x.Type == type)?.Value;
     }
 }

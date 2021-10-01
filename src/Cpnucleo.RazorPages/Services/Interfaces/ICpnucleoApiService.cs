@@ -1,6 +1,4 @@
 using Refit;
-using System;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces
 {

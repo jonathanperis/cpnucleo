@@ -1,7 +1,6 @@
-namespace Cpnucleo.MVC.Configuration
+namespace Cpnucleo.MVC.Configuration;
+
+public class ApplicationConfigurations
 {
-    public class ApplicationConfigurations
-    {
-        public string NomeSistema { get; set; }
-    }
+    public string NomeSistema { get; set; }
 }

@@ -1,170 +1,161 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
-using Cpnucleo.MVC.Models;
-using MagicOnion.Client;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers
+namespace Cpnucleo.MVC.Controllers;
+
+[Authorize]
+public class WorkflowController : BaseController
 {
-    [Authorize]
-    public class WorkflowController : BaseController
+    private readonly IWorkflowGrpcService _workflowGrpcService;
+
+    private WorkflowView _workflowView;
+
+    public WorkflowController(IConfiguration configuration)
+        : base(configuration)
     {
-        private readonly IWorkflowGrpcService _workflowGrpcService;
+        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
+    }
 
-        private WorkflowView _workflowView;
-
-        public WorkflowController(IConfiguration configuration)
-            : base(configuration)
+    public WorkflowView WorkflowView
+    {
+        get
         {
-            _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
-        }
-
-        public WorkflowView WorkflowView
-        {
-            get
+            if (_workflowView == null)
             {
-                if (_workflowView == null)
-                {
-                    _workflowView = new WorkflowView();
-                }
-
-                return _workflowView;
+                _workflowView = new WorkflowView();
             }
-            set => _workflowView = value;
+
+            return _workflowView;
         }
+        set => _workflowView = value;
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Listar()
+    [HttpGet]
+    public async Task<IActionResult> Listar()
+    {
+        try
         {
-            try
-            {
-                ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
-                WorkflowView.Lista = response.Workflows;
+            ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
+            WorkflowView.Lista = response.Workflows;
 
-                return View(WorkflowView);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+            return View(WorkflowView);
         }
-
-        [HttpGet]
-        public IActionResult Incluir()
+        catch (Exception ex)
         {
+            ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Incluir(WorkflowView obj)
+    [HttpGet]
+    public IActionResult Incluir()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Incluir(WorkflowView obj)
+    {
+        try
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return View();
-                }
-
-                await _workflowGrpcService.AddAsync(new CreateWorkflowCommand { Workflow = obj.Workflow });
-
-                return RedirectToAction("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
                 return View();
             }
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> Alterar(Guid id)
+            await _workflowGrpcService.AddAsync(new CreateWorkflowCommand { Workflow = obj.Workflow });
+
+            return RedirectToAction("Listar");
+        }
+        catch (Exception ex)
         {
-            try
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Alterar(Guid id)
+    {
+        try
+        {
+            GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
+            WorkflowView.Workflow = response.Workflow;
+
+            return View(WorkflowView);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Alterar(WorkflowView obj)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
-                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
+                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
                 WorkflowView.Workflow = response.Workflow;
 
                 return View(WorkflowView);
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+
+            await _workflowGrpcService.UpdateAsync(new UpdateWorkflowCommand { Workflow = obj.Workflow });
+
+            return RedirectToAction("Listar");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Alterar(WorkflowView obj)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
-                    WorkflowView.Workflow = response.Workflow;
-
-                    return View(WorkflowView);
-                }
-
-                await _workflowGrpcService.UpdateAsync(new UpdateWorkflowCommand { Workflow = obj.Workflow });
-
-                return RedirectToAction("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
         }
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Remover(Guid id)
+    [HttpGet]
+    public async Task<IActionResult> Remover(Guid id)
+    {
+        try
         {
-            try
+            GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
+            WorkflowView.Workflow = response.Workflow;
+
+            return View(WorkflowView);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Remover(WorkflowView obj)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
-                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
+                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
                 WorkflowView.Workflow = response.Workflow;
 
                 return View(WorkflowView);
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+
+            await _workflowGrpcService.RemoveAsync(new RemoveWorkflowCommand { Id = obj.Workflow.Id });
+
+            return RedirectToAction("Listar");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Remover(WorkflowView obj)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
-                    WorkflowView.Workflow = response.Workflow;
-
-                    return View(WorkflowView);
-                }
-
-                await _workflowGrpcService.RemoveAsync(new RemoveWorkflowCommand { Id = obj.Workflow.Id });
-
-                return RedirectToAction("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
         }
     }
 }

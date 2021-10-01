@@ -3,9 +3,6 @@ using Cpnucleo.RazorPages.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa
 {
