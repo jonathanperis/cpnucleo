@@ -1,58 +1,52 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
-namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
+[Authorize]
+public class RemoverModel : PageBase
 {
-    [Authorize]
-    public class RemoverModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    [BindProperty]
+    public RecursoProjetoViewModel RecursoProjeto { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid id)
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
+            RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, id);
+
+            return Page();
         }
-
-        [BindProperty]
-        public RecursoProjetoViewModel RecursoProjeto { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(Guid id)
+        catch (Exception ex)
         {
-            try
-            {
-                RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, id);
-
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
+    }
 
-        public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync()
+    {
+        try
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, RecursoProjeto.Id);
+                RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, RecursoProjeto.Id);
 
-                    return Page();
-                }
-
-                await _cpnucleoApiService.DeleteAsync("recursoProjeto", Token, RecursoProjeto.Id);
-
-                return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
+
+            await _cpnucleoApiService.DeleteAsync("recursoProjeto", Token, RecursoProjeto.Id);
+
+            return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }

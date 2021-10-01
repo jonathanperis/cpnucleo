@@ -1,40 +1,34 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
-namespace Cpnucleo.RazorPages.Pages.RecursoProjeto
+[Authorize]
+public class ListarModel : PageBase
 {
-    [Authorize]
-    public class ListarModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public ListarModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public ListarModel(ICpnucleoApiService cpnucleoApiService)
+    [BindProperty]
+    public RecursoProjetoViewModel RecursoProjeto { get; set; }
+
+    public IEnumerable<RecursoProjetoViewModel> Lista { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid idProjeto)
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
+            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, idProjeto);
+
+            ViewData["idProjeto"] = idProjeto;
+
+            return Page();
         }
-
-        [BindProperty]
-        public RecursoProjetoViewModel RecursoProjeto { get; set; }
-
-        public IEnumerable<RecursoProjetoViewModel> Lista { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(Guid idProjeto)
+        catch (Exception ex)
         {
-            try
-            {
-                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, idProjeto);
-
-                ViewData["idProjeto"] = idProjeto;
-
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }
