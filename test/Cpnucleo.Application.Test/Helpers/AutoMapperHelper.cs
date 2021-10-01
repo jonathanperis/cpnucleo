@@ -1,19 +1,17 @@
-﻿using AutoMapper;
-using Cpnucleo.Application.Configuration;
+﻿using Cpnucleo.Application.Configuration;
 
-namespace Cpnucleo.Application.Test.Helpers
+namespace Cpnucleo.Application.Test.Helpers;
+
+public class AutoMapperHelper
 {
-    public class AutoMapperHelper
+    public static IMapper GetMappings()
     {
-        public static IMapper GetMappings()
+        MapperConfiguration config = new MapperConfiguration(cfg =>
         {
-            MapperConfiguration config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ViewModelToEntityProfile>();
-                cfg.AddProfile<EntityToViewModelProfile>();
-            });
+            cfg.AddProfile<ViewModelToEntityProfile>();
+            cfg.AddProfile<EntityToViewModelProfile>();
+        });
 
-            return config.CreateMapper();
-        }
+        return config.CreateMapper();
     }
 }
