@@ -1,17 +1,53 @@
-﻿using Microsoft.AspNetCore;
+﻿using Cpnucleo.API.Configuration;
+using Cpnucleo.Infra.CrossCutting.IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
-namespace Cpnucleo.API;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+builder.Services.AddCpnucleoSetup();
+
+builder.Services.AddSwaggerConfig();
+builder.Services.AddVersionConfig();
+
+builder.Services.AddAuthentication(x =>
 {
-    public static void Main(string[] args)
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
     {
-        CreateWebHostBuilder(args).Build().Run();
-    }
+        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"])),
+    };
+});
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+// Add services to the container.
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
     {
-        return WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>();
-    }
-}
+        options.SuppressMapClientErrors = true;
+    });
+
+var app = builder.Build();
+
+app.UseSwaggerConfig();
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
