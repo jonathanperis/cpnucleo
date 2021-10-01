@@ -1,62 +1,56 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Cpnucleo.RazorPages.Pages;
 
-namespace Cpnucleo.RazorPages.Pages
+[Authorize]
+public class FluxoTrabalhoModel : PageBase
 {
-    [Authorize]
-    public class FluxoTrabalhoModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public FluxoTrabalhoModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public FluxoTrabalhoModel(ICpnucleoApiService cpnucleoApiService)
+    public IEnumerable<WorkflowViewModel> Lista { get; set; }
+
+    public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
+
+    public async Task<IActionResult> OnGetAsync()
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
+            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
+            ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
+
+            return Page();
         }
-
-        public IEnumerable<WorkflowViewModel> Lista { get; set; }
-
-        public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
-
-        public async Task<IActionResult> OnGetAsync()
+        catch (Exception ex)
         {
-            try
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
+        }
+    }
+
+    public async Task<IActionResult> OnPostAsync(Guid idTarefa, Guid idWorkflow)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
                 Lista = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
                 ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
 
                 return Page();
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+
+            WorkflowViewModel result3 = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
+            await _cpnucleoApiService.PutAsync("tarefa/putByWorkflow", Token, idTarefa, result3);
+
+            return Page();
         }
-
-        public async Task<IActionResult> OnPostAsync(Guid idTarefa, Guid idWorkflow)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    Lista = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
-                    ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
-
-                    return Page();
-                }
-
-                WorkflowViewModel result3 = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
-                await _cpnucleoApiService.PutAsync("tarefa/putByWorkflow", Token, idTarefa, result3);
-
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }

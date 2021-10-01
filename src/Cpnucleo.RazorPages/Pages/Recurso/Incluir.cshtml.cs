@@ -1,41 +1,35 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
 
-namespace Cpnucleo.RazorPages.Pages.Recurso
+[Authorize]
+public class IncluirModel : PageBase
 {
-    [Authorize]
-    public class IncluirModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    [BindProperty]
+    public RecursoViewModel Recurso { get; set; }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
-        }
-
-        [BindProperty]
-        public RecursoViewModel Recurso { get; set; }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return Page();
-                }
-
-                await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", Token, Recurso);
-
-                return RedirectToPage("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
                 return Page();
             }
+
+            await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", Token, Recurso);
+
+            return RedirectToPage("Listar");
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }

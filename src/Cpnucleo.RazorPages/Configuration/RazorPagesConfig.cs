@@ -1,5 +1,4 @@
-﻿using Cpnucleo.RazorPages.Services.Interfaces;
-using Refit;
+﻿using Refit;
 
 namespace Cpnucleo.RazorPages.Configuration;
 

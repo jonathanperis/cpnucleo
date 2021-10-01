@@ -1,35 +1,56 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
-namespace Cpnucleo.RazorPages.Pages.Tarefa
+[Authorize]
+public class IncluirModel : PageBase
 {
-    [Authorize]
-    public class IncluirModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    [BindProperty]
+    public TarefaViewModel Tarefa { get; set; }
+
+    public SelectList SelectProjetos { get; set; }
+
+    public SelectList SelectSistemas { get; set; }
+
+    public SelectList SelectWorkflows { get; set; }
+
+    public SelectList SelectTipoTarefas { get; set; }
+
+    public async Task<IActionResult> OnGetAsync()
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
+            IEnumerable<ProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+            SelectProjetos = new SelectList(result, "Id", "Nome");
+
+            IEnumerable<SistemaViewModel> result2 = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+            SelectSistemas = new SelectList(result2, "Id", "Nome");
+
+            IEnumerable<WorkflowViewModel> result3 = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
+            SelectWorkflows = new SelectList(result3, "Id", "Nome");
+
+            IEnumerable<TipoTarefaViewModel> result4 = await _cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
+            SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
+
+            return Page();
         }
-
-        [BindProperty]
-        public TarefaViewModel Tarefa { get; set; }
-
-        public SelectList SelectProjetos { get; set; }
-
-        public SelectList SelectSistemas { get; set; }
-
-        public SelectList SelectWorkflows { get; set; }
-
-        public SelectList SelectTipoTarefas { get; set; }
-
-        public async Task<IActionResult> OnGetAsync()
+        catch (Exception ex)
         {
-            try
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
+        }
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
                 IEnumerable<ProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
                 SelectProjetos = new SelectList(result, "Id", "Nome");
@@ -45,43 +66,15 @@ namespace Cpnucleo.RazorPages.Pages.Tarefa
 
                 return Page();
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+
+            await _cpnucleoApiService.PostAsync<TarefaViewModel>("tarefa", Token, Tarefa);
+
+            return RedirectToPage("Listar");
         }
-
-        public async Task<IActionResult> OnPostAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    IEnumerable<ProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
-                    SelectProjetos = new SelectList(result, "Id", "Nome");
-
-                    IEnumerable<SistemaViewModel> result2 = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
-                    SelectSistemas = new SelectList(result2, "Id", "Nome");
-
-                    IEnumerable<WorkflowViewModel> result3 = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
-                    SelectWorkflows = new SelectList(result3, "Id", "Nome");
-
-                    IEnumerable<TipoTarefaViewModel> result4 = await _cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
-                    SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
-
-                    return Page();
-                }
-
-                await _cpnucleoApiService.PostAsync<TarefaViewModel>("tarefa", Token, Tarefa);
-
-                return RedirectToPage("Listar");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }

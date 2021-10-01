@@ -1,40 +1,34 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
-namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa
+[Authorize]
+public class ListarModel : PageBase
 {
-    [Authorize]
-    public class ListarModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public ListarModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public ListarModel(ICpnucleoApiService cpnucleoApiService)
+    [BindProperty]
+    public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
+
+    public IEnumerable<ImpedimentoTarefaViewModel> Lista { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid idTarefa)
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
+            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>("impedimentoTarefa/getByTarefa", Token, idTarefa);
+
+            ViewData["idTarefa"] = idTarefa;
+
+            return Page();
         }
-
-        [BindProperty]
-        public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
-
-        public IEnumerable<ImpedimentoTarefaViewModel> Lista { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(Guid idTarefa)
+        catch (Exception ex)
         {
-            try
-            {
-                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>("impedimentoTarefa/getByTarefa", Token, idTarefa);
-
-                ViewData["idTarefa"] = idTarefa;
-
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }

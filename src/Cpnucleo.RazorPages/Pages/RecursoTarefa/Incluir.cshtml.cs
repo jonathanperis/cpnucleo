@@ -1,69 +1,62 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using Cpnucleo.RazorPages.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
 
-namespace Cpnucleo.RazorPages.Pages.RecursoTarefa
+[Authorize]
+public class IncluirModel : PageBase
 {
-    [Authorize]
-    public class IncluirModel : PageBase
+    private readonly ICpnucleoApiService _cpnucleoApiService;
+
+    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
     {
-        private readonly ICpnucleoApiService _cpnucleoApiService;
+        _cpnucleoApiService = cpnucleoApiService;
+    }
 
-        public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    [BindProperty]
+    public RecursoTarefaViewModel RecursoTarefa { get; set; }
+
+    public TarefaViewModel Tarefa { get; set; }
+
+    public SelectList SelectRecursos { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(Guid idTarefa)
+    {
+        try
         {
-            _cpnucleoApiService = cpnucleoApiService;
+            Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+
+            IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+            SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
+
+            return Page();
         }
-
-        [BindProperty]
-        public RecursoTarefaViewModel RecursoTarefa { get; set; }
-
-        public TarefaViewModel Tarefa { get; set; }
-
-        public SelectList SelectRecursos { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(Guid idTarefa)
+        catch (Exception ex)
         {
-            try
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
+        }
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        try
+        {
+            if (!ModelState.IsValid)
             {
-                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
 
                 IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
                 SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+
+            await _cpnucleoApiService.PostAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa);
+
+            return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }
-
-        public async Task<IActionResult> OnPostAsync()
+        catch (Exception ex)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
-
-                    IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
-                    SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
-
-                    return Page();
-                }
-
-                await _cpnucleoApiService.PostAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa);
-
-                return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();
-            }
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return Page();
         }
     }
 }
