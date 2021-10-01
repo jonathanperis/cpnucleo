@@ -1,84 +1,76 @@
-﻿using AutoMapper;
-using Cpnucleo.Application.Interfaces;
-using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.UoW;
+﻿using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Cpnucleo.Application.Services
+namespace Cpnucleo.Application.Services;
+
+internal class RecursoAppService : IRecursoAppService
 {
-    internal class RecursoAppService : IRecursoAppService
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly ICryptographyManager _cryptographyManager;
+
+    public RecursoAppService(IUnitOfWork unitOfWork, IMapper mapper, ICryptographyManager cryptographyManager)
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly ICryptographyManager _cryptographyManager;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _cryptographyManager = cryptographyManager;
+    }
 
-        public RecursoAppService(IUnitOfWork unitOfWork, IMapper mapper, ICryptographyManager cryptographyManager)
+    public async Task<RecursoViewModel> AddAsync(RecursoViewModel viewModel)
+    {
+        _cryptographyManager.CryptPbkdf2(viewModel.Senha, out string senhaCrypt, out string salt);
+
+        viewModel.Senha = senhaCrypt;
+        viewModel.Salt = salt;
+
+        RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(viewModel)));
+        await _unitOfWork.SaveChangesAsync();
+
+        return result;
+    }
+
+    public async Task<IEnumerable<RecursoViewModel>> AllAsync(bool getDependencies = false)
+    {
+        IEnumerable<RecursoViewModel> result = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(getDependencies));
+
+        foreach (RecursoViewModel item in result)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _cryptographyManager = cryptographyManager;
+            item.Senha = null;
+            item.Salt = null;
         }
 
-        public async Task<RecursoViewModel> AddAsync(RecursoViewModel viewModel)
-        {
-            _cryptographyManager.CryptPbkdf2(viewModel.Senha, out string senhaCrypt, out string salt);
+        return result;
+    }
 
-            viewModel.Senha = senhaCrypt;
-            viewModel.Salt = salt;
+    public async Task<RecursoViewModel> GetAsync(Guid id)
+    {
+        RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(id));
 
-            RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(viewModel)));
-            await _unitOfWork.SaveChangesAsync();
+        result.Senha = null;
+        result.Salt = null;
 
-            return result;
-        }
+        return result;
+    }
 
-        public async Task<IEnumerable<RecursoViewModel>> AllAsync(bool getDependencies = false)
-        {
-            IEnumerable<RecursoViewModel> result = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(getDependencies));
+    public async Task RemoveAsync(Guid id)
+    {
+        await _unitOfWork.RecursoRepository.RemoveAsync(id);
+        await _unitOfWork.SaveChangesAsync();
+    }
 
-            foreach (RecursoViewModel item in result)
-            {
-                item.Senha = null;
-                item.Salt = null;
-            }
+    public async Task UpdateAsync(RecursoViewModel viewModel)
+    {
+        _cryptographyManager.CryptPbkdf2(viewModel.Senha, out string senhaCrypt, out string salt);
 
-            return result;
-        }
+        viewModel.Senha = senhaCrypt;
+        viewModel.Salt = salt;
 
-        public async Task<RecursoViewModel> GetAsync(Guid id)
-        {
-            RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(id));
+        _unitOfWork.RecursoRepository.Update(_mapper.Map<Recurso>(viewModel));
+        await _unitOfWork.SaveChangesAsync();
+    }
 
-            result.Senha = null;
-            result.Salt = null;
-
-            return result;
-        }
-
-        public async Task RemoveAsync(Guid id)
-        {
-            await _unitOfWork.RecursoRepository.RemoveAsync(id);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(RecursoViewModel viewModel)
-        {
-            _cryptographyManager.CryptPbkdf2(viewModel.Senha, out string senhaCrypt, out string salt);
-
-            viewModel.Senha = senhaCrypt;
-            viewModel.Salt = salt;
-
-            _unitOfWork.RecursoRepository.Update(_mapper.Map<Recurso>(viewModel));
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
     }
 }

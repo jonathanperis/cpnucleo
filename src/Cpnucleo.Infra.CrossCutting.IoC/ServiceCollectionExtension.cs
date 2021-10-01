@@ -1,10 +1,10 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.IoC;
-
-using Cpnucleo.Application.Configuration;
+﻿using Cpnucleo.Application.Configuration;
 using Cpnucleo.Domain.Configuration;
 using Cpnucleo.Infra.CrossCutting.Security.Configuration;
 using Cpnucleo.Infra.Data.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Cpnucleo.Infra.CrossCutting.IoC;
 
 public static class ServiceCollectionExtension
 {

@@ -1,186 +1,180 @@
-﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces;
-using Cpnucleo.Domain.UoW;
-using Cpnucleo.Infra.Data.Context;
+﻿using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.Data.Repositories;
-using System;
-using System.Threading.Tasks;
 
-namespace Cpnucleo.Infra.Data.UoW
+namespace Cpnucleo.Infra.Data.UoW;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    private readonly CpnucleoContext _context;
+
+    public UnitOfWork(CpnucleoContext context)
     {
-        private readonly CpnucleoContext _context;
+        _context = context;
+    }
 
-        public UnitOfWork(CpnucleoContext context)
+    private IApontamentoRepository _apontamentoRepository;
+    private IGenericRepository<Impedimento> _impedimentoRepository;
+    private IImpedimentoTarefaRepository _impedimentoTarefaRepository;
+    private IGenericRepository<Projeto> _projetoRepository;
+    private IRecursoRepository _recursoRepository;
+    private IRecursoProjetoRepository _recursoProjetoRepository;
+    private IRecursoTarefaRepository _recursoTarefaRepository;
+    private IGenericRepository<Sistema> _sistemaRepository;
+    private ITarefaRepository _tarefaRepository;
+    private IGenericRepository<TipoTarefa> _tipoTarefaRepository;
+    private IWorkflowRepository _workflowRepository;
+
+    public IApontamentoRepository ApontamentoRepository
+    {
+        get
         {
-            _context = context;
-        }
-
-        private IApontamentoRepository _apontamentoRepository;
-        private IGenericRepository<Impedimento> _impedimentoRepository;
-        private IImpedimentoTarefaRepository _impedimentoTarefaRepository;
-        private IGenericRepository<Projeto> _projetoRepository;
-        private IRecursoRepository _recursoRepository;
-        private IRecursoProjetoRepository _recursoProjetoRepository;
-        private IRecursoTarefaRepository _recursoTarefaRepository;
-        private IGenericRepository<Sistema> _sistemaRepository;
-        private ITarefaRepository _tarefaRepository;
-        private IGenericRepository<TipoTarefa> _tipoTarefaRepository;
-        private IWorkflowRepository _workflowRepository;
-
-        public IApontamentoRepository ApontamentoRepository
-        {
-            get
+            if (_apontamentoRepository == null)
             {
-                if (_apontamentoRepository == null)
-                {
-                    _apontamentoRepository = new ApontamentoRepository(_context);
-                }
-
-                return _apontamentoRepository;
+                _apontamentoRepository = new ApontamentoRepository(_context);
             }
-        }
 
-        public IGenericRepository<Impedimento> ImpedimentoRepository
+            return _apontamentoRepository;
+        }
+    }
+
+    public IGenericRepository<Impedimento> ImpedimentoRepository
+    {
+        get
         {
-            get
+            if (_impedimentoRepository == null)
             {
-                if (_impedimentoRepository == null)
-                {
-                    _impedimentoRepository = new GenericRepository<Impedimento>(_context);
-                }
-
-                return _impedimentoRepository;
+                _impedimentoRepository = new GenericRepository<Impedimento>(_context);
             }
-        }
 
-        public IImpedimentoTarefaRepository ImpedimentoTarefaRepository
+            return _impedimentoRepository;
+        }
+    }
+
+    public IImpedimentoTarefaRepository ImpedimentoTarefaRepository
+    {
+        get
         {
-            get
+            if (_impedimentoTarefaRepository == null)
             {
-                if (_impedimentoTarefaRepository == null)
-                {
-                    _impedimentoTarefaRepository = new ImpedimentoTarefaRepository(_context);
-                }
-
-                return _impedimentoTarefaRepository;
+                _impedimentoTarefaRepository = new ImpedimentoTarefaRepository(_context);
             }
-        }
 
-        public IGenericRepository<Projeto> ProjetoRepository
+            return _impedimentoTarefaRepository;
+        }
+    }
+
+    public IGenericRepository<Projeto> ProjetoRepository
+    {
+        get
         {
-            get
+            if (_projetoRepository == null)
             {
-                if (_projetoRepository == null)
-                {
-                    _projetoRepository = new GenericRepository<Projeto>(_context);
-                }
-
-                return _projetoRepository;
+                _projetoRepository = new GenericRepository<Projeto>(_context);
             }
-        }
 
-        public IRecursoRepository RecursoRepository
+            return _projetoRepository;
+        }
+    }
+
+    public IRecursoRepository RecursoRepository
+    {
+        get
         {
-            get
+            if (_recursoRepository == null)
             {
-                if (_recursoRepository == null)
-                {
-                    _recursoRepository = new RecursoRepository(_context);
-                }
-
-                return _recursoRepository;
+                _recursoRepository = new RecursoRepository(_context);
             }
-        }
 
-        public IRecursoProjetoRepository RecursoProjetoRepository
+            return _recursoRepository;
+        }
+    }
+
+    public IRecursoProjetoRepository RecursoProjetoRepository
+    {
+        get
         {
-            get
+            if (_recursoProjetoRepository == null)
             {
-                if (_recursoProjetoRepository == null)
-                {
-                    _recursoProjetoRepository = new RecursoProjetoRepository(_context);
-                }
-
-                return _recursoProjetoRepository;
+                _recursoProjetoRepository = new RecursoProjetoRepository(_context);
             }
-        }
 
-        public IRecursoTarefaRepository RecursoTarefaRepository
+            return _recursoProjetoRepository;
+        }
+    }
+
+    public IRecursoTarefaRepository RecursoTarefaRepository
+    {
+        get
         {
-            get
+            if (_recursoTarefaRepository == null)
             {
-                if (_recursoTarefaRepository == null)
-                {
-                    _recursoTarefaRepository = new RecursoTarefaRepository(_context);
-                }
-
-                return _recursoTarefaRepository;
+                _recursoTarefaRepository = new RecursoTarefaRepository(_context);
             }
-        }
 
-        public IGenericRepository<Sistema> SistemaRepository
+            return _recursoTarefaRepository;
+        }
+    }
+
+    public IGenericRepository<Sistema> SistemaRepository
+    {
+        get
         {
-            get
+            if (_sistemaRepository == null)
             {
-                if (_sistemaRepository == null)
-                {
-                    _sistemaRepository = new GenericRepository<Sistema>(_context);
-                }
-
-                return _sistemaRepository;
+                _sistemaRepository = new GenericRepository<Sistema>(_context);
             }
-        }
 
-        public ITarefaRepository TarefaRepository
+            return _sistemaRepository;
+        }
+    }
+
+    public ITarefaRepository TarefaRepository
+    {
+        get
         {
-            get
+            if (_tarefaRepository == null)
             {
-                if (_tarefaRepository == null)
-                {
-                    _tarefaRepository = new TarefaRepository(_context);
-                }
-
-                return _tarefaRepository;
+                _tarefaRepository = new TarefaRepository(_context);
             }
-        }
 
-        public IGenericRepository<TipoTarefa> TipoTarefaRepository
+            return _tarefaRepository;
+        }
+    }
+
+    public IGenericRepository<TipoTarefa> TipoTarefaRepository
+    {
+        get
         {
-            get
+            if (_tipoTarefaRepository == null)
             {
-                if (_tipoTarefaRepository == null)
-                {
-                    _tipoTarefaRepository = new GenericRepository<TipoTarefa>(_context);
-                }
-
-                return _tipoTarefaRepository;
+                _tipoTarefaRepository = new GenericRepository<TipoTarefa>(_context);
             }
-        }
 
-        public IWorkflowRepository WorkflowRepository
+            return _tipoTarefaRepository;
+        }
+    }
+
+    public IWorkflowRepository WorkflowRepository
+    {
+        get
         {
-            get
+            if (_workflowRepository == null)
             {
-                if (_workflowRepository == null)
-                {
-                    _workflowRepository = new WorkflowRepository(_context);
-                }
-
-                return _workflowRepository;
+                _workflowRepository = new WorkflowRepository(_context);
             }
-        }
 
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
+            return _workflowRepository;
         }
+    }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-            GC.SuppressFinalize(this);
-        }
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

@@ -1,7 +1,6 @@
-namespace Cpnucleo.Domain.Entities
+namespace Cpnucleo.Domain.Entities;
+
+public class Impedimento : BaseEntity
 {
-    public class Impedimento : BaseEntity
-    {
-        public string Nome { get; set; }
-    }
+    public string Nome { get; set; }
 }

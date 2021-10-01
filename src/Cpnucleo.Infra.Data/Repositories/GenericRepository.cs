@@ -1,87 +1,78 @@
-﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces;
-using Cpnucleo.Infra.Data.Context;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Cpnucleo.Infra.Data.Repositories
+namespace Cpnucleo.Infra.Data.Repositories;
+
+internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
+    protected readonly CpnucleoContext _context;
+
+    public GenericRepository(CpnucleoContext context)
     {
-        protected readonly CpnucleoContext _context;
+        _context = context;
+    }
 
-        public GenericRepository(CpnucleoContext context)
+    public async Task<TEntity> AddAsync(TEntity entity)
+    {
+        if (entity.Id == Guid.Empty)
         {
-            _context = context;
+            entity.Id = Guid.NewGuid();
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity)
+        entity.Ativo = true;
+        entity.DataInclusao = DateTime.Now;
+
+        EntityEntry<TEntity> result = await _context.AddAsync(entity);
+
+        return result.Entity;
+    }
+
+    public void Update(TEntity entity)
+    {
+        entity.DataAlteracao = DateTime.Now;
+
+        _context.Update(entity);
+    }
+
+    public async Task<TEntity> GetAsync(Guid id)
+    {
+        return await _context.Set<TEntity>()
+            .AsQueryable()
+            .Include(_context.GetIncludePaths(typeof(TEntity)))
+            .FirstOrDefaultAsync(x => x.Id == id && x.Ativo);
+    }
+
+    public async Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false)
+    {
+        IQueryable<TEntity> obj = _context.Set<TEntity>();
+
+        if (getDependencies)
         {
-            if (entity.Id == Guid.Empty)
-            {
-                entity.Id = Guid.NewGuid();
-            }
-
-            entity.Ativo = true;
-            entity.DataInclusao = DateTime.Now;
-
-            EntityEntry<TEntity> result = await _context.AddAsync(entity);
-
-            return result.Entity;
+            obj = obj.Include(_context.GetIncludePaths(typeof(TEntity)));
         }
 
-        public void Update(TEntity entity)
-        {
-            entity.DataAlteracao = DateTime.Now;
+        return await obj.OrderBy(x => x.DataInclusao)
+            .Where(x => x.Ativo)
+            .ToListAsync();
+    }
 
-            _context.Update(entity);
-        }
+    public async Task RemoveAsync(Guid id)
+    {
+        TEntity entity = await GetAsync(id);
 
-        public async Task<TEntity> GetAsync(Guid id)
-        {
-            return await _context.Set<TEntity>()
-                .AsQueryable()
-                .Include(_context.GetIncludePaths(typeof(TEntity)))
-                .FirstOrDefaultAsync(x => x.Id == id && x.Ativo);
-        }
+        entity.Ativo = false;
+        entity.DataExclusao = DateTime.Now;
 
-        public async Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false)
-        {
-            IQueryable<TEntity> obj = _context.Set<TEntity>();
+        Update(entity);
+    }
 
-            if (getDependencies)
-            {
-                obj = obj.Include(_context.GetIncludePaths(typeof(TEntity)));
-            }
+    public void Detatch(TEntity entity)
+    {
+        _context.Entry(entity).State = EntityState.Detached;
+    }
 
-            return await obj.OrderBy(x => x.DataInclusao)
-                .Where(x => x.Ativo)
-                .ToListAsync();
-        }
-
-        public async Task RemoveAsync(Guid id)
-        {
-            TEntity entity = await GetAsync(id);
-
-            entity.Ativo = false;
-            entity.DataExclusao = DateTime.Now;
-
-            Update(entity);
-        }
-
-        public void Detatch(TEntity entity)
-        {
-            _context.Entry(entity).State = EntityState.Detached;
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        _context.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

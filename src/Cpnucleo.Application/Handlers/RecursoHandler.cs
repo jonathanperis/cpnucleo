@@ -1,180 +1,170 @@
-﻿using AutoMapper;
-using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.UoW;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util;
+﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
-using MessagePipe;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Cpnucleo.Application.Handlers
+namespace Cpnucleo.Application.Handlers;
+
+public class RecursoHandler :
+    IAsyncRequestHandler<CreateRecursoCommand, CreateRecursoResponse>,
+    IAsyncRequestHandler<GetRecursoQuery, GetRecursoResponse>,
+    IAsyncRequestHandler<ListRecursoQuery, ListRecursoResponse>,
+    IAsyncRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse>,
+    IAsyncRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse>,
+    IAsyncRequestHandler<AuthQuery, AuthResponse>
 {
-    public class RecursoHandler :
-        IAsyncRequestHandler<CreateRecursoCommand, CreateRecursoResponse>,
-        IAsyncRequestHandler<GetRecursoQuery, GetRecursoResponse>,
-        IAsyncRequestHandler<ListRecursoQuery, ListRecursoResponse>,
-        IAsyncRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse>,
-        IAsyncRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse>,
-        IAsyncRequestHandler<AuthQuery, AuthResponse>
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly ICryptographyManager _cryptographyManager;
+
+    public RecursoHandler(IUnitOfWork unitOfWork, IMapper mapper, ICryptographyManager cryptographyManager)
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly ICryptographyManager _cryptographyManager;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _cryptographyManager = cryptographyManager;
+    }
 
-        public RecursoHandler(IUnitOfWork unitOfWork, IMapper mapper, ICryptographyManager cryptographyManager)
+    public async ValueTask<CreateRecursoResponse> InvokeAsync(CreateRecursoCommand request, CancellationToken cancellationToken)
+    {
+        CreateRecursoResponse result = new CreateRecursoResponse
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _cryptographyManager = cryptographyManager;
-        }
+            Status = OperationResult.Failed
+        };
 
-        public async ValueTask<CreateRecursoResponse> InvokeAsync(CreateRecursoCommand request, CancellationToken cancellationToken)
+        _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
+
+        request.Recurso.Senha = senhaCrypt;
+        request.Recurso.Salt = salt;
+
+        Recurso obj = await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(request.Recurso));
+        result.Recurso = _mapper.Map<RecursoViewModel>(obj);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        result.Recurso.Senha = null;
+        result.Recurso.Salt = null;
+
+        result.Status = OperationResult.Success;
+
+        return result;
+    }
+
+    public async ValueTask<GetRecursoResponse> InvokeAsync(GetRecursoQuery request, CancellationToken cancellationToken)
+    {
+        GetRecursoResponse result = new GetRecursoResponse
         {
-            CreateRecursoResponse result = new CreateRecursoResponse
-            {
-                Status = OperationResult.Failed
-            };
+            Status = OperationResult.Failed
+        };
 
-            _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
+        result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(request.Id));
 
-            request.Recurso.Senha = senhaCrypt;
-            request.Recurso.Salt = salt;
-
-            Recurso obj = await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Recurso>(request.Recurso));
-            result.Recurso = _mapper.Map<RecursoViewModel>(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            result.Recurso.Senha = null;
-            result.Recurso.Salt = null;
-
-            result.Status = OperationResult.Success;
+        if (result.Recurso == null)
+        {
+            result.Status = OperationResult.NotFound;
 
             return result;
         }
 
-        public async ValueTask<GetRecursoResponse> InvokeAsync(GetRecursoQuery request, CancellationToken cancellationToken)
+        result.Recurso.Senha = null;
+        result.Recurso.Salt = null;
+
+        result.Status = OperationResult.Success;
+
+        return result;
+    }
+
+    public async ValueTask<ListRecursoResponse> InvokeAsync(ListRecursoQuery request, CancellationToken cancellationToken)
+    {
+        ListRecursoResponse result = new ListRecursoResponse
         {
-            GetRecursoResponse result = new GetRecursoResponse
-            {
-                Status = OperationResult.Failed
-            };
+            Status = OperationResult.Failed
+        };
 
-            result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(request.Id));
+        result.Recursos = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies));
 
-            if (result.Recurso == null)
-            {
-                result.Status = OperationResult.NotFound;
+        foreach (RecursoViewModel item in result.Recursos)
+        {
+            item.Senha = null;
+            item.Salt = null;
+        }
 
-                return result;
-            }
+        result.Status = OperationResult.Success;
 
-            result.Recurso.Senha = null;
-            result.Recurso.Salt = null;
+        return result;
+    }
 
-            result.Status = OperationResult.Success;
+    public async ValueTask<RemoveRecursoResponse> InvokeAsync(RemoveRecursoCommand request, CancellationToken cancellationToken)
+    {
+        RemoveRecursoResponse result = new RemoveRecursoResponse
+        {
+            Status = OperationResult.Failed
+        };
+
+        Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
+
+        if (obj == null)
+        {
+            result.Status = OperationResult.NotFound;
 
             return result;
         }
 
-        public async ValueTask<ListRecursoResponse> InvokeAsync(ListRecursoQuery request, CancellationToken cancellationToken)
+        await _unitOfWork.RecursoRepository.RemoveAsync(request.Id);
+
+        bool success = await _unitOfWork.SaveChangesAsync();
+
+        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+
+        return result;
+    }
+
+    public async ValueTask<UpdateRecursoResponse> InvokeAsync(UpdateRecursoCommand request, CancellationToken cancellationToken)
+    {
+        UpdateRecursoResponse result = new UpdateRecursoResponse
         {
-            ListRecursoResponse result = new ListRecursoResponse
-            {
-                Status = OperationResult.Failed
-            };
+            Status = OperationResult.Failed
+        };
 
-            result.Recursos = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies));
+        _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
 
-            foreach (RecursoViewModel item in result.Recursos)
-            {
-                item.Senha = null;
-                item.Salt = null;
-            }
+        request.Recurso.Senha = senhaCrypt;
+        request.Recurso.Salt = salt;
 
-            result.Status = OperationResult.Success;
+        _unitOfWork.RecursoRepository.Update(_mapper.Map<Recurso>(request.Recurso));
+
+        bool success = await _unitOfWork.SaveChangesAsync();
+
+        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+
+        return result;
+    }
+
+    public async ValueTask<AuthResponse> InvokeAsync(AuthQuery request, CancellationToken cancellationToken)
+    {
+        AuthResponse result = new AuthResponse
+        {
+            Status = OperationResult.Failed
+        };
+
+        result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetByLoginAsync(request.Login));
+
+        if (result.Recurso == null)
+        {
+            result.Status = OperationResult.NotFound;
 
             return result;
         }
 
-        public async ValueTask<RemoveRecursoResponse> InvokeAsync(RemoveRecursoCommand request, CancellationToken cancellationToken)
-        {
-            RemoveRecursoResponse result = new RemoveRecursoResponse
-            {
-                Status = OperationResult.Failed
-            };
+        bool success = _cryptographyManager.VerifyPbkdf2(request.Senha, result.Recurso.Senha, result.Recurso.Salt);
 
-            Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
+        result.Recurso.Senha = null;
+        result.Recurso.Salt = null;
 
-            if (obj == null)
-            {
-                result.Status = OperationResult.NotFound;
+        result.Status = success ? OperationResult.Success : OperationResult.Failed;
 
-                return result;
-            }
-
-            await _unitOfWork.RecursoRepository.RemoveAsync(request.Id);
-
-            bool success = await _unitOfWork.SaveChangesAsync();
-
-            result.Status = success ? OperationResult.Success : OperationResult.Failed;
-
-            return result;
-        }
-
-        public async ValueTask<UpdateRecursoResponse> InvokeAsync(UpdateRecursoCommand request, CancellationToken cancellationToken)
-        {
-            UpdateRecursoResponse result = new UpdateRecursoResponse
-            {
-                Status = OperationResult.Failed
-            };
-
-            _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
-
-            request.Recurso.Senha = senhaCrypt;
-            request.Recurso.Salt = salt;
-
-            _unitOfWork.RecursoRepository.Update(_mapper.Map<Recurso>(request.Recurso));
-
-            bool success = await _unitOfWork.SaveChangesAsync();
-
-            result.Status = success ? OperationResult.Success : OperationResult.Failed;
-
-            return result;
-        }
-
-        public async ValueTask<AuthResponse> InvokeAsync(AuthQuery request, CancellationToken cancellationToken)
-        {
-            AuthResponse result = new AuthResponse
-            {
-                Status = OperationResult.Failed
-            };
-
-            result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetByLoginAsync(request.Login));
-
-            if (result.Recurso == null)
-            {
-                result.Status = OperationResult.NotFound;
-
-                return result;
-            }
-
-            bool success = _cryptographyManager.VerifyPbkdf2(request.Senha, result.Recurso.Senha, result.Recurso.Salt);
-
-            result.Recurso.Senha = null;
-            result.Recurso.Salt = null;
-
-            result.Status = success ? OperationResult.Success : OperationResult.Failed;
-
-            return result;
-        }
+        return result;
     }
 }

@@ -1,10 +1,10 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+
+namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface IWorkflowGrpcService : IService<IWorkflowGrpcService>
 {

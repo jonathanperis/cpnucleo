@@ -1,24 +1,20 @@
-﻿using Cpnucleo.Domain.Entities;
-using Cpnucleo.Domain.Interfaces;
-using System;
-using System.Threading.Tasks;
+﻿using Cpnucleo.Domain.Interfaces;
 
-namespace Cpnucleo.Domain.UoW
+namespace Cpnucleo.Domain.UoW;
+
+public interface IUnitOfWork : IDisposable
 {
-    public interface IUnitOfWork : IDisposable
-    {
-        IApontamentoRepository ApontamentoRepository { get; }
-        IGenericRepository<Impedimento> ImpedimentoRepository { get; }
-        IImpedimentoTarefaRepository ImpedimentoTarefaRepository { get; }
-        IGenericRepository<Projeto> ProjetoRepository { get; }
-        IRecursoRepository RecursoRepository { get; }
-        IRecursoProjetoRepository RecursoProjetoRepository { get; }
-        IRecursoTarefaRepository RecursoTarefaRepository { get; }
-        IGenericRepository<Sistema> SistemaRepository { get; }
-        ITarefaRepository TarefaRepository { get; }
-        IGenericRepository<TipoTarefa> TipoTarefaRepository { get; }
-        IWorkflowRepository WorkflowRepository { get; }
+    IApontamentoRepository ApontamentoRepository { get; }
+    IGenericRepository<Impedimento> ImpedimentoRepository { get; }
+    IImpedimentoTarefaRepository ImpedimentoTarefaRepository { get; }
+    IGenericRepository<Projeto> ProjetoRepository { get; }
+    IRecursoRepository RecursoRepository { get; }
+    IRecursoProjetoRepository RecursoProjetoRepository { get; }
+    IRecursoTarefaRepository RecursoTarefaRepository { get; }
+    IGenericRepository<Sistema> SistemaRepository { get; }
+    ITarefaRepository TarefaRepository { get; }
+    IGenericRepository<TipoTarefa> TipoTarefaRepository { get; }
+    IWorkflowRepository WorkflowRepository { get; }
 
-        Task<bool> SaveChangesAsync();
-    }
+    Task<bool> SaveChangesAsync();
 }

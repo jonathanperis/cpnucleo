@@ -1,8 +1,7 @@
-﻿namespace Cpnucleo.Infra.Data.Context;
-
-using Cpnucleo.Infra.Data.Mappings;
-using Microsoft.EntityFrameworkCore;
+﻿using Cpnucleo.Infra.Data.Mappings;
 using Microsoft.Extensions.Configuration;
+
+namespace Cpnucleo.Infra.Data.Context;
 
 public class CpnucleoContext : DbContext
 {

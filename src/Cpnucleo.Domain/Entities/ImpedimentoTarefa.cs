@@ -1,17 +1,14 @@
-using System;
+namespace Cpnucleo.Domain.Entities;
 
-namespace Cpnucleo.Domain.Entities
+public class ImpedimentoTarefa : BaseEntity
 {
-    public class ImpedimentoTarefa : BaseEntity
-    {
-        public string Descricao { get; set; }
+    public string Descricao { get; set; }
 
-        public Guid IdTarefa { get; set; }
+    public Guid IdTarefa { get; set; }
 
-        public Guid IdImpedimento { get; set; }
+    public Guid IdImpedimento { get; set; }
 
-        public Tarefa Tarefa { get; set; }
+    public Tarefa Tarefa { get; set; }
 
-        public Impedimento Impedimento { get; set; }
-    }
+    public Impedimento Impedimento { get; set; }
 }
