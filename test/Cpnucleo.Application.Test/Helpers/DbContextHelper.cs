@@ -1,25 +1,22 @@
-﻿using Cpnucleo.Domain.UoW;
-using Cpnucleo.Infra.Data.Context;
+﻿using Cpnucleo.Infra.Data.Context;
 using Cpnucleo.Infra.Data.UoW;
 using Microsoft.EntityFrameworkCore;
-using System;
 
-namespace Cpnucleo.Application.Test.Helpers
+namespace Cpnucleo.Application.Test.Helpers;
+
+public class DbContextHelper
 {
-    public class DbContextHelper
+    public static IUnitOfWork GetContext()
     {
-        public static IUnitOfWork GetContext()
-        {
-            DbContextOptions<CpnucleoContext> options = new DbContextOptionsBuilder<CpnucleoContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
+        DbContextOptions<CpnucleoContext> options = new DbContextOptionsBuilder<CpnucleoContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
 
-            CpnucleoContext context = new CpnucleoContext(options);
-            context.SaveChanges();
+        CpnucleoContext context = new CpnucleoContext(options);
+        context.SaveChanges();
 
-            UnitOfWork unitOfWork = new UnitOfWork(context);
+        UnitOfWork unitOfWork = new UnitOfWork(context);
 
-            return unitOfWork;
-        }
+        return unitOfWork;
     }
 }
