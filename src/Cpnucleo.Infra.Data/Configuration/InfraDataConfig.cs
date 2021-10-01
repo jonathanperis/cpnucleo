@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.Data.Configuration;
-
-using Cpnucleo.Domain.UoW;
-using Cpnucleo.Infra.Data.Context;
+﻿using Cpnucleo.Domain.UoW;
 using Cpnucleo.Infra.Data.UoW;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Cpnucleo.Infra.Data.Configuration;
 
 public static class InfraDataConfig
 {

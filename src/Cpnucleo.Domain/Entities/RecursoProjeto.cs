@@ -1,15 +1,12 @@
-using System;
+namespace Cpnucleo.Domain.Entities;
 
-namespace Cpnucleo.Domain.Entities
+public class RecursoProjeto : BaseEntity
 {
-    public class RecursoProjeto : BaseEntity
-    {
-        public Guid IdRecurso { get; set; }
+    public Guid IdRecurso { get; set; }
 
-        public Guid IdProjeto { get; set; }
+    public Guid IdProjeto { get; set; }
 
-        public Recurso Recurso { get; set; }
+    public Recurso Recurso { get; set; }
 
-        public Projeto Projeto { get; set; }
-    }
+    public Projeto Projeto { get; set; }
 }

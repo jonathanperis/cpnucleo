@@ -1,11 +1,10 @@
-namespace Cpnucleo.Domain.Entities
+namespace Cpnucleo.Domain.Entities;
+
+public class TipoTarefa : BaseEntity
 {
-    public class TipoTarefa : BaseEntity
-    {
-        public string Nome { get; set; }
+    public string Nome { get; set; }
 
-        public string Image { get; set; }
+    public string Image { get; set; }
 
-        public string Element { get; set; }
-    }
+    public string Element { get; set; }
 }
