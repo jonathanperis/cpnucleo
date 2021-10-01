@@ -1,7 +1,6 @@
-namespace Cpnucleo.RazorPages.Configuration
+namespace Cpnucleo.RazorPages.Configuration;
+
+public class ApplicationConfigurations
 {
-    public class ApplicationConfigurations
-    {
-        public string NomeSistema { get; set; }
-    }
+    public string NomeSistema { get; set; }
 }

@@ -1,144 +1,135 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Util;
-using Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
-using Cpnucleo.MVC.Models;
 using Cpnucleo.MVC.Services;
-using MagicOnion.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Cpnucleo.MVC.Controllers
+namespace Cpnucleo.MVC.Controllers;
+
+public class HomeController : BaseController
 {
-    public class HomeController : BaseController
+    private readonly IRecursoGrpcService _recursoGrpcService;
+    private readonly IConfiguration _configuration;
+
+    private HomeView _viewModel;
+
+    public HomeController(IConfiguration configuration)
+        : base(configuration)
     {
-        private readonly IRecursoGrpcService _recursoGrpcService;
-        private readonly IConfiguration _configuration;
+        _configuration = configuration;
+        _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
+    }
 
-        private HomeView _viewModel;
-
-        public HomeController(IConfiguration configuration)
-            : base(configuration)
+    public HomeView ViewModel
+    {
+        get
         {
-            _configuration = configuration;
-            _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
-        }
-
-        public HomeView ViewModel
-        {
-            get
+            if (_viewModel == null)
             {
-                if (_viewModel == null)
-                {
-                    _viewModel = new HomeView();
-                }
-
-                return _viewModel;
+                _viewModel = new HomeView();
             }
-            set => _viewModel = value;
+
+            return _viewModel;
         }
+        set => _viewModel = value;
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Login(string returnUrl = null, bool logout = false)
+    [HttpGet]
+    public async Task<IActionResult> Login(string returnUrl = null, bool logout = false)
+    {
+        try
         {
-            try
+            if (logout)
             {
-                if (logout)
-                {
-                    await HttpContext.SignOutAsync();
+                await HttpContext.SignOutAsync();
 
-                    return RedirectToAction("Login");
-                }
+                return RedirectToAction("Login");
+            }
 
-                ViewData["ReturnUrl"] = returnUrl;
+            ViewData["ReturnUrl"] = returnUrl;
 
+            return View();
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View();
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(HomeView obj, string returnUrl = null)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
                 return View();
             }
-            catch (Exception ex)
+
+            AuthResponse response = await _recursoGrpcService.AuthAsync(new AuthQuery { Login = obj.Usuario, Senha = obj.Senha });
+
+            if (response.Status == OperationResult.Failed)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return View();
             }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(HomeView obj, string returnUrl = null)
-        {
-            try
+            else
             {
-                if (!ModelState.IsValid)
+                IEnumerable<Claim> claims = new[]
                 {
-                    return View();
-                }
-
-                AuthResponse response = await _recursoGrpcService.AuthAsync(new AuthQuery { Login = obj.Usuario, Senha = obj.Senha });
-
-                if (response.Status == OperationResult.Failed)
-                {
-                    ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
-                    return View();
-                }
-                else
-                {
-                    IEnumerable<Claim> claims = new[]
-                    {
                         new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString()),
                         new Claim(ClaimTypes.Hash, response.Recurso.Token)
                     };
 
-                    ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
+                ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
-                    int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
+                int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
 
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        principal,
-                        new AuthenticationProperties
-                        {
-                            IsPersistent = true,
-                            ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
-                        });
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal,
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
+                    });
 
-                    return RedirectToLocal(returnUrl);
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View();
+                return RedirectToLocal(returnUrl);
             }
         }
-
-        public IActionResult Erro()
+        catch (Exception ex)
         {
+            ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
 
-        public IActionResult Negado()
+    public IActionResult Erro()
+    {
+        return View();
+    }
+
+    public IActionResult Negado()
+    {
+        return View();
+    }
+
+    public IActionResult NaoEncontrado()
+    {
+        return View();
+    }
+
+    private IActionResult RedirectToLocal(string returnUrl)
+    {
+        if (Url.IsLocalUrl(returnUrl))
         {
-            return View();
+            return Redirect(returnUrl);
         }
-
-        public IActionResult NaoEncontrado()
+        else
         {
-            return View();
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction("Listar", "Apontamento");
-            }
+            return RedirectToAction("Listar", "Apontamento");
         }
     }
 }
