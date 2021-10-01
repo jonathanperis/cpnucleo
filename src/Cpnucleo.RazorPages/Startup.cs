@@ -1,15 +1,7 @@
 using Cpnucleo.RazorPages.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using StackExchange.Profiling.Storage;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Cpnucleo.RazorPages
