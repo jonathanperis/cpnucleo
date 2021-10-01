@@ -1,14 +1,8 @@
-using Cpnucleo.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+namespace Cpnucleo.Domain.Interfaces;
 
-namespace Cpnucleo.Domain.Interfaces
+public interface IApontamentoRepository : IGenericRepository<Apontamento>
 {
-    public interface IApontamentoRepository : IGenericRepository<Apontamento>
-    {
-        Task<int> GetTotalHorasByRecursoAsync(Guid idRecurso, Guid idTarefa);
+    Task<int> GetTotalHorasByRecursoAsync(Guid idRecurso, Guid idTarefa);
 
-        Task<IEnumerable<Apontamento>> GetByRecursoAsync(Guid idRecurso);
-    }
+    Task<IEnumerable<Apontamento>> GetByRecursoAsync(Guid idRecurso);
 }

@@ -1,10 +1,10 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
-
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+
+namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface ISistemaGrpcService : IService<ISistemaGrpcService>
 {

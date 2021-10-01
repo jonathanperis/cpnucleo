@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace Cpnucleo.Application.Interfaces;
 
-namespace Cpnucleo.Application.Interfaces
+public interface IGenericAppService<TViewModel> : IDisposable
 {
-    public interface IGenericAppService<TViewModel> : IDisposable
-    {
-        Task<TViewModel> AddAsync(TViewModel viewModel);
+    Task<TViewModel> AddAsync(TViewModel viewModel);
 
-        Task UpdateAsync(TViewModel entity);
+    Task UpdateAsync(TViewModel entity);
 
-        Task<TViewModel> GetAsync(Guid id);
+    Task<TViewModel> GetAsync(Guid id);
 
-        Task<IEnumerable<TViewModel>> AllAsync(bool getDependencies = false);
+    Task<IEnumerable<TViewModel>> AllAsync(bool getDependencies = false);
 
-        Task RemoveAsync(Guid id);
-    }
+    Task RemoveAsync(Guid id);
 }
