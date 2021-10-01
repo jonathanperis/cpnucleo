@@ -18,7 +18,8 @@ steps:
 - task: UseDotNet@2
   displayName: Install .NET SDK
   inputs:
-    version: '5.0.x'
+    useGlobalJson: true
+    includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
   displayName: Restore
