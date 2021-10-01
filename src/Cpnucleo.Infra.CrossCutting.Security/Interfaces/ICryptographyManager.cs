@@ -1,9 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Security.Interfaces
-{
-    public interface ICryptographyManager
-    {
-        void CryptPbkdf2(string item, out string itemCrypt, out string salt);
+﻿namespace Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 
-        bool VerifyPbkdf2(string item, string itemCrypt, string salt);
-    }
+public interface ICryptographyManager
+{
+    void CryptPbkdf2(string item, out string itemCrypt, out string salt);
+
+    bool VerifyPbkdf2(string item, string itemCrypt, string salt);
 }
