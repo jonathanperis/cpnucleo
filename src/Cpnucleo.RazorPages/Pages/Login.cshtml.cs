@@ -19,7 +19,7 @@ public class LoginModel : PageBase
     [BindProperty]
     public LoginViewModel Login { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(string returnUrl = null, bool logout = false)
+    public async Task<IActionResult> OnGetAsync(string? returnUrl = null, bool logout = false)
     {
         try
         {
@@ -41,7 +41,7 @@ public class LoginModel : PageBase
         }
     }
 
-    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
         try
         {
