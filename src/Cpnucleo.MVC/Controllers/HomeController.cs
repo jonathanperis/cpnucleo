@@ -36,7 +36,7 @@ public class HomeController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Login(string returnUrl = null, bool logout = false)
+    public async Task<IActionResult> Login(string? returnUrl = null, bool logout = false)
     {
         try
         {
@@ -59,7 +59,7 @@ public class HomeController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(HomeView obj, string returnUrl = null)
+    public async Task<IActionResult> Login(HomeView obj, string? returnUrl = null)
     {
         try
         {
