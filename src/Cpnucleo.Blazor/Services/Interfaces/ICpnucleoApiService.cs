@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Refit;
 
 namespace Cpnucleo.Blazor.Services.Interfaces
@@ -10,7 +8,7 @@ namespace Cpnucleo.Blazor.Services.Interfaces
         Task<T> GetAsync<T>(string uri, [Authorize("Bearer")] string token, bool getDependencies = false);
 
         [Get("/{uri}/{id}")]
-        Task<T> GetAsync<T>(string uri, [Authorize("Bearer")] string token, Guid id);        
+        Task<T> GetAsync<T>(string uri, [Authorize("Bearer")] string token, Guid id);
 
         [Post("/{uri}")]
         Task<T> PostAsync<T>(string uri, [Authorize("Bearer")] string token, [Body] object value);
