@@ -10,8 +10,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grpc.Net.Client" Version="2.39.0" />
-		<PackageReference Include="Grpc.Net.Client.Web" Version="2.39.0" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.40.0" />
+		<PackageReference Include="Grpc.Net.Client.Web" Version="2.40.0" />
 		<PackageReference Include="MagicOnion.Client" Version="4.3.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
 		<PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
