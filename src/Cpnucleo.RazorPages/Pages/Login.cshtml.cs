@@ -50,7 +50,7 @@ public class LoginModel : PageBase
                 return Page();
             }
 
-            RecursoViewModel recurso = await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso/auth", "", new RecursoViewModel { Login = Login.Usuario, Senha = Login.Senha });
+            RecursoViewModel recurso = await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso/auth", "", new AuthViewModel { Login = Login.Usuario, Senha = Login.Senha });
 
             IEnumerable<Claim> claims = new[]
             {

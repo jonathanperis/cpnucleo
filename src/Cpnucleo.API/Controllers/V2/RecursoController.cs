@@ -1,5 +1,6 @@
 ﻿using Cpnucleo.API.Services;
 using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.API.Controllers.V2;
 
@@ -161,14 +162,12 @@ public class RecursoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Recurso>> Auth([FromBody] Recurso obj)
+    public async Task<ActionResult<Recurso>> Auth([FromBody] AuthViewModel obj)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-
-        bool valido = false;
 
         Recurso recurso = await _unitOfWork.RecursoRepository.GetByLoginAsync(obj.Login);
 
@@ -177,8 +176,7 @@ public class RecursoController : ControllerBase
             return NotFound();
         }
 
-        valido = _cryptographyManager.VerifyPbkdf2(obj.Senha, recurso.Senha, recurso.Salt);
-
+        bool valido = _cryptographyManager.VerifyPbkdf2(obj.Senha, recurso.Senha, recurso.Salt);
         recurso.Senha = null;
         recurso.Salt = null;
 
