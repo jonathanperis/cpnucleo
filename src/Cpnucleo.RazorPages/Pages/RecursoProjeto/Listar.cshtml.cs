@@ -19,7 +19,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, idProjeto);
+            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", Token, idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 
