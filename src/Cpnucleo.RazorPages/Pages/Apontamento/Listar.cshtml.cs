@@ -27,8 +27,8 @@ public class ListarModel : PageBase
             string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new Guid(retorno);
 
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
-            ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
+            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento", "getbyrecurso", Token, idRecurso);
+            ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "getbyrecurso", Token, idRecurso);
 
             return Page();
         }
@@ -48,8 +48,8 @@ public class ListarModel : PageBase
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new Guid(retorno);
 
-                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento/getbyrecurso", Token, idRecurso);
-                ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa/getbyrecurso", Token, idRecurso);
+                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento", "getbyrecurso", Token, idRecurso);
+                ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "getbyrecurso", Token, idRecurso);
 
                 return Page();
             }

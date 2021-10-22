@@ -37,12 +37,6 @@ internal class TarefaMap : IEntityTypeConfiguration<Tarefa>
             .HasColumnType("varchar(1000)")
             .HasMaxLength(1000);
 
-        builder
-            .Ignore(c => c.HorasConsumidas);
-
-        builder
-            .Ignore(c => c.HorasRestantes);
-
         builder.Property(c => c.IdProjeto)
             .HasColumnName("PROJ_ID")
             .HasColumnType("uniqueidentifier")
@@ -100,5 +94,11 @@ internal class TarefaMap : IEntityTypeConfiguration<Tarefa>
             .HasOne(p => p.TipoTarefa)
             .WithMany()
             .HasForeignKey(f => f.IdTipoTarefa);
+
+        builder
+            .Ignore(c => c.HorasConsumidas);
+
+        builder
+            .Ignore(c => c.HorasRestantes);
     }
 }

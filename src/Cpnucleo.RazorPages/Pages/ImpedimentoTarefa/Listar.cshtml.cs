@@ -19,7 +19,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>("impedimentoTarefa/getByTarefa", Token, idTarefa);
+            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>("impedimentoTarefa", "getByTarefa", Token, idTarefa);
 
             ViewData["idTarefa"] = idTarefa;
 
