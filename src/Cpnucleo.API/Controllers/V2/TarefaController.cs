@@ -231,7 +231,7 @@ public class TarefaController : ControllerBase
     /// <response code="400">ID informado não é válido</response>
     /// <response code="401">Acesso não autorizado</response>
     /// <response code="500">Erro no processamento da requisição</response>
-    [HttpPut("PutByWorkflow/{idTarefa}")]
+    [HttpPut("PutByWorkflow/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PutByWorkflow(Guid id, [FromBody] Workflow obj)

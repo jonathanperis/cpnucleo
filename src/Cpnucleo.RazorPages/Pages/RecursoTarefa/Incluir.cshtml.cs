@@ -23,7 +23,7 @@ public class IncluirModel : PageBase
         {
             Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
 
-            IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+            IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", Token, Tarefa.IdProjeto);
             SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
             return Page();
@@ -43,7 +43,7 @@ public class IncluirModel : PageBase
             {
                 Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
 
-                IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto/getByProjeto", Token, Tarefa.IdProjeto);
+                IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", Token, Tarefa.IdProjeto);
                 SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
                 return Page();

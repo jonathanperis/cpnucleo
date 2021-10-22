@@ -43,7 +43,7 @@ public class FluxoTrabalhoModel : PageBase
             }
 
             WorkflowViewModel result3 = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
-            await _cpnucleoApiService.PutAsync("tarefa/putByWorkflow", Token, idTarefa, result3);
+            await _cpnucleoApiService.PutAsync("tarefa", "putByWorkflow", Token, idTarefa, result3);
 
             return Page();
         }
