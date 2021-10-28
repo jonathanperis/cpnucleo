@@ -24,7 +24,7 @@ public class ImpedimentoHandler :
 
     public async ValueTask<CreateImpedimentoResponse> InvokeAsync(CreateImpedimentoCommand request, CancellationToken cancellationToken)
     {
-        CreateImpedimentoResponse result = new CreateImpedimentoResponse
+        CreateImpedimentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -41,7 +41,7 @@ public class ImpedimentoHandler :
 
     public async ValueTask<GetImpedimentoResponse> InvokeAsync(GetImpedimentoQuery request, CancellationToken cancellationToken)
     {
-        GetImpedimentoResponse result = new GetImpedimentoResponse
+        GetImpedimentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -62,7 +62,7 @@ public class ImpedimentoHandler :
 
     public async ValueTask<ListImpedimentoResponse> InvokeAsync(ListImpedimentoQuery request, CancellationToken cancellationToken)
     {
-        ListImpedimentoResponse result = new ListImpedimentoResponse
+        ListImpedimentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -75,7 +75,7 @@ public class ImpedimentoHandler :
 
     public async ValueTask<RemoveImpedimentoResponse> InvokeAsync(RemoveImpedimentoCommand request, CancellationToken cancellationToken)
     {
-        RemoveImpedimentoResponse result = new RemoveImpedimentoResponse
+        RemoveImpedimentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -100,7 +100,7 @@ public class ImpedimentoHandler :
 
     public async ValueTask<UpdateImpedimentoResponse> InvokeAsync(UpdateImpedimentoCommand request, CancellationToken cancellationToken)
     {
-        UpdateImpedimentoResponse result = new UpdateImpedimentoResponse
+        UpdateImpedimentoResponse result = new()
         {
             Status = OperationResult.Failed
         };

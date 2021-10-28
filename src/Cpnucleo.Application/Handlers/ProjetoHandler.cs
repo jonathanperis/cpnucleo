@@ -24,7 +24,7 @@ public class ProjetoHandler :
 
     public async ValueTask<CreateProjetoResponse> InvokeAsync(CreateProjetoCommand request, CancellationToken cancellationToken)
     {
-        CreateProjetoResponse result = new CreateProjetoResponse
+        CreateProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -41,7 +41,7 @@ public class ProjetoHandler :
 
     public async ValueTask<GetProjetoResponse> InvokeAsync(GetProjetoQuery request, CancellationToken cancellationToken)
     {
-        GetProjetoResponse result = new GetProjetoResponse
+        GetProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -62,7 +62,7 @@ public class ProjetoHandler :
 
     public async ValueTask<ListProjetoResponse> InvokeAsync(ListProjetoQuery request, CancellationToken cancellationToken)
     {
-        ListProjetoResponse result = new ListProjetoResponse
+        ListProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -75,7 +75,7 @@ public class ProjetoHandler :
 
     public async ValueTask<RemoveProjetoResponse> InvokeAsync(RemoveProjetoCommand request, CancellationToken cancellationToken)
     {
-        RemoveProjetoResponse result = new RemoveProjetoResponse
+        RemoveProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -100,7 +100,7 @@ public class ProjetoHandler :
 
     public async ValueTask<UpdateProjetoResponse> InvokeAsync(UpdateProjetoCommand request, CancellationToken cancellationToken)
     {
-        UpdateProjetoResponse result = new UpdateProjetoResponse
+        UpdateProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };

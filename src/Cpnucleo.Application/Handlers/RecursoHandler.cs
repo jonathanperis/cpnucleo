@@ -29,7 +29,7 @@ public class RecursoHandler :
 
     public async ValueTask<CreateRecursoResponse> InvokeAsync(CreateRecursoCommand request, CancellationToken cancellationToken)
     {
-        CreateRecursoResponse result = new CreateRecursoResponse
+        CreateRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -54,7 +54,7 @@ public class RecursoHandler :
 
     public async ValueTask<GetRecursoResponse> InvokeAsync(GetRecursoQuery request, CancellationToken cancellationToken)
     {
-        GetRecursoResponse result = new GetRecursoResponse
+        GetRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -78,7 +78,7 @@ public class RecursoHandler :
 
     public async ValueTask<ListRecursoResponse> InvokeAsync(ListRecursoQuery request, CancellationToken cancellationToken)
     {
-        ListRecursoResponse result = new ListRecursoResponse
+        ListRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -98,7 +98,7 @@ public class RecursoHandler :
 
     public async ValueTask<RemoveRecursoResponse> InvokeAsync(RemoveRecursoCommand request, CancellationToken cancellationToken)
     {
-        RemoveRecursoResponse result = new RemoveRecursoResponse
+        RemoveRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -123,7 +123,7 @@ public class RecursoHandler :
 
     public async ValueTask<UpdateRecursoResponse> InvokeAsync(UpdateRecursoCommand request, CancellationToken cancellationToken)
     {
-        UpdateRecursoResponse result = new UpdateRecursoResponse
+        UpdateRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -144,7 +144,7 @@ public class RecursoHandler :
 
     public async ValueTask<AuthResponse> InvokeAsync(AuthQuery request, CancellationToken cancellationToken)
     {
-        AuthResponse result = new AuthResponse
+        AuthResponse result = new()
         {
             Status = OperationResult.Failed
         };

@@ -55,7 +55,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-RequestLocalizationOptions localizationOptions = new RequestLocalizationOptions
+RequestLocalizationOptions localizationOptions = new()
 {
     SupportedCultures = new List<CultureInfo> { new CultureInfo("pt-BR") },
     SupportedUICultures = new List<CultureInfo> { new CultureInfo("pt-BR") },

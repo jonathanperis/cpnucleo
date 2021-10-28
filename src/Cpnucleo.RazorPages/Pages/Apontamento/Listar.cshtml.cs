@@ -25,7 +25,7 @@ public class ListarModel : PageBase
         try
         {
             string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-            Guid idRecurso = new Guid(retorno);
+            Guid idRecurso = new(retorno);
 
             Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento", "getbyrecurso", Token, idRecurso);
             ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "getbyrecurso", Token, idRecurso);
@@ -46,7 +46,7 @@ public class ListarModel : PageBase
             if (!ModelState.IsValid)
             {
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-                Guid idRecurso = new Guid(retorno);
+                Guid idRecurso = new(retorno);
 
                 Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento", "getbyrecurso", Token, idRecurso);
                 ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "getbyrecurso", Token, idRecurso);

@@ -26,7 +26,7 @@ public class ApontamentoHandler :
 
     public async ValueTask<CreateApontamentoResponse> InvokeAsync(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
-        CreateApontamentoResponse result = new CreateApontamentoResponse
+        CreateApontamentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -43,7 +43,7 @@ public class ApontamentoHandler :
 
     public async ValueTask<GetApontamentoResponse> InvokeAsync(GetApontamentoQuery request, CancellationToken cancellationToken = default)
     {
-        GetApontamentoResponse result = new GetApontamentoResponse
+        GetApontamentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -64,7 +64,7 @@ public class ApontamentoHandler :
 
     public async ValueTask<ListApontamentoResponse> InvokeAsync(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
-        ListApontamentoResponse result = new ListApontamentoResponse
+        ListApontamentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -77,7 +77,7 @@ public class ApontamentoHandler :
 
     public async ValueTask<RemoveApontamentoResponse> InvokeAsync(RemoveApontamentoCommand request, CancellationToken cancellationToken = default)
     {
-        RemoveApontamentoResponse result = new RemoveApontamentoResponse
+        RemoveApontamentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -102,7 +102,7 @@ public class ApontamentoHandler :
 
     public async ValueTask<UpdateApontamentoResponse> InvokeAsync(UpdateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
-        UpdateApontamentoResponse result = new UpdateApontamentoResponse
+        UpdateApontamentoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -118,7 +118,7 @@ public class ApontamentoHandler :
 
     public async ValueTask<GetByRecursoResponse> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
     {
-        GetByRecursoResponse result = new GetByRecursoResponse
+        GetByRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
