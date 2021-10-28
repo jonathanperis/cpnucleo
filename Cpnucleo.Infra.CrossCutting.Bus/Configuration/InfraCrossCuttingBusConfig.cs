@@ -12,7 +12,8 @@ public static class InfraCrossCuttingBusConfig
     {
         services.AddScoped<IEventHandler, EventHandler>();
 
-        services.AddServiceBus<PayloadSerializer>(settings => {
+        services.AddServiceBus<PayloadSerializer>(settings =>
+        {
             settings.Enabled = true;
             settings.ReceiveMessages = true;
             settings.WithConnection(configuration["AzureServiceBus:CpnucleoConnection"]);
