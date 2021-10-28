@@ -21,13 +21,13 @@ internal class PayloadSerializer : IMessagePayloadSerializer
 
     public SerializationResult SerializeBody(object objectToSerialize)
     {
-        var json = JsonConvert.SerializeObject(objectToSerialize, Formatting.None, Settings);
+        string json = JsonConvert.SerializeObject(objectToSerialize, Formatting.None, Settings);
         return new SerializationResult("application/json", Encoding.UTF8.GetBytes(json));
     }
 
     public object DeSerializeBody(byte[] content, Type typeToCreate)
     {
-        var @string = Encoding.UTF8.GetString(content);
+        string @string = Encoding.UTF8.GetString(content);
         return JsonConvert.DeserializeObject(@string, typeToCreate, Settings)!;
     }
 }
