@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
+﻿using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 
@@ -15,11 +17,13 @@ public class SistemaHandler :
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IEventHandler _eventHandler;
 
-    public SistemaHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public SistemaHandler(IUnitOfWork unitOfWork, IMapper mapper, IEventHandler eventHandler)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _eventHandler = eventHandler;
     }
 
     public async ValueTask<CreateSistemaResponse> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
@@ -94,6 +98,11 @@ public class SistemaHandler :
         bool success = await _unitOfWork.SaveChangesAsync();
 
         result.Status = success ? OperationResult.Success : OperationResult.Failed;
+
+        if (result.Status == OperationResult.Success)
+        {
+            await _eventHandler.PublishEventAsync(new RemoveSistemaEvent { Id = request.Id });
+        }
 
         return result;
     }
