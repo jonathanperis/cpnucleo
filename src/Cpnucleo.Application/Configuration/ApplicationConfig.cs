@@ -1,5 +1,8 @@
-﻿using Cpnucleo.Application.Interfaces;
+﻿using Cpnucleo.Application.Events.Sistema;
+using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
+using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
+using Ev.ServiceBus;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Application.Configuration;
@@ -24,6 +27,11 @@ public static class ApplicationConfig
             .AddScoped<IWorkflowAppService, WorkflowAppService>();
 
         services.AddMessagePipe();
+
+        services.RegisterServiceBusReception().FromQueue("CpnucleoDefaultQueue", builder =>
+        {
+            builder.RegisterReception<RemoveSistemaEvent, RemoveSistemaEventHandler>();
+        });
     }
 }
 

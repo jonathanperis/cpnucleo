@@ -1,8 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
+﻿using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+using Moq;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -15,13 +18,16 @@ public class SistemaHandlerTest
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
 
+        Mock<IEventHandler> mock = new();
+        mock.Setup(x => x.PublishEventAsync(new object())).Returns(Task.CompletedTask);
+
         CreateSistemaCommand request = new()
         {
             Sistema = MockViewModelHelper.GetNewSistema()
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
         CreateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
         // Assert
@@ -38,6 +44,9 @@ public class SistemaHandlerTest
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
 
+        Mock<IEventHandler> mock = new();
+        mock.Setup(x => x.PublishEventAsync(new object())).Returns(Task.CompletedTask);
+
         Guid sistemaId = Guid.NewGuid();
 
         await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
@@ -49,7 +58,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
         GetSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
         // Assert
@@ -66,6 +75,9 @@ public class SistemaHandlerTest
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
 
+        Mock<IEventHandler> mock = new();
+        mock.Setup(x => x.PublishEventAsync(new object())).Returns(Task.CompletedTask);
+
         Guid sistemaId = Guid.NewGuid();
 
         await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
@@ -77,7 +89,7 @@ public class SistemaHandlerTest
         ListSistemaQuery request = new();
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
         ListSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
         // Assert
@@ -95,6 +107,9 @@ public class SistemaHandlerTest
         IMapper mapper = AutoMapperHelper.GetMappings();
 
         Guid sistemaId = Guid.NewGuid();
+
+        Mock<IEventHandler> mock = new();
+        mock.Setup(x => x.PublishEventAsync(new RemoveSistemaEvent { Id = sistemaId })).Returns(Task.CompletedTask);
 
         Sistema sistema = MockEntityHelper.GetNewSistema(sistemaId);
 
@@ -114,7 +129,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
         RemoveSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
         GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
@@ -130,6 +145,9 @@ public class SistemaHandlerTest
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+
+        Mock<IEventHandler> mock = new();
+        mock.Setup(x => x.PublishEventAsync(new object())).Returns(Task.CompletedTask);
 
         Guid sistemaId = Guid.NewGuid();
         DateTime dataInclusao = DateTime.Now;
@@ -152,7 +170,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
         UpdateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
         GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
