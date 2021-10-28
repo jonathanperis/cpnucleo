@@ -6,7 +6,7 @@ public static class ClaimsService
 {
     public static ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
     {
-        ClaimsIdentity identities = new ClaimsIdentity(claims, "Cookie");
+        ClaimsIdentity identities = new(claims, "Cookie");
 
         return new ClaimsPrincipal(new[] { identities });
     }

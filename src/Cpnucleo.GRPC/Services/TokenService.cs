@@ -9,7 +9,7 @@ public static class TokenService
 {
     public static string GenerateToken(string id, string key, string issuer, int expires)
     {
-        SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
+        SecurityTokenDescriptor tokenDescriptor = new()
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
@@ -21,7 +21,7 @@ public static class TokenService
             Issuer = issuer,
         };
 
-        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        JwtSecurityTokenHandler tokenHandler = new();
         SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);

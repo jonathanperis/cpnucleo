@@ -24,7 +24,7 @@ public class TipoTarefaHandler :
 
     public async ValueTask<CreateTipoTarefaResponse> InvokeAsync(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
-        CreateTipoTarefaResponse result = new CreateTipoTarefaResponse
+        CreateTipoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -41,7 +41,7 @@ public class TipoTarefaHandler :
 
     public async ValueTask<GetTipoTarefaResponse> InvokeAsync(GetTipoTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetTipoTarefaResponse result = new GetTipoTarefaResponse
+        GetTipoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -62,7 +62,7 @@ public class TipoTarefaHandler :
 
     public async ValueTask<ListTipoTarefaResponse> InvokeAsync(ListTipoTarefaQuery request, CancellationToken cancellationToken)
     {
-        ListTipoTarefaResponse result = new ListTipoTarefaResponse
+        ListTipoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -75,7 +75,7 @@ public class TipoTarefaHandler :
 
     public async ValueTask<RemoveTipoTarefaResponse> InvokeAsync(RemoveTipoTarefaCommand request, CancellationToken cancellationToken)
     {
-        RemoveTipoTarefaResponse result = new RemoveTipoTarefaResponse
+        RemoveTipoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -100,7 +100,7 @@ public class TipoTarefaHandler :
 
     public async ValueTask<UpdateTipoTarefaResponse> InvokeAsync(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
-        UpdateTipoTarefaResponse result = new UpdateTipoTarefaResponse
+        UpdateTipoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
