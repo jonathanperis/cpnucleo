@@ -24,7 +24,7 @@ public class WorkflowHandler :
 
     public async ValueTask<CreateWorkflowResponse> InvokeAsync(CreateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        CreateWorkflowResponse result = new CreateWorkflowResponse
+        CreateWorkflowResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -41,7 +41,7 @@ public class WorkflowHandler :
 
     public async ValueTask<GetWorkflowResponse> InvokeAsync(GetWorkflowQuery request, CancellationToken cancellationToken)
     {
-        GetWorkflowResponse result = new GetWorkflowResponse
+        GetWorkflowResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -62,7 +62,7 @@ public class WorkflowHandler :
 
     public async ValueTask<ListWorkflowResponse> InvokeAsync(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
-        ListWorkflowResponse result = new ListWorkflowResponse
+        ListWorkflowResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -77,7 +77,7 @@ public class WorkflowHandler :
 
     public async ValueTask<RemoveWorkflowResponse> InvokeAsync(RemoveWorkflowCommand request, CancellationToken cancellationToken)
     {
-        RemoveWorkflowResponse result = new RemoveWorkflowResponse
+        RemoveWorkflowResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -102,7 +102,7 @@ public class WorkflowHandler :
 
     public async ValueTask<UpdateWorkflowResponse> InvokeAsync(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        UpdateWorkflowResponse result = new UpdateWorkflowResponse
+        UpdateWorkflowResponse result = new()
         {
             Status = OperationResult.Failed
         };

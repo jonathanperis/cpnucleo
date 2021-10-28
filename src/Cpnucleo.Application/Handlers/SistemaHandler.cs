@@ -24,7 +24,7 @@ public class SistemaHandler :
 
     public async ValueTask<CreateSistemaResponse> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
     {
-        CreateSistemaResponse result = new CreateSistemaResponse
+        CreateSistemaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -41,7 +41,7 @@ public class SistemaHandler :
 
     public async ValueTask<GetSistemaResponse> InvokeAsync(GetSistemaQuery request, CancellationToken cancellationToken = default)
     {
-        GetSistemaResponse result = new GetSistemaResponse
+        GetSistemaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -62,7 +62,7 @@ public class SistemaHandler :
 
     public async ValueTask<ListSistemaResponse> InvokeAsync(ListSistemaQuery request, CancellationToken cancellationToken = default)
     {
-        ListSistemaResponse result = new ListSistemaResponse
+        ListSistemaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -75,7 +75,7 @@ public class SistemaHandler :
 
     public async ValueTask<RemoveSistemaResponse> InvokeAsync(RemoveSistemaCommand request, CancellationToken cancellationToken = default)
     {
-        RemoveSistemaResponse result = new RemoveSistemaResponse
+        RemoveSistemaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -100,7 +100,7 @@ public class SistemaHandler :
 
     public async ValueTask<UpdateSistemaResponse> InvokeAsync(UpdateSistemaCommand request, CancellationToken cancellationToken = default)
     {
-        UpdateSistemaResponse result = new UpdateSistemaResponse
+        UpdateSistemaResponse result = new()
         {
             Status = OperationResult.Failed
         };

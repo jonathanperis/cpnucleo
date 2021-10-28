@@ -6,7 +6,7 @@ public class AutoMapperHelper
 {
     public static IMapper GetMappings()
     {
-        MapperConfiguration config = new MapperConfiguration(cfg =>
+        MapperConfiguration config = new(cfg =>
         {
             cfg.AddProfile<ViewModelToEntityProfile>();
             cfg.AddProfile<EntityToViewModelProfile>();

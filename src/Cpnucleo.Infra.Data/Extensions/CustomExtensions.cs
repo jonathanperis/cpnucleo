@@ -13,11 +13,11 @@ internal static partial class CustomExtensions
     public static IEnumerable<string> GetIncludePaths(this DbContext context, Type clrEntityType)
     {
         IEntityType entityType = context.Model.FindEntityType(clrEntityType);
-        HashSet<INavigation> includedNavigations = new HashSet<INavigation>();
-        Stack<IEnumerator<INavigation>> stack = new Stack<IEnumerator<INavigation>>();
+        HashSet<INavigation> includedNavigations = new();
+        Stack<IEnumerator<INavigation>> stack = new();
         while (true)
         {
-            List<INavigation> entityNavigations = new List<INavigation>();
+            List<INavigation> entityNavigations = new();
             foreach (INavigation navigation in entityType.GetNavigations())
             {
                 if (includedNavigations.Add(navigation))

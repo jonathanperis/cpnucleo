@@ -26,7 +26,7 @@ public class ImpedimentoTarefaHandler :
 
     public async ValueTask<CreateImpedimentoTarefaResponse> InvokeAsync(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        CreateImpedimentoTarefaResponse result = new CreateImpedimentoTarefaResponse
+        CreateImpedimentoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -43,7 +43,7 @@ public class ImpedimentoTarefaHandler :
 
     public async ValueTask<GetImpedimentoTarefaResponse> InvokeAsync(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetImpedimentoTarefaResponse result = new GetImpedimentoTarefaResponse
+        GetImpedimentoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -64,7 +64,7 @@ public class ImpedimentoTarefaHandler :
 
     public async ValueTask<ListImpedimentoTarefaResponse> InvokeAsync(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
-        ListImpedimentoTarefaResponse result = new ListImpedimentoTarefaResponse
+        ListImpedimentoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -77,7 +77,7 @@ public class ImpedimentoTarefaHandler :
 
     public async ValueTask<RemoveImpedimentoTarefaResponse> InvokeAsync(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        RemoveImpedimentoTarefaResponse result = new RemoveImpedimentoTarefaResponse
+        RemoveImpedimentoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -102,7 +102,7 @@ public class ImpedimentoTarefaHandler :
 
     public async ValueTask<UpdateImpedimentoTarefaResponse> InvokeAsync(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        UpdateImpedimentoTarefaResponse result = new UpdateImpedimentoTarefaResponse
+        UpdateImpedimentoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -118,7 +118,7 @@ public class ImpedimentoTarefaHandler :
 
     public async ValueTask<GetByTarefaResponse> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetByTarefaResponse result = new GetByTarefaResponse
+        GetByTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };

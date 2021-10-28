@@ -26,7 +26,7 @@ public class RecursoProjetoHandler :
 
     public async ValueTask<CreateRecursoProjetoResponse> InvokeAsync(CreateRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        CreateRecursoProjetoResponse result = new CreateRecursoProjetoResponse
+        CreateRecursoProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -43,7 +43,7 @@ public class RecursoProjetoHandler :
 
     public async ValueTask<GetRecursoProjetoResponse> InvokeAsync(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        GetRecursoProjetoResponse result = new GetRecursoProjetoResponse
+        GetRecursoProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -64,7 +64,7 @@ public class RecursoProjetoHandler :
 
     public async ValueTask<ListRecursoProjetoResponse> InvokeAsync(ListRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        ListRecursoProjetoResponse result = new ListRecursoProjetoResponse
+        ListRecursoProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -77,7 +77,7 @@ public class RecursoProjetoHandler :
 
     public async ValueTask<RemoveRecursoProjetoResponse> InvokeAsync(RemoveRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        RemoveRecursoProjetoResponse result = new RemoveRecursoProjetoResponse
+        RemoveRecursoProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -102,7 +102,7 @@ public class RecursoProjetoHandler :
 
     public async ValueTask<UpdateRecursoProjetoResponse> InvokeAsync(UpdateRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        UpdateRecursoProjetoResponse result = new UpdateRecursoProjetoResponse
+        UpdateRecursoProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -118,7 +118,7 @@ public class RecursoProjetoHandler :
 
     public async ValueTask<GetByProjetoResponse> InvokeAsync(GetByProjetoQuery request, CancellationToken cancellationToken)
     {
-        GetByProjetoResponse result = new GetByProjetoResponse
+        GetByProjetoResponse result = new()
         {
             Status = OperationResult.Failed
         };

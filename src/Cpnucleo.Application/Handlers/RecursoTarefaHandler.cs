@@ -26,7 +26,7 @@ public class RecursoTarefaHandler :
 
     public async ValueTask<CreateRecursoTarefaResponse> InvokeAsync(CreateRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
-        CreateRecursoTarefaResponse result = new CreateRecursoTarefaResponse
+        CreateRecursoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -43,7 +43,7 @@ public class RecursoTarefaHandler :
 
     public async ValueTask<GetRecursoTarefaResponse> InvokeAsync(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetRecursoTarefaResponse result = new GetRecursoTarefaResponse
+        GetRecursoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -64,7 +64,7 @@ public class RecursoTarefaHandler :
 
     public async ValueTask<ListRecursoTarefaResponse> InvokeAsync(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
-        ListRecursoTarefaResponse result = new ListRecursoTarefaResponse
+        ListRecursoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -77,7 +77,7 @@ public class RecursoTarefaHandler :
 
     public async ValueTask<RemoveRecursoTarefaResponse> InvokeAsync(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
-        RemoveRecursoTarefaResponse result = new RemoveRecursoTarefaResponse
+        RemoveRecursoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -102,7 +102,7 @@ public class RecursoTarefaHandler :
 
     public async ValueTask<UpdateRecursoTarefaResponse> InvokeAsync(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
-        UpdateRecursoTarefaResponse result = new UpdateRecursoTarefaResponse
+        UpdateRecursoTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -118,7 +118,7 @@ public class RecursoTarefaHandler :
 
     public async ValueTask<GetByTarefaResponse> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetByTarefaResponse result = new GetByTarefaResponse
+        GetByTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };

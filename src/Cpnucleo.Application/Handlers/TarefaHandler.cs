@@ -28,7 +28,7 @@ public class TarefaHandler :
 
     public async ValueTask<CreateTarefaResponse> InvokeAsync(CreateTarefaCommand request, CancellationToken cancellationToken)
     {
-        CreateTarefaResponse result = new CreateTarefaResponse
+        CreateTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -45,7 +45,7 @@ public class TarefaHandler :
 
     public async ValueTask<GetTarefaResponse> InvokeAsync(GetTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetTarefaResponse result = new GetTarefaResponse
+        GetTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -66,7 +66,7 @@ public class TarefaHandler :
 
     public async ValueTask<ListTarefaResponse> InvokeAsync(ListTarefaQuery request, CancellationToken cancellationToken)
     {
-        ListTarefaResponse result = new ListTarefaResponse
+        ListTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -81,7 +81,7 @@ public class TarefaHandler :
 
     public async ValueTask<RemoveTarefaResponse> InvokeAsync(RemoveTarefaCommand request, CancellationToken cancellationToken)
     {
-        RemoveTarefaResponse result = new RemoveTarefaResponse
+        RemoveTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -106,7 +106,7 @@ public class TarefaHandler :
 
     public async ValueTask<UpdateTarefaResponse> InvokeAsync(UpdateTarefaCommand request, CancellationToken cancellationToken)
     {
-        UpdateTarefaResponse result = new UpdateTarefaResponse
+        UpdateTarefaResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -122,7 +122,7 @@ public class TarefaHandler :
 
     public async ValueTask<GetByRecursoResponse> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
     {
-        GetByRecursoResponse result = new GetByRecursoResponse
+        GetByRecursoResponse result = new()
         {
             Status = OperationResult.Failed
         };
@@ -137,7 +137,7 @@ public class TarefaHandler :
 
     public async ValueTask<UpdateByWorkflowResponse> InvokeAsync(UpdateByWorkflowCommand request, CancellationToken cancellationToken)
     {
-        UpdateByWorkflowResponse result = new UpdateByWorkflowResponse
+        UpdateByWorkflowResponse result = new()
         {
             Status = OperationResult.Failed
         };

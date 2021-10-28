@@ -12,10 +12,10 @@ public class DbContextHelper
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        CpnucleoContext context = new CpnucleoContext(options);
+        CpnucleoContext context = new(options);
         context.SaveChanges();
 
-        UnitOfWork unitOfWork = new UnitOfWork(context);
+        UnitOfWork unitOfWork = new(context);
 
         return unitOfWork;
     }
