@@ -6,7 +6,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCpnucleoSetup();
+builder.Services.AddCpnucleoSetup(builder.Configuration);
 
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
