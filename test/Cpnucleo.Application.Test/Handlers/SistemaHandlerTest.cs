@@ -27,7 +27,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object, null);
         CreateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
         // Assert
@@ -58,7 +58,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object, null);
         GetSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
         // Assert
@@ -89,7 +89,7 @@ public class SistemaHandlerTest
         ListSistemaQuery request = new();
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object, null);
         ListSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
 
         // Assert
@@ -129,7 +129,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object, null);
         RemoveSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
         GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 
@@ -170,7 +170,7 @@ public class SistemaHandlerTest
         };
 
         // Act
-        SistemaHandler handler = new(unitOfWork, mapper, mock.Object);
+        SistemaHandler handler = new(unitOfWork, mapper, mock.Object, null);
         UpdateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
         GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
 

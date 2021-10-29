@@ -53,7 +53,17 @@ WebApplication app = builder.Build();
 
 app.UseRouting();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-app.UseCors();
+
+app.UseCors(x =>
+{
+    // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
+    x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
+           .AllowAnyHeader()
+           .WithMethods("GET", "POST")
+           .AllowCredentials();
+});
+
+app.UseCpnucleoApiSetup();
 
 app.UseAuthentication();
 app.UseAuthorization();
