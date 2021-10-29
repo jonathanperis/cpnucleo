@@ -14,7 +14,7 @@ public static class ServiceCollectionExtension
     {
         services.AddInfraCrossCuttingSecutirySetup();
         services.AddInfraCrossCuttingBusSetup(configuration);
-        services.AddApplicationSetup();
+        services.AddApplicationSetup(configuration);
         services.AddDomainSetup();
         services.AddInfraDataSetup();
 
