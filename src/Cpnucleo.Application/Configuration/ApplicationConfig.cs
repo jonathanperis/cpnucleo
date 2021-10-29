@@ -1,15 +1,18 @@
 ﻿using Cpnucleo.Application.Events.Sistema;
+using Cpnucleo.Application.Hubs;
 using Cpnucleo.Application.Interfaces;
 using Cpnucleo.Application.Services;
 using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
 using Ev.ServiceBus;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Application.Configuration;
 
 public static class ApplicationConfig
 {
-    public static void AddApplicationSetup(this IServiceCollection services)
+    public static void AddApplicationSetup(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAutoMapper(typeof(ViewModelToEntityProfile), typeof(EntityToViewModelProfile));
 
@@ -31,6 +34,18 @@ public static class ApplicationConfig
         services.RegisterServiceBusReception().FromQueue("CpnucleoDefaultQueue", builder =>
         {
             builder.RegisterReception<RemoveSistemaEvent, RemoveSistemaEventHandler>();
+        });
+
+        services.AddSignalR()
+                .AddAzureSignalR(configuration["AzureSignalR:DefaultConnection"]);
+    }
+
+    public static void UseApplicationSetup(this IApplicationBuilder app)
+    {
+        app.UseFileServer();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapHub<CpnucleoHub>("/hub");
         });
     }
 }

@@ -3,6 +3,8 @@
     ViewData["Title"] = "Relação de Sistemas";
 }
 
+@inject IConfiguration configuration;
+
 @section Styles {
     <!-- DataTables -->
     <link href="https://cpnucleo-assets.azurewebsites.net/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
@@ -88,6 +90,8 @@
 @section Scripts {
     <!-- DataTables -->
     <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/dataTables/datatables.min.js"></script>
+    <!--Reference the SignalR library. -->
+    <script src="~/lib/signalr/signalr.min.js"></script>
     <script>
         $(document).ready(function () {
             $('.table-datatable').DataTable({
@@ -133,5 +137,38 @@
                 }]
             });
         });
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("@configuration["AppSettings:UrlCpnucleoGrpc"]/hub")
+            .withAutomaticReconnect()
+            .build();
+
+        bindConnectionMessage(connection);
+
+        Object.defineProperty(WebSocket, 'OPEN', { value: 1, });
+
+        connection.start()
+            .then(() => onConnected(connection))
+            .catch(error => console.error(error.message));    
+
+        function bindConnectionMessage(connection) {
+
+            //Incoming messages.
+            connection.on('broadcastMessage', (name, message) => {
+
+                console.log('received message: ' + name, message)
+            });
+
+            connection.on('echo', (name, message) => {
+
+                console.log('received message: ' + name, message)
+            });
+        }
+
+        function onConnected(connection) {
+
+            //Sent messages.
+            connection.send('echo', 'Echo: Test Message.', 'Lorem ipsum dolor sit amet');
+        }
     </script>
 }

@@ -16,7 +16,7 @@ public static class InfraCrossCuttingBusConfig
         {
             settings.Enabled = true;
             settings.ReceiveMessages = true;
-            settings.WithConnection(configuration["AzureServiceBus:CpnucleoConnection"]);
+            settings.WithConnection(configuration["AzureServiceBus:DefaultConnection"]);
         });
 
         services.RegisterServiceBusDispatch().ToQueue("CpnucleoDefaultQueue", builder =>

@@ -1,10 +1,12 @@
-﻿using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+﻿using Cpnucleo.Application.Hubs;
+using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Cpnucleo.Application.Handlers;
 
@@ -18,12 +20,14 @@ public class SistemaHandler :
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IEventHandler _eventHandler;
+    private readonly IHubContext<CpnucleoHub> _hubContext;
 
-    public SistemaHandler(IUnitOfWork unitOfWork, IMapper mapper, IEventHandler eventHandler)
+    public SistemaHandler(IUnitOfWork unitOfWork, IMapper mapper, IEventHandler eventHandler, IHubContext<CpnucleoHub> hubContext)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _eventHandler = eventHandler;
+        _hubContext = hubContext;
     }
 
     public async ValueTask<CreateSistemaResponse> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
@@ -73,6 +77,8 @@ public class SistemaHandler :
 
         result.Sistemas = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies));
         result.Status = OperationResult.Success;
+
+        await _hubContext.Clients.All.SendAsync("broadcastMessage", "Broadcast: Test Message.", "Lorem ipsum dolor sit amet", cancellationToken);
 
         return result;
     }
