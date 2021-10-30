@@ -58,8 +58,8 @@ app.UseCors(x =>
 {
     // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
     x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
+           .AllowAnyMethod()
            .AllowAnyHeader()
-           .WithMethods("GET", "POST")
            .AllowCredentials();
 });
 

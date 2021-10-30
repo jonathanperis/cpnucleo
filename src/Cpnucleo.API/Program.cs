@@ -16,7 +16,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "AllowCpcnuleoClients",
                       x =>
                       {
-                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"]);
+                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
                       });
 });
 
