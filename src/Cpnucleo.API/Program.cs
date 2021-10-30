@@ -11,6 +11,15 @@ builder.Services.AddCpnucleoSetup(builder.Configuration);
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowCpcnuleoClients",
+                      x =>
+                      {
+                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"]);
+                      });
+});
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -42,12 +51,11 @@ builder.Services.AddControllers()
 var app = builder.Build();
 
 app.UseSwaggerConfig();
-
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseCors("AllowCpcnuleoClients");
 
+app.MapControllers();
 app.Run();
