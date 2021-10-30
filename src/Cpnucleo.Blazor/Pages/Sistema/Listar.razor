@@ -1,6 +1,9 @@
 @page "/sistema/listar"
 @inject IJSRuntime JS;
 @inject ICpnucleoApiService cpnucleoApiService;
+@*@inject HttpClient Http*@
+
+<PageTitle>Relação de Sistemas</PageTitle>
 
 <div class="row">
     <div class="col-lg-12">
@@ -85,6 +88,7 @@
     protected override async Task OnInitializedAsync()
     {
         sistemas = await cpnucleoApiService.GetAsync<IEnumerable<Sistema>>("sistema", "");
+        //sistemas = await Http.GetFromJsonAsync<IEnumerable<Sistema>>("sistema");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Sistemas");
     }
