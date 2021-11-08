@@ -52,7 +52,8 @@ public class MockEntityHelper
             Id = recursoId == Guid.Empty ? Guid.NewGuid() : recursoId,
             Nome = "Recurso de teste",
             Login = "usuario.teste",
-            Senha = "12345678",
+            Senha = "k8n3YJ7em+uo32BbpRNgjB+kX6uRCJLN7V1L4Q7WwUqDrpz00uCHi+wOLJBZJkOQ",
+            Salt = "okVTEMBEAbjnjKmD3On1qKwDT0+vfBRAzDM/T7vHqH+gZJxV8/9rRhqiALLlLC7r",
         };
     }
 

@@ -10,7 +10,7 @@ public class Tarefa : BaseEntity
 
     public int QtdHoras { get; set; }
 
-    public string Detalhe { get; set; }
+    public string? Detalhe { get; set; }
 
     public int HorasConsumidas { get; set; }
 
