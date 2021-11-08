@@ -13,4 +13,8 @@
 		<PackageReference Include="Refit.HttpClientFactory" Version="6.1.15" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
+	</ItemGroup>	
+
 </Project>
