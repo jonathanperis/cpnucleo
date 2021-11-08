@@ -48,11 +48,11 @@
 </div>
 
 @code {
-    private Sistema model = new Sistema();
+    private SistemaViewModel model = new SistemaViewModel();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<Sistema>("sistema", "", model);
+        await cpnucleoApiService.PostAsync<SistemaViewModel>("sistema", "", model);
 
         navigationManager.NavigateTo("/sistema/listar");
     }
