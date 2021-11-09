@@ -22,6 +22,12 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
+  displayName: Install WASM tools
+  inputs:
+    command: 'workload install wasm-tools'
+    projects: '$(project)'
+
+- task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: 'restore'
