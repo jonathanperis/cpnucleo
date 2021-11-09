@@ -25,8 +25,8 @@ steps:
   displayName: Install WASM tools
   inputs:
     command: 'custom'
-    custom: 'workload install'
-    arguments: 'wasm-tools'
+    custom: 'workload'
+    arguments: 'install wasm-tools'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
