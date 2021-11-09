@@ -20,7 +20,7 @@ steps:
   inputs:
     useGlobalJson: true
     includePreviewVersions: true
-    
+
 - task: DotNetCoreCLI@2
   displayName: Install WASM tools
   inputs:
