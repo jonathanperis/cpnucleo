@@ -20,13 +20,13 @@ steps:
   inputs:
     useGlobalJson: true
     includePreviewVersions: true
-
+    
 - task: DotNetCoreCLI@2
   displayName: Install WASM tools
   inputs:
-    command: 'workload'
-    arguments: 'install wasm-tools'
-    projects: '$(project)'
+    command: 'custom'
+    custom: 'workload install'
+    arguments: 'wasm-tools'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
