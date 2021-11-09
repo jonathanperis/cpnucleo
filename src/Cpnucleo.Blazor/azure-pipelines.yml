@@ -38,7 +38,7 @@ steps:
   displayName: Build
   inputs:
     command: 'build'
-    projects: '$(solution)'
+    projects: '$(project)'
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
