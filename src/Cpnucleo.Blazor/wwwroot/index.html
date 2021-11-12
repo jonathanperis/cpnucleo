@@ -21,6 +21,12 @@
     <link href="https://cpnucleo-assets.azurewebsites.net/css/style.css" rel="stylesheet">
     <link href="https://cpnucleo-assets.azurewebsites.net/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="https://cpnucleo-assets.azurewebsites.net/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+    <style type="text/css">
+        .progress {
+            margin-top: 10px;
+            margin-bottom: 0px;
+        }
+    </style>
 </head>
 <body class="top-navigation">
     <div id="wrapper">
@@ -36,12 +42,14 @@
     <!-- Custom and plugin javascript -->
     <script src="https://cpnucleo-assets.azurewebsites.net/js/inspinia.js"></script>
     <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/pace/pace.min.js"></script>
-    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/dataTables/datatables.min.js"></script> -->
-    <script>
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/dataTables/datatables.min.js"></script>
+    <!-- Password meter -->
+    <script src="https://cpnucleo-assets.azurewebsites.net/js/plugins/pwstrength/pwstrength-bootstrap.min.js"></script>
+    <script type="text/javascript">
         function dataTables(nomeRelatorio) {
 
             $(document).ready(function () {
-            
+
                 $('.table-datatable').DataTable({
                     language: {
                         "lengthMenu": "Mostrando _MENU_ registros por página",
@@ -83,12 +91,68 @@
                         "targets": 'no-sort',
                         "orderable": false,
                     }]
-                });      
+                });
 
             });
 
         }
     </script>
-    <script src="_framework/blazor.webassembly.js"></script>        
+    <script type="text/javascript">
+        function passwordStrenght() {
+
+            $(document).ready(function () {
+
+                var options = {};
+                options.ui = {
+                    container: "#senha-container",
+                    showVerdictsInsideProgressBar: true,
+                    viewports: {
+                        progress: ".senha-progress"
+                    }
+                };
+                options.common = {
+                    debug: false,
+                };
+                options.i18n = {
+                    t: function (key) {
+                        var result = translateThisThing(key);
+
+                        return result === key ? '' : result;
+                    }
+                };
+                $('#senha').pwstrength(options);
+
+            });
+
+        };
+
+        function translateThisThing(key) {
+
+            if (key == "veryWeak") {
+                return "Muito Fraca";
+            }
+
+            if (key == "weak") {
+                return "Fraca";
+            }
+
+            if (key == "normal") {
+                return "Normal";
+            }
+
+            if (key == "medium") {
+                return "Média";
+            }
+
+            if (key == "strong") {
+                return "Forte";
+            }
+
+            if (key == "veryStrong") {
+                return "Muito Forte";
+            }
+        }
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
 </body>
 </html>
