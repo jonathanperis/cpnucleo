@@ -16,5 +16,5 @@ public class WorkflowViewModel : BaseViewModel
 
     [Display(Name = "Tamanho Coluna")]
     [DataMember(Order = 5)]
-    public string TamanhoColuna { get; set; }
+    public string? TamanhoColuna { get; set; }
 }

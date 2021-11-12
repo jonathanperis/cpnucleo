@@ -1,13 +1,13 @@
-@page "/impedimento/remover/{id:guid}"
+@page "/workflow/alterar/{id:guid}"
 @inject ICpnucleoApiService cpnucleoApiService;
 @inject NavigationManager navigationManager;
 
-<PageTitle>CPN - Remoção de Impedimento</PageTitle>
+<PageTitle>CPN - Alteração de Workflow</PageTitle>
 
 <div class="col-lg-12">
     <div class="ibox float-e-margins">
         <div class="ibox-title">
-            <h5>Remoção de Impedimento</h5>
+            <h5>Alteração de Workflow</h5>
             <div class="ibox-tools">
                 <a class="fullscreen-link">
                     <i class="fa fa-expand"></i>
@@ -35,8 +35,16 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Nome">                            
-                            <p class="form-control-static">@model.Nome</p>
+                            <InputText class="form-control" @bind-Value="model.Nome" />
+                            <ValidationMessage For="@(() => model.Nome)" />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Ordem)" /><br><small class="text-navy">Ordem no Kanban</small></label>
+                        <div class="col-sm-10">
+                            <input class="form-control" @bind="model.Ordem" />
+                            <ValidationMessage For="@(() => model.Ordem)" />
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -49,8 +57,8 @@
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                            <a class="btn btn-white" role="button" href="/impedimento/listar">Voltar</a>                            
-                            <button class="btn btn-primary" type="submit">Remover</button>
+                            <a class="btn btn-white" role="button" href="/workflow/listar">Voltar</a>
+                            <button class="btn btn-primary" type="submit">Alterar</button>
                         </div>
                     </div>
                 }        
@@ -64,17 +72,17 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ImpedimentoViewModel model = new ImpedimentoViewModel();
+    private WorkflowViewModel model = new WorkflowViewModel();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", "", Id);
+        model = await cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("impedimento", "", Id);
+        await cpnucleoApiService.PutAsync("workflow", "", Id, model);
 
-        navigationManager.NavigateTo("/impedimento/listar");
+        navigationManager.NavigateTo("/workflow/listar");
     }
 }
