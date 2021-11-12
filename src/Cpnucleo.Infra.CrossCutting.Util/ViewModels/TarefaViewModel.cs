@@ -60,16 +60,16 @@ public class TarefaViewModel : BaseViewModel //:IValidatableObject
     public Guid IdTipoTarefa { get; set; }
 
     [DataMember(Order = 14)]
-    public ProjetoViewModel Projeto { get; set; }
+    public ProjetoViewModel? Projeto { get; set; }
 
     [DataMember(Order = 15)]
-    public WorkflowViewModel Workflow { get; set; }
+    public WorkflowViewModel? Workflow { get; set; }
 
     [DataMember(Order = 16)]
-    public RecursoViewModel Recurso { get; set; }
+    public RecursoViewModel? Recurso { get; set; }
 
     [DataMember(Order = 17)]
-    public TipoTarefaViewModel TipoTarefa { get; set; }
+    public TipoTarefaViewModel? TipoTarefa { get; set; }
 
     // public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     // {
