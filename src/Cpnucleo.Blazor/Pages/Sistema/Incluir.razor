@@ -22,7 +22,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
                     <div class="col-sm-10">
-                        <InputText class="form-control" @bind-Value="model.Nome" />
+                        <input type="text" class="form-control" @bind="model.Nome" placeholder="Nome" />
                         <ValidationMessage For="@(() => model.Nome)" />
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Descricao)" /></label>
                     <div class="col-sm-10">
-                        <InputText class="form-control" @bind-Value="model.Descricao" />
+                        <input type="text" class="form-control" @bind="model.Descricao" placeholder="Descrição" />
                         <ValidationMessage For="@(() => model.Descricao)" />
                     </div>
                 </div>

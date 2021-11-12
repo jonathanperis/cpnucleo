@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
                         <div class="col-sm-10">
-                            <InputText class="form-control" @bind-Value="model.Nome" />
+                            <input type="text" class="form-control" @bind="model.Nome" placeholder="Nome" />
                             <ValidationMessage For="@(() => model.Nome)" />
                         </div>
                     </div>
@@ -43,12 +43,12 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.IdSistema)" /></label>
                         <div class="col-sm-10">
-                            <InputSelect class="form-control m-b" @bind-Value="model.IdSistema">
+                            <select class="form-control m-b" @bind="model.IdSistema">
                                 @foreach (var item in sistemas)
                                 {
                                     <option value="@item.Id">@item.Nome</option>
                                 }
-                            </InputSelect>
+                            </select>
                             <ValidationMessage For="@(() => model.IdSistema)" />
                         </div>
                     </div>
