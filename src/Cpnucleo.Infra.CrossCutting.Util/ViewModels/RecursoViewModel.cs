@@ -20,18 +20,18 @@ public class RecursoViewModel : BaseViewModel
     [Required(ErrorMessage = "Necessário informar a {0} do Recurso.")]
     [StringLength(50, ErrorMessage = "A {0} deve conter ao menos {2} e o máximo {1} caractéres.", MinimumLength = 8)]
     [DataMember(Order = 5)]
-    public string Senha { get; set; }
+    public string? Senha { get; set; }
 
     [Display(Name = "Confirmação de Senha")]
     [DataType(DataType.Password)]
     [Required(ErrorMessage = "Necessário informar a {0} do Recurso.")]
     [Compare("Senha", ErrorMessage = "A {1} e a {0} não correspondem.")]
     [DataMember(Order = 6)]
-    public string ConfirmarSenha { get; set; }
+    public string? ConfirmarSenha { get; set; }
 
     [DataMember(Order = 7)]
-    public string Salt { get; set; }
+    public string? Salt { get; set; }
 
     [DataMember(Order = 8)]
-    public string Token { get; set; }
+    public string? Token { get; set; }
 }
