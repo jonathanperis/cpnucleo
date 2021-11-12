@@ -17,7 +17,7 @@
         <div class="ibox-content">
 
             <EditForm class="form-horizontal" Model="@model" OnValidSubmit="@HandleValidSubmit">
-                <DataAnnotationsValidator />     
+                <DataAnnotationsValidator />
 
                 @if (model.Id == Guid.Empty)
                 {
@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Nome">                            
+                            <input type="hidden" @bind="model.Nome">
                             <p class="form-control-static">@model.Nome</p>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Descricao)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Descricao">                            
+                            <input type="hidden" @bind="model.Descricao">
                             <p class="form-control-static">@model.Descricao</p>
                         </div>
                     </div>
@@ -57,11 +57,11 @@
                     <div class="hr-line-dashed"></div>
                     <div class="form-group">
                         <div class="col-sm-4 col-sm-offset-2">
-                            <a class="btn btn-white" role="button" href="/sistema/listar">Voltar</a>                            
+                            <a class="btn btn-white" role="button" href="/sistema/listar">Voltar</a>
                             <button class="btn btn-primary" type="submit">Remover</button>
                         </div>
                     </div>
-                }        
+                }
 
             </EditForm>
         </div>

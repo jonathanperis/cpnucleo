@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.Nome)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.Nome">
+                            <input type="hidden" @bind="model.Nome">
                             <p class="form-control-static">@model.Nome</p>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.IdSistema)" /></label>
                         <div class="col-sm-10">
-                            <input type="hidden" @bind-value="model.IdSistema">
+                            <input type="hidden" @bind="model.IdSistema">
                             <p class="form-control-static">@model.Sistema.Nome</p>
                         </div>
                     </div>

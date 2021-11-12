@@ -15,9 +15,9 @@
                     </a>
                 </div>
             </div>
-            <div class="ibox-content"> 
+            <div class="ibox-content">
                 <a class="btn btn-primary btn-sm" role="button" href="/projeto/incluir">+ Projeto</a>
-                <br /><br />                
+                <br /><br />
 
                 @if (projetos == null)
                 {
@@ -44,24 +44,24 @@
                             <tbody>
                                 @foreach (var item in projetos)
                                 {
-                                <tr>
-                                    <td>@item.Id</td>
-                                    <td>@item.Nome</td>
-                                    <td>@item.Sistema.Nome</td>
-                                    <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
-                                    @if (projetos.Count() > 0)
-                                    {
-                                        <td style="text-align: center">
-                                            <a class="btn btn-outline btn-warning btn-xs" role="button" href="/projeto/alterar/@item.Id">Alterar</a>
-                                        </td>
-                                        <td style="text-align: center">
-                                            <a class="btn btn-outline btn-danger btn-xs" role="button" href="/projeto/remover/@item.Id">Remover</a>
-                                        </td>
-                                        <td style="text-align: center">
-                                            <a class="btn btn-outline btn-info btn-xs" role="button" href="">+ Recurso</a>
-                                        </td>
-                                    }
-                                </tr>
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Nome</td>
+                                        <td>@item.Sistema.Nome</td>
+                                        <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
+                                        @if (projetos.Count() > 0)
+                                        {
+                                            <td style="text-align: center">
+                                                <a class="btn btn-outline btn-warning btn-xs" role="button" href="/projeto/alterar/@item.Id">Alterar</a>
+                                            </td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-outline btn-danger btn-xs" role="button" href="/projeto/remover/@item.Id">Remover</a>
+                                            </td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-outline btn-info btn-xs" role="button" href="">+ Recurso</a>
+                                            </td>
+                                        }
+                                    </tr>
                                 }
                             </tbody>
                             <tfoot>
