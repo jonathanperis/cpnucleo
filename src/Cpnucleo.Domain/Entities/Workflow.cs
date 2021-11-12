@@ -6,5 +6,5 @@ public class Workflow : BaseEntity
 
     public int? Ordem { get; set; }
 
-    public string TamanhoColuna { get; set; }
+    public string? TamanhoColuna { get; set; }
 }
