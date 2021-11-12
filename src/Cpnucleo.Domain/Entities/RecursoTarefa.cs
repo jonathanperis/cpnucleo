@@ -8,7 +8,7 @@ public class RecursoTarefa : BaseEntity
 
     public Guid IdTarefa { get; set; }
 
-    public Recurso Recurso { get; set; }
+    public Recurso? Recurso { get; set; }
 
-    public Tarefa Tarefa { get; set; }
+    public Tarefa? Tarefa { get; set; }
 }

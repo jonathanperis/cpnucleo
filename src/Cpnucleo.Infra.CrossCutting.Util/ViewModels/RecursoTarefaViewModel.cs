@@ -14,8 +14,8 @@ public class RecursoTarefaViewModel : BaseViewModel
     public Guid IdTarefa { get; set; }
 
     [DataMember(Order = 5)]
-    public RecursoViewModel Recurso { get; set; }
+    public RecursoViewModel? Recurso { get; set; }
 
     [DataMember(Order = 6)]
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaViewModel? Tarefa { get; set; }
 }

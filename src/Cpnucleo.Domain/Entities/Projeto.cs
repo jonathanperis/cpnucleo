@@ -6,5 +6,5 @@ public class Projeto : BaseEntity
 
     public Guid IdSistema { get; set; }
 
-    public Sistema Sistema { get; set; }
+    public Sistema? Sistema { get; set; }
 }
