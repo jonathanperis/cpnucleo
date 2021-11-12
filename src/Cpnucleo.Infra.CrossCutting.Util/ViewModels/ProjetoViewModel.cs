@@ -15,5 +15,5 @@ public class ProjetoViewModel : BaseViewModel
     public Guid IdSistema { get; set; }
 
     [DataMember(Order = 5)]
-    public SistemaViewModel Sistema { get; set; }
+    public SistemaViewModel? Sistema { get; set; }
 }

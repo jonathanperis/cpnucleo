@@ -6,7 +6,7 @@ public class RecursoProjeto : BaseEntity
 
     public Guid IdProjeto { get; set; }
 
-    public Recurso Recurso { get; set; }
+    public Recurso? Recurso { get; set; }
 
-    public Projeto Projeto { get; set; }
+    public Projeto? Projeto { get; set; }
 }

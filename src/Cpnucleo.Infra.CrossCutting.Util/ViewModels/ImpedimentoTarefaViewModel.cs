@@ -20,8 +20,8 @@ public class ImpedimentoTarefaViewModel : BaseViewModel
     public Guid IdImpedimento { get; set; }
 
     [DataMember(Order = 6)]
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaViewModel? Tarefa { get; set; }
 
     [DataMember(Order = 7)]
-    public ImpedimentoViewModel Impedimento { get; set; }
+    public ImpedimentoViewModel? Impedimento { get; set; }
 }

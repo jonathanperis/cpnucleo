@@ -14,8 +14,8 @@ public class RecursoProjetoViewModel : BaseViewModel
     public Guid IdProjeto { get; set; }
 
     [DataMember(Order = 5)]
-    public RecursoViewModel Recurso { get; set; }
+    public RecursoViewModel? Recurso { get; set; }
 
     [DataMember(Order = 6)]
-    public ProjetoViewModel Projeto { get; set; }
+    public ProjetoViewModel? Projeto { get; set; }
 }

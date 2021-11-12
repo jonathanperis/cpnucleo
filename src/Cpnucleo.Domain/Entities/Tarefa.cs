@@ -24,11 +24,11 @@ public class Tarefa : BaseEntity
 
     public Guid IdTipoTarefa { get; set; }
 
-    public Projeto Projeto { get; set; }
+    public Projeto? Projeto { get; set; }
 
-    public Workflow Workflow { get; set; }
+    public Workflow? Workflow { get; set; }
 
-    public Recurso Recurso { get; set; }
+    public Recurso? Recurso { get; set; }
 
-    public TipoTarefa TipoTarefa { get; set; }
+    public TipoTarefa? TipoTarefa { get; set; }
 }

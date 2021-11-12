@@ -12,5 +12,5 @@ public class Apontamento : BaseEntity
 
     public Guid IdRecurso { get; set; }
 
-    public Tarefa Tarefa { get; set; }
+    public Tarefa? Tarefa { get; set; }
 }

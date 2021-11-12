@@ -8,7 +8,7 @@ public class ImpedimentoTarefa : BaseEntity
 
     public Guid IdImpedimento { get; set; }
 
-    public Tarefa Tarefa { get; set; }
+    public Tarefa? Tarefa { get; set; }
 
-    public Impedimento Impedimento { get; set; }
+    public Impedimento? Impedimento { get; set; }
 }

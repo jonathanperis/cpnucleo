@@ -33,5 +33,5 @@ public class ApontamentoViewModel : BaseViewModel
     public Guid IdRecurso { get; set; }
 
     [DataMember(Order = 8)]
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaViewModel? Tarefa { get; set; }
 }
