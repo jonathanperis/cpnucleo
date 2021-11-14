@@ -149,6 +149,44 @@
             }
         }
     </script>
+    <script type="text/javascript">
+        function modalApontamento() {
+
+            $('#modal-apontamento').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget)
+
+                var nomeTarefa = button.data('nome-tarefa')
+                var idTarefa = button.data('id-tarefa')
+                var idRecurso = button.data('id-recurso')
+
+                var modal = $(this)
+
+                modal.find('#modal-description').text(nomeTarefa)
+
+                if (idTarefa != null && idRecurso != null) {
+
+                    var event = new Event('change');
+
+                    var modalIdTarefa = document.getElementById('modal-id-tarefa');
+                    modalIdTarefa.value = idTarefa;
+                    modalIdTarefa.dispatchEvent(event);
+
+                    var modalIdRecurso = document.getElementById('modal-id-recurso');
+                    modalIdRecurso.value = idRecurso;
+                    modalIdRecurso.dispatchEvent(event);
+                }
+            })
+
+            $('#modal-apontamento').on('hide.bs.modal', function () {
+                $(this).find('form').trigger('reset');
+            })
+        }
+
+        function fecharModalApontamento() {
+
+            $('#modal-apontamento').modal('hide')
+        }
+    </script>
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 </html>
