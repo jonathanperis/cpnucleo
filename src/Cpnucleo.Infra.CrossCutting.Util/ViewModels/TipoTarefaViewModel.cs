@@ -13,7 +13,7 @@ public class TipoTarefaViewModel : BaseViewModel
     [Required(ErrorMessage = "Necessário informar o {0} do Tipo Tarefa.")]
     [MaxLength(100, ErrorMessage = "{0} pode conter no máximo {1} caractéres.")]
     [DataMember(Order = 4)]
-    public string Element { get; set; }
+    public string? Element { get; set; }
 
     [Display(Name = "Image Card")]
     [Required(ErrorMessage = "Necessário informar o {0} do Tipo Tarefa.")]

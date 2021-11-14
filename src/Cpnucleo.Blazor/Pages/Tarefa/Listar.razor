@@ -1,14 +1,14 @@
-@page "/projeto/listar"
+@page "/tarefa/listar"
 @inject IJSRuntime JS;
 @inject ICpnucleoApiService cpnucleoApiService;
 
-<PageTitle>CPN - Relação de Projetos</PageTitle>
+<PageTitle>CPN - Relação de Tarefas</PageTitle>
 
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Relação de Projetos</h5>
+                <h5>Relação de Tarefas</h5>
                 <div class="ibox-tools">
                     <a class="fullscreen-link">
                         <i class="fa fa-expand"></i>
@@ -16,10 +16,10 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <a class="btn btn-primary btn-sm" role="button" href="/projeto/incluir">+ Projeto</a>
+                <a class="btn btn-primary btn-sm" role="button" href="/tarefa/incluir">+ Tarefa</a>
                 <br /><br />
 
-                @if (projetos == null)
+                @if (tarefas == null)
                 {
                     <p><em>Carregando...</em></p>
                 }
@@ -29,12 +29,13 @@
                         <table class="table table-striped table-bordered table-hover table-datatable">
                             <thead>
                                 <tr>
-                                    <th><DisplayName For="@(() => projeto.Id)" /></th>
-                                    <th><DisplayName For="@(() => projeto.Nome)" /></th>
-                                    <th><DisplayName For="@(() => projeto.Sistema)" /></th>
-                                    <th><DisplayName For="@(() => projeto.DataInclusao)" /></th>
-                                    @if (projetos.Count() > 0)
+                                    <th><DisplayName For="@(() => tarefa.Id)" /></th>
+                                    <th><DisplayName For="@(() => tarefa.Nome)" /></th>
+                                    <th><DisplayName For="@(() => tarefa.Projeto)" /></th>
+                                    <th><DisplayName For="@(() => tarefa.DataInclusao)" /></th>
+                                    @if (tarefas.Count() > 0)
                                     {
+                                        <th class="no-sort"></th>
                                         <th class="no-sort"></th>
                                         <th class="no-sort"></th>
                                         <th class="no-sort"></th>
@@ -42,23 +43,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in projetos)
+                                @foreach (var item in tarefas)
                                 {
                                     <tr>
                                         <td>@item.Id</td>
                                         <td>@item.Nome</td>
-                                        <td>@item.Sistema.Nome</td>
+                                        <td>@item.Projeto.Nome</td>
                                         <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
-                                        @if (projetos.Count() > 0)
+                                        @if (tarefas.Count() > 0)
                                         {
                                             <td style="text-align: center">
-                                                <a class="btn btn-outline btn-warning btn-xs" role="button" href="/projeto/alterar/@item.Id">Alterar</a>
+                                                <a class="btn btn-outline btn-warning btn-xs" role="button" href="/tarefa/alterar/@item.Id">Alterar</a>
                                             </td>
                                             <td style="text-align: center">
-                                                <a class="btn btn-outline btn-danger btn-xs" role="button" href="/projeto/remover/@item.Id">Remover</a>
+                                                <a class="btn btn-outline btn-danger btn-xs" role="button" href="/tarefa/remover/@item.Id">Remover</a>
                                             </td>
                                             <td style="text-align: center">
-                                                <a class="btn btn-outline btn-info btn-xs" role="button" href="/recursoProjeto/listar/@item.Id">+ Recurso</a>
+                                                <a class="btn btn-outline btn-info btn-xs" role="button" href="/recursoTarefa/listar/@item.Id">+ Recurso</a>
+                                            </td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-outline btn-success btn-xs" role="button" href="/impedimentoTarefa/listar/@item.Id">+ Impedimento</a>
                                             </td>
                                         }
                                     </tr>
@@ -66,12 +70,13 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th><DisplayName For="@(() => projeto.Id)" /></th>
-                                    <th><DisplayName For="@(() => projeto.Nome)" /></th>
-                                    <th><DisplayName For="@(() => projeto.Sistema)" /></th>
-                                    <th><DisplayName For="@(() => projeto.DataInclusao)" /></th>
-                                    @if (projetos.Count() > 0)
+                                    <th><DisplayName For="@(() => tarefa.Id)" /></th>
+                                    <th><DisplayName For="@(() => tarefa.Nome)" /></th>
+                                    <th><DisplayName For="@(() => tarefa.Projeto)" /></th>
+                                    <th><DisplayName For="@(() => tarefa.DataInclusao)" /></th>
+                                    @if (tarefas.Count() > 0)
                                     {
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -87,13 +92,13 @@
 </div>
 
 @code {
-    private ProjetoViewModel projeto;
-    private IEnumerable<ProjetoViewModel> projetos;
+    private TarefaViewModel tarefa;
+    private IEnumerable<TarefaViewModel> tarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        projetos = await cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", "", true);
+        tarefas = await cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "");
 
-        await JS.InvokeVoidAsync("dataTables", "Relação de Projetos");
+        await JS.InvokeVoidAsync("dataTables", "Relação de Tarefas");
     }
 }
