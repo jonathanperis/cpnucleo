@@ -4,19 +4,31 @@ namespace Cpnucleo.Blazor.Services.Interfaces
 {
     public interface ICpnucleoApiService
     {
-        [Get("/{uri}")]
-        Task<T> GetAsync<T>(string uri, [Authorize("Bearer")] string token, bool getDependencies = false);
+        [Get("/{route}")]
+        Task<T> GetAsync<T>(string route, [Authorize("Bearer")] string token, bool getDependencies = false);
 
-        [Get("/{uri}/{id}")]
-        Task<T> GetAsync<T>(string uri, [Authorize("Bearer")] string token, Guid id);
+        [Get("/{route}/{action}")]
+        Task<T> GetAsync<T>(string route, string action, [Authorize("Bearer")] string token, bool getDependencies = false);
 
-        [Post("/{uri}")]
-        Task<T> PostAsync<T>(string uri, [Authorize("Bearer")] string token, [Body] object value);
+        [Get("/{route}/{id}")]
+        Task<T> GetAsync<T>(string route, [Authorize("Bearer")] string token, Guid id);
 
-        [Put("/{uri}/{id}")]
-        Task PutAsync(string uri, [Authorize("Bearer")] string token, Guid id, [Body] object value);
+        [Get("/{route}/{action}/{id}")]
+        Task<T> GetAsync<T>(string route, string action, [Authorize("Bearer")] string token, Guid id);
 
-        [Delete("/{uri}/{id}")]
-        Task DeleteAsync(string uri, [Authorize("Bearer")] string token, Guid id);
+        [Post("/{route}")]
+        Task<T> PostAsync<T>(string route, [Authorize("Bearer")] string token, [Body] object value);
+
+        [Post("/{route}/{action}")]
+        Task<T> PostAsync<T>(string route, string action, [Authorize("Bearer")] string token, [Body] object value);
+
+        [Put("/{route}/{id}")]
+        Task PutAsync(string route, [Authorize("Bearer")] string token, Guid id, [Body] object value);
+
+        [Put("/{route}/{action}/{id}")]
+        Task PutAsync(string route, string action, [Authorize("Bearer")] string token, Guid id, [Body] object value);
+
+        [Delete("/{route}/{id}")]
+        Task DeleteAsync(string route, [Authorize("Bearer")] string token, Guid id);
     }
 }
