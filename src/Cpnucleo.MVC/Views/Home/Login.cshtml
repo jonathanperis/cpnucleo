@@ -81,12 +81,12 @@
                 }
 
                 <div class="form-group">
-                    <input type="text" class="form-control" asp-for="Usuario" placeholder="@Html.DisplayNameFor(x => x.Usuario)">
-                    <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Usuario)</span>
+                    <input type="text" class="form-control" asp-for="Auth.Usuario" placeholder="@Html.DisplayNameFor(x => x.Auth.Usuario)">
+                    <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Auth.Usuario)</span>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" asp-for="Senha" placeholder="@Html.DisplayNameFor(x => x.Senha)">
-                    <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Senha)</span>
+                    <input type="password" class="form-control" asp-for="Auth.Senha" placeholder="@Html.DisplayNameFor(x => x.Auth.Senha)">
+                    <span class="help-block m-b-none">@Html.ValidationMessageFor(x => x.Auth.Senha)</span>
                 </div>
                 <button type="submit" class="btn btn-primary block full-width m-b">Entrar</button>
                 <div class="alert alert-info alert-dismissible" role="alert">

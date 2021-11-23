@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 
-[DataContract]
-public class GetWorkflowQuery
+public class GetWorkflowQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

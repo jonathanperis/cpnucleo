@@ -149,7 +149,7 @@ public class RecursoHandler :
             Status = OperationResult.Failed
         };
 
-        result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetByLoginAsync(request.Login));
+        result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetByLoginAsync(request.Auth.Usuario));
 
         if (result.Recurso == null)
         {
@@ -158,7 +158,7 @@ public class RecursoHandler :
             return result;
         }
 
-        bool success = _cryptographyManager.VerifyPbkdf2(request.Senha, result.Recurso.Senha, result.Recurso.Salt);
+        bool success = _cryptographyManager.VerifyPbkdf2(request.Auth.Senha, result.Recurso.Senha, result.Recurso.Salt);
 
         result.Recurso.Senha = null;
         result.Recurso.Salt = null;

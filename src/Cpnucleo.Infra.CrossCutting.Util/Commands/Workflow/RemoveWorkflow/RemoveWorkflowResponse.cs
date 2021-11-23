@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 
-[DataContract]
-public class RemoveWorkflowResponse
+public class RemoveWorkflowResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 }

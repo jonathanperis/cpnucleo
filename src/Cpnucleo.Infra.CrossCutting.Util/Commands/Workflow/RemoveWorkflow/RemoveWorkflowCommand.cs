@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
 
-[DataContract]
-public class RemoveWorkflowCommand
+public class RemoveWorkflowCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

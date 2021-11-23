@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
 
-[DataContract]
-public class GetImpedimentoQuery
+public class GetImpedimentoQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

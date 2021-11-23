@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
 
-[DataContract]
-public class RemoveSistemaCommand
+public class RemoveSistemaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
 
-[DataContract]
-public class RemoveImpedimentoTarefaCommand
+public class RemoveImpedimentoTarefaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

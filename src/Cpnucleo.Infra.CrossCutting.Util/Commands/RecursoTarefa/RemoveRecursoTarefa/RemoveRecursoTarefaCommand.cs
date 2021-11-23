@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
 
-[DataContract]
-public class RemoveRecursoTarefaCommand
+public class RemoveRecursoTarefaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

@@ -1,11 +1,8 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 
-[DataContract]
-public class GetSistemaResponse
+public class GetSistemaResponse : BaseQuery
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 
-    [DataMember(Order = 2)]
     public SistemaViewModel Sistema { get; set; }
 }

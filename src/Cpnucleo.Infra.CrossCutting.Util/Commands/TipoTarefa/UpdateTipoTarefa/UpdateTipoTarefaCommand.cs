@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
 
-[DataContract]
-public class UpdateTipoTarefaCommand
+public class UpdateTipoTarefaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public TipoTarefaViewModel TipoTarefa { get; set; }
 }

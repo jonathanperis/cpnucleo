@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
 
-[DataContract]
-public class RemoveTarefaResponse
+public class RemoveTarefaResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 }

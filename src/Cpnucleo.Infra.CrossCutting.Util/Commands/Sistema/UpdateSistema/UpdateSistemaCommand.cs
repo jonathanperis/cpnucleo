@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
 
-[DataContract]
-public class UpdateSistemaCommand
+public class UpdateSistemaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public SistemaViewModel Sistema { get; set; }
 }

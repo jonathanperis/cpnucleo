@@ -17,7 +17,7 @@ public class LoginModel : PageBase
     }
 
     [BindProperty]
-    public LoginViewModel Login { get; set; }
+    public AuthViewModel Auth { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string? returnUrl = null, bool logout = false)
     {
@@ -50,7 +50,7 @@ public class LoginModel : PageBase
                 return Page();
             }
 
-            RecursoViewModel recurso = await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", "auth", "", new AuthViewModel { Login = Login.Usuario, Senha = Login.Senha });
+            RecursoViewModel recurso = await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", "auth", "", Auth);
 
             IEnumerable<Claim> claims = new[]
             {

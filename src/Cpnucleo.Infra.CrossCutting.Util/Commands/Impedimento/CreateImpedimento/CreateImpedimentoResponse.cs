@@ -1,11 +1,8 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.CreateImpedimento;
 
-[DataContract]
-public class CreateImpedimentoResponse
+public class CreateImpedimentoResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 
-    [DataMember(Order = 2)]
     public ImpedimentoViewModel Impedimento { get; set; }
 }

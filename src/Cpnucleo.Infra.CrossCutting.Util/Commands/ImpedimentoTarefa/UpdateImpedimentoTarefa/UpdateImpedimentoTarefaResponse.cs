@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
 
-[DataContract]
-public class UpdateImpedimentoTarefaResponse
+public class UpdateImpedimentoTarefaResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 }

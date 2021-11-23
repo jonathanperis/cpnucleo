@@ -1,11 +1,8 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
 
-[DataContract]
-public class GetWorkflowResponse
+public class GetWorkflowResponse : BaseQuery
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 
-    [DataMember(Order = 2)]
     public WorkflowViewModel Workflow { get; set; }
 }

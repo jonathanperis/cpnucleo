@@ -1,11 +1,8 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
 
-[DataContract]
-public class CreateApontamentoResponse
+public class CreateApontamentoResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 
-    [DataMember(Order = 2)]
     public ApontamentoViewModel Apontamento { get; set; }
 }

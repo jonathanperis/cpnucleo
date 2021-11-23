@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
 
-[DataContract]
-public class ListApontamentoQuery
+public class ListApontamentoQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public bool GetDependencies { get; set; }
 }

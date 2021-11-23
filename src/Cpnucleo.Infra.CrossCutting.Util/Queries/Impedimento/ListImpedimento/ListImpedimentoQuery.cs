@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
 
-[DataContract]
-public class ListImpedimentoQuery
+public class ListImpedimentoQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public bool GetDependencies { get; set; }
 }

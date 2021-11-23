@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
 
-[DataContract]
-public class ListSistemaQuery
+public class ListSistemaQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public bool GetDependencies { get; set; }
 }

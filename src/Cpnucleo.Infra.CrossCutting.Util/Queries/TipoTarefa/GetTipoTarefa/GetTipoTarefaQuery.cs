@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
 
-[DataContract]
-public class GetTipoTarefaQuery
+public class GetTipoTarefaQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
 
-[DataContract]
-public class GetSistemaQuery
+public class GetSistemaQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

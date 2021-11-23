@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
 
-[DataContract]
-public class CreateProjetoCommand
+public class CreateProjetoCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public ProjetoViewModel Projeto { get; set; }
 }

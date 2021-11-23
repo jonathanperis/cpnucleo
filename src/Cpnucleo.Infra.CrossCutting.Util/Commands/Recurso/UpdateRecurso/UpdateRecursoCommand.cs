@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
 
-[DataContract]
-public class UpdateRecursoCommand
+public class UpdateRecursoCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public RecursoViewModel Recurso { get; set; }
 }

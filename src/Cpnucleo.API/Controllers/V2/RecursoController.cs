@@ -169,7 +169,7 @@ public class RecursoController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        Recurso recurso = await _unitOfWork.RecursoRepository.GetByLoginAsync(obj.Login);
+        Recurso recurso = await _unitOfWork.RecursoRepository.GetByLoginAsync(obj.Usuario);
 
         if (recurso == null)
         {

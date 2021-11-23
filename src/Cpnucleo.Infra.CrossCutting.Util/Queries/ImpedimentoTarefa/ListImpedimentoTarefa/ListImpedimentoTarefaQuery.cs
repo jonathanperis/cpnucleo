@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 
-[DataContract]
-public class ListImpedimentoTarefaQuery
+public class ListImpedimentoTarefaQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public bool GetDependencies { get; set; }
 }
