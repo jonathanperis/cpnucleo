@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
 
-[DataContract]
-public class ListTipoTarefaQuery
+public class ListTipoTarefaQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public bool GetDependencies { get; set; }
 }

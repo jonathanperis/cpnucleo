@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
 
-[DataContract]
-public class UpdateApontamentoCommand
+public class UpdateApontamentoCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public ApontamentoViewModel Apontamento { get; set; }
 }

@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
 
-[DataContract]
-public class RemoveImpedimentoResponse
+public class RemoveImpedimentoResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 }

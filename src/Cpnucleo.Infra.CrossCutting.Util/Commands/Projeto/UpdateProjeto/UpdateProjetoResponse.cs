@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
 
-[DataContract]
-public class UpdateProjetoResponse
+public class UpdateProjetoResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 }

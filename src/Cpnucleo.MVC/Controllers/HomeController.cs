@@ -68,7 +68,7 @@ public class HomeController : BaseController
                 return View();
             }
 
-            AuthResponse response = await _recursoGrpcService.AuthAsync(new AuthQuery { Login = obj.Usuario, Senha = obj.Senha });
+            AuthResponse response = await _recursoGrpcService.AuthAsync(new AuthQuery { Auth = obj.Auth });
 
             if (response.Status == OperationResult.Failed)
             {

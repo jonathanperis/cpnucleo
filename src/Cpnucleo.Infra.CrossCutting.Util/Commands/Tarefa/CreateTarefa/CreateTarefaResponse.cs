@@ -1,11 +1,8 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
 
-[DataContract]
-public class CreateTarefaResponse
+public class CreateTarefaResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 
-    [DataMember(Order = 2)]
     public TarefaViewModel Tarefa { get; set; }
 }
