@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
 
-[DataContract]
-public class GetByProjetoQuery
+public class GetByProjetoQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid IdProjeto { get; set; }
 }

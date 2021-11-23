@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
 
-[DataContract]
-public class RemoveRecursoResponse
+public class RemoveRecursoResponse : BaseCommand
 {
-    [DataMember(Order = 1)]
     public OperationResult Status { get; set; }
 }

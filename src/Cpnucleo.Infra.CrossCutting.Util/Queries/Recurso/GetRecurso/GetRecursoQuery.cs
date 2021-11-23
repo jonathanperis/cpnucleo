@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
 
-[DataContract]
-public class GetRecursoQuery
+public class GetRecursoQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 }

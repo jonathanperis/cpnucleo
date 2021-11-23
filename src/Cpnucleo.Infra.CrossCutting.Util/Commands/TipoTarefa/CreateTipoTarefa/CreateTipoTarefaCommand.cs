@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.CreateTipoTarefa;
 
-[DataContract]
-public class CreateTipoTarefaCommand
+public class CreateTipoTarefaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public TipoTarefaViewModel TipoTarefa { get; set; }
 }

@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
 
-[DataContract]
-public class GetByTarefaQuery
+public class GetByTarefaQuery : BaseQuery
 {
-    [DataMember(Order = 1)]
     public Guid IdTarefa { get; set; }
 }

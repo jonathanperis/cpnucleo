@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
 
-[DataContract]
-public class CreateSistemaCommand
+public class CreateSistemaCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public SistemaViewModel Sistema { get; set; }
 }

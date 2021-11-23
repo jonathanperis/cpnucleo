@@ -1,14 +1,15 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using MessagePack;
 
+namespace Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+
+[MessagePackObject(true)]
 public abstract class BaseViewModel
 {
-    [Key]
+    [System.ComponentModel.DataAnnotations.Key]
     [Display(Name = "Id")]
-    [DataMember(Order = 1)]
     public Guid Id { get; set; }
 
     [Display(Name = "Data de Inclusão")]
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-    [DataMember(Order = 2)]
     public DateTime DataInclusao { get; set; }
 }

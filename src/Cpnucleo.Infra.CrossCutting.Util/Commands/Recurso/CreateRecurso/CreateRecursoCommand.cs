@@ -1,8 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
 
-[DataContract]
-public class CreateRecursoCommand
+public class CreateRecursoCommand : BaseCommand
 {
-    [DataMember(Order = 1)]
     public RecursoViewModel Recurso { get; set; }
 }
