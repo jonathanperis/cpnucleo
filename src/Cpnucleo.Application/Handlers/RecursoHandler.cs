@@ -1,17 +1,15 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class RecursoHandler :
-    IAsyncRequestHandler<CreateRecursoCommand, OperationResult>,
-    IAsyncRequestHandler<GetRecursoQuery, RecursoViewModel>,
-    IAsyncRequestHandler<ListRecursoQuery, IEnumerable<RecursoViewModel>>,
-    IAsyncRequestHandler<RemoveRecursoCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateRecursoCommand, OperationResult>,
-    IAsyncRequestHandler<AuthQuery, AuthResponse>
+    IRequestHandler<CreateRecursoCommand, OperationResult>,
+    IRequestHandler<GetRecursoQuery, RecursoViewModel>,
+    IRequestHandler<ListRecursoQuery, IEnumerable<RecursoViewModel>>,
+    IRequestHandler<RemoveRecursoCommand, OperationResult>,
+    IRequestHandler<UpdateRecursoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -24,7 +22,7 @@ public class RecursoHandler :
         _cryptographyManager = cryptographyManager;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateRecursoCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateRecursoCommand request, CancellationToken cancellationToken)
     {
         _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
 
@@ -40,17 +38,20 @@ public class RecursoHandler :
         return result;
     }
 
-    public async ValueTask<RecursoViewModel> InvokeAsync(GetRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<RecursoViewModel> Handle(GetRecursoQuery request, CancellationToken cancellationToken)
     {
         RecursoViewModel result = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetAsync(request.Id));
 
-        result.Senha = null;
-        result.Salt = null;
+        if (result != null)
+        {
+            result.Senha = null;
+            result.Salt = null;
+        }
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<RecursoViewModel>> InvokeAsync(ListRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RecursoViewModel>> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<RecursoViewModel> result = _mapper.Map<IEnumerable<RecursoViewModel>>(await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies));
 
@@ -63,7 +64,7 @@ public class RecursoHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveRecursoCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveRecursoCommand request, CancellationToken cancellationToken)
     {
         Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
 
@@ -81,7 +82,7 @@ public class RecursoHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateRecursoCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateRecursoCommand request, CancellationToken cancellationToken)
     {
         _cryptographyManager.CryptPbkdf2(request.Recurso.Senha, out string senhaCrypt, out string salt);
 
@@ -93,32 +94,6 @@ public class RecursoHandler :
         bool success = await _unitOfWork.SaveChangesAsync();
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
-
-        return result;
-    }
-
-    public async ValueTask<AuthResponse> InvokeAsync(AuthQuery request, CancellationToken cancellationToken)
-    {
-        AuthResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Recurso = _mapper.Map<RecursoViewModel>(await _unitOfWork.RecursoRepository.GetByLoginAsync(request.Auth.Usuario));
-
-        if (result.Recurso == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        bool success = _cryptographyManager.VerifyPbkdf2(request.Auth.Senha, result.Recurso.Senha, result.Recurso.Salt);
-
-        result.Recurso.Senha = null;
-        result.Recurso.Salt = null;
-
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

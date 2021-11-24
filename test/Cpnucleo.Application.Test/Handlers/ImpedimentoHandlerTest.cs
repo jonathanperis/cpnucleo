@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.CreateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -22,13 +20,10 @@ public class ImpedimentoHandlerTest
 
         // Act
         ImpedimentoHandler handler = new(unitOfWork, mapper);
-        CreateImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Impedimento != null);
-        Assert.True(response.Impedimento.Id != Guid.Empty);
-        Assert.True(response.Impedimento.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -50,13 +45,12 @@ public class ImpedimentoHandlerTest
 
         // Act
         ImpedimentoHandler handler = new(unitOfWork, mapper);
-        GetImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        ImpedimentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Impedimento != null);
-        Assert.True(response.Impedimento.Id != Guid.Empty);
-        Assert.True(response.Impedimento.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -78,13 +72,12 @@ public class ImpedimentoHandlerTest
 
         // Act
         ImpedimentoHandler handler = new(unitOfWork, mapper);
-        ListImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<ImpedimentoViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Impedimentos != null);
-        Assert.True(response.Impedimentos.Any());
-        Assert.True(response.Impedimentos.FirstOrDefault(x => x.Id == impedimentoId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == impedimentoId) != null);
     }
 
     [Fact]
@@ -115,13 +108,12 @@ public class ImpedimentoHandlerTest
 
         // Act
         ImpedimentoHandler handler = new(unitOfWork, mapper);
-        RemoveImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetImpedimentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ImpedimentoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Impedimento == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -153,14 +145,13 @@ public class ImpedimentoHandlerTest
 
         // Act
         ImpedimentoHandler handler = new(unitOfWork, mapper);
-        UpdateImpedimentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetImpedimentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ImpedimentoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Impedimento != null);
-        Assert.True(response2.Impedimento.Id == impedimentoId);
-        Assert.True(response2.Impedimento.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == impedimentoId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

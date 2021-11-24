@@ -7,47 +7,35 @@ namespace Cpnucleo.GRPC.Services;
 [Authorize]
 public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateProjetoCommand, OperationResult> _createProjetoCommand;
-    private readonly IAsyncRequestHandler<ListProjetoQuery, IEnumerable<ProjetoViewModel>> _listProjetoQuery;
-    private readonly IAsyncRequestHandler<GetProjetoQuery, ProjetoViewModel> _getProjetoQuery;
-    private readonly IAsyncRequestHandler<RemoveProjetoCommand, OperationResult> _removeProjetoCommand;
-    private readonly IAsyncRequestHandler<UpdateProjetoCommand, OperationResult> _updateProjetoCommand;
+    private readonly IMediator _mediator;
 
-    public ProjetoGrpcService(IAsyncRequestHandler<CreateProjetoCommand, OperationResult> createProjetoCommand,
-                              IAsyncRequestHandler<ListProjetoQuery, IEnumerable<ProjetoViewModel>> listProjetoQuery,
-                              IAsyncRequestHandler<GetProjetoQuery, ProjetoViewModel> getProjetoQuery,
-                              IAsyncRequestHandler<RemoveProjetoCommand, OperationResult> removeProjetoCommand,
-                              IAsyncRequestHandler<UpdateProjetoCommand, OperationResult> updateProjetoCommand)
+    public ProjetoGrpcService(IMediator mediator)
     {
-        _createProjetoCommand = createProjetoCommand;
-        _listProjetoQuery = listProjetoQuery;
-        _getProjetoQuery = getProjetoQuery;
-        _removeProjetoCommand = removeProjetoCommand;
-        _updateProjetoCommand = updateProjetoCommand;
+        _mediator = mediator;
     }
 
     public async UnaryResult<OperationResult> AddAsync(CreateProjetoCommand command)
     {
-        return await _createProjetoCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<IEnumerable<ProjetoViewModel>> AllAsync(ListProjetoQuery query)
     {
-        return await _listProjetoQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<ProjetoViewModel> GetAsync(GetProjetoQuery query)
     {
-        return await _getProjetoQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<OperationResult> RemoveAsync(RemoveProjetoCommand command)
     {
-        return await _removeProjetoCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<OperationResult> UpdateAsync(UpdateProjetoCommand command)
     {
-        return await _updateProjetoCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 }

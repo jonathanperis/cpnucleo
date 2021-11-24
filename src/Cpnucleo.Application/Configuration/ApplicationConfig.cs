@@ -7,6 +7,7 @@ using Ev.ServiceBus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Cpnucleo.Application.Configuration;
 
@@ -29,7 +30,7 @@ public static class ApplicationConfig
             .AddScoped<ITipoTarefaAppService, TipoTarefaAppService>()
             .AddScoped<IWorkflowAppService, WorkflowAppService>();
 
-        services.AddMessagePipe();
+        services.AddMediatR(Assembly.GetExecutingAssembly());
 
         services.RegisterServiceBusReception().FromQueue("CpnucleoDefaultQueue", builder =>
         {

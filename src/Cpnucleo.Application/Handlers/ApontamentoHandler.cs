@@ -4,12 +4,12 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
 namespace Cpnucleo.Application.Handlers;
 
 public class ApontamentoHandler :
-    IAsyncRequestHandler<CreateApontamentoCommand, OperationResult>,
-    IAsyncRequestHandler<GetApontamentoQuery, ApontamentoViewModel>,
-    IAsyncRequestHandler<ListApontamentoQuery, IEnumerable<ApontamentoViewModel>>,
-    IAsyncRequestHandler<RemoveApontamentoCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateApontamentoCommand, OperationResult>,
-    IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<ApontamentoViewModel>>
+    IRequestHandler<CreateApontamentoCommand, OperationResult>,
+    IRequestHandler<GetApontamentoQuery, ApontamentoViewModel>,
+    IRequestHandler<ListApontamentoQuery, IEnumerable<ApontamentoViewModel>>,
+    IRequestHandler<RemoveApontamentoCommand, OperationResult>,
+    IRequestHandler<UpdateApontamentoCommand, OperationResult>,
+    IRequestHandler<GetByRecursoQuery, IEnumerable<ApontamentoViewModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ public class ApontamentoHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
         await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(request.Apontamento));
         
@@ -31,21 +31,21 @@ public class ApontamentoHandler :
         return result;
     }
 
-    public async ValueTask<ApontamentoViewModel> InvokeAsync(GetApontamentoQuery request, CancellationToken cancellationToken = default)
+    public async Task<ApontamentoViewModel> Handle(GetApontamentoQuery request, CancellationToken cancellationToken = default)
     {
         ApontamentoViewModel result = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<ApontamentoViewModel>> InvokeAsync(ListApontamentoQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ApontamentoViewModel>> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<ApontamentoViewModel> result = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveApontamentoCommand request, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> Handle(RemoveApontamentoCommand request, CancellationToken cancellationToken = default)
     {
         Apontamento obj = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
 
@@ -63,7 +63,7 @@ public class ApontamentoHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateApontamentoCommand request, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> Handle(UpdateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
         _unitOfWork.ApontamentoRepository.Update(_mapper.Map<Apontamento>(request.Apontamento));
 
@@ -74,7 +74,7 @@ public class ApontamentoHandler :
         return result;
     }
 
-    public async ValueTask<IEnumerable<ApontamentoViewModel>> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ApontamentoViewModel>> Handle(GetByRecursoQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<ApontamentoViewModel> result = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(request.IdRecurso));
 

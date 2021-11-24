@@ -1,8 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -38,8 +35,7 @@ public class RecursoController : BaseController
     {
         try
         {
-            ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
-            RecursoView.Lista = response.Recursos;
+            RecursoView.Lista = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
 
             return View(RecursoView);
         }
@@ -82,8 +78,7 @@ public class RecursoController : BaseController
     {
         try
         {
-            GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
-            RecursoView.Recurso = response.Recurso;
+            RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
 
             return View(RecursoView);
         }
@@ -101,8 +96,7 @@ public class RecursoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
-                RecursoView.Recurso = response.Recurso;
+                RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
 
                 return View(RecursoView);
             }
@@ -123,8 +117,7 @@ public class RecursoController : BaseController
     {
         try
         {
-            GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
-            RecursoView.Recurso = response.Recurso;
+            RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
 
             return View(RecursoView);
         }
@@ -142,8 +135,7 @@ public class RecursoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetRecursoResponse response = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
-                RecursoView.Recurso = response.Recurso;
+                RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
 
                 return View(RecursoView);
             }

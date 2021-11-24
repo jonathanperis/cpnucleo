@@ -1,12 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 using Cpnucleo.MVC.Services;
 using System.Security.Claims;
 
@@ -51,8 +47,7 @@ public class ApontamentoController : BaseController
             string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new(retorno);
 
-            GetByRecursoResponse response = await _apontamentoGrpcService.GetByRecursoAsync(new GetByRecursoQuery { IdRecurso = idRecurso });
-            ApontamentoView.Lista = response.Apontamentos;
+            ApontamentoView.Lista = await _apontamentoGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Apontamento.GetByRecursoQuery { IdRecurso = idRecurso });
 
             await CarregarTarefasByRecurso(idRecurso);
 
@@ -75,8 +70,7 @@ public class ApontamentoController : BaseController
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new(retorno);
 
-                GetByRecursoResponse response = await _apontamentoGrpcService.GetByRecursoAsync(new GetByRecursoQuery { IdRecurso = idRecurso });
-                ApontamentoView.Lista = response.Apontamentos;
+                ApontamentoView.Lista = await _apontamentoGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Apontamento.GetByRecursoQuery { IdRecurso = idRecurso });
 
                 await CarregarTarefasByRecurso(idRecurso);
 
@@ -99,8 +93,7 @@ public class ApontamentoController : BaseController
     {
         try
         {
-            GetApontamentoResponse response = await _apontamentoGrpcService.GetAsync(new GetApontamentoQuery { Id = id });
-            ApontamentoView.Apontamento = response.Apontamento;
+            ApontamentoView.Apontamento = await _apontamentoGrpcService.GetAsync(new GetApontamentoQuery { Id = id });
 
             return View(ApontamentoView);
         }
@@ -118,8 +111,7 @@ public class ApontamentoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetApontamentoResponse response = await _apontamentoGrpcService.GetAsync(new GetApontamentoQuery { Id = obj.Apontamento.Id });
-                ApontamentoView.Apontamento = response.Apontamento;
+                ApontamentoView.Apontamento = await _apontamentoGrpcService.GetAsync(new GetApontamentoQuery { Id = obj.Apontamento.Id });
 
                 return View(ApontamentoView);
             }
@@ -165,11 +157,8 @@ public class ApontamentoController : BaseController
                 return Json(new { success = false, message = "", body = ApontamentoView });
             }
 
-            GetTarefaResponse getTarefaResponse = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
-            TarefaViewModel tarefa = getTarefaResponse.Tarefa;
-
-            GetWorkflowResponse getWorkflowResponse = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = idWorkflow });
-            WorkflowViewModel workflow = getWorkflowResponse.Workflow;
+            TarefaViewModel tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
+            WorkflowViewModel workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = idWorkflow });
 
             tarefa.IdWorkflow = workflow.Id;
             tarefa.Workflow = workflow;
@@ -187,19 +176,16 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarTarefasByRecurso(Guid idRecurso)
     {
-        Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso.GetByRecursoResponse response = await _tarefaGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso.GetByRecursoQuery { IdRecurso = idRecurso });
-        ApontamentoView.ListaTarefas = response.Tarefas;
+        ApontamentoView.ListaTarefas = await _tarefaGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Tarefa.GetByRecursoQuery { IdRecurso = idRecurso });
     }
 
     private async Task CarregarWorkflows()
     {
-        ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
-        ApontamentoView.ListaWorkflow = response.Workflows;
+        ApontamentoView.ListaWorkflow = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
     }
 
     private async Task CarregarTarefas()
     {
-        ListTarefaResponse response = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
-        ApontamentoView.ListaTarefas = response.Tarefas;
+        ApontamentoView.ListaTarefas = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
     }
 }

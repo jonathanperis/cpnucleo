@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -27,13 +25,10 @@ public class ProjetoHandlerTest
 
         // Act
         ProjetoHandler handler = new(unitOfWork, mapper);
-        CreateProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Projeto != null);
-        Assert.True(response.Projeto.Id != Guid.Empty);
-        Assert.True(response.Projeto.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -59,13 +54,12 @@ public class ProjetoHandlerTest
 
         // Act
         ProjetoHandler handler = new(unitOfWork, mapper);
-        GetProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        ProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Projeto != null);
-        Assert.True(response.Projeto.Id != Guid.Empty);
-        Assert.True(response.Projeto.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -91,13 +85,12 @@ public class ProjetoHandlerTest
 
         // Act
         ProjetoHandler handler = new(unitOfWork, mapper);
-        ListProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<ProjetoViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Projetos != null);
-        Assert.True(response.Projetos.Any());
-        Assert.True(response.Projetos.FirstOrDefault(x => x.Id == projetoId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == projetoId) != null);
     }
 
     [Fact]
@@ -132,13 +125,12 @@ public class ProjetoHandlerTest
 
         // Act
         ProjetoHandler handler = new(unitOfWork, mapper);
-        RemoveProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetProjetoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ProjetoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Projeto == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -174,14 +166,13 @@ public class ProjetoHandlerTest
 
         // Act
         ProjetoHandler handler = new(unitOfWork, mapper);
-        UpdateProjetoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetProjetoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ProjetoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Projeto != null);
-        Assert.True(response2.Projeto.Id == projetoId);
-        Assert.True(response2.Projeto.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == projetoId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }
