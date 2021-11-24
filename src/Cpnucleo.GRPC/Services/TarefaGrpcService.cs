@@ -1,28 +1,25 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateTarefaCommand, CreateTarefaResponse> _createTarefaCommand;
-    private readonly IAsyncRequestHandler<ListTarefaQuery, ListTarefaResponse> _listTarefaQuery;
-    private readonly IAsyncRequestHandler<GetTarefaQuery, GetTarefaResponse> _getTarefaQuery;
-    private readonly IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse> _getByRecursoQuery;
-    private readonly IAsyncRequestHandler<RemoveTarefaCommand, RemoveTarefaResponse> _removeTarefaCommand;
-    private readonly IAsyncRequestHandler<UpdateTarefaCommand, UpdateTarefaResponse> _updateTarefaCommand;
+    private readonly IAsyncRequestHandler<CreateTarefaCommand, OperationResult> _createTarefaCommand;
+    private readonly IAsyncRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>> _listTarefaQuery;
+    private readonly IAsyncRequestHandler<GetTarefaQuery, TarefaViewModel> _getTarefaQuery;
+    private readonly IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>> _getByRecursoQuery;
+    private readonly IAsyncRequestHandler<RemoveTarefaCommand, OperationResult> _removeTarefaCommand;
+    private readonly IAsyncRequestHandler<UpdateTarefaCommand, OperationResult> _updateTarefaCommand;
 
-    public TarefaGrpcService(IAsyncRequestHandler<CreateTarefaCommand, CreateTarefaResponse> createTarefaCommand,
-                             IAsyncRequestHandler<ListTarefaQuery, ListTarefaResponse> listTarefaQuery,
-                             IAsyncRequestHandler<GetTarefaQuery, GetTarefaResponse> getTarefaQuery,
-                             IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse> getByRecursoQuery,
-                             IAsyncRequestHandler<RemoveTarefaCommand, RemoveTarefaResponse> removeTarefaCommand,
-                             IAsyncRequestHandler<UpdateTarefaCommand, UpdateTarefaResponse> updateTarefaCommand)
+    public TarefaGrpcService(IAsyncRequestHandler<CreateTarefaCommand, OperationResult> createTarefaCommand,
+                             IAsyncRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>> listTarefaQuery,
+                             IAsyncRequestHandler<GetTarefaQuery, TarefaViewModel> getTarefaQuery,
+                             IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>> getByRecursoQuery,
+                             IAsyncRequestHandler<RemoveTarefaCommand, OperationResult> removeTarefaCommand,
+                             IAsyncRequestHandler<UpdateTarefaCommand, OperationResult> updateTarefaCommand)
     {
         _createTarefaCommand = createTarefaCommand;
         _listTarefaQuery = listTarefaQuery;
@@ -32,32 +29,32 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
         _updateTarefaCommand = updateTarefaCommand;
     }
 
-    public async UnaryResult<CreateTarefaResponse> AddAsync(CreateTarefaCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateTarefaCommand command)
     {
         return await _createTarefaCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<ListTarefaResponse> AllAsync(ListTarefaQuery query)
+    public async UnaryResult<IEnumerable<TarefaViewModel>> AllAsync(ListTarefaQuery query)
     {
         return await _listTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetTarefaResponse> GetAsync(GetTarefaQuery query)
+    public async UnaryResult<TarefaViewModel> GetAsync(GetTarefaQuery query)
     {
         return await _getTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query)
+    public async UnaryResult<IEnumerable<TarefaViewModel>> GetByRecursoAsync(GetByRecursoQuery query)
     {
         return await _getByRecursoQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<RemoveTarefaResponse> RemoveAsync(RemoveTarefaCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveTarefaCommand command)
     {
         return await _removeTarefaCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<UpdateTarefaResponse> UpdateAsync(UpdateTarefaCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateTarefaCommand command)
     {
         return await _updateTarefaCommand.InvokeAsync(command);
     }

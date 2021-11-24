@@ -1,17 +1,14 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class WorkflowHandler :
-    IAsyncRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse>,
-    IAsyncRequestHandler<GetWorkflowQuery, GetWorkflowResponse>,
-    IAsyncRequestHandler<ListWorkflowQuery, ListWorkflowResponse>,
-    IAsyncRequestHandler<RemoveWorkflowCommand, RemoveWorkflowResponse>,
-    IAsyncRequestHandler<UpdateWorkflowCommand, UpdateWorkflowResponse>
+    IAsyncRequestHandler<CreateWorkflowCommand, OperationResult>,
+    IAsyncRequestHandler<GetWorkflowQuery, WorkflowViewModel>,
+    IAsyncRequestHandler<ListWorkflowQuery, IEnumerable<WorkflowViewModel>>,
+    IAsyncRequestHandler<RemoveWorkflowCommand, OperationResult>,
+    IAsyncRequestHandler<UpdateWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -22,96 +19,58 @@ public class WorkflowHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<CreateWorkflowResponse> InvokeAsync(CreateWorkflowCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(CreateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        CreateWorkflowResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(request.Workflow));
 
-        Workflow obj = await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(request.Workflow));
-        result.Workflow = _mapper.Map<WorkflowViewModel>(obj);
+        bool success = await _unitOfWork.SaveChangesAsync();
 
-        await _unitOfWork.SaveChangesAsync();
-
-        result.Status = OperationResult.Success;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetWorkflowResponse> InvokeAsync(GetWorkflowQuery request, CancellationToken cancellationToken)
+    public async ValueTask<WorkflowViewModel> InvokeAsync(GetWorkflowQuery request, CancellationToken cancellationToken)
     {
-        GetWorkflowResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Workflow = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.GetAsync(request.Id));
-
-        if (result.Workflow == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        result.Status = OperationResult.Success;
+        WorkflowViewModel result = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<ListWorkflowResponse> InvokeAsync(ListWorkflowQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<WorkflowViewModel>> InvokeAsync(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
-        ListWorkflowResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        IEnumerable<WorkflowViewModel> result = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies));
 
-        result.Workflows = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies));
-        result.Status = OperationResult.Success;
-
-        await PreencherDadosAdicionaisAsync(result.Workflows);
+        await PreencherDadosAdicionaisAsync(result);
 
         return result;
     }
 
-    public async ValueTask<RemoveWorkflowResponse> InvokeAsync(RemoveWorkflowCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(RemoveWorkflowCommand request, CancellationToken cancellationToken)
     {
-        RemoveWorkflowResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         Workflow obj = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
 
         if (obj == null)
         {
-            result.Status = OperationResult.NotFound;
-
-            return result;
+            return OperationResult.NotFound;
         }
 
         await _unitOfWork.WorkflowRepository.RemoveAsync(request.Id);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<UpdateWorkflowResponse> InvokeAsync(UpdateWorkflowCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        UpdateWorkflowResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         _unitOfWork.WorkflowRepository.Update(_mapper.Map<Workflow>(request.Workflow));
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

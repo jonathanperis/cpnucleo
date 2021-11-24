@@ -1,19 +1,15 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.RemoveRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.ListRecursoProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class RecursoProjetoHandler :
-    IAsyncRequestHandler<CreateRecursoProjetoCommand, CreateRecursoProjetoResponse>,
-    IAsyncRequestHandler<GetRecursoProjetoQuery, GetRecursoProjetoResponse>,
-    IAsyncRequestHandler<ListRecursoProjetoQuery, ListRecursoProjetoResponse>,
-    IAsyncRequestHandler<RemoveRecursoProjetoCommand, RemoveRecursoProjetoResponse>,
-    IAsyncRequestHandler<UpdateRecursoProjetoCommand, UpdateRecursoProjetoResponse>,
-    IAsyncRequestHandler<GetByProjetoQuery, GetByProjetoResponse>
+    IAsyncRequestHandler<CreateRecursoProjetoCommand, OperationResult>,
+    IAsyncRequestHandler<GetRecursoProjetoQuery, RecursoProjetoViewModel>,
+    IAsyncRequestHandler<ListRecursoProjetoQuery, IEnumerable<RecursoProjetoViewModel>>,
+    IAsyncRequestHandler<RemoveRecursoProjetoCommand, OperationResult>,
+    IAsyncRequestHandler<UpdateRecursoProjetoCommand, OperationResult>,
+    IAsyncRequestHandler<GetByProjetoQuery, IEnumerable<RecursoProjetoViewModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -24,107 +20,63 @@ public class RecursoProjetoHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<CreateRecursoProjetoResponse> InvokeAsync(CreateRecursoProjetoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(CreateRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        CreateRecursoProjetoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        await _unitOfWork.RecursoProjetoRepository.AddAsync(_mapper.Map<RecursoProjeto>(request.RecursoProjeto));
 
-        RecursoProjeto obj = await _unitOfWork.RecursoProjetoRepository.AddAsync(_mapper.Map<RecursoProjeto>(request.RecursoProjeto));
-        result.RecursoProjeto = _mapper.Map<RecursoProjetoViewModel>(obj);
+        bool success = await _unitOfWork.SaveChangesAsync();
 
-        await _unitOfWork.SaveChangesAsync();
-
-        result.Status = OperationResult.Success;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetRecursoProjetoResponse> InvokeAsync(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<RecursoProjetoViewModel> InvokeAsync(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        GetRecursoProjetoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.RecursoProjeto = _mapper.Map<RecursoProjetoViewModel>(await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id));
-
-        if (result.RecursoProjeto == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        result.Status = OperationResult.Success;
+        RecursoProjetoViewModel result = _mapper.Map<RecursoProjetoViewModel>(await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<ListRecursoProjetoResponse> InvokeAsync(ListRecursoProjetoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<RecursoProjetoViewModel>> InvokeAsync(ListRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        ListRecursoProjetoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.RecursoProjetos = _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(await _unitOfWork.RecursoProjetoRepository.AllAsync(request.GetDependencies));
-        result.Status = OperationResult.Success;
+        IEnumerable<RecursoProjetoViewModel> result = _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(await _unitOfWork.RecursoProjetoRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<RemoveRecursoProjetoResponse> InvokeAsync(RemoveRecursoProjetoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(RemoveRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        RemoveRecursoProjetoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         RecursoProjeto obj = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
 
         if (obj == null)
         {
-            result.Status = OperationResult.NotFound;
-
-            return result;
+            return OperationResult.NotFound;
         }
 
         await _unitOfWork.RecursoProjetoRepository.RemoveAsync(request.Id);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<UpdateRecursoProjetoResponse> InvokeAsync(UpdateRecursoProjetoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        UpdateRecursoProjetoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         _unitOfWork.RecursoProjetoRepository.Update(_mapper.Map<RecursoProjeto>(request.RecursoProjeto));
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetByProjetoResponse> InvokeAsync(GetByProjetoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<RecursoProjetoViewModel>> InvokeAsync(GetByProjetoQuery request, CancellationToken cancellationToken)
     {
-        GetByProjetoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.RecursoProjetos = _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(await _unitOfWork.RecursoProjetoRepository.GetByProjetoAsync(request.IdProjeto));
-        result.Status = OperationResult.Success;
+        IEnumerable<RecursoProjetoViewModel> result = _mapper.Map<IEnumerable<RecursoProjetoViewModel>>(await _unitOfWork.RecursoProjetoRepository.GetByProjetoAsync(request.IdProjeto));
 
         return result;
     }

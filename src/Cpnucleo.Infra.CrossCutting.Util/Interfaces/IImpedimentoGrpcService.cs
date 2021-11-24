@@ -1,20 +1,17 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.CreateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface IImpedimentoGrpcService : IService<IImpedimentoGrpcService>
 {
-    UnaryResult<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command);
+    UnaryResult<OperationResult> AddAsync(CreateImpedimentoCommand command);
 
-    UnaryResult<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command);
+    UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoCommand command);
 
-    UnaryResult<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query);
+    UnaryResult<ImpedimentoViewModel> GetAsync(GetImpedimentoQuery query);
 
-    UnaryResult<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query);
+    UnaryResult<IEnumerable<ImpedimentoViewModel>> AllAsync(ListImpedimentoQuery query);
 
-    UnaryResult<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command);
+    UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoCommand command);
 }

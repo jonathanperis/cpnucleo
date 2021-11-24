@@ -1,19 +1,15 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class ApontamentoHandler :
-    IAsyncRequestHandler<CreateApontamentoCommand, CreateApontamentoResponse>,
-    IAsyncRequestHandler<GetApontamentoQuery, GetApontamentoResponse>,
-    IAsyncRequestHandler<ListApontamentoQuery, ListApontamentoResponse>,
-    IAsyncRequestHandler<RemoveApontamentoCommand, RemoveApontamentoResponse>,
-    IAsyncRequestHandler<UpdateApontamentoCommand, UpdateApontamentoResponse>,
-    IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse>
+    IAsyncRequestHandler<CreateApontamentoCommand, OperationResult>,
+    IAsyncRequestHandler<GetApontamentoQuery, ApontamentoViewModel>,
+    IAsyncRequestHandler<ListApontamentoQuery, IEnumerable<ApontamentoViewModel>>,
+    IAsyncRequestHandler<RemoveApontamentoCommand, OperationResult>,
+    IAsyncRequestHandler<UpdateApontamentoCommand, OperationResult>,
+    IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<ApontamentoViewModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -24,107 +20,63 @@ public class ApontamentoHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<CreateApontamentoResponse> InvokeAsync(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
+    public async ValueTask<OperationResult> InvokeAsync(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
-        CreateApontamentoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(request.Apontamento));
+        
+        bool success = await _unitOfWork.SaveChangesAsync();
 
-        Apontamento obj = await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(request.Apontamento));
-        result.Apontamento = _mapper.Map<ApontamentoViewModel>(obj);
-
-        await _unitOfWork.SaveChangesAsync();
-
-        result.Status = OperationResult.Success;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetApontamentoResponse> InvokeAsync(GetApontamentoQuery request, CancellationToken cancellationToken = default)
+    public async ValueTask<ApontamentoViewModel> InvokeAsync(GetApontamentoQuery request, CancellationToken cancellationToken = default)
     {
-        GetApontamentoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Apontamento = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.GetAsync(request.Id));
-
-        if (result.Apontamento == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        result.Status = OperationResult.Success;
+        ApontamentoViewModel result = _mapper.Map<ApontamentoViewModel>(await _unitOfWork.ApontamentoRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<ListApontamentoResponse> InvokeAsync(ListApontamentoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<ApontamentoViewModel>> InvokeAsync(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
-        ListApontamentoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Apontamentos = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.AllAsync(request.GetDependencies));
-        result.Status = OperationResult.Success;
+        IEnumerable<ApontamentoViewModel> result = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<RemoveApontamentoResponse> InvokeAsync(RemoveApontamentoCommand request, CancellationToken cancellationToken = default)
+    public async ValueTask<OperationResult> InvokeAsync(RemoveApontamentoCommand request, CancellationToken cancellationToken = default)
     {
-        RemoveApontamentoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         Apontamento obj = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
 
         if (obj == null)
         {
-            result.Status = OperationResult.NotFound;
-
-            return result;
+            return OperationResult.NotFound;
         }
 
         await _unitOfWork.ApontamentoRepository.RemoveAsync(request.Id);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<UpdateApontamentoResponse> InvokeAsync(UpdateApontamentoCommand request, CancellationToken cancellationToken = default)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
-        UpdateApontamentoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         _unitOfWork.ApontamentoRepository.Update(_mapper.Map<Apontamento>(request.Apontamento));
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetByRecursoResponse> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<ApontamentoViewModel>> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
     {
-        GetByRecursoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Apontamentos = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(request.IdRecurso));
-        result.Status = OperationResult.Success;
+        IEnumerable<ApontamentoViewModel> result = _mapper.Map<IEnumerable<ApontamentoViewModel>>(await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(request.IdRecurso));
 
         return result;
     }

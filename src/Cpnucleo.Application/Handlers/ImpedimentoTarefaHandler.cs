@@ -1,19 +1,15 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class ImpedimentoTarefaHandler :
-    IAsyncRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse>,
-    IAsyncRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse>,
-    IAsyncRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse>,
-    IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse>,
-    IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse>,
-    IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse>
+    IAsyncRequestHandler<CreateImpedimentoTarefaCommand, OperationResult>,
+    IAsyncRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel>,
+    IAsyncRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>>,
+    IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult>,
+    IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult>,
+    IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -24,107 +20,63 @@ public class ImpedimentoTarefaHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<CreateImpedimentoTarefaResponse> InvokeAsync(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        CreateImpedimentoTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(_mapper.Map<ImpedimentoTarefa>(request.ImpedimentoTarefa));
 
-        ImpedimentoTarefa obj = await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(_mapper.Map<ImpedimentoTarefa>(request.ImpedimentoTarefa));
-        result.ImpedimentoTarefa = _mapper.Map<ImpedimentoTarefaViewModel>(obj);
+        bool success = await _unitOfWork.SaveChangesAsync();
 
-        await _unitOfWork.SaveChangesAsync();
-
-        result.Status = OperationResult.Success;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetImpedimentoTarefaResponse> InvokeAsync(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<ImpedimentoTarefaViewModel> InvokeAsync(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetImpedimentoTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.ImpedimentoTarefa = _mapper.Map<ImpedimentoTarefaViewModel>(await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id));
-
-        if (result.ImpedimentoTarefa == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        result.Status = OperationResult.Success;
+        ImpedimentoTarefaViewModel result = _mapper.Map<ImpedimentoTarefaViewModel>(await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<ListImpedimentoTarefaResponse> InvokeAsync(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<ImpedimentoTarefaViewModel>> InvokeAsync(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
-        ListImpedimentoTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.ImpedimentoTarefas = _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(await _unitOfWork.ImpedimentoTarefaRepository.AllAsync(request.GetDependencies));
-        result.Status = OperationResult.Success;
+        IEnumerable<ImpedimentoTarefaViewModel> result = _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(await _unitOfWork.ImpedimentoTarefaRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<RemoveImpedimentoTarefaResponse> InvokeAsync(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        RemoveImpedimentoTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         ImpedimentoTarefa obj = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id);
 
         if (obj == null)
         {
-            result.Status = OperationResult.NotFound;
-
-            return result;
+            return OperationResult.NotFound;
         }
 
         await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(request.Id);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<UpdateImpedimentoTarefaResponse> InvokeAsync(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        UpdateImpedimentoTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         _unitOfWork.ImpedimentoTarefaRepository.Update(_mapper.Map<ImpedimentoTarefa>(request.ImpedimentoTarefa));
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetByTarefaResponse> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<ImpedimentoTarefaViewModel>> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetByTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.ImpedimentoTarefas = _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(request.IdTarefa));
-        result.Status = OperationResult.Success;
+        IEnumerable<ImpedimentoTarefaViewModel> result = _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(request.IdTarefa));
 
         return result;
     }

@@ -1,21 +1,18 @@
 ﻿using Cpnucleo.Application.Hubs;
 using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class SistemaHandler :
-    IAsyncRequestHandler<CreateSistemaCommand, CreateSistemaResponse>,
-    IAsyncRequestHandler<GetSistemaQuery, GetSistemaResponse>,
-    IAsyncRequestHandler<ListSistemaQuery, ListSistemaResponse>,
-    IAsyncRequestHandler<RemoveSistemaCommand, RemoveSistemaResponse>,
-    IAsyncRequestHandler<UpdateSistemaCommand, UpdateSistemaResponse>
+    IAsyncRequestHandler<CreateSistemaCommand, OperationResult>,
+    IAsyncRequestHandler<GetSistemaQuery, SistemaViewModel>,
+    IAsyncRequestHandler<ListSistemaQuery, IEnumerable<SistemaViewModel>>,
+    IAsyncRequestHandler<RemoveSistemaCommand, OperationResult>,
+    IAsyncRequestHandler<UpdateSistemaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -30,82 +27,49 @@ public class SistemaHandler :
         _hubContext = hubContext;
     }
 
-    public async ValueTask<CreateSistemaResponse> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
+    public async ValueTask<OperationResult> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
     {
-        CreateSistemaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Sistema>(request.Sistema));
 
-        Sistema obj = await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Sistema>(request.Sistema));
-        result.Sistema = _mapper.Map<SistemaViewModel>(obj);
+        bool success = await _unitOfWork.SaveChangesAsync();
 
-        await _unitOfWork.SaveChangesAsync();
-
-        result.Status = OperationResult.Success;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetSistemaResponse> InvokeAsync(GetSistemaQuery request, CancellationToken cancellationToken = default)
+    public async ValueTask<SistemaViewModel> InvokeAsync(GetSistemaQuery request, CancellationToken cancellationToken = default)
     {
-        GetSistemaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Sistema = _mapper.Map<SistemaViewModel>(await _unitOfWork.SistemaRepository.GetAsync(request.Id));
-
-        if (result.Sistema == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        result.Status = OperationResult.Success;
+        SistemaViewModel result = _mapper.Map<SistemaViewModel>(await _unitOfWork.SistemaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<ListSistemaResponse> InvokeAsync(ListSistemaQuery request, CancellationToken cancellationToken = default)
+    public async ValueTask<IEnumerable<SistemaViewModel>> InvokeAsync(ListSistemaQuery request, CancellationToken cancellationToken = default)
     {
-        ListSistemaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Sistemas = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies));
-        result.Status = OperationResult.Success;
+        IEnumerable<SistemaViewModel> result = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies));
 
         await _hubContext.Clients.All.SendAsync("broadcastMessage", "Broadcast: Test Message.", "Lorem ipsum dolor sit amet", cancellationToken);
 
         return result;
     }
 
-    public async ValueTask<RemoveSistemaResponse> InvokeAsync(RemoveSistemaCommand request, CancellationToken cancellationToken = default)
+    public async ValueTask<OperationResult> InvokeAsync(RemoveSistemaCommand request, CancellationToken cancellationToken = default)
     {
-        RemoveSistemaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         Sistema obj = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
 
         if (obj == null)
         {
-            result.Status = OperationResult.NotFound;
-
-            return result;
+            return OperationResult.NotFound;
         }
 
         await _unitOfWork.SistemaRepository.RemoveAsync(request.Id);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
-        if (result.Status == OperationResult.Success)
+        if (result == OperationResult.Success)
         {
             await _eventHandler.PublishEventAsync(new RemoveSistemaEvent { Id = request.Id });
         }
@@ -113,18 +77,13 @@ public class SistemaHandler :
         return result;
     }
 
-    public async ValueTask<UpdateSistemaResponse> InvokeAsync(UpdateSistemaCommand request, CancellationToken cancellationToken = default)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateSistemaCommand request, CancellationToken cancellationToken = default)
     {
-        UpdateSistemaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         _unitOfWork.SistemaRepository.Update(_mapper.Map<Sistema>(request.Sistema));
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
