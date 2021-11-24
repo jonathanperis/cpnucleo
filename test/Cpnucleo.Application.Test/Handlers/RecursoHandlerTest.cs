@@ -1,9 +1,7 @@
 ﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -24,15 +22,10 @@ public class RecursoHandlerTest
 
         // Act
         RecursoHandler handler = new(unitOfWork, mapper, manager);
-        CreateRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Recurso != null);
-        Assert.True(response.Recurso.Id != Guid.Empty);
-        Assert.True(response.Recurso.DataInclusao.Ticks != 0);
-        Assert.True(response.Recurso.Senha == null);
-        Assert.True(response.Recurso.Salt == null);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -55,15 +48,14 @@ public class RecursoHandlerTest
 
         // Act
         RecursoHandler handler = new(unitOfWork, mapper, manager);
-        GetRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        RecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Recurso != null);
-        Assert.True(response.Recurso.Id != Guid.Empty);
-        Assert.True(response.Recurso.DataInclusao.Ticks != 0);
-        Assert.True(response.Recurso.Senha == null);
-        Assert.True(response.Recurso.Salt == null);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
+        Assert.True(response.Senha == null);
+        Assert.True(response.Salt == null);
     }
 
     [Fact]
@@ -86,13 +78,12 @@ public class RecursoHandlerTest
 
         // Act
         RecursoHandler handler = new(unitOfWork, mapper, manager);
-        ListRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<RecursoViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Recursos != null);
-        Assert.True(response.Recursos.Any());
-        Assert.True(response.Recursos.FirstOrDefault(x => x.Id == recursoId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == recursoId) != null);
     }
 
     [Fact]
@@ -124,13 +115,12 @@ public class RecursoHandlerTest
 
         // Act
         RecursoHandler handler = new(unitOfWork, mapper, manager);
-        RemoveRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetRecursoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        RecursoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Recurso == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -163,16 +153,15 @@ public class RecursoHandlerTest
 
         // Act
         RecursoHandler handler = new(unitOfWork, mapper, manager);
-        UpdateRecursoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetRecursoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        RecursoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Recurso != null);
-        Assert.True(response2.Recurso.Id == recursoId);
-        Assert.True(response2.Recurso.DataInclusao.Ticks == dataInclusao.Ticks);
-        Assert.True(response2.Recurso.Senha == null);
-        Assert.True(response2.Recurso.Salt == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == recursoId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response2.Senha == null);
+        Assert.True(response2.Salt == null);
     }
 }

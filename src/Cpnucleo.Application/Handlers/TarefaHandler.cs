@@ -4,13 +4,13 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
 namespace Cpnucleo.Application.Handlers;
 
 public class TarefaHandler :
-    IAsyncRequestHandler<CreateTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetTarefaQuery, TarefaViewModel>,
-    IAsyncRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>>,
-    IAsyncRequestHandler<RemoveTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>>,
-    IAsyncRequestHandler<UpdateByWorkflowCommand, OperationResult>
+    IRequestHandler<CreateTarefaCommand, OperationResult>,
+    IRequestHandler<GetTarefaQuery, TarefaViewModel>,
+    IRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>>,
+    IRequestHandler<RemoveTarefaCommand, OperationResult>,
+    IRequestHandler<UpdateTarefaCommand, OperationResult>,
+    IRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>>,
+    IRequestHandler<UpdateByWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ public class TarefaHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateTarefaCommand request, CancellationToken cancellationToken)
     {
         await _unitOfWork.TarefaRepository.AddAsync(_mapper.Map<Tarefa>(request.Tarefa));
 
@@ -32,14 +32,14 @@ public class TarefaHandler :
         return result;
     }
 
-    public async ValueTask<TarefaViewModel> InvokeAsync(GetTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<TarefaViewModel> Handle(GetTarefaQuery request, CancellationToken cancellationToken)
     {
         TarefaViewModel result = _mapper.Map<TarefaViewModel>(await _unitOfWork.TarefaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<TarefaViewModel>> InvokeAsync(ListTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TarefaViewModel>> Handle(ListTarefaQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<TarefaViewModel> result = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.AllAsync(request.GetDependencies));
 
@@ -48,7 +48,7 @@ public class TarefaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveTarefaCommand request, CancellationToken cancellationToken)
     {
         Tarefa obj = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
 
@@ -66,7 +66,7 @@ public class TarefaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateTarefaCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.TarefaRepository.Update(_mapper.Map<Tarefa>(request.Tarefa));
 
@@ -77,7 +77,7 @@ public class TarefaHandler :
         return result;
     }
 
-    public async ValueTask<IEnumerable<TarefaViewModel>> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TarefaViewModel>> Handle(GetByRecursoQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<TarefaViewModel> result = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.GetByRecursoAsync(request.IdRecurso));
 
@@ -86,7 +86,7 @@ public class TarefaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateByWorkflowCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateByWorkflowCommand request, CancellationToken cancellationToken)
     {
         Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.IdTarefa);
 

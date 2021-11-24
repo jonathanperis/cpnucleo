@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -45,13 +43,10 @@ public class ImpedimentoTarefaHandlerTest
 
         // Act
         ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-        CreateImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.ImpedimentoTarefa != null);
-        Assert.True(response.ImpedimentoTarefa.Id != Guid.Empty);
-        Assert.True(response.ImpedimentoTarefa.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -94,13 +89,12 @@ public class ImpedimentoTarefaHandlerTest
 
         // Act
         ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-        GetImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        ImpedimentoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.ImpedimentoTarefa != null);
-        Assert.True(response.ImpedimentoTarefa.Id != Guid.Empty);
-        Assert.True(response.ImpedimentoTarefa.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -142,13 +136,12 @@ public class ImpedimentoTarefaHandlerTest
 
         // Act
         ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-        ListImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<ImpedimentoTarefaViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.ImpedimentoTarefas != null);
-        Assert.True(response.ImpedimentoTarefas.Any());
-        Assert.True(response.ImpedimentoTarefas.FirstOrDefault(x => x.Id == impedimentoTarefaId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == impedimentoTarefaId) != null);
     }
 
     [Fact]
@@ -199,13 +192,12 @@ public class ImpedimentoTarefaHandlerTest
 
         // Act
         ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-        RemoveImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetImpedimentoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ImpedimentoTarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.ImpedimentoTarefa == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -257,14 +249,13 @@ public class ImpedimentoTarefaHandlerTest
 
         // Act
         ImpedimentoTarefaHandler handler = new(unitOfWork, mapper);
-        UpdateImpedimentoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetImpedimentoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ImpedimentoTarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.ImpedimentoTarefa != null);
-        Assert.True(response2.ImpedimentoTarefa.Id == impedimentoTarefaId);
-        Assert.True(response2.ImpedimentoTarefa.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == impedimentoTarefaId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

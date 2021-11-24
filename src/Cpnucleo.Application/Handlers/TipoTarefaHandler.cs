@@ -4,11 +4,11 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
 namespace Cpnucleo.Application.Handlers;
 
 public class TipoTarefaHandler :
-    IAsyncRequestHandler<CreateTipoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetTipoTarefaQuery, TipoTarefaViewModel>,
-    IAsyncRequestHandler<ListTipoTarefaQuery, IEnumerable<TipoTarefaViewModel>>,
-    IAsyncRequestHandler<RemoveTipoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateTipoTarefaCommand, OperationResult>
+    IRequestHandler<CreateTipoTarefaCommand, OperationResult>,
+    IRequestHandler<GetTipoTarefaQuery, TipoTarefaViewModel>,
+    IRequestHandler<ListTipoTarefaQuery, IEnumerable<TipoTarefaViewModel>>,
+    IRequestHandler<RemoveTipoTarefaCommand, OperationResult>,
+    IRequestHandler<UpdateTipoTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ public class TipoTarefaHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
         await _unitOfWork.TipoTarefaRepository.AddAsync(_mapper.Map<TipoTarefa>(request.TipoTarefa));
 
@@ -30,21 +30,21 @@ public class TipoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<TipoTarefaViewModel> InvokeAsync(GetTipoTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<TipoTarefaViewModel> Handle(GetTipoTarefaQuery request, CancellationToken cancellationToken)
     {
         TipoTarefaViewModel result = _mapper.Map<TipoTarefaViewModel>(await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<TipoTarefaViewModel>> InvokeAsync(ListTipoTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TipoTarefaViewModel>> Handle(ListTipoTarefaQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<TipoTarefaViewModel> result = _mapper.Map<IEnumerable<TipoTarefaViewModel>>(await _unitOfWork.TipoTarefaRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveTipoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveTipoTarefaCommand request, CancellationToken cancellationToken)
     {
         TipoTarefa obj = await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id);
 
@@ -62,7 +62,7 @@ public class TipoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.TipoTarefaRepository.Update(_mapper.Map<TipoTarefa>(request.TipoTarefa));
 

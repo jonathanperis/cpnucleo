@@ -4,12 +4,12 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
 namespace Cpnucleo.Application.Handlers;
 
 public class ImpedimentoTarefaHandler :
-    IAsyncRequestHandler<CreateImpedimentoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel>,
-    IAsyncRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>>,
-    IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>>
+    IRequestHandler<CreateImpedimentoTarefaCommand, OperationResult>,
+    IRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel>,
+    IRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>>,
+    IRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult>,
+    IRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult>,
+    IRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ public class ImpedimentoTarefaHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
         await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(_mapper.Map<ImpedimentoTarefa>(request.ImpedimentoTarefa));
 
@@ -31,21 +31,21 @@ public class ImpedimentoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<ImpedimentoTarefaViewModel> InvokeAsync(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<ImpedimentoTarefaViewModel> Handle(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
         ImpedimentoTarefaViewModel result = _mapper.Map<ImpedimentoTarefaViewModel>(await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<ImpedimentoTarefaViewModel>> InvokeAsync(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ImpedimentoTarefaViewModel>> Handle(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<ImpedimentoTarefaViewModel> result = _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(await _unitOfWork.ImpedimentoTarefaRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
         ImpedimentoTarefa obj = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id);
 
@@ -63,7 +63,7 @@ public class ImpedimentoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.ImpedimentoTarefaRepository.Update(_mapper.Map<ImpedimentoTarefa>(request.ImpedimentoTarefa));
 
@@ -74,7 +74,7 @@ public class ImpedimentoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<IEnumerable<ImpedimentoTarefaViewModel>> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ImpedimentoTarefaViewModel>> Handle(GetByTarefaQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<ImpedimentoTarefaViewModel> result = _mapper.Map<IEnumerable<ImpedimentoTarefaViewModel>>(await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(request.IdTarefa));
 

@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.SignalR;
 namespace Cpnucleo.Application.Handlers;
 
 public class SistemaHandler :
-    IAsyncRequestHandler<CreateSistemaCommand, OperationResult>,
-    IAsyncRequestHandler<GetSistemaQuery, SistemaViewModel>,
-    IAsyncRequestHandler<ListSistemaQuery, IEnumerable<SistemaViewModel>>,
-    IAsyncRequestHandler<RemoveSistemaCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateSistemaCommand, OperationResult>
+    IRequestHandler<CreateSistemaCommand, OperationResult>,
+    IRequestHandler<GetSistemaQuery, SistemaViewModel>,
+    IRequestHandler<ListSistemaQuery, IEnumerable<SistemaViewModel>>,
+    IRequestHandler<RemoveSistemaCommand, OperationResult>,
+    IRequestHandler<UpdateSistemaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ public class SistemaHandler :
         _hubContext = hubContext;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateSistemaCommand request, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> Handle(CreateSistemaCommand request, CancellationToken cancellationToken = default)
     {
         await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Sistema>(request.Sistema));
 
@@ -38,14 +38,14 @@ public class SistemaHandler :
         return result;
     }
 
-    public async ValueTask<SistemaViewModel> InvokeAsync(GetSistemaQuery request, CancellationToken cancellationToken = default)
+    public async Task<SistemaViewModel> Handle(GetSistemaQuery request, CancellationToken cancellationToken = default)
     {
         SistemaViewModel result = _mapper.Map<SistemaViewModel>(await _unitOfWork.SistemaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<SistemaViewModel>> InvokeAsync(ListSistemaQuery request, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<SistemaViewModel>> Handle(ListSistemaQuery request, CancellationToken cancellationToken = default)
     {
         IEnumerable<SistemaViewModel> result = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies));
 
@@ -54,7 +54,7 @@ public class SistemaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveSistemaCommand request, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> Handle(RemoveSistemaCommand request, CancellationToken cancellationToken = default)
     {
         Sistema obj = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
 
@@ -77,7 +77,7 @@ public class SistemaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateSistemaCommand request, CancellationToken cancellationToken = default)
+    public async Task<OperationResult> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken = default)
     {
         _unitOfWork.SistemaRepository.Update(_mapper.Map<Sistema>(request.Sistema));
 
