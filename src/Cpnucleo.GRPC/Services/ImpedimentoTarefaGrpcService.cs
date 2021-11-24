@@ -7,55 +7,40 @@ namespace Cpnucleo.GRPC.Services;
 [Authorize]
 public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcService>, IImpedimentoTarefaGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateImpedimentoTarefaCommand, OperationResult> _createImpedimentoTarefaCommand;
-    private readonly IAsyncRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> _listImpedimentoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel> _getImpedimentoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> _getByTarefaQuery;
-    private readonly IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult> _removeImpedimentoTarefaCommand;
-    private readonly IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult> _updateImpedimentoTarefaCommand;
+    private readonly IMediator _mediator;
 
-    public ImpedimentoTarefaGrpcService(IAsyncRequestHandler<CreateImpedimentoTarefaCommand, OperationResult> createImpedimentoTarefaCommand,
-                                        IAsyncRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> listImpedimentoTarefaQuery,
-                                        IAsyncRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel> getImpedimentoTarefaQuery,
-                                        IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> getByTarefaQuery,
-                                        IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult> removeImpedimentoTarefaCommand,
-                                        IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult> updateImpedimentoTarefaCommand)
+    public ImpedimentoTarefaGrpcService(IMediator mediator)
     {
-        _createImpedimentoTarefaCommand = createImpedimentoTarefaCommand;
-        _listImpedimentoTarefaQuery = listImpedimentoTarefaQuery;
-        _getImpedimentoTarefaQuery = getImpedimentoTarefaQuery;
-        _getByTarefaQuery = getByTarefaQuery;
-        _removeImpedimentoTarefaCommand = removeImpedimentoTarefaCommand;
-        _updateImpedimentoTarefaCommand = updateImpedimentoTarefaCommand;
+        _mediator = mediator;
     }
 
     public async UnaryResult<OperationResult> AddAsync(CreateImpedimentoTarefaCommand command)
     {
-        return await _createImpedimentoTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<IEnumerable<ImpedimentoTarefaViewModel>> AllAsync(ListImpedimentoTarefaQuery query)
     {
-        return await _listImpedimentoTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<ImpedimentoTarefaViewModel> GetAsync(GetImpedimentoTarefaQuery query)
     {
-        return await _getImpedimentoTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<IEnumerable<ImpedimentoTarefaViewModel>> GetByTarefaAsync(GetByTarefaQuery query)
     {
-        return await _getByTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoTarefaCommand command)
     {
-        return await _removeImpedimentoTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoTarefaCommand command)
     {
-        return await _updateImpedimentoTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 }

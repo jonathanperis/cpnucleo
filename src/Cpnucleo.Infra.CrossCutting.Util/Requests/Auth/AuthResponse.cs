@@ -1,6 +1,6 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
+﻿namespace Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
 
-public class AuthResponse : BaseQuery
+public class AuthResponse : BaseRequest
 {
     public OperationResult Status { get; set; }
 

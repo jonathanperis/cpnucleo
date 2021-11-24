@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.CreateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.RemoveTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -22,13 +20,10 @@ public class TipoTarefaHandlerTest
 
         // Act
         TipoTarefaHandler handler = new(unitOfWork, mapper);
-        CreateTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.TipoTarefa != null);
-        Assert.True(response.TipoTarefa.Id != Guid.Empty);
-        Assert.True(response.TipoTarefa.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -50,13 +45,12 @@ public class TipoTarefaHandlerTest
 
         // Act
         TipoTarefaHandler handler = new(unitOfWork, mapper);
-        GetTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        TipoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.TipoTarefa != null);
-        Assert.True(response.TipoTarefa.Id != Guid.Empty);
-        Assert.True(response.TipoTarefa.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -78,13 +72,12 @@ public class TipoTarefaHandlerTest
 
         // Act
         TipoTarefaHandler handler = new(unitOfWork, mapper);
-        ListTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<TipoTarefaViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.TipoTarefas != null);
-        Assert.True(response.TipoTarefas.Any());
-        Assert.True(response.TipoTarefas.FirstOrDefault(x => x.Id == tipoTarefaId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == tipoTarefaId) != null);
     }
 
     [Fact]
@@ -115,13 +108,12 @@ public class TipoTarefaHandlerTest
 
         // Act
         TipoTarefaHandler handler = new(unitOfWork, mapper);
-        RemoveTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetTipoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        TipoTarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.TipoTarefa == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -153,14 +145,13 @@ public class TipoTarefaHandlerTest
 
         // Act
         TipoTarefaHandler handler = new(unitOfWork, mapper);
-        UpdateTipoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetTipoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        TipoTarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.TipoTarefa != null);
-        Assert.True(response2.TipoTarefa.Id == tipoTarefaId);
-        Assert.True(response2.TipoTarefa.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == tipoTarefaId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

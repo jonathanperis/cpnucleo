@@ -7,55 +7,40 @@ namespace Cpnucleo.GRPC.Services;
 [Authorize]
 public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, IRecursoTarefaGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateRecursoTarefaCommand, OperationResult> _createRecursoTarefaCommand;
-    private readonly IAsyncRequestHandler<ListRecursoTarefaQuery, IEnumerable<RecursoTarefaViewModel>> _listRecursoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetRecursoTarefaQuery, RecursoTarefaViewModel> _getRecursoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<RecursoTarefaViewModel>> _getByTarefaQuery;
-    private readonly IAsyncRequestHandler<RemoveRecursoTarefaCommand, OperationResult> _removeRecursoTarefaCommand;
-    private readonly IAsyncRequestHandler<UpdateRecursoTarefaCommand, OperationResult> _updateRecursoTarefaCommand;
+    private readonly IMediator _mediator;
 
-    public RecursoTarefaGrpcService(IAsyncRequestHandler<CreateRecursoTarefaCommand, OperationResult> createRecursoTarefaCommand,
-                                    IAsyncRequestHandler<ListRecursoTarefaQuery, IEnumerable<RecursoTarefaViewModel>> listRecursoTarefaQuery,
-                                    IAsyncRequestHandler<GetRecursoTarefaQuery, RecursoTarefaViewModel> getRecursoTarefaQuery,
-                                    IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<RecursoTarefaViewModel>> getByTarefaQuery,
-                                    IAsyncRequestHandler<RemoveRecursoTarefaCommand, OperationResult> removeRecursoTarefaCommand,
-                                    IAsyncRequestHandler<UpdateRecursoTarefaCommand, OperationResult> updateRecursoTarefaCommand)
+    public RecursoTarefaGrpcService(IMediator mediator)
     {
-        _createRecursoTarefaCommand = createRecursoTarefaCommand;
-        _listRecursoTarefaQuery = listRecursoTarefaQuery;
-        _getRecursoTarefaQuery = getRecursoTarefaQuery;
-        _getByTarefaQuery = getByTarefaQuery;
-        _removeRecursoTarefaCommand = removeRecursoTarefaCommand;
-        _updateRecursoTarefaCommand = updateRecursoTarefaCommand;
+        _mediator = mediator;
     }
 
     public async UnaryResult<OperationResult> AddAsync(CreateRecursoTarefaCommand command)
     {
-        return await _createRecursoTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<IEnumerable<RecursoTarefaViewModel>> AllAsync(ListRecursoTarefaQuery query)
     {
-        return await _listRecursoTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<RecursoTarefaViewModel> GetAsync(GetRecursoTarefaQuery query)
     {
-        return await _getRecursoTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<IEnumerable<RecursoTarefaViewModel>> GetByTarefaAsync(GetByTarefaQuery query)
     {
-        return await _getByTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<OperationResult> RemoveAsync(RemoveRecursoTarefaCommand command)
     {
-        return await _removeRecursoTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<OperationResult> UpdateAsync(UpdateRecursoTarefaCommand command)
     {
-        return await _updateRecursoTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 }

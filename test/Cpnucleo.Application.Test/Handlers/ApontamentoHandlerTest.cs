@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -42,13 +40,10 @@ public class ApontamentoHandlerTest
 
         // Act
         ApontamentoHandler handler = new(unitOfWork, mapper);
-        CreateApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Apontamento != null);
-        Assert.True(response.Apontamento.Id != Guid.Empty);
-        Assert.True(response.Apontamento.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -88,13 +83,12 @@ public class ApontamentoHandlerTest
 
         // Act
         ApontamentoHandler handler = new(unitOfWork, mapper);
-        GetApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        ApontamentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Apontamento != null);
-        Assert.True(response.Apontamento.Id != Guid.Empty);
-        Assert.True(response.Apontamento.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -133,13 +127,12 @@ public class ApontamentoHandlerTest
 
         // Act
         ApontamentoHandler handler = new(unitOfWork, mapper);
-        ListApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<ApontamentoViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Apontamentos != null);
-        Assert.True(response.Apontamentos.Any());
-        Assert.True(response.Apontamentos.FirstOrDefault(x => x.Id == apontamentoId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == apontamentoId) != null);
     }
 
     [Fact]
@@ -187,13 +180,12 @@ public class ApontamentoHandlerTest
 
         // Act
         ApontamentoHandler handler = new(unitOfWork, mapper);
-        RemoveApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetApontamentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ApontamentoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Apontamento == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -242,14 +234,13 @@ public class ApontamentoHandlerTest
 
         // Act
         ApontamentoHandler handler = new(unitOfWork, mapper);
-        UpdateApontamentoResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetApontamentoResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        ApontamentoViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Apontamento != null);
-        Assert.True(response2.Apontamento.Id == apontamentoId);
-        Assert.True(response2.Apontamento.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == apontamentoId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

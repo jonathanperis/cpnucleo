@@ -4,12 +4,12 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
 namespace Cpnucleo.Application.Handlers;
 
 public class RecursoTarefaHandler :
-    IAsyncRequestHandler<CreateRecursoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetRecursoTarefaQuery, RecursoTarefaViewModel>,
-    IAsyncRequestHandler<ListRecursoTarefaQuery, IEnumerable<RecursoTarefaViewModel>>,
-    IAsyncRequestHandler<RemoveRecursoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateRecursoTarefaCommand, OperationResult>,
-    IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<RecursoTarefaViewModel>>
+    IRequestHandler<CreateRecursoTarefaCommand, OperationResult>,
+    IRequestHandler<GetRecursoTarefaQuery, RecursoTarefaViewModel>,
+    IRequestHandler<ListRecursoTarefaQuery, IEnumerable<RecursoTarefaViewModel>>,
+    IRequestHandler<RemoveRecursoTarefaCommand, OperationResult>,
+    IRequestHandler<UpdateRecursoTarefaCommand, OperationResult>,
+    IRequestHandler<GetByTarefaQuery, IEnumerable<RecursoTarefaViewModel>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ public class RecursoTarefaHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateRecursoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
         await _unitOfWork.RecursoTarefaRepository.AddAsync(_mapper.Map<RecursoTarefa>(request.RecursoTarefa));
 
@@ -31,21 +31,21 @@ public class RecursoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<RecursoTarefaViewModel> InvokeAsync(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<RecursoTarefaViewModel> Handle(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
         RecursoTarefaViewModel result = _mapper.Map<RecursoTarefaViewModel>(await _unitOfWork.RecursoTarefaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<RecursoTarefaViewModel>> InvokeAsync(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RecursoTarefaViewModel>> Handle(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<RecursoTarefaViewModel> result = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(await _unitOfWork.RecursoTarefaRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
         RecursoTarefa obj = await _unitOfWork.RecursoTarefaRepository.GetAsync(request.Id);
 
@@ -63,7 +63,7 @@ public class RecursoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.RecursoTarefaRepository.Update(_mapper.Map<RecursoTarefa>(request.RecursoTarefa));
 
@@ -74,7 +74,7 @@ public class RecursoTarefaHandler :
         return result;
     }
 
-    public async ValueTask<IEnumerable<RecursoTarefaViewModel>> InvokeAsync(GetByTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<RecursoTarefaViewModel>> Handle(GetByTarefaQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<RecursoTarefaViewModel> result = _mapper.Map<IEnumerable<RecursoTarefaViewModel>>(await _unitOfWork.RecursoTarefaRepository.GetByTarefaAsync(request.IdTarefa));
 

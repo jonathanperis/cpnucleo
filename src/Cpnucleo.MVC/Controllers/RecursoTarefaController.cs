@@ -1,10 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.CreateRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -44,8 +41,7 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            GetByTarefaResponse response = await _recursoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
-            RecursoTarefaView.Lista = response.RecursoTarefas;
+            RecursoTarefaView.Lista = await _recursoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
 
             ViewData["idTarefa"] = idTarefa;
 
@@ -96,8 +92,7 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
-            RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
+            RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
 
             await CarregarSelectRecursos();
 
@@ -117,8 +112,7 @@ public class RecursoTarefaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
-                RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
+                RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
 
                 await CarregarSelectRecursos();
 
@@ -141,8 +135,7 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
-            RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
+            RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
 
             return View(RecursoTarefaView);
         }
@@ -160,8 +153,7 @@ public class RecursoTarefaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetRecursoTarefaResponse response = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
-                RecursoTarefaView.RecursoTarefa = response.RecursoTarefa;
+                RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
 
                 return View(RecursoTarefaView);
             }
@@ -179,13 +171,12 @@ public class RecursoTarefaController : BaseController
 
     private async Task ObterTarefa(Guid idTarefa)
     {
-        GetTarefaResponse response = await _TarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
-        RecursoTarefaView.Tarefa = response.Tarefa;
+        RecursoTarefaView.Tarefa = await _TarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
     }
 
     private async Task CarregarSelectRecursos()
     {
-        ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
-        RecursoTarefaView.SelectRecursos = new SelectList(response.Recursos, "Id", "Nome");
+        IEnumerable<RecursoViewModel> response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
+        RecursoTarefaView.SelectRecursos = new SelectList(response, "Id", "Nome");
     }
 }

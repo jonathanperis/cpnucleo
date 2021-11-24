@@ -1,8 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -38,8 +35,7 @@ public class SistemaController : BaseController
     {
         try
         {
-            ListSistemaResponse response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
-            SistemaView.Lista = response.Sistemas;
+            SistemaView.Lista = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
 
             return View(SistemaView);
         }
@@ -82,8 +78,7 @@ public class SistemaController : BaseController
     {
         try
         {
-            GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
-            SistemaView.Sistema = response.Sistema;
+            SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
 
             return View(SistemaView);
         }
@@ -101,8 +96,7 @@ public class SistemaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
-                SistemaView.Sistema = response.Sistema;
+                SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
 
                 return View(SistemaView);
             }
@@ -123,8 +117,7 @@ public class SistemaController : BaseController
     {
         try
         {
-            GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
-            SistemaView.Sistema = response.Sistema;
+            SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
 
             return View(SistemaView);
         }
@@ -142,8 +135,7 @@ public class SistemaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetSistemaResponse response = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
-                SistemaView.Sistema = response.Sistema;
+                SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
 
                 return View(SistemaView);
             }

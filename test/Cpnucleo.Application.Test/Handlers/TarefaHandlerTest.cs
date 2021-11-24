@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -39,13 +37,10 @@ public class TarefaHandlerTest
 
         // Act
         TarefaHandler handler = new(unitOfWork, mapper);
-        CreateTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Tarefa != null);
-        Assert.True(response.Tarefa.Id != Guid.Empty);
-        Assert.True(response.Tarefa.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -82,13 +77,12 @@ public class TarefaHandlerTest
 
         // Act
         TarefaHandler handler = new(unitOfWork, mapper);
-        GetTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        TarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Tarefa != null);
-        Assert.True(response.Tarefa.Id != Guid.Empty);
-        Assert.True(response.Tarefa.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -124,13 +118,12 @@ public class TarefaHandlerTest
 
         // Act
         TarefaHandler handler = new(unitOfWork, mapper);
-        ListTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<TarefaViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Tarefas != null);
-        Assert.True(response.Tarefas.Any());
-        Assert.True(response.Tarefas.FirstOrDefault(x => x.Id == tarefaId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == tarefaId) != null);
     }
 
     [Fact]
@@ -175,13 +168,12 @@ public class TarefaHandlerTest
 
         // Act
         TarefaHandler handler = new(unitOfWork, mapper);
-        RemoveTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        TarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Tarefa == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -227,14 +219,13 @@ public class TarefaHandlerTest
 
         // Act
         TarefaHandler handler = new(unitOfWork, mapper);
-        UpdateTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        TarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Tarefa != null);
-        Assert.True(response2.Tarefa.Id == tarefaId);
-        Assert.True(response2.Tarefa.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == tarefaId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

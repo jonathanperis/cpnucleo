@@ -7,55 +7,40 @@ namespace Cpnucleo.GRPC.Services;
 [Authorize]
 public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateTarefaCommand, OperationResult> _createTarefaCommand;
-    private readonly IAsyncRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>> _listTarefaQuery;
-    private readonly IAsyncRequestHandler<GetTarefaQuery, TarefaViewModel> _getTarefaQuery;
-    private readonly IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>> _getByRecursoQuery;
-    private readonly IAsyncRequestHandler<RemoveTarefaCommand, OperationResult> _removeTarefaCommand;
-    private readonly IAsyncRequestHandler<UpdateTarefaCommand, OperationResult> _updateTarefaCommand;
+    private readonly IMediator _mediator;
 
-    public TarefaGrpcService(IAsyncRequestHandler<CreateTarefaCommand, OperationResult> createTarefaCommand,
-                             IAsyncRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>> listTarefaQuery,
-                             IAsyncRequestHandler<GetTarefaQuery, TarefaViewModel> getTarefaQuery,
-                             IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>> getByRecursoQuery,
-                             IAsyncRequestHandler<RemoveTarefaCommand, OperationResult> removeTarefaCommand,
-                             IAsyncRequestHandler<UpdateTarefaCommand, OperationResult> updateTarefaCommand)
+    public TarefaGrpcService(IMediator mediator)
     {
-        _createTarefaCommand = createTarefaCommand;
-        _listTarefaQuery = listTarefaQuery;
-        _getTarefaQuery = getTarefaQuery;
-        _getByRecursoQuery = getByRecursoQuery;
-        _removeTarefaCommand = removeTarefaCommand;
-        _updateTarefaCommand = updateTarefaCommand;
+        _mediator = mediator;
     }
 
     public async UnaryResult<OperationResult> AddAsync(CreateTarefaCommand command)
     {
-        return await _createTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<IEnumerable<TarefaViewModel>> AllAsync(ListTarefaQuery query)
     {
-        return await _listTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<TarefaViewModel> GetAsync(GetTarefaQuery query)
     {
-        return await _getTarefaQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<IEnumerable<TarefaViewModel>> GetByRecursoAsync(GetByRecursoQuery query)
     {
-        return await _getByRecursoQuery.InvokeAsync(query);
+        return await _mediator.Send(query);
     }
 
     public async UnaryResult<OperationResult> RemoveAsync(RemoveTarefaCommand command)
     {
-        return await _removeTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 
     public async UnaryResult<OperationResult> UpdateAsync(UpdateTarefaCommand command)
     {
-        return await _updateTarefaCommand.InvokeAsync(command);
+        return await _mediator.Send(command);
     }
 }

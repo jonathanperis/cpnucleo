@@ -4,11 +4,11 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 namespace Cpnucleo.Application.Handlers;
 
 public class WorkflowHandler :
-    IAsyncRequestHandler<CreateWorkflowCommand, OperationResult>,
-    IAsyncRequestHandler<GetWorkflowQuery, WorkflowViewModel>,
-    IAsyncRequestHandler<ListWorkflowQuery, IEnumerable<WorkflowViewModel>>,
-    IAsyncRequestHandler<RemoveWorkflowCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateWorkflowCommand, OperationResult>
+    IRequestHandler<CreateWorkflowCommand, OperationResult>,
+    IRequestHandler<GetWorkflowQuery, WorkflowViewModel>,
+    IRequestHandler<ListWorkflowQuery, IEnumerable<WorkflowViewModel>>,
+    IRequestHandler<RemoveWorkflowCommand, OperationResult>,
+    IRequestHandler<UpdateWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ public class WorkflowHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateWorkflowCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
     {
         await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Workflow>(request.Workflow));
 
@@ -30,14 +30,14 @@ public class WorkflowHandler :
         return result;
     }
 
-    public async ValueTask<WorkflowViewModel> InvokeAsync(GetWorkflowQuery request, CancellationToken cancellationToken)
+    public async Task<WorkflowViewModel> Handle(GetWorkflowQuery request, CancellationToken cancellationToken)
     {
         WorkflowViewModel result = _mapper.Map<WorkflowViewModel>(await _unitOfWork.WorkflowRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<WorkflowViewModel>> InvokeAsync(ListWorkflowQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<WorkflowViewModel>> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<WorkflowViewModel> result = _mapper.Map<IEnumerable<WorkflowViewModel>>(await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies));
 
@@ -46,7 +46,7 @@ public class WorkflowHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveWorkflowCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)
     {
         Workflow obj = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
 
@@ -64,7 +64,7 @@ public class WorkflowHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateWorkflowCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.WorkflowRepository.Update(_mapper.Map<Workflow>(request.Workflow));
 

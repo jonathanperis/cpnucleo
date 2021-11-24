@@ -1,9 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -41,8 +38,7 @@ public class ProjetoController : BaseController
     {
         try
         {
-            ListProjetoResponse response = await _projetoGrpcService.AllAsync(new ListProjetoQuery { GetDependencies = true });
-            ProjetoView.Lista = response.Projetos;
+            ProjetoView.Lista = await _projetoGrpcService.AllAsync(new ListProjetoQuery { GetDependencies = true });
 
             return View(ProjetoView);
         }
@@ -89,8 +85,7 @@ public class ProjetoController : BaseController
     {
         try
         {
-            GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
-            ProjetoView.Projeto = response.Projeto;
+            ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
 
             await CarregarSelectSistemas();
 
@@ -110,8 +105,7 @@ public class ProjetoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
-                ProjetoView.Projeto = response.Projeto;
+                ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
 
                 await CarregarSelectSistemas();
 
@@ -134,8 +128,7 @@ public class ProjetoController : BaseController
     {
         try
         {
-            GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
-            ProjetoView.Projeto = response.Projeto;
+            ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
 
             return View(ProjetoView);
         }
@@ -153,8 +146,7 @@ public class ProjetoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
-                ProjetoView.Projeto = response.Projeto;
+                ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
 
                 return View(ProjetoView);
             }
@@ -172,7 +164,7 @@ public class ProjetoController : BaseController
 
     private async Task CarregarSelectSistemas()
     {
-        ListSistemaResponse response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
-        ProjetoView.SelectSistemas = new SelectList(response.Sistemas, "Id", "Nome");
+        IEnumerable<SistemaViewModel> response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
+        ProjetoView.SelectSistemas = new SelectList(response, "Id", "Nome");
     }
 }

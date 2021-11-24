@@ -1,10 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -44,8 +41,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            GetByTarefaResponse response = await _impedimentoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
-            ImpedimentoTarefaView.Lista = response.ImpedimentoTarefas;
+            ImpedimentoTarefaView.Lista = await _impedimentoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
 
             ViewData["idTarefa"] = idTarefa;
 
@@ -96,8 +92,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
-            ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
+            ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
 
             await CarregarSelectImpedimentos();
 
@@ -117,8 +112,7 @@ public class ImpedimentoTarefaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
-                ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
+                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
 
                 await CarregarSelectImpedimentos();
 
@@ -141,8 +135,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
-            ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
+            ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
 
             return View(ImpedimentoTarefaView);
         }
@@ -160,8 +153,7 @@ public class ImpedimentoTarefaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetImpedimentoTarefaResponse response = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
-                ImpedimentoTarefaView.ImpedimentoTarefa = response.ImpedimentoTarefa;
+                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
 
                 return View(ImpedimentoTarefaView);
             }
@@ -179,13 +171,12 @@ public class ImpedimentoTarefaController : BaseController
 
     private async Task ObterTarefa(Guid idTarefa)
     {
-        GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
-        ImpedimentoTarefaView.Tarefa = response.Tarefa;
+        ImpedimentoTarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
     }
 
     private async Task CarregarSelectImpedimentos()
     {
-        ListImpedimentoResponse response = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
-        ImpedimentoTarefaView.SelectImpedimentos = new SelectList(response.Impedimentos, "Id", "Nome");
+        IEnumerable<ImpedimentoViewModel> response = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
+        ImpedimentoTarefaView.SelectImpedimentos = new SelectList(response, "Id", "Nome");
     }
 }

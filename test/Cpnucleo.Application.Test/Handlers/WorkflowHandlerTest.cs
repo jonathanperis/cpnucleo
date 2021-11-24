@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -22,13 +20,10 @@ public class WorkflowHandlerTest
 
         // Act
         WorkflowHandler handler = new(unitOfWork, mapper);
-        CreateWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Workflow != null);
-        Assert.True(response.Workflow.Id != Guid.Empty);
-        Assert.True(response.Workflow.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -50,13 +45,12 @@ public class WorkflowHandlerTest
 
         // Act
         WorkflowHandler handler = new(unitOfWork, mapper);
-        GetWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        WorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Workflow != null);
-        Assert.True(response.Workflow.Id != Guid.Empty);
-        Assert.True(response.Workflow.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -78,14 +72,13 @@ public class WorkflowHandlerTest
 
         // Act
         WorkflowHandler handler = new(unitOfWork, mapper);
-        ListWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<WorkflowViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Workflows != null);
-        Assert.True(response.Workflows.Any());
-        Assert.True(response.Workflows.FirstOrDefault(x => x.Id == workflowId) != null);
-        Assert.True(response.Workflows.FirstOrDefault(x => x.TamanhoColuna != null) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == workflowId) != null);
+        Assert.True(response.FirstOrDefault(x => x.TamanhoColuna != null) != null);
     }
 
     [Fact]
@@ -116,13 +109,12 @@ public class WorkflowHandlerTest
 
         // Act
         WorkflowHandler handler = new(unitOfWork, mapper);
-        RemoveWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetWorkflowResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        WorkflowViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Workflow == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -154,14 +146,13 @@ public class WorkflowHandlerTest
 
         // Act
         WorkflowHandler handler = new(unitOfWork, mapper);
-        UpdateWorkflowResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetWorkflowResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        WorkflowViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Workflow != null);
-        Assert.True(response2.Workflow.Id == workflowId);
-        Assert.True(response2.Workflow.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == workflowId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

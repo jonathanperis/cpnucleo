@@ -1,11 +1,9 @@
 ﻿using Cpnucleo.Application.Hubs;
 using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.CreateSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.RemoveSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
 using Cpnucleo.Infra.CrossCutting.Util.Events.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.GetSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 
@@ -30,13 +28,10 @@ public class SistemaHandlerTest
 
         // Act
         SistemaHandler handler = new(unitOfWork, mapper, mockServiceBus.Object, mockSignalR.Object);
-        CreateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Sistema != null);
-        Assert.True(response.Sistema.Id != Guid.Empty);
-        Assert.True(response.Sistema.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -61,13 +56,12 @@ public class SistemaHandlerTest
 
         // Act
         SistemaHandler handler = new(unitOfWork, mapper, mockServiceBus.Object, mockSignalR.Object);
-        GetSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        SistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Sistema != null);
-        Assert.True(response.Sistema.Id != Guid.Empty);
-        Assert.True(response.Sistema.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -92,13 +86,12 @@ public class SistemaHandlerTest
 
         // Act
         SistemaHandler handler = new(unitOfWork, mapper, mockServiceBus.Object, mockSignalR.Object);
-        ListSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<SistemaViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.Sistemas != null);
-        Assert.True(response.Sistemas.Any());
-        Assert.True(response.Sistemas.FirstOrDefault(x => x.Id == sistemaId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == sistemaId) != null);
     }
 
     [Fact]
@@ -132,13 +125,12 @@ public class SistemaHandlerTest
 
         // Act
         SistemaHandler handler = new(unitOfWork, mapper, mockServiceBus.Object, mockSignalR.Object);
-        RemoveSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        SistemaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.Sistema == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -173,14 +165,13 @@ public class SistemaHandlerTest
 
         // Act
         SistemaHandler handler = new(unitOfWork, mapper, mockServiceBus.Object, mockSignalR.Object);
-        UpdateSistemaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetSistemaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        SistemaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.Sistema != null);
-        Assert.True(response2.Sistema.Id == sistemaId);
-        Assert.True(response2.Sistema.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == sistemaId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

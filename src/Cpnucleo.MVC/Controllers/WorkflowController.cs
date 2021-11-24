@@ -1,8 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -38,8 +35,7 @@ public class WorkflowController : BaseController
     {
         try
         {
-            ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
-            WorkflowView.Lista = response.Workflows;
+            WorkflowView.Lista = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
 
             return View(WorkflowView);
         }
@@ -82,8 +78,7 @@ public class WorkflowController : BaseController
     {
         try
         {
-            GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
-            WorkflowView.Workflow = response.Workflow;
+            WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
 
             return View(WorkflowView);
         }
@@ -101,8 +96,7 @@ public class WorkflowController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
-                WorkflowView.Workflow = response.Workflow;
+                WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
 
                 return View(WorkflowView);
             }
@@ -123,8 +117,7 @@ public class WorkflowController : BaseController
     {
         try
         {
-            GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
-            WorkflowView.Workflow = response.Workflow;
+            WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
 
             return View(WorkflowView);
         }
@@ -142,8 +135,7 @@ public class WorkflowController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetWorkflowResponse response = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
-                WorkflowView.Workflow = response.Workflow;
+                WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
 
                 return View(WorkflowView);
             }

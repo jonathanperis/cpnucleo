@@ -1,8 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.CreateRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.ListRecursoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -42,13 +40,10 @@ public class RecursoTarefaHandlerTest
 
         // Act
         RecursoTarefaHandler handler = new(unitOfWork, mapper);
-        CreateRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.RecursoTarefa != null);
-        Assert.True(response.RecursoTarefa.Id != Guid.Empty);
-        Assert.True(response.RecursoTarefa.DataInclusao.Ticks != 0);
+        Assert.True(response == OperationResult.Success);
     }
 
     [Fact]
@@ -88,13 +83,12 @@ public class RecursoTarefaHandlerTest
 
         // Act
         RecursoTarefaHandler handler = new(unitOfWork, mapper);
-        GetRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        RecursoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.RecursoTarefa != null);
-        Assert.True(response.RecursoTarefa.Id != Guid.Empty);
-        Assert.True(response.RecursoTarefa.DataInclusao.Ticks != 0);
+        Assert.True(response != null);
+        Assert.True(response.Id != Guid.Empty);
+        Assert.True(response.DataInclusao.Ticks != 0);
     }
 
     [Fact]
@@ -133,13 +127,12 @@ public class RecursoTarefaHandlerTest
 
         // Act
         RecursoTarefaHandler handler = new(unitOfWork, mapper);
-        ListRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
+        IEnumerable<RecursoTarefaViewModel> response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response.RecursoTarefas != null);
-        Assert.True(response.RecursoTarefas.Any());
-        Assert.True(response.RecursoTarefas.FirstOrDefault(x => x.Id == recursoTarefaId) != null);
+        Assert.True(response != null);
+        Assert.True(response.Any());
+        Assert.True(response.FirstOrDefault(x => x.Id == recursoTarefaId) != null);
     }
 
     [Fact]
@@ -187,13 +180,12 @@ public class RecursoTarefaHandlerTest
 
         // Act
         RecursoTarefaHandler handler = new(unitOfWork, mapper);
-        RemoveRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetRecursoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        RecursoTarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.NotFound);
-        Assert.True(response2.RecursoTarefa == null);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 == null);
     }
 
     [Fact]
@@ -242,14 +234,13 @@ public class RecursoTarefaHandlerTest
 
         // Act
         RecursoTarefaHandler handler = new(unitOfWork, mapper);
-        UpdateRecursoTarefaResponse response = await handler.InvokeAsync(request, CancellationToken.None);
-        GetRecursoTarefaResponse response2 = await handler.InvokeAsync(request2, CancellationToken.None);
+        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        RecursoTarefaViewModel response2 = await handler.Handle(request2, CancellationToken.None);
 
         // Assert
-        Assert.True(response.Status == OperationResult.Success);
-        Assert.True(response2.Status == OperationResult.Success);
-        Assert.True(response2.RecursoTarefa != null);
-        Assert.True(response2.RecursoTarefa.Id == recursoTarefaId);
-        Assert.True(response2.RecursoTarefa.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response == OperationResult.Success);
+        Assert.True(response2 != null);
+        Assert.True(response2.Id == recursoTarefaId);
+        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
     }
 }

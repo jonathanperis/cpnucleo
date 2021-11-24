@@ -4,11 +4,11 @@ using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
 namespace Cpnucleo.Application.Handlers;
 
 public class ProjetoHandler :
-    IAsyncRequestHandler<CreateProjetoCommand, OperationResult>,
-    IAsyncRequestHandler<GetProjetoQuery, ProjetoViewModel>,
-    IAsyncRequestHandler<ListProjetoQuery, IEnumerable<ProjetoViewModel>>,
-    IAsyncRequestHandler<RemoveProjetoCommand, OperationResult>,
-    IAsyncRequestHandler<UpdateProjetoCommand, OperationResult>
+    IRequestHandler<CreateProjetoCommand, OperationResult>,
+    IRequestHandler<GetProjetoQuery, ProjetoViewModel>,
+    IRequestHandler<ListProjetoQuery, IEnumerable<ProjetoViewModel>>,
+    IRequestHandler<RemoveProjetoCommand, OperationResult>,
+    IRequestHandler<UpdateProjetoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -19,7 +19,7 @@ public class ProjetoHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(CreateProjetoCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(CreateProjetoCommand request, CancellationToken cancellationToken)
     {
         await _unitOfWork.ProjetoRepository.AddAsync(_mapper.Map<Projeto>(request.Projeto));
 
@@ -30,21 +30,21 @@ public class ProjetoHandler :
         return result;
     }
 
-    public async ValueTask<ProjetoViewModel> InvokeAsync(GetProjetoQuery request, CancellationToken cancellationToken)
+    public async Task<ProjetoViewModel> Handle(GetProjetoQuery request, CancellationToken cancellationToken)
     {
         ProjetoViewModel result = _mapper.Map<ProjetoViewModel>(await _unitOfWork.ProjetoRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<IEnumerable<ProjetoViewModel>> InvokeAsync(ListProjetoQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ProjetoViewModel>> Handle(ListProjetoQuery request, CancellationToken cancellationToken)
     {
         IEnumerable<ProjetoViewModel> result = _mapper.Map<IEnumerable<ProjetoViewModel>>(await _unitOfWork.ProjetoRepository.AllAsync(request.GetDependencies));
 
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(RemoveProjetoCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(RemoveProjetoCommand request, CancellationToken cancellationToken)
     {
         Projeto obj = await _unitOfWork.ProjetoRepository.GetAsync(request.Id);
 
@@ -62,7 +62,7 @@ public class ProjetoHandler :
         return result;
     }
 
-    public async ValueTask<OperationResult> InvokeAsync(UpdateProjetoCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateProjetoCommand request, CancellationToken cancellationToken)
     {
         _unitOfWork.ProjetoRepository.Update(_mapper.Map<Projeto>(request.Projeto));
 

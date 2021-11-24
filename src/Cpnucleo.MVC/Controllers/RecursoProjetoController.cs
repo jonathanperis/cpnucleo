@@ -1,10 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.RemoveRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -44,8 +41,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            GetByProjetoResponse response = await _recursoProjetoGrpcService.GetByProjetoAsync(new GetByProjetoQuery { IdProjeto = idProjeto });
-            RecursoProjetoView.Lista = response.RecursoProjetos;
+            RecursoProjetoView.Lista = await _recursoProjetoGrpcService.GetByProjetoAsync(new GetByProjetoQuery { IdProjeto = idProjeto });
 
             ViewData["idProjeto"] = idProjeto;
 
@@ -96,8 +92,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            GetRecursoProjetoResponse response = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = id });
-            RecursoProjetoView.RecursoProjeto = response.RecursoProjeto;
+            RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = id });
 
             await CarregarSelectRecursos();
 
@@ -117,8 +112,7 @@ public class RecursoProjetoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetRecursoProjetoResponse response = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = obj.RecursoProjeto.Id });
-                RecursoProjetoView.RecursoProjeto = response.RecursoProjeto;
+                RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = obj.RecursoProjeto.Id });
 
                 await CarregarSelectRecursos();
 
@@ -141,8 +135,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            GetRecursoProjetoResponse response = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = id });
-            RecursoProjetoView.RecursoProjeto = response.RecursoProjeto;
+            RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = id });
 
             return View(RecursoProjetoView);
         }
@@ -160,8 +153,7 @@ public class RecursoProjetoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetRecursoProjetoResponse response = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = obj.RecursoProjeto.Id });
-                RecursoProjetoView.RecursoProjeto = response.RecursoProjeto;
+                RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = obj.RecursoProjeto.Id });
 
                 return View(RecursoProjetoView);
             }
@@ -179,13 +171,12 @@ public class RecursoProjetoController : BaseController
 
     private async Task ObterProjeto(Guid idProjeto)
     {
-        GetProjetoResponse response = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = idProjeto });
-        RecursoProjetoView.Projeto = response.Projeto;
+        RecursoProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = idProjeto });
     }
 
     private async Task CarregarSelectRecursos()
     {
-        ListRecursoResponse response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
-        RecursoProjetoView.SelectRecursos = new SelectList(response.Recursos, "Id", "Nome");
+        IEnumerable<RecursoViewModel> response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
+        RecursoProjetoView.SelectRecursos = new SelectList(response, "Id", "Nome");
     }
 }

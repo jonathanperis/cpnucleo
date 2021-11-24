@@ -1,8 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.CreateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -38,8 +35,7 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            ListImpedimentoResponse response = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
-            ImpedimentoView.Lista = response.Impedimentos;
+            ImpedimentoView.Lista = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
 
             return View(ImpedimentoView);
         }
@@ -82,8 +78,7 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            GetImpedimentoResponse response = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = id });
-            ImpedimentoView.Impedimento = response.Impedimento;
+            ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = id });
 
             return View(ImpedimentoView);
         }
@@ -101,8 +96,7 @@ public class ImpedimentoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetImpedimentoResponse response = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = obj.Impedimento.Id });
-                ImpedimentoView.Impedimento = response.Impedimento;
+                ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = obj.Impedimento.Id });
 
                 return View(ImpedimentoView);
             }
@@ -123,8 +117,7 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            GetImpedimentoResponse response = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = id });
-            ImpedimentoView.Impedimento = response.Impedimento;
+            ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = id });
 
             return View(ImpedimentoView);
         }
@@ -142,8 +135,7 @@ public class ImpedimentoController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetImpedimentoResponse response = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = obj.Impedimento.Id });
-                ImpedimentoView.Impedimento = response.Impedimento;
+                ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = obj.Impedimento.Id });
 
                 return View(ImpedimentoView);
             }

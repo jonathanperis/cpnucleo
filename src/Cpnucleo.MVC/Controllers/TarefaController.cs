@@ -1,12 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema.ListSistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 
 namespace Cpnucleo.MVC.Controllers;
 
@@ -50,8 +47,7 @@ public class TarefaController : BaseController
     {
         try
         {
-            ListTarefaResponse response = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
-            TarefaView.Lista = response.Tarefas;
+            TarefaView.Lista = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
 
             return View(TarefaView);
         }
@@ -108,8 +104,7 @@ public class TarefaController : BaseController
     {
         try
         {
-            GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
-            TarefaView.Tarefa = response.Tarefa;
+            TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
 
             await CarregarSelectSistemas();
             await CarregarSelectProjetos();
@@ -132,8 +127,7 @@ public class TarefaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
-                TarefaView.Tarefa = response.Tarefa;
+                TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
 
                 await CarregarSelectSistemas();
                 await CarregarSelectProjetos();
@@ -159,8 +153,7 @@ public class TarefaController : BaseController
     {
         try
         {
-            GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
-            TarefaView.Tarefa = response.Tarefa;
+            TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
 
             return View(TarefaView);
         }
@@ -178,8 +171,7 @@ public class TarefaController : BaseController
         {
             if (!ModelState.IsValid)
             {
-                GetTarefaResponse response = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
-                TarefaView.Tarefa = response.Tarefa;
+                TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
 
                 return View(TarefaView);
             }
@@ -197,25 +189,25 @@ public class TarefaController : BaseController
 
     private async Task CarregarSelectSistemas()
     {
-        ListSistemaResponse response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
-        TarefaView.SelectSistemas = new SelectList(response.Sistemas, "Id", "Nome");
+        IEnumerable<SistemaViewModel> response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
+        TarefaView.SelectSistemas = new SelectList(response, "Id", "Nome");
     }
 
     private async Task CarregarSelectProjetos()
     {
-        ListProjetoResponse response = await _projetoGrpcService.AllAsync(new ListProjetoQuery { });
-        TarefaView.SelectProjetos = new SelectList(response.Projetos, "Id", "Nome");
+        IEnumerable<ProjetoViewModel> response = await _projetoGrpcService.AllAsync(new ListProjetoQuery { });
+        TarefaView.SelectProjetos = new SelectList(response, "Id", "Nome");
     }
 
     private async Task CarregarSelectWorkflows()
     {
-        ListWorkflowResponse response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
-        TarefaView.SelectWorkflows = new SelectList(response.Workflows, "Id", "Nome");
+        IEnumerable<WorkflowViewModel> response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
+        TarefaView.SelectWorkflows = new SelectList(response, "Id", "Nome");
     }
 
     private async Task CarregarSelectTipoTarefas()
     {
-        ListTipoTarefaResponse response = await _tipoTarefaGrpcService.AllAsync(new ListTipoTarefaQuery { });
-        TarefaView.SelectTipoTarefas = new SelectList(response.TipoTarefas, "Id", "Nome");
+        IEnumerable<TipoTarefaViewModel> response = await _tipoTarefaGrpcService.AllAsync(new ListTipoTarefaQuery { });
+        TarefaView.SelectTipoTarefas = new SelectList(response, "Id", "Nome");
     }
 }
