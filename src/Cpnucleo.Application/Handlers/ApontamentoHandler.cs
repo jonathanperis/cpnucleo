@@ -23,7 +23,7 @@ public class ApontamentoHandler :
     public async Task<OperationResult> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken = default)
     {
         await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Apontamento>(request.Apontamento));
-        
+
         bool success = await _unitOfWork.SaveChangesAsync();
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
