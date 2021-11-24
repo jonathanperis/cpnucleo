@@ -100,7 +100,7 @@ public class SistemaHandlerTest
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-     
+
         Guid sistemaId = Guid.NewGuid();
 
         Mock<IEventHandler> mockServiceBus = ServiceBusHelper.GetInstance(new RemoveSistemaEvent { Id = sistemaId });

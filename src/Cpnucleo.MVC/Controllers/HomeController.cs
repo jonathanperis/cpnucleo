@@ -79,9 +79,9 @@ public class HomeController : BaseController
             {
                 IEnumerable<Claim> claims = new[]
                 {
-                        new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString()),
-                        new Claim(ClaimTypes.Hash, response.Recurso.Token)
-                    };
+                    new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString()),
+                    new Claim(ClaimTypes.Hash, response.Recurso.Token)
+                };
 
                 ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
 
