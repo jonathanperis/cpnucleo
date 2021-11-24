@@ -1,23 +1,19 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.CreateRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.RemoveRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa.UpdateRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetByTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.GetRecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa.ListRecursoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface IRecursoTarefaGrpcService : IService<IRecursoTarefaGrpcService>
 {
-    UnaryResult<CreateRecursoTarefaResponse> AddAsync(CreateRecursoTarefaCommand command);
+    UnaryResult<OperationResult> AddAsync(CreateRecursoTarefaCommand command);
 
-    UnaryResult<UpdateRecursoTarefaResponse> UpdateAsync(UpdateRecursoTarefaCommand command);
+    UnaryResult<OperationResult> UpdateAsync(UpdateRecursoTarefaCommand command);
 
-    UnaryResult<GetRecursoTarefaResponse> GetAsync(GetRecursoTarefaQuery query);
+    UnaryResult<RecursoTarefaViewModel> GetAsync(GetRecursoTarefaQuery query);
 
-    UnaryResult<ListRecursoTarefaResponse> AllAsync(ListRecursoTarefaQuery query);
+    UnaryResult<IEnumerable<RecursoTarefaViewModel>> AllAsync(ListRecursoTarefaQuery query);
 
-    UnaryResult<RemoveRecursoTarefaResponse> RemoveAsync(RemoveRecursoTarefaCommand command);
+    UnaryResult<OperationResult> RemoveAsync(RemoveRecursoTarefaCommand command);
 
-    UnaryResult<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query);
+    UnaryResult<IEnumerable<RecursoTarefaViewModel>> GetByTarefaAsync(GetByTarefaQuery query);
 }

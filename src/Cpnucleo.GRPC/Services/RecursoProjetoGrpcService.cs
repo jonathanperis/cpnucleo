@@ -1,28 +1,25 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.CreateRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.RemoveRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto.UpdateRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetByProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.GetRecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto.ListRecursoProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>, IRecursoProjetoGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateRecursoProjetoCommand, CreateRecursoProjetoResponse> _createRecursoProjetoCommand;
-    private readonly IAsyncRequestHandler<ListRecursoProjetoQuery, ListRecursoProjetoResponse> _listRecursoProjetoQuery;
-    private readonly IAsyncRequestHandler<GetRecursoProjetoQuery, GetRecursoProjetoResponse> _getRecursoProjetoQuery;
-    private readonly IAsyncRequestHandler<GetByProjetoQuery, GetByProjetoResponse> _getByProjetoQuery;
-    private readonly IAsyncRequestHandler<RemoveRecursoProjetoCommand, RemoveRecursoProjetoResponse> _removeRecursoProjetoCommand;
-    private readonly IAsyncRequestHandler<UpdateRecursoProjetoCommand, UpdateRecursoProjetoResponse> _updateRecursoProjetoCommand;
+    private readonly IAsyncRequestHandler<CreateRecursoProjetoCommand, OperationResult> _createRecursoProjetoCommand;
+    private readonly IAsyncRequestHandler<ListRecursoProjetoQuery, IEnumerable<RecursoProjetoViewModel>> _listRecursoProjetoQuery;
+    private readonly IAsyncRequestHandler<GetRecursoProjetoQuery, RecursoProjetoViewModel> _getRecursoProjetoQuery;
+    private readonly IAsyncRequestHandler<GetByProjetoQuery, IEnumerable<RecursoProjetoViewModel>> _getByProjetoQuery;
+    private readonly IAsyncRequestHandler<RemoveRecursoProjetoCommand, OperationResult> _removeRecursoProjetoCommand;
+    private readonly IAsyncRequestHandler<UpdateRecursoProjetoCommand, OperationResult> _updateRecursoProjetoCommand;
 
-    public RecursoProjetoGrpcService(IAsyncRequestHandler<CreateRecursoProjetoCommand, CreateRecursoProjetoResponse> createRecursoProjetoCommand,
-                                     IAsyncRequestHandler<ListRecursoProjetoQuery, ListRecursoProjetoResponse> listRecursoProjetoQuery,
-                                     IAsyncRequestHandler<GetRecursoProjetoQuery, GetRecursoProjetoResponse> getRecursoProjetoQuery,
-                                     IAsyncRequestHandler<GetByProjetoQuery, GetByProjetoResponse> getByProjetoQuery,
-                                     IAsyncRequestHandler<RemoveRecursoProjetoCommand, RemoveRecursoProjetoResponse> removeRecursoProjetoCommand,
-                                     IAsyncRequestHandler<UpdateRecursoProjetoCommand, UpdateRecursoProjetoResponse> updateRecursoProjetoCommand)
+    public RecursoProjetoGrpcService(IAsyncRequestHandler<CreateRecursoProjetoCommand, OperationResult> createRecursoProjetoCommand,
+                                     IAsyncRequestHandler<ListRecursoProjetoQuery, IEnumerable<RecursoProjetoViewModel>> listRecursoProjetoQuery,
+                                     IAsyncRequestHandler<GetRecursoProjetoQuery, RecursoProjetoViewModel> getRecursoProjetoQuery,
+                                     IAsyncRequestHandler<GetByProjetoQuery, IEnumerable<RecursoProjetoViewModel>> getByProjetoQuery,
+                                     IAsyncRequestHandler<RemoveRecursoProjetoCommand, OperationResult> removeRecursoProjetoCommand,
+                                     IAsyncRequestHandler<UpdateRecursoProjetoCommand, OperationResult> updateRecursoProjetoCommand)
     {
         _createRecursoProjetoCommand = createRecursoProjetoCommand;
         _listRecursoProjetoQuery = listRecursoProjetoQuery;
@@ -32,32 +29,32 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
         _updateRecursoProjetoCommand = updateRecursoProjetoCommand;
     }
 
-    public async UnaryResult<CreateRecursoProjetoResponse> AddAsync(CreateRecursoProjetoCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateRecursoProjetoCommand command)
     {
         return await _createRecursoProjetoCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<ListRecursoProjetoResponse> AllAsync(ListRecursoProjetoQuery query)
+    public async UnaryResult<IEnumerable<RecursoProjetoViewModel>> AllAsync(ListRecursoProjetoQuery query)
     {
         return await _listRecursoProjetoQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetRecursoProjetoResponse> GetAsync(GetRecursoProjetoQuery query)
+    public async UnaryResult<RecursoProjetoViewModel> GetAsync(GetRecursoProjetoQuery query)
     {
         return await _getRecursoProjetoQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetByProjetoResponse> GetByProjetoAsync(GetByProjetoQuery query)
+    public async UnaryResult<IEnumerable<RecursoProjetoViewModel>> GetByProjetoAsync(GetByProjetoQuery query)
     {
         return await _getByProjetoQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<RemoveRecursoProjetoResponse> RemoveAsync(RemoveRecursoProjetoCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveRecursoProjetoCommand command)
     {
         return await _removeRecursoProjetoCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<UpdateRecursoProjetoResponse> UpdateAsync(UpdateRecursoProjetoCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateRecursoProjetoCommand command)
     {
         return await _updateRecursoProjetoCommand.InvokeAsync(command);
     }

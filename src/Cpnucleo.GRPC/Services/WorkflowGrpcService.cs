@@ -1,25 +1,23 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.CreateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.RemoveWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow.UpdateWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.GetWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow.ListWorkflow;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse> _createWorkflowCommand;
-    private readonly IAsyncRequestHandler<ListWorkflowQuery, ListWorkflowResponse> _listWorkflowQuery;
-    private readonly IAsyncRequestHandler<GetWorkflowQuery, GetWorkflowResponse> _getWorkflowQuery;
-    private readonly IAsyncRequestHandler<RemoveWorkflowCommand, RemoveWorkflowResponse> _removeWorkflowCommand;
-    private readonly IAsyncRequestHandler<UpdateWorkflowCommand, UpdateWorkflowResponse> _updateWorkflowCommand;
+    private readonly IAsyncRequestHandler<CreateWorkflowCommand, OperationResult> _createWorkflowCommand;
+    private readonly IAsyncRequestHandler<ListWorkflowQuery, IEnumerable<WorkflowViewModel>> _listWorkflowQuery;
+    private readonly IAsyncRequestHandler<GetWorkflowQuery, WorkflowViewModel> _getWorkflowQuery;
+    private readonly IAsyncRequestHandler<RemoveWorkflowCommand, OperationResult> _removeWorkflowCommand;
+    private readonly IAsyncRequestHandler<UpdateWorkflowCommand, OperationResult> _updateWorkflowCommand;
 
-    public WorkflowGrpcService(IAsyncRequestHandler<CreateWorkflowCommand, CreateWorkflowResponse> createWorkflowCommand,
-                               IAsyncRequestHandler<ListWorkflowQuery, ListWorkflowResponse> listWorkflowQuery,
-                               IAsyncRequestHandler<GetWorkflowQuery, GetWorkflowResponse> getWorkflowQuery,
-                               IAsyncRequestHandler<RemoveWorkflowCommand, RemoveWorkflowResponse> removeWorkflowCommand,
-                               IAsyncRequestHandler<UpdateWorkflowCommand, UpdateWorkflowResponse> updateWorkflowCommand)
+    public WorkflowGrpcService(IAsyncRequestHandler<CreateWorkflowCommand, OperationResult> createWorkflowCommand,
+                               IAsyncRequestHandler<ListWorkflowQuery, IEnumerable<WorkflowViewModel>> listWorkflowQuery,
+                               IAsyncRequestHandler<GetWorkflowQuery, WorkflowViewModel> getWorkflowQuery,
+                               IAsyncRequestHandler<RemoveWorkflowCommand, OperationResult> removeWorkflowCommand,
+                               IAsyncRequestHandler<UpdateWorkflowCommand, OperationResult> updateWorkflowCommand)
     {
         _createWorkflowCommand = createWorkflowCommand;
         _listWorkflowQuery = listWorkflowQuery;
@@ -28,27 +26,27 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
         _updateWorkflowCommand = updateWorkflowCommand;
     }
 
-    public async UnaryResult<CreateWorkflowResponse> AddAsync(CreateWorkflowCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateWorkflowCommand command)
     {
         return await _createWorkflowCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<ListWorkflowResponse> AllAsync(ListWorkflowQuery query)
+    public async UnaryResult<IEnumerable<WorkflowViewModel>> AllAsync(ListWorkflowQuery query)
     {
         return await _listWorkflowQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetWorkflowResponse> GetAsync(GetWorkflowQuery query)
+    public async UnaryResult<WorkflowViewModel> GetAsync(GetWorkflowQuery query)
     {
         return await _getWorkflowQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<RemoveWorkflowResponse> RemoveAsync(RemoveWorkflowCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveWorkflowCommand command)
     {
         return await _removeWorkflowCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<UpdateWorkflowResponse> UpdateAsync(UpdateWorkflowCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateWorkflowCommand command)
     {
         return await _updateWorkflowCommand.InvokeAsync(command);
     }

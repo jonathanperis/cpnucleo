@@ -1,20 +1,17 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.CreateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.RemoveTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface ITipoTarefaGrpcService : IService<ITipoTarefaGrpcService>
 {
-    UnaryResult<CreateTipoTarefaResponse> AddAsync(CreateTipoTarefaCommand command);
+    UnaryResult<OperationResult> AddAsync(CreateTipoTarefaCommand command);
 
-    UnaryResult<UpdateTipoTarefaResponse> UpdateAsync(UpdateTipoTarefaCommand command);
+    UnaryResult<OperationResult> UpdateAsync(UpdateTipoTarefaCommand command);
 
-    UnaryResult<GetTipoTarefaResponse> GetAsync(GetTipoTarefaQuery query);
+    UnaryResult<TipoTarefaViewModel> GetAsync(GetTipoTarefaQuery query);
 
-    UnaryResult<ListTipoTarefaResponse> AllAsync(ListTipoTarefaQuery query);
+    UnaryResult<IEnumerable<TipoTarefaViewModel>> AllAsync(ListTipoTarefaQuery query);
 
-    UnaryResult<RemoveTipoTarefaResponse> RemoveAsync(RemoveTipoTarefaCommand command);
+    UnaryResult<OperationResult> RemoveAsync(RemoveTipoTarefaCommand command);
 }

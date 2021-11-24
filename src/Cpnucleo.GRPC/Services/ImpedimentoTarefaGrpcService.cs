@@ -1,28 +1,25 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetByTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcService>, IImpedimentoTarefaGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse> _createImpedimentoTarefaCommand;
-    private readonly IAsyncRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse> _listImpedimentoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse> _getImpedimentoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse> _getByTarefaQuery;
-    private readonly IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse> _removeImpedimentoTarefaCommand;
-    private readonly IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse> _updateImpedimentoTarefaCommand;
+    private readonly IAsyncRequestHandler<CreateImpedimentoTarefaCommand, OperationResult> _createImpedimentoTarefaCommand;
+    private readonly IAsyncRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> _listImpedimentoTarefaQuery;
+    private readonly IAsyncRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel> _getImpedimentoTarefaQuery;
+    private readonly IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> _getByTarefaQuery;
+    private readonly IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult> _removeImpedimentoTarefaCommand;
+    private readonly IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult> _updateImpedimentoTarefaCommand;
 
-    public ImpedimentoTarefaGrpcService(IAsyncRequestHandler<CreateImpedimentoTarefaCommand, CreateImpedimentoTarefaResponse> createImpedimentoTarefaCommand,
-                                        IAsyncRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaResponse> listImpedimentoTarefaQuery,
-                                        IAsyncRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaResponse> getImpedimentoTarefaQuery,
-                                        IAsyncRequestHandler<GetByTarefaQuery, GetByTarefaResponse> getByTarefaQuery,
-                                        IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, RemoveImpedimentoTarefaResponse> removeImpedimentoTarefaCommand,
-                                        IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, UpdateImpedimentoTarefaResponse> updateImpedimentoTarefaCommand)
+    public ImpedimentoTarefaGrpcService(IAsyncRequestHandler<CreateImpedimentoTarefaCommand, OperationResult> createImpedimentoTarefaCommand,
+                                        IAsyncRequestHandler<ListImpedimentoTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> listImpedimentoTarefaQuery,
+                                        IAsyncRequestHandler<GetImpedimentoTarefaQuery, ImpedimentoTarefaViewModel> getImpedimentoTarefaQuery,
+                                        IAsyncRequestHandler<GetByTarefaQuery, IEnumerable<ImpedimentoTarefaViewModel>> getByTarefaQuery,
+                                        IAsyncRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult> removeImpedimentoTarefaCommand,
+                                        IAsyncRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult> updateImpedimentoTarefaCommand)
     {
         _createImpedimentoTarefaCommand = createImpedimentoTarefaCommand;
         _listImpedimentoTarefaQuery = listImpedimentoTarefaQuery;
@@ -32,32 +29,32 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
         _updateImpedimentoTarefaCommand = updateImpedimentoTarefaCommand;
     }
 
-    public async UnaryResult<CreateImpedimentoTarefaResponse> AddAsync(CreateImpedimentoTarefaCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateImpedimentoTarefaCommand command)
     {
         return await _createImpedimentoTarefaCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<ListImpedimentoTarefaResponse> AllAsync(ListImpedimentoTarefaQuery query)
+    public async UnaryResult<IEnumerable<ImpedimentoTarefaViewModel>> AllAsync(ListImpedimentoTarefaQuery query)
     {
         return await _listImpedimentoTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetImpedimentoTarefaResponse> GetAsync(GetImpedimentoTarefaQuery query)
+    public async UnaryResult<ImpedimentoTarefaViewModel> GetAsync(GetImpedimentoTarefaQuery query)
     {
         return await _getImpedimentoTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetByTarefaResponse> GetByTarefaAsync(GetByTarefaQuery query)
+    public async UnaryResult<IEnumerable<ImpedimentoTarefaViewModel>> GetByTarefaAsync(GetByTarefaQuery query)
     {
         return await _getByTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<RemoveImpedimentoTarefaResponse> RemoveAsync(RemoveImpedimentoTarefaCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoTarefaCommand command)
     {
         return await _removeImpedimentoTarefaCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<UpdateImpedimentoTarefaResponse> UpdateAsync(UpdateImpedimentoTarefaCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoTarefaCommand command)
     {
         return await _updateImpedimentoTarefaCommand.InvokeAsync(command);
     }

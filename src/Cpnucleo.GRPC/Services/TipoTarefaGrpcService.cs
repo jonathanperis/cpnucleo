@@ -1,25 +1,23 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.CreateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.RemoveTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa.UpdateTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.GetTipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa.ListTipoTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoTarefaGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateTipoTarefaCommand, CreateTipoTarefaResponse> _createTipoTarefaCommand;
-    private readonly IAsyncRequestHandler<ListTipoTarefaQuery, ListTipoTarefaResponse> _listTipoTarefaQuery;
-    private readonly IAsyncRequestHandler<GetTipoTarefaQuery, GetTipoTarefaResponse> _getTipoTarefaQuery;
-    private readonly IAsyncRequestHandler<RemoveTipoTarefaCommand, RemoveTipoTarefaResponse> _removeTipoTarefaCommand;
-    private readonly IAsyncRequestHandler<UpdateTipoTarefaCommand, UpdateTipoTarefaResponse> _updateTipoTarefaCommand;
+    private readonly IAsyncRequestHandler<CreateTipoTarefaCommand, OperationResult> _createTipoTarefaCommand;
+    private readonly IAsyncRequestHandler<ListTipoTarefaQuery, IEnumerable<TipoTarefaViewModel>> _listTipoTarefaQuery;
+    private readonly IAsyncRequestHandler<GetTipoTarefaQuery, TipoTarefaViewModel> _getTipoTarefaQuery;
+    private readonly IAsyncRequestHandler<RemoveTipoTarefaCommand, OperationResult> _removeTipoTarefaCommand;
+    private readonly IAsyncRequestHandler<UpdateTipoTarefaCommand, OperationResult> _updateTipoTarefaCommand;
 
-    public TipoTarefaGrpcService(IAsyncRequestHandler<CreateTipoTarefaCommand, CreateTipoTarefaResponse> createTipoTarefaCommand,
-                                 IAsyncRequestHandler<ListTipoTarefaQuery, ListTipoTarefaResponse> listTipoTarefaQuery,
-                                 IAsyncRequestHandler<GetTipoTarefaQuery, GetTipoTarefaResponse> getTipoTarefaQuery,
-                                 IAsyncRequestHandler<RemoveTipoTarefaCommand, RemoveTipoTarefaResponse> removeTipoTarefaCommand,
-                                 IAsyncRequestHandler<UpdateTipoTarefaCommand, UpdateTipoTarefaResponse> updateTipoTarefaCommand)
+    public TipoTarefaGrpcService(IAsyncRequestHandler<CreateTipoTarefaCommand, OperationResult> createTipoTarefaCommand,
+                                 IAsyncRequestHandler<ListTipoTarefaQuery, IEnumerable<TipoTarefaViewModel>> listTipoTarefaQuery,
+                                 IAsyncRequestHandler<GetTipoTarefaQuery, TipoTarefaViewModel> getTipoTarefaQuery,
+                                 IAsyncRequestHandler<RemoveTipoTarefaCommand, OperationResult> removeTipoTarefaCommand,
+                                 IAsyncRequestHandler<UpdateTipoTarefaCommand, OperationResult> updateTipoTarefaCommand)
     {
         _createTipoTarefaCommand = createTipoTarefaCommand;
         _listTipoTarefaQuery = listTipoTarefaQuery;
@@ -28,27 +26,27 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
         _updateTipoTarefaCommand = updateTipoTarefaCommand;
     }
 
-    public async UnaryResult<CreateTipoTarefaResponse> AddAsync(CreateTipoTarefaCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateTipoTarefaCommand command)
     {
         return await _createTipoTarefaCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<ListTipoTarefaResponse> AllAsync(ListTipoTarefaQuery query)
+    public async UnaryResult<IEnumerable<TipoTarefaViewModel>> AllAsync(ListTipoTarefaQuery query)
     {
         return await _listTipoTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetTipoTarefaResponse> GetAsync(GetTipoTarefaQuery query)
+    public async UnaryResult<TipoTarefaViewModel> GetAsync(GetTipoTarefaQuery query)
     {
         return await _getTipoTarefaQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<RemoveTipoTarefaResponse> RemoveAsync(RemoveTipoTarefaCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveTipoTarefaCommand command)
     {
         return await _removeTipoTarefaCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<UpdateTipoTarefaResponse> UpdateAsync(UpdateTipoTarefaCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateTipoTarefaCommand command)
     {
         return await _updateTipoTarefaCommand.InvokeAsync(command);
     }

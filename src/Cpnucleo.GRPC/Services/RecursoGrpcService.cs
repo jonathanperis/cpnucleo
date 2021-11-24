@@ -1,28 +1,26 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.CreateRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.RemoveRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso.UpdateRecurso;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.Auth;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.GetRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso.ListRecurso;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateRecursoCommand, CreateRecursoResponse> _createRecursoCommand;
-    private readonly IAsyncRequestHandler<ListRecursoQuery, ListRecursoResponse> _listRecursoQuery;
+    private readonly IAsyncRequestHandler<CreateRecursoCommand, OperationResult> _createRecursoCommand;
+    private readonly IAsyncRequestHandler<ListRecursoQuery, IEnumerable<RecursoViewModel>> _listRecursoQuery;
     private readonly IAsyncRequestHandler<AuthQuery, AuthResponse> _authQuery;
-    private readonly IAsyncRequestHandler<GetRecursoQuery, GetRecursoResponse> _getRecursoQuery;
-    private readonly IAsyncRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse> _removeRecursoCommand;
-    private readonly IAsyncRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse> _updateRecursoCommand;
+    private readonly IAsyncRequestHandler<GetRecursoQuery, RecursoViewModel> _getRecursoQuery;
+    private readonly IAsyncRequestHandler<RemoveRecursoCommand, OperationResult> _removeRecursoCommand;
+    private readonly IAsyncRequestHandler<UpdateRecursoCommand, OperationResult> _updateRecursoCommand;
     private readonly IConfiguration _configuration;
 
-    public RecursoGrpcService(IAsyncRequestHandler<CreateRecursoCommand, CreateRecursoResponse> createRecursoCommand,
-                              IAsyncRequestHandler<ListRecursoQuery, ListRecursoResponse> listRecursoQuery,
+    public RecursoGrpcService(IAsyncRequestHandler<CreateRecursoCommand, OperationResult> createRecursoCommand,
+                              IAsyncRequestHandler<ListRecursoQuery, IEnumerable<RecursoViewModel>> listRecursoQuery,
                               IAsyncRequestHandler<AuthQuery, AuthResponse> authQuery,
-                              IAsyncRequestHandler<GetRecursoQuery, GetRecursoResponse> getRecursoQuery,
-                              IAsyncRequestHandler<RemoveRecursoCommand, RemoveRecursoResponse> removeRecursoCommand,
-                              IAsyncRequestHandler<UpdateRecursoCommand, UpdateRecursoResponse> updateRecursoCommand,
+                              IAsyncRequestHandler<GetRecursoQuery, RecursoViewModel> getRecursoQuery,
+                              IAsyncRequestHandler<RemoveRecursoCommand, OperationResult> removeRecursoCommand,
+                              IAsyncRequestHandler<UpdateRecursoCommand, OperationResult> updateRecursoCommand,
                               IConfiguration configuration)
     {
         _createRecursoCommand = createRecursoCommand;
@@ -35,13 +33,13 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     }
 
     [Authorize]
-    public async UnaryResult<CreateRecursoResponse> AddAsync(CreateRecursoCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateRecursoCommand command)
     {
         return await _createRecursoCommand.InvokeAsync(command);
     }
 
     [Authorize]
-    public async UnaryResult<ListRecursoResponse> AllAsync(ListRecursoQuery query)
+    public async UnaryResult<IEnumerable<RecursoViewModel>> AllAsync(ListRecursoQuery query)
     {
         return await _listRecursoQuery.InvokeAsync(query);
     }
@@ -61,19 +59,19 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     }
 
     [Authorize]
-    public async UnaryResult<GetRecursoResponse> GetAsync(GetRecursoQuery query)
+    public async UnaryResult<RecursoViewModel> GetAsync(GetRecursoQuery query)
     {
         return await _getRecursoQuery.InvokeAsync(query);
     }
 
     [Authorize]
-    public async UnaryResult<RemoveRecursoResponse> RemoveAsync(RemoveRecursoCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveRecursoCommand command)
     {
         return await _removeRecursoCommand.InvokeAsync(command);
     }
 
     [Authorize]
-    public async UnaryResult<UpdateRecursoResponse> UpdateAsync(UpdateRecursoCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateRecursoCommand command)
     {
         return await _updateRecursoCommand.InvokeAsync(command);
     }

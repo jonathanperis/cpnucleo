@@ -1,25 +1,23 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.CreateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.RemoveImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento.UpdateImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.GetImpedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento.ListImpedimento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
+using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImpedimentoGrpcService
 {
-    private readonly IAsyncRequestHandler<CreateImpedimentoCommand, CreateImpedimentoResponse> _createImpedimentoCommand;
-    private readonly IAsyncRequestHandler<ListImpedimentoQuery, ListImpedimentoResponse> _listImpedimentoQuery;
-    private readonly IAsyncRequestHandler<GetImpedimentoQuery, GetImpedimentoResponse> _getImpedimentoQuery;
-    private readonly IAsyncRequestHandler<RemoveImpedimentoCommand, RemoveImpedimentoResponse> _removeImpedimentoCommand;
-    private readonly IAsyncRequestHandler<UpdateImpedimentoCommand, UpdateImpedimentoResponse> _updateImpedimentoCommand;
+    private readonly IAsyncRequestHandler<CreateImpedimentoCommand, OperationResult> _createImpedimentoCommand;
+    private readonly IAsyncRequestHandler<ListImpedimentoQuery, IEnumerable<ImpedimentoViewModel>> _listImpedimentoQuery;
+    private readonly IAsyncRequestHandler<GetImpedimentoQuery, ImpedimentoViewModel> _getImpedimentoQuery;
+    private readonly IAsyncRequestHandler<RemoveImpedimentoCommand, OperationResult> _removeImpedimentoCommand;
+    private readonly IAsyncRequestHandler<UpdateImpedimentoCommand, OperationResult> _updateImpedimentoCommand;
 
-    public ImpedimentoGrpcService(IAsyncRequestHandler<CreateImpedimentoCommand, CreateImpedimentoResponse> createImpedimentoCommand,
-                                  IAsyncRequestHandler<ListImpedimentoQuery, ListImpedimentoResponse> listImpedimentoQuery,
-                                  IAsyncRequestHandler<GetImpedimentoQuery, GetImpedimentoResponse> getImpedimentoQuery,
-                                  IAsyncRequestHandler<RemoveImpedimentoCommand, RemoveImpedimentoResponse> removeImpedimentoCommand,
-                                  IAsyncRequestHandler<UpdateImpedimentoCommand, UpdateImpedimentoResponse> updateImpedimentoCommand)
+    public ImpedimentoGrpcService(IAsyncRequestHandler<CreateImpedimentoCommand, OperationResult> createImpedimentoCommand,
+                                  IAsyncRequestHandler<ListImpedimentoQuery, IEnumerable<ImpedimentoViewModel>> listImpedimentoQuery,
+                                  IAsyncRequestHandler<GetImpedimentoQuery, ImpedimentoViewModel> getImpedimentoQuery,
+                                  IAsyncRequestHandler<RemoveImpedimentoCommand, OperationResult> removeImpedimentoCommand,
+                                  IAsyncRequestHandler<UpdateImpedimentoCommand, OperationResult> updateImpedimentoCommand)
     {
         _createImpedimentoCommand = createImpedimentoCommand;
         _listImpedimentoQuery = listImpedimentoQuery;
@@ -28,27 +26,27 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
         _updateImpedimentoCommand = updateImpedimentoCommand;
     }
 
-    public async UnaryResult<CreateImpedimentoResponse> AddAsync(CreateImpedimentoCommand command)
+    public async UnaryResult<OperationResult> AddAsync(CreateImpedimentoCommand command)
     {
         return await _createImpedimentoCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<ListImpedimentoResponse> AllAsync(ListImpedimentoQuery query)
+    public async UnaryResult<IEnumerable<ImpedimentoViewModel>> AllAsync(ListImpedimentoQuery query)
     {
         return await _listImpedimentoQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<GetImpedimentoResponse> GetAsync(GetImpedimentoQuery query)
+    public async UnaryResult<ImpedimentoViewModel> GetAsync(GetImpedimentoQuery query)
     {
         return await _getImpedimentoQuery.InvokeAsync(query);
     }
 
-    public async UnaryResult<RemoveImpedimentoResponse> RemoveAsync(RemoveImpedimentoCommand command)
+    public async UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoCommand command)
     {
         return await _removeImpedimentoCommand.InvokeAsync(command);
     }
 
-    public async UnaryResult<UpdateImpedimentoResponse> UpdateAsync(UpdateImpedimentoCommand command)
+    public async UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoCommand command)
     {
         return await _updateImpedimentoCommand.InvokeAsync(command);
     }

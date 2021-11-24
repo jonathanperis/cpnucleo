@@ -1,21 +1,16 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.CreateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.RemoveTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateByWorkflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa.UpdateTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.GetTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa.ListTarefa;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
 
 namespace Cpnucleo.Application.Handlers;
 
 public class TarefaHandler :
-    IAsyncRequestHandler<CreateTarefaCommand, CreateTarefaResponse>,
-    IAsyncRequestHandler<GetTarefaQuery, GetTarefaResponse>,
-    IAsyncRequestHandler<ListTarefaQuery, ListTarefaResponse>,
-    IAsyncRequestHandler<RemoveTarefaCommand, RemoveTarefaResponse>,
-    IAsyncRequestHandler<UpdateTarefaCommand, UpdateTarefaResponse>,
-    IAsyncRequestHandler<GetByRecursoQuery, GetByRecursoResponse>,
-    IAsyncRequestHandler<UpdateByWorkflowCommand, UpdateByWorkflowResponse>
+    IAsyncRequestHandler<CreateTarefaCommand, OperationResult>,
+    IAsyncRequestHandler<GetTarefaQuery, TarefaViewModel>,
+    IAsyncRequestHandler<ListTarefaQuery, IEnumerable<TarefaViewModel>>,
+    IAsyncRequestHandler<RemoveTarefaCommand, OperationResult>,
+    IAsyncRequestHandler<UpdateTarefaCommand, OperationResult>,
+    IAsyncRequestHandler<GetByRecursoQuery, IEnumerable<TarefaViewModel>>,
+    IAsyncRequestHandler<UpdateByWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -26,122 +21,73 @@ public class TarefaHandler :
         _mapper = mapper;
     }
 
-    public async ValueTask<CreateTarefaResponse> InvokeAsync(CreateTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(CreateTarefaCommand request, CancellationToken cancellationToken)
     {
-        CreateTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        await _unitOfWork.TarefaRepository.AddAsync(_mapper.Map<Tarefa>(request.Tarefa));
 
-        Tarefa obj = await _unitOfWork.TarefaRepository.AddAsync(_mapper.Map<Tarefa>(request.Tarefa));
-        result.Tarefa = _mapper.Map<TarefaViewModel>(obj);
+        bool success = await _unitOfWork.SaveChangesAsync();
 
-        await _unitOfWork.SaveChangesAsync();
-
-        result.Status = OperationResult.Success;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetTarefaResponse> InvokeAsync(GetTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<TarefaViewModel> InvokeAsync(GetTarefaQuery request, CancellationToken cancellationToken)
     {
-        GetTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
-        result.Tarefa = _mapper.Map<TarefaViewModel>(await _unitOfWork.TarefaRepository.GetAsync(request.Id));
-
-        if (result.Tarefa == null)
-        {
-            result.Status = OperationResult.NotFound;
-
-            return result;
-        }
-
-        result.Status = OperationResult.Success;
+        TarefaViewModel result = _mapper.Map<TarefaViewModel>(await _unitOfWork.TarefaRepository.GetAsync(request.Id));
 
         return result;
     }
 
-    public async ValueTask<ListTarefaResponse> InvokeAsync(ListTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<TarefaViewModel>> InvokeAsync(ListTarefaQuery request, CancellationToken cancellationToken)
     {
-        ListTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        IEnumerable<TarefaViewModel> result = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.AllAsync(request.GetDependencies));
 
-        result.Tarefas = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.AllAsync(request.GetDependencies));
-        result.Status = OperationResult.Success;
-
-        await PreencherDadosAdicionaisAsync(result.Tarefas);
+        await PreencherDadosAdicionaisAsync(result);
 
         return result;
     }
 
-    public async ValueTask<RemoveTarefaResponse> InvokeAsync(RemoveTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(RemoveTarefaCommand request, CancellationToken cancellationToken)
     {
-        RemoveTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         Tarefa obj = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
 
         if (obj == null)
         {
-            result.Status = OperationResult.NotFound;
-
-            return result;
+            return OperationResult.NotFound;
         }
 
         await _unitOfWork.TarefaRepository.RemoveAsync(request.Id);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<UpdateTarefaResponse> InvokeAsync(UpdateTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateTarefaCommand request, CancellationToken cancellationToken)
     {
-        UpdateTarefaResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         _unitOfWork.TarefaRepository.Update(_mapper.Map<Tarefa>(request.Tarefa));
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }
 
-    public async ValueTask<GetByRecursoResponse> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<IEnumerable<TarefaViewModel>> InvokeAsync(GetByRecursoQuery request, CancellationToken cancellationToken)
     {
-        GetByRecursoResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
+        IEnumerable<TarefaViewModel> result = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.GetByRecursoAsync(request.IdRecurso));
 
-        result.Tarefas = _mapper.Map<IEnumerable<TarefaViewModel>>(await _unitOfWork.TarefaRepository.GetByRecursoAsync(request.IdRecurso));
-        result.Status = OperationResult.Success;
-
-        await PreencherDadosAdicionaisAsync(result.Tarefas);
+        await PreencherDadosAdicionaisAsync(result);
 
         return result;
     }
 
-    public async ValueTask<UpdateByWorkflowResponse> InvokeAsync(UpdateByWorkflowCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> InvokeAsync(UpdateByWorkflowCommand request, CancellationToken cancellationToken)
     {
-        UpdateByWorkflowResponse result = new()
-        {
-            Status = OperationResult.Failed
-        };
-
         Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.IdTarefa);
 
         tarefa.IdWorkflow = request.Workflow.Id;
@@ -151,7 +97,7 @@ public class TarefaHandler :
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
-        result.Status = success ? OperationResult.Success : OperationResult.Failed;
+        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

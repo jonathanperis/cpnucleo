@@ -1,20 +1,17 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.CreateProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.RemoveProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto.UpdateProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.GetProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto.ListProjeto;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface IProjetoGrpcService : IService<IProjetoGrpcService>
 {
-    UnaryResult<CreateProjetoResponse> AddAsync(CreateProjetoCommand command);
+    UnaryResult<OperationResult> AddAsync(CreateProjetoCommand command);
 
-    UnaryResult<UpdateProjetoResponse> UpdateAsync(UpdateProjetoCommand command);
+    UnaryResult<OperationResult> UpdateAsync(UpdateProjetoCommand command);
 
-    UnaryResult<GetProjetoResponse> GetAsync(GetProjetoQuery query);
+    UnaryResult<ProjetoViewModel> GetAsync(GetProjetoQuery query);
 
-    UnaryResult<ListProjetoResponse> AllAsync(ListProjetoQuery query);
+    UnaryResult<IEnumerable<ProjetoViewModel>> AllAsync(ListProjetoQuery query);
 
-    UnaryResult<RemoveProjetoResponse> RemoveAsync(RemoveProjetoCommand command);
+    UnaryResult<OperationResult> RemoveAsync(RemoveProjetoCommand command);
 }
