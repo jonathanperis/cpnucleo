@@ -1,23 +1,19 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.CreateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.RemoveApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento.UpdateApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.GetByRecurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento.ListApontamento;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
 
 namespace Cpnucleo.Infra.CrossCutting.Util.Interfaces;
 
 public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
 {
-    UnaryResult<CreateApontamentoResponse> AddAsync(CreateApontamentoCommand command);
+    UnaryResult<OperationResult> AddAsync(CreateApontamentoCommand command);
 
-    UnaryResult<UpdateApontamentoResponse> UpdateAsync(UpdateApontamentoCommand command);
+    UnaryResult<OperationResult> UpdateAsync(UpdateApontamentoCommand command);
 
-    UnaryResult<GetApontamentoResponse> GetAsync(GetApontamentoQuery query);
+    UnaryResult<ApontamentoViewModel> GetAsync(GetApontamentoQuery query);
 
-    UnaryResult<ListApontamentoResponse> AllAsync(ListApontamentoQuery query);
+    UnaryResult<IEnumerable<ApontamentoViewModel>> AllAsync(ListApontamentoQuery query);
 
-    UnaryResult<RemoveApontamentoResponse> RemoveAsync(RemoveApontamentoCommand command);
+    UnaryResult<OperationResult> RemoveAsync(RemoveApontamentoCommand command);
 
-    UnaryResult<GetByRecursoResponse> GetByRecursoAsync(GetByRecursoQuery query);
+    UnaryResult<IEnumerable<ApontamentoViewModel>> GetByRecursoAsync(GetByRecursoQuery query);
 }
