@@ -11,9 +11,8 @@ public class WorkflowController : BaseController
     private WorkflowView _workflowView;
 
     public WorkflowController(IConfiguration configuration)
-        : base(configuration)
     {
-        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
+        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcWorkflow"]));
     }
 
     public WorkflowView WorkflowView

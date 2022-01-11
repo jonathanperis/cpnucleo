@@ -9,16 +9,10 @@ namespace Cpnucleo.MVC.Controllers;
 public class BaseController : Controller
 {
     protected GrpcChannel _channel;
-    private readonly IConfiguration _configuration;
-
-    public BaseController(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
 
     public string Token => ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.Hash);
 
-    protected GrpcChannel CreateAuthenticatedChannel()
+    protected GrpcChannel CreateAuthenticatedChannel(string grpcAddress)
     {
         CallCredentials credentials = CallCredentials.FromInterceptor((context, metadata) =>
         {
@@ -38,7 +32,7 @@ public class BaseController : Controller
 
         handler.HttpVersion = new Version(1, 1);
 
-        _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"],
+        _channel = GrpcChannel.ForAddress(grpcAddress,
             new GrpcChannelOptions
             {
                 Credentials = ChannelCredentials.Create(new SslCredentials(), credentials),
