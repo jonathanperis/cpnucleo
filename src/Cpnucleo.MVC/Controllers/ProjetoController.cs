@@ -13,10 +13,9 @@ public class ProjetoController : BaseController
     private ProjetoView _projetoView;
 
     public ProjetoController(IConfiguration configuration)
-        : base(configuration)
     {
-        _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel());
-        _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
+        _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcProjeto"]));
+        _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcSistema"]));
     }
 
     public ProjetoView ProjetoView
