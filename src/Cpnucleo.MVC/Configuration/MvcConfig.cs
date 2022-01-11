@@ -1,8 +1,14 @@
-﻿namespace Cpnucleo.MVC.Configuration;
+﻿using Cpnucleo.MVC.Services.Interfaces;
+using Refit;
+
+namespace Cpnucleo.MVC.Configuration;
 
 public static class MvcConfig
 {
-    public static void AddMvcConfigSetup(this IServiceCollection services)
+    public static void AddMvcConfigSetup(this IServiceCollection services, IConfiguration configuration)
     {
+        services
+            .AddRefitClient<ICpnucleoApiService>()
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApiAuth")}/api/v1"));
     }
 }

@@ -13,6 +13,8 @@
 		<PackageReference Include="MagicOnion.Client" Version="4.3.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
 		<PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
+		<PackageReference Include="Refit" Version="6.1.15" />
+		<PackageReference Include="Refit.HttpClientFactory" Version="6.1.15" />
 	</ItemGroup>
 
 	<ItemGroup>
