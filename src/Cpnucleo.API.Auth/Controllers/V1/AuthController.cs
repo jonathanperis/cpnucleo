@@ -4,15 +4,15 @@ using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
 namespace Cpnucleo.API.Controllers.V2;
 
 [Produces("application/json")]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}")]
 [ApiController]
 [ApiVersion("1")]
-public class RecursoController : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IConfiguration _configuration;
 
-    public RecursoController(IMediator mediator, IConfiguration configuration)
+    public AuthController(IMediator mediator, IConfiguration configuration)
     {
         _mediator = mediator;
         _configuration = configuration;

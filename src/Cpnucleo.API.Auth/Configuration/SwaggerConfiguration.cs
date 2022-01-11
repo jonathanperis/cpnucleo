@@ -12,8 +12,8 @@ public static class SwaggerConfiguration
             config.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
-                Title = "Cpnucleo API",
-                Description = "Cpnucleo example ASP.NET Core Web API (deprecated)",
+                Title = "Cpnucleo Auth API",
+                Description = "Cpnucleo example ASP.NET Core Web API",
                 Contact = new OpenApiContact
                 {
                     Name = "Jonathan Peris",
