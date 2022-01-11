@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "Cpnucleo.GRPC.RecursoTarefa": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5245;https://localhost:7245",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
