@@ -15,10 +15,9 @@ public class HomeController : BaseController
     private HomeView _viewModel;
 
     public HomeController(IConfiguration configuration)
-        : base(configuration)
     {
         _configuration = configuration;
-        _authGrpcService = MagicOnionClient.Create<IAuthGrpcService>(CreateAuthenticatedChannel());
+        _authGrpcService = MagicOnionClient.Create<IAuthGrpcService>(CreateAuthenticatedChannel(""));
     }
 
     public HomeView ViewModel

@@ -11,9 +11,8 @@ public class ImpedimentoController : BaseController
     private ImpedimentoView _impedimentoView;
 
     public ImpedimentoController(IConfiguration configuration)
-        : base(configuration)
     {
-        _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel());
+        _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcImpedimento"]));
     }
 
     public ImpedimentoView ImpedimentoView

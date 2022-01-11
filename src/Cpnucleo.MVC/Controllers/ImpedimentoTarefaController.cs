@@ -15,11 +15,10 @@ public class ImpedimentoTarefaController : BaseController
     private ImpedimentoTarefaView _impedimentoTarefaView;
 
     public ImpedimentoTarefaController(IConfiguration configuration)
-        : base(configuration)
     {
-        _impedimentoTarefaGrpcService = MagicOnionClient.Create<IImpedimentoTarefaGrpcService>(CreateAuthenticatedChannel());
-        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
-        _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel());
+        _impedimentoTarefaGrpcService = MagicOnionClient.Create<IImpedimentoTarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcImpedimentoTarefa"]));
+        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcTarefa"]));
+        _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcImpedimento"]));
     }
 
     public ImpedimentoTarefaView ImpedimentoTarefaView
