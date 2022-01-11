@@ -139,7 +139,7 @@
         });
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("@configuration["AppSettings:UrlCpnucleoGrpc"]/hub")
+            .withUrl("@configuration["AppSettings:UrlCpnucleoGrpcSistema"]/hub")
             .withAutomaticReconnect()
             .build();
 
