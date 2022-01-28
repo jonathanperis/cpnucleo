@@ -8,14 +8,14 @@ using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Controllers;
 
-public class HomeController : BaseController
+public class HomeController : Controller
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoAuthService _cpnucleoApiService;
     private readonly IConfiguration _configuration;
 
     private HomeView _viewModel;
 
-    public HomeController(ICpnucleoApiService cpnucleoApiService, IConfiguration configuration)
+    public HomeController(ICpnucleoAuthService cpnucleoApiService, IConfiguration configuration)
     {
         _cpnucleoApiService = cpnucleoApiService;
         _configuration = configuration;

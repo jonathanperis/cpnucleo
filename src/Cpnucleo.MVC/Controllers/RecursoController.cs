@@ -11,8 +11,9 @@ public class RecursoController : BaseController
     private RecursoView _recursoView;
 
     public RecursoController(IConfiguration configuration)
+        : base(configuration)
     {
-        _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcRecurso"]));
+        _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
     }
 
     public RecursoView RecursoView
