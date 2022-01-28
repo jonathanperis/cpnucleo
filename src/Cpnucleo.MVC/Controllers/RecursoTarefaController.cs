@@ -15,10 +15,11 @@ public class RecursoTarefaController : BaseController
     private RecursoTarefaView _recursoTarefaView;
 
     public RecursoTarefaController(IConfiguration configuration)
+        : base(configuration)
     {
-        _recursoTarefaGrpcService = MagicOnionClient.Create<IRecursoTarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcRecursoTarefa"]));
-        _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcRecurso"]));
-        _TarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcTarefa"]));
+        _recursoTarefaGrpcService = MagicOnionClient.Create<IRecursoTarefaGrpcService>(CreateAuthenticatedChannel());
+        _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
+        _TarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
     }
 
     public RecursoTarefaView RecursoTarefaView

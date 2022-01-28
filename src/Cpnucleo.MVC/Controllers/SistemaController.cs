@@ -11,8 +11,9 @@ public class SistemaController : BaseController
     private SistemaView _sistemaView;
 
     public SistemaController(IConfiguration configuration)
+        : base(configuration)
     {
-        _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcSistema"]));
+        _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
     }
 
     public SistemaView SistemaView

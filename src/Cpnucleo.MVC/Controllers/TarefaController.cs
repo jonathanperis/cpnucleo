@@ -19,12 +19,13 @@ public class TarefaController : BaseController
     private TarefaView _tarefaView;
 
     public TarefaController(IConfiguration configuration)
+        : base(configuration)
     {
-        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcTarefa"]));
-        _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcSistema"]));
-        _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcProjeto"]));
-        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcWorkflow"]));
-        _tipoTarefaGrpcService = MagicOnionClient.Create<ITipoTarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcTipoTarefa"]));
+        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
+        _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
+        _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel());
+        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
+        _tipoTarefaGrpcService = MagicOnionClient.Create<ITipoTarefaGrpcService>(CreateAuthenticatedChannel());
     }
 
     public TarefaView TarefaView

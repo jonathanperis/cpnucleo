@@ -3,7 +3,7 @@ using AuthorizeAttribute = Refit.AuthorizeAttribute;
 
 namespace Cpnucleo.MVC.Services.Interfaces;
 
-public interface ICpnucleoApiService
+public interface ICpnucleoAuthService
 {
     [Get("/{route}")]
     Task<T> GetAsync<T>(string route, [Authorize("Bearer")] string token, bool getDependencies = false);

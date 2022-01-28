@@ -18,10 +18,11 @@ public class ApontamentoController : BaseController
     private ApontamentoView _apontamentoView;
 
     public ApontamentoController(IConfiguration configuration)
+        : base(configuration)
     {
-        _apontamentoGrpcService = MagicOnionClient.Create<IApontamentoGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcApontamento"]));
-        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcTarefa"]));
-        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel(configuration["AppSettings:UrlCpnucleoGrpcWorkflow"]));
+        _apontamentoGrpcService = MagicOnionClient.Create<IApontamentoGrpcService>(CreateAuthenticatedChannel());
+        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
+        _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
     }
 
     public ApontamentoView ApontamentoView
