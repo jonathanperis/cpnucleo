@@ -8,8 +8,8 @@ public class AutoMapperHelper
     {
         MapperConfiguration config = new(cfg =>
         {
-            cfg.AddProfile<ViewModelToEntityProfile>();
-            cfg.AddProfile<EntityToViewModelProfile>();
+            cfg.AddProfile<DTOToEntityProfile>();
+            cfg.AddProfile<EntityToDTOProfile>();
         });
 
         return config.CreateMapper();

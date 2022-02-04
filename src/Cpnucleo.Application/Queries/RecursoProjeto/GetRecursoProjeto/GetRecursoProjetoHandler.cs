@@ -1,0 +1,27 @@
+﻿namespace Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjeto;
+
+public class GetRecursoProjetoHandler : IRequestHandler<GetRecursoProjetoQuery, GetRecursoProjetoViewModel>
+{
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public GetRecursoProjetoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
+
+    public async Task<GetRecursoProjetoViewModel> Handle(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
+    {
+        var recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
+
+        if (recursoProjeto == null)
+        {
+            return new GetRecursoProjetoViewModel { OperationResult = OperationResult.NotFound };
+        }
+
+        RecursoProjetoDTO result = _mapper.Map<RecursoProjetoDTO>(recursoProjeto);
+
+        return new GetRecursoProjetoViewModel { RecursoProjeto = result, OperationResult = OperationResult.Success };
+    }
+}

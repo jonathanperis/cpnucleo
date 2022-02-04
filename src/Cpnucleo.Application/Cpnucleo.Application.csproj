@@ -10,6 +10,9 @@
 		<PackageReference Include="AutoMapper" Version="10.1.1" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 		<PackageReference Include="Ev.ServiceBus" Version="3.3.0" />
+		<PackageReference Include="MagicOnion.Abstractions" Version="4.3.1" />
+		<PackageReference Include="MediatR" Version="9.0.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Azure.SignalR" Version="1.13.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
@@ -18,7 +21,6 @@
 		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Bus\Cpnucleo.Infra.CrossCutting.Bus.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Security\Cpnucleo.Infra.CrossCutting.Security.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
 	</ItemGroup>
 
 </Project>
