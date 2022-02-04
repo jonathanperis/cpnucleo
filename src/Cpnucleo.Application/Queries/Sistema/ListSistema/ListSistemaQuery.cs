@@ -4,6 +4,11 @@ public class ListSistemaQuery : IRequest<ListSistemaViewModel>
 {
     public bool GetDependencies { get; }
 
+    public ListSistemaQuery()
+    {
+
+    }
+
     public ListSistemaQuery(bool getDependencies)
     {
         GetDependencies = getDependencies;
