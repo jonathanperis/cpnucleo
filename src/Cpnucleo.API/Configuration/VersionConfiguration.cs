@@ -7,7 +7,7 @@ public static class VersionConfiguration
         services.AddApiVersioning(options =>
         {
             options.AssumeDefaultVersionWhenUnspecified = true;
-            options.DefaultApiVersion = new ApiVersion(2, 0);
+            options.DefaultApiVersion = new ApiVersion(3, 0);
             options.ReportApiVersions = true;
         });
 

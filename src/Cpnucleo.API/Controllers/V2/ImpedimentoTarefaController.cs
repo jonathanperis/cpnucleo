@@ -3,8 +3,8 @@
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
-[ApiVersion("2")]
-//[Authorize]
+[ApiVersion("2", Deprecated = true)]
+[Authorize]
 public class ImpedimentoTarefaController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;

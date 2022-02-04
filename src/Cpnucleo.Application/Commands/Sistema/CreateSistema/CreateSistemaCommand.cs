@@ -6,6 +6,11 @@ public class CreateSistemaCommand : IRequest<OperationResult>
     public string Nome { get; }
     public string Descricao { get; }
 
+    public CreateSistemaCommand()
+    {
+
+    }
+
     public CreateSistemaCommand(Guid id, string nome, string descricao)
     {
         Id = id;

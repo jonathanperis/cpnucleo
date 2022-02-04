@@ -1,26 +1,21 @@
-﻿using Cpnucleo.API.Services;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
 
 namespace Cpnucleo.API.Controllers.V2;
 
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
-[ApiVersion("2")]
+[ApiVersion("2", Deprecated = true)]
 public class RecursoController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICryptographyManager _cryptographyManager;
-    private readonly IConfiguration _configuration;
 
     public RecursoController(IUnitOfWork unitOfWork,
-                            ICryptographyManager cryptographyManager,
-                            IConfiguration configuration)
+                            ICryptographyManager cryptographyManager)
     {
         _unitOfWork = unitOfWork;
         _cryptographyManager = cryptographyManager;
-        _configuration = configuration;
     }
 
     /// <summary>
@@ -37,7 +32,7 @@ public class RecursoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    //[Authorize]
+    [Authorize]
     public async Task<IEnumerable<Recurso>> Get(bool getDependencies = false)
     {
         return await _unitOfWork.RecursoRepository.AllAsync(getDependencies);
@@ -59,7 +54,7 @@ public class RecursoController : ControllerBase
     [HttpGet("{id}", Name = "GetRecurso")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    //[Authorize]
+    [Authorize]
     public async Task<ActionResult<Recurso>> Get(Guid id)
     {
         Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(id);
@@ -103,7 +98,7 @@ public class RecursoController : ControllerBase
     [ProducesResponseType(typeof(Recurso), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    //[Authorize]
+    [Authorize]
     public async Task<ActionResult<Recurso>> Post([FromBody] Recurso obj)
     {
         if (!ModelState.IsValid)
@@ -138,63 +133,6 @@ public class RecursoController : ControllerBase
     }
 
     /// <summary>
-    /// Autenticar
-    /// </summary>
-    /// <remarks>
-    /// # Autenticar
-    /// 
-    /// Autentica e devolve um token válido por 60 minutos para utilização na API.
-    /// 
-    /// # Sample request:
-    ///
-    ///     POST /recurso/autenticar
-    ///     {
-    ///        "login": "usuario.teste",
-    ///        "senha": "12345678"
-    ///     }
-    /// </remarks>
-    /// <param name="obj">Recurso</param>
-    /// <response code="200">Retorna um recurso</response>
-    /// <response code="400">Objetos não preenchidos corretamente</response>
-    /// <response code="404">Recurso não encontrado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpPost("Auth")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Recurso>> Auth([FromBody] AuthViewModel obj)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        Recurso recurso = await _unitOfWork.RecursoRepository.GetByLoginAsync(obj.Usuario);
-
-        if (recurso == null)
-        {
-            return NotFound();
-        }
-
-        bool valido = _cryptographyManager.VerifyPbkdf2(obj.Senha, recurso.Senha, recurso.Salt);
-        recurso.Senha = null;
-        recurso.Salt = null;
-
-        if (!valido)
-        {
-            return NotFound();
-        }
-        else
-        {
-            int.TryParse(_configuration["Jwt:Expires"], out int jwtExpires);
-
-            recurso.Token = TokenService.GenerateToken(recurso.Id.ToString(), _configuration["Jwt:Key"], _configuration["Jwt:Issuer"], jwtExpires);
-
-            return Ok(recurso);
-        }
-    }
-
-    /// <summary>
     /// Alterar recurso
     /// </summary>
     /// <remarks>
@@ -223,7 +161,7 @@ public class RecursoController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> Put(Guid id, [FromBody] Recurso obj)
     {
         if (!ModelState.IsValid)
@@ -278,7 +216,7 @@ public class RecursoController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> Delete(Guid id)
     {
         Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(id);
