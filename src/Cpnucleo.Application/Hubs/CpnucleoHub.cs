@@ -16,7 +16,7 @@ public class CpnucleoHub : Hub
     public async Task Echo(string name, string message)
     {
         //Some business logic here.
-        IEnumerable<SistemaViewModel> sistemas = _mapper.Map<IEnumerable<SistemaViewModel>>(await _unitOfWork.SistemaRepository.AllAsync(true));
+        IEnumerable<SistemaDTO> sistemas = _mapper.Map<IEnumerable<SistemaDTO>>(await _unitOfWork.SistemaRepository.AllAsync(true));
 
         await Clients.Client(Context.ConnectionId).SendAsync("echo", name, $"{message} (echo from server)");
     }
