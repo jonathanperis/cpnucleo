@@ -2,16 +2,8 @@
 
 public class UpdateProjetoCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-    public string Nome { get; }
-    public bool Ativo { get; }
+    public Guid Id { get; set; }
+    public string Nome { get; set; }
+    public bool Ativo { get; set; }
     public Guid IdSistema { get; set; }
-
-    public UpdateProjetoCommand(Guid id, string nome, bool ativo, Guid idSistema)
-    {
-        Id = id;
-        Nome = nome;
-        Ativo = ativo;
-        IdSistema = idSistema;
-    }
 }

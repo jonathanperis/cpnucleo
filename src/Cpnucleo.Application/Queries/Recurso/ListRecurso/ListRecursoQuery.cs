@@ -2,10 +2,5 @@
 
 public class ListRecursoQuery : IRequest<ListRecursoViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListRecursoQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }

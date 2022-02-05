@@ -2,10 +2,5 @@
 
 public class ListImpedimentoQuery : IRequest<ListImpedimentoViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListImpedimentoQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }

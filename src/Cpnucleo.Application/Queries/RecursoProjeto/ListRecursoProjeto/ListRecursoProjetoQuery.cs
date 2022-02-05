@@ -2,10 +2,5 @@
 
 public class ListRecursoProjetoQuery : IRequest<ListRecursoProjetoViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListRecursoProjetoQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }

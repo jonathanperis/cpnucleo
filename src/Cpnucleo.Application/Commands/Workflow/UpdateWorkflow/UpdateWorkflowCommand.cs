@@ -2,16 +2,8 @@
 
 public class UpdateWorkflowCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-    public string Nome { get; }
-    public int Ordem { get; }
-    public bool Ativo { get; }
-
-    public UpdateWorkflowCommand(Guid id, string nome, int ordem, bool ativo)
-    {
-        Id = id;
-        Nome = nome;
-        Ordem = ordem;
-        Ativo = ativo;
-    }
+    public Guid Id { get; set; }
+    public string Nome { get; set; }
+    public int Ordem { get; set; }
+    public bool Ativo { get; set; }
 }

@@ -2,10 +2,5 @@
 
 public class GetImpedimentoQuery : IRequest<GetImpedimentoViewModel>
 {
-    public Guid Id { get; }
-
-    public GetImpedimentoQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

@@ -2,10 +2,5 @@
 
 public class GetRecursoQuery : IRequest<GetRecursoViewModel>
 {
-    public Guid Id { get; }
-
-    public GetRecursoQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

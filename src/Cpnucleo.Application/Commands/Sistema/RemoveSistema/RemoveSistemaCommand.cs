@@ -2,10 +2,5 @@
 
 public class RemoveSistemaCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveSistemaCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

@@ -2,10 +2,5 @@
 
 public class GetImpedimentoTarefaQuery : IRequest<GetImpedimentoTarefaViewModel>
 {
-    public Guid Id { get; }
-
-    public GetImpedimentoTarefaQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }
