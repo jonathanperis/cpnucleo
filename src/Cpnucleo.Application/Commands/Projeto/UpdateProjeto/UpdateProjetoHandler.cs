@@ -19,7 +19,6 @@ public class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand, Operat
         }
 
         projeto.Nome = request.Nome;
-        projeto.Ativo = request.Ativo;
         projeto.IdSistema = request.IdSistema;
 
         _unitOfWork.ProjetoRepository.Update(projeto);
