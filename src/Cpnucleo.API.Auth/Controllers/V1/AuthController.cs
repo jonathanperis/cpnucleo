@@ -1,5 +1,6 @@
 ﻿using Cpnucleo.API.Services;
-using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+using Cpnucleo.Application;
+using Cpnucleo.Application.Requests.Auth;
 
 namespace Cpnucleo.API.Controllers.V2;
 
@@ -63,7 +64,7 @@ public class AuthController : ControllerBase
         {
             int.TryParse(_configuration["Jwt:Expires"], out int jwtExpires);
 
-            response.Recurso.Token = TokenService.GenerateToken(response.Recurso.Id.ToString(), _configuration["Jwt:Key"], _configuration["Jwt:Issuer"], jwtExpires);
+            response.Token = TokenService.GenerateToken(response.Recurso.Id.ToString(), _configuration["Jwt:Key"], _configuration["Jwt:Issuer"], jwtExpires);
         }
 
         return Ok(response);
