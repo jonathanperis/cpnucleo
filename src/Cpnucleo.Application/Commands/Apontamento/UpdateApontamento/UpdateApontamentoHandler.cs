@@ -21,7 +21,6 @@ public class UpdateApontamentoHandler : IRequestHandler<UpdateApontamentoCommand
         apontamento.Descricao = request.Descricao;
         apontamento.DataApontamento = request.DataApontamento;
         apontamento.QtdHoras = request.QtdHoras;
-        apontamento.Ativo = request.Ativo;
         apontamento.IdTarefa = request.IdTarefa;
         apontamento.IdRecurso = request.IdRecurso;
 

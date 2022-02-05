@@ -19,7 +19,6 @@ public class UpdateImpedimentoTarefaHandler : IRequestHandler<UpdateImpedimentoT
         }
 
         impedimentoTarefa.Descricao = request.Descricao;
-        impedimentoTarefa.Ativo = request.Ativo;
         impedimentoTarefa.IdTarefa = request.IdTarefa;
         impedimentoTarefa.IdImpedimento = request.IdImpedimento;
 

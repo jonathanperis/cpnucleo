@@ -20,7 +20,6 @@ public class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand, Operat
 
         sistema.Nome = request.Nome;
         sistema.Descricao = request.Descricao;
-        sistema.Ativo = request.Ativo;
 
         _unitOfWork.SistemaRepository.Update(sistema);
 

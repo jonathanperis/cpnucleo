@@ -22,7 +22,6 @@ public class UpdateTarefaHandler : IRequestHandler<UpdateTarefaCommand, Operatio
         tarefa.DataInicio = request.DataInicio;
         tarefa.DataTermino = request.DataTermino;
         tarefa.QtdHoras = request.QtdHoras;
-        tarefa.Ativo = request.Ativo;
         tarefa.IdProjeto = request.IdProjeto;
         tarefa.IdWorkflow = request.IdWorkflow;
         tarefa.IdRecurso = request.IdRecurso;
