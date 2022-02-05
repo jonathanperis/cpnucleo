@@ -20,7 +20,6 @@ public class UpdateTipoTarefaHandler : IRequestHandler<UpdateTipoTarefaCommand, 
 
         tipoTarefa.Nome = request.Nome;
         tipoTarefa.Image = request.Image;
-        tipoTarefa.Ativo = request.Ativo;
 
         _unitOfWork.TipoTarefaRepository.Update(tipoTarefa);
 

@@ -19,7 +19,6 @@ public class UpdateImpedimentoHandler : IRequestHandler<UpdateImpedimentoCommand
         }
 
         impedimento.Nome = request.Nome;
-        impedimento.Ativo = request.Ativo;
 
         _unitOfWork.ImpedimentoRepository.Update(impedimento);
 

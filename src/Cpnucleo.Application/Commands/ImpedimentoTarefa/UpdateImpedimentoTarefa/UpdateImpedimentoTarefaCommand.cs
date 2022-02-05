@@ -6,5 +6,4 @@ public class UpdateImpedimentoTarefaCommand : IRequest<OperationResult>
     public string Descricao { get; set; }
     public Guid IdTarefa { get; set; }
     public Guid IdImpedimento { get; set; }
-    public bool Ativo { get; set; }
 }

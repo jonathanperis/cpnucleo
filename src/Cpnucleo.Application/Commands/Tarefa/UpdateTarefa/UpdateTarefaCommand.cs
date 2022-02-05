@@ -8,7 +8,6 @@ public class UpdateTarefaCommand : IRequest<OperationResult>
     public DateTime DataTermino { get; set; }
     public int QtdHoras { get; set; }
     public string Detalhe { get; set; }
-    public bool Ativo { get; set; }
     public Guid IdProjeto { get; set; }
     public Guid IdWorkflow { get; set; }
     public Guid IdRecurso { get; set; }

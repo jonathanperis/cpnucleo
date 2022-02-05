@@ -20,7 +20,6 @@ public class UpdateWorkflowHandler : IRequestHandler<UpdateWorkflowCommand, Oper
 
         workflow.Nome = request.Nome;
         workflow.Ordem = request.Ordem;
-        workflow.Ativo = request.Ativo;
 
         _unitOfWork.WorkflowRepository.Update(workflow);
 

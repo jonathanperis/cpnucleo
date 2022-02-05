@@ -18,7 +18,6 @@ public class UpdateRecursoTarefaHandler : IRequestHandler<UpdateRecursoTarefaCom
             return OperationResult.NotFound;
         }
 
-        recursoTarefa.Ativo = request.Ativo;
         recursoTarefa.IdRecurso = request.IdRecurso;
         recursoTarefa.IdTarefa = request.IdTarefa;
 

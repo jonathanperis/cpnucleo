@@ -18,7 +18,6 @@ public class UpdateRecursoProjetoHandler : IRequestHandler<UpdateRecursoProjetoC
             return OperationResult.NotFound;
         }
 
-        recursoProjeto.Ativo = request.Ativo;
         recursoProjeto.IdRecurso = request.IdRecurso;
         recursoProjeto.IdProjeto = request.IdProjeto;
 

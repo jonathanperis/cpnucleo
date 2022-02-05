@@ -5,5 +5,4 @@ public class UpdateRecursoProjetoCommand : IRequest<OperationResult>
     public Guid Id { get; set; }
     public Guid IdRecurso { get; set; }
     public Guid IdProjeto { get; set; }
-    public bool Ativo { get; set; }
 }
