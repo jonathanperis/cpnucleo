@@ -2,10 +2,5 @@
 
 public class GetWorkflowQuery : IRequest<GetWorkflowViewModel>
 {
-    public Guid Id { get; }
-
-    public GetWorkflowQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

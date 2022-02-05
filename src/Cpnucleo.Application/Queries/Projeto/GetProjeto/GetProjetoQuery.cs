@@ -2,10 +2,5 @@
 
 public class GetProjetoQuery : IRequest<GetProjetoViewModel>
 {
-    public Guid Id { get; }
-
-    public GetProjetoQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

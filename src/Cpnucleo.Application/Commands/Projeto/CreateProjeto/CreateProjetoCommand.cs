@@ -2,14 +2,7 @@
 
 public class CreateProjetoCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-    public string Nome { get; }
-    public Guid IdSistema { get; }
-
-    public CreateProjetoCommand(Guid id, string nome, Guid idSistema)
-    {
-        Id = id;
-        Nome = nome;
-        IdSistema = idSistema;
-    }
+    public Guid Id { get; set; }
+    public string Nome { get; set; }
+    public Guid IdSistema { get; set; }
 }

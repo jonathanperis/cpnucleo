@@ -2,10 +2,5 @@
 
 public class GetByRecursoQuery : IRequest<GetByRecursoViewModel>
 {
-    public Guid IdRecurso { get; }
-
-    public GetByRecursoQuery(Guid idRecurso)
-    {
-        IdRecurso = idRecurso;
-    }
+    public Guid IdRecurso { get; set; }
 }

@@ -2,10 +2,5 @@
 
 public class ListApontamentoQuery : IRequest<ListApontamentoViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListApontamentoQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }

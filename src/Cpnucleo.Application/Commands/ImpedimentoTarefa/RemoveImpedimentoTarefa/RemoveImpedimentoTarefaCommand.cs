@@ -2,10 +2,5 @@
 
 public class RemoveImpedimentoTarefaCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveImpedimentoTarefaCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

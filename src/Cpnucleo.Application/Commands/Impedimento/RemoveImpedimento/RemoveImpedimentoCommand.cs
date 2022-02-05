@@ -2,10 +2,5 @@
 
 public class RemoveImpedimentoCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveImpedimentoCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

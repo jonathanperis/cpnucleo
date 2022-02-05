@@ -2,10 +2,5 @@
 
 public class ListTipoTarefaQuery : IRequest<ListTipoTarefaViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListTipoTarefaQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }

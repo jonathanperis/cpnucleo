@@ -2,10 +2,5 @@
 
 public class RemoveRecursoCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveRecursoCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

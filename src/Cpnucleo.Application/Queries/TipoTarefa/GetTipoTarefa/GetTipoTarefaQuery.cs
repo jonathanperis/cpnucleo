@@ -2,10 +2,5 @@
 
 public class GetTipoTarefaQuery : IRequest<GetTipoTarefaViewModel>
 {
-    public Guid Id { get; }
-
-    public GetTipoTarefaQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

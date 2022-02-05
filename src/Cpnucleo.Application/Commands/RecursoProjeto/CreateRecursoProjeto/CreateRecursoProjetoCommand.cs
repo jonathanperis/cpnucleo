@@ -2,14 +2,7 @@
 
 public class CreateRecursoProjetoCommand : IRequest<OperationResult>
 {
-    public CreateRecursoProjetoCommand(Guid id, Guid idRecurso, Guid idProjeto)
-    {
-        Id = id;
-        IdRecurso = idRecurso;
-        IdProjeto = idProjeto;
-    }
-
-    public Guid Id { get; }
-    public Guid IdRecurso { get; }
-    public Guid IdProjeto { get; }
+    public Guid Id { get; set; }
+    public Guid IdRecurso { get; set; }
+    public Guid IdProjeto { get; set; }
 }

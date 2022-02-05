@@ -2,14 +2,7 @@
 
 public class CreateWorkflowCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-    public string Nome { get; }
-    public int Ordem { get; }
-
-    public CreateWorkflowCommand(Guid id, string nome, int ordem)
-    {
-        Id = id;
-        Nome = nome;
-        Ordem = ordem;
-    }
+    public Guid Id { get; set; }
+    public string Nome { get; set; }
+    public int Ordem { get; set; }
 }

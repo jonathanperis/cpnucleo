@@ -2,20 +2,10 @@
 
 public class CreateApontamentoCommand : IRequest<OperationResult>
 {
-    public CreateApontamentoCommand(Guid id, string descricao, DateTime dataApontamento, int qtdHoras, Guid idTarefa, Guid idRecurso)
-    {
-        Id = id;
-        Descricao = descricao;
-        DataApontamento = dataApontamento;
-        QtdHoras = qtdHoras;
-        IdTarefa = idTarefa;
-        IdRecurso = idRecurso;
-    }
-
-    public Guid Id { get; }
-    public string Descricao { get; }
-    public DateTime DataApontamento { get; }
-    public int QtdHoras { get; }
-    public Guid IdTarefa { get; }
-    public Guid IdRecurso { get; }
+    public Guid Id { get; set; }
+    public string Descricao { get; set; }
+    public DateTime DataApontamento { get; set; }
+    public int QtdHoras { get; set; }
+    public Guid IdTarefa { get; set; }
+    public Guid IdRecurso { get; set; }
 }
