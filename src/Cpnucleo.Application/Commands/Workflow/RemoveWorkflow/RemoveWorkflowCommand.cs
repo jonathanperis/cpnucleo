@@ -2,10 +2,5 @@
 
 public class RemoveWorkflowCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveWorkflowCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

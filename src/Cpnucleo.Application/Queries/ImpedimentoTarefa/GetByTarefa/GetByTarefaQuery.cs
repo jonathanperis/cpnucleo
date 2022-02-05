@@ -2,10 +2,5 @@
 
 public class GetByTarefaQuery : IRequest<GetByTarefaViewModel>
 {
-    public Guid IdTarefa { get; }
-
-    public GetByTarefaQuery(Guid idTarefa)
-    {
-        IdTarefa = idTarefa;
-    }
+    public Guid IdTarefa { get; set; }
 }

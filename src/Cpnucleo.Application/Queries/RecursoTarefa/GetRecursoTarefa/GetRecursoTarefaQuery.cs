@@ -2,10 +2,5 @@
 
 public class GetRecursoTarefaQuery : IRequest<GetRecursoTarefaViewModel>
 {
-    public Guid Id { get; }
-
-    public GetRecursoTarefaQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

@@ -2,10 +2,5 @@
 
 public class RemoveProjetoCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveProjetoCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

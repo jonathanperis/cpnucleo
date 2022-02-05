@@ -7,20 +7,19 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCpnucleoSetup(builder.Configuration);
-
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "AllowCpcnuleoClients",
-                      x =>
-                      {
-                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                      });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: "AllowCpcnuleoClients",
+//                      x =>
+//                      {
+//                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
+//                            .AllowAnyHeader()
+//                            .AllowAnyMethod();
+//                      });
+//});
 
 builder.Services.AddAuthentication(x =>
 {
@@ -50,14 +49,18 @@ builder.Services.AddControllers()
         options.SuppressMapClientErrors = true;
     });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
+
+app.UseRouting();
 
 app.UseSwaggerConfig();
+app.UseCpnucleoApiSetup();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AllowCpcnuleoClients");
+//app.UseCors("AllowCpcnuleoClients");
 
 app.MapControllers();
 app.Run();

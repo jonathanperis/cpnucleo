@@ -2,16 +2,8 @@
 
 public class UpdateSistemaCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-    public string Nome { get; }
-    public string Descricao { get; }
-    public bool Ativo { get; }
-
-    public UpdateSistemaCommand(Guid id, string nome, string descricao, bool ativo)
-    {
-        Id = id;
-        Nome = nome;
-        Descricao = descricao;
-        Ativo = ativo;
-    }
+    public Guid Id { get; set; }
+    public string Nome { get; set; }
+    public string Descricao { get; set; }
+    public bool Ativo { get; set; }
 }

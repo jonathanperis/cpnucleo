@@ -2,10 +2,5 @@
 
 public class GetApontamentoQuery : IRequest<GetApontamentoViewModel>
 {
-    public Guid Id { get; }
-
-    public GetApontamentoQuery(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

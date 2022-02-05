@@ -2,10 +2,5 @@
 
 public class RemoveTarefaCommand : IRequest<OperationResult>
 {
-    public Guid Id { get; }
-
-    public RemoveTarefaCommand(Guid id)
-    {
-        Id = id;
-    }
+    public Guid Id { get; set; }
 }

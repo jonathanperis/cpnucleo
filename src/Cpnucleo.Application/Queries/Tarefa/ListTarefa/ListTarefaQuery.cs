@@ -2,10 +2,5 @@
 
 public class ListTarefaQuery : IRequest<ListTarefaViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListTarefaQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }

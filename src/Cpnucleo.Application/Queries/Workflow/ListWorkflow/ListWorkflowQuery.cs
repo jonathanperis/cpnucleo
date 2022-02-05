@@ -2,10 +2,5 @@
 
 public class ListWorkflowQuery : IRequest<ListWorkflowViewModel>
 {
-    public bool GetDependencies { get; }
-
-    public ListWorkflowQuery(bool getDependencies)
-    {
-        GetDependencies = getDependencies;
-    }
+    public bool GetDependencies { get; set; }
 }
