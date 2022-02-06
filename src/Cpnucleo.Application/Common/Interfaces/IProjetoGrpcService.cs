@@ -5,7 +5,7 @@ using Cpnucleo.Application.Queries.Projeto.GetProjeto;
 using Cpnucleo.Application.Queries.Projeto.ListProjeto;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IProjetoGrpcService : IService<IProjetoGrpcService>
 {

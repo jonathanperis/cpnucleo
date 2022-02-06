@@ -5,7 +5,7 @@ using Cpnucleo.Application.Queries.Sistema.GetSistema;
 using Cpnucleo.Application.Queries.Sistema.ListSistema;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface ISistemaGrpcService : IService<ISistemaGrpcService>
 {

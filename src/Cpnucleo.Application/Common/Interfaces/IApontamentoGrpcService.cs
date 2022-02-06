@@ -6,7 +6,7 @@ using Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
 using Cpnucleo.Application.Queries.Apontamento.ListApontamento;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
 {

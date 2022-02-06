@@ -5,7 +5,7 @@ using Cpnucleo.Application.Queries.Workflow.GetWorkflow;
 using Cpnucleo.Application.Queries.Workflow.ListWorkflow;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IWorkflowGrpcService : IService<IWorkflowGrpcService>
 {

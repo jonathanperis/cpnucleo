@@ -6,7 +6,7 @@ using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjetoByProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.ListRecursoProjeto;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IRecursoProjetoGrpcService : IService<IRecursoProjetoGrpcService>
 {
