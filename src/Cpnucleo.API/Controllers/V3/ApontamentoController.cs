@@ -3,7 +3,7 @@ using Cpnucleo.Application.Commands.Apontamento.CreateApontamento;
 using Cpnucleo.Application.Commands.Apontamento.RemoveApontamento;
 using Cpnucleo.Application.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Application.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Application.Queries.Apontamento.GetByRecurso;
+using Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
 using Cpnucleo.Application.Queries.Apontamento.ListApontamento;
 
 namespace Cpnucleo.API.Controllers.V3;
@@ -64,8 +64,8 @@ public class ApontamentoController : ControllerBase
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     [HttpGet]
-    [Route("GetByRecurso")]
-    public async Task<ActionResult<GetByRecursoViewModel>> GetByRecurso([FromQuery] GetByRecursoQuery query)
+    [Route("GetApontamentoByRecurso")]
+    public async Task<ActionResult<GetApontamentoByRecursoViewModel>> GetApontamentoByRecurso([FromQuery] GetApontamentoByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }

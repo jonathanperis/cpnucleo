@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Application;
 using Cpnucleo.Application.Commands.Tarefa.CreateTarefa;
 using Cpnucleo.Application.Commands.Tarefa.RemoveTarefa;
-using Cpnucleo.Application.Commands.Tarefa.UpdateByWorkflow;
 using Cpnucleo.Application.Commands.Tarefa.UpdateTarefa;
+using Cpnucleo.Application.Commands.Tarefa.UpdateTarefaByWorkflow;
 using Cpnucleo.Application.Queries.Tarefa.GetByRecurso;
 using Cpnucleo.Application.Queries.Tarefa.GetTarefa;
 using Cpnucleo.Application.Queries.Tarefa.ListTarefa;
@@ -65,8 +65,8 @@ public class TarefaController : ControllerBase
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     [HttpGet]
-    [Route("GetByRecurso")]
-    public async Task<ActionResult<GetByRecursoViewModel>> GetByRecurso([FromQuery] GetByRecursoQuery query)
+    [Route("GetTarefaByRecurso")]
+    public async Task<ActionResult<GetTarefaByRecursoViewModel>> GetTarefaByRecurso([FromQuery] GetTarefaByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
@@ -113,8 +113,8 @@ public class TarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutByWorkflow")]
-    public async Task<ActionResult<OperationResult>> PutByWorkflowTarefa([FromBody] UpdateByWorkflowCommand command)
+    [Route("UpdateTarefaByWorkflow")]
+    public async Task<ActionResult<OperationResult>> PutTarefaByWorkflow([FromBody] UpdateTarefaByWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }

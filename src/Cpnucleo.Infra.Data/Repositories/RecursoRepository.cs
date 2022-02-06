@@ -8,7 +8,7 @@ internal class RecursoRepository : GenericRepository<Recurso>, IRecursoRepositor
 
     }
 
-    public async Task<Recurso> GetByLoginAsync(string login)
+    public async Task<Recurso> GetRecursoByLoginAsync(string login)
     {
         return await _context.Set<Recurso>()
             .AsQueryable()

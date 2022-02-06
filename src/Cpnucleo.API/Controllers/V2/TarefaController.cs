@@ -79,7 +79,7 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<Tarefa>> GetByRecurso(Guid id)
     {
-        IEnumerable<Tarefa> result = await _unitOfWork.TarefaRepository.GetByRecursoAsync(id);
+        IEnumerable<Tarefa> result = await _unitOfWork.TarefaRepository.GetTarefaByRecursoAsync(id);
 
         return await PreencherDadosAdicionaisAsync(result);
     }
@@ -314,7 +314,7 @@ public class TarefaController : ControllerBase
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-            IEnumerable<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(item.Id);
+            IEnumerable<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(item.Id);
 
             if (impedimentos.Any())
             {
