@@ -19,5 +19,5 @@ public interface IRecursoProjetoGrpcService : IService<IRecursoProjetoGrpcServic
 
     UnaryResult<OperationResult> RemoveAsync(RemoveRecursoProjetoCommand command);
 
-    UnaryResult<GetByProjetoViewModel> GetByProjetoAsync(GetByProjetoQuery query);
+    UnaryResult<GetRecursoProjetoByProjetoViewModel> GetByProjetoAsync(GetRecursoProjetoByProjetoQuery query);
 }

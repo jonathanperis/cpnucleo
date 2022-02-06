@@ -1,15 +1,15 @@
-﻿namespace Cpnucleo.Application.Commands.Tarefa.UpdateByWorkflow;
+﻿namespace Cpnucleo.Application.Commands.Tarefa.UpdateTarefaByWorkflow;
 
-public class UpdateByWorkflowHandler : IRequestHandler<UpdateByWorkflowCommand, OperationResult>
+public class UpdateTarefaByWorkflowHandler : IRequestHandler<UpdateTarefaByWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateByWorkflowHandler(IUnitOfWork unitOfWork)
+    public UpdateTarefaByWorkflowHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<OperationResult> Handle(UpdateByWorkflowCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult> Handle(UpdateTarefaByWorkflowCommand request, CancellationToken cancellationToken)
     {
         var tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
 

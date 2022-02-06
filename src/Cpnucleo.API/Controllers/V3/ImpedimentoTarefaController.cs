@@ -64,8 +64,8 @@ public class ImpedimentoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     [HttpGet]
-    [Route("GetByTarefa")]
-    public async Task<ActionResult<GetByTarefaViewModel>> GetByTarefa([FromQuery] GetByTarefaQuery query)
+    [Route("GetImpedimentoTarefaByTarefa")]
+    public async Task<ActionResult<GetImpedimentoTarefaByTarefaViewModel>> GetImpedimentoTarefaByTarefa([FromQuery] GetImpedimentoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }

@@ -8,7 +8,7 @@ internal class ImpedimentoTarefaRepository : GenericRepository<ImpedimentoTarefa
 
     }
 
-    public async Task<IEnumerable<ImpedimentoTarefa>> GetByTarefaAsync(Guid idTarefa)
+    public async Task<IEnumerable<ImpedimentoTarefa>> GetImpedimentoTarefaByTarefaAsync(Guid idTarefa)
     {
         IEnumerable<ImpedimentoTarefa> result = await AllAsync(true);
 

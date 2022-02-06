@@ -10,7 +10,7 @@ internal class WorkflowRepository : GenericRepository<Workflow>, IWorkflowReposi
 
     public async Task<int> GetQuantidadeColunasAsync()
     {
-        System.Collections.Generic.IEnumerable<Workflow> result = await AllAsync(true);
+        IEnumerable<Workflow> result = await AllAsync(true);
 
         return result.Count();
     }

@@ -1,30 +1,30 @@
 ﻿namespace Cpnucleo.Application.Queries.Tarefa.GetByRecurso;
 
-public class GetByRecursoHandler : IRequestHandler<GetByRecursoQuery, GetByRecursoViewModel>
+public class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery, GetTarefaByRecursoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public GetByRecursoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetTarefaByRecursoHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
 
-    public async Task<GetByRecursoViewModel> Handle(GetByRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<GetTarefaByRecursoViewModel> Handle(GetTarefaByRecursoQuery request, CancellationToken cancellationToken)
     {
-        var tarefas = await _unitOfWork.TarefaRepository.GetByRecursoAsync(request.IdRecurso);
+        var tarefas = await _unitOfWork.TarefaRepository.GetTarefaByRecursoAsync(request.IdRecurso);
 
         if (tarefas == null)
         {
-            return new GetByRecursoViewModel { OperationResult = OperationResult.NotFound };
+            return new GetTarefaByRecursoViewModel { OperationResult = OperationResult.NotFound };
         }
 
         IEnumerable<TarefaDTO> result = _mapper.Map<IEnumerable<TarefaDTO>>(tarefas);
 
         await PreencherDadosAdicionaisAsync(result);
 
-        return new GetByRecursoViewModel { Tarefas = result, OperationResult = OperationResult.Success };
+        return new GetTarefaByRecursoViewModel { Tarefas = result, OperationResult = OperationResult.Success };
     }
 
     private async Task PreencherDadosAdicionaisAsync(IEnumerable<TarefaDTO> lista)
@@ -38,7 +38,7 @@ public class GetByRecursoHandler : IRequestHandler<GetByRecursoQuery, GetByRecur
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-            IEnumerable<Domain.Entities.ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(item.Id);
+            IEnumerable<Domain.Entities.ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(item.Id);
 
             if (impedimentos.Any())
             {

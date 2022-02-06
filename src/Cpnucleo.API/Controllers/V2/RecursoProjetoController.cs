@@ -49,7 +49,7 @@ public class RecursoProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<RecursoProjeto>> GetByProjeto(Guid idRecurso)
     {
-        return await _unitOfWork.RecursoProjetoRepository.GetByProjetoAsync(idRecurso);
+        return await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjetoAsync(idRecurso);
     }
 
     /// <summary>

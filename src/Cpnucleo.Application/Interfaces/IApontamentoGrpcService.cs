@@ -2,7 +2,7 @@
 using Cpnucleo.Application.Commands.Apontamento.RemoveApontamento;
 using Cpnucleo.Application.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Application.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Application.Queries.Apontamento.GetByRecurso;
+using Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
 using Cpnucleo.Application.Queries.Apontamento.ListApontamento;
 
 namespace Cpnucleo.Application.Interfaces;
@@ -19,5 +19,5 @@ public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
 
     UnaryResult<OperationResult> RemoveAsync(RemoveApontamentoCommand command);
 
-    UnaryResult<GetByRecursoViewModel> GetByRecursoAsync(GetByRecursoQuery query);
+    UnaryResult<GetApontamentoByRecursoViewModel> GetByRecursoAsync(GetApontamentoByRecursoQuery query);
 }

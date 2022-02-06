@@ -8,7 +8,7 @@ internal class RecursoProjetoRepository : GenericRepository<RecursoProjeto>, IRe
 
     }
 
-    public async Task<IEnumerable<RecursoProjeto>> GetByProjetoAsync(Guid idProjeto)
+    public async Task<IEnumerable<RecursoProjeto>> GetRecursoProjetoByProjetoAsync(Guid idProjeto)
     {
         IEnumerable<RecursoProjeto> result = await AllAsync(true);
 

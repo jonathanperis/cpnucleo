@@ -19,5 +19,5 @@ public interface IImpedimentoTarefaGrpcService : IService<IImpedimentoTarefaGrpc
 
     UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoTarefaCommand command);
 
-    UnaryResult<GetByTarefaViewModel> GetByTarefaAsync(GetByTarefaQuery query);
+    UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetByTarefaAsync(GetImpedimentoTarefaByTarefaQuery query);
 }

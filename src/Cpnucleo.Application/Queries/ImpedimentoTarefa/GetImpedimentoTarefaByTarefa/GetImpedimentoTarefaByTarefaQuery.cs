@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa.GetByTarefa;
 
-public class GetByTarefaQuery : IRequest<GetByTarefaViewModel>
+public class GetImpedimentoTarefaByTarefaQuery : IRequest<GetImpedimentoTarefaByTarefaViewModel>
 {
     public Guid IdTarefa { get; set; }
 }

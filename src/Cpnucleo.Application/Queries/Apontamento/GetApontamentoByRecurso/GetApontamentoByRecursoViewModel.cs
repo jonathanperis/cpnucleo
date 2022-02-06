@@ -1,6 +1,6 @@
-﻿namespace Cpnucleo.Application.Queries.Apontamento.GetByRecurso;
+﻿namespace Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
 
-public class GetByRecursoViewModel
+public class GetApontamentoByRecursoViewModel
 {
     public IEnumerable<ApontamentoDTO> Apontamentos { get; set; }
     public OperationResult OperationResult { get; set; }
