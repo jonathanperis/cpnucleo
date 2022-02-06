@@ -80,8 +80,8 @@ public class RecursoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostRecursoTarefa")]
-    public async Task<ActionResult<OperationResult>> PostRecursoTarefa([FromBody] CreateRecursoTarefaCommand command)
+    [Route("CreateRecursoTarefa")]
+    public async Task<ActionResult<OperationResult>> CreateRecursoTarefa([FromBody] CreateRecursoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -96,8 +96,8 @@ public class RecursoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutRecursoTarefa")]
-    public async Task<ActionResult<OperationResult>> PutRecursoTarefa([FromBody] UpdateRecursoTarefaCommand command)
+    [Route("UpdateRecursoTarefa")]
+    public async Task<ActionResult<OperationResult>> UpdateRecursoTarefa([FromBody] UpdateRecursoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -112,8 +112,8 @@ public class RecursoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteRecursoTarefa")]
-    public async Task<ActionResult<OperationResult>> DeleteRecursoTarefa([FromBody] RemoveRecursoTarefaCommand command)
+    [Route("RemoveRecursoTarefa")]
+    public async Task<ActionResult<OperationResult>> RemoveRecursoTarefa([FromBody] RemoveRecursoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }

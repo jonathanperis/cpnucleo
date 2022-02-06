@@ -63,8 +63,8 @@ public class TipoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostTipoTarefa")]
-    public async Task<ActionResult<OperationResult>> PostTipoTarefa([FromBody] CreateTipoTarefaCommand command)
+    [Route("CreateTipoTarefa")]
+    public async Task<ActionResult<OperationResult>> CreateTipoTarefa([FromBody] CreateTipoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -79,8 +79,8 @@ public class TipoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutTipoTarefa")]
-    public async Task<ActionResult<OperationResult>> PutTipoTarefa([FromBody] UpdateTipoTarefaCommand command)
+    [Route("UpdateTipoTarefa")]
+    public async Task<ActionResult<OperationResult>> UpdateTipoTarefa([FromBody] UpdateTipoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -95,8 +95,8 @@ public class TipoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteTipoTarefa")]
-    public async Task<ActionResult<OperationResult>> DeleteTipoTarefa([FromBody] RemoveTipoTarefaCommand command)
+    [Route("RemoveTipoTarefa")]
+    public async Task<ActionResult<OperationResult>> RemoveTipoTarefa([FromBody] RemoveTipoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }

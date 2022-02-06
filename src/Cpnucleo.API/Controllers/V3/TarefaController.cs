@@ -81,8 +81,8 @@ public class TarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostTarefa")]
-    public async Task<ActionResult<OperationResult>> PostTarefa([FromBody] CreateTarefaCommand command)
+    [Route("CreateTarefa")]
+    public async Task<ActionResult<OperationResult>> CreateTarefa([FromBody] CreateTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -97,8 +97,8 @@ public class TarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutTarefa")]
-    public async Task<ActionResult<OperationResult>> PutTarefa([FromBody] UpdateTarefaCommand command)
+    [Route("UpdateTarefa")]
+    public async Task<ActionResult<OperationResult>> UpdateTarefa([FromBody] UpdateTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -114,7 +114,7 @@ public class TarefaController : ControllerBase
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
     [Route("UpdateTarefaByWorkflow")]
-    public async Task<ActionResult<OperationResult>> PutTarefaByWorkflow([FromBody] UpdateTarefaByWorkflowCommand command)
+    public async Task<ActionResult<OperationResult>> UpdateTarefaByWorkflow([FromBody] UpdateTarefaByWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -129,8 +129,8 @@ public class TarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteTarefa")]
-    public async Task<ActionResult<OperationResult>> DeleteTarefa([FromBody] RemoveTarefaCommand command)
+    [Route("RemoveTarefa")]
+    public async Task<ActionResult<OperationResult>> RemoveTarefa([FromBody] RemoveTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
