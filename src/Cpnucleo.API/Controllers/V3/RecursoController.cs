@@ -63,8 +63,8 @@ public class RecursoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostRecurso")]
-    public async Task<ActionResult<OperationResult>> PostRecurso([FromBody] CreateRecursoCommand command)
+    [Route("CreateRecurso")]
+    public async Task<ActionResult<OperationResult>> CreateRecurso([FromBody] CreateRecursoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -79,8 +79,8 @@ public class RecursoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutRecurso")]
-    public async Task<ActionResult<OperationResult>> PutRecurso([FromBody] UpdateRecursoCommand command)
+    [Route("UpdateRecurso")]
+    public async Task<ActionResult<OperationResult>> UpdateRecurso([FromBody] UpdateRecursoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -95,8 +95,8 @@ public class RecursoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteRecurso")]
-    public async Task<ActionResult<OperationResult>> DeleteRecurso([FromBody] RemoveRecursoCommand command)
+    [Route("RemoveRecurso")]
+    public async Task<ActionResult<OperationResult>> RemoveRecurso([FromBody] RemoveRecursoCommand command)
     {
         return await _mediator.Send(command);
     }

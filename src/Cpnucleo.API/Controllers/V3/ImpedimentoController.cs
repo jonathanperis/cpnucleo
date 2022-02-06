@@ -63,8 +63,8 @@ public class ImpedimentoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostImpedimento")]
-    public async Task<ActionResult<OperationResult>> PostImpedimento([FromBody] CreateImpedimentoCommand command)
+    [Route("CreateImpedimento")]
+    public async Task<ActionResult<OperationResult>> CreateImpedimento([FromBody] CreateImpedimentoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -79,8 +79,8 @@ public class ImpedimentoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutImpedimento")]
-    public async Task<ActionResult<OperationResult>> PutImpedimento([FromBody] UpdateImpedimentoCommand command)
+    [Route("UpdateImpedimento")]
+    public async Task<ActionResult<OperationResult>> UpdateImpedimento([FromBody] UpdateImpedimentoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -95,8 +95,8 @@ public class ImpedimentoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteImpedimento")]
-    public async Task<ActionResult<OperationResult>> DeleteImpedimento([FromBody] RemoveImpedimentoCommand command)
+    [Route("RemoveImpedimento")]
+    public async Task<ActionResult<OperationResult>> RemoveImpedimento([FromBody] RemoveImpedimentoCommand command)
     {
         return await _mediator.Send(command);
     }

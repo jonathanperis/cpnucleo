@@ -63,8 +63,8 @@ public class ProjetoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostProjeto")]
-    public async Task<ActionResult<OperationResult>> PostProjeto([FromBody] CreateProjetoCommand command)
+    [Route("CreateProjeto")]
+    public async Task<ActionResult<OperationResult>> CreateProjeto([FromBody] CreateProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -79,8 +79,8 @@ public class ProjetoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutProjeto")]
-    public async Task<ActionResult<OperationResult>> PutProjeto([FromBody] UpdateProjetoCommand command)
+    [Route("UpdateProjeto")]
+    public async Task<ActionResult<OperationResult>> UpdateProjeto([FromBody] UpdateProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -95,8 +95,8 @@ public class ProjetoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteProjeto")]
-    public async Task<ActionResult<OperationResult>> DeleteProjeto([FromBody] RemoveProjetoCommand command)
+    [Route("RemoveProjeto")]
+    public async Task<ActionResult<OperationResult>> RemoveProjeto([FromBody] RemoveProjetoCommand command)
     {
         return await _mediator.Send(command);
     }

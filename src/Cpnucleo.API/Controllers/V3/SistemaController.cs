@@ -63,8 +63,8 @@ public class SistemaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostSistema")]
-    public async Task<ActionResult<OperationResult>> PostSistema([FromBody] CreateSistemaCommand command)
+    [Route("CreateSistema")]
+    public async Task<ActionResult<OperationResult>> CreateSistema([FromBody] CreateSistemaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -79,8 +79,8 @@ public class SistemaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutSistema")]
-    public async Task<ActionResult<OperationResult>> PutSistema([FromBody] UpdateSistemaCommand command)
+    [Route("UpdateSistema")]
+    public async Task<ActionResult<OperationResult>> UpdateSistema([FromBody] UpdateSistemaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -95,8 +95,8 @@ public class SistemaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteSistema")]
-    public async Task<ActionResult<OperationResult>> DeleteSistema([FromBody] RemoveSistemaCommand command)
+    [Route("RemoveSistema")]
+    public async Task<ActionResult<OperationResult>> RemoveSistema([FromBody] RemoveSistemaCommand command)
     {
         return await _mediator.Send(command);
     }
