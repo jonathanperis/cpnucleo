@@ -63,8 +63,8 @@ public class WorkflowController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostWorkflow")]
-    public async Task<ActionResult<OperationResult>> PostWorkflow([FromBody] CreateWorkflowCommand command)
+    [Route("CreateWorkflow")]
+    public async Task<ActionResult<OperationResult>> CreateWorkflow([FromBody] CreateWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -79,8 +79,8 @@ public class WorkflowController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutWorkflow")]
-    public async Task<ActionResult<OperationResult>> PutWorkflow([FromBody] UpdateWorkflowCommand command)
+    [Route("UpdateWorkflow")]
+    public async Task<ActionResult<OperationResult>> UpdateWorkflow([FromBody] UpdateWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -95,8 +95,8 @@ public class WorkflowController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteWorkflow")]
-    public async Task<ActionResult<OperationResult>> DeleteWorkflow([FromBody] RemoveWorkflowCommand command)
+    [Route("RemoveWorkflow")]
+    public async Task<ActionResult<OperationResult>> RemoveWorkflow([FromBody] RemoveWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }

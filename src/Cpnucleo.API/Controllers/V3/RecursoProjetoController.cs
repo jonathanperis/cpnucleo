@@ -80,8 +80,8 @@ public class RecursoProjetoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostRecursoProjeto")]
-    public async Task<ActionResult<OperationResult>> PostRecursoProjeto([FromBody] CreateRecursoProjetoCommand command)
+    [Route("CreateRecursoProjeto")]
+    public async Task<ActionResult<OperationResult>> CreateRecursoProjeto([FromBody] CreateRecursoProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -96,8 +96,8 @@ public class RecursoProjetoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutRecursoProjeto")]
-    public async Task<ActionResult<OperationResult>> PutRecursoProjeto([FromBody] UpdateRecursoProjetoCommand command)
+    [Route("UpdateRecursoProjeto")]
+    public async Task<ActionResult<OperationResult>> UpdateRecursoProjeto([FromBody] UpdateRecursoProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -112,8 +112,8 @@ public class RecursoProjetoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteRecursoProjeto")]
-    public async Task<ActionResult<OperationResult>> DeleteRecursoProjeto([FromBody] RemoveRecursoProjetoCommand command)
+    [Route("RemoveRecursoProjeto")]
+    public async Task<ActionResult<OperationResult>> RemoveRecursoProjeto([FromBody] RemoveRecursoProjetoCommand command)
     {
         return await _mediator.Send(command);
     }

@@ -80,8 +80,8 @@ public class ApontamentoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostApontamento")]
-    public async Task<ActionResult<OperationResult>> PostApontamento([FromBody] CreateApontamentoCommand command)
+    [Route("CreateApontamento")]
+    public async Task<ActionResult<OperationResult>> CreateApontamento([FromBody] CreateApontamentoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -96,8 +96,8 @@ public class ApontamentoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutApontamento")]
-    public async Task<ActionResult<OperationResult>> PutApontamento([FromBody] UpdateApontamentoCommand command)
+    [Route("UpdateApontamento")]
+    public async Task<ActionResult<OperationResult>> UpdateApontamento([FromBody] UpdateApontamentoCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -112,8 +112,8 @@ public class ApontamentoController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteApontamento")]
-    public async Task<ActionResult<OperationResult>> DeleteApontamento([FromBody] RemoveApontamentoCommand command)
+    [Route("RemoveApontamento")]
+    public async Task<ActionResult<OperationResult>> RemoveApontamento([FromBody] RemoveApontamentoCommand command)
     {
         return await _mediator.Send(command);
     }

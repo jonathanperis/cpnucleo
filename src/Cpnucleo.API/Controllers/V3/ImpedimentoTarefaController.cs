@@ -80,8 +80,8 @@ public class ImpedimentoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [Route("PostImpedimentoTarefa")]
-    public async Task<ActionResult<OperationResult>> PostImpedimentoTarefa([FromBody] CreateImpedimentoTarefaCommand command)
+    [Route("CreateImpedimentoTarefa")]
+    public async Task<ActionResult<OperationResult>> CreateImpedimentoTarefa([FromBody] CreateImpedimentoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -96,8 +96,8 @@ public class ImpedimentoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPut]
-    [Route("PutImpedimentoTarefa")]
-    public async Task<ActionResult<OperationResult>> PutImpedimentoTarefa([FromBody] UpdateImpedimentoTarefaCommand command)
+    [Route("UpdateImpedimentoTarefa")]
+    public async Task<ActionResult<OperationResult>> UpdateImpedimentoTarefa([FromBody] UpdateImpedimentoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
@@ -112,8 +112,8 @@ public class ImpedimentoTarefaController : ControllerBase
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpDelete]
-    [Route("DeleteImpedimentoTarefa")]
-    public async Task<ActionResult<OperationResult>> DeleteImpedimentoTarefa([FromBody] RemoveImpedimentoTarefaCommand command)
+    [Route("RemoveImpedimentoTarefa")]
+    public async Task<ActionResult<OperationResult>> RemoveImpedimentoTarefa([FromBody] RemoveImpedimentoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
