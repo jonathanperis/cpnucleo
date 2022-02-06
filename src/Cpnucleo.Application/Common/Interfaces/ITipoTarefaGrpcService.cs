@@ -3,6 +3,7 @@ using Cpnucleo.Application.Commands.TipoTarefa.RemoveTipoTarefa;
 using Cpnucleo.Application.Commands.TipoTarefa.UpdateTipoTarefa;
 using Cpnucleo.Application.Queries.TipoTarefa.GetTipoTarefa;
 using Cpnucleo.Application.Queries.TipoTarefa.ListTipoTarefa;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 

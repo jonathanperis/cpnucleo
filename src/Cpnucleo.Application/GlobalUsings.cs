@@ -2,5 +2,5 @@
 global using Cpnucleo.Application.DTOs;
 global using Cpnucleo.Domain.Entities;
 global using Cpnucleo.Domain.UoW;
-global using MagicOnion;
+global using FluentValidation;
 global using MediatR;

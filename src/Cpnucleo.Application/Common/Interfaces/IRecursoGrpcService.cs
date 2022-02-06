@@ -3,6 +3,7 @@ using Cpnucleo.Application.Commands.Recurso.RemoveRecurso;
 using Cpnucleo.Application.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Application.Queries.Recurso.GetRecurso;
 using Cpnucleo.Application.Queries.Recurso.ListRecurso;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 

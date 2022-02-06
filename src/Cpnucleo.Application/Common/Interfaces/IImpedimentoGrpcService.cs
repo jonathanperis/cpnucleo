@@ -3,6 +3,7 @@ using Cpnucleo.Application.Commands.Impedimento.RemoveImpedimento;
 using Cpnucleo.Application.Commands.Impedimento.UpdateImpedimento;
 using Cpnucleo.Application.Queries.Impedimento.GetImpedimento;
 using Cpnucleo.Application.Queries.Impedimento.ListImpedimento;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 

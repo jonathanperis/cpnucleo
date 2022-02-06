@@ -4,6 +4,7 @@ using Cpnucleo.Application.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Application.Queries.Apontamento.GetApontamento;
 using Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
 using Cpnucleo.Application.Queries.Apontamento.ListApontamento;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 

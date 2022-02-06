@@ -3,6 +3,7 @@ using Cpnucleo.Application.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Application.Commands.Sistema.UpdateSistema;
 using Cpnucleo.Application.Queries.Sistema.GetSistema;
 using Cpnucleo.Application.Queries.Sistema.ListSistema;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 
