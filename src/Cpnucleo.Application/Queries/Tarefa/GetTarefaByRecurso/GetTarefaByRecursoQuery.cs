@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.Queries.Tarefa.GetByRecurso;
+﻿namespace Cpnucleo.Application.Queries.Tarefa.GetTarefaByRecurso;
 
 public class GetTarefaByRecursoQuery : IRequest<GetTarefaByRecursoViewModel>
 {

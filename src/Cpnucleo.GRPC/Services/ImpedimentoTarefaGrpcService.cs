@@ -1,6 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
+using Cpnucleo.Application.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
+using Cpnucleo.Application.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
+using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetByTarefa;
+using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
+using Cpnucleo.Application.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,17 +22,17 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<ImpedimentoTarefaViewModel>> AllAsync(ListImpedimentoTarefaQuery query)
+    public async UnaryResult<ListImpedimentoTarefaViewModel> AllAsync(ListImpedimentoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<ImpedimentoTarefaViewModel> GetAsync(GetImpedimentoTarefaQuery query)
+    public async UnaryResult<GetImpedimentoTarefaViewModel> GetAsync(GetImpedimentoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<IEnumerable<ImpedimentoTarefaViewModel>> GetByTarefaAsync(GetByTarefaQuery query)
+    public async UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetByTarefaAsync(GetImpedimentoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }

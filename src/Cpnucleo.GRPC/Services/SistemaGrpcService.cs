@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.Sistema.CreateSistema;
+using Cpnucleo.Application.Commands.Sistema.RemoveSistema;
+using Cpnucleo.Application.Commands.Sistema.UpdateSistema;
+using Cpnucleo.Application.Queries.Sistema.GetSistema;
+using Cpnucleo.Application.Queries.Sistema.ListSistema;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,12 +21,12 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<SistemaViewModel>> AllAsync(ListSistemaQuery query)
+    public async UnaryResult<ListSistemaViewModel> AllAsync(ListSistemaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<SistemaViewModel> GetAsync(GetSistemaQuery query)
+    public async UnaryResult<GetSistemaViewModel> GetAsync(GetSistemaQuery query)
     {
         return await _mediator.Send(query);
     }

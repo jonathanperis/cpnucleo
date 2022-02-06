@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.Workflow.CreateWorkflow;
+using Cpnucleo.Application.Commands.Workflow.RemoveWorkflow;
+using Cpnucleo.Application.Commands.Workflow.UpdateWorkflow;
+using Cpnucleo.Application.Queries.Workflow.GetWorkflow;
+using Cpnucleo.Application.Queries.Workflow.ListWorkflow;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,12 +21,12 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<WorkflowViewModel>> AllAsync(ListWorkflowQuery query)
+    public async UnaryResult<ListWorkflowViewModel> AllAsync(ListWorkflowQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<WorkflowViewModel> GetAsync(GetWorkflowQuery query)
+    public async UnaryResult<GetWorkflowViewModel> GetAsync(GetWorkflowQuery query)
     {
         return await _mediator.Send(query);
     }

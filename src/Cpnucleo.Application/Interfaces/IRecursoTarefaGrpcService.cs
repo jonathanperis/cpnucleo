@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Application.Commands.RecursoTarefa.CreateRecursoTarefa;
 using Cpnucleo.Application.Commands.RecursoTarefa.RemoveRecursoTarefa;
 using Cpnucleo.Application.Commands.RecursoTarefa.UpdateRecursoTarefa;
-using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetByTarefa;
+using Cpnucleo.Application.Queries.RecursoTarefa.GetByTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.ListRecursoTarefa;
 
@@ -19,5 +19,5 @@ public interface IRecursoTarefaGrpcService : IService<IRecursoTarefaGrpcService>
 
     UnaryResult<OperationResult> RemoveAsync(RemoveRecursoTarefaCommand command);
 
-    UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetByTarefaAsync(GetImpedimentoTarefaByTarefaQuery query);
+    UnaryResult<GetRecursoTarefaByTarefaViewModel> GetByTarefaAsync(GetRecursoTarefaByTarefaQuery query);
 }
