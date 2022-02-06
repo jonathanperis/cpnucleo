@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
 using Cpnucleo.Application.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
 using Cpnucleo.Application.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetByTarefa;
 using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
+using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefaByTarefa;
 using Cpnucleo.Application.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 
 namespace Cpnucleo.GRPC.Services;
@@ -17,32 +17,32 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateImpedimentoTarefaCommand command)
+    public async UnaryResult<OperationResult> CreateImpedimentoTarefa(CreateImpedimentoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListImpedimentoTarefaViewModel> AllAsync(ListImpedimentoTarefaQuery query)
+    public async UnaryResult<ListImpedimentoTarefaViewModel> ListImpedimentoTarefa(ListImpedimentoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetImpedimentoTarefaViewModel> GetAsync(GetImpedimentoTarefaQuery query)
+    public async UnaryResult<GetImpedimentoTarefaViewModel> GetImpedimentoTarefa(GetImpedimentoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetByTarefaAsync(GetImpedimentoTarefaByTarefaQuery query)
+    public async UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetImpedimentoTarefaByTarefa(GetImpedimentoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoTarefaCommand command)
+    public async UnaryResult<OperationResult> RemoveImpedimentoTarefa(RemoveImpedimentoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoTarefaCommand command)
+    public async UnaryResult<OperationResult> UpdateImpedimentoTarefa(UpdateImpedimentoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }

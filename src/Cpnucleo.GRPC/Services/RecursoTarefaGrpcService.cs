@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Application.Commands.RecursoTarefa.CreateRecursoTarefa;
 using Cpnucleo.Application.Commands.RecursoTarefa.RemoveRecursoTarefa;
 using Cpnucleo.Application.Commands.RecursoTarefa.UpdateRecursoTarefa;
-using Cpnucleo.Application.Queries.RecursoTarefa.GetByTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefa;
+using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefaByTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.ListRecursoTarefa;
 
 namespace Cpnucleo.GRPC.Services;
@@ -17,32 +17,32 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateRecursoTarefaCommand command)
+    public async UnaryResult<OperationResult> CreateRecursoTarefa(CreateRecursoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListRecursoTarefaViewModel> AllAsync(ListRecursoTarefaQuery query)
+    public async UnaryResult<ListRecursoTarefaViewModel> ListRecursoTarefa(ListRecursoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetRecursoTarefaViewModel> GetAsync(GetRecursoTarefaQuery query)
+    public async UnaryResult<GetRecursoTarefaViewModel> GetRecursoTarefa(GetRecursoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetRecursoTarefaByTarefaViewModel> GetByTarefaAsync(GetRecursoTarefaByTarefaQuery query)
+    public async UnaryResult<GetRecursoTarefaByTarefaViewModel> GetRecursoTarefaByTarefa(GetRecursoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveRecursoTarefaCommand command)
+    public async UnaryResult<OperationResult> RemoveRecursoTarefa(RemoveRecursoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateRecursoTarefaCommand command)
+    public async UnaryResult<OperationResult> UpdateRecursoTarefa(UpdateRecursoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }

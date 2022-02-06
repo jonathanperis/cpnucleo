@@ -16,27 +16,27 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateRecursoCommand command)
+    public async UnaryResult<OperationResult> CreateRecurso(CreateRecursoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListRecursoViewModel> AllAsync(ListRecursoQuery query)
+    public async UnaryResult<ListRecursoViewModel> ListRecurso(ListRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetRecursoViewModel> GetAsync(GetRecursoQuery query)
+    public async UnaryResult<GetRecursoViewModel> GetRecurso(GetRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveRecursoCommand command)
+    public async UnaryResult<OperationResult> RemoveRecurso(RemoveRecursoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateRecursoCommand command)
+    public async UnaryResult<OperationResult> UpdateRecurso(UpdateRecursoCommand command)
     {
         return await _mediator.Send(command);
     }
