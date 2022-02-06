@@ -8,13 +8,13 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface IProjetoGrpcService : IService<IProjetoGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateProjetoCommand command);
+    UnaryResult<OperationResult> CreateProjeto(CreateProjetoCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateProjetoCommand command);
+    UnaryResult<OperationResult> UpdateProjeto(UpdateProjetoCommand command);
 
-    UnaryResult<GetProjetoViewModel> GetAsync(GetProjetoQuery query);
+    UnaryResult<GetProjetoViewModel> GetProjeto(GetProjetoQuery query);
 
-    UnaryResult<ListProjetoViewModel> AllAsync(ListProjetoQuery query);
+    UnaryResult<ListProjetoViewModel> ListProjeto(ListProjetoQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveProjetoCommand command);
+    UnaryResult<OperationResult> RemoveProjeto(RemoveProjetoCommand command);
 }

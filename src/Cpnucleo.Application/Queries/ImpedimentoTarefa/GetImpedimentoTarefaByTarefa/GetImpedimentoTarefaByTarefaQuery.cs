@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa.GetByTarefa;
+﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefaByTarefa;
 
 public class GetImpedimentoTarefaByTarefaQuery : IRequest<GetImpedimentoTarefaByTarefaViewModel>
 {

@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Application.Commands.RecursoProjeto.CreateRecursoProjeto;
 using Cpnucleo.Application.Commands.RecursoProjeto.RemoveRecursoProjeto;
 using Cpnucleo.Application.Commands.RecursoProjeto.UpdateRecursoProjeto;
-using Cpnucleo.Application.Queries.RecursoProjeto.GetByProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjeto;
+using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjetoByProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.ListRecursoProjeto;
 
 namespace Cpnucleo.GRPC.Services;
@@ -17,32 +17,32 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateRecursoProjetoCommand command)
+    public async UnaryResult<OperationResult> CreateRecursoProjeto(CreateRecursoProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListRecursoProjetoViewModel> AllAsync(ListRecursoProjetoQuery query)
+    public async UnaryResult<ListRecursoProjetoViewModel> ListRecursoProjeto(ListRecursoProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetRecursoProjetoViewModel> GetAsync(GetRecursoProjetoQuery query)
+    public async UnaryResult<GetRecursoProjetoViewModel> GetRecursoProjeto(GetRecursoProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetRecursoProjetoByProjetoViewModel> GetByProjetoAsync(GetRecursoProjetoByProjetoQuery query)
+    public async UnaryResult<GetRecursoProjetoByProjetoViewModel> GetRecursoProjetoByProjeto(GetRecursoProjetoByProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveRecursoProjetoCommand command)
+    public async UnaryResult<OperationResult> RemoveRecursoProjeto(RemoveRecursoProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateRecursoProjetoCommand command)
+    public async UnaryResult<OperationResult> UpdateRecursoProjeto(UpdateRecursoProjetoCommand command)
     {
         return await _mediator.Send(command);
     }

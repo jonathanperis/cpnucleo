@@ -8,13 +8,13 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface IRecursoGrpcService : IService<IRecursoGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateRecursoCommand command);
+    UnaryResult<OperationResult> CreateRecurso(CreateRecursoCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateRecursoCommand command);
+    UnaryResult<OperationResult> UpdateRecurso(UpdateRecursoCommand command);
 
-    UnaryResult<GetRecursoViewModel> GetAsync(GetRecursoQuery query);
+    UnaryResult<GetRecursoViewModel> GetRecurso(GetRecursoQuery query);
 
-    UnaryResult<ListRecursoViewModel> AllAsync(ListRecursoQuery query);
+    UnaryResult<ListRecursoViewModel> ListRecurso(ListRecursoQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveRecursoCommand command);
+    UnaryResult<OperationResult> RemoveRecurso(RemoveRecursoCommand command);
 }

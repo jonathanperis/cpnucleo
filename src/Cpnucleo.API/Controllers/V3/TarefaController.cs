@@ -3,8 +3,8 @@ using Cpnucleo.Application.Commands.Tarefa.CreateTarefa;
 using Cpnucleo.Application.Commands.Tarefa.RemoveTarefa;
 using Cpnucleo.Application.Commands.Tarefa.UpdateTarefa;
 using Cpnucleo.Application.Commands.Tarefa.UpdateTarefaByWorkflow;
-using Cpnucleo.Application.Queries.Tarefa.GetByRecurso;
 using Cpnucleo.Application.Queries.Tarefa.GetTarefa;
+using Cpnucleo.Application.Queries.Tarefa.GetTarefaByRecurso;
 using Cpnucleo.Application.Queries.Tarefa.ListTarefa;
 
 namespace Cpnucleo.API.Controllers.V3;

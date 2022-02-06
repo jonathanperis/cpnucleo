@@ -16,27 +16,27 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateImpedimentoCommand command)
+    public async UnaryResult<OperationResult> CreateImpedimento(CreateImpedimentoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListImpedimentoViewModel> AllAsync(ListImpedimentoQuery query)
+    public async UnaryResult<ListImpedimentoViewModel> ListImpedimento(ListImpedimentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetImpedimentoViewModel> GetAsync(GetImpedimentoQuery query)
+    public async UnaryResult<GetImpedimentoViewModel> GetImpedimento(GetImpedimentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoCommand command)
+    public async UnaryResult<OperationResult> RemoveImpedimento(RemoveImpedimentoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoCommand command)
+    public async UnaryResult<OperationResult> UpdateImpedimento(UpdateImpedimentoCommand command)
     {
         return await _mediator.Send(command);
     }

@@ -2,8 +2,8 @@
 using Cpnucleo.Application.Commands.RecursoProjeto.CreateRecursoProjeto;
 using Cpnucleo.Application.Commands.RecursoProjeto.RemoveRecursoProjeto;
 using Cpnucleo.Application.Commands.RecursoProjeto.UpdateRecursoProjeto;
-using Cpnucleo.Application.Queries.RecursoProjeto.GetByProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjeto;
+using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjetoByProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.ListRecursoProjeto;
 
 namespace Cpnucleo.API.Controllers.V3;

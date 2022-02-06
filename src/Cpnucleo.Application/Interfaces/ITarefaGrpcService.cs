@@ -9,15 +9,15 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface ITarefaGrpcService : IService<ITarefaGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateTarefaCommand command);
+    UnaryResult<OperationResult> CreateTarefa(CreateTarefaCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateTarefaCommand command);
+    UnaryResult<OperationResult> UpdateTarefa(UpdateTarefaCommand command);
 
-    UnaryResult<GetTarefaViewModel> GetAsync(GetTarefaQuery query);
+    UnaryResult<GetTarefaViewModel> GetTarefa(GetTarefaQuery query);
 
-    UnaryResult<ListTarefaViewModel> AllAsync(ListTarefaQuery query);
+    UnaryResult<ListTarefaViewModel> ListTarefa(ListTarefaQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveTarefaCommand command);
+    UnaryResult<OperationResult> RemoveTarefa(RemoveTarefaCommand command);
 
-    UnaryResult<GetTarefaByRecursoViewModel> GetByRecursoAsync(GetTarefaByRecursoQuery query);
+    UnaryResult<GetTarefaByRecursoViewModel> GetTarefaByRecurso(GetTarefaByRecursoQuery query);
 }

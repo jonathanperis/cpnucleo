@@ -17,32 +17,32 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateApontamentoCommand command)
+    public async UnaryResult<OperationResult> CreateApontamento(CreateApontamentoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListApontamentoViewModel> AllAsync(ListApontamentoQuery query)
+    public async UnaryResult<ListApontamentoViewModel> ListApontamento(ListApontamentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetApontamentoViewModel> GetAsync(GetApontamentoQuery query)
+    public async UnaryResult<GetApontamentoViewModel> GetApontamento(GetApontamentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetApontamentoByRecursoViewModel> GetByRecursoAsync(GetApontamentoByRecursoQuery query)
+    public async UnaryResult<GetApontamentoByRecursoViewModel> GetApontamentoByRecurso(GetApontamentoByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveApontamentoCommand command)
+    public async UnaryResult<OperationResult> RemoveApontamento(RemoveApontamentoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateApontamentoCommand command)
+    public async UnaryResult<OperationResult> UpdateApontamento(UpdateApontamentoCommand command)
     {
         return await _mediator.Send(command);
     }

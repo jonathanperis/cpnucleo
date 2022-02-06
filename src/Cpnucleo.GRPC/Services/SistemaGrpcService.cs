@@ -16,27 +16,27 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateSistemaCommand command)
+    public async UnaryResult<OperationResult> CreateSistema(CreateSistemaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListSistemaViewModel> AllAsync(ListSistemaQuery query)
+    public async UnaryResult<ListSistemaViewModel> ListSistema(ListSistemaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetSistemaViewModel> GetAsync(GetSistemaQuery query)
+    public async UnaryResult<GetSistemaViewModel> GetSistema(GetSistemaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveSistemaCommand command)
+    public async UnaryResult<OperationResult> RemoveSistema(RemoveSistemaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateSistemaCommand command)
+    public async UnaryResult<OperationResult> UpdateSistema(UpdateSistemaCommand command)
     {
         return await _mediator.Send(command);
     }
