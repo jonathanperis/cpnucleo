@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.DTOs;
+﻿namespace Cpnucleo.Application.Common.DTOs;
 
 public abstract class BaseDTO
 {
