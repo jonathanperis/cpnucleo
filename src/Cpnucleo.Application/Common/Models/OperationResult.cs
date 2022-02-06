@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application;
+﻿namespace Cpnucleo.Application.Common.Models;
 
 public enum OperationResult
 {

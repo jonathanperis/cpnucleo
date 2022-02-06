@@ -10,7 +10,7 @@ using Cpnucleo.Application.Commands.Tarefa.CreateTarefa;
 using Cpnucleo.Application.Commands.TipoTarefa.CreateTipoTarefa;
 using Cpnucleo.Application.Commands.Workflow.CreateWorkflow;
 
-namespace Cpnucleo.Application.Configuration
+namespace Cpnucleo.Application.Common.Mappings
 {
     internal class CommandToEntityProfile : Profile
     {

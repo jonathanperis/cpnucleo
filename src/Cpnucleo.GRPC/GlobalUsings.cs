@@ -1,5 +1,5 @@
-﻿global using Cpnucleo.Application;
-global using Cpnucleo.Application.Interfaces;
+﻿global using Cpnucleo.Application.Common.Interfaces;
+global using Cpnucleo.Application.Common.Models;
 global using MagicOnion;
 global using MagicOnion.Server;
 global using MediatR;

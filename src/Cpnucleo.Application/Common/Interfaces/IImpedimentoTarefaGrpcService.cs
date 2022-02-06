@@ -6,7 +6,7 @@ using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefaByTaref
 using Cpnucleo.Application.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IImpedimentoTarefaGrpcService : IService<IImpedimentoTarefaGrpcService>
 {

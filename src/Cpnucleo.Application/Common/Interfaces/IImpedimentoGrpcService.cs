@@ -5,7 +5,7 @@ using Cpnucleo.Application.Queries.Impedimento.GetImpedimento;
 using Cpnucleo.Application.Queries.Impedimento.ListImpedimento;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IImpedimentoGrpcService : IService<IImpedimentoGrpcService>
 {

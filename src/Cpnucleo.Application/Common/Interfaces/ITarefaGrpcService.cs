@@ -6,7 +6,7 @@ using Cpnucleo.Application.Queries.Tarefa.GetTarefaByRecurso;
 using Cpnucleo.Application.Queries.Tarefa.ListTarefa;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface ITarefaGrpcService : IService<ITarefaGrpcService>
 {

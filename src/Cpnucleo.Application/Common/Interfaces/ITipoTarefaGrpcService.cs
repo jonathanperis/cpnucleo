@@ -5,7 +5,7 @@ using Cpnucleo.Application.Queries.TipoTarefa.GetTipoTarefa;
 using Cpnucleo.Application.Queries.TipoTarefa.ListTipoTarefa;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface ITipoTarefaGrpcService : IService<ITipoTarefaGrpcService>
 {

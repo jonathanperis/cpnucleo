@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.Configuration;
+﻿namespace Cpnucleo.Application.Common.Mappings;
 
 public class EntityToDTOProfile : Profile
 {
