@@ -1,5 +1,7 @@
 ﻿using Cpnucleo.API.Configuration;
+using Cpnucleo.API.Filters;
 using Cpnucleo.Infra.CrossCutting.IoC;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -43,7 +45,8 @@ builder.Services.AddAuthentication(x =>
 });
 
 // Add services to the container.
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
+    .AddFluentValidation(x => x.AutomaticValidationEnabled = false)
     .ConfigureApiBehaviorOptions(options =>
     {
         options.SuppressMapClientErrors = true;

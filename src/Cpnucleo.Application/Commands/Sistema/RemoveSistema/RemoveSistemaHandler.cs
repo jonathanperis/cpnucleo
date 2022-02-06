@@ -31,7 +31,7 @@ public class RemoveSistemaHandler : IRequestHandler<RemoveSistemaCommand, Operat
 
         if (result == OperationResult.Success)
         {
-            await _eventHandler.PublishEventAsync(new RemoveSistemaEvent(request.Id));
+            await _eventHandler.PublishEventAsync(new RemoveSistemaEvent { Id = request.Id });
         }
 
         return result;

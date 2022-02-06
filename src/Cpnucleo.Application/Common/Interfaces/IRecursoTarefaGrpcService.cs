@@ -4,6 +4,7 @@ using Cpnucleo.Application.Commands.RecursoTarefa.UpdateRecursoTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefaByTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.ListRecursoTarefa;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 

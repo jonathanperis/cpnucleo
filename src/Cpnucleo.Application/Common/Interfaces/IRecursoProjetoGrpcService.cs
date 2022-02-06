@@ -4,6 +4,7 @@ using Cpnucleo.Application.Commands.RecursoProjeto.UpdateRecursoProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjetoByProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto.ListRecursoProjeto;
+using MagicOnion;
 
 namespace Cpnucleo.Application.Interfaces;
 

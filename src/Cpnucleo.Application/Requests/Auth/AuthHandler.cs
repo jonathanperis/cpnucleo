@@ -32,7 +32,7 @@ public class AuthHandler : IRequestHandler<AuthRequest, AuthResponse>
         }
 
         result.Recurso = _mapper.Map<RecursoDTO>(recurso);
-        
+
         bool success = _cryptographyManager.VerifyPbkdf2(request.Senha, recurso.Senha, recurso.Salt);
 
         result.Status = success ? OperationResult.Success : OperationResult.Failed;
