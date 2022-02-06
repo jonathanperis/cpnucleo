@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Configuration;
+﻿using Cpnucleo.Application.Common.Behaviors;
 using Cpnucleo.Application.Events.Sistema;
 using Cpnucleo.Application.Hubs;
 using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
@@ -14,9 +14,11 @@ public static class DependencyInjection
 {
     public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAutoMapper(typeof(DTOToEntityProfile), typeof(EntityToDTOProfile));
-
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.RegisterServiceBusReception().FromQueue("CpnucleoDefaultQueue", builder =>
         {

@@ -2,10 +2,5 @@
 
 public class RemoveSistemaEvent
 {
-    public RemoveSistemaEvent(Guid id)
-    {
-        Id = id;
-    }
-
-    public Guid Id { get; }
+    public Guid Id { get; set; }
 }
