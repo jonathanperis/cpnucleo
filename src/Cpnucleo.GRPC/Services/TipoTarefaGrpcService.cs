@@ -16,27 +16,27 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateTipoTarefaCommand command)
+    public async UnaryResult<OperationResult> CreateTipoTarefa(CreateTipoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListTipoTarefaViewModel> AllAsync(ListTipoTarefaQuery query)
+    public async UnaryResult<ListTipoTarefaViewModel> ListTipoTarefa(ListTipoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetTipoTarefaViewModel> GetAsync(GetTipoTarefaQuery query)
+    public async UnaryResult<GetTipoTarefaViewModel> GetTipoTarefa(GetTipoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveTipoTarefaCommand command)
+    public async UnaryResult<OperationResult> RemoveTipoTarefa(RemoveTipoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateTipoTarefaCommand command)
+    public async UnaryResult<OperationResult> UpdateTipoTarefa(UpdateTipoTarefaCommand command)
     {
         return await _mediator.Send(command);
     }

@@ -8,13 +8,13 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface ITipoTarefaGrpcService : IService<ITipoTarefaGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateTipoTarefaCommand command);
+    UnaryResult<OperationResult> CreateTipoTarefa(CreateTipoTarefaCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateTipoTarefaCommand command);
+    UnaryResult<OperationResult> UpdateTipoTarefa(UpdateTipoTarefaCommand command);
 
-    UnaryResult<GetTipoTarefaViewModel> GetAsync(GetTipoTarefaQuery query);
+    UnaryResult<GetTipoTarefaViewModel> GetTipoTarefa(GetTipoTarefaQuery query);
 
-    UnaryResult<ListTipoTarefaViewModel> AllAsync(ListTipoTarefaQuery query);
+    UnaryResult<ListTipoTarefaViewModel> ListTipoTarefa(ListTipoTarefaQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveTipoTarefaCommand command);
+    UnaryResult<OperationResult> RemoveTipoTarefa(RemoveTipoTarefaCommand command);
 }

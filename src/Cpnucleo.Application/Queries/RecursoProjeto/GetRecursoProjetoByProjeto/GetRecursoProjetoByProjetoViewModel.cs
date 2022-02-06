@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.Queries.RecursoProjeto.GetByProjeto;
+﻿namespace Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjetoByProjeto;
 
 public class GetRecursoProjetoByProjetoViewModel
 {

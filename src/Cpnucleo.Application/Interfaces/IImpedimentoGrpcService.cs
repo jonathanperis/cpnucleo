@@ -8,13 +8,13 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface IImpedimentoGrpcService : IService<IImpedimentoGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateImpedimentoCommand command);
+    UnaryResult<OperationResult> CreateImpedimento(CreateImpedimentoCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoCommand command);
+    UnaryResult<OperationResult> UpdateImpedimento(UpdateImpedimentoCommand command);
 
-    UnaryResult<GetImpedimentoViewModel> GetAsync(GetImpedimentoQuery query);
+    UnaryResult<GetImpedimentoViewModel> GetImpedimento(GetImpedimentoQuery query);
 
-    UnaryResult<ListImpedimentoViewModel> AllAsync(ListImpedimentoQuery query);
+    UnaryResult<ListImpedimentoViewModel> ListImpedimento(ListImpedimentoQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoCommand command);
+    UnaryResult<OperationResult> RemoveImpedimento(RemoveImpedimentoCommand command);
 }

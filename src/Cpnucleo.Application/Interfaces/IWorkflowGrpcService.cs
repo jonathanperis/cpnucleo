@@ -8,13 +8,13 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface IWorkflowGrpcService : IService<IWorkflowGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateWorkflowCommand command);
+    UnaryResult<OperationResult> CreateWorkflow(CreateWorkflowCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateWorkflowCommand command);
+    UnaryResult<OperationResult> UpdateWorkflow(UpdateWorkflowCommand command);
 
-    UnaryResult<GetWorkflowViewModel> GetAsync(GetWorkflowQuery query);
+    UnaryResult<GetWorkflowViewModel> GetWorkflow(GetWorkflowQuery query);
 
-    UnaryResult<ListWorkflowViewModel> AllAsync(ListWorkflowQuery query);
+    UnaryResult<ListWorkflowViewModel> ListWorkflow(ListWorkflowQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveWorkflowCommand command);
+    UnaryResult<OperationResult> RemoveWorkflow(RemoveWorkflowCommand command);
 }

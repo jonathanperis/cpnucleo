@@ -9,15 +9,15 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateApontamentoCommand command);
+    UnaryResult<OperationResult> CreateApontamento(CreateApontamentoCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateApontamentoCommand command);
+    UnaryResult<OperationResult> UpdateApontamento(UpdateApontamentoCommand command);
 
-    UnaryResult<GetApontamentoViewModel> GetAsync(GetApontamentoQuery query);
+    UnaryResult<GetApontamentoViewModel> GetApontamento(GetApontamentoQuery query);
 
-    UnaryResult<ListApontamentoViewModel> AllAsync(ListApontamentoQuery query);
+    UnaryResult<ListApontamentoViewModel> ListApontamento(ListApontamentoQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveApontamentoCommand command);
+    UnaryResult<OperationResult> RemoveApontamento(RemoveApontamentoCommand command);
 
-    UnaryResult<GetApontamentoByRecursoViewModel> GetByRecursoAsync(GetApontamentoByRecursoQuery query);
+    UnaryResult<GetApontamentoByRecursoViewModel> GetApontamentoByRecurso(GetApontamentoByRecursoQuery query);
 }

@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
 using Cpnucleo.Application.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
 using Cpnucleo.Application.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetByTarefa;
+using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefaByTarefa;
 using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
 using Cpnucleo.Application.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
 
@@ -9,15 +9,15 @@ namespace Cpnucleo.Application.Interfaces;
 
 public interface IImpedimentoTarefaGrpcService : IService<IImpedimentoTarefaGrpcService>
 {
-    UnaryResult<OperationResult> AddAsync(CreateImpedimentoTarefaCommand command);
+    UnaryResult<OperationResult> CreateImpedimentoTarefa(CreateImpedimentoTarefaCommand command);
 
-    UnaryResult<OperationResult> UpdateAsync(UpdateImpedimentoTarefaCommand command);
+    UnaryResult<OperationResult> UpdateImpedimentoTarefa(UpdateImpedimentoTarefaCommand command);
 
-    UnaryResult<GetImpedimentoTarefaViewModel> GetAsync(GetImpedimentoTarefaQuery query);
+    UnaryResult<GetImpedimentoTarefaViewModel> GetImpedimentoTarefa(GetImpedimentoTarefaQuery query);
 
-    UnaryResult<ListImpedimentoTarefaViewModel> AllAsync(ListImpedimentoTarefaQuery query);
+    UnaryResult<ListImpedimentoTarefaViewModel> ListImpedimentoTarefa(ListImpedimentoTarefaQuery query);
 
-    UnaryResult<OperationResult> RemoveAsync(RemoveImpedimentoTarefaCommand command);
+    UnaryResult<OperationResult> RemoveImpedimentoTarefa(RemoveImpedimentoTarefaCommand command);
 
-    UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetByTarefaAsync(GetImpedimentoTarefaByTarefaQuery query);
+    UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetImpedimentoTarefaByTarefa(GetImpedimentoTarefaByTarefaQuery query);
 }

@@ -16,27 +16,27 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateProjetoCommand command)
+    public async UnaryResult<OperationResult> CreateProjeto(CreateProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListProjetoViewModel> AllAsync(ListProjetoQuery query)
+    public async UnaryResult<ListProjetoViewModel> ListProjeto(ListProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetProjetoViewModel> GetAsync(GetProjetoQuery query)
+    public async UnaryResult<GetProjetoViewModel> GetProjeto(GetProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveProjetoCommand command)
+    public async UnaryResult<OperationResult> RemoveProjeto(RemoveProjetoCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateProjetoCommand command)
+    public async UnaryResult<OperationResult> UpdateProjeto(UpdateProjetoCommand command)
     {
         return await _mediator.Send(command);
     }

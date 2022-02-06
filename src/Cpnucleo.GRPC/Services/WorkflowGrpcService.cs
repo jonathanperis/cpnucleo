@@ -16,27 +16,27 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
         _mediator = mediator;
     }
 
-    public async UnaryResult<OperationResult> AddAsync(CreateWorkflowCommand command)
+    public async UnaryResult<OperationResult> CreateWorkflow(CreateWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<ListWorkflowViewModel> AllAsync(ListWorkflowQuery query)
+    public async UnaryResult<ListWorkflowViewModel> ListWorkflow(ListWorkflowQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<GetWorkflowViewModel> GetAsync(GetWorkflowQuery query)
+    public async UnaryResult<GetWorkflowViewModel> GetWorkflow(GetWorkflowQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<OperationResult> RemoveAsync(RemoveWorkflowCommand command)
+    public async UnaryResult<OperationResult> RemoveWorkflow(RemoveWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<OperationResult> UpdateAsync(UpdateWorkflowCommand command)
+    public async UnaryResult<OperationResult> UpdateWorkflow(UpdateWorkflowCommand command)
     {
         return await _mediator.Send(command);
     }
