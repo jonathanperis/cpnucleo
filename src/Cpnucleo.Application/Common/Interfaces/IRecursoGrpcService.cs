@@ -5,7 +5,7 @@ using Cpnucleo.Application.Queries.Recurso.GetRecurso;
 using Cpnucleo.Application.Queries.Recurso.ListRecurso;
 using MagicOnion;
 
-namespace Cpnucleo.Application.Interfaces;
+namespace Cpnucleo.Application.Common.Interfaces;
 
 public interface IRecursoGrpcService : IService<IRecursoGrpcService>
 {
