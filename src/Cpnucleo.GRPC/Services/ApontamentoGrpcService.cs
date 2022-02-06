@@ -1,6 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.Apontamento.CreateApontamento;
+using Cpnucleo.Application.Commands.Apontamento.RemoveApontamento;
+using Cpnucleo.Application.Commands.Apontamento.UpdateApontamento;
+using Cpnucleo.Application.Queries.Apontamento.GetApontamento;
+using Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
+using Cpnucleo.Application.Queries.Apontamento.ListApontamento;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,17 +22,17 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<ApontamentoViewModel>> AllAsync(ListApontamentoQuery query)
+    public async UnaryResult<ListApontamentoViewModel> AllAsync(ListApontamentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<ApontamentoViewModel> GetAsync(GetApontamentoQuery query)
+    public async UnaryResult<GetApontamentoViewModel> GetAsync(GetApontamentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<IEnumerable<ApontamentoViewModel>> GetByRecursoAsync(GetByRecursoQuery query)
+    public async UnaryResult<GetApontamentoByRecursoViewModel> GetByRecursoAsync(GetApontamentoByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }

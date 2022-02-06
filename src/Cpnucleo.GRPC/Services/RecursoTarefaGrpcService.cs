@@ -1,6 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.RecursoTarefa.CreateRecursoTarefa;
+using Cpnucleo.Application.Commands.RecursoTarefa.RemoveRecursoTarefa;
+using Cpnucleo.Application.Commands.RecursoTarefa.UpdateRecursoTarefa;
+using Cpnucleo.Application.Queries.RecursoTarefa.GetByTarefa;
+using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefa;
+using Cpnucleo.Application.Queries.RecursoTarefa.ListRecursoTarefa;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,17 +22,17 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<RecursoTarefaViewModel>> AllAsync(ListRecursoTarefaQuery query)
+    public async UnaryResult<ListRecursoTarefaViewModel> AllAsync(ListRecursoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<RecursoTarefaViewModel> GetAsync(GetRecursoTarefaQuery query)
+    public async UnaryResult<GetRecursoTarefaViewModel> GetAsync(GetRecursoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<IEnumerable<RecursoTarefaViewModel>> GetByTarefaAsync(GetByTarefaQuery query)
+    public async UnaryResult<GetRecursoTarefaByTarefaViewModel> GetByTarefaAsync(GetRecursoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }

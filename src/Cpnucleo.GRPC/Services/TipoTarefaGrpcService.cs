@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.TipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.TipoTarefa.CreateTipoTarefa;
+using Cpnucleo.Application.Commands.TipoTarefa.RemoveTipoTarefa;
+using Cpnucleo.Application.Commands.TipoTarefa.UpdateTipoTarefa;
+using Cpnucleo.Application.Queries.TipoTarefa.GetTipoTarefa;
+using Cpnucleo.Application.Queries.TipoTarefa.ListTipoTarefa;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,12 +21,12 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<TipoTarefaViewModel>> AllAsync(ListTipoTarefaQuery query)
+    public async UnaryResult<ListTipoTarefaViewModel> AllAsync(ListTipoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<TipoTarefaViewModel> GetAsync(GetTipoTarefaQuery query)
+    public async UnaryResult<GetTipoTarefaViewModel> GetAsync(GetTipoTarefaQuery query)
     {
         return await _mediator.Send(query);
     }
