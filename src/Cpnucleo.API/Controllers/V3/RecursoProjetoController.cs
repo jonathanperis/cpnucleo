@@ -64,8 +64,8 @@ public class RecursoProjetoController : ControllerBase
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     [HttpGet]
-    [Route("GetByProjeto")]
-    public async Task<ActionResult<GetByProjetoViewModel>> GetByProjeto([FromQuery] GetByProjetoQuery query)
+    [Route("GetRecursoProjetoByProjeto")]
+    public async Task<ActionResult<GetRecursoProjetoByProjetoViewModel>> GetRecursoProjetoByProjeto([FromQuery] GetRecursoProjetoByProjetoQuery query)
     {
         return await _mediator.Send(query);
     }

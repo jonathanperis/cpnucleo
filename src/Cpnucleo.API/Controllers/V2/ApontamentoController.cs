@@ -49,7 +49,7 @@ public class ApontamentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<Apontamento>> GetByRecurso(Guid idRecurso)
     {
-        return await _unitOfWork.ApontamentoRepository.GetByRecursoAsync(idRecurso);
+        return await _unitOfWork.ApontamentoRepository.GetApontamentoByRecursoAsync(idRecurso);
     }
 
     /// <summary>

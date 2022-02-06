@@ -8,7 +8,7 @@ internal class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepository
 
     }
 
-    public async Task<IEnumerable<Tarefa>> GetByRecursoAsync(Guid idRecurso)
+    public async Task<IEnumerable<Tarefa>> GetTarefaByRecursoAsync(Guid idRecurso)
     {
         IEnumerable<Tarefa> result = await AllAsync(true);
 

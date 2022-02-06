@@ -49,7 +49,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<ImpedimentoTarefa>> GetByTarefa(Guid idTarefa)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.GetByTarefaAsync(idTarefa);
+        return await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(idTarefa);
     }
 
     /// <summary>

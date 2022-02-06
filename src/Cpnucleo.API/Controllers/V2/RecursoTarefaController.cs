@@ -49,7 +49,7 @@ public class RecursoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<RecursoTarefa>> GetByTarefa(Guid idTarefa)
     {
-        return await _unitOfWork.RecursoTarefaRepository.GetByTarefaAsync(idTarefa);
+        return await _unitOfWork.RecursoTarefaRepository.GetRecursoTarefaByTarefaAsync(idTarefa);
     }
 
     /// <summary>

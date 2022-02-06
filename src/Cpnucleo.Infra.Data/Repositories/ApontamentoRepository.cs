@@ -8,7 +8,7 @@ internal class ApontamentoRepository : GenericRepository<Apontamento>, IApontame
 
     }
 
-    public async Task<IEnumerable<Apontamento>> GetByRecursoAsync(Guid idRecurso)
+    public async Task<IEnumerable<Apontamento>> GetApontamentoByRecursoAsync(Guid idRecurso)
     {
         IEnumerable<Apontamento> result = await AllAsync(true);
 
