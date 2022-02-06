@@ -1,6 +1,9 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.RecursoProjeto.CreateRecursoProjeto;
+using Cpnucleo.Application.Commands.RecursoProjeto.RemoveRecursoProjeto;
+using Cpnucleo.Application.Commands.RecursoProjeto.UpdateRecursoProjeto;
+using Cpnucleo.Application.Queries.RecursoProjeto.GetByProjeto;
+using Cpnucleo.Application.Queries.RecursoProjeto.GetRecursoProjeto;
+using Cpnucleo.Application.Queries.RecursoProjeto.ListRecursoProjeto;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,17 +22,17 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<RecursoProjetoViewModel>> AllAsync(ListRecursoProjetoQuery query)
+    public async UnaryResult<ListRecursoProjetoViewModel> AllAsync(ListRecursoProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<RecursoProjetoViewModel> GetAsync(GetRecursoProjetoQuery query)
+    public async UnaryResult<GetRecursoProjetoViewModel> GetAsync(GetRecursoProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<IEnumerable<RecursoProjetoViewModel>> GetByProjetoAsync(GetByProjetoQuery query)
+    public async UnaryResult<GetRecursoProjetoByProjetoViewModel> GetByProjetoAsync(GetRecursoProjetoByProjetoQuery query)
     {
         return await _mediator.Send(query);
     }

@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.Impedimento.CreateImpedimento;
+using Cpnucleo.Application.Commands.Impedimento.RemoveImpedimento;
+using Cpnucleo.Application.Commands.Impedimento.UpdateImpedimento;
+using Cpnucleo.Application.Queries.Impedimento.GetImpedimento;
+using Cpnucleo.Application.Queries.Impedimento.ListImpedimento;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,12 +21,12 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<ImpedimentoViewModel>> AllAsync(ListImpedimentoQuery query)
+    public async UnaryResult<ListImpedimentoViewModel> AllAsync(ListImpedimentoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<ImpedimentoViewModel> GetAsync(GetImpedimentoQuery query)
+    public async UnaryResult<GetImpedimentoViewModel> GetAsync(GetImpedimentoQuery query)
     {
         return await _mediator.Send(query);
     }

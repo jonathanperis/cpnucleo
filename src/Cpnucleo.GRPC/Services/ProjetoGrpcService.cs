@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.Projeto.CreateProjeto;
+using Cpnucleo.Application.Commands.Projeto.RemoveProjeto;
+using Cpnucleo.Application.Commands.Projeto.UpdateProjeto;
+using Cpnucleo.Application.Queries.Projeto.GetProjeto;
+using Cpnucleo.Application.Queries.Projeto.ListProjeto;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,12 +21,12 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<ProjetoViewModel>> AllAsync(ListProjetoQuery query)
+    public async UnaryResult<ListProjetoViewModel> AllAsync(ListProjetoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<ProjetoViewModel> GetAsync(GetProjetoQuery query)
+    public async UnaryResult<GetProjetoViewModel> GetAsync(GetProjetoQuery query)
     {
         return await _mediator.Send(query);
     }

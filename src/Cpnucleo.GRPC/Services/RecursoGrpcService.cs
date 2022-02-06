@@ -1,6 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
+﻿using Cpnucleo.Application.Commands.Recurso.CreateRecurso;
+using Cpnucleo.Application.Commands.Recurso.RemoveRecurso;
+using Cpnucleo.Application.Commands.Recurso.UpdateRecurso;
+using Cpnucleo.Application.Queries.Recurso.GetRecurso;
+using Cpnucleo.Application.Queries.Recurso.ListRecurso;
 
 namespace Cpnucleo.GRPC.Services;
 
@@ -19,12 +21,12 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
         return await _mediator.Send(command);
     }
 
-    public async UnaryResult<IEnumerable<RecursoViewModel>> AllAsync(ListRecursoQuery query)
+    public async UnaryResult<ListRecursoViewModel> AllAsync(ListRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
 
-    public async UnaryResult<RecursoViewModel> GetAsync(GetRecursoQuery query)
+    public async UnaryResult<GetRecursoViewModel> GetAsync(GetRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
