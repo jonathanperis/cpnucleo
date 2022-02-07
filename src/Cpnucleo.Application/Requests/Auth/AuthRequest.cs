@@ -2,12 +2,6 @@
 
 public class AuthRequest : IRequest<AuthResponse>
 {
-    public AuthRequest(string usuario, string senha)
-    {
-        Usuario = usuario;
-        Senha = senha;
-    }
-
-    public string Usuario { get; }
-    public string Senha { get; }
+    public string Usuario { get; set; }
+    public string Senha { get; set; }
 }
