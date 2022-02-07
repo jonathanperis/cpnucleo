@@ -4,13 +4,9 @@ public class CreateSistemaCommandValidator : AbstractValidator<CreateSistemaComm
 {
     public CreateSistemaCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty();
-
-        RuleFor(x => x.Nome)
-            .NotEmpty();
-
-        RuleFor(x => x.Descricao)
-            .NotEmpty();
+        RuleFor(x => x.Nome).NotEmpty();
+        RuleFor(x => x.Nome).MaximumLength(50);
+        RuleFor(x => x.Descricao).NotEmpty();
+        RuleFor(x => x.Descricao).MaximumLength(450);
     }
 }
