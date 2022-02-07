@@ -1,0 +1,11 @@
+﻿namespace Cpnucleo.Application.Commands.RecursoTarefa.UpdateRecursoTarefa;
+
+public class UpdateRecursoTarefaCommandValidator : AbstractValidator<UpdateRecursoTarefaCommand>
+{
+    public UpdateRecursoTarefaCommandValidator()
+    {
+        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.IdRecurso).NotEmpty();
+        RuleFor(x => x.IdTarefa).NotEmpty();
+    }
+}
