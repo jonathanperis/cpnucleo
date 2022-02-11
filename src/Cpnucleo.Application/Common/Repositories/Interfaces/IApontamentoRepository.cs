@@ -1,4 +1,4 @@
-namespace Cpnucleo.Domain.Interfaces;
+namespace Cpnucleo.Application.Common.Repositories.Interfaces;
 
 public interface IApontamentoRepository : IGenericRepository<Apontamento>
 {

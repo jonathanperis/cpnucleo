@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Security;
-using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.Application.Common.Security.Interfaces;
+using Cpnucleo.Infra.CrossCutting.Security;
 
 namespace Cpnucleo.Application.Test.Helpers;
 

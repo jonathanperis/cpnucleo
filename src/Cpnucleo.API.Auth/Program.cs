@@ -1,26 +1,32 @@
-﻿using Cpnucleo.API.Configuration;
-using Cpnucleo.Infra.CrossCutting.IoC;
+﻿using Cpnucleo.API.Auth.Filters;
+using Cpnucleo.API.Configuration;
+using Cpnucleo.Application;
+using Cpnucleo.Infra.CrossCutting.Bus;
+using Cpnucleo.Infra.Data;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCpnucleoSetup(builder.Configuration);
+builder.Services.AddInfraData();
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
 
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "AllowCpcnuleoClients",
-                      x =>
-                      {
-                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                      });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: "AllowCpcnuleoClients",
+//                      x =>
+//                      {
+//                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
+//                            .AllowAnyHeader()
+//                            .AllowAnyMethod();
+//                      });
+//});
 
 builder.Services.AddAuthentication(x =>
 {
@@ -43,8 +49,8 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-// Add services to the container.
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
+    .AddFluentValidation(x => x.AutomaticValidationEnabled = false)
     .ConfigureApiBehaviorOptions(options =>
     {
         options.SuppressMapClientErrors = true;
@@ -53,11 +59,14 @@ builder.Services.AddControllers()
 var app = builder.Build();
 
 app.UseSwaggerConfig();
+
+app.UseApplication();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AllowCpcnuleoClients");
+//app.UseCors("AllowCpcnuleoClients");
 
 app.MapControllers();
 app.Run();

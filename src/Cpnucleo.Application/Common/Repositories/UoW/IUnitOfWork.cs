@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Domain.Interfaces;
+﻿using Cpnucleo.Application.Common.Repositories.Interfaces;
 
-namespace Cpnucleo.Domain.UoW;
+namespace Cpnucleo.Application.Common.Repositories.UoW;
 
 public interface IUnitOfWork : IDisposable
 {

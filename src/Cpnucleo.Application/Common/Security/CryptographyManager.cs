@@ -1,7 +1,7 @@
-﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.Application.Common.Security.Interfaces;
 using System.Security.Cryptography;
 
-namespace Cpnucleo.Infra.CrossCutting.Security;
+namespace Cpnucleo.Application.Common.Security;
 
 public class CryptographyManager : ICryptographyManager
 {
