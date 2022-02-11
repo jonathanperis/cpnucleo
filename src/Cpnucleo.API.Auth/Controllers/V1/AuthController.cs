@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.API.Services;
-using Cpnucleo.Application;
 using Cpnucleo.Application.Requests.Auth;
 
 namespace Cpnucleo.API.Controllers.V2;

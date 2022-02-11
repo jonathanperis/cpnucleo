@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.Recurso.CreateRecurso;
+﻿using Cpnucleo.Application.Commands.Recurso.CreateRecurso;
 using Cpnucleo.Application.Commands.Recurso.RemoveRecurso;
 using Cpnucleo.Application.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Application.Queries.Recurso.GetRecurso;

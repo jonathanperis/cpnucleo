@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.Sistema.CreateSistema;
+﻿using Cpnucleo.Application.Commands.Sistema.CreateSistema;
 using Cpnucleo.Application.Commands.Sistema.RemoveSistema;
 using Cpnucleo.Application.Commands.Sistema.UpdateSistema;
 using Cpnucleo.Application.Queries.Sistema.GetSistema;

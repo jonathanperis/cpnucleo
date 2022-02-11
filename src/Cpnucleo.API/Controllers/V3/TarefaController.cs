@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.Tarefa.CreateTarefa;
+﻿using Cpnucleo.Application.Commands.Tarefa.CreateTarefa;
 using Cpnucleo.Application.Commands.Tarefa.RemoveTarefa;
 using Cpnucleo.Application.Commands.Tarefa.UpdateTarefa;
 using Cpnucleo.Application.Commands.Tarefa.UpdateTarefaByWorkflow;

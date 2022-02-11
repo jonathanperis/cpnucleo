@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.TipoTarefa.CreateTipoTarefa;
+﻿using Cpnucleo.Application.Commands.TipoTarefa.CreateTipoTarefa;
 using Cpnucleo.Application.Commands.TipoTarefa.RemoveTipoTarefa;
 using Cpnucleo.Application.Commands.TipoTarefa.UpdateTipoTarefa;
 using Cpnucleo.Application.Queries.TipoTarefa.GetTipoTarefa;

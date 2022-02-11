@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.Impedimento.CreateImpedimento;
+﻿using Cpnucleo.Application.Commands.Impedimento.CreateImpedimento;
 using Cpnucleo.Application.Commands.Impedimento.RemoveImpedimento;
 using Cpnucleo.Application.Commands.Impedimento.UpdateImpedimento;
 using Cpnucleo.Application.Queries.Impedimento.GetImpedimento;
