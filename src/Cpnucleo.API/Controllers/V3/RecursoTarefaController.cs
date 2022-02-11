@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.RecursoTarefa.CreateRecursoTarefa;
+﻿using Cpnucleo.Application.Commands.RecursoTarefa.CreateRecursoTarefa;
 using Cpnucleo.Application.Commands.RecursoTarefa.RemoveRecursoTarefa;
 using Cpnucleo.Application.Commands.RecursoTarefa.UpdateRecursoTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa.GetRecursoTarefa;

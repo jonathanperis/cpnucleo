@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
+﻿using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
 using Cpnucleo.Application.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
 using Cpnucleo.Application.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
 using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;

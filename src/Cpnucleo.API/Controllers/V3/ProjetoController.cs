@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.Projeto.CreateProjeto;
+﻿using Cpnucleo.Application.Commands.Projeto.CreateProjeto;
 using Cpnucleo.Application.Commands.Projeto.RemoveProjeto;
 using Cpnucleo.Application.Commands.Projeto.UpdateProjeto;
 using Cpnucleo.Application.Queries.Projeto.GetProjeto;

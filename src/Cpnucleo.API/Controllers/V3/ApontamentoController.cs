@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Application;
-using Cpnucleo.Application.Commands.Apontamento.CreateApontamento;
+﻿using Cpnucleo.Application.Commands.Apontamento.CreateApontamento;
 using Cpnucleo.Application.Commands.Apontamento.RemoveApontamento;
 using Cpnucleo.Application.Commands.Apontamento.UpdateApontamento;
 using Cpnucleo.Application.Queries.Apontamento.GetApontamento;
