@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Domain.UoW;
+﻿using Cpnucleo.Application.Common.Repositories.UoW;
 using Cpnucleo.Infra.Data.UoW;
 using Microsoft.Extensions.DependencyInjection;
 

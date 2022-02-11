@@ -21,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
 	</ItemGroup>
 
