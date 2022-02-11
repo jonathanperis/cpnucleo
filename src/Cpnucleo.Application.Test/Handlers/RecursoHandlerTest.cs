@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.Application.Common.Security.Interfaces;
 using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
 using Cpnucleo.Infra.CrossCutting.Util.ViewModels;

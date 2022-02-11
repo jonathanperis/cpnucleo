@@ -1,4 +1,6 @@
-using Cpnucleo.Infra.CrossCutting.IoC;
+using Cpnucleo.Application;
+using Cpnucleo.Infra.CrossCutting.Bus;
+using Cpnucleo.Infra.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -6,22 +8,20 @@ using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
+builder.Services.AddInfraData();
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
 
-builder.Services.AddCpnucleoSetup(builder.Configuration);
-
-// Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddMagicOnion();
 
-builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
-{
-    builder.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader()
-           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
-}));
+//builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+//{
+//    builder.AllowAnyOrigin()
+//           .AllowAnyMethod()
+//           .AllowAnyHeader()
+//           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+//}));
 
 builder.Services.AddAuthorization(options =>
 {
@@ -54,21 +54,20 @@ WebApplication app = builder.Build();
 app.UseRouting();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 
-app.UseCors(x =>
-{
-    // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
-    x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
-           .AllowAnyMethod()
-           .AllowAnyHeader()
-           .AllowCredentials();
-});
+//app.UseCors(x =>
+//{
+//    // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
+//    x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
+//           .AllowAnyMethod()
+//           .AllowAnyHeader()
+//           .AllowCredentials();
+//});
 
-app.UseCpnucleoApiSetup();
+app.UseApplication();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapMagicOnionService().RequireCors("AllowAll");

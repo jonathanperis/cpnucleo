@@ -1,6 +1,8 @@
 ﻿using Cpnucleo.API.Configuration;
 using Cpnucleo.API.Filters;
-using Cpnucleo.Infra.CrossCutting.IoC;
+using Cpnucleo.Application;
+using Cpnucleo.Infra.CrossCutting.Bus;
+using Cpnucleo.Infra.Data;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +10,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCpnucleoSetup(builder.Configuration);
+builder.Services.AddInfraData();
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
+
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
@@ -44,7 +49,6 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-// Add services to the container.
 builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false)
     .ConfigureApiBehaviorOptions(options =>
@@ -57,7 +61,8 @@ WebApplication app = builder.Build();
 app.UseRouting();
 
 app.UseSwaggerConfig();
-app.UseCpnucleoApiSetup();
+
+app.UseApplication();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

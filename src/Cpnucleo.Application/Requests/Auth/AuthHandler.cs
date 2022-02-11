@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Security.Interfaces;
+﻿using Cpnucleo.Application.Common.Security.Interfaces;
 
 namespace Cpnucleo.Application.Requests.Auth;
 
