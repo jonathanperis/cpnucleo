@@ -1,16 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Apontamento.CreateApontamento;
-using Cpnucleo.Application.Commands.Impedimento.CreateImpedimento;
-using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
-using Cpnucleo.Application.Commands.Projeto.CreateProjeto;
-using Cpnucleo.Application.Commands.Recurso.CreateRecurso;
-using Cpnucleo.Application.Commands.RecursoProjeto.CreateRecursoProjeto;
-using Cpnucleo.Application.Commands.RecursoTarefa.CreateRecursoTarefa;
-using Cpnucleo.Application.Commands.Sistema.CreateSistema;
-using Cpnucleo.Application.Commands.Tarefa.CreateTarefa;
-using Cpnucleo.Application.Commands.TipoTarefa.CreateTipoTarefa;
-using Cpnucleo.Application.Commands.Workflow.CreateWorkflow;
-
-namespace Cpnucleo.Application.Common.Mappings
+﻿namespace Cpnucleo.Application.Common.Mappings
 {
     internal class CommandToEntityProfile : Profile
     {

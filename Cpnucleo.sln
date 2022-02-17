@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.GRPC", "src\Cpnucl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cpnucleo.Application.Test", "src\Cpnucleo.Application.Test\Cpnucleo.Application.Test.csproj", "{88D02F97-8723-4324-ACC4-04DE49F2E66E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpnucleo.Infra.CrossCutting.Util", "src\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj", "{011948C1-3ACD-4FDD-AB73-F8AB08214E68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,10 @@ Global
 		{88D02F97-8723-4324-ACC4-04DE49F2E66E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88D02F97-8723-4324-ACC4-04DE49F2E66E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88D02F97-8723-4324-ACC4-04DE49F2E66E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{011948C1-3ACD-4FDD-AB73-F8AB08214E68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{011948C1-3ACD-4FDD-AB73-F8AB08214E68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{011948C1-3ACD-4FDD-AB73-F8AB08214E68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{011948C1-3ACD-4FDD-AB73-F8AB08214E68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +131,7 @@ Global
 		{A05E85FC-1ADF-4D7A-ADCB-E4690425713D} = {55878995-8168-4653-9220-73200A600D3C}
 		{F08D689F-105E-4BAA-8E0C-1A1A1D03BF0F} = {665F2256-A82B-436A-A0EA-9C2AC54FBF94}
 		{88D02F97-8723-4324-ACC4-04DE49F2E66E} = {5AF7028A-8D26-4F15-BB4D-15E9444EF5FE}
+		{011948C1-3ACD-4FDD-AB73-F8AB08214E68} = {27786067-7F33-4B64-BA82-22B8C6086450}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {675F3075-5730-40F7-A628-6AE3BDBDFBB1}

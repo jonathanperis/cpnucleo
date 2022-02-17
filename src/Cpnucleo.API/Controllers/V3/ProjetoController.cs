@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Projeto.CreateProjeto;
-using Cpnucleo.Application.Commands.Projeto.RemoveProjeto;
-using Cpnucleo.Application.Commands.Projeto.UpdateProjeto;
-using Cpnucleo.Application.Queries.Projeto.GetProjeto;
-using Cpnucleo.Application.Queries.Projeto.ListProjeto;
-
-namespace Cpnucleo.API.Controllers.V3;
+﻿namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

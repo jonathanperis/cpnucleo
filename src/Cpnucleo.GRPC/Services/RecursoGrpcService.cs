@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Recurso.CreateRecurso;
-using Cpnucleo.Application.Commands.Recurso.RemoveRecurso;
-using Cpnucleo.Application.Commands.Recurso.UpdateRecurso;
-using Cpnucleo.Application.Queries.Recurso.GetRecurso;
-using Cpnucleo.Application.Queries.Recurso.ListRecurso;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpcService

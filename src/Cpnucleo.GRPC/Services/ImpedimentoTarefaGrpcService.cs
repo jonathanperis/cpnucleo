@@ -1,11 +1,4 @@
-﻿using Cpnucleo.Application.Commands.ImpedimentoTarefa.CreateImpedimentoTarefa;
-using Cpnucleo.Application.Commands.ImpedimentoTarefa.RemoveImpedimentoTarefa;
-using Cpnucleo.Application.Commands.ImpedimentoTarefa.UpdateImpedimentoTarefa;
-using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefa;
-using Cpnucleo.Application.Queries.ImpedimentoTarefa.GetImpedimentoTarefaByTarefa;
-using Cpnucleo.Application.Queries.ImpedimentoTarefa.ListImpedimentoTarefa;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcService>, IImpedimentoTarefaGrpcService
