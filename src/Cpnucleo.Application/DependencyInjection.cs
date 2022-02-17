@@ -1,4 +1,6 @@
 ﻿using Cpnucleo.Application.Common.Behaviors;
+using Cpnucleo.Application.Common.Security;
+using Cpnucleo.Application.Common.Security.Interfaces;
 using Cpnucleo.Application.Events.Sistema;
 using Cpnucleo.Application.Hubs;
 using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
@@ -19,6 +21,7 @@ public static class DependencyInjection
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddScoped<ICryptographyManager, CryptographyManager>();
 
         services.RegisterServiceBusReception().FromQueue("CpnucleoDefaultQueue", builder =>
         {
