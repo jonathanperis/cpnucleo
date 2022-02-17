@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Impedimento.CreateImpedimento;
-using Cpnucleo.Application.Commands.Impedimento.RemoveImpedimento;
-using Cpnucleo.Application.Commands.Impedimento.UpdateImpedimento;
-using Cpnucleo.Application.Queries.Impedimento.GetImpedimento;
-using Cpnucleo.Application.Queries.Impedimento.ListImpedimento;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImpedimentoGrpcService
