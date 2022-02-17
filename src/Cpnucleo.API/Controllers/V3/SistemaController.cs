@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Sistema.CreateSistema;
-using Cpnucleo.Application.Commands.Sistema.RemoveSistema;
-using Cpnucleo.Application.Commands.Sistema.UpdateSistema;
-using Cpnucleo.Application.Queries.Sistema.GetSistema;
-using Cpnucleo.Application.Queries.Sistema.ListSistema;
-
-namespace Cpnucleo.API.Controllers.V3;
+﻿namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

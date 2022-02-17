@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Sistema.CreateSistema;
-using Cpnucleo.Application.Commands.Sistema.RemoveSistema;
-using Cpnucleo.Application.Commands.Sistema.UpdateSistema;
-using Cpnucleo.Application.Queries.Sistema.GetSistema;
-using Cpnucleo.Application.Queries.Sistema.ListSistema;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpcService

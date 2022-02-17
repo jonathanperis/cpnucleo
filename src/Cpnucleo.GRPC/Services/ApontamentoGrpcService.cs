@@ -1,11 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Apontamento.CreateApontamento;
-using Cpnucleo.Application.Commands.Apontamento.RemoveApontamento;
-using Cpnucleo.Application.Commands.Apontamento.UpdateApontamento;
-using Cpnucleo.Application.Queries.Apontamento.GetApontamento;
-using Cpnucleo.Application.Queries.Apontamento.GetApontamentoByRecurso;
-using Cpnucleo.Application.Queries.Apontamento.ListApontamento;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApontamentoGrpcService

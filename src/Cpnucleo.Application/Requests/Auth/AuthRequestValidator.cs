@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.Application.Requests.Auth;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+
+namespace Cpnucleo.Application.Requests.Auth;
 
 public class GetAuthQueryValidator : AbstractValidator<AuthRequest>
 {
