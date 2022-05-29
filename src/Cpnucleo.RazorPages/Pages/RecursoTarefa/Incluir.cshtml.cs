@@ -3,17 +3,17 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public RecursoTarefaViewModel RecursoTarefa { get; set; }
+    public RecursoTarefaDTO RecursoTarefa { get; set; }
 
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaDTO Tarefa { get; set; }
 
     public SelectList SelectRecursos { get; set; }
 
@@ -21,9 +21,9 @@ public class IncluirModel : PageBase
     {
         try
         {
-            Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+            Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, idTarefa);
 
-            IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", Token, Tarefa.IdProjeto);
+            IEnumerable<RecursoProjetoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoProjetoDTO>>("recursoProjeto", "getByProjeto", Token, Tarefa.IdProjeto);
             SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
             return Page();
@@ -41,15 +41,15 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, RecursoTarefa.IdTarefa);
+                Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, RecursoTarefa.IdTarefa);
 
-                IEnumerable<RecursoProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", Token, Tarefa.IdProjeto);
+                IEnumerable<RecursoProjetoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoProjetoDTO>>("recursoProjeto", "getByProjeto", Token, Tarefa.IdProjeto);
                 SelectRecursos = new SelectList(result, "Recurso.Id", "Recurso.Nome");
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa);
+            await _cpnucleoApiClient.PostAsync<RecursoTarefaDTO>("recursoTarefa", Token, RecursoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }

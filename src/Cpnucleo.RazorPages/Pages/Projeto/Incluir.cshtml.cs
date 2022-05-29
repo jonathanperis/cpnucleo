@@ -3,15 +3,15 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ProjetoViewModel Projeto { get; set; }
+    public ProjetoDTO Projeto { get; set; }
 
     public SelectList SelectSistemas { get; set; }
 
@@ -19,7 +19,7 @@ public class IncluirModel : PageBase
     {
         try
         {
-            IEnumerable<SistemaViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+            IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
             SelectSistemas = new SelectList(result, "Id", "Nome");
 
             return Page();
@@ -37,13 +37,13 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                IEnumerable<SistemaViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
                 SelectSistemas = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<ProjetoViewModel>("projeto", Token, Projeto);
+            await _cpnucleoApiClient.PostAsync<ProjetoDTO>("projeto", Token, Projeto);
 
             return RedirectToPage("Listar");
         }

@@ -3,17 +3,17 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public RecursoProjetoViewModel RecursoProjeto { get; set; }
+    public RecursoProjetoDTO RecursoProjeto { get; set; }
 
-    public ProjetoViewModel Projeto { get; set; }
+    public ProjetoDTO Projeto { get; set; }
 
     public SelectList SelectRecursos { get; set; }
 
@@ -21,9 +21,9 @@ public class IncluirModel : PageBase
     {
         try
         {
-            Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, idProjeto);
+            Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, idProjeto);
 
-            IEnumerable<RecursoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
+            IEnumerable<RecursoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", Token);
             SelectRecursos = new SelectList(result, "Id", "Nome");
 
             return Page();
@@ -41,15 +41,15 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, RecursoProjeto.IdProjeto);
+                Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, RecursoProjeto.IdProjeto);
 
-                IEnumerable<RecursoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", Token);
+                IEnumerable<RecursoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", Token);
                 SelectRecursos = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<RecursoProjetoViewModel>("recursoProjeto", Token, RecursoProjeto);
+            await _cpnucleoApiClient.PostAsync<RecursoProjetoDTO>("recursoProjeto", Token, RecursoProjeto);
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }

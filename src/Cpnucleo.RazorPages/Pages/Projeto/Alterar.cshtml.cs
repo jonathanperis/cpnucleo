@@ -3,15 +3,15 @@
 [Authorize]
 public class AlterarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public AlterarModel(ICpnucleoApiService cpnucleoApiService)
+    public AlterarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ProjetoViewModel Projeto { get; set; }
+    public ProjetoDTO Projeto { get; set; }
 
     public SelectList SelectSistemas { get; set; }
 
@@ -19,9 +19,9 @@ public class AlterarModel : PageBase
     {
         try
         {
-            Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, id);
+            Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, id);
 
-            IEnumerable<SistemaViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+            IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
             SelectSistemas = new SelectList(result, "Id", "Nome");
 
             return Page();
@@ -39,15 +39,15 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
+                Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, Projeto.Id);
 
-                IEnumerable<SistemaViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
                 SelectSistemas = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PutAsync("projeto", Token, Projeto.Id, Projeto);
+            await _cpnucleoApiClient.PutAsync("projeto", Token, Projeto.Id, Projeto);
 
             return RedirectToPage("Listar");
         }

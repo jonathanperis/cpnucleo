@@ -3,21 +3,21 @@
 [Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaDTO Tarefa { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, id);
+            Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id);
+                Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, Tarefa.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("tarefa", Token, Tarefa.Id);
+            await _cpnucleoApiClient.DeleteAsync("tarefa", Token, Tarefa.Id);
 
             return RedirectToPage("Listar");
         }

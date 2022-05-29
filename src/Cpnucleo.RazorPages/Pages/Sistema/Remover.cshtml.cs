@@ -1,23 +1,23 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
-[Authorize]
+//[Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public SistemaViewModel Sistema { get; set; }
+    public SistemaDTO Sistema { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, id);
+            Sistema = await _cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
+                Sistema = await _cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", Token, Sistema.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("sistema", Token, Sistema.Id);
+            await _cpnucleoApiClient.DeleteAsync("sistema", Token, Sistema.Id);
 
             return RedirectToPage("Listar");
         }

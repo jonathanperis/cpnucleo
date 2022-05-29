@@ -3,21 +3,21 @@
 [Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ApontamentoViewModel Apontamento { get; set; }
+    public ApontamentoDTO Apontamento { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Apontamento = await _cpnucleoApiService.GetAsync<ApontamentoViewModel>("apontamento", Token, id);
+            Apontamento = await _cpnucleoApiClient.GetAsync<ApontamentoDTO>("apontamento", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Apontamento = await _cpnucleoApiService.GetAsync<ApontamentoViewModel>("apontamento", Token, Apontamento.Id);
+                Apontamento = await _cpnucleoApiClient.GetAsync<ApontamentoDTO>("apontamento", Token, Apontamento.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("apontamento", Token, Apontamento.Id);
+            await _cpnucleoApiClient.DeleteAsync("apontamento", Token, Apontamento.Id);
 
             return RedirectToPage("Listar");
         }

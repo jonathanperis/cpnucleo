@@ -3,21 +3,21 @@
 [Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public RecursoProjetoViewModel RecursoProjeto { get; set; }
+    public RecursoProjetoDTO RecursoProjeto { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, id);
+            RecursoProjeto = await _cpnucleoApiClient.GetAsync<RecursoProjetoDTO>("recursoProjeto", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjeto = await _cpnucleoApiService.GetAsync<RecursoProjetoViewModel>("recursoProjeto", Token, RecursoProjeto.Id);
+                RecursoProjeto = await _cpnucleoApiClient.GetAsync<RecursoProjetoDTO>("recursoProjeto", Token, RecursoProjeto.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("recursoProjeto", Token, RecursoProjeto.Id);
+            await _cpnucleoApiClient.DeleteAsync("recursoProjeto", Token, RecursoProjeto.Id);
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }

@@ -6,19 +6,19 @@ namespace Cpnucleo.RazorPages.Pages.Apontamento;
 [Authorize]
 public class ListarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public ListarModel(ICpnucleoApiService cpnucleoApiService)
+    public ListarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ApontamentoViewModel Apontamento { get; set; }
+    public ApontamentoDTO Apontamento { get; set; }
 
-    public IEnumerable<ApontamentoViewModel> Lista { get; set; }
+    public IEnumerable<ApontamentoDTO> Lista { get; set; }
 
-    public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
+    public IEnumerable<TarefaDTO> ListaTarefas { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -27,8 +27,8 @@ public class ListarModel : PageBase
             string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
             Guid idRecurso = new(retorno);
 
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento", "getbyrecurso", Token, idRecurso);
-            ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "getbyrecurso", Token, idRecurso);
+            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDTO>>("apontamento", "getbyrecurso", Token, idRecurso);
+            ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "getbyrecurso", Token, idRecurso);
 
             return Page();
         }
@@ -48,13 +48,13 @@ public class ListarModel : PageBase
                 string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
                 Guid idRecurso = new(retorno);
 
-                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ApontamentoViewModel>>("apontamento", "getbyrecurso", Token, idRecurso);
-                ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "getbyrecurso", Token, idRecurso);
+                Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDTO>>("apontamento", "getbyrecurso", Token, idRecurso);
+                ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "getbyrecurso", Token, idRecurso);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<ApontamentoViewModel>("apontamento", Token, Apontamento);
+            await _cpnucleoApiClient.PostAsync<ApontamentoDTO>("apontamento", Token, Apontamento);
 
             return RedirectToPage("Listar");
         }

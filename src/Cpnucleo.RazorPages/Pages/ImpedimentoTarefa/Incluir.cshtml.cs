@@ -3,17 +3,17 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ImpedimentoTarefaViewModel ImpedimentoTarefa { get; set; }
+    public ImpedimentoTarefaDTO ImpedimentoTarefa { get; set; }
 
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaDTO Tarefa { get; set; }
 
     public SelectList SelectImpedimentos { get; set; }
 
@@ -21,9 +21,9 @@ public class IncluirModel : PageBase
     {
         try
         {
-            Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, idTarefa);
+            Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, idTarefa);
 
-            IEnumerable<ImpedimentoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+            IEnumerable<ImpedimentoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", Token);
             SelectImpedimentos = new SelectList(result, "Id", "Nome");
 
             return Page();
@@ -41,15 +41,15 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, ImpedimentoTarefa.IdTarefa);
+                Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, ImpedimentoTarefa.IdTarefa);
 
-                IEnumerable<ImpedimentoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+                IEnumerable<ImpedimentoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", Token);
                 SelectImpedimentos = new SelectList(result, "Id", "Nome");
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", Token, ImpedimentoTarefa);
+            await _cpnucleoApiClient.PostAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", Token, ImpedimentoTarefa);
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }
