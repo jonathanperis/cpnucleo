@@ -3,21 +3,21 @@
 [Authorize]
 public class AlterarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public AlterarModel(ICpnucleoApiService cpnucleoApiService)
+    public AlterarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ImpedimentoViewModel Impedimento { get; set; }
+    public ImpedimentoDTO Impedimento { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Impedimento = await _cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", Token, id);
+            Impedimento = await _cpnucleoApiClient.GetAsync<ImpedimentoDTO>("impedimento", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Impedimento = await _cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento.Id);
+                Impedimento = await _cpnucleoApiClient.GetAsync<ImpedimentoDTO>("impedimento", Token, Impedimento.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PutAsync("impedimento", Token, Impedimento.Id, Impedimento);
+            await _cpnucleoApiClient.PutAsync("impedimento", Token, Impedimento.Id, Impedimento);
 
             return RedirectToPage("Listar");
         }

@@ -3,15 +3,15 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ImpedimentoViewModel Impedimento { get; set; }
+    public ImpedimentoDTO Impedimento { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<ImpedimentoViewModel>("impedimento", Token, Impedimento);
+            await _cpnucleoApiClient.PostAsync<ImpedimentoDTO>("impedimento", Token, Impedimento);
 
             return RedirectToPage("Listar");
         }

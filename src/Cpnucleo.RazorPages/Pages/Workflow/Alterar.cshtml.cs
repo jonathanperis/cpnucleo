@@ -3,21 +3,21 @@
 [Authorize]
 public class AlterarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public AlterarModel(ICpnucleoApiService cpnucleoApiService)
+    public AlterarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public WorkflowViewModel Workflow { get; set; }
+    public WorkflowDTO Workflow { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Workflow = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, id);
+            Workflow = await _cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Workflow = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, Workflow.Id);
+                Workflow = await _cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", Token, Workflow.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PutAsync("workflow", Token, Workflow.Id, Workflow);
+            await _cpnucleoApiClient.PutAsync("workflow", Token, Workflow.Id, Workflow);
 
             return RedirectToPage("Listar");
         }

@@ -1,24 +1,34 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Common.Models;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
 
-[Authorize]
+namespace Cpnucleo.RazorPages.Pages.Sistema;
+
+//[Authorize]
 public class ListarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public ListarModel(ICpnucleoApiService cpnucleoApiService)
+    public ListarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
-    public SistemaViewModel Sistema { get; set; }
+    public SistemaDTO Sistema { get; set; }
 
-    public IEnumerable<SistemaViewModel> Lista { get; set; }
+    public IEnumerable<SistemaDTO> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
         try
         {
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("ListSistema", Token, new ListSistemaQuery { GetDependencies = false });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                //@@JONATHAN - TRATAR ERRO.
+            }
+
+            Lista = result.Sistemas;
 
             return Page();
         }

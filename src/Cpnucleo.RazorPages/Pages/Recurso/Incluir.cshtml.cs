@@ -3,15 +3,15 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public RecursoViewModel Recurso { get; set; }
+    public RecursoDTO Recurso { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", Token, Recurso);
+            await _cpnucleoApiClient.PostAsync<RecursoDTO>("recurso", Token, Recurso);
 
             return RedirectToPage("Listar");
         }

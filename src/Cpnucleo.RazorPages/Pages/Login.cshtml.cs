@@ -1,4 +1,6 @@
-﻿using Cpnucleo.RazorPages.Services;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Common.Models;
+using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
@@ -7,17 +9,17 @@ namespace Cpnucleo.RazorPages.Pages;
 
 public class LoginModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoAuthApiClient _cpnucleoApiClient;
     private readonly IConfiguration _configuration;
 
-    public LoginModel(ICpnucleoApiService cpnucleoApiService, IConfiguration configuration)
+    public LoginModel(ICpnucleoAuthApiClient cpnucleoApiClient, IConfiguration configuration)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
         _configuration = configuration;
     }
 
     [BindProperty]
-    public AuthViewModel Auth { get; set; }
+    public AuthDTO Auth { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string? returnUrl = null, bool logout = false)
     {
@@ -50,28 +52,36 @@ public class LoginModel : PageBase
                 return Page();
             }
 
-            RecursoViewModel recurso = await _cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", "auth", "", Auth);
+            AuthResponse response = await _cpnucleoApiClient.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = Auth.Usuario, Senha = Auth.Senha });
 
-            IEnumerable<Claim> claims = new[]
+            if (response.Status == OperationResult.Failed)
             {
-                new Claim(ClaimTypes.PrimarySid, recurso.Id.ToString()),
-                new Claim(ClaimTypes.Hash, recurso.Token)
-            };
-
-            ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
-
-            int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
-
-            await HttpContext.SignInAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme,
-            principal,
-            new AuthenticationProperties
+                ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
+                return Page();
+            }
+            else
             {
-                IsPersistent = true,
-                ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
-            });
+                IEnumerable<Claim> claims = new[]
+                {
+                    new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString()),
+                    new Claim(ClaimTypes.Hash, response.Token)
+                };
 
-            return RedirectToLocal(returnUrl);
+                ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
+
+                int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal,
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(expiresUtc)
+                    });
+
+                return RedirectToLocal(returnUrl);
+            }
         }
         catch (Exception ex)
         {
