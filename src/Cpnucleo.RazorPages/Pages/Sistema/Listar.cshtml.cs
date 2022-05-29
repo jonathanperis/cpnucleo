@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Common.Models;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
-
-namespace Cpnucleo.RazorPages.Pages.Sistema;
+﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 //[Authorize]
 public class ListarModel : PageBase
@@ -21,7 +18,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("ListSistema", Token, new ListSistemaQuery { GetDependencies = false });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { GetDependencies = false });
 
             if (result.OperationResult == OperationResult.Failed)
             {
