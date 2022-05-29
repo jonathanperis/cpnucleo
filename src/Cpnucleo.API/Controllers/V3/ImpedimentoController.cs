@@ -71,7 +71,7 @@ public class ImpedimentoController : ControllerBase
     /// Altera um impedimento na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateImpedimento")]
     public async Task<ActionResult<OperationResult>> UpdateImpedimento([FromBody] UpdateImpedimentoCommand command)
     {
@@ -87,7 +87,7 @@ public class ImpedimentoController : ControllerBase
     /// Remove um impedimento da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveImpedimento")]
     public async Task<ActionResult<OperationResult>> RemoveImpedimento([FromBody] RemoveImpedimentoCommand command)
     {

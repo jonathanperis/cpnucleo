@@ -87,7 +87,7 @@ public class TarefaController : ControllerBase
     /// Altera um tarefa na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateTarefa")]
     public async Task<ActionResult<OperationResult>> UpdateTarefa([FromBody] UpdateTarefaCommand command)
     {
@@ -103,7 +103,7 @@ public class TarefaController : ControllerBase
     /// Altera um workflow da tarefa na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateTarefaByWorkflow")]
     public async Task<ActionResult<OperationResult>> UpdateTarefaByWorkflow([FromBody] UpdateTarefaByWorkflowCommand command)
     {
@@ -119,7 +119,7 @@ public class TarefaController : ControllerBase
     /// Remove um tarefa da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveTarefa")]
     public async Task<ActionResult<OperationResult>> RemoveTarefa([FromBody] RemoveTarefaCommand command)
     {

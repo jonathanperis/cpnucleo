@@ -87,7 +87,7 @@ public class ApontamentoController : ControllerBase
     /// Altera um apontamento na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateApontamento")]
     public async Task<ActionResult<OperationResult>> UpdateApontamento([FromBody] UpdateApontamentoCommand command)
     {
@@ -103,7 +103,7 @@ public class ApontamentoController : ControllerBase
     /// Remove um apontamento da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveApontamento")]
     public async Task<ActionResult<OperationResult>> RemoveApontamento([FromBody] RemoveApontamentoCommand command)
     {

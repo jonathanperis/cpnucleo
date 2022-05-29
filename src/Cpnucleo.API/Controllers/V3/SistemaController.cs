@@ -71,7 +71,7 @@ public class SistemaController : ControllerBase
     /// Altera um sistema na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateSistema")]
     public async Task<ActionResult<OperationResult>> UpdateSistema([FromBody] UpdateSistemaCommand command)
     {
@@ -87,7 +87,7 @@ public class SistemaController : ControllerBase
     /// Remove um sistema da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveSistema")]
     public async Task<ActionResult<OperationResult>> RemoveSistema([FromBody] RemoveSistemaCommand command)
     {

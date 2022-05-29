@@ -87,7 +87,7 @@ public class RecursoProjetoController : ControllerBase
     /// Altera um recurso de projeto na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateRecursoProjeto")]
     public async Task<ActionResult<OperationResult>> UpdateRecursoProjeto([FromBody] UpdateRecursoProjetoCommand command)
     {
@@ -103,7 +103,7 @@ public class RecursoProjetoController : ControllerBase
     /// Remove um recurso de projeto da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveRecursoProjeto")]
     public async Task<ActionResult<OperationResult>> RemoveRecursoProjeto([FromBody] RemoveRecursoProjetoCommand command)
     {
