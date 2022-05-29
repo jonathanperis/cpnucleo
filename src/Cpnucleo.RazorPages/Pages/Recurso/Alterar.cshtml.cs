@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
 
-[Authorize]
+//[Authorize]
 public class AlterarModel : PageBase
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
