@@ -38,9 +38,9 @@ public interface ICpnucleoApiClient
 
 
 
-    [Post("/{route}")]
-    Task<T> ExecuteQueryAsync<T>(string route, [Authorize("Bearer")] string token, [Query] object value);
+    [Get("/{route}/{action}")]
+    Task<T> ExecuteQueryAsync<T>(string route, string action, [Authorize("Bearer")] string token, [Query] object value);
 
-    [Post("/{route}")]
-    Task<T> ExecuteCommandAsync<T>(string route, [Authorize("Bearer")] string token, [Body] object value);
+    [Get("/{route}/{action}")]
+    Task<T> ExecuteCommandAsync<T>(string route, string action, [Authorize("Bearer")] string token, [Body] object value);
 }
