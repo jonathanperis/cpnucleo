@@ -3,23 +3,23 @@
 [Authorize]
 public class ListarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public ListarModel(ICpnucleoApiService cpnucleoApiService)
+    public ListarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public RecursoProjetoViewModel RecursoProjeto { get; set; }
+    public RecursoProjetoDTO RecursoProjeto { get; set; }
 
-    public IEnumerable<RecursoProjetoViewModel> Lista { get; set; }
+    public IEnumerable<RecursoProjetoDTO> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid idProjeto)
     {
         try
         {
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", Token, idProjeto);
+            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoProjetoDTO>>("recursoProjeto", "getByProjeto", Token, idProjeto);
 
             ViewData["idProjeto"] = idProjeto;
 

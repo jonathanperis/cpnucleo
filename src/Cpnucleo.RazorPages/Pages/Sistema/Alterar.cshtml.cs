@@ -1,23 +1,23 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
-[Authorize]
+//[Authorize]
 public class AlterarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public AlterarModel(ICpnucleoApiService cpnucleoApiService)
+    public AlterarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public SistemaViewModel Sistema { get; set; }
+    public SistemaDTO Sistema { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, id);
+            Sistema = await _cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Sistema = await _cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", Token, Sistema.Id);
+                Sistema = await _cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", Token, Sistema.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PutAsync("sistema", Token, Sistema.Id, Sistema);
+            await _cpnucleoApiClient.PutAsync("sistema", Token, Sistema.Id, Sistema);
 
             return RedirectToPage("Listar");
         }

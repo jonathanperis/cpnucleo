@@ -1,17 +1,17 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
-[Authorize]
+//[Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public SistemaViewModel Sistema { get; set; }
+    public SistemaDTO Sistema { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<SistemaViewModel>("sistema", Token, Sistema);
+            await _cpnucleoApiClient.PostAsync<SistemaDTO>("sistema", Token, Sistema);
 
             return RedirectToPage("Listar");
         }

@@ -3,15 +3,15 @@
 [Authorize]
 public class IncluirModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public IncluirModel(ICpnucleoApiService cpnucleoApiService)
+    public IncluirModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public WorkflowViewModel Workflow { get; set; }
+    public WorkflowDTO Workflow { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiService.PostAsync<WorkflowViewModel>("workflow", Token, Workflow);
+            await _cpnucleoApiClient.PostAsync<WorkflowDTO>("workflow", Token, Workflow);
 
             return RedirectToPage("Listar");
         }

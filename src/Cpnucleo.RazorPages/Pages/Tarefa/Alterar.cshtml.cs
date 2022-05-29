@@ -3,15 +3,15 @@
 [Authorize]
 public class AlterarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public AlterarModel(ICpnucleoApiService cpnucleoApiService)
+    public AlterarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaDTO Tarefa { get; set; }
 
     public SelectList SelectProjetos { get; set; }
 
@@ -25,18 +25,18 @@ public class AlterarModel : PageBase
     {
         try
         {
-            Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, id);
+            Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, id);
 
-            IEnumerable<ProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+            IEnumerable<ProjetoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", Token);
             SelectProjetos = new SelectList(result, "Id", "Nome");
 
-            IEnumerable<SistemaViewModel> result2 = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+            IEnumerable<SistemaDTO> result2 = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
             SelectSistemas = new SelectList(result2, "Id", "Nome");
 
-            IEnumerable<WorkflowViewModel> result3 = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
+            IEnumerable<WorkflowDTO> result3 = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
             SelectWorkflows = new SelectList(result3, "Id", "Nome");
 
-            IEnumerable<TipoTarefaViewModel> result4 = await _cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
+            IEnumerable<TipoTarefaDTO> result4 = await _cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", Token);
             SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
 
             return Page();
@@ -54,24 +54,24 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = await _cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", Token, Tarefa.Id);
+                Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, Tarefa.Id);
 
-                IEnumerable<ProjetoViewModel> result = await _cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", Token);
+                IEnumerable<ProjetoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", Token);
                 SelectProjetos = new SelectList(result, "Id", "Nome");
 
-                IEnumerable<SistemaViewModel> result2 = await _cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", Token);
+                IEnumerable<SistemaDTO> result2 = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
                 SelectSistemas = new SelectList(result2, "Id", "Nome");
 
-                IEnumerable<WorkflowViewModel> result3 = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
+                IEnumerable<WorkflowDTO> result3 = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
                 SelectWorkflows = new SelectList(result3, "Id", "Nome");
 
-                IEnumerable<TipoTarefaViewModel> result4 = await _cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", Token);
+                IEnumerable<TipoTarefaDTO> result4 = await _cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", Token);
                 SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
 
                 return Page();
             }
 
-            await _cpnucleoApiService.PutAsync("tarefa", Token, Tarefa.Id, Tarefa);
+            await _cpnucleoApiClient.PutAsync("tarefa", Token, Tarefa.Id, Tarefa);
 
             return RedirectToPage("Listar");
         }

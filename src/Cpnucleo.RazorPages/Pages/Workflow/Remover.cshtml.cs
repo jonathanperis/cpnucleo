@@ -3,21 +3,21 @@
 [Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public WorkflowViewModel Workflow { get; set; }
+    public WorkflowDTO Workflow { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Workflow = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, id);
+            Workflow = await _cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Workflow = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, Workflow.Id);
+                Workflow = await _cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", Token, Workflow.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("workflow", Token, Workflow.Id);
+            await _cpnucleoApiClient.DeleteAsync("workflow", Token, Workflow.Id);
 
             return RedirectToPage("Listar");
         }

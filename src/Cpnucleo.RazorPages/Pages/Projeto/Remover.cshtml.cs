@@ -3,21 +3,21 @@
 [Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public ProjetoViewModel Projeto { get; set; }
+    public ProjetoDTO Projeto { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, id);
+            Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", Token, Projeto.Id);
+                Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, Projeto.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("projeto", Token, Projeto.Id);
+            await _cpnucleoApiClient.DeleteAsync("projeto", Token, Projeto.Id);
 
             return RedirectToPage("Listar");
         }

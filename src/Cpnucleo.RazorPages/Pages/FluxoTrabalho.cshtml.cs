@@ -3,23 +3,23 @@
 [Authorize]
 public class FluxoTrabalhoModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public FluxoTrabalhoModel(ICpnucleoApiService cpnucleoApiService)
+    public FluxoTrabalhoModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
-    public IEnumerable<WorkflowViewModel> Lista { get; set; }
+    public IEnumerable<WorkflowDTO> Lista { get; set; }
 
-    public IEnumerable<TarefaViewModel> ListaTarefas { get; set; }
+    public IEnumerable<TarefaDTO> ListaTarefas { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
         try
         {
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
-            ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
+            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
+            ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", Token, true);
 
             return Page();
         }
@@ -36,14 +36,14 @@ public class FluxoTrabalhoModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Lista = await _cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", Token);
-                ListaTarefas = await _cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", Token, true);
+                Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
+                ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", Token, true);
 
                 return Page();
             }
 
-            WorkflowViewModel result3 = await _cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", Token, idWorkflow);
-            await _cpnucleoApiService.PutAsync("tarefa", "putByWorkflow", Token, idTarefa, result3);
+            WorkflowDTO result3 = await _cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", Token, idWorkflow);
+            await _cpnucleoApiClient.PutAsync("tarefa", "putByWorkflow", Token, idTarefa, result3);
 
             return Page();
         }

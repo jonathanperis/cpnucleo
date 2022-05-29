@@ -3,21 +3,21 @@
 [Authorize]
 public class RemoverModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public RemoverModel(ICpnucleoApiService cpnucleoApiService)
+    public RemoverModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
     [BindProperty]
-    public RecursoTarefaViewModel RecursoTarefa { get; set; }
+    public RecursoTarefaDTO RecursoTarefa { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
         try
         {
-            RecursoTarefa = await _cpnucleoApiService.GetAsync<RecursoTarefaViewModel>("recursoTarefa", Token, id);
+            RecursoTarefa = await _cpnucleoApiClient.GetAsync<RecursoTarefaDTO>("recursoTarefa", Token, id);
 
             return Page();
         }
@@ -34,12 +34,12 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa = await _cpnucleoApiService.GetAsync<RecursoTarefaViewModel>("recursoTarefa", Token, RecursoTarefa.Id);
+                RecursoTarefa = await _cpnucleoApiClient.GetAsync<RecursoTarefaDTO>("recursoTarefa", Token, RecursoTarefa.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiService.DeleteAsync("recursoTarefa", Token, RecursoTarefa.Id);
+            await _cpnucleoApiClient.DeleteAsync("recursoTarefa", Token, RecursoTarefa.Id);
 
             return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }

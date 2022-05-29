@@ -3,22 +3,22 @@
 [Authorize]
 public class ListarModel : PageBase
 {
-    private readonly ICpnucleoApiService _cpnucleoApiService;
+    private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
-    public ListarModel(ICpnucleoApiService cpnucleoApiService)
+    public ListarModel(ICpnucleoApiClient cpnucleoApiClient)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoApiClient = cpnucleoApiClient;
     }
 
-    public ImpedimentoViewModel Impedimento { get; set; }
+    public ImpedimentoDTO Impedimento { get; set; }
 
-    public IEnumerable<ImpedimentoViewModel> Lista { get; set; }
+    public IEnumerable<ImpedimentoDTO> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
         try
         {
-            Lista = await _cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", Token);
+            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", Token);
 
             return Page();
         }

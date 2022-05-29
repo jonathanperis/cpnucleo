@@ -38,7 +38,7 @@ public class AuthController : ControllerBase
     ///       }
     ///     }
     /// </remarks>
-    /// <param name="query">Recurso</param>
+    /// <param name="request">Recurso</param>
     /// <response code="200">Retorna um recurso</response>
     /// <response code="400">Objetos não preenchidos corretamente</response>
     /// <response code="404">Recurso não encontrado</response>
@@ -47,14 +47,14 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AuthResponse>> Auth([FromBody] AuthRequest query)
+    public async Task<ActionResult<AuthResponse>> Auth([FromBody] AuthRequest request)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        AuthResponse response = await _mediator.Send(query);
+        AuthResponse response = await _mediator.Send(request);
 
         if (response.Recurso == null)
         {

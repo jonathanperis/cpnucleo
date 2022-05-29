@@ -3,7 +3,7 @@ using AuthorizeAttribute = Refit.AuthorizeAttribute;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces;
 
-public interface ICpnucleoApiService
+public interface ICpnucleoApiClient
 {
     [Get("/{route}")]
     Task<T> GetAsync<T>(string route, [Authorize("Bearer")] string token, bool getDependencies = false);
@@ -31,4 +31,16 @@ public interface ICpnucleoApiService
 
     [Delete("/{route}/{id}")]
     Task DeleteAsync(string route, [Authorize("Bearer")] string token, Guid id);
+
+
+
+
+
+
+
+    [Post("/{route}")]
+    Task<T> ExecuteQueryAsync<T>(string route, [Authorize("Bearer")] string token, [Query] object value);
+
+    [Post("/{route}")]
+    Task<T> ExecuteCommandAsync<T>(string route, [Authorize("Bearer")] string token, [Body] object value);
 }
