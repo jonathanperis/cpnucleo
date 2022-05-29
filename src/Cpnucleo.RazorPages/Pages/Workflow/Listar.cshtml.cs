@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
 
-[Authorize]
+//[Authorize]
 public class ListarModel : PageBase
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
