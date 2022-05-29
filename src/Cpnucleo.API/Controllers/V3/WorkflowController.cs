@@ -71,7 +71,7 @@ public class WorkflowController : ControllerBase
     /// Altera um workflow na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateWorkflow")]
     public async Task<ActionResult<OperationResult>> UpdateWorkflow([FromBody] UpdateWorkflowCommand command)
     {
@@ -87,7 +87,7 @@ public class WorkflowController : ControllerBase
     /// Remove um workflow da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveWorkflow")]
     public async Task<ActionResult<OperationResult>> RemoveWorkflow([FromBody] RemoveWorkflowCommand command)
     {

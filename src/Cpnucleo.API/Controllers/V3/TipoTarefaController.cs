@@ -71,7 +71,7 @@ public class TipoTarefaController : ControllerBase
     /// Altera um tipo de tarefa na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateTipoTarefa")]
     public async Task<ActionResult<OperationResult>> UpdateTipoTarefa([FromBody] UpdateTipoTarefaCommand command)
     {
@@ -87,7 +87,7 @@ public class TipoTarefaController : ControllerBase
     /// Remove um tipo de tarefa da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveTipoTarefa")]
     public async Task<ActionResult<OperationResult>> RemoveTipoTarefa([FromBody] RemoveTipoTarefaCommand command)
     {

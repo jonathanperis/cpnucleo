@@ -87,7 +87,7 @@ public class RecursoTarefaController : ControllerBase
     /// Altera um recurso de tarefa na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateRecursoTarefa")]
     public async Task<ActionResult<OperationResult>> UpdateRecursoTarefa([FromBody] UpdateRecursoTarefaCommand command)
     {
@@ -103,7 +103,7 @@ public class RecursoTarefaController : ControllerBase
     /// Remove um recurso de tarefa da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveRecursoTarefa")]
     public async Task<ActionResult<OperationResult>> RemoveRecursoTarefa([FromBody] RemoveRecursoTarefaCommand command)
     {

@@ -71,7 +71,7 @@ public class ProjetoController : ControllerBase
     /// Altera um projeto na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateProjeto")]
     public async Task<ActionResult<OperationResult>> UpdateProjeto([FromBody] UpdateProjetoCommand command)
     {
@@ -87,7 +87,7 @@ public class ProjetoController : ControllerBase
     /// Remove um projeto da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveProjeto")]
     public async Task<ActionResult<OperationResult>> RemoveProjeto([FromBody] RemoveProjetoCommand command)
     {

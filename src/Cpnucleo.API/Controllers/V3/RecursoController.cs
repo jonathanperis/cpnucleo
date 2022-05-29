@@ -71,7 +71,7 @@ public class RecursoController : ControllerBase
     /// Altera um recurso na base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpPut]
+    [HttpPost]
     [Route("UpdateRecurso")]
     public async Task<ActionResult<OperationResult>> UpdateRecurso([FromBody] UpdateRecursoCommand command)
     {
@@ -87,7 +87,7 @@ public class RecursoController : ControllerBase
     /// Remove um recurso da base de dados.
     /// </remarks>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
-    [HttpDelete]
+    [HttpPost]
     [Route("RemoveRecurso")]
     public async Task<ActionResult<OperationResult>> RemoveRecurso([FromBody] RemoveRecursoCommand command)
     {
