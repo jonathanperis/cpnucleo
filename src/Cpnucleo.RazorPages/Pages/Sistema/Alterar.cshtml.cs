@@ -17,7 +17,7 @@ public class AlterarModel : PageBase
     {
         try
         {
-            Sistema = await _cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", Token, id);
+            await CarregarSistema(id);
 
             return Page();
         }
@@ -34,12 +34,17 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Sistema = await _cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", Token, Sistema.Id);
+                await CarregarSistema(Sistema.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PutAsync("sistema", Token, Sistema.Id, Sistema);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "UpdateSistema", Token, new UpdateSistemaCommand { Id = Sistema.Id, Nome = Sistema.Nome, Descricao = Sistema.Descricao });
+
+            if (result == OperationResult.Failed)
+            {
+                //@@JONATHAN - TRATAR ERRO.
+            }
 
             return RedirectToPage("Listar");
         }
@@ -48,5 +53,17 @@ public class AlterarModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarSistema(Guid id)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", Token, new GetSistemaQuery { Id = id });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            //@@JONATHAN - TRATAR ERRO.
+        }
+
+        Sistema = result.Sistema;
     }
 }

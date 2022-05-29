@@ -22,7 +22,12 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<SistemaDTO>("sistema", Token, Sistema);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "CreateSistema", Token, new CreateSistemaCommand { Nome = Sistema.Nome, Descricao = Sistema.Descricao });
+
+            if (result == OperationResult.Failed)
+            {
+                //@@JONATHAN - TRATAR ERRO.
+            }
 
             return RedirectToPage("Listar");
         }
