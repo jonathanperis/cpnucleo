@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
-[Authorize]
+//[Authorize]
 public class IncluirModel : PageBase
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
