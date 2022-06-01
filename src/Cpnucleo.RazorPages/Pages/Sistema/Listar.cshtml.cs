@@ -22,7 +22,8 @@ public class ListarModel : PageBase
 
             if (result.OperationResult == OperationResult.Failed)
             {
-                //@@JONATHAN - TRATAR ERRO.
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
             }
 
             Lista = result.Sistemas;
