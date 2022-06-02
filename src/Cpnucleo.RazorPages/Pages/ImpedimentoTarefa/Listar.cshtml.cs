@@ -19,7 +19,15 @@ public class ListarModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoTarefaDTO>>("impedimentoTarefa", "getByTarefa", Token, idTarefa);
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaByTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefaByTarefa", Token, new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
+
+            Lista = result.ImpedimentoTarefas;
 
             ViewData["idTarefa"] = idTarefa;
 

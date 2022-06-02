@@ -3,5 +3,5 @@
 public class CreateImpedimentoCommand : IRequest<OperationResult>
 {
     public Guid Id { get; set; }
-    public string Nome { get; set; }
+    public string Nome { get; init; }
 }

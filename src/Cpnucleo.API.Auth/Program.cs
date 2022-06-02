@@ -56,7 +56,9 @@ builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilte
         options.SuppressMapClientErrors = true;
     });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
+
+app.UseRouting();
 
 app.UseSwaggerConfig();
 

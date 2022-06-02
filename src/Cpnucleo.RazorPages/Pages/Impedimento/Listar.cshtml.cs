@@ -18,7 +18,15 @@ public class ListarModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", Token);
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", Token, new ListImpedimentoQuery { });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
+
+            Lista = result.Impedimentos;
 
             return Page();
         }

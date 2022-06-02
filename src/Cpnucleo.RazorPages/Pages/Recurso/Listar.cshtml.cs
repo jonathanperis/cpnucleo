@@ -18,7 +18,15 @@ public class ListarModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", Token);
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", Token, new ListRecursoQuery { });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
+
+            Lista = result.Recursos;
 
             return Page();
         }

@@ -21,10 +21,7 @@ public class IncluirModel : PageBase
     {
         try
         {
-            Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, idTarefa);
-
-            IEnumerable<ImpedimentoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", Token);
-            SelectImpedimentos = new SelectList(result, "Id", "Nome");
+            await CarregarDados(idTarefa);
 
             return Page();
         }
@@ -41,15 +38,18 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Tarefa = await _cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", Token, ImpedimentoTarefa.IdTarefa);
-
-                IEnumerable<ImpedimentoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", Token);
-                SelectImpedimentos = new SelectList(result, "Id", "Nome");
+                await CarregarDados(ImpedimentoTarefa.IdTarefa);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", Token, ImpedimentoTarefa);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "CreateImpedimentoTarefa", Token, new CreateImpedimentoTarefaCommand { Descricao = ImpedimentoTarefa.Descricao, IdImpedimento = ImpedimentoTarefa.IdImpedimento, IdTarefa = ImpedimentoTarefa.IdTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }
@@ -58,5 +58,28 @@ public class IncluirModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idTarefa)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", Token, new GetTarefaQuery { Id = idTarefa });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Tarefa = result.Tarefa;
+
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", Token, new ListImpedimentoQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectImpedimentos = new SelectList(result2.Impedimentos, "Id", "Nome");
     }
 }

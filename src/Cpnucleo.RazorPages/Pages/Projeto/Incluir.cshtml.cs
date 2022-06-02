@@ -19,8 +19,7 @@ public class IncluirModel : PageBase
     {
         try
         {
-            IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
-            SelectSistemas = new SelectList(result, "Id", "Nome");
+            await CarregarDados();
 
             return Page();
         }
@@ -37,13 +36,18 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
-                SelectSistemas = new SelectList(result, "Id", "Nome");
+                await CarregarDados();
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<ProjetoDTO>("projeto", Token, Projeto);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "CreateProjeto", Token, new CreateProjetoCommand { Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -52,5 +56,18 @@ public class IncluirModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados()
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectSistemas = new SelectList(result.Sistemas, "Id", "Nome");
     }
 }

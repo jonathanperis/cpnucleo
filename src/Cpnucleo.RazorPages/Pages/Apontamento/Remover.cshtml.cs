@@ -17,7 +17,7 @@ public class RemoverModel : PageBase
     {
         try
         {
-            Apontamento = await _cpnucleoApiClient.GetAsync<ApontamentoDTO>("apontamento", Token, id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,12 +34,18 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Apontamento = await _cpnucleoApiClient.GetAsync<ApontamentoDTO>("apontamento", Token, Apontamento.Id);
+                await CarregarDados(Apontamento.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.DeleteAsync("apontamento", Token, Apontamento.Id);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "RemoveApontamento", Token, new RemoveApontamentoCommand { Id = Apontamento.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -48,5 +54,18 @@ public class RemoverModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idApontamento)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoViewModel>("Apontamento", "GetApontamento", Token, new GetApontamentoQuery { Id = idApontamento });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Apontamento = result.Apontamento;
     }
 }
