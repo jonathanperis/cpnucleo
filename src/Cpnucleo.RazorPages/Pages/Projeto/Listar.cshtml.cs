@@ -18,7 +18,15 @@ public class ListarModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", Token, true);
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", Token, new ListProjetoQuery { GetDependencies = true });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
+
+            Lista = result.Projetos;
 
             return Page();
         }

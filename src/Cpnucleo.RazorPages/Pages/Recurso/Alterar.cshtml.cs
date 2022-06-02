@@ -17,7 +17,7 @@ public class AlterarModel : PageBase
     {
         try
         {
-            Recurso = await _cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", Token, id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,12 +34,18 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Recurso = await _cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", Token, Recurso.Id);
+                await CarregarDados(Recurso.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PutAsync("recurso", Token, Recurso.Id, Recurso);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "UpdateRecurso", Token, new UpdateRecursoCommand { Id = Recurso.Id, Nome = Recurso.Nome, Senha = Recurso.Senha });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -48,5 +54,18 @@ public class AlterarModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idRecurso)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", Token, new GetRecursoQuery { Id = idRecurso });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Recurso = result.Recurso;
     }
 }

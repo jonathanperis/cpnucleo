@@ -22,7 +22,13 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<ImpedimentoDTO>("impedimento", Token, Impedimento);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "CreateImpedimento", Token, new CreateImpedimentoCommand { Nome = Impedimento.Nome });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }

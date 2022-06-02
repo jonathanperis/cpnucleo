@@ -17,7 +17,7 @@ public class RemoverModel : PageBase
     {
         try
         {
-            RecursoTarefa = await _cpnucleoApiClient.GetAsync<RecursoTarefaDTO>("recursoTarefa", Token, id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,12 +34,18 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefa = await _cpnucleoApiClient.GetAsync<RecursoTarefaDTO>("recursoTarefa", Token, RecursoTarefa.Id);
+                await CarregarDados(RecursoTarefa.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.DeleteAsync("recursoTarefa", Token, RecursoTarefa.Id);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "RemoveRecursoTarefa", Token, new RemoveRecursoTarefaCommand { Id = RecursoTarefa.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar", new { idTarefa = RecursoTarefa.IdTarefa });
         }
@@ -48,5 +54,18 @@ public class RemoverModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idRecursoTarefa)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoTarefaViewModel>("RecursoTarefa", "GetRecursoTarefa", Token, new GetRecursoTarefaQuery { Id = idRecursoTarefa });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        RecursoTarefa = result.RecursoTarefa;
     }
 }

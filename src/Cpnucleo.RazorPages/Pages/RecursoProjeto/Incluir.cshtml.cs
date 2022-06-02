@@ -21,10 +21,7 @@ public class IncluirModel : PageBase
     {
         try
         {
-            Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, idProjeto);
-
-            IEnumerable<RecursoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", Token);
-            SelectRecursos = new SelectList(result, "Id", "Nome");
+            await CarregarDados(idProjeto);
 
             return Page();
         }
@@ -41,15 +38,18 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, RecursoProjeto.IdProjeto);
-
-                IEnumerable<RecursoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", Token);
-                SelectRecursos = new SelectList(result, "Id", "Nome");
+                await CarregarDados(RecursoProjeto.IdProjeto);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<RecursoProjetoDTO>("recursoProjeto", Token, RecursoProjeto);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "CreateRecursoProjeto", Token, new CreateRecursoProjetoCommand { IdProjeto = RecursoProjeto.IdProjeto, IdRecurso = RecursoProjeto.IdRecurso });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }
@@ -58,5 +58,28 @@ public class IncluirModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idProjeto)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", Token, new GetProjetoQuery { Id = idProjeto });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Projeto = result.Projeto;
+
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", Token, new ListRecursoQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectRecursos = new SelectList(result2.Recursos, "Id", "Nome");
     }
 }

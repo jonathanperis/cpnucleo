@@ -18,7 +18,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { GetDependencies = false });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
 
             if (result.OperationResult == OperationResult.Failed)
             {

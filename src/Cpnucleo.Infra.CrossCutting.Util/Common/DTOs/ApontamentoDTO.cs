@@ -11,7 +11,7 @@ public class ApontamentoDTO : BaseDTO
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
     [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
     [Required(ErrorMessage = "Necessário informar a {0}.")]
-    public DateTime? DataApontamento { get; set; }
+    public DateTime DataApontamento { get; set; }
 
     [Display(Name = "Tempo Utilizado")]
     [Required(ErrorMessage = "Necessário informar o {0}.")]

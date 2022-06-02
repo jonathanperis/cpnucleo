@@ -17,7 +17,7 @@ public class RemoverModel : PageBase
     {
         try
         {
-            ImpedimentoTarefa = await _cpnucleoApiClient.GetAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", Token, id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,12 +34,18 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                ImpedimentoTarefa = await _cpnucleoApiClient.GetAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", Token, ImpedimentoTarefa.Id);
+                await CarregarDados(ImpedimentoTarefa.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.DeleteAsync("impedimentoTarefa", Token, ImpedimentoTarefa.Id);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "RemoveImpedimentoTarefa", Token, new RemoveImpedimentoTarefaCommand { Id = ImpedimentoTarefa.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar", new { idTarefa = ImpedimentoTarefa.IdTarefa });
         }
@@ -48,5 +54,18 @@ public class RemoverModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idImpedimentoTarefa)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", Token, new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ImpedimentoTarefa = result.ImpedimentoTarefa;
     }
 }

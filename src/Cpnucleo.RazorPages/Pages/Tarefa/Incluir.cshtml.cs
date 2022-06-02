@@ -25,17 +25,7 @@ public class IncluirModel : PageBase
     {
         try
         {
-            IEnumerable<ProjetoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", Token);
-            SelectProjetos = new SelectList(result, "Id", "Nome");
-
-            IEnumerable<SistemaDTO> result2 = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
-            SelectSistemas = new SelectList(result2, "Id", "Nome");
-
-            IEnumerable<WorkflowDTO> result3 = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
-            SelectWorkflows = new SelectList(result3, "Id", "Nome");
-
-            IEnumerable<TipoTarefaDTO> result4 = await _cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", Token);
-            SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
+            await CarregarDados();
 
             return Page();
         }
@@ -52,22 +42,18 @@ public class IncluirModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                IEnumerable<ProjetoDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", Token);
-                SelectProjetos = new SelectList(result, "Id", "Nome");
-
-                IEnumerable<SistemaDTO> result2 = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
-                SelectSistemas = new SelectList(result2, "Id", "Nome");
-
-                IEnumerable<WorkflowDTO> result3 = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
-                SelectWorkflows = new SelectList(result3, "Id", "Nome");
-
-                IEnumerable<TipoTarefaDTO> result4 = await _cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", Token);
-                SelectTipoTarefas = new SelectList(result4, "Id", "Nome");
+                await CarregarDados();
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<TarefaDTO>("tarefa", Token, Tarefa);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "CreateTarefa", Token, new CreateTarefaCommand { Nome = Tarefa.Nome, DataInicio = Tarefa.DataInicio, DataTermino = Tarefa.DataTermino, QtdHoras = Tarefa.QtdHoras, Detalhe = Tarefa.Detalhe, IdProjeto = Tarefa.IdProjeto, IdWorkflow = Tarefa.IdWorkflow, IdRecurso = Tarefa.IdRecurso, IdTipoTarefa = Tarefa.IdTipoTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -76,5 +62,48 @@ public class IncluirModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados()
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", Token, new ListProjetoQuery { });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectProjetos = new SelectList(result.Projetos, "Id", "Nome");
+
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
+
+        var result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", Token, new ListWorkflowQuery { });
+
+        if (result3.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectWorkflows = new SelectList(result3.Workflows, "Id", "Nome");
+
+        var result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", Token, new ListTipoTarefaQuery { });
+
+        if (result4.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectTipoTarefas = new SelectList(result4.TipoTarefas, "Id", "Nome");
     }
 }

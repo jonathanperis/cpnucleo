@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Common.Models;
-using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
 using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

@@ -19,10 +19,7 @@ public class AlterarModel : PageBase
     {
         try
         {
-            Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, id);
-
-            IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
-            SelectSistemas = new SelectList(result, "Id", "Nome");
+            await CarregarDados(id);
 
             return Page();
         }
@@ -39,15 +36,18 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Projeto = await _cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", Token, Projeto.Id);
-
-                IEnumerable<SistemaDTO> result = await _cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", Token);
-                SelectSistemas = new SelectList(result, "Id", "Nome");
+                await CarregarDados(Projeto.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PutAsync("projeto", Token, Projeto.Id, Projeto);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "UpdateProjeto", Token, new UpdateProjetoCommand { Id = Projeto.Id, Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -56,5 +56,28 @@ public class AlterarModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idProjeto)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", Token, new GetProjetoQuery { Id = idProjeto });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Projeto = result.Projeto;
+
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
     }
 }

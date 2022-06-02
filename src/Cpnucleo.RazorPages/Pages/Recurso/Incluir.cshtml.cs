@@ -22,7 +22,13 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<RecursoDTO>("recurso", Token, Recurso);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "CreateRecurso", Token, new CreateRecursoCommand { Login = Recurso.Login, Nome = Recurso.Nome, Senha = Recurso.Senha });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
