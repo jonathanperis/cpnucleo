@@ -17,7 +17,7 @@ public class AlterarModel : PageBase
     {
         try
         {
-            await CarregarSistema(id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,7 +34,7 @@ public class AlterarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                await CarregarSistema(Sistema.Id);
+                await CarregarDados(Sistema.Id);
 
                 return Page();
             }
@@ -43,7 +43,8 @@ public class AlterarModel : PageBase
 
             if (result == OperationResult.Failed)
             {
-                //@@JONATHAN - TRATAR ERRO.
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
             }
 
             return RedirectToPage("Listar");
@@ -55,13 +56,14 @@ public class AlterarModel : PageBase
         }
     }
 
-    private async Task CarregarSistema(Guid id)
+    private async Task CarregarDados(Guid id)
     {
         var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", Token, new GetSistemaQuery { Id = id });
 
         if (result.OperationResult == OperationResult.Failed)
         {
-            //@@JONATHAN - TRATAR ERRO.
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
         }
 
         Sistema = result.Sistema;

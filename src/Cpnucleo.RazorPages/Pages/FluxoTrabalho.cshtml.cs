@@ -18,8 +18,7 @@ public class FluxoTrabalhoModel : PageBase
     {
         try
         {
-            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
-            ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", Token, true);
+            await CarregarDados();
 
             return Page();
         }
@@ -36,14 +35,18 @@ public class FluxoTrabalhoModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", Token);
-                ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", Token, true);
+                await CarregarDados();
 
                 return Page();
             }
 
-            WorkflowDTO result3 = await _cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", Token, idWorkflow);
-            await _cpnucleoApiClient.PutAsync("tarefa", "putByWorkflow", Token, idTarefa, result3);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "UpdateTarefaByWorkflow", Token, new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return Page();
         }
@@ -52,5 +55,28 @@ public class FluxoTrabalhoModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados()
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", Token, new ListWorkflowQuery { });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Lista = result.Workflows;
+
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", Token, new ListTarefaQuery { GetDependencies = true });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ListaTarefas = result2.Tarefas;
     }
 }

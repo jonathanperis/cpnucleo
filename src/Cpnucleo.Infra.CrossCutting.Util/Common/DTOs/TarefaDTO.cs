@@ -11,13 +11,13 @@ public class TarefaDTO : BaseDTO //:IValidatableObject
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
     [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
     [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
-    public DateTime? DataInicio { get; set; }
+    public DateTime DataInicio { get; set; }
 
     [Display(Name = "Data de Término")]
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
     [DataType(DataType.Date, ErrorMessage = "{0} em formato inválido")]
     [Required(ErrorMessage = "Necessário informar a {0} da Tarefa.")]
-    public DateTime? DataTermino { get; set; }
+    public DateTime DataTermino { get; set; }
 
     [Display(Name = "Tempo Estimado")]
     [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]

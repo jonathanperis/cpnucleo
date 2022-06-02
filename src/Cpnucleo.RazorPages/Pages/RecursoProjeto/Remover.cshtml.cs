@@ -17,7 +17,7 @@ public class RemoverModel : PageBase
     {
         try
         {
-            RecursoProjeto = await _cpnucleoApiClient.GetAsync<RecursoProjetoDTO>("recursoProjeto", Token, id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,12 +34,18 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjeto = await _cpnucleoApiClient.GetAsync<RecursoProjetoDTO>("recursoProjeto", Token, RecursoProjeto.Id);
+                await CarregarDados(RecursoProjeto.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.DeleteAsync("recursoProjeto", Token, RecursoProjeto.Id);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "RemoveRecursoProjeto", Token, new RemoveRecursoProjetoCommand { Id = RecursoProjeto.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar", new { idProjeto = RecursoProjeto.IdProjeto });
         }
@@ -48,5 +54,18 @@ public class RemoverModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idRecursoProjeto)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoProjetoViewModel>("RecursoProjeto", "GetRecursoProjeto", Token, new GetRecursoProjetoQuery { Id = idRecursoProjeto });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        RecursoProjeto = result.RecursoProjeto;
     }
 }

@@ -24,11 +24,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-            Guid idRecurso = new(retorno);
-
-            Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDTO>>("apontamento", "getbyrecurso", Token, idRecurso);
-            ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "getbyrecurso", Token, idRecurso);
+            await CarregarDados();
 
             return Page();
         }
@@ -45,16 +41,18 @@ public class ListarModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-                Guid idRecurso = new(retorno);
-
-                Lista = await _cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDTO>>("apontamento", "getbyrecurso", Token, idRecurso);
-                ListaTarefas = await _cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "getbyrecurso", Token, idRecurso);
+                await CarregarDados();
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.PostAsync<ApontamentoDTO>("apontamento", Token, Apontamento);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", Token, new CreateApontamentoCommand { Descricao = Apontamento.Descricao, IdRecurso = Apontamento.IdRecurso, IdTarefa = Apontamento.IdTarefa, QtdHoras = Apontamento.QtdHoras, DataApontamento = Apontamento.DataApontamento });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -63,5 +61,31 @@ public class ListarModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados()
+    {
+        string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+        Guid idRecurso = new(retorno);
+
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", Token, new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Lista = result.Apontamentos;
+
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", Token, new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ListaTarefas = result2.Tarefas;
     }
 }

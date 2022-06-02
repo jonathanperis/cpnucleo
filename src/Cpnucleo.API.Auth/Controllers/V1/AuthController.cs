@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.API.Services;
-using Cpnucleo.Application.Requests.Auth;
 using Cpnucleo.Infra.CrossCutting.Util.Common.Models;
 using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
 
@@ -27,16 +26,6 @@ public class AuthController : ControllerBase
     /// # Autenticar
     /// 
     /// Autentica e devolve um token válido por 60 minutos para utilização na API.
-    /// 
-    /// # Sample request:
-    ///
-    ///     POST /auth
-    ///     {
-    ///       "auth": {
-    ///         "usuario": "usuario.teste",
-    ///         "senha": "12345678"
-    ///       }
-    ///     }
     /// </remarks>
     /// <param name="request">Recurso</param>
     /// <response code="200">Retorna um recurso</response>

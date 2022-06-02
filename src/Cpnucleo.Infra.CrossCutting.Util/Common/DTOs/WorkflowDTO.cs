@@ -9,7 +9,7 @@ public class WorkflowDTO : BaseDTO
 
     [Display(Name = "Ordem")]
     [Required(ErrorMessage = "Necessário informar a {0} do Workflow.")]
-    public int? Ordem { get; set; }
+    public int Ordem { get; set; }
 
     [Display(Name = "Tamanho Coluna")]
     public string? TamanhoColuna { get; set; }

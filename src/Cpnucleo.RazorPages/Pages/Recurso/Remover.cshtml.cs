@@ -17,7 +17,7 @@ public class RemoverModel : PageBase
     {
         try
         {
-            Recurso = await _cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", Token, id);
+            await CarregarDados(id);
 
             return Page();
         }
@@ -34,12 +34,18 @@ public class RemoverModel : PageBase
         {
             if (!ModelState.IsValid)
             {
-                Recurso = await _cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", Token, Recurso.Id);
+                await CarregarDados(Recurso.Id);
 
                 return Page();
             }
 
-            await _cpnucleoApiClient.DeleteAsync("recurso", Token, Recurso.Id);
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "RemoveRecurso", Token, new RemoveRecursoCommand { Id = Recurso.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return Page();
+            }
 
             return RedirectToPage("Listar");
         }
@@ -48,5 +54,18 @@ public class RemoverModel : PageBase
             ModelState.AddModelError(string.Empty, ex.Message);
             return Page();
         }
+    }
+
+    private async Task CarregarDados(Guid idRecurso)
+    {
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", Token, new GetRecursoQuery { Id = idRecurso });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        Recurso = result.Recurso;
     }
 }
