@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.RazorPages.Pages;
 
-//[Authorize]
+[Authorize]
 public class FluxoTrabalhoModel : PageBase
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;

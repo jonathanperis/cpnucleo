@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Pages.Apontamento;
 
-//[Authorize]
+[Authorize]
 public class ListarModel : PageBase
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
