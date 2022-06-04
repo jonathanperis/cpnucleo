@@ -20,9 +20,8 @@ public class CreateRecursoHandler : IRequestHandler<CreateRecursoCommand, Operat
         _cryptographyManager.CryptPbkdf2(request.Senha, out string senhaCrypt, out string salt);
 
         request.Senha = senhaCrypt;
-        request.Salt = salt;
 
-        await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Domain.Entities.Recurso>(request));
+        await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Domain.Entities.Recurso>(request), salt);
 
         bool success = await _unitOfWork.SaveChangesAsync();
 
