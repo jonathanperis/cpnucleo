@@ -8,9 +8,9 @@ public class UpdateTarefaCommandValidator : AbstractValidator<UpdateTarefaComman
         RuleFor(x => x.Nome).NotEmpty();
         RuleFor(x => x.Nome).MaximumLength(450);
         RuleFor(x => x.DataInicio).NotEmpty();
-        RuleFor(x => x.DataInicio).Must(x => x.Date < DateTime.Now.Date);
+        RuleFor(x => x.DataInicio).Must(x => x.Date >= DateTime.Now.Date);
         RuleFor(x => x.DataTermino).NotEmpty();
-        RuleFor(x => x.DataTermino).Must(x => x.Date < DateTime.Now.Date);
+        RuleFor(x => x.DataTermino).Must(x => x.Date >= DateTime.Now.Date);
         RuleFor(x => x.QtdHoras).GreaterThanOrEqualTo(1);
         RuleFor(x => x.Detalhe).NotEmpty();
         RuleFor(x => x.Detalhe).MaximumLength(1000);

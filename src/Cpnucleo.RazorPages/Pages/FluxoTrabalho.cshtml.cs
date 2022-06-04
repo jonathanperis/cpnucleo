@@ -40,7 +40,7 @@ public class FluxoTrabalhoModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "UpdateTarefaByWorkflow", Token, new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "UpdateTarefaByWorkflow", Token, new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
 
             if (result == OperationResult.Failed)
             {

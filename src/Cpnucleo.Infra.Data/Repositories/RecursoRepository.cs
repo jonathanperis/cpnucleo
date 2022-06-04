@@ -8,6 +8,13 @@ internal class RecursoRepository : GenericRepository<Recurso>, IRecursoRepositor
 
     }
 
+    public Task<Recurso> AddAsync(Recurso entity, string salt)
+    {
+        entity.Salt = salt;
+
+        return AddAsync(entity);
+    }
+
     public async Task<Recurso> GetRecursoByLoginAsync(string login)
     {
         return await _context.Set<Recurso>()
