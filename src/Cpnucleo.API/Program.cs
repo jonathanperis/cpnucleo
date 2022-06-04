@@ -6,6 +6,7 @@ using Cpnucleo.Infra.Data;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,26 +29,31 @@ builder.Services.AddVersionConfig();
 //                      });
 //});
 
-builder.Services.AddAuthentication(x =>
+builder.Services.AddAuthorization(options =>
 {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(x =>
-{
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
+    options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
     {
-        ValidateAudience = false,
-        ValidateIssuer = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"])),
-    };
+        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+        policy.RequireClaim(ClaimTypes.PrimarySid);
+        policy.RequireClaim(ClaimTypes.Hash);
+    });
 });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"])),
+        };
+    });
 
 builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
     .AddFluentValidation(x => x.AutomaticValidationEnabled = false)
@@ -61,12 +67,11 @@ WebApplication app = builder.Build();
 app.UseRouting();
 
 app.UseSwaggerConfig();
-
-app.UseApplication();
-
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseApplication();
 
 //app.UseCors("AllowCpcnuleoClients");
 
