@@ -4,7 +4,7 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [ApiVersion("2")]
-//[Authorize]
+[Authorize]
 public class SistemaController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
