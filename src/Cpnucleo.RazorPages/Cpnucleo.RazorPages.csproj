@@ -6,6 +6,7 @@
 		<Nullable>disable</Nullable>
 		<UserSecretsId>ad23b12b-1357-478e-b2eb-0043aa8247d1</UserSecretsId>
 	</PropertyGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
 		<PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22" />
