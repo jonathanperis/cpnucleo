@@ -10,6 +10,5 @@ public class CreateRecursoCommandValidator : AbstractValidator<CreateRecursoComm
         RuleFor(x => x.Login).MaximumLength(50);
         RuleFor(x => x.Senha).NotEmpty();
         RuleFor(x => x.Senha).MaximumLength(50);
-        RuleFor(x => x.Salt).Empty();
     }
 }
