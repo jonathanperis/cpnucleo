@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.API.Controllers.V3;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [ApiVersion("3")]
 [Produces("application/json")]
