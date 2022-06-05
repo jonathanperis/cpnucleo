@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
 
-public class RemoveImpedimentoCommand : IRequest<OperationResult>
+public class RemoveImpedimentoCommand : BaseCommand, IRequest<OperationResult>
 {
     public Guid Id { get; set; }
 }

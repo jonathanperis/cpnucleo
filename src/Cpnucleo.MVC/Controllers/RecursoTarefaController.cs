@@ -1,39 +1,34 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class RecursoTarefaController : BaseController
 {
     private readonly IRecursoTarefaGrpcService _recursoTarefaGrpcService;
     private readonly IRecursoGrpcService _recursoGrpcService;
-    private readonly ITarefaGrpcService _TarefaGrpcService;
+    private readonly ITarefaGrpcService _tarefaGrpcService;
 
-    private RecursoTarefaView _recursoTarefaView;
+    private RecursoTarefaViewModel _viewModel;
 
     public RecursoTarefaController(IConfiguration configuration)
         : base(configuration)
     {
         _recursoTarefaGrpcService = MagicOnionClient.Create<IRecursoTarefaGrpcService>(CreateAuthenticatedChannel());
         _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
-        _TarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
+        _tarefaGrpcService = MagicOnionClient.Create<ITarefaGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public RecursoTarefaView RecursoTarefaView
+    public RecursoTarefaViewModel ViewModel
     {
         get
         {
-            if (_recursoTarefaView == null)
+            if (_viewModel == null)
             {
-                _recursoTarefaView = new RecursoTarefaView();
+                _viewModel = new RecursoTarefaViewModel();
             }
 
-            return _recursoTarefaView;
+            return _viewModel;
         }
-        set => _recursoTarefaView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -41,11 +36,19 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            RecursoTarefaView.Lista = await _recursoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
+            var result = await _recursoTarefaGrpcService.GetRecursoTarefaByTarefa(new GetRecursoTarefaByTarefaQuery { IdTarefa = idTarefa });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.RecursoTarefas;
 
             ViewData["idTarefa"] = idTarefa;
 
-            return View(RecursoTarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -57,26 +60,30 @@ public class RecursoTarefaController : BaseController
     [HttpGet]
     public async Task<IActionResult> Incluir(Guid idTarefa)
     {
-        await ObterTarefa(idTarefa);
-        await CarregarSelectRecursos();
+        await CarregarDados(null, idTarefa);
 
-        return View(RecursoTarefaView);
+        return View(ViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(RecursoTarefaView obj)
+    public async Task<IActionResult> Incluir(RecursoTarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                await ObterTarefa(obj.Tarefa.Id);
-                await CarregarSelectRecursos();
+                await CarregarDados(null, obj.Tarefa.Id);
 
-                return View(RecursoTarefaView);
+                return View(ViewModel);
             }
 
-            await _recursoTarefaGrpcService.AddAsync(new CreateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
+            var result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
         }
@@ -92,11 +99,9 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
+            await CarregarDados(id);
 
-            await CarregarSelectRecursos();
-
-            return View(RecursoTarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -106,20 +111,24 @@ public class RecursoTarefaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(RecursoTarefaView obj)
+    public async Task<IActionResult> Alterar(RecursoTarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
+                await CarregarDados(obj.RecursoTarefa.Id);
 
-                await CarregarSelectRecursos();
-
-                return View(RecursoTarefaView);
+                return View(ViewModel);
             }
 
-            await _recursoTarefaGrpcService.UpdateAsync(new UpdateRecursoTarefaCommand { RecursoTarefa = obj.RecursoTarefa });
+            var result = await _recursoTarefaGrpcService.UpdateRecursoTarefa(new UpdateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
         }
@@ -135,9 +144,9 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(RecursoTarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -147,18 +156,24 @@ public class RecursoTarefaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(RecursoTarefaView obj)
+    public async Task<IActionResult> Remover(RecursoTarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                RecursoTarefaView.RecursoTarefa = await _recursoTarefaGrpcService.GetAsync(new GetRecursoTarefaQuery { Id = obj.RecursoTarefa.Id });
+                await CarregarDados(obj.RecursoTarefa.Id);
 
-                return View(RecursoTarefaView);
+                return View(ViewModel);
             }
 
-            await _recursoTarefaGrpcService.RemoveAsync(new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
+            var result = await _recursoTarefaGrpcService.RemoveRecursoTarefa(new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
         }
@@ -169,14 +184,42 @@ public class RecursoTarefaController : BaseController
         }
     }
 
-    private async Task ObterTarefa(Guid idTarefa)
+    private async Task CarregarDados(Guid? idRecursoTarefa = default, Guid? idTarefa = default)
     {
-        RecursoTarefaView.Tarefa = await _TarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
-    }
+        if (idRecursoTarefa is not null)
+        {
+            var result = await _recursoTarefaGrpcService.GetRecursoTarefa(new GetRecursoTarefaQuery { Id = idRecursoTarefa.Value });
 
-    private async Task CarregarSelectRecursos()
-    {
-        IEnumerable<RecursoViewModel> response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
-        RecursoTarefaView.SelectRecursos = new SelectList(response, "Id", "Nome");
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
+
+            ViewModel.RecursoTarefa = result.RecursoTarefa;
+        }
+
+        if (idTarefa is not null)
+        {
+            var result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
+
+            ViewModel.Tarefa = result.Tarefa;
+        }
+
+        var result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectRecursos = new SelectList(result2.Recursos, "Id", "Nome");
     }
 }

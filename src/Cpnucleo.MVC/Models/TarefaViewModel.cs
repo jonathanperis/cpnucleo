@@ -2,11 +2,11 @@ using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Models;
 
-public class TarefaView
+public class TarefaViewModel
 {
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaDTO Tarefa { get; set; }
 
-    public IEnumerable<TarefaViewModel> Lista { get; set; }
+    public IEnumerable<TarefaDTO> Lista { get; set; }
 
     public SelectList SelectProjetos { get; set; }
 

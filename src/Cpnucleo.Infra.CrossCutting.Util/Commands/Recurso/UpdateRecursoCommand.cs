@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
 
-public class UpdateRecursoCommand : IRequest<OperationResult>
+public class UpdateRecursoCommand : BaseCommand, IRequest<OperationResult>
 {
     public Guid Id { get; set; }
     public string Nome { get; set; }

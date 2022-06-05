@@ -51,9 +51,9 @@ public class LoginModel : PageBase
                 return Page();
             }
 
-            AuthResponse response = await _cpnucleoApiClient.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = Auth.Usuario, Senha = Auth.Senha });
+            var result = await _cpnucleoApiClient.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = Auth.Usuario, Senha = Auth.Senha });
 
-            if (response.Status == OperationResult.Failed)
+            if (result.Status == OperationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return Page();
@@ -62,8 +62,8 @@ public class LoginModel : PageBase
             {
                 IEnumerable<Claim> claims = new[]
                 {
-                    new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString()),
-                    new Claim(ClaimTypes.Hash, response.Token)
+                    new Claim(ClaimTypes.PrimarySid, result.Recurso.Id.ToString()),
+                    new Claim(ClaimTypes.Hash, result.Token)
                 };
 
                 ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
