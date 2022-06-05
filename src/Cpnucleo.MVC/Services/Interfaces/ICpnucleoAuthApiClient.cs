@@ -1,7 +1,7 @@
 using Refit;
 using AuthorizeAttribute = Refit.AuthorizeAttribute;
 
-namespace Cpnucleo.RazorPages.Services.Interfaces;
+namespace Cpnucleo.MVC.Services.Interfaces;
 
 public interface ICpnucleoAuthApiClient
 {

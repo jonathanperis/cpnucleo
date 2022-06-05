@@ -9,14 +9,14 @@ namespace Cpnucleo.MVC.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ICpnucleoAuthService _cpnucleoApiService;
+    private readonly ICpnucleoAuthApiClient _cpnucleoAuthApiClient;
     private readonly IConfiguration _configuration;
 
     private HomeViewModel _viewModel;
 
-    public HomeController(ICpnucleoAuthService cpnucleoApiService, IConfiguration configuration)
+    public HomeController(ICpnucleoAuthApiClient cpnucleoApiService, IConfiguration configuration)
     {
-        _cpnucleoApiService = cpnucleoApiService;
+        _cpnucleoAuthApiClient = cpnucleoApiService;
         _configuration = configuration;
     }
 
@@ -67,7 +67,7 @@ public class HomeController : Controller
                 return View();
             }
 
-            var result = await _cpnucleoApiService.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = obj.Auth.Usuario, Senha = obj.Auth.Senha });
+            var result = await _cpnucleoAuthApiClient.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = obj.Auth.Usuario, Senha = obj.Auth.Senha });
 
             if (result.Status == OperationResult.Failed)
             {
