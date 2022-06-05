@@ -141,7 +141,7 @@ public class ApontamentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> FluxoTrabalho(Guid idTarefa, Guid idWorkflow)
+    public async Task<JsonResult> FluxoTrabalho(Guid idTarefa, Guid idWorkflow)
     {
         try
         {
@@ -149,7 +149,7 @@ public class ApontamentoController : BaseController
             {
                 await CarregarDadosFluxoTrabalho();
 
-                return View();
+                return Json(new { success = false, message = "", body = ViewModel });
             }
 
             var result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
@@ -157,15 +157,15 @@ public class ApontamentoController : BaseController
             if (result == OperationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
-                return View();
+                return Json(new { success = false, message = "", body = ViewModel });
             }
 
-            return View();
+            return Json(new { success = true });
         }
         catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
-            return View();
+            return Json(new { success = false, message = ex.Message });
         }
     }
 
