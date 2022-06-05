@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
 
-public class UpdateSistemaCommand : IRequest<OperationResult>
+public class UpdateSistemaCommand : BaseCommand, IRequest<OperationResult>
 {
     public Guid Id { get; set; }
     public string Nome { get; set; }

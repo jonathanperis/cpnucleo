@@ -1,14 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ImpedimentoController : BaseController
 {
     private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
-    private ImpedimentoView _impedimentoView;
+    private ImpedimentoViewModel _viewModel;
 
     public ImpedimentoController(IConfiguration configuration)
         : base(configuration)
@@ -16,18 +13,18 @@ public class ImpedimentoController : BaseController
         _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public ImpedimentoView ImpedimentoView
+    public ImpedimentoViewModel ViewModel
     {
         get
         {
-            if (_impedimentoView == null)
+            if (_viewModel == null)
             {
-                _impedimentoView = new ImpedimentoView();
+                _viewModel = new ImpedimentoViewModel();
             }
 
-            return _impedimentoView;
+            return _viewModel;
         }
-        set => _impedimentoView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -35,9 +32,17 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            ImpedimentoView.Lista = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
+            var result = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery { });
 
-            return View(ImpedimentoView);
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.Impedimentos;
+
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -53,7 +58,7 @@ public class ImpedimentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(ImpedimentoView obj)
+    public async Task<IActionResult> Incluir(ImpedimentoViewModel obj)
     {
         try
         {
@@ -62,7 +67,13 @@ public class ImpedimentoController : BaseController
                 return View();
             }
 
-            await _impedimentoGrpcService.AddAsync(new CreateImpedimentoCommand { Impedimento = obj.Impedimento });
+            var result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand { Nome = obj.Impedimento.Nome });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -78,9 +89,9 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(ImpedimentoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -90,18 +101,24 @@ public class ImpedimentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(ImpedimentoView obj)
+    public async Task<IActionResult> Alterar(ImpedimentoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = obj.Impedimento.Id });
+                await CarregarDados(obj.Impedimento.Id);
 
-                return View(ImpedimentoView);
+                return View(ViewModel);
             }
 
-            await _impedimentoGrpcService.UpdateAsync(new UpdateImpedimentoCommand { Impedimento = obj.Impedimento });
+            var result = await _impedimentoGrpcService.UpdateImpedimento(new UpdateImpedimentoCommand { Id = obj.Impedimento.Id, Nome = obj.Impedimento.Nome });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -117,9 +134,9 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(ImpedimentoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -129,18 +146,24 @@ public class ImpedimentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(ImpedimentoView obj)
+    public async Task<IActionResult> Remover(ImpedimentoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ImpedimentoView.Impedimento = await _impedimentoGrpcService.GetAsync(new GetImpedimentoQuery { Id = obj.Impedimento.Id });
+                await CarregarDados(obj.Impedimento.Id);
 
-                return View(ImpedimentoView);
+                return View(ViewModel);
             }
 
-            await _impedimentoGrpcService.RemoveAsync(new RemoveImpedimentoCommand { Id = obj.Impedimento.Id });
+            var result = await _impedimentoGrpcService.RemoveImpedimento(new RemoveImpedimentoCommand { Id = obj.Impedimento.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -149,5 +172,18 @@ public class ImpedimentoController : BaseController
             ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
+
+    private async Task CarregarDados(Guid id)
+    {
+        var result = await _impedimentoGrpcService.GetImpedimento(new GetImpedimentoQuery { Id = id });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.Impedimento = result.Impedimento;
     }
 }

@@ -1,4 +1,4 @@
-﻿@model ApontamentoView
+﻿@model ApontamentoViewModel
 @{
     ViewData["Title"] = "Apontamentos";
 }
@@ -21,7 +21,11 @@
         </div>
         <br />
     }
-
+    else
+    {
+        
+    }
+    
     <div class="col-lg-12">
         <div class="ibox collapsed">
             <div class="ibox-title">
@@ -59,7 +63,7 @@
                                     <td>@item.Id</td>
                                     <td>@item.Descricao</td>
                                     <td>@item.Tarefa.Nome</td>
-                                    <td>@item.DataApontamento.Value.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.DataApontamento.ToString("dd/MM/yyyy")</td>
                                     <td>@item.QtdHoras</td>
                                     <td>@item.DataInclusao.ToString("dd/MM/yyyy")</td>
                                     @if (Model.Lista.Count() > 0)

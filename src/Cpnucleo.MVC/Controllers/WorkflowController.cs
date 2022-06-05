@@ -1,14 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class WorkflowController : BaseController
 {
     private readonly IWorkflowGrpcService _workflowGrpcService;
 
-    private WorkflowView _workflowView;
+    private WorkflowViewModel _viewModel;
 
     public WorkflowController(IConfiguration configuration)
         : base(configuration)
@@ -16,18 +13,18 @@ public class WorkflowController : BaseController
         _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public WorkflowView WorkflowView
+    public WorkflowViewModel ViewModel
     {
         get
         {
-            if (_workflowView == null)
+            if (_viewModel == null)
             {
-                _workflowView = new WorkflowView();
+                _viewModel = new WorkflowViewModel();
             }
 
-            return _workflowView;
+            return _viewModel;
         }
-        set => _workflowView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -35,9 +32,17 @@ public class WorkflowController : BaseController
     {
         try
         {
-            WorkflowView.Lista = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
+            var result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
 
-            return View(WorkflowView);
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.Workflows;
+
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -53,7 +58,7 @@ public class WorkflowController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(WorkflowView obj)
+    public async Task<IActionResult> Incluir(WorkflowViewModel obj)
     {
         try
         {
@@ -62,7 +67,13 @@ public class WorkflowController : BaseController
                 return View();
             }
 
-            await _workflowGrpcService.AddAsync(new CreateWorkflowCommand { Workflow = obj.Workflow });
+            var result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand { Nome = obj.Workflow.Nome, Ordem = obj.Workflow.Ordem });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -78,9 +89,9 @@ public class WorkflowController : BaseController
     {
         try
         {
-            WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(WorkflowView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -90,18 +101,24 @@ public class WorkflowController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(WorkflowView obj)
+    public async Task<IActionResult> Alterar(WorkflowViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
+                await CarregarDados(obj.Workflow.Id);
 
-                return View(WorkflowView);
+                return View(ViewModel);
             }
 
-            await _workflowGrpcService.UpdateAsync(new UpdateWorkflowCommand { Workflow = obj.Workflow });
+            var result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand { Nome = obj.Workflow.Nome, Ordem = obj.Workflow.Ordem });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -117,9 +134,9 @@ public class WorkflowController : BaseController
     {
         try
         {
-            WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(WorkflowView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -129,18 +146,24 @@ public class WorkflowController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(WorkflowView obj)
+    public async Task<IActionResult> Remover(WorkflowViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                WorkflowView.Workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = obj.Workflow.Id });
+                await CarregarDados(obj.Workflow.Id);
 
-                return View(WorkflowView);
+                return View(ViewModel);
             }
 
-            await _workflowGrpcService.RemoveAsync(new RemoveWorkflowCommand { Id = obj.Workflow.Id });
+            var result = await _workflowGrpcService.RemoveWorkflow(new RemoveWorkflowCommand { Id = obj.Workflow.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -149,5 +172,18 @@ public class WorkflowController : BaseController
             ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
+
+    private async Task CarregarDados(Guid id)
+    {
+        var result = await _workflowGrpcService.GetWorkflow(new GetWorkflowQuery { Id = id });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.Workflow = result.Workflow;
     }
 }

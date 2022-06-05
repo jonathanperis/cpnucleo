@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util;
-using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
 using Cpnucleo.MVC.Services;
 using Cpnucleo.MVC.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -13,7 +12,7 @@ public class HomeController : Controller
     private readonly ICpnucleoAuthService _cpnucleoApiService;
     private readonly IConfiguration _configuration;
 
-    private HomeView _viewModel;
+    private HomeViewModel _viewModel;
 
     public HomeController(ICpnucleoAuthService cpnucleoApiService, IConfiguration configuration)
     {
@@ -21,13 +20,13 @@ public class HomeController : Controller
         _configuration = configuration;
     }
 
-    public HomeView ViewModel
+    public HomeViewModel ViewModel
     {
         get
         {
             if (_viewModel == null)
             {
-                _viewModel = new HomeView();
+                _viewModel = new HomeViewModel();
             }
 
             return _viewModel;
@@ -59,7 +58,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(HomeView obj, string? returnUrl = null)
+    public async Task<IActionResult> Login(HomeViewModel obj, string? returnUrl = null)
     {
         try
         {
@@ -68,9 +67,9 @@ public class HomeController : Controller
                 return View();
             }
 
-            AuthResponse response = await _cpnucleoApiService.PostAsync<AuthResponse>("auth", "", new AuthRequest { Auth = obj.Auth });
+            var result = await _cpnucleoApiService.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = obj.Auth.Usuario, Senha = obj.Auth.Senha });
 
-            if (response.Status == OperationResult.Failed)
+            if (result.Status == OperationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return View();
@@ -79,8 +78,8 @@ public class HomeController : Controller
             {
                 IEnumerable<Claim> claims = new[]
                 {
-                    new Claim(ClaimTypes.PrimarySid, response.Recurso.Id.ToString()),
-                    new Claim(ClaimTypes.Hash, response.Recurso.Token)
+                    new Claim(ClaimTypes.PrimarySid, result.Recurso.Id.ToString()),
+                    new Claim(ClaimTypes.Hash, result.Token)
                 };
 
                 ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);

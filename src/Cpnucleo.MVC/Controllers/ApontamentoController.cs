@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Apontamento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
-using Cpnucleo.MVC.Services;
+﻿using Cpnucleo.MVC.Services;
 using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Controllers;
@@ -15,7 +10,7 @@ public class ApontamentoController : BaseController
     private readonly ITarefaGrpcService _tarefaGrpcService;
     private readonly IWorkflowGrpcService _workflowGrpcService;
 
-    private ApontamentoView _apontamentoView;
+    private ApontamentoViewModel _viewModel;
 
     public ApontamentoController(IConfiguration configuration)
         : base(configuration)
@@ -25,18 +20,18 @@ public class ApontamentoController : BaseController
         _workflowGrpcService = MagicOnionClient.Create<IWorkflowGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public ApontamentoView ApontamentoView
+    public ApontamentoViewModel ViewModel
     {
         get
         {
-            if (_apontamentoView == null)
+            if (_viewModel == null)
             {
-                _apontamentoView = new ApontamentoView();
+                _viewModel = new ApontamentoViewModel();
             }
 
-            return _apontamentoView;
+            return _viewModel;
         }
-        set => _apontamentoView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -44,14 +39,9 @@ public class ApontamentoController : BaseController
     {
         try
         {
-            string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-            Guid idRecurso = new(retorno);
+            await CarregarDadosListar();
 
-            ApontamentoView.Lista = await _apontamentoGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Apontamento.GetByRecursoQuery { IdRecurso = idRecurso });
-
-            await CarregarTarefasByRecurso(idRecurso);
-
-            return View(ApontamentoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -61,23 +51,24 @@ public class ApontamentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Listar(ApontamentoView obj)
+    public async Task<IActionResult> Listar(ApontamentoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
-                Guid idRecurso = new(retorno);
+                await CarregarDadosListar();
 
-                ApontamentoView.Lista = await _apontamentoGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Apontamento.GetByRecursoQuery { IdRecurso = idRecurso });
-
-                await CarregarTarefasByRecurso(idRecurso);
-
-                return View(ApontamentoView);
+                return View(ViewModel);
             }
 
-            await _apontamentoGrpcService.AddAsync(new CreateApontamentoCommand { Apontamento = obj.Apontamento });
+            var result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand { Descricao = obj.Apontamento.Descricao, IdRecurso = obj.Apontamento.IdRecurso, IdTarefa = obj.Apontamento.IdTarefa, QtdHoras = obj.Apontamento.QtdHoras, DataApontamento = obj.Apontamento.DataApontamento });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -93,9 +84,9 @@ public class ApontamentoController : BaseController
     {
         try
         {
-            ApontamentoView.Apontamento = await _apontamentoGrpcService.GetAsync(new GetApontamentoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(ApontamentoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -105,18 +96,24 @@ public class ApontamentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(ApontamentoView obj)
+    public async Task<IActionResult> Remover(ApontamentoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ApontamentoView.Apontamento = await _apontamentoGrpcService.GetAsync(new GetApontamentoQuery { Id = obj.Apontamento.Id });
+                await CarregarDados(obj.Apontamento.Id);
 
-                return View(ApontamentoView);
+                return View(ViewModel);
             }
 
-            await _apontamentoGrpcService.RemoveAsync(new RemoveApontamentoCommand { Id = obj.Apontamento.Id });
+            var result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand { Id = obj.Apontamento.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -132,10 +129,9 @@ public class ApontamentoController : BaseController
     {
         try
         {
-            await CarregarWorkflows();
-            await CarregarTarefas();
+            await CarregarDadosFluxoTrabalho();
 
-            return View(ApontamentoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -145,47 +141,93 @@ public class ApontamentoController : BaseController
     }
 
     [HttpPost]
-    public async Task<JsonResult> FluxoTrabalho(Guid idTarefa, Guid idWorkflow)
+    public async Task<IActionResult> FluxoTrabalho(Guid idTarefa, Guid idWorkflow)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                await CarregarWorkflows();
-                await CarregarTarefas();
+                await CarregarDadosFluxoTrabalho();
 
-                return Json(new { success = false, message = "", body = ApontamentoView });
+                return View();
             }
 
-            TarefaViewModel tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
-            WorkflowViewModel workflow = await _workflowGrpcService.GetAsync(new GetWorkflowQuery { Id = idWorkflow });
+            var result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
 
-            tarefa.IdWorkflow = workflow.Id;
-            tarefa.Workflow = workflow;
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
-            await _tarefaGrpcService.UpdateAsync(new UpdateTarefaCommand { Tarefa = tarefa });
-
-            return Json(new { success = true });
+            return View();
         }
         catch (Exception ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
-            return Json(new { success = false, message = ex.Message });
+            return View();
         }
     }
 
-    private async Task CarregarTarefasByRecurso(Guid idRecurso)
+    private async Task CarregarDados(Guid id)
     {
-        ApontamentoView.ListaTarefas = await _tarefaGrpcService.GetByRecursoAsync(new Infra.CrossCutting.Util.Queries.Tarefa.GetByRecursoQuery { IdRecurso = idRecurso });
+        var result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery { Id = id });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.Apontamento = result.Apontamento;
     }
 
-    private async Task CarregarWorkflows()
+    private async Task CarregarDadosListar()
     {
-        ApontamentoView.ListaWorkflow = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
+        string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+        Guid idRecurso = new(retorno);
+
+        var result = await _apontamentoGrpcService.GetApontamentoByRecurso(new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.Lista = result.Apontamentos;
+
+        var result2 = await _tarefaGrpcService.GetTarefaByRecurso(new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.ListaTarefas = result2.Tarefas;
     }
 
-    private async Task CarregarTarefas()
+    private async Task CarregarDadosFluxoTrabalho()
     {
-        ApontamentoView.ListaTarefas = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
+        var result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.ListaWorkflow = result.Workflows;
+
+        var result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.ListaTarefas = result2.Tarefas;
     }
 }

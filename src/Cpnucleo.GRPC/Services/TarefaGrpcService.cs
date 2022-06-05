@@ -39,4 +39,9 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     {
         return await _mediator.Send(command);
     }
+
+    public async UnaryResult<OperationResult> UpdateTarefaByWorkflow(UpdateTarefaByWorkflowCommand command)
+    {
+        return await _mediator.Send(command);
+    }
 }

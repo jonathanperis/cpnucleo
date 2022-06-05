@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.RecursoProjeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoProjeto;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class RecursoProjetoController : BaseController
@@ -12,7 +7,7 @@ public class RecursoProjetoController : BaseController
     private readonly IRecursoGrpcService _recursoGrpcService;
     private readonly IProjetoGrpcService _projetoGrpcService;
 
-    private RecursoProjetoView _recursoProjetoView;
+    private RecursoProjetoViewModel _viewModel;
 
     public RecursoProjetoController(IConfiguration configuration)
         : base(configuration)
@@ -22,18 +17,18 @@ public class RecursoProjetoController : BaseController
         _projetoGrpcService = MagicOnionClient.Create<IProjetoGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public RecursoProjetoView RecursoProjetoView
+    public RecursoProjetoViewModel ViewModel
     {
         get
         {
-            if (_recursoProjetoView == null)
+            if (_viewModel == null)
             {
-                _recursoProjetoView = new RecursoProjetoView();
+                _viewModel = new RecursoProjetoViewModel();
             }
 
-            return _recursoProjetoView;
+            return _viewModel;
         }
-        set => _recursoProjetoView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -41,11 +36,19 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            RecursoProjetoView.Lista = await _recursoProjetoGrpcService.GetByProjetoAsync(new GetByProjetoQuery { IdProjeto = idProjeto });
+            var result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new GetRecursoProjetoByProjetoQuery { IdProjeto = idProjeto });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.RecursoProjetos;
 
             ViewData["idProjeto"] = idProjeto;
 
-            return View(RecursoProjetoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -57,26 +60,30 @@ public class RecursoProjetoController : BaseController
     [HttpGet]
     public async Task<IActionResult> Incluir(Guid idProjeto)
     {
-        await ObterProjeto(idProjeto);
-        await CarregarSelectRecursos();
+        await CarregarDados(null, idProjeto);
 
-        return View(RecursoProjetoView);
+        return View(ViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(RecursoProjetoView obj)
+    public async Task<IActionResult> Incluir(RecursoProjetoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                await ObterProjeto(obj.Projeto.Id);
-                await CarregarSelectRecursos();
+                await CarregarDados(null, obj.Projeto.Id);
 
-                return View(RecursoProjetoView);
+                return View(ViewModel);
             }
 
-            await _recursoProjetoGrpcService.AddAsync(new CreateRecursoProjetoCommand { RecursoProjeto = obj.RecursoProjeto });
+            var result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand { IdProjeto = obj.RecursoProjeto.IdProjeto, IdRecurso = obj.RecursoProjeto.IdRecurso });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
         }
@@ -92,11 +99,9 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = id });
+            await CarregarDados(id);
 
-            await CarregarSelectRecursos();
-
-            return View(RecursoProjetoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -106,20 +111,24 @@ public class RecursoProjetoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(RecursoProjetoView obj)
+    public async Task<IActionResult> Alterar(RecursoProjetoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = obj.RecursoProjeto.Id });
+                await CarregarDados(obj.RecursoProjeto.Id);
 
-                await CarregarSelectRecursos();
-
-                return View(RecursoProjetoView);
+                return View(ViewModel);
             }
 
-            await _recursoProjetoGrpcService.UpdateAsync(new UpdateRecursoProjetoCommand { RecursoProjeto = obj.RecursoProjeto });
+            var result = await _recursoProjetoGrpcService.UpdateRecursoProjeto(new UpdateRecursoProjetoCommand { Id = obj.RecursoProjeto.Id, IdProjeto = obj.RecursoProjeto.IdProjeto, IdRecurso = obj.RecursoProjeto.IdRecurso });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
         }
@@ -135,9 +144,9 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(RecursoProjetoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -147,18 +156,24 @@ public class RecursoProjetoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(RecursoProjetoView obj)
+    public async Task<IActionResult> Remover(RecursoProjetoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                RecursoProjetoView.RecursoProjeto = await _recursoProjetoGrpcService.GetAsync(new GetRecursoProjetoQuery { Id = obj.RecursoProjeto.Id });
+                await CarregarDados(obj.RecursoProjeto.Id);
 
-                return View(RecursoProjetoView);
+                return View(ViewModel);
             }
 
-            await _recursoProjetoGrpcService.RemoveAsync(new RemoveRecursoProjetoCommand { Id = obj.RecursoProjeto.Id });
+            var result = await _recursoProjetoGrpcService.RemoveRecursoProjeto(new RemoveRecursoProjetoCommand { Id = obj.RecursoProjeto.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
         }
@@ -169,14 +184,42 @@ public class RecursoProjetoController : BaseController
         }
     }
 
-    private async Task ObterProjeto(Guid idProjeto)
+    private async Task CarregarDados(Guid? idRecursoProjeto = default, Guid? idProjeto = default)
     {
-        RecursoProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = idProjeto });
-    }
+        if (idRecursoProjeto is not null)
+        {
+            var result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery { Id = idRecursoProjeto.Value });
 
-    private async Task CarregarSelectRecursos()
-    {
-        IEnumerable<RecursoViewModel> response = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
-        RecursoProjetoView.SelectRecursos = new SelectList(response, "Id", "Nome");
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
+
+            ViewModel.RecursoProjeto = result.RecursoProjeto;
+        }
+
+        if (idProjeto is not null)
+        {
+            var result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = idProjeto.Value });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
+
+            ViewModel.Projeto = result.Projeto;
+        }
+
+        var result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectRecursos = new SelectList(result2.Recursos, "Id", "Nome");
     }
 }

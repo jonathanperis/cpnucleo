@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
 
-public class ListImpedimentoQuery : IRequest<ListImpedimentoViewModel>
+public class ListImpedimentoQuery : BaseQuery, IRequest<ListImpedimentoViewModel>
 {
     public bool GetDependencies { get; set; }
 }

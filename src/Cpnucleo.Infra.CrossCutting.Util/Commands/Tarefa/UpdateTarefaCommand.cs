@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
 
-public class UpdateTarefaCommand : IRequest<OperationResult>
+public class UpdateTarefaCommand : BaseCommand, IRequest<OperationResult>
 {
     public Guid Id { get; set; }
     public string Nome { get; set; }

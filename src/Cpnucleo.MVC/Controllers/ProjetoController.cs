@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ProjetoController : BaseController
@@ -10,7 +6,7 @@ public class ProjetoController : BaseController
     private readonly IProjetoGrpcService _projetoGrpcService;
     private readonly ISistemaGrpcService _sistemaGrpcService;
 
-    private ProjetoView _projetoView;
+    private ProjetoViewModel _viewModel;
 
     public ProjetoController(IConfiguration configuration)
         : base(configuration)
@@ -19,18 +15,18 @@ public class ProjetoController : BaseController
         _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public ProjetoView ProjetoView
+    public ProjetoViewModel ViewModel
     {
         get
         {
-            if (_projetoView == null)
+            if (_viewModel == null)
             {
-                _projetoView = new ProjetoView();
+                _viewModel = new ProjetoViewModel();
             }
 
-            return _projetoView;
+            return _viewModel;
         }
-        set => _projetoView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -38,9 +34,17 @@ public class ProjetoController : BaseController
     {
         try
         {
-            ProjetoView.Lista = await _projetoGrpcService.AllAsync(new ListProjetoQuery { GetDependencies = true });
+            var result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { GetDependencies = true });
 
-            return View(ProjetoView);
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.Projetos;
+
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -52,24 +56,30 @@ public class ProjetoController : BaseController
     [HttpGet]
     public async Task<IActionResult> Incluir()
     {
-        await CarregarSelectSistemas();
+        await CarregarDados();
 
-        return View(ProjetoView);
+        return View(ViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(ProjetoView obj)
+    public async Task<IActionResult> Incluir(ProjetoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                await CarregarSelectSistemas();
+                await CarregarDados();
 
-                return View(ProjetoView);
+                return View(ViewModel);
             }
 
-            await _projetoGrpcService.AddAsync(new CreateProjetoCommand { Projeto = obj.Projeto });
+            var result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand { Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -85,11 +95,9 @@ public class ProjetoController : BaseController
     {
         try
         {
-            ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
+            await CarregarDados(id);
 
-            await CarregarSelectSistemas();
-
-            return View(ProjetoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -99,20 +107,24 @@ public class ProjetoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(ProjetoView obj)
+    public async Task<IActionResult> Alterar(ProjetoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
+                await CarregarDados(obj.Projeto.Id);
 
-                await CarregarSelectSistemas();
-
-                return View(ProjetoView);
+                return View(ViewModel);
             }
 
-            await _projetoGrpcService.UpdateAsync(new UpdateProjetoCommand { Projeto = obj.Projeto });
+            var result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand { Id = obj.Projeto.Id, Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -128,9 +140,9 @@ public class ProjetoController : BaseController
     {
         try
         {
-            ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(ProjetoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -140,18 +152,24 @@ public class ProjetoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(ProjetoView obj)
+    public async Task<IActionResult> Remover(ProjetoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ProjetoView.Projeto = await _projetoGrpcService.GetAsync(new GetProjetoQuery { Id = obj.Projeto.Id });
+                await CarregarDados(obj.Projeto.Id);
 
-                return View(ProjetoView);
+                return View(ViewModel);
             }
 
-            await _projetoGrpcService.RemoveAsync(new RemoveProjetoCommand { Id = obj.Projeto.Id });
+            var result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand { Id = obj.Projeto.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -162,9 +180,29 @@ public class ProjetoController : BaseController
         }
     }
 
-    private async Task CarregarSelectSistemas()
+    private async Task CarregarDados(Guid? id = default)
     {
-        IEnumerable<SistemaViewModel> response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
-        ProjetoView.SelectSistemas = new SelectList(response, "Id", "Nome");
+        if (id is not null)
+        {
+            var result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = id.Value });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            } 
+
+            ViewModel.Projeto = result.Projeto;
+        }
+
+        var result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
     }
 }

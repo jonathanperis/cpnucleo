@@ -1,11 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class TarefaController : BaseController
@@ -16,7 +9,7 @@ public class TarefaController : BaseController
     private readonly IWorkflowGrpcService _workflowGrpcService;
     private readonly ITipoTarefaGrpcService _tipoTarefaGrpcService;
 
-    private TarefaView _tarefaView;
+    private TarefaViewModel _viewModel;
 
     public TarefaController(IConfiguration configuration)
         : base(configuration)
@@ -28,18 +21,18 @@ public class TarefaController : BaseController
         _tipoTarefaGrpcService = MagicOnionClient.Create<ITipoTarefaGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public TarefaView TarefaView
+    public TarefaViewModel ViewModel
     {
         get
         {
-            if (_tarefaView == null)
+            if (_viewModel == null)
             {
-                _tarefaView = new TarefaView();
+                _viewModel = new TarefaViewModel();
             }
 
-            return _tarefaView;
+            return _viewModel;
         }
-        set => _tarefaView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -47,9 +40,17 @@ public class TarefaController : BaseController
     {
         try
         {
-            TarefaView.Lista = await _tarefaGrpcService.AllAsync(new ListTarefaQuery { GetDependencies = true });
+            var result = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
 
-            return View(TarefaView);
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.Tarefas;
+
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -61,34 +62,34 @@ public class TarefaController : BaseController
     [HttpGet]
     public async Task<IActionResult> Incluir()
     {
-        await CarregarSelectSistemas();
-        await CarregarSelectProjetos();
-        await CarregarSelectWorkflows();
-        await CarregarSelectTipoTarefas();
+        await CarregarDados();
 
-        TarefaView.User = HttpContext.User;
+        ViewModel.User = HttpContext.User;
 
-        return View(TarefaView);
+        return View(ViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(TarefaView obj)
+    public async Task<IActionResult> Incluir(TarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                await CarregarSelectSistemas();
-                await CarregarSelectProjetos();
-                await CarregarSelectWorkflows();
-                await CarregarSelectTipoTarefas();
+                await CarregarDados();
 
-                TarefaView.User = HttpContext.User;
+                ViewModel.User = HttpContext.User;
 
-                return View(TarefaView);
+                return View(ViewModel);
             }
 
-            await _tarefaGrpcService.AddAsync(new CreateTarefaCommand { Tarefa = obj.Tarefa });
+            var result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand { Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -104,14 +105,9 @@ public class TarefaController : BaseController
     {
         try
         {
-            TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
+            await CarregarDados(id);
 
-            await CarregarSelectSistemas();
-            await CarregarSelectProjetos();
-            await CarregarSelectWorkflows();
-            await CarregarSelectTipoTarefas();
-
-            return View(TarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -121,23 +117,24 @@ public class TarefaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(TarefaView obj)
+    public async Task<IActionResult> Alterar(TarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
+                await CarregarDados(obj.Tarefa.Id);
 
-                await CarregarSelectSistemas();
-                await CarregarSelectProjetos();
-                await CarregarSelectWorkflows();
-                await CarregarSelectTipoTarefas();
-
-                return View(TarefaView);
+                return View(ViewModel);
             }
 
-            await _tarefaGrpcService.UpdateAsync(new UpdateTarefaCommand { Tarefa = obj.Tarefa });
+            var result = await _tarefaGrpcService.UpdateTarefa(new UpdateTarefaCommand { Id = obj.Tarefa.Id, Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -153,9 +150,9 @@ public class TarefaController : BaseController
     {
         try
         {
-            TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(TarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -165,18 +162,24 @@ public class TarefaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(TarefaView obj)
+    public async Task<IActionResult> Remover(TarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                TarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = obj.Tarefa.Id });
+                await CarregarDados(obj.Tarefa.Id);
 
-                return View(TarefaView);
+                return View(ViewModel);
             }
 
-            await _tarefaGrpcService.RemoveAsync(new RemoveTarefaCommand { Id = obj.Tarefa.Id });
+            var result = await _tarefaGrpcService.RemoveTarefa(new RemoveTarefaCommand { Id = obj.Tarefa.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -187,27 +190,59 @@ public class TarefaController : BaseController
         }
     }
 
-    private async Task CarregarSelectSistemas()
+    private async Task CarregarDados(Guid? id = default)
     {
-        IEnumerable<SistemaViewModel> response = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
-        TarefaView.SelectSistemas = new SelectList(response, "Id", "Nome");
-    }
+        if (id is not null)
+        {
+            var result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = id.Value });
 
-    private async Task CarregarSelectProjetos()
-    {
-        IEnumerable<ProjetoViewModel> response = await _projetoGrpcService.AllAsync(new ListProjetoQuery { });
-        TarefaView.SelectProjetos = new SelectList(response, "Id", "Nome");
-    }
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
 
-    private async Task CarregarSelectWorkflows()
-    {
-        IEnumerable<WorkflowViewModel> response = await _workflowGrpcService.AllAsync(new ListWorkflowQuery { });
-        TarefaView.SelectWorkflows = new SelectList(response, "Id", "Nome");
-    }
+            ViewModel.Tarefa = result.Tarefa;
+        }
 
-    private async Task CarregarSelectTipoTarefas()
-    {
-        IEnumerable<TipoTarefaViewModel> response = await _tipoTarefaGrpcService.AllAsync(new ListTipoTarefaQuery { });
-        TarefaView.SelectTipoTarefas = new SelectList(response, "Id", "Nome");
+        var result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
+
+        var result3 = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { });
+
+        if (result3.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectProjetos = new SelectList(result3.Projetos, "Id", "Nome");
+
+        var result4 = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+
+        if (result4.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectWorkflows = new SelectList(result4.Workflows, "Id", "Nome");
+
+        var result5 = await _tipoTarefaGrpcService.ListTipoTarefa(new ListTipoTarefaQuery { });
+
+        if (result5.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectTipoTarefas = new SelectList(result5.TipoTarefas, "Id", "Nome");
     }
 }

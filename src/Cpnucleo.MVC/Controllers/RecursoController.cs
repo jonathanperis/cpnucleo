@@ -1,14 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Recurso;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Recurso;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class RecursoController : BaseController
 {
     private readonly IRecursoGrpcService _recursoGrpcService;
 
-    private RecursoView _recursoView;
+    private RecursoViewModel _viewModel;
 
     public RecursoController(IConfiguration configuration)
         : base(configuration)
@@ -16,18 +13,18 @@ public class RecursoController : BaseController
         _recursoGrpcService = MagicOnionClient.Create<IRecursoGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public RecursoView RecursoView
+    public RecursoViewModel ViewModel
     {
         get
         {
-            if (_recursoView == null)
+            if (_viewModel == null)
             {
-                _recursoView = new RecursoView();
+                _viewModel = new RecursoViewModel();
             }
 
-            return _recursoView;
+            return _viewModel;
         }
-        set => _recursoView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -35,9 +32,17 @@ public class RecursoController : BaseController
     {
         try
         {
-            RecursoView.Lista = await _recursoGrpcService.AllAsync(new ListRecursoQuery { });
+            var result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
 
-            return View(RecursoView);
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.Recursos;
+
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -53,7 +58,7 @@ public class RecursoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(RecursoView obj)
+    public async Task<IActionResult> Incluir(RecursoViewModel obj)
     {
         try
         {
@@ -62,7 +67,13 @@ public class RecursoController : BaseController
                 return View();
             }
 
-            await _recursoGrpcService.AddAsync(new CreateRecursoCommand { Recurso = obj.Recurso });
+            var result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand { Nome = obj.Recurso.Nome, Login = obj.Recurso.Login, Senha = obj.Recurso.Senha });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -78,9 +89,9 @@ public class RecursoController : BaseController
     {
         try
         {
-            RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(RecursoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -90,18 +101,24 @@ public class RecursoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(RecursoView obj)
+    public async Task<IActionResult> Alterar(RecursoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
+                await CarregarDados(obj.Recurso.Id);
 
-                return View(RecursoView);
+                return View(ViewModel);
             }
 
-            await _recursoGrpcService.UpdateAsync(new UpdateRecursoCommand { Recurso = obj.Recurso });
+            var result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand { Id = obj.Recurso.Id, Nome = obj.Recurso.Nome, Senha = obj.Recurso.Senha });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -117,9 +134,9 @@ public class RecursoController : BaseController
     {
         try
         {
-            RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(RecursoView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -129,18 +146,24 @@ public class RecursoController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(RecursoView obj)
+    public async Task<IActionResult> Remover(RecursoViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                RecursoView.Recurso = await _recursoGrpcService.GetAsync(new GetRecursoQuery { Id = obj.Recurso.Id });
+                await CarregarDados(obj.Recurso.Id);
 
-                return View(RecursoView);
+                return View(ViewModel);
             }
 
-            await _recursoGrpcService.RemoveAsync(new RemoveRecursoCommand { Id = obj.Recurso.Id });
+            var result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand { Id = obj.Recurso.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -149,5 +172,18 @@ public class RecursoController : BaseController
             ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
+
+    private async Task CarregarDados(Guid id)
+    {
+        var result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery { Id = id });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.Recurso = result.Recurso;
     }
 }
