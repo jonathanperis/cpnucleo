@@ -1,8 +1,11 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Util.Common.DTOs;
+﻿using MessagePack;
 
+namespace Cpnucleo.Infra.CrossCutting.Util.Common.DTOs;
+
+[MessagePackObject(true)]
 public abstract class BaseDTO
 {
-    [Key]
+    [System.ComponentModel.DataAnnotations.Key]
     [Display(Name = "Id")]
     public Guid Id { get; set; }
 
