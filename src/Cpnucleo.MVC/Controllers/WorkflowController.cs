@@ -112,7 +112,7 @@ public class WorkflowController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand { Nome = obj.Workflow.Nome, Ordem = obj.Workflow.Ordem });
+            var result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand { Id = obj.Workflow.Id, Nome = obj.Workflow.Nome, Ordem = obj.Workflow.Ordem });
 
             if (result == OperationResult.Failed)
             {
