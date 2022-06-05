@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
 
-public class CreateApontamentoCommand : IRequest<OperationResult>
+public class CreateApontamentoCommand : BaseCommand, IRequest<OperationResult>
 {
     public Guid Id { get; set; }
     public string Descricao { get; set; }

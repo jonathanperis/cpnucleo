@@ -15,13 +15,13 @@ builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
 builder.Services.AddGrpc();
 builder.Services.AddMagicOnion();
 
-//builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
-//{
-//    builder.AllowAnyOrigin()
-//           .AllowAnyMethod()
-//           .AllowAnyHeader()
-//           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
-//}));
+builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
+}));
 
 builder.Services.AddAuthorization(options =>
 {
@@ -54,14 +54,14 @@ WebApplication app = builder.Build();
 app.UseRouting();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 
-//app.UseCors(x =>
-//{
-//    // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
-//    x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
-//           .AllowAnyMethod()
-//           .AllowAnyHeader()
-//           .AllowCredentials();
-//});
+app.UseCors(x =>
+{
+    // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
+    x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
+});
 
 app.UseApplication();
 

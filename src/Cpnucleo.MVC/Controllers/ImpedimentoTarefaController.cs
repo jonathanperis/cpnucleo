@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Impedimento;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.ImpedimentoTarefa;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ImpedimentoTarefaController : BaseController
@@ -12,7 +7,7 @@ public class ImpedimentoTarefaController : BaseController
     private readonly ITarefaGrpcService _tarefaGrpcService;
     private readonly IImpedimentoGrpcService _impedimentoGrpcService;
 
-    private ImpedimentoTarefaView _impedimentoTarefaView;
+    private ImpedimentoTarefaViewModel _viewModel;
 
     public ImpedimentoTarefaController(IConfiguration configuration)
         : base(configuration)
@@ -22,18 +17,18 @@ public class ImpedimentoTarefaController : BaseController
         _impedimentoGrpcService = MagicOnionClient.Create<IImpedimentoGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public ImpedimentoTarefaView ImpedimentoTarefaView
+    public ImpedimentoTarefaViewModel ViewModel
     {
         get
         {
-            if (_impedimentoTarefaView == null)
+            if (_viewModel == null)
             {
-                _impedimentoTarefaView = new ImpedimentoTarefaView();
+                _viewModel = new ImpedimentoTarefaViewModel();
             }
 
-            return _impedimentoTarefaView;
+            return _viewModel;
         }
-        set => _impedimentoTarefaView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -41,11 +36,19 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            ImpedimentoTarefaView.Lista = await _impedimentoTarefaGrpcService.GetByTarefaAsync(new GetByTarefaQuery { IdTarefa = idTarefa });
+            var result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.ImpedimentoTarefas;
 
             ViewData["idTarefa"] = idTarefa;
 
-            return View(ImpedimentoTarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -57,26 +60,30 @@ public class ImpedimentoTarefaController : BaseController
     [HttpGet]
     public async Task<IActionResult> Incluir(Guid idTarefa)
     {
-        await ObterTarefa(idTarefa);
-        await CarregarSelectImpedimentos();
+        await CarregarDados(null, idTarefa);
 
-        return View(ImpedimentoTarefaView);
+        return View(ViewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(ImpedimentoTarefaView obj)
+    public async Task<IActionResult> Incluir(ImpedimentoTarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                await ObterTarefa(obj.Tarefa.Id);
-                await CarregarSelectImpedimentos();
+                await CarregarDados(null, obj.Tarefa.Id);
 
-                return View(ImpedimentoTarefaView);
+                return View(ViewModel);
             }
 
-            await _impedimentoTarefaGrpcService.AddAsync(new CreateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
+            var result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand { Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
         }
@@ -92,11 +99,9 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
+            await CarregarDados(id);
 
-            await CarregarSelectImpedimentos();
-
-            return View(ImpedimentoTarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -106,20 +111,24 @@ public class ImpedimentoTarefaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(ImpedimentoTarefaView obj)
+    public async Task<IActionResult> Alterar(ImpedimentoTarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
+                await CarregarDados(obj.ImpedimentoTarefa.Id);
 
-                await CarregarSelectImpedimentos();
-
-                return View(ImpedimentoTarefaView);
+                return View(ViewModel);
             }
 
-            await _impedimentoTarefaGrpcService.UpdateAsync(new UpdateImpedimentoTarefaCommand { ImpedimentoTarefa = obj.ImpedimentoTarefa });
+            var result = await _impedimentoTarefaGrpcService.UpdateImpedimentoTarefa(new UpdateImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id, Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
         }
@@ -135,9 +144,9 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(ImpedimentoTarefaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -147,18 +156,24 @@ public class ImpedimentoTarefaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(ImpedimentoTarefaView obj)
+    public async Task<IActionResult> Remover(ImpedimentoTarefaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                ImpedimentoTarefaView.ImpedimentoTarefa = await _impedimentoTarefaGrpcService.GetAsync(new GetImpedimentoTarefaQuery { Id = obj.ImpedimentoTarefa.Id });
+                await CarregarDados(obj.ImpedimentoTarefa.Id);
 
-                return View(ImpedimentoTarefaView);
+                return View(ViewModel);
             }
 
-            await _impedimentoTarefaGrpcService.RemoveAsync(new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
+            var result = await _impedimentoTarefaGrpcService.RemoveImpedimentoTarefa(new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar", new { idTarefa = obj.ImpedimentoTarefa.IdTarefa });
         }
@@ -169,14 +184,42 @@ public class ImpedimentoTarefaController : BaseController
         }
     }
 
-    private async Task ObterTarefa(Guid idTarefa)
+    private async Task CarregarDados(Guid? idImpedimentoTarefa = default, Guid? idTarefa = default)
     {
-        ImpedimentoTarefaView.Tarefa = await _tarefaGrpcService.GetAsync(new GetTarefaQuery { Id = idTarefa });
-    }
+        if (idImpedimentoTarefa is not null)
+        {
+            var result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefa(new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa.Value });
 
-    private async Task CarregarSelectImpedimentos()
-    {
-        IEnumerable<ImpedimentoViewModel> response = await _impedimentoGrpcService.AllAsync(new ListImpedimentoQuery { });
-        ImpedimentoTarefaView.SelectImpedimentos = new SelectList(response, "Id", "Nome");
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
+
+            ViewModel.ImpedimentoTarefa = result.ImpedimentoTarefa; 
+        }
+
+        if (idTarefa is not null)
+        {
+            var result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
+
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return;
+            }
+
+            ViewModel.Tarefa = result.Tarefa;
+        }
+
+        var result2 = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery { });
+
+        if (result2.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.SelectImpedimentos = new SelectList(result2.Impedimentos, "Id", "Nome");
     }
 }

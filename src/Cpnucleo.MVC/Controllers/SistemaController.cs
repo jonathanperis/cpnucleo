@@ -1,14 +1,11 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class SistemaController : BaseController
 {
     private readonly ISistemaGrpcService _sistemaGrpcService;
 
-    private SistemaView _sistemaView;
+    private SistemaViewModel _viewModel;
 
     public SistemaController(IConfiguration configuration)
         : base(configuration)
@@ -16,18 +13,18 @@ public class SistemaController : BaseController
         _sistemaGrpcService = MagicOnionClient.Create<ISistemaGrpcService>(CreateAuthenticatedChannel());
     }
 
-    public SistemaView SistemaView
+    public SistemaViewModel ViewModel
     {
         get
         {
-            if (_sistemaView == null)
+            if (_viewModel == null)
             {
-                _sistemaView = new SistemaView();
+                _viewModel = new SistemaViewModel();
             }
 
-            return _sistemaView;
+            return _viewModel;
         }
-        set => _sistemaView = value;
+        set => _viewModel = value;
     }
 
     [HttpGet]
@@ -35,9 +32,17 @@ public class SistemaController : BaseController
     {
         try
         {
-            SistemaView.Lista = await _sistemaGrpcService.AllAsync(new ListSistemaQuery { });
+            var result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
 
-            return View(SistemaView);
+            if (result.OperationResult == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
+
+            ViewModel.Lista = result.Sistemas;
+
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -53,7 +58,7 @@ public class SistemaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Incluir(SistemaView obj)
+    public async Task<IActionResult> Incluir(SistemaViewModel obj)
     {
         try
         {
@@ -62,7 +67,13 @@ public class SistemaController : BaseController
                 return View();
             }
 
-            await _sistemaGrpcService.AddAsync(new CreateSistemaCommand { Sistema = obj.Sistema });
+            var result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand { Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -78,9 +89,9 @@ public class SistemaController : BaseController
     {
         try
         {
-            SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(SistemaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -90,18 +101,24 @@ public class SistemaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Alterar(SistemaView obj)
+    public async Task<IActionResult> Alterar(SistemaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
+                await CarregarDados(obj.Sistema.Id);
 
-                return View(SistemaView);
+                return View(ViewModel);
             }
 
-            await _sistemaGrpcService.UpdateAsync(new UpdateSistemaCommand { Sistema = obj.Sistema });
+            var result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand { Id = obj.Sistema.Id, Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -117,9 +134,9 @@ public class SistemaController : BaseController
     {
         try
         {
-            SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = id });
+            await CarregarDados(id);
 
-            return View(SistemaView);
+            return View(ViewModel);
         }
         catch (Exception ex)
         {
@@ -129,18 +146,24 @@ public class SistemaController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Remover(SistemaView obj)
+    public async Task<IActionResult> Remover(SistemaViewModel obj)
     {
         try
         {
             if (!ModelState.IsValid)
             {
-                SistemaView.Sistema = await _sistemaGrpcService.GetAsync(new GetSistemaQuery { Id = obj.Sistema.Id });
+                await CarregarDados(obj.Sistema.Id);
 
-                return View(SistemaView);
+                return View(ViewModel);
             }
 
-            await _sistemaGrpcService.RemoveAsync(new RemoveSistemaCommand { Id = obj.Sistema.Id });
+            var result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand { Id = obj.Sistema.Id });
+
+            if (result == OperationResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+                return View();
+            }
 
             return RedirectToAction("Listar");
         }
@@ -149,5 +172,18 @@ public class SistemaController : BaseController
             ModelState.AddModelError(string.Empty, ex.Message);
             return View();
         }
+    }
+
+    private async Task CarregarDados(Guid id)
+    {
+        var result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery { Id = id });
+
+        if (result.OperationResult == OperationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
+            return;
+        }
+
+        ViewModel.Sistema = result.Sistema;
     }
 }

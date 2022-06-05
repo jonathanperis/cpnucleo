@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Util.Queries.RecursoTarefa;
 
-public class ListRecursoTarefaQuery : IRequest<ListRecursoTarefaViewModel>
+public class ListRecursoTarefaQuery : BaseQuery, IRequest<ListRecursoTarefaViewModel>
 {
     public bool GetDependencies { get; set; }
 }

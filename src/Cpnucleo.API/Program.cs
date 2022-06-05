@@ -18,16 +18,16 @@ builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: "AllowCpcnuleoClients",
-//                      x =>
-//                      {
-//                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
-//                            .AllowAnyHeader()
-//                            .AllowAnyMethod();
-//                      });
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowCpcnuleoClients",
+                      x =>
+                      {
+                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                      });
+});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -73,7 +73,7 @@ app.UseAuthorization();
 
 app.UseApplication();
 
-//app.UseCors("AllowCpcnuleoClients");
+app.UseCors("AllowCpcnuleoClients");
 
 app.MapControllers();
 app.Run();
