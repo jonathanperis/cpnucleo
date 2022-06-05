@@ -8,12 +8,12 @@ namespace Cpnucleo.RazorPages.Pages;
 
 public class LoginModel : PageBase
 {
-    private readonly ICpnucleoAuthApiClient _cpnucleoApiClient;
+    private readonly ICpnucleoAuthApiClient _cpnucleoAuthApiClient;
     private readonly IConfiguration _configuration;
 
     public LoginModel(ICpnucleoAuthApiClient cpnucleoApiClient, IConfiguration configuration)
     {
-        _cpnucleoApiClient = cpnucleoApiClient;
+        _cpnucleoAuthApiClient = cpnucleoApiClient;
         _configuration = configuration;
     }
 
@@ -51,7 +51,7 @@ public class LoginModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = Auth.Usuario, Senha = Auth.Senha });
+            var result = await _cpnucleoAuthApiClient.PostAsync<AuthResponse>("auth", "", new AuthRequest { Usuario = Auth.Usuario, Senha = Auth.Senha });
 
             if (result.Status == OperationResult.Failed)
             {
