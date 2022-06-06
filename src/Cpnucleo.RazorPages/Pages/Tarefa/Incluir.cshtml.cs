@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
-public class IncluirModel : PageBase
+public class IncluirModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -47,7 +47,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "CreateTarefa", Token, new CreateTarefaCommand { Nome = Tarefa.Nome, DataInicio = Tarefa.DataInicio, DataTermino = Tarefa.DataTermino, QtdHoras = Tarefa.QtdHoras, Detalhe = Tarefa.Detalhe, IdProjeto = Tarefa.IdProjeto, IdWorkflow = Tarefa.IdWorkflow, IdRecurso = Tarefa.IdRecurso, IdTipoTarefa = Tarefa.IdTipoTarefa });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "CreateTarefa", new CreateTarefaCommand { Nome = Tarefa.Nome, DataInicio = Tarefa.DataInicio, DataTermino = Tarefa.DataTermino, QtdHoras = Tarefa.QtdHoras, Detalhe = Tarefa.Detalhe, IdProjeto = Tarefa.IdProjeto, IdWorkflow = Tarefa.IdWorkflow, IdRecurso = Tarefa.IdRecurso, IdTipoTarefa = Tarefa.IdTipoTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -66,7 +66,7 @@ public class IncluirModel : PageBase
 
     private async Task CarregarDados()
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", Token, new ListProjetoQuery { });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", new ListProjetoQuery { });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -76,7 +76,7 @@ public class IncluirModel : PageBase
 
         SelectProjetos = new SelectList(result.Projetos, "Id", "Nome");
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {
@@ -86,7 +86,7 @@ public class IncluirModel : PageBase
 
         SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
 
-        var result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", Token, new ListWorkflowQuery { });
+        var result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
 
         if (result3.OperationResult == OperationResult.Failed)
         {
@@ -96,7 +96,7 @@ public class IncluirModel : PageBase
 
         SelectWorkflows = new SelectList(result3.Workflows, "Id", "Nome");
 
-        var result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", Token, new ListTipoTarefaQuery { });
+        var result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", new ListTipoTarefaQuery { });
 
         if (result4.OperationResult == OperationResult.Failed)
         {

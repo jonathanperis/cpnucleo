@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Apontamento;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "RemoveApontamento", Token, new RemoveApontamentoCommand { Id = Apontamento.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "RemoveApontamento", new RemoveApontamentoCommand { Id = Apontamento.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idApontamento)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoViewModel>("Apontamento", "GetApontamento", Token, new GetApontamentoQuery { Id = idApontamento });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoViewModel>("Apontamento", "GetApontamento", new GetApontamentoQuery { Id = idApontamento });
 
         if (result.OperationResult == OperationResult.Failed)
         {

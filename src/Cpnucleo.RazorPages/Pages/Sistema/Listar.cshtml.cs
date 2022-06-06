@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -18,7 +18,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
 
             if (result.OperationResult == OperationResult.Failed)
             {

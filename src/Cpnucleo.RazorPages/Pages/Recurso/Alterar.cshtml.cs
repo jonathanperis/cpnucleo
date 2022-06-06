@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
 
 [Authorize]
-public class AlterarModel : PageBase
+public class AlterarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class AlterarModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "UpdateRecurso", Token, new UpdateRecursoCommand { Id = Recurso.Id, Nome = Recurso.Nome, Senha = Recurso.Senha });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "UpdateRecurso", new UpdateRecursoCommand { Id = Recurso.Id, Nome = Recurso.Nome, Senha = Recurso.Senha });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class AlterarModel : PageBase
 
     private async Task CarregarDados(Guid idRecurso)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", Token, new GetRecursoQuery { Id = idRecurso });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", new GetRecursoQuery { Id = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {

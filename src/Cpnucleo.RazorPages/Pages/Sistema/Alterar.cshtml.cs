@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
-public class AlterarModel : PageBase
+public class AlterarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class AlterarModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "UpdateSistema", Token, new UpdateSistemaCommand { Id = Sistema.Id, Nome = Sistema.Nome, Descricao = Sistema.Descricao });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "UpdateSistema", new UpdateSistemaCommand { Id = Sistema.Id, Nome = Sistema.Nome, Descricao = Sistema.Descricao });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class AlterarModel : PageBase
 
     private async Task CarregarDados(Guid id)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", Token, new GetSistemaQuery { Id = id });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery { Id = id });
 
         if (result.OperationResult == OperationResult.Failed)
         {

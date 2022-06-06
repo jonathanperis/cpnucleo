@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
+﻿using Azure.Messaging.ServiceBus;
+using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
 using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
 using Ev.ServiceBus;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ public static class DependencyInjection
         {
             settings.Enabled = true;
             settings.ReceiveMessages = true;
-            settings.WithConnection(configuration["AzureServiceBus:DefaultConnection"]);
+            settings.WithConnection(configuration["AzureServiceBus:DefaultConnection"], new ServiceBusClientOptions());
         });
 
         services.RegisterServiceBusDispatch().ToQueue("CpnucleoDefaultQueue", builder =>

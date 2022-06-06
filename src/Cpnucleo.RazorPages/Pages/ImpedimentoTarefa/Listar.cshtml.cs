@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -19,7 +19,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaByTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefaByTarefa", Token, new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaByTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefaByTarefa", new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
 
             if (result.OperationResult == OperationResult.Failed)
             {
