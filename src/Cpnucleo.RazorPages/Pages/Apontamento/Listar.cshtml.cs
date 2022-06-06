@@ -4,7 +4,7 @@ using System.Security.Claims;
 namespace Cpnucleo.RazorPages.Pages.Apontamento;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -46,7 +46,7 @@ public class ListarModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", Token, new CreateApontamentoCommand { Descricao = Apontamento.Descricao, IdRecurso = Apontamento.IdRecurso, IdTarefa = Apontamento.IdTarefa, QtdHoras = Apontamento.QtdHoras, DataApontamento = Apontamento.DataApontamento });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand { Descricao = Apontamento.Descricao, IdRecurso = Apontamento.IdRecurso, IdTarefa = Apontamento.IdTarefa, QtdHoras = Apontamento.QtdHoras, DataApontamento = Apontamento.DataApontamento });
 
             if (result == OperationResult.Failed)
             {
@@ -68,7 +68,7 @@ public class ListarModel : PageBase
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", Token, new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -78,7 +78,7 @@ public class ListarModel : PageBase
 
         Lista = result.Apontamentos;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", Token, new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {

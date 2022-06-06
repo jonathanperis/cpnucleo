@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -18,7 +18,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", Token, new ListTarefaQuery { GetDependencies = true });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery { GetDependencies = true });
 
             if (result.OperationResult == OperationResult.Failed)
             {

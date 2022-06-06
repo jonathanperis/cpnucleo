@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages;
 
 [Authorize]
-public class FluxoTrabalhoModel : PageBase
+public class FluxoTrabalhoModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -40,7 +40,7 @@ public class FluxoTrabalhoModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "UpdateTarefaByWorkflow", Token, new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "UpdateTarefaByWorkflow", new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
 
             if (result == OperationResult.Failed)
             {
@@ -59,7 +59,7 @@ public class FluxoTrabalhoModel : PageBase
 
     private async Task CarregarDados()
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", Token, new ListWorkflowQuery { });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -69,7 +69,7 @@ public class FluxoTrabalhoModel : PageBase
 
         Lista = result.Workflows;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", Token, new ListTarefaQuery { GetDependencies = true });
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery { GetDependencies = true });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

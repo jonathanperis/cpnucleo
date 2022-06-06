@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -19,7 +19,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoTarefaByTarefaViewModel>("RecursoTarefa", "GetRecursoTarefaByTarefa", Token, new GetRecursoTarefaByTarefaQuery { IdTarefa = idTarefa });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoTarefaByTarefaViewModel>("RecursoTarefa", "GetRecursoTarefaByTarefa", new GetRecursoTarefaByTarefaQuery { IdTarefa = idTarefa });
 
             if (result.OperationResult == OperationResult.Failed)
             {

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Pages;
 
-public class LoginModel : PageBase
+public class LoginModel : PageModel
 {
     private readonly ICpnucleoAuthApiClient _cpnucleoAuthApiClient;
     private readonly IConfiguration _configuration;

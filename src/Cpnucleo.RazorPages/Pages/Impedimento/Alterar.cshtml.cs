@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
-public class AlterarModel : PageBase
+public class AlterarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class AlterarModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "UpdateImpedimento", Token, new UpdateImpedimentoCommand { Id = Impedimento.Id, Nome = Impedimento.Nome });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "UpdateImpedimento", new UpdateImpedimentoCommand { Id = Impedimento.Id, Nome = Impedimento.Nome });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class AlterarModel : PageBase
 
     private async Task CarregarDados(Guid idImpedimento)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoViewModel>("Impedimento", "GetImpedimento", Token, new GetImpedimentoQuery { Id = idImpedimento });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoViewModel>("Impedimento", "GetImpedimento", new GetImpedimentoQuery { Id = idImpedimento });
 
         if (result.OperationResult == OperationResult.Failed)
         {

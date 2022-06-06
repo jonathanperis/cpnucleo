@@ -1,4 +1,5 @@
-﻿using Refit;
+﻿using Cpnucleo.RazorPages.Services;
+using Refit;
 
 namespace Cpnucleo.RazorPages.Configuration;
 
@@ -12,6 +13,7 @@ public static class RazorPagesConfig
 
         services
             .AddRefitClient<ICpnucleoApiClient>()
-            .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v3"));
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v3"))
+            .AddHttpMessageHandler<AuthHeaderHandler>();
     }
 }

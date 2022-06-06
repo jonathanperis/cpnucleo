@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "RemoveRecurso", Token, new RemoveRecursoCommand { Id = Recurso.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "RemoveRecurso", new RemoveRecursoCommand { Id = Recurso.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idRecurso)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", Token, new GetRecursoQuery { Id = idRecurso });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", new GetRecursoQuery { Id = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {

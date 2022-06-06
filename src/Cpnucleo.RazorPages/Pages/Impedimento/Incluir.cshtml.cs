@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
-public class IncluirModel : PageBase
+public class IncluirModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "CreateImpedimento", Token, new CreateImpedimentoCommand { Nome = Impedimento.Nome });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "CreateImpedimento", new CreateImpedimentoCommand { Nome = Impedimento.Nome });
 
             if (result == OperationResult.Failed)
             {

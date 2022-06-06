@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Projeto;
 
 [Authorize]
-public class IncluirModel : PageBase
+public class IncluirModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -41,7 +41,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "CreateProjeto", Token, new CreateProjetoCommand { Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand { Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +60,7 @@ public class IncluirModel : PageBase
 
     private async Task CarregarDados()
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
 
         if (result.OperationResult == OperationResult.Failed)
         {

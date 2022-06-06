@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "RemoveWorkflow", Token, new RemoveWorkflowCommand { Id = Workflow.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "RemoveWorkflow", new RemoveWorkflowCommand { Id = Workflow.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idWorkflow)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", Token, new GetWorkflowQuery { Id = idWorkflow });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery { Id = idWorkflow });
 
         if (result.OperationResult == OperationResult.Failed)
         {
