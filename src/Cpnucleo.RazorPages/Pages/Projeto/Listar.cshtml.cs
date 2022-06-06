@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Projeto;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -18,7 +18,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", Token, new ListProjetoQuery { GetDependencies = true });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", new ListProjetoQuery { GetDependencies = true });
 
             if (result.OperationResult == OperationResult.Failed)
             {

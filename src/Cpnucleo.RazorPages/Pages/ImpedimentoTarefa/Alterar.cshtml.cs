@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
 [Authorize]
-public class AlterarModel : PageBase
+public class AlterarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -41,7 +41,7 @@ public class AlterarModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "UpdateImpedimentoTarefa", Token, new UpdateImpedimentoTarefaCommand { Id = ImpedimentoTarefa.Id, Descricao = ImpedimentoTarefa.Descricao, IdTarefa = ImpedimentoTarefa.IdTarefa, IdImpedimento = ImpedimentoTarefa.IdImpedimento });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "UpdateImpedimentoTarefa", new UpdateImpedimentoTarefaCommand { Id = ImpedimentoTarefa.Id, Descricao = ImpedimentoTarefa.Descricao, IdTarefa = ImpedimentoTarefa.IdTarefa, IdImpedimento = ImpedimentoTarefa.IdImpedimento });
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +60,7 @@ public class AlterarModel : PageBase
 
     private async Task CarregarDados(Guid idImpedimentoTarefa)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", Token, new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -70,7 +70,7 @@ public class AlterarModel : PageBase
 
         ImpedimentoTarefa = result.ImpedimentoTarefa;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", Token, new ListImpedimentoQuery { });
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", new ListImpedimentoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

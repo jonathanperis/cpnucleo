@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "RemoveImpedimentoTarefa", Token, new RemoveImpedimentoTarefaCommand { Id = ImpedimentoTarefa.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "RemoveImpedimentoTarefa", new RemoveImpedimentoTarefaCommand { Id = ImpedimentoTarefa.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idImpedimentoTarefa)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", Token, new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa });
 
         if (result.OperationResult == OperationResult.Failed)
         {

@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "RemoveSistema", Token, new RemoveSistemaCommand { Id = Sistema.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "RemoveSistema", new RemoveSistemaCommand { Id = Sistema.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idSistema)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", Token, new GetSistemaQuery { Id = idSistema });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery { Id = idSistema });
 
         if (result.OperationResult == OperationResult.Failed)
         {

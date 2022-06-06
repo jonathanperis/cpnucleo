@@ -66,14 +66,15 @@ WebApplication app = builder.Build();
 
 app.UseRouting();
 
+app.UseCors("AllowCpcnuleoClients");
+
 app.UseSwaggerConfig();
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseApplication();
-
-app.UseCors("AllowCpcnuleoClients");
 
 app.MapControllers();
 app.Run();

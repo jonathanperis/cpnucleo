@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Projeto;
 
 [Authorize]
-public class AlterarModel : PageBase
+public class AlterarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -41,7 +41,7 @@ public class AlterarModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "UpdateProjeto", Token, new UpdateProjetoCommand { Id = Projeto.Id, Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "UpdateProjeto", new UpdateProjetoCommand { Id = Projeto.Id, Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +60,7 @@ public class AlterarModel : PageBase
 
     private async Task CarregarDados(Guid idProjeto)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", Token, new GetProjetoQuery { Id = idProjeto });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery { Id = idProjeto });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -70,7 +70,7 @@ public class AlterarModel : PageBase
 
         Projeto = result.Projeto;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", Token, new ListSistemaQuery { });
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

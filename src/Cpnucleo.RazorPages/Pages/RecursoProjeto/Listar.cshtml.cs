@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
 [Authorize]
-public class ListarModel : PageBase
+public class ListarModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -19,7 +19,7 @@ public class ListarModel : PageBase
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoProjetoByProjetoViewModel>("RecursoProjeto", "GetRecursoProjetoByProjeto", Token, new GetRecursoProjetoByProjetoQuery { IdProjeto = idProjeto });
+            var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoProjetoByProjetoViewModel>("RecursoProjeto", "GetRecursoProjetoByProjeto", new GetRecursoProjetoByProjetoQuery { IdProjeto = idProjeto });
 
             if (result.OperationResult == OperationResult.Failed)
             {

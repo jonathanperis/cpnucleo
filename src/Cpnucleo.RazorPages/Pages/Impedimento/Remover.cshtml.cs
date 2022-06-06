@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "RemoveImpedimento", Token, new RemoveImpedimentoCommand { Id = Impedimento.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "RemoveImpedimento", new RemoveImpedimentoCommand { Id = Impedimento.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idImpedimento)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoViewModel>("Impedimento", "GetImpedimento", Token, new GetImpedimentoQuery { Id = idImpedimento });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoViewModel>("Impedimento", "GetImpedimento", new GetImpedimentoQuery { Id = idImpedimento });
 
         if (result.OperationResult == OperationResult.Failed)
         {

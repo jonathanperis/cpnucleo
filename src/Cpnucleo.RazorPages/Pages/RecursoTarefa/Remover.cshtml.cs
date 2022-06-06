@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
 
 [Authorize]
-public class RemoverModel : PageBase
+public class RemoverModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -39,7 +39,7 @@ public class RemoverModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "RemoveRecursoTarefa", Token, new RemoveRecursoTarefaCommand { Id = RecursoTarefa.Id });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "RemoveRecursoTarefa", new RemoveRecursoTarefaCommand { Id = RecursoTarefa.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageBase
 
     private async Task CarregarDados(Guid idRecursoTarefa)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoTarefaViewModel>("RecursoTarefa", "GetRecursoTarefa", Token, new GetRecursoTarefaQuery { Id = idRecursoTarefa });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoTarefaViewModel>("RecursoTarefa", "GetRecursoTarefa", new GetRecursoTarefaQuery { Id = idRecursoTarefa });
 
         if (result.OperationResult == OperationResult.Failed)
         {

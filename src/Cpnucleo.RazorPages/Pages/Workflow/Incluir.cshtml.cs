@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
-public class IncluirModel : PageBase
+public class IncluirModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "CreateWorkflow", Token, new CreateWorkflowCommand { Nome = Workflow.Nome, Ordem = Workflow.Ordem });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand { Nome = Workflow.Nome, Ordem = Workflow.Ordem });
 
             if (result == OperationResult.Failed)
             {

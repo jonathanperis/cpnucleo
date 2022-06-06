@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
-public class IncluirModel : PageBase
+public class IncluirModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -22,7 +22,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "CreateSistema", Token, new CreateSistemaCommand { Nome = Sistema.Nome, Descricao = Sistema.Descricao });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "CreateSistema", new CreateSistemaCommand { Nome = Sistema.Nome, Descricao = Sistema.Descricao });
 
             if (result == OperationResult.Failed)
             {

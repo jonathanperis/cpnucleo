@@ -1,7 +1,7 @@
 ﻿namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
 
 [Authorize]
-public class IncluirModel : PageBase
+public class IncluirModel : PageModel
 {
     private readonly ICpnucleoApiClient _cpnucleoApiClient;
 
@@ -43,7 +43,7 @@ public class IncluirModel : PageBase
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "CreateRecursoTarefa", Token, new CreateRecursoTarefaCommand { IdTarefa = RecursoTarefa.IdTarefa, IdRecurso = RecursoTarefa.IdRecurso });
+            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "CreateRecursoTarefa", new CreateRecursoTarefaCommand { IdTarefa = RecursoTarefa.IdTarefa, IdRecurso = RecursoTarefa.IdRecurso });
 
             if (result == OperationResult.Failed)
             {
@@ -62,7 +62,7 @@ public class IncluirModel : PageBase
 
     private async Task CarregarDados(Guid idTarefa)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", Token, new GetTarefaQuery { Id = idTarefa });
+        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery { Id = idTarefa });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -72,7 +72,7 @@ public class IncluirModel : PageBase
 
         Tarefa = result.Tarefa;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", Token, new ListRecursoQuery { });
+        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

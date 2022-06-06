@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Configuration;
+using Cpnucleo.RazorPages.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using StackExchange.Profiling.Storage;
@@ -41,6 +42,9 @@ builder.Services.AddMiniProfiler(options =>
     // (defaults to true, and connection opening/closing is tracked)
     options.TrackConnectionOpenClose = true;
 });
+
+builder.Services.AddTransient<AuthHeaderHandler>();
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
