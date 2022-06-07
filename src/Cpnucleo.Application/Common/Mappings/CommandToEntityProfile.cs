@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Common.Mappings
 {
-    internal class CommandToEntityProfile : Profile
+    public class CommandToEntityProfile : Profile
     {
         public CommandToEntityProfile()
         {
