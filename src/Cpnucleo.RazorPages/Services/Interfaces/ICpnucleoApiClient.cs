@@ -1,5 +1,4 @@
 using Refit;
-using AuthorizeAttribute = Refit.AuthorizeAttribute;
 
 namespace Cpnucleo.RazorPages.Services.Interfaces;
 
