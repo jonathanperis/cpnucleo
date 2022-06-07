@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Configuration;
+﻿using Cpnucleo.Application.Common.Mappings;
 
 namespace Cpnucleo.Application.Test.Helpers;
 
@@ -10,6 +10,7 @@ public class AutoMapperHelper
         {
             cfg.AddProfile<DTOToEntityProfile>();
             cfg.AddProfile<EntityToDTOProfile>();
+            cfg.AddProfile<CommandToEntityProfile>();
         });
 
         return config.CreateMapper();
