@@ -1,4 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 
 namespace Cpnucleo.Application.Test.Helpers;
 
@@ -20,13 +22,37 @@ public class MockQueryHelper
         };
     }
 
+    public static GetProjetoQuery GetNewGetProjetoQuery(Guid projetoId = default)
+    {
+        return new GetProjetoQuery
+        {
+            Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId
+        };
+    }
 
+    public static ListProjetoQuery GetNewListProjetoQuery(bool getDependencies = default)
+    {
+        return new ListProjetoQuery
+        {
+            GetDependencies = getDependencies
+        };
+    }
 
+    public static GetWorkflowQuery GetNewGetWorkflowQuery(Guid workflowId = default)
+    {
+        return new GetWorkflowQuery
+        {
+            Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId
+        };
+    }
 
-
-
-
-
+    public static ListWorkflowQuery GetNewListWorkflowQuery(bool getDependencies = default)
+    {
+        return new ListWorkflowQuery
+        {
+            GetDependencies = getDependencies
+        };
+    }
 
 
 
