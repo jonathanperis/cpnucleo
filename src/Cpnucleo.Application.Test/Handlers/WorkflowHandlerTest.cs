@@ -1,25 +1,23 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
+﻿using Cpnucleo.Application.Commands.Workflow;
+using Cpnucleo.Application.Queries.Workflow;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
 using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.ViewModels;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
 public class WorkflowHandlerTest
 {
     [Fact]
-    public async Task CreateWorkflowCommand_Handle()
+    public async Task CreateWorkflowCommand_Handle_Success()
     {
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
 
-        CreateWorkflowCommand request = new()
-        {
-            Workflow = MockViewModelHelper.GetNewWorkflow()
-        };
+        CreateWorkflowCommand request = MockCommandHelper.GetNewCreateWorkflowCommand();
 
         // Act
-        WorkflowHandler handler = new(unitOfWork, mapper);
+        CreateWorkflowHandler handler = new(unitOfWork, mapper);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -27,7 +25,7 @@ public class WorkflowHandlerTest
     }
 
     [Fact]
-    public async Task GetWorkflowQuery_Handle()
+    public async Task GetWorkflowQuery_Handle_Success()
     {
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
@@ -38,23 +36,20 @@ public class WorkflowHandlerTest
         await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
         await unitOfWork.SaveChangesAsync();
 
-        GetWorkflowQuery request = new()
-        {
-            Id = workflowId
-        };
+        GetWorkflowQuery request = MockQueryHelper.GetNewGetWorkflowQuery(workflowId);
 
         // Act
-        WorkflowHandler handler = new(unitOfWork, mapper);
-        WorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
+        GetWorkflowHandler handler = new(unitOfWork, mapper);
+        GetWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response != null);
-        Assert.True(response.Id != Guid.Empty);
-        Assert.True(response.DataInclusao.Ticks != 0);
+        Assert.True(response.Workflow.Id != Guid.Empty);
+        Assert.True(response.Workflow.DataInclusao.Ticks != 0);
     }
 
     [Fact]
-    public async Task ListWorkflowQuery_Handle()
+    public async Task ListWorkflowQuery_Handle_Success()
     {
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
@@ -68,21 +63,21 @@ public class WorkflowHandlerTest
 
         await unitOfWork.SaveChangesAsync();
 
-        ListWorkflowQuery request = new();
+        ListWorkflowQuery request = MockQueryHelper.GetNewListWorkflowQuery();
 
         // Act
-        WorkflowHandler handler = new(unitOfWork, mapper);
-        IEnumerable<WorkflowViewModel> response = await handler.Handle(request, CancellationToken.None);
+        ListWorkflowHandler handler = new(unitOfWork, mapper);
+        ListWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response != null);
-        Assert.True(response.Any());
-        Assert.True(response.FirstOrDefault(x => x.Id == workflowId) != null);
-        Assert.True(response.FirstOrDefault(x => x.TamanhoColuna != null) != null);
+        Assert.True(response.Workflows.Any());
+        Assert.True(response.Workflows.FirstOrDefault(x => x.Id == workflowId) != null);
+        Assert.True(response.Workflows.FirstOrDefault(x => x.TamanhoColuna != null) != null);
     }
 
     [Fact]
-    public async Task RemoveWorkflowCommand_Handle()
+    public async Task RemoveWorkflowCommand_Handle_Success()
     {
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
@@ -97,35 +92,29 @@ public class WorkflowHandlerTest
 
         unitOfWork.WorkflowRepository.Detatch(workflow);
 
-        RemoveWorkflowCommand request = new()
-        {
-            Id = workflowId
-        };
-
-        GetWorkflowQuery request2 = new()
-        {
-            Id = workflowId
-        };
+        RemoveWorkflowCommand request = MockCommandHelper.GetNewRemoveWorkflowCommand(workflowId);
+        GetWorkflowQuery request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflowId);
 
         // Act
-        WorkflowHandler handler = new(unitOfWork, mapper);
+        RemoveWorkflowHandler handler = new(unitOfWork);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
-        WorkflowViewModel response2 = await handler.Handle(request2, CancellationToken.None);
+
+        GetWorkflowHandler handler2 = new(unitOfWork, mapper);
+        GetWorkflowViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
-        Assert.True(response2 == null);
+        Assert.True(response2.OperationResult == OperationResult.NotFound);
     }
 
     [Fact]
-    public async Task UpdateWorkflowCommand_Handle()
+    public async Task UpdateWorkflowCommand_Handle_Success()
     {
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
 
         Guid workflowId = Guid.NewGuid();
-        DateTime dataInclusao = DateTime.Now;
 
         Workflow workflow = MockEntityHelper.GetNewWorkflow(workflowId);
 
@@ -134,25 +123,19 @@ public class WorkflowHandlerTest
 
         unitOfWork.WorkflowRepository.Detatch(workflow);
 
-        UpdateWorkflowCommand request = new()
-        {
-            Workflow = MockViewModelHelper.GetNewWorkflow(workflowId, dataInclusao)
-        };
-
-        GetWorkflowQuery request2 = new()
-        {
-            Id = workflowId
-        };
+        UpdateWorkflowCommand request = MockCommandHelper.GetNewUpdateWorkflowCommand(workflowId);
+        GetWorkflowQuery request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflowId);
 
         // Act
-        WorkflowHandler handler = new(unitOfWork, mapper);
+        UpdateWorkflowHandler handler = new(unitOfWork);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
-        WorkflowViewModel response2 = await handler.Handle(request2, CancellationToken.None);
+
+        GetWorkflowHandler handler2 = new(unitOfWork, mapper);
+        GetWorkflowViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2 != null);
-        Assert.True(response2.Id == workflowId);
-        Assert.True(response2.DataInclusao.Ticks == dataInclusao.Ticks);
+        Assert.True(response2.Workflow.Id == workflowId);
     }
 }
