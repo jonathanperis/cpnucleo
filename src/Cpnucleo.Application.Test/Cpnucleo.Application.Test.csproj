@@ -11,13 +11,11 @@
 	  <Compile Remove="Handlers\ApontamentoHandlerTest.cs" />
 	  <Compile Remove="Handlers\ImpedimentoHandlerTest.cs" />
 	  <Compile Remove="Handlers\ImpedimentoTarefaHandlerTest.cs" />
-	  <Compile Remove="Handlers\ProjetoHandlerTest.cs" />
 	  <Compile Remove="Handlers\RecursoHandlerTest.cs" />
 	  <Compile Remove="Handlers\RecursoProjetoHandlerTest.cs" />
 	  <Compile Remove="Handlers\RecursoTarefaHandlerTest.cs" />
 	  <Compile Remove="Handlers\TarefaHandlerTest.cs" />
 	  <Compile Remove="Handlers\TipoTarefaHandlerTest.cs" />
-	  <Compile Remove="Handlers\WorkflowHandlerTest.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

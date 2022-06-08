@@ -1,4 +1,6 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
+﻿using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
+using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
 
 namespace Cpnucleo.Application.Test.Helpers;
 
@@ -22,27 +24,71 @@ public class MockCommandHelper
         };
     }
 
-    public static UpdateSistemaCommand GetNewUpdateSistemaCommand(Guid sistemaId = default, DateTime dataInclusao = default)
+    public static UpdateSistemaCommand GetNewUpdateSistemaCommand(Guid sistemaId = default)
     {
         return new UpdateSistemaCommand
         {
             Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
-            Nome = "Sistema de teste",
-            Descricao = "Descrição do sistema de teste"
+            Nome = "Sistema de teste - alterado",
+            Descricao = "Descrição do sistema de teste - alterado"
         };
     }
 
+    public static CreateProjetoCommand GetNewCreateProjetoCommand(Guid sistemaId, Guid projetoId = default)
+    {
+        return new CreateProjetoCommand
+        {
+            Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId,
+            Nome = "Projeto de teste",
+            IdSistema = sistemaId
+        };
+    }
 
+    public static RemoveProjetoCommand GetNewRemoveProjetoCommand(Guid projetoId = default)
+    {
+        return new RemoveProjetoCommand
+        {
+            Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId
+        };
+    }
 
+    public static UpdateProjetoCommand GetNewUpdateProjetoCommand(Guid sistemaId, Guid projetoId = default)
+    {
+        return new UpdateProjetoCommand
+        {
+            Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId,
+            Nome = "Projeto de teste - alterado",
+            IdSistema = sistemaId
+        };
+    }
 
+    public static CreateWorkflowCommand GetNewCreateWorkflowCommand(Guid workflowId = default)
+    {
+        return new CreateWorkflowCommand
+        {
+            Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
+            Nome = "Workflow de teste",
+            Ordem = 1
+        };
+    }
 
+    public static RemoveWorkflowCommand GetNewRemoveWorkflowCommand(Guid workflowId = default)
+    {
+        return new RemoveWorkflowCommand
+        {
+            Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId
+        };
+    }
 
-
-
-
-
-
-
+    public static UpdateWorkflowCommand GetNewUpdateWorkflowCommand(Guid workflowId = default)
+    {
+        return new UpdateWorkflowCommand
+        {
+            Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
+            Nome = "Workflow de teste - alterado",
+            Ordem = 2
+        };
+    }
 
 
 
