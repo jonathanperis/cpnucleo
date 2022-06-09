@@ -22,6 +22,8 @@ public class GetRecursoHandler : IRequestHandler<GetRecursoQuery, GetRecursoView
 
         RecursoDTO result = _mapper.Map<RecursoDTO>(recurso);
 
+        result.Senha = null;
+
         return new GetRecursoViewModel { Recurso = result, OperationResult = OperationResult.Success };
     }
 }

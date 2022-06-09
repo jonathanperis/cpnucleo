@@ -1,7 +1,5 @@
 ﻿using Cpnucleo.Application.Commands.Projeto;
 using Cpnucleo.Application.Queries.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Projeto;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Projeto;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -52,7 +50,7 @@ public class ProjetoHandlerTest
         GetProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response != null);
+        Assert.True(response.Projeto != null);
         Assert.True(response.Projeto.Id != Guid.Empty);
         Assert.True(response.Projeto.DataInclusao.Ticks != 0);
     }
@@ -83,7 +81,7 @@ public class ProjetoHandlerTest
         ListProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response != null);
+        Assert.True(response.Projetos != null);
         Assert.True(response.Projetos.Any());
         Assert.True(response.Projetos.FirstOrDefault(x => x.Id == projetoId) != null);
     }
@@ -155,7 +153,7 @@ public class ProjetoHandlerTest
 
         // Assert
         Assert.True(response == OperationResult.Success);
-        Assert.True(response2 != null);
+        Assert.True(response2.Projeto != null);
         Assert.True(response2.Projeto.Id == projetoId);
     }
 }

@@ -8,17 +8,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Handlers\ApontamentoHandlerTest.cs" />
-	  <Compile Remove="Handlers\ImpedimentoHandlerTest.cs" />
-	  <Compile Remove="Handlers\ImpedimentoTarefaHandlerTest.cs" />
-	  <Compile Remove="Handlers\RecursoHandlerTest.cs" />
-	  <Compile Remove="Handlers\RecursoProjetoHandlerTest.cs" />
-	  <Compile Remove="Handlers\RecursoTarefaHandlerTest.cs" />
-	  <Compile Remove="Handlers\TarefaHandlerTest.cs" />
-	  <Compile Remove="Handlers\TipoTarefaHandlerTest.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="11.0.1" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.5" />
