@@ -1,7 +1,5 @@
 ﻿using Cpnucleo.Application.Commands.Workflow;
 using Cpnucleo.Application.Queries.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Workflow;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
 
 namespace Cpnucleo.Application.Test.Handlers;
 
@@ -43,7 +41,7 @@ public class WorkflowHandlerTest
         GetWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response != null);
+        Assert.True(response.Workflow != null);
         Assert.True(response.Workflow.Id != Guid.Empty);
         Assert.True(response.Workflow.DataInclusao.Ticks != 0);
     }
@@ -70,7 +68,7 @@ public class WorkflowHandlerTest
         ListWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response != null);
+        Assert.True(response.Workflows != null);
         Assert.True(response.Workflows.Any());
         Assert.True(response.Workflows.FirstOrDefault(x => x.Id == workflowId) != null);
         Assert.True(response.Workflows.FirstOrDefault(x => x.TamanhoColuna != null) != null);
@@ -135,7 +133,7 @@ public class WorkflowHandlerTest
 
         // Assert
         Assert.True(response == OperationResult.Success);
-        Assert.True(response2 != null);
+        Assert.True(response2.Workflow != null);
         Assert.True(response2.Workflow.Id == workflowId);
     }
 }

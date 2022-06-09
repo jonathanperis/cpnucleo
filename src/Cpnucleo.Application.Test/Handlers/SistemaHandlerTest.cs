@@ -3,8 +3,6 @@ using Cpnucleo.Application.Hubs;
 using Cpnucleo.Application.Queries.Sistema;
 using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
 using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Commands.Sistema;
-using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 
@@ -70,7 +68,7 @@ public class SistemaHandlerTest
         GetSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response != null);
+        Assert.True(response.Sistema != null);
         Assert.True(response.Sistema.Id != Guid.Empty);
         Assert.True(response.Sistema.DataInclusao.Ticks != 0);
     }
@@ -99,7 +97,7 @@ public class SistemaHandlerTest
         ListSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        Assert.True(response != null);
+        Assert.True(response.Sistemas != null);
         Assert.True(response.Sistemas.Any());
         Assert.True(response.Sistemas.FirstOrDefault(x => x.Id == sistemaId) != null);
     }
@@ -165,7 +163,7 @@ public class SistemaHandlerTest
 
         // Assert
         Assert.True(response == OperationResult.Success);
-        Assert.True(response2 != null);
+        Assert.True(response2.Sistema != null);
         Assert.True(response2.Sistema.Id == sistemaId);
     }
 }
