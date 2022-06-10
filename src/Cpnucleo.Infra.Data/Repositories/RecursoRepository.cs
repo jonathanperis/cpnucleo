@@ -3,10 +3,7 @@
 internal class RecursoRepository : GenericRepository<Recurso>, IRecursoRepository
 {
     public RecursoRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public Task<Recurso> AddAsync(Recurso entity, string salt)
     {
