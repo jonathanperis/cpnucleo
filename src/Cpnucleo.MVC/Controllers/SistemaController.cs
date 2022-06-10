@@ -32,7 +32,7 @@ public class SistemaController : BaseController
     {
         try
         {
-            var result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+            ListSistemaViewModel result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -67,7 +67,7 @@ public class SistemaController : BaseController
                 return View();
             }
 
-            var result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand { Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
+            OperationResult result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand { Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
 
             if (result == OperationResult.Failed)
             {
@@ -112,7 +112,7 @@ public class SistemaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand { Id = obj.Sistema.Id, Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
+            OperationResult result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand { Id = obj.Sistema.Id, Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
 
             if (result == OperationResult.Failed)
             {
@@ -157,7 +157,7 @@ public class SistemaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand { Id = obj.Sistema.Id });
+            OperationResult result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand { Id = obj.Sistema.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -176,7 +176,7 @@ public class SistemaController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        var result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery { Id = id });
+        GetSistemaViewModel result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery { Id = id });
 
         if (result.OperationResult == OperationResult.Failed)
         {

@@ -13,7 +13,7 @@ public class ListImpedimentoHandler : IRequestHandler<ListImpedimentoQuery, List
 
     public async Task<ListImpedimentoViewModel> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
     {
-        var impedimentos = await _unitOfWork.ImpedimentoRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.Impedimento> impedimentos = await _unitOfWork.ImpedimentoRepository.AllAsync(request.GetDependencies);
 
         if (impedimentos == null)
         {

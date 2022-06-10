@@ -16,19 +16,21 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
     {
         if (_validators.Any())
         {
-            var context = new ValidationContext<TRequest>(request);
+            ValidationContext<TRequest> context = new ValidationContext<TRequest>(request);
 
-            var validationResults = await Task.WhenAll(
+            FluentValidation.Results.ValidationResult[] validationResults = await Task.WhenAll(
                 _validators.Select(v =>
                     v.ValidateAsync(context, cancellationToken)));
 
-            var failures = validationResults
+            List<FluentValidation.Results.ValidationFailure> failures = validationResults
                 .Where(r => r.Errors.Any())
                 .SelectMany(r => r.Errors)
                 .ToList();
 
             if (failures.Any())
+            {
                 throw new ValidationException(failures);
+            }
         }
 
         return await next();

@@ -11,7 +11,7 @@ public class RemoveImpedimentoHandler : IRequestHandler<RemoveImpedimentoCommand
 
     public async Task<OperationResult> Handle(RemoveImpedimentoCommand request, CancellationToken cancellationToken)
     {
-        var impedimento = await _unitOfWork.ImpedimentoRepository.GetAsync(request.Id);
+        Domain.Entities.Impedimento impedimento = await _unitOfWork.ImpedimentoRepository.GetAsync(request.Id);
 
         if (impedimento == null)
         {

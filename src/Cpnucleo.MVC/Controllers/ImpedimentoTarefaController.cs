@@ -36,7 +36,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            var result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
+            GetImpedimentoTarefaByTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -77,7 +77,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand { Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
+            OperationResult result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand { Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -122,7 +122,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _impedimentoTarefaGrpcService.UpdateImpedimentoTarefa(new UpdateImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id, Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
+            OperationResult result = await _impedimentoTarefaGrpcService.UpdateImpedimentoTarefa(new UpdateImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id, Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -167,7 +167,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _impedimentoTarefaGrpcService.RemoveImpedimentoTarefa(new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
+            OperationResult result = await _impedimentoTarefaGrpcService.RemoveImpedimentoTarefa(new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -188,7 +188,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         if (idImpedimentoTarefa is not null)
         {
-            var result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefa(new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa.Value });
+            GetImpedimentoTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefa(new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -196,12 +196,12 @@ public class ImpedimentoTarefaController : BaseController
                 return;
             }
 
-            ViewModel.ImpedimentoTarefa = result.ImpedimentoTarefa; 
+            ViewModel.ImpedimentoTarefa = result.ImpedimentoTarefa;
         }
 
         if (idTarefa is not null)
         {
-            var result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
+            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -212,7 +212,7 @@ public class ImpedimentoTarefaController : BaseController
             ViewModel.Tarefa = result.Tarefa;
         }
 
-        var result2 = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery { });
+        ListImpedimentoViewModel result2 = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

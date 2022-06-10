@@ -11,7 +11,7 @@ public class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand, Operat
 
     public async Task<OperationResult> Handle(UpdateProjetoCommand request, CancellationToken cancellationToken)
     {
-        var projeto = await _unitOfWork.ProjetoRepository.GetAsync(request.Id);
+        Domain.Entities.Projeto projeto = await _unitOfWork.ProjetoRepository.GetAsync(request.Id);
 
         if (projeto == null)
         {

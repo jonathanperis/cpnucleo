@@ -13,7 +13,7 @@ public class GetApontamentoHandler : IRequestHandler<GetApontamentoQuery, GetApo
 
     public async Task<GetApontamentoViewModel> Handle(GetApontamentoQuery request, CancellationToken cancellationToken)
     {
-        var apontamento = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
+        Domain.Entities.Apontamento apontamento = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
 
         if (apontamento == null)
         {

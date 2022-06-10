@@ -18,7 +18,7 @@ public class ListSistemaHandler : IRequestHandler<ListSistemaQuery, ListSistemaV
 
     public async Task<ListSistemaViewModel> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
     {
-        var sistemas = await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.Sistema> sistemas = await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies);
 
         if (sistemas == null)
         {

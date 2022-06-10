@@ -34,7 +34,7 @@ public class ProjetoController : BaseController
     {
         try
         {
-            var result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { GetDependencies = true });
+            ListProjetoViewModel result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { GetDependencies = true });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -73,7 +73,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand { Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
+            OperationResult result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand { Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
 
             if (result == OperationResult.Failed)
             {
@@ -118,7 +118,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand { Id = obj.Projeto.Id, Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
+            OperationResult result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand { Id = obj.Projeto.Id, Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
 
             if (result == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand { Id = obj.Projeto.Id });
+            OperationResult result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand { Id = obj.Projeto.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -184,18 +184,18 @@ public class ProjetoController : BaseController
     {
         if (id is not null)
         {
-            var result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = id.Value });
+            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = id.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
                 return;
-            } 
+            }
 
             ViewModel.Projeto = result.Projeto;
         }
 
-        var result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

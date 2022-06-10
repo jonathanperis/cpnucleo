@@ -13,7 +13,7 @@ public class ListRecursoHandler : IRequestHandler<ListRecursoQuery, ListRecursoV
 
     public async Task<ListRecursoViewModel> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
     {
-        var recursos = await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.Recurso> recursos = await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies);
 
         if (recursos == null)
         {

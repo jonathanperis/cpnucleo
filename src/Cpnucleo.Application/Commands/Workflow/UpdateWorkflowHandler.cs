@@ -11,7 +11,7 @@ public class UpdateWorkflowHandler : IRequestHandler<UpdateWorkflowCommand, Oper
 
     public async Task<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        var workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
 
         if (workflow == null)
         {

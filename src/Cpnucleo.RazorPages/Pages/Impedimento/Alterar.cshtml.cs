@@ -39,7 +39,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "UpdateImpedimento", new UpdateImpedimentoCommand { Id = Impedimento.Id, Nome = Impedimento.Nome });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "UpdateImpedimento", new UpdateImpedimentoCommand { Id = Impedimento.Id, Nome = Impedimento.Nome });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idImpedimento)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoViewModel>("Impedimento", "GetImpedimento", new GetImpedimentoQuery { Id = idImpedimento });
+        GetImpedimentoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoViewModel>("Impedimento", "GetImpedimento", new GetImpedimentoQuery { Id = idImpedimento });
 
         if (result.OperationResult == OperationResult.Failed)
         {
