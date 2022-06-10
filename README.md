@@ -13,6 +13,10 @@ A sample solution that implements the best praticles when building a .NET 5 proj
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20MVC%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=9)
 
+- [Auth API Cpnucleo](https://api-cpnucleo-auth.azurewebsites.net/swagger)
+
+[![Build Status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo.API.Auth?branchName=master)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=18&branchName=master)
+
 - [API Cpnucleo](https://api-cpnucleo.azurewebsites.net/swagger)
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/API%20-%20Cpnucleo%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=8)
