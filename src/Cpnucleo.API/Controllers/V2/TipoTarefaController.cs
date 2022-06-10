@@ -4,7 +4,7 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [ApiVersion("2", Deprecated = true)]
-[Authorize]
+//[Authorize]
 public class TipoTarefaController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
