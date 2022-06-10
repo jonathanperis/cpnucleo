@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+﻿using Cpnucleo.Infra.CrossCutting.Shared.Requests.Auth;
 using Cpnucleo.MVC.Services;
 using Cpnucleo.MVC.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;

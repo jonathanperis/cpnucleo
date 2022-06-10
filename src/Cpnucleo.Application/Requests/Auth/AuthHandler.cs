@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Application.Common.Security.Interfaces;
-using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+using Cpnucleo.Infra.CrossCutting.Shared.Requests.Auth;
 
 namespace Cpnucleo.Application.Requests.Auth;
 
