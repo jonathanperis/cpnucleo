@@ -11,7 +11,7 @@ public class UpdateRecursoTarefaHandler : IRequestHandler<UpdateRecursoTarefaCom
 
     public async Task<OperationResult> Handle(UpdateRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
-        var recursoTarefa = await _unitOfWork.RecursoTarefaRepository.GetAsync(request.Id);
+        Domain.Entities.RecursoTarefa recursoTarefa = await _unitOfWork.RecursoTarefaRepository.GetAsync(request.Id);
 
         if (recursoTarefa == null)
         {

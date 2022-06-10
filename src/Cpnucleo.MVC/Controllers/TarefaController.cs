@@ -40,7 +40,7 @@ public class TarefaController : BaseController
     {
         try
         {
-            var result = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
+            ListTarefaViewModel result = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -83,7 +83,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand { Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
+            OperationResult result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand { Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -128,7 +128,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _tarefaGrpcService.UpdateTarefa(new UpdateTarefaCommand { Id = obj.Tarefa.Id, Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
+            OperationResult result = await _tarefaGrpcService.UpdateTarefa(new UpdateTarefaCommand { Id = obj.Tarefa.Id, Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -173,7 +173,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _tarefaGrpcService.RemoveTarefa(new RemoveTarefaCommand { Id = obj.Tarefa.Id });
+            OperationResult result = await _tarefaGrpcService.RemoveTarefa(new RemoveTarefaCommand { Id = obj.Tarefa.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -194,7 +194,7 @@ public class TarefaController : BaseController
     {
         if (id is not null)
         {
-            var result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = id.Value });
+            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = id.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -205,7 +205,7 @@ public class TarefaController : BaseController
             ViewModel.Tarefa = result.Tarefa;
         }
 
-        var result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {
@@ -215,7 +215,7 @@ public class TarefaController : BaseController
 
         ViewModel.SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
 
-        var result3 = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { });
+        ListProjetoViewModel result3 = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { });
 
         if (result3.OperationResult == OperationResult.Failed)
         {
@@ -225,7 +225,7 @@ public class TarefaController : BaseController
 
         ViewModel.SelectProjetos = new SelectList(result3.Projetos, "Id", "Nome");
 
-        var result4 = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+        ListWorkflowViewModel result4 = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
 
         if (result4.OperationResult == OperationResult.Failed)
         {
@@ -235,7 +235,7 @@ public class TarefaController : BaseController
 
         ViewModel.SelectWorkflows = new SelectList(result4.Workflows, "Id", "Nome");
 
-        var result5 = await _tipoTarefaGrpcService.ListTipoTarefa(new ListTipoTarefaQuery { });
+        ListTipoTarefaViewModel result5 = await _tipoTarefaGrpcService.ListTipoTarefa(new ListTipoTarefaQuery { });
 
         if (result5.OperationResult == OperationResult.Failed)
         {

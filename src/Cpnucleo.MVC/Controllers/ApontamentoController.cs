@@ -62,7 +62,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand { Descricao = obj.Apontamento.Descricao, IdRecurso = obj.Apontamento.IdRecurso, IdTarefa = obj.Apontamento.IdTarefa, QtdHoras = obj.Apontamento.QtdHoras, DataApontamento = obj.Apontamento.DataApontamento });
+            OperationResult result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand { Descricao = obj.Apontamento.Descricao, IdRecurso = obj.Apontamento.IdRecurso, IdTarefa = obj.Apontamento.IdTarefa, QtdHoras = obj.Apontamento.QtdHoras, DataApontamento = obj.Apontamento.DataApontamento });
 
             if (result == OperationResult.Failed)
             {
@@ -107,7 +107,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand { Id = obj.Apontamento.Id });
+            OperationResult result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand { Id = obj.Apontamento.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -152,7 +152,7 @@ public class ApontamentoController : BaseController
                 return Json(new { success = false, message = "", body = ViewModel });
             }
 
-            var result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
+            OperationResult result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
 
             if (result == OperationResult.Failed)
             {
@@ -171,7 +171,7 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        var result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery { Id = id });
+        GetApontamentoViewModel result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery { Id = id });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -187,7 +187,7 @@ public class ApontamentoController : BaseController
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        var result = await _apontamentoGrpcService.GetApontamentoByRecurso(new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+        GetApontamentoByRecursoViewModel result = await _apontamentoGrpcService.GetApontamentoByRecurso(new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -197,7 +197,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.Lista = result.Apontamentos;
 
-        var result2 = await _tarefaGrpcService.GetTarefaByRecurso(new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+        GetTarefaByRecursoViewModel result2 = await _tarefaGrpcService.GetTarefaByRecurso(new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -210,7 +210,7 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDadosFluxoTrabalho()
     {
-        var result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+        ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -220,7 +220,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.ListaWorkflow = result.Workflows;
 
-        var result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
+        ListTarefaViewModel result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

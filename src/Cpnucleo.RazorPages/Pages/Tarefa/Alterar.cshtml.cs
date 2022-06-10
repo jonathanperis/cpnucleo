@@ -47,7 +47,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "UpdateTarefa", new UpdateTarefaCommand { Id = Tarefa.Id, Nome = Tarefa.Nome, DataInicio = Tarefa.DataInicio, DataTermino = Tarefa.DataTermino, QtdHoras = Tarefa.QtdHoras, Detalhe = Tarefa.Detalhe, IdProjeto = Tarefa.IdProjeto, IdWorkflow = Tarefa.IdWorkflow, IdRecurso = Tarefa.IdRecurso, IdTipoTarefa = Tarefa.IdTipoTarefa });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "UpdateTarefa", new UpdateTarefaCommand { Id = Tarefa.Id, Nome = Tarefa.Nome, DataInicio = Tarefa.DataInicio, DataTermino = Tarefa.DataTermino, QtdHoras = Tarefa.QtdHoras, Detalhe = Tarefa.Detalhe, IdProjeto = Tarefa.IdProjeto, IdWorkflow = Tarefa.IdWorkflow, IdRecurso = Tarefa.IdRecurso, IdTipoTarefa = Tarefa.IdTipoTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -66,7 +66,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idTarefa)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery { Id = idTarefa });
+        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery { Id = idTarefa });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -76,7 +76,7 @@ public class AlterarModel : PageModel
 
         Tarefa = result.Tarefa;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", new ListProjetoQuery { });
+        ListProjetoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", new ListProjetoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {
@@ -86,7 +86,7 @@ public class AlterarModel : PageModel
 
         SelectProjetos = new SelectList(result2.Projetos, "Id", "Nome");
 
-        var result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
+        ListSistemaViewModel result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
 
         if (result3.OperationResult == OperationResult.Failed)
         {
@@ -96,7 +96,7 @@ public class AlterarModel : PageModel
 
         SelectSistemas = new SelectList(result3.Sistemas, "Id", "Nome");
 
-        var result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
+        ListWorkflowViewModel result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
 
         if (result4.OperationResult == OperationResult.Failed)
         {
@@ -106,7 +106,7 @@ public class AlterarModel : PageModel
 
         SelectWorkflows = new SelectList(result4.Workflows, "Id", "Nome");
 
-        var result5 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", new ListTipoTarefaQuery { });
+        ListTipoTarefaViewModel result5 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", new ListTipoTarefaQuery { });
 
         if (result5.OperationResult == OperationResult.Failed)
         {

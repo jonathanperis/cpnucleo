@@ -35,7 +35,7 @@ public class ImpedimentoHandlerTest
         await unitOfWork.SaveChangesAsync();
 
         GetImpedimentoQuery request = MockQueryHelper.GetNewGetImpedimentoQuery(impedimentoId);
-            
+
         // Act
         GetImpedimentoHandler handler = new(unitOfWork, mapper);
         GetImpedimentoViewModel response = await handler.Handle(request, CancellationToken.None);

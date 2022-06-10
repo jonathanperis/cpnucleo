@@ -13,7 +13,7 @@ public class GetTipoTarefaHandler : IRequestHandler<GetTipoTarefaQuery, GetTipoT
 
     public async Task<GetTipoTarefaViewModel> Handle(GetTipoTarefaQuery request, CancellationToken cancellationToken)
     {
-        var tipoTarefa = await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id);
+        Domain.Entities.TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id);
 
         if (tipoTarefa == null)
         {

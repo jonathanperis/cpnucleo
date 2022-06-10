@@ -13,7 +13,7 @@ public class ListApontamentoHandler : IRequestHandler<ListApontamentoQuery, List
 
     public async Task<ListApontamentoViewModel> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
-        var apontamentos = await _unitOfWork.ApontamentoRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.Apontamento> apontamentos = await _unitOfWork.ApontamentoRepository.AllAsync(request.GetDependencies);
 
         if (apontamentos == null)
         {

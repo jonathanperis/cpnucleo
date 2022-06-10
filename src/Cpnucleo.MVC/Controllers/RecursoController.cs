@@ -32,7 +32,7 @@ public class RecursoController : BaseController
     {
         try
         {
-            var result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+            ListRecursoViewModel result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -67,7 +67,7 @@ public class RecursoController : BaseController
                 return View();
             }
 
-            var result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand { Nome = obj.Recurso.Nome, Login = obj.Recurso.Login, Senha = obj.Recurso.Senha });
+            OperationResult result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand { Nome = obj.Recurso.Nome, Login = obj.Recurso.Login, Senha = obj.Recurso.Senha });
 
             if (result == OperationResult.Failed)
             {
@@ -112,7 +112,7 @@ public class RecursoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand { Id = obj.Recurso.Id, Nome = obj.Recurso.Nome, Senha = obj.Recurso.Senha });
+            OperationResult result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand { Id = obj.Recurso.Id, Nome = obj.Recurso.Nome, Senha = obj.Recurso.Senha });
 
             if (result == OperationResult.Failed)
             {
@@ -157,7 +157,7 @@ public class RecursoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand { Id = obj.Recurso.Id });
+            OperationResult result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand { Id = obj.Recurso.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -176,7 +176,7 @@ public class RecursoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        var result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery { Id = id });
+        GetRecursoViewModel result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery { Id = id });
 
         if (result.OperationResult == OperationResult.Failed)
         {

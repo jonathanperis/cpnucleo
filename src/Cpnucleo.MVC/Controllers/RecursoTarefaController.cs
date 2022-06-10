@@ -36,7 +36,7 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            var result = await _recursoTarefaGrpcService.GetRecursoTarefaByTarefa(new GetRecursoTarefaByTarefaQuery { IdTarefa = idTarefa });
+            GetRecursoTarefaByTarefaViewModel result = await _recursoTarefaGrpcService.GetRecursoTarefaByTarefa(new GetRecursoTarefaByTarefaQuery { IdTarefa = idTarefa });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -77,7 +77,7 @@ public class RecursoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
+            OperationResult result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -122,7 +122,7 @@ public class RecursoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoTarefaGrpcService.UpdateRecursoTarefa(new UpdateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
+            OperationResult result = await _recursoTarefaGrpcService.UpdateRecursoTarefa(new UpdateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
 
             if (result == OperationResult.Failed)
             {
@@ -167,7 +167,7 @@ public class RecursoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoTarefaGrpcService.RemoveRecursoTarefa(new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
+            OperationResult result = await _recursoTarefaGrpcService.RemoveRecursoTarefa(new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -188,7 +188,7 @@ public class RecursoTarefaController : BaseController
     {
         if (idRecursoTarefa is not null)
         {
-            var result = await _recursoTarefaGrpcService.GetRecursoTarefa(new GetRecursoTarefaQuery { Id = idRecursoTarefa.Value });
+            GetRecursoTarefaViewModel result = await _recursoTarefaGrpcService.GetRecursoTarefa(new GetRecursoTarefaQuery { Id = idRecursoTarefa.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -201,7 +201,7 @@ public class RecursoTarefaController : BaseController
 
         if (idTarefa is not null)
         {
-            var result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
+            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -212,7 +212,7 @@ public class RecursoTarefaController : BaseController
             ViewModel.Tarefa = result.Tarefa;
         }
 
-        var result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+        ListRecursoViewModel result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

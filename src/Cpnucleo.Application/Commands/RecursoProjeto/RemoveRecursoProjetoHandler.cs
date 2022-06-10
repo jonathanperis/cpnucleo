@@ -11,7 +11,7 @@ public class RemoveRecursoProjetoHandler : IRequestHandler<RemoveRecursoProjetoC
 
     public async Task<OperationResult> Handle(RemoveRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        var recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
+        Domain.Entities.RecursoProjeto recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
 
         if (recursoProjeto == null)
         {

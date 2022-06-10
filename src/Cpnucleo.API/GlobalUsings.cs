@@ -1,4 +1,5 @@
 ﻿global using Cpnucleo.Application.Common.Repositories.UoW;
+global using Cpnucleo.Domain.Entities;
 global using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
 global using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
 global using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;
@@ -22,7 +23,6 @@ global using Cpnucleo.Infra.CrossCutting.Util.Queries.Sistema;
 global using Cpnucleo.Infra.CrossCutting.Util.Queries.Tarefa;
 global using Cpnucleo.Infra.CrossCutting.Util.Queries.TipoTarefa;
 global using Cpnucleo.Infra.CrossCutting.Util.Queries.Workflow;
-global using Cpnucleo.Domain.Entities;
 global using MediatR;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;

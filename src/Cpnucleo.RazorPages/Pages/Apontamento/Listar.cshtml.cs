@@ -46,7 +46,7 @@ public class ListarModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand { Descricao = Apontamento.Descricao, IdRecurso = Apontamento.IdRecurso, IdTarefa = Apontamento.IdTarefa, QtdHoras = Apontamento.QtdHoras, DataApontamento = Apontamento.DataApontamento });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand { Descricao = Apontamento.Descricao, IdRecurso = Apontamento.IdRecurso, IdTarefa = Apontamento.IdTarefa, QtdHoras = Apontamento.QtdHoras, DataApontamento = Apontamento.DataApontamento });
 
             if (result == OperationResult.Failed)
             {
@@ -68,7 +68,7 @@ public class ListarModel : PageModel
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+        GetApontamentoByRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -78,7 +78,7 @@ public class ListarModel : PageModel
 
         Lista = result.Apontamentos;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+        GetTarefaByRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {

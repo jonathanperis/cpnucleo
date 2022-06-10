@@ -11,7 +11,7 @@ public class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand, Operat
 
     public async Task<OperationResult> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken)
     {
-        var sistema = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
+        Domain.Entities.Sistema sistema = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
 
         if (sistema == null)
         {

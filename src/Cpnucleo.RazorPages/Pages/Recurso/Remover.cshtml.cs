@@ -39,7 +39,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "RemoveRecurso", new RemoveRecursoCommand { Id = Recurso.Id });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "RemoveRecurso", new RemoveRecursoCommand { Id = Recurso.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idRecurso)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", new GetRecursoQuery { Id = idRecurso });
+        GetRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoViewModel>("Recurso", "GetRecurso", new GetRecursoQuery { Id = idRecurso });
 
         if (result.OperationResult == OperationResult.Failed)
         {

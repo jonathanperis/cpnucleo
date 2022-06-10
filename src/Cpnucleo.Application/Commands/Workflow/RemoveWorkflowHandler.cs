@@ -11,7 +11,7 @@ public class RemoveWorkflowHandler : IRequestHandler<RemoveWorkflowCommand, Oper
 
     public async Task<OperationResult> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)
     {
-        var workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
 
         if (workflow == null)
         {

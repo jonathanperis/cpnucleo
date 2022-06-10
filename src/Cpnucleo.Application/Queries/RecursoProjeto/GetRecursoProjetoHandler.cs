@@ -13,7 +13,7 @@ public class GetRecursoProjetoHandler : IRequestHandler<GetRecursoProjetoQuery, 
 
     public async Task<GetRecursoProjetoViewModel> Handle(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        var recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
+        Domain.Entities.RecursoProjeto recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
 
         if (recursoProjeto == null)
         {

@@ -13,7 +13,7 @@ public class ListProjetoHandler : IRequestHandler<ListProjetoQuery, ListProjetoV
 
     public async Task<ListProjetoViewModel> Handle(ListProjetoQuery request, CancellationToken cancellationToken)
     {
-        var projetos = await _unitOfWork.ProjetoRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.Projeto> projetos = await _unitOfWork.ProjetoRepository.AllAsync(request.GetDependencies);
 
         if (projetos == null)
         {

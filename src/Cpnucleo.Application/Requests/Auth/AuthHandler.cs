@@ -23,7 +23,7 @@ public class AuthHandler : IRequestHandler<AuthRequest, AuthResponse>
             Status = OperationResult.Failed
         };
 
-        var recurso = await _unitOfWork.RecursoRepository.GetRecursoByLoginAsync(request.Usuario);
+        Recurso recurso = await _unitOfWork.RecursoRepository.GetRecursoByLoginAsync(request.Usuario);
 
         if (recurso == null)
         {

@@ -18,7 +18,7 @@ public class RemoverModel : PageModel
         try
         {
             await CarregarDados(id);
-            
+
             return Page();
         }
         catch (Exception ex)
@@ -39,7 +39,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "RemoveSistema", new RemoveSistemaCommand { Id = Sistema.Id });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "RemoveSistema", new RemoveSistemaCommand { Id = Sistema.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -58,7 +58,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idSistema)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery { Id = idSistema });
+        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery { Id = idSistema });
 
         if (result.OperationResult == OperationResult.Failed)
         {

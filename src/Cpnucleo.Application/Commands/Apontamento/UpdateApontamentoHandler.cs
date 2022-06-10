@@ -11,7 +11,7 @@ public class UpdateApontamentoHandler : IRequestHandler<UpdateApontamentoCommand
 
     public async Task<OperationResult> Handle(UpdateApontamentoCommand request, CancellationToken cancellationToken)
     {
-        var apontamento = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
+        Domain.Entities.Apontamento apontamento = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
 
         if (apontamento == null)
         {

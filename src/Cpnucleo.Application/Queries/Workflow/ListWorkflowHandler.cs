@@ -13,7 +13,7 @@ public class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, ListWorkfl
 
     public async Task<ListWorkflowViewModel> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
-        var workflows = await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.Workflow> workflows = await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies);
 
         if (workflows == null)
         {

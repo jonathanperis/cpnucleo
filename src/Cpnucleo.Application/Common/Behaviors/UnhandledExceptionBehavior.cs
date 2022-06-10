@@ -19,7 +19,7 @@ public class UnhandledExceptionBehavior<TRequest, TResponse> : IPipelineBehavior
         }
         catch (Exception ex)
         {
-            var requestName = typeof(TRequest).Name;
+            string requestName = typeof(TRequest).Name;
 
             _logger.LogError(ex, "Cpnucleo Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 

@@ -13,7 +13,7 @@ public class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery
 
     public async Task<GetTarefaByRecursoViewModel> Handle(GetTarefaByRecursoQuery request, CancellationToken cancellationToken)
     {
-        var tarefas = await _unitOfWork.TarefaRepository.GetTarefaByRecursoAsync(request.IdRecurso);
+        IEnumerable<Domain.Entities.Tarefa> tarefas = await _unitOfWork.TarefaRepository.GetTarefaByRecursoAsync(request.IdRecurso);
 
         if (tarefas == null)
         {

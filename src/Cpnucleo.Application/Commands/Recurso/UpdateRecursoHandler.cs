@@ -15,7 +15,7 @@ public class UpdateRecursoHandler : IRequestHandler<UpdateRecursoCommand, Operat
 
     public async Task<OperationResult> Handle(UpdateRecursoCommand request, CancellationToken cancellationToken)
     {
-        var recurso = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
+        Domain.Entities.Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
 
         if (recurso == null)
         {
