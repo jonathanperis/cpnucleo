@@ -1,5 +1,6 @@
 ﻿global using Cpnucleo.Application.Common.Repositories.UoW;
 global using Cpnucleo.Domain.Entities;
+global using Cpnucleo.Domain.Services.Interfaces;
 global using Cpnucleo.Infra.CrossCutting.Util.Commands.Apontamento;
 global using Cpnucleo.Infra.CrossCutting.Util.Commands.Impedimento;
 global using Cpnucleo.Infra.CrossCutting.Util.Commands.ImpedimentoTarefa;

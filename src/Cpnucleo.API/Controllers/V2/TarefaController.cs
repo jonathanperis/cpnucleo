@@ -8,10 +8,12 @@
 public class TarefaController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWorkflowService _workflowService;
 
-    public TarefaController(IUnitOfWork unitOfWork)
+    public TarefaController(IUnitOfWork unitOfWork, IWorkflowService workflowService)
     {
         _unitOfWork = unitOfWork;
+        _workflowService = workflowService;
     }
 
     /// <summary>
@@ -309,7 +311,7 @@ public class TarefaController : ControllerBase
 
         foreach (Tarefa item in lista)
         {
-            item.Workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            item.Workflow.TamanhoColuna = _workflowService.GetTamanhoColuna(colunas);
 
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
