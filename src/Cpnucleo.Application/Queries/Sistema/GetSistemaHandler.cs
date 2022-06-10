@@ -13,7 +13,7 @@ public class GetSistemaHandler : IRequestHandler<GetSistemaQuery, GetSistemaView
 
     public async Task<GetSistemaViewModel> Handle(GetSistemaQuery request, CancellationToken cancellationToken)
     {
-        var sistema = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
+        Domain.Entities.Sistema sistema = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
 
         if (sistema == null)
         {

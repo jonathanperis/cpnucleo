@@ -36,7 +36,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            var result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new GetRecursoProjetoByProjetoQuery { IdProjeto = idProjeto });
+            GetRecursoProjetoByProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new GetRecursoProjetoByProjetoQuery { IdProjeto = idProjeto });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -77,7 +77,7 @@ public class RecursoProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand { IdProjeto = obj.RecursoProjeto.IdProjeto, IdRecurso = obj.RecursoProjeto.IdRecurso });
+            OperationResult result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand { IdProjeto = obj.RecursoProjeto.IdProjeto, IdRecurso = obj.RecursoProjeto.IdRecurso });
 
             if (result == OperationResult.Failed)
             {
@@ -122,7 +122,7 @@ public class RecursoProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoProjetoGrpcService.UpdateRecursoProjeto(new UpdateRecursoProjetoCommand { Id = obj.RecursoProjeto.Id, IdProjeto = obj.RecursoProjeto.IdProjeto, IdRecurso = obj.RecursoProjeto.IdRecurso });
+            OperationResult result = await _recursoProjetoGrpcService.UpdateRecursoProjeto(new UpdateRecursoProjetoCommand { Id = obj.RecursoProjeto.Id, IdProjeto = obj.RecursoProjeto.IdProjeto, IdRecurso = obj.RecursoProjeto.IdRecurso });
 
             if (result == OperationResult.Failed)
             {
@@ -167,7 +167,7 @@ public class RecursoProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            var result = await _recursoProjetoGrpcService.RemoveRecursoProjeto(new RemoveRecursoProjetoCommand { Id = obj.RecursoProjeto.Id });
+            OperationResult result = await _recursoProjetoGrpcService.RemoveRecursoProjeto(new RemoveRecursoProjetoCommand { Id = obj.RecursoProjeto.Id });
 
             if (result == OperationResult.Failed)
             {
@@ -188,7 +188,7 @@ public class RecursoProjetoController : BaseController
     {
         if (idRecursoProjeto is not null)
         {
-            var result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery { Id = idRecursoProjeto.Value });
+            GetRecursoProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery { Id = idRecursoProjeto.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -201,7 +201,7 @@ public class RecursoProjetoController : BaseController
 
         if (idProjeto is not null)
         {
-            var result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = idProjeto.Value });
+            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = idProjeto.Value });
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -212,7 +212,7 @@ public class RecursoProjetoController : BaseController
             ViewModel.Projeto = result.Projeto;
         }
 
-        var result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+        ListRecursoViewModel result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

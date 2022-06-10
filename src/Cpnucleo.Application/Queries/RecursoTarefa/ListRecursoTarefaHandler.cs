@@ -13,7 +13,7 @@ public class ListRecursoTarefaHandler : IRequestHandler<ListRecursoTarefaQuery, 
 
     public async Task<ListRecursoTarefaViewModel> Handle(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
-        var recursoTarefas = await _unitOfWork.RecursoTarefaRepository.AllAsync(request.GetDependencies);
+        IEnumerable<Domain.Entities.RecursoTarefa> recursoTarefas = await _unitOfWork.RecursoTarefaRepository.AllAsync(request.GetDependencies);
 
         if (recursoTarefas == null)
         {

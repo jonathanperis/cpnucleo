@@ -13,7 +13,7 @@ public class GetWorkflowHandler : IRequestHandler<GetWorkflowQuery, GetWorkflowV
 
     public async Task<GetWorkflowViewModel> Handle(GetWorkflowQuery request, CancellationToken cancellationToken)
     {
-        var workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
 
         if (workflow == null)
         {

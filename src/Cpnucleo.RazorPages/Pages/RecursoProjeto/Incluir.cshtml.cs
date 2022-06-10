@@ -43,7 +43,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "CreateRecursoProjeto", new CreateRecursoProjetoCommand { IdProjeto = RecursoProjeto.IdProjeto, IdRecurso = RecursoProjeto.IdRecurso });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "CreateRecursoProjeto", new CreateRecursoProjetoCommand { IdProjeto = RecursoProjeto.IdProjeto, IdRecurso = RecursoProjeto.IdRecurso });
 
             if (result == OperationResult.Failed)
             {
@@ -62,7 +62,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados(Guid idProjeto)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery { Id = idProjeto });
+        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery { Id = idProjeto });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -72,7 +72,7 @@ public class IncluirModel : PageModel
 
         Projeto = result.Projeto;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
+        ListRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

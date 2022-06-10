@@ -11,14 +11,14 @@ public class UpdateTarefaByWorkflowHandler : IRequestHandler<UpdateTarefaByWorkf
 
     public async Task<OperationResult> Handle(UpdateTarefaByWorkflowCommand request, CancellationToken cancellationToken)
     {
-        var tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
+        Domain.Entities.Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
 
         if (tarefa == null)
         {
             return OperationResult.NotFound;
         }
 
-        var workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.IdWorkflow);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.IdWorkflow);
 
         if (workflow == null)
         {

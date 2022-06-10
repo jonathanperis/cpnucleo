@@ -13,7 +13,7 @@ public class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImpediment
 
     public async Task<GetImpedimentoTarefaByTarefaViewModel> Handle(GetImpedimentoTarefaByTarefaQuery request, CancellationToken cancellationToken)
     {
-        var impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(request.IdTarefa);
+        IEnumerable<Domain.Entities.ImpedimentoTarefa> impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(request.IdTarefa);
 
         if (impedimentoTarefas == null)
         {

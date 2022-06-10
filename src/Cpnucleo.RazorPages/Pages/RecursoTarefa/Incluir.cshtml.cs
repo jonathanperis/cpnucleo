@@ -43,7 +43,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "CreateRecursoTarefa", new CreateRecursoTarefaCommand { IdTarefa = RecursoTarefa.IdTarefa, IdRecurso = RecursoTarefa.IdRecurso });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoTarefa", "CreateRecursoTarefa", new CreateRecursoTarefaCommand { IdTarefa = RecursoTarefa.IdTarefa, IdRecurso = RecursoTarefa.IdRecurso });
 
             if (result == OperationResult.Failed)
             {
@@ -62,7 +62,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados(Guid idTarefa)
     {
-        var result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery { Id = idTarefa });
+        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery { Id = idTarefa });
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -72,7 +72,7 @@ public class IncluirModel : PageModel
 
         Tarefa = result.Tarefa;
 
-        var result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
+        ListRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
 
         if (result2.OperationResult == OperationResult.Failed)
         {

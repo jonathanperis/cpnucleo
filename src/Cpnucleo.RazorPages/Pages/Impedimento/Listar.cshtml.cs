@@ -18,7 +18,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            var result = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", new ListImpedimentoQuery { });
+            ListImpedimentoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", new ListImpedimentoQuery { });
 
             if (result.OperationResult == OperationResult.Failed)
             {

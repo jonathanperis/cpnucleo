@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace Cpnucleo.RazorPages.Pages;
+﻿namespace Cpnucleo.RazorPages.Pages;
 
 public class NaoEncontradoModel : PageModel
 {
