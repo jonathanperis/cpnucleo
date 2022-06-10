@@ -23,4 +23,4 @@ A sample solution that implements the best praticles when building a .NET 5 proj
 
 - [Cpnucleo Blazor](https://cpnucleo-blazor.azurewebsites.net)
 
-[![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20Blazor%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=10)
+[![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20Blazor%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=17)
