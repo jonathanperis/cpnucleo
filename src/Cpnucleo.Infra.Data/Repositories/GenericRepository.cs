@@ -41,7 +41,7 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             .FirstOrDefaultAsync(x => x.Id == id && x.Ativo);
     }
 
-    public async Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false)
+    public IQueryable<TEntity> All(Expression<Func<TEntity, bool>> predicate, bool getDependencies = false)
     {
         IQueryable<TEntity> obj = _context.Set<TEntity>();
 
@@ -50,8 +50,15 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             obj = obj.Include(_context.GetIncludePaths(typeof(TEntity)));
         }
 
-        return await obj.OrderBy(x => x.DataInclusao)
-            .Where(x => x.Ativo)
+        return obj.OrderBy(x => x.DataInclusao)
+            .Where(predicate);
+    }
+
+    public async Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false)
+    {
+        Expression<Func<TEntity, bool>> predicate = x => x.Ativo;
+
+        return await All(predicate, getDependencies)
             .ToListAsync();
     }
 

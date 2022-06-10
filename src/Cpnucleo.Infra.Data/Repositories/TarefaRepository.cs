@@ -3,23 +3,15 @@
 internal class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepository
 {
     public TarefaRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public async Task<IEnumerable<Tarefa>> GetTarefaByRecursoAsync(Guid idRecurso)
     {
-        IEnumerable<Tarefa> result = await AllAsync(true);
-
-        return result
-            .Select(Tarefa => new
-            {
-                Tarefa,
-                // ListaRecursoTarefas = Tarefa.ListaRecursoTarefas
-                //     .Where(p => p.IdRecurso == idRecurso)
-            })
-            .Select(x => x.Tarefa)
-            .ToList();
+        return await _context.Set<RecursoTarefa>()
+                   .AsQueryable()
+                   .Include(_context.GetIncludePaths(typeof(RecursoTarefa)))
+                   .Where(x => x.IdRecurso == idRecurso && x.Ativo)
+                   .Select(x => x.Tarefa)
+                   .ToListAsync();
     }
 }

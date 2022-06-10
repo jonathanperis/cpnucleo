@@ -3,16 +3,14 @@
 internal class WorkflowRepository : GenericRepository<Workflow>, IWorkflowRepository
 {
     public WorkflowRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public async Task<int> GetQuantidadeColunasAsync()
     {
-        IEnumerable<Workflow> result = await AllAsync(true);
+        Expression<Func<Workflow, bool>> predicate = x => x.Ativo;
 
-        return result.Count();
+        return await All(predicate, true)
+            .CountAsync();
     }
 
     public string GetTamanhoColuna(int colunas)

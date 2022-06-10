@@ -3,17 +3,13 @@
 internal class RecursoProjetoRepository : GenericRepository<RecursoProjeto>, IRecursoProjetoRepository
 {
     public RecursoProjetoRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public async Task<IEnumerable<RecursoProjeto>> GetRecursoProjetoByProjetoAsync(Guid idProjeto)
     {
-        IEnumerable<RecursoProjeto> result = await AllAsync(true);
+        Expression<Func<RecursoProjeto, bool>> predicate = x => x.IdProjeto == idProjeto && x.Ativo;
 
-        return result
-            .Where(x => x.IdProjeto == idProjeto)
-            .ToList();
+        return await All(predicate, true)
+            .ToListAsync();
     }
 }

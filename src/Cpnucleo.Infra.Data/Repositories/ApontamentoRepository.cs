@@ -3,26 +3,21 @@
 internal class ApontamentoRepository : GenericRepository<Apontamento>, IApontamentoRepository
 {
     public ApontamentoRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public async Task<IEnumerable<Apontamento>> GetApontamentoByRecursoAsync(Guid idRecurso)
     {
-        IEnumerable<Apontamento> result = await AllAsync(true);
+        Expression<Func<Apontamento, bool>> predicate = x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30) && x.Ativo;
 
-        return result
-            .Where(x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30))
-            .ToList();
+        return await All(predicate, true)
+            .ToListAsync();
     }
 
     public async Task<int> GetTotalHorasByRecursoAsync(Guid idRecurso, Guid idTarefa)
     {
-        IEnumerable<Apontamento> result = await AllAsync(true);
+        Expression<Func<Apontamento, bool>> predicate = x => x.IdRecurso == idRecurso && x.IdTarefa == idTarefa && x.Ativo;
 
-        return result
-            .Where(x => x.IdRecurso == idRecurso && x.IdTarefa == idTarefa)
-            .Sum(x => x.QtdHoras);
+        return await All(predicate, true)
+            .SumAsync(x => x.QtdHoras);
     }
 }
