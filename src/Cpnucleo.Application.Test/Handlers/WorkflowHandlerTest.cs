@@ -52,6 +52,7 @@ public class WorkflowHandlerTest
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        IWorkflowService service = WorkflowHelper.GetInstance();
 
         Guid workflowId = Guid.NewGuid();
 
@@ -64,7 +65,7 @@ public class WorkflowHandlerTest
         ListWorkflowQuery request = MockQueryHelper.GetNewListWorkflowQuery();
 
         // Act
-        ListWorkflowHandler handler = new(unitOfWork, mapper);
+        ListWorkflowHandler handler = new(unitOfWork, mapper, service);
         ListWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert

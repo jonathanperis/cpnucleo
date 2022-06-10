@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.API.Configuration;
 using Cpnucleo.API.Filters;
 using Cpnucleo.Application;
+using Cpnucleo.Domain;
 using Cpnucleo.Infra.CrossCutting.Bus;
 using Cpnucleo.Infra.Data;
 using FluentValidation.AspNetCore;
@@ -11,6 +12,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDomain();
 builder.Services.AddInfraData();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfraCrossCuttingBus(builder.Configuration);

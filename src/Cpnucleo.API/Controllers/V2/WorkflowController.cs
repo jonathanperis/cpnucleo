@@ -8,10 +8,12 @@
 public class WorkflowController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWorkflowService _workflowService;
 
-    public WorkflowController(IUnitOfWork unitOfWork)
+    public WorkflowController(IUnitOfWork unitOfWork, IWorkflowService workflowService)
     {
         _unitOfWork = unitOfWork;
+        _workflowService = workflowService;
     }
 
     /// <summary>
@@ -36,7 +38,7 @@ public class WorkflowController : ControllerBase
 
         foreach (Workflow item in result)
         {
-            item.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            item.TamanhoColuna = _workflowService.GetTamanhoColuna(colunas);
         }
 
         return result;
@@ -69,7 +71,7 @@ public class WorkflowController : ControllerBase
 
         int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 
-        workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+        workflow.TamanhoColuna = _workflowService.GetTamanhoColuna(colunas);
 
         return Ok(workflow);
     }

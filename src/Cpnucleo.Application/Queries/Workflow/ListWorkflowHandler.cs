@@ -4,11 +4,13 @@ public class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, ListWorkfl
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IWorkflowService _workflowService;
 
-    public ListWorkflowHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public ListWorkflowHandler(IUnitOfWork unitOfWork, IMapper mapper, IWorkflowService workflowService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _workflowService = workflowService;
     }
 
     public async Task<ListWorkflowViewModel> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
@@ -33,7 +35,7 @@ public class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, ListWorkfl
 
         foreach (WorkflowDTO item in lista)
         {
-            item.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            item.TamanhoColuna = _workflowService.GetTamanhoColuna(colunas);
         }
     }
 }

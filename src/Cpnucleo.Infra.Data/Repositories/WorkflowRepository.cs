@@ -12,12 +12,4 @@ internal class WorkflowRepository : GenericRepository<Workflow>, IWorkflowReposi
         return await All(predicate, true)
             .CountAsync();
     }
-
-    public string GetTamanhoColuna(int colunas)
-    {
-        colunas = colunas == 1 ? 2 : colunas;
-
-        int i = 12 / colunas;
-        return i.ToString();
-    }
 }
