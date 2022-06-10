@@ -1,5 +1,5 @@
 @page "/sistema/incluir"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Inclusão de Sistema</PageTitle>
@@ -48,11 +48,11 @@
 </div>
 
 @code {
-    private SistemaViewModel model = new SistemaViewModel();
+    private SistemaDTO model = new SistemaDTO();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<SistemaViewModel>("sistema", "", model);
+        await cpnucleoApiClient.PostAsync<SistemaDTO>("sistema", "", model);
 
         navigationManager.NavigateTo("/sistema/listar");
     }

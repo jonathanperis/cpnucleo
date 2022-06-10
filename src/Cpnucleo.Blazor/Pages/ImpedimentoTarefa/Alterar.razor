@@ -1,5 +1,5 @@
 @page "/impedimentoTarefa/alterar/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Alteração de Impedimento (Tarefa)</PageTitle>
@@ -85,20 +85,20 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ImpedimentoTarefaViewModel model = new ImpedimentoTarefaViewModel();
-    private IEnumerable<ImpedimentoViewModel> impedimentos;
+    private ImpedimentoTarefaDTO model = new ImpedimentoTarefaDTO();
+    private IEnumerable<ImpedimentoDTO> impedimentos;
 
     protected override async Task OnInitializedAsync()
     {        
-        impedimentos = await cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", "");
-        model = await cpnucleoApiService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", "", Id);
+        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", "");
+        model = await cpnucleoApiClient.GetAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
         model.Impedimento = impedimentos.FirstOrDefault(x => x.Id == model.IdImpedimento);
 
-        await cpnucleoApiService.PutAsync("impedimentoTarefa", "", Id, model);
+        await cpnucleoApiClient.PutAsync("impedimentoTarefa", "", Id, model);
 
         navigationManager.NavigateTo($"/impedimentoTarefa/listar/{model.IdTarefa}");
     }
