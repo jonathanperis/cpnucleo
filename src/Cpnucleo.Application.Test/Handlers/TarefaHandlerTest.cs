@@ -102,6 +102,7 @@ public class TarefaHandlerTest
 
         Guid tarefaId = Guid.NewGuid();
         await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
+        await unitOfWork.RecursoTarefaRepository.AddAsync(MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId));
 
         await unitOfWork.SaveChangesAsync();
 
