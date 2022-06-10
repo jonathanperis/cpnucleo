@@ -3,17 +3,13 @@
 internal class RecursoTarefaRepository : GenericRepository<RecursoTarefa>, IRecursoTarefaRepository
 {
     public RecursoTarefaRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public async Task<IEnumerable<RecursoTarefa>> GetRecursoTarefaByTarefaAsync(Guid idTarefa)
     {
-        IEnumerable<RecursoTarefa> result = await AllAsync(true);
+        Expression<Func<RecursoTarefa, bool>> predicate = x => x.IdTarefa == idTarefa && x.Ativo;
 
-        return result
-            .Where(x => x.IdTarefa == idTarefa)
-            .ToList();
+        return await All(predicate, true)
+            .ToListAsync();
     }
 }
