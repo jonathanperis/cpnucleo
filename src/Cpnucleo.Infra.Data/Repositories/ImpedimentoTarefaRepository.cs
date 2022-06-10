@@ -3,17 +3,13 @@
 internal class ImpedimentoTarefaRepository : GenericRepository<ImpedimentoTarefa>, IImpedimentoTarefaRepository
 {
     public ImpedimentoTarefaRepository(CpnucleoContext context)
-        : base(context)
-    {
-
-    }
+        : base(context) { }
 
     public async Task<IEnumerable<ImpedimentoTarefa>> GetImpedimentoTarefaByTarefaAsync(Guid idTarefa)
     {
-        IEnumerable<ImpedimentoTarefa> result = await AllAsync(true);
+        Expression<Func<ImpedimentoTarefa, bool>> predicate = x => x.IdTarefa == idTarefa && x.Ativo;
 
-        return result
-            .Where(x => x.IdTarefa == idTarefa)
-            .ToList();
+        return await All(predicate, true)
+            .ToListAsync();
     }
 }
