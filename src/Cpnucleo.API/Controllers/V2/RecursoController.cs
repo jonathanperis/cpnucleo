@@ -6,6 +6,7 @@ namespace Cpnucleo.API.Controllers.V2;
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [ApiVersion("2", Deprecated = true)]
+//[Authorize]
 public class RecursoController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -32,7 +33,6 @@ public class RecursoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [Authorize]
     public async Task<IEnumerable<Recurso>> Get(bool getDependencies = false)
     {
         return await _unitOfWork.RecursoRepository.AllAsync(getDependencies);
@@ -54,7 +54,6 @@ public class RecursoController : ControllerBase
     [HttpGet("{id}", Name = "GetRecurso")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Authorize]
     public async Task<ActionResult<Recurso>> Get(Guid id)
     {
         Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(id);
@@ -98,7 +97,6 @@ public class RecursoController : ControllerBase
     [ProducesResponseType(typeof(Recurso), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [Authorize]
     public async Task<ActionResult<Recurso>> Post([FromBody] Recurso obj)
     {
         if (!ModelState.IsValid)
@@ -161,7 +159,6 @@ public class RecursoController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Authorize]
     public async Task<IActionResult> Put(Guid id, [FromBody] Recurso obj)
     {
         if (!ModelState.IsValid)
@@ -216,7 +213,6 @@ public class RecursoController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Authorize]
     public async Task<IActionResult> Delete(Guid id)
     {
         Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(id);
