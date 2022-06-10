@@ -1,5 +1,5 @@
 @page "/tarefa/alterar/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager
 
 <PageTitle>CPN - Alteração de Tarefa</PageTitle>
@@ -144,17 +144,17 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private TarefaViewModel model = new TarefaViewModel();
-    private IEnumerable<ProjetoViewModel> projetos;
-    private IEnumerable<WorkflowViewModel> workflows;
-    private IEnumerable<TipoTarefaViewModel> tipoTarefas;
+    private TarefaDTO model = new TarefaDTO();
+    private IEnumerable<ProjetoDTO> projetos;
+    private IEnumerable<WorkflowDTO> workflows;
+    private IEnumerable<TipoTarefaDTO> tipoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        projetos = await cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", "");
-        workflows = await cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", "");
-        tipoTarefas = await cpnucleoApiService.GetAsync<IEnumerable<TipoTarefaViewModel>>("tipoTarefa", "");
-        model = await cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", "", Id);
+        projetos = await cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", "");
+        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", "");
+        tipoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", "");
+        model = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()
@@ -163,7 +163,7 @@
         model.Workflow = workflows.FirstOrDefault(x => x.Id == model.IdWorkflow);
         model.TipoTarefa = tipoTarefas.FirstOrDefault(x => x.Id == model.IdTipoTarefa);
 
-        await cpnucleoApiService.PutAsync("tarefa", "", Id, model);
+        await cpnucleoApiClient.PutAsync("tarefa", "", Id, model);
 
         navigationManager.NavigateTo("/tarefa/listar");
     }

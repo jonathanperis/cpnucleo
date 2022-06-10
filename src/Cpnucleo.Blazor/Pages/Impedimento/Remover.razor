@@ -1,5 +1,5 @@
 @page "/impedimento/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Remoção de Impedimento</PageTitle>
@@ -64,16 +64,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ImpedimentoViewModel model = new ImpedimentoViewModel();
+    private ImpedimentoDTO model = new ImpedimentoDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<ImpedimentoViewModel>("impedimento", "", Id);
+        model = await cpnucleoApiClient.GetAsync<ImpedimentoDTO>("impedimento", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("impedimento", "", Id);
+        await cpnucleoApiClient.DeleteAsync("impedimento", "", Id);
 
         navigationManager.NavigateTo("/impedimento/listar");
     }

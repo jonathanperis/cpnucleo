@@ -1,5 +1,5 @@
 @page "/apontamento/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Remoção de Apontamento</PageTitle>
@@ -51,7 +51,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.DataApontamento)" /></label>
                         <div class="col-sm-10">
-                            <p class="form-control-static">@model.DataApontamento.Value.ToShortDateString()</p>
+                            <p class="form-control-static">@model.DataApontamento.ToShortDateString()</p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -87,16 +87,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ApontamentoViewModel model = new ApontamentoViewModel();
+    private ApontamentoDTO model = new ApontamentoDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<ApontamentoViewModel>("apontamento", "", Id);
+        model = await cpnucleoApiClient.GetAsync<ApontamentoDTO>("apontamento", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("apontamento", "", Id);
+        await cpnucleoApiClient.DeleteAsync("apontamento", "", Id);
 
         navigationManager.NavigateTo("/apontamento/listar");
     }

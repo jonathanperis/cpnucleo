@@ -1,6 +1,6 @@
 @page "/recurso/alterar/{id:guid}"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Alteração de Recurso</PageTitle>
@@ -91,18 +91,18 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private RecursoViewModel model = new RecursoViewModel();
+    private RecursoDTO model = new RecursoDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<RecursoViewModel>("recurso", "", Id);
+        model = await cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", "", Id);
 
         await JS.InvokeVoidAsync("passwordStrenght");
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PutAsync("recurso", "", Id, model);
+        await cpnucleoApiClient.PutAsync("recurso", "", Id, model);
 
         navigationManager.NavigateTo("/recurso/listar");
     }

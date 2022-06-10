@@ -1,5 +1,5 @@
 @page "/sistema/alterar/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Alteração de Sistema</PageTitle>
@@ -72,16 +72,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private SistemaViewModel model = new SistemaViewModel();
+    private SistemaDTO model = new SistemaDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", "", Id);
+        model = await cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PutAsync("sistema", "", Id, model);
+        await cpnucleoApiClient.PutAsync("sistema", "", Id, model);
 
         navigationManager.NavigateTo("/sistema/listar");
     }

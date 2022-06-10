@@ -1,6 +1,6 @@
 @page "/projeto/listar"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Projetos</PageTitle>
 
@@ -87,12 +87,12 @@
 </div>
 
 @code {
-    private ProjetoViewModel projeto;
-    private IEnumerable<ProjetoViewModel> projetos;
+    private ProjetoDTO projeto;
+    private IEnumerable<ProjetoDTO> projetos;
 
     protected override async Task OnInitializedAsync()
     {
-        projetos = await cpnucleoApiService.GetAsync<IEnumerable<ProjetoViewModel>>("projeto", "", true);
+        projetos = await cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", "", true);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Projetos");
     }

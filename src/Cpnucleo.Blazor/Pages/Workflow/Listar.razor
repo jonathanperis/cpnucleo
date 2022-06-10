@@ -1,6 +1,6 @@
 @page "/workflow/listar"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Workflow</PageTitle>
 
@@ -82,12 +82,12 @@
 </div>
 
 @code {
-    private WorkflowViewModel workflow;
-    private IEnumerable<WorkflowViewModel> workflows;
+    private WorkflowDTO workflow;
+    private IEnumerable<WorkflowDTO> workflows;
 
     protected override async Task OnInitializedAsync()
     {
-        workflows = await cpnucleoApiService.GetAsync<IEnumerable<WorkflowViewModel>>("workflow", "");
+        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Workflow");
     }

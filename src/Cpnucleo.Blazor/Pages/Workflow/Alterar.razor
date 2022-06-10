@@ -1,5 +1,5 @@
 @page "/workflow/alterar/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Alteração de Workflow</PageTitle>
@@ -72,16 +72,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private WorkflowViewModel model = new WorkflowViewModel();
+    private WorkflowDTO model = new WorkflowDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<WorkflowViewModel>("workflow", "", Id);
+        model = await cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PutAsync("workflow", "", Id, model);
+        await cpnucleoApiClient.PutAsync("workflow", "", Id, model);
 
         navigationManager.NavigateTo("/workflow/listar");
     }

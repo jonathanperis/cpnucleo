@@ -1,5 +1,5 @@
 @page "/recurso/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Remoção de Recurso</PageTitle>
@@ -72,16 +72,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private RecursoViewModel model = new RecursoViewModel();
+    private RecursoDTO model = new RecursoDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<RecursoViewModel>("recurso", "", Id);
+        model = await cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("recurso", "", Id);
+        await cpnucleoApiClient.DeleteAsync("recurso", "", Id);
 
         navigationManager.NavigateTo("/recurso/listar");
     }
