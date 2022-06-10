@@ -4,11 +4,13 @@ public class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IWorkflowService _workflowService;
 
-    public GetTarefaByRecursoHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetTarefaByRecursoHandler(IUnitOfWork unitOfWork, IMapper mapper, IWorkflowService workflowService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _workflowService = workflowService;
     }
 
     public async Task<GetTarefaByRecursoViewModel> Handle(GetTarefaByRecursoQuery request, CancellationToken cancellationToken)
@@ -33,7 +35,7 @@ public class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery
 
         foreach (TarefaDTO item in lista)
         {
-            item.Workflow.TamanhoColuna = _unitOfWork.WorkflowRepository.GetTamanhoColuna(colunas);
+            item.Workflow.TamanhoColuna = _workflowService.GetTamanhoColuna(colunas);
 
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;

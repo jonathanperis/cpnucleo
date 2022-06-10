@@ -84,6 +84,7 @@ public class TarefaHandlerTest
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        IWorkflowService service = WorkflowHelper.GetInstance();
 
         Guid sistemaId = Guid.NewGuid();
         await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
@@ -109,7 +110,7 @@ public class TarefaHandlerTest
         GetTarefaByRecursoQuery request = MockQueryHelper.GetNewGetTarefaByRecursoQuery(recursoId);
 
         // Act
-        GetTarefaByRecursoHandler handler = new(unitOfWork, mapper);
+        GetTarefaByRecursoHandler handler = new(unitOfWork, mapper, service);
         GetTarefaByRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -124,6 +125,7 @@ public class TarefaHandlerTest
         // Arrange
         IUnitOfWork unitOfWork = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        IWorkflowService service = WorkflowHelper.GetInstance();
 
         Guid sistemaId = Guid.NewGuid();
         await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
@@ -150,7 +152,7 @@ public class TarefaHandlerTest
         ListTarefaQuery request = MockQueryHelper.GetNewListTarefaQuery();
 
         // Act
-        ListTarefaHandler handler = new(unitOfWork, mapper);
+        ListTarefaHandler handler = new(unitOfWork, mapper, service);
         ListTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
