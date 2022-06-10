@@ -17,7 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Bus\Cpnucleo.Infra.CrossCutting.Bus.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Util\Cpnucleo.Infra.CrossCutting.Util.csproj" />
+		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Shared\Cpnucleo.Infra.CrossCutting.Shared.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
 	</ItemGroup>
 

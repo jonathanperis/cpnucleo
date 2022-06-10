@@ -1,6 +1,6 @@
 ﻿using Cpnucleo.API.Services;
-using Cpnucleo.Infra.CrossCutting.Util.Common.Models;
-using Cpnucleo.Infra.CrossCutting.Util.Requests.Auth;
+using Cpnucleo.Infra.CrossCutting.Shared.Common.Models;
+using Cpnucleo.Infra.CrossCutting.Shared.Requests.Auth;
 
 namespace Cpnucleo.API.Controllers.V2;
 
