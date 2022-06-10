@@ -41,7 +41,7 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             .FirstOrDefaultAsync(x => x.Id == id && x.Ativo);
     }
 
-    public IQueryable<TEntity> All(Expression<Func<TEntity, bool>> predicate, bool getDependencies = false)
+    protected IQueryable<TEntity> All(Expression<Func<TEntity, bool>> predicate, bool getDependencies = false)
     {
         IQueryable<TEntity> obj = _context.Set<TEntity>();
 
