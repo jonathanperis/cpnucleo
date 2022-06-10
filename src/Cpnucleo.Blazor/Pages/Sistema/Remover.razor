@@ -1,5 +1,5 @@
 @page "/sistema/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Remoção de Sistema</PageTitle>
@@ -72,16 +72,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private SistemaViewModel model = new SistemaViewModel();
+    private SistemaDTO model = new SistemaDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<SistemaViewModel>("sistema", "", Id);
+        model = await cpnucleoApiClient.GetAsync<SistemaDTO>("sistema", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("sistema", "", Id);
+        await cpnucleoApiClient.DeleteAsync("sistema", "", Id);
 
         navigationManager.NavigateTo("/sistema/listar");
     }

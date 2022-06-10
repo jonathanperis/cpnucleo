@@ -1,5 +1,5 @@
 @page "/recursoTarefa/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Remoção de Recurso (Tarefa)</PageTitle>
@@ -72,16 +72,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private RecursoTarefaViewModel model = new RecursoTarefaViewModel();
+    private RecursoTarefaDTO model = new RecursoTarefaDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<RecursoTarefaViewModel>("recursoTarefa", "", Id);
+        model = await cpnucleoApiClient.GetAsync<RecursoTarefaDTO>("recursoTarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("recursoTarefa", "", Id);
+        await cpnucleoApiClient.DeleteAsync("recursoTarefa", "", Id);
 
         navigationManager.NavigateTo($"/recursoTarefa/listar/{model.IdTarefa}");
     }

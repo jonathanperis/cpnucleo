@@ -1,5 +1,5 @@
 @page "/impedimentoTarefa/incluir/{idTarefa:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Inclusão de Impedimento (Tarefa)</PageTitle>
@@ -71,14 +71,14 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private ImpedimentoTarefaViewModel model = new ImpedimentoTarefaViewModel();
-    private TarefaViewModel tarefa;
-    private IEnumerable<ImpedimentoViewModel> impedimentos;
+    private ImpedimentoTarefaDTO model = new ImpedimentoTarefaDTO();
+    private TarefaDTO tarefa;
+    private IEnumerable<ImpedimentoDTO> impedimentos;
 
     protected override async Task OnInitializedAsync()
     {
-        tarefa = await cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", "", IdTarefa);
-        impedimentos = await cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", "");
+        tarefa = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", IdTarefa);
+        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", "");
 
         model.IdTarefa = IdTarefa;
         model.IdImpedimento = impedimentos.FirstOrDefault().Id;
@@ -86,7 +86,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", "", model);
+        await cpnucleoApiClient.PostAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", "", model);
 
         navigationManager.NavigateTo($"/impedimentoTarefa/listar/{IdTarefa}");
     }

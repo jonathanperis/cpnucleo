@@ -2,7 +2,7 @@ using Refit;
 
 namespace Cpnucleo.Blazor.Services.Interfaces
 {
-    public interface ICpnucleoApiService
+    public interface ICpnucleoApiClient
     {
         [Get("/{route}")]
         Task<T> GetAsync<T>(string route, [Authorize("Bearer")] string token, bool getDependencies = false);

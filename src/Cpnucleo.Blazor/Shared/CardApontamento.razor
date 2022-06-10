@@ -2,7 +2,7 @@
     data-nome-tarefa="@Tarefa.Nome" data-id-tarefa="@Tarefa.Id" data-id-recurso="@Tarefa.IdRecurso">
     @Tarefa.Nome
     <div class="agile-detail">
-        <i class="fa fa-clock-o"></i> @Tarefa.DataTermino.Value.ToString("dd/MM/yyyy")
+        <i class="fa fa-clock-o"></i> @Tarefa.DataTermino.ToString("dd/MM/yyyy")
         <div class="m-xxs m-l-none"><i class="fa fa-user"></i> #@Tarefa.Id criada por @Tarefa.Recurso.Nome</div>
         @if (Tarefa.HorasRestantes >= 0)
         {
@@ -22,5 +22,5 @@
 
 @code {
     [Parameter]
-    public TarefaViewModel Tarefa { get; set; }
+    public TarefaDTO Tarefa { get; set; }
 }

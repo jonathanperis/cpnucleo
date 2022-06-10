@@ -1,5 +1,5 @@
 @page "/projeto/alterar/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager
 
 <PageTitle>CPN - Alteração de Projeto</PageTitle>
@@ -76,20 +76,20 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ProjetoViewModel model = new ProjetoViewModel();
-    private IEnumerable<SistemaViewModel> sistemas;
+    private ProjetoDTO model = new ProjetoDTO();
+    private IEnumerable<SistemaDTO> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", "");
-        model = await cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", "", Id);
+        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", "");
+        model = await cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
         model.Sistema = sistemas.FirstOrDefault(x => x.Id == model.IdSistema);
 
-        await cpnucleoApiService.PutAsync("projeto", "", Id, model);
+        await cpnucleoApiClient.PutAsync("projeto", "", Id, model);
 
         navigationManager.NavigateTo("/projeto/listar");
     }

@@ -1,6 +1,6 @@
 @page "/recursoTarefa/listar/{idTarefa:guid}"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Recursos (Tarefa)</PageTitle>
 
@@ -81,12 +81,12 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private RecursoTarefaViewModel recursoTarefa;
-    private IEnumerable<RecursoTarefaViewModel> recursoTarefas;
+    private RecursoTarefaDTO recursoTarefa;
+    private IEnumerable<RecursoTarefaDTO> recursoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        recursoTarefas = await cpnucleoApiService.GetAsync<IEnumerable<RecursoTarefaViewModel>>("recursoTarefa", "getByTarefa", "", IdTarefa);
+        recursoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoTarefaDTO>>("recursoTarefa", "getByTarefa", "", IdTarefa);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Recursos (Tarefa)");
     }

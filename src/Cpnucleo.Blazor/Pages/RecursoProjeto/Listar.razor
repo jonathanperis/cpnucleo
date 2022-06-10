@@ -1,6 +1,6 @@
 @page "/recursoProjeto/listar/{idProjeto:guid}"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Recursos (Projeto)</PageTitle>
 
@@ -81,12 +81,12 @@
     [Parameter]
     public Guid IdProjeto { get; set; }
 
-    private RecursoProjetoViewModel recursoProjeto;
-    private IEnumerable<RecursoProjetoViewModel> recursoProjetos;
+    private RecursoProjetoDTO recursoProjeto;
+    private IEnumerable<RecursoProjetoDTO> recursoProjetos;
 
     protected override async Task OnInitializedAsync()
     {
-        recursoProjetos = await cpnucleoApiService.GetAsync<IEnumerable<RecursoProjetoViewModel>>("recursoProjeto", "getByProjeto", "", IdProjeto);
+        recursoProjetos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoProjetoDTO>>("recursoProjeto", "getByProjeto", "", IdProjeto);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Recursos (Projeto)");
     }

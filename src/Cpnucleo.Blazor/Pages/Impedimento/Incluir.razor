@@ -1,5 +1,5 @@
 @page "/impedimento/incluir"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Inclusão de Impedimento</PageTitle>
@@ -40,11 +40,11 @@
 </div>
 
 @code {
-    private ImpedimentoViewModel model = new ImpedimentoViewModel();
+    private ImpedimentoDTO model = new ImpedimentoDTO();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<ImpedimentoViewModel>("impedimento", "", model);
+        await cpnucleoApiClient.PostAsync<ImpedimentoDTO>("impedimento", "", model);
 
         navigationManager.NavigateTo("/impedimento/listar");
     }

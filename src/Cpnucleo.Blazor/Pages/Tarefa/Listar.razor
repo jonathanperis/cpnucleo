@@ -1,6 +1,6 @@
 @page "/tarefa/listar"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Tarefas</PageTitle>
 
@@ -92,12 +92,12 @@
 </div>
 
 @code {
-    private TarefaViewModel tarefa;
-    private IEnumerable<TarefaViewModel> tarefas;
+    private TarefaDTO tarefa;
+    private IEnumerable<TarefaDTO> tarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        tarefas = await cpnucleoApiService.GetAsync<IEnumerable<TarefaViewModel>>("tarefa", "");
+        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Tarefas");
     }

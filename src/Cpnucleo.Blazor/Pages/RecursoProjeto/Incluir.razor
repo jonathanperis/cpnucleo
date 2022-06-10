@@ -1,5 +1,5 @@
 @page "/recursoProjeto/incluir/{idProjeto:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Inclusão de Recurso (Projeto)</PageTitle>
@@ -63,14 +63,14 @@
     [Parameter]
     public Guid IdProjeto { get; set; }
 
-    private RecursoProjetoViewModel model = new RecursoProjetoViewModel();
-    private ProjetoViewModel projeto;
-    private IEnumerable<RecursoViewModel> recursos;
+    private RecursoProjetoDTO model = new RecursoProjetoDTO();
+    private ProjetoDTO projeto;
+    private IEnumerable<RecursoDTO> recursos;
 
     protected override async Task OnInitializedAsync()
     {
-        projeto = await cpnucleoApiService.GetAsync<ProjetoViewModel>("projeto", "", IdProjeto);
-        recursos = await cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", "");
+        projeto = await cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", "", IdProjeto);
+        recursos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", "");
 
         model.IdProjeto = IdProjeto;
         model.IdRecurso = recursos.FirstOrDefault().Id;
@@ -78,7 +78,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<RecursoProjetoViewModel>("recursoProjeto", "", model);
+        await cpnucleoApiClient.PostAsync<RecursoProjetoDTO>("recursoProjeto", "", model);
 
         navigationManager.NavigateTo($"/recursoProjeto/listar/{IdProjeto}");
     }

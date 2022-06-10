@@ -9,7 +9,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
-    .AddRefitClient<ICpnucleoApiService>()
+    .AddRefitClient<ICpnucleoApiClient>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{builder.Configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2"));
 
 await builder.Build().RunAsync();

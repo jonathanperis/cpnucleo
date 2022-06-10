@@ -1,6 +1,6 @@
 @page "/sistema/listar"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Sistemas</PageTitle>
 
@@ -82,12 +82,12 @@
 </div>
 
 @code {
-    private SistemaViewModel sistema;
-    private IEnumerable<SistemaViewModel> sistemas;
+    private SistemaDTO sistema;
+    private IEnumerable<SistemaDTO> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", "");
+        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Sistemas");
     }

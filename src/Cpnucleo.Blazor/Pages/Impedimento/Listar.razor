@@ -1,6 +1,6 @@
 @page "/impedimento/listar"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Impedimentos</PageTitle>
 
@@ -79,12 +79,12 @@
 </div>
 
 @code {
-    private ImpedimentoViewModel impedimento;
-    private IEnumerable<ImpedimentoViewModel> impedimentos;
+    private ImpedimentoDTO impedimento;
+    private IEnumerable<ImpedimentoDTO> impedimentos;
 
     protected override async Task OnInitializedAsync()
     {
-        impedimentos = await cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoViewModel>>("impedimento", "");
+        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Impedimentos");
     }

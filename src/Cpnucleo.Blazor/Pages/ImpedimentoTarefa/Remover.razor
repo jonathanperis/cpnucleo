@@ -1,5 +1,5 @@
 @page "/impedimentoTarefa/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Remoção de Impedimento (Tarefa)</PageTitle>
@@ -80,16 +80,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ImpedimentoTarefaViewModel model = new ImpedimentoTarefaViewModel();
+    private ImpedimentoTarefaDTO model = new ImpedimentoTarefaDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<ImpedimentoTarefaViewModel>("impedimentoTarefa", "", Id);
+        model = await cpnucleoApiClient.GetAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("impedimentoTarefa", "", Id);
+        await cpnucleoApiClient.DeleteAsync("impedimentoTarefa", "", Id);
 
         navigationManager.NavigateTo($"/impedimentoTarefa/listar/{model.IdTarefa}");
     }

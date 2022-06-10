@@ -1,5 +1,5 @@
 @page "/tarefa/remover/{id:guid}"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager
 
 <PageTitle>CPN - Remoção de Tarefa</PageTitle>
@@ -59,7 +59,7 @@
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.DataInicio)" /></label>
                         <div class="col-sm-10">
                             <input type="hidden" @bind="model.DataInicio">
-                            <p class="form-control-static">@model.DataInicio.Value.ToShortDateString()</p>
+                            <p class="form-control-static">@model.DataInicio.ToShortDateString()</p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -67,7 +67,7 @@
                         <label class="col-sm-2 control-label"><DisplayName For="@(() => model.DataTermino)" /></label>
                         <div class="col-sm-10">
                             <input type="hidden" @bind="model.DataTermino">
-                            <p class="form-control-static">@model.DataTermino.Value.ToShortDateString()</p>
+                            <p class="form-control-static">@model.DataTermino.ToShortDateString()</p>
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
@@ -135,16 +135,16 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private TarefaViewModel model = new TarefaViewModel();
+    private TarefaDTO model = new TarefaDTO();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiService.GetAsync<TarefaViewModel>("tarefa", "", Id);
+        model = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.DeleteAsync("tarefa", "", Id);
+        await cpnucleoApiClient.DeleteAsync("tarefa", "", Id);
 
         navigationManager.NavigateTo("/tarefa/listar");
     }

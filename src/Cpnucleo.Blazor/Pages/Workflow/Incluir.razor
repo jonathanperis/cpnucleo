@@ -1,5 +1,5 @@
 @page "/workflow/incluir"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Inclusão de Workflow</PageTitle>
@@ -48,11 +48,11 @@
 </div>
 
 @code {
-    private WorkflowViewModel model = new WorkflowViewModel();
+    private WorkflowDTO model = new WorkflowDTO();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<WorkflowViewModel>("workflow", "", model);
+        await cpnucleoApiClient.PostAsync<WorkflowDTO>("workflow", "", model);
 
         navigationManager.NavigateTo("/workflow/listar");
     }

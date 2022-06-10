@@ -1,5 +1,5 @@
 @page "/projeto/incluir"
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager
 
 <PageTitle>CPN - Inclusão de Projeto</PageTitle>
@@ -60,18 +60,18 @@
 </div>
 
 @code {
-    private ProjetoViewModel model = new ProjetoViewModel();
-    private IEnumerable<SistemaViewModel> sistemas;
+    private ProjetoDTO model = new ProjetoDTO();
+    private IEnumerable<SistemaDTO> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiService.GetAsync<IEnumerable<SistemaViewModel>>("sistema", "");
+        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", "");
         model.IdSistema = sistemas.FirstOrDefault().Id;
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<ProjetoViewModel>("projeto", "", model);
+        await cpnucleoApiClient.PostAsync<ProjetoDTO>("projeto", "", model);
 
         navigationManager.NavigateTo("/projeto/listar");
     }

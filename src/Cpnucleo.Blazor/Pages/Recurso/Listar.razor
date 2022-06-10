@@ -1,6 +1,6 @@
 @page "/recurso/listar"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Recursos</PageTitle>
 
@@ -79,12 +79,12 @@
 </div>
 
 @code {
-    private RecursoViewModel recurso;
-    private IEnumerable<RecursoViewModel> recursos;
+    private RecursoDTO recurso;
+    private IEnumerable<RecursoDTO> recursos;
 
     protected override async Task OnInitializedAsync()
     {
-        recursos = await cpnucleoApiService.GetAsync<IEnumerable<RecursoViewModel>>("recurso", "");
+        recursos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Recursos");
     }

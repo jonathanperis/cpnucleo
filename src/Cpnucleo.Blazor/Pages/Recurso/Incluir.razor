@@ -1,6 +1,6 @@
 @page "/recurso/incluir"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 @inject NavigationManager navigationManager;
 
 <PageTitle>CPN - Inclusão de Recurso</PageTitle>
@@ -66,7 +66,7 @@
 </div>
 
 @code {
-    private RecursoViewModel model = new RecursoViewModel();
+    private RecursoDTO model = new RecursoDTO();
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,7 +75,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiService.PostAsync<RecursoViewModel>("recurso", "", model);
+        await cpnucleoApiClient.PostAsync<RecursoDTO>("recurso", "", model);
 
         navigationManager.NavigateTo("/recurso/listar");
     }

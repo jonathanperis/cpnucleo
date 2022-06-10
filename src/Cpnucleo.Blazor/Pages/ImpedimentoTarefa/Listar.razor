@@ -1,6 +1,6 @@
 @page "/impedimentoTarefa/listar/{idTarefa:guid}"
 @inject IJSRuntime JS;
-@inject ICpnucleoApiService cpnucleoApiService;
+@inject ICpnucleoApiClient cpnucleoApiClient;
 
 <PageTitle>CPN - Relação de Impedimentos (Tarefa)</PageTitle>
 
@@ -89,12 +89,12 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private ImpedimentoTarefaViewModel impedimentoTarefa;
-    private IEnumerable<ImpedimentoTarefaViewModel> impedimentoTarefas;
+    private ImpedimentoTarefaDTO impedimentoTarefa;
+    private IEnumerable<ImpedimentoTarefaDTO> impedimentoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        impedimentoTarefas = await cpnucleoApiService.GetAsync<IEnumerable<ImpedimentoTarefaViewModel>>("impedimentoTarefa", "getByTarefa", "", IdTarefa);
+        impedimentoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoTarefaDTO>>("impedimentoTarefa", "getByTarefa", "", IdTarefa);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Impedimentos (Tarefa)");
     }
