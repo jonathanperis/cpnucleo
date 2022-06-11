@@ -53,7 +53,7 @@ steps:
   inputs:
     command: custom
     custom: 'ef '
-    arguments: database update --project Cpnucleo.API
+    arguments: database update
 
 - task: DotNetCoreCLI@2
   displayName: Test
