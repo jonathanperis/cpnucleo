@@ -2,6 +2,8 @@
 
 internal class RecursoMap : IEntityTypeConfiguration<Recurso>
 {
+    internal static List<Recurso> Recursos { get; set; }
+
     public void Configure(EntityTypeBuilder<Recurso> builder)
     {
         builder.ToTable("CPN_TB_RECURSO");
@@ -55,5 +57,10 @@ internal class RecursoMap : IEntityTypeConfiguration<Recurso>
             .HasColumnName("REC_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
+
+        if (Recursos != null)
+        {
+            builder.HasData(Recursos);
+        }
     }
 }

@@ -2,28 +2,30 @@
 
 internal class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
 {
+    internal static List<Apontamento> Apontamentos { get; set; }
+
     public void Configure(EntityTypeBuilder<Apontamento> builder)
     {
-        builder.ToTable("CPN_TB_LANCAMENTO");
+        builder.ToTable("CPN_TB_APONTAMENTO");
 
         builder.Property(c => c.Id)
-            .HasColumnName("LANC_ID")
+            .HasColumnName("APT_ID")
             .HasColumnType("uniqueidentifier")
             .IsRequired();
 
         builder.Property(c => c.Descricao)
-            .HasColumnName("LANC_DESCRICAO")
+            .HasColumnName("APT_DESCRICAO")
             .HasColumnType("varchar(450)")
             .HasMaxLength(450)
             .IsRequired();
 
         builder.Property(c => c.DataApontamento)
-            .HasColumnName("LANC_DATA_LANCAMENTO")
+            .HasColumnName("APT_DATA_LANCAMENTO")
             .HasColumnType("datetime")
             .IsRequired();
 
         builder.Property(c => c.QtdHoras)
-            .HasColumnName("LANC_QTD_HORAS")
+            .HasColumnName("APT_QTD_HORAS")
             .HasColumnType("int")
             .IsRequired();
 
@@ -38,20 +40,20 @@ internal class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
             .IsRequired();
 
         builder.Property(c => c.DataInclusao)
-            .HasColumnName("LANC_DATA_INCLUSAO")
+            .HasColumnName("APT_DATA_INCLUSAO")
             .HasColumnType("datetime")
             .IsRequired();
 
         builder.Property(c => c.DataAlteracao)
-            .HasColumnName("LANC_DATA_ALTERACAO")
+            .HasColumnName("APT_DATA_ALTERACAO")
             .HasColumnType("datetime");
 
         builder.Property(c => c.DataExclusao)
-            .HasColumnName("LANC_DATA_EXCLUSAO")
+            .HasColumnName("APT_DATA_EXCLUSAO")
             .HasColumnType("datetime");
 
         builder.Property(c => c.Ativo)
-            .HasColumnName("LANC_ATIVO")
+            .HasColumnName("APT_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
 
@@ -59,5 +61,10 @@ internal class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
             .HasOne(p => p.Tarefa)
             .WithMany()
             .HasForeignKey(f => f.IdTarefa);
+
+        if (Apontamentos != null)
+        {
+            builder.HasData(Apontamentos);
+        }
     }
 }

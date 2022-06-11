@@ -1,17 +1,17 @@
-﻿using Cpnucleo.Infra.Data.Mappings;
+﻿using Cpnucleo.Infra.Data.Helpers;
+using Cpnucleo.Infra.Data.Mappings;
 using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infra.Data.Context;
 
 public class CpnucleoContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-
-    public CpnucleoContext(IConfiguration configuration)
-    {
-        _configuration = configuration;
+    public CpnucleoContext()
+    { 
+    
     }
 
+    //@JONATHAN - Utilizado apenas pelo projeto de teste.
     public CpnucleoContext(DbContextOptions<CpnucleoContext> options)
         : base(options)
     {
@@ -19,6 +19,48 @@ public class CpnucleoContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        Guid sistemaId = Guid.NewGuid();
+        SistemaMap.Sistemas = new()
+        {
+            MockEntityHelper.GetNewSistema(sistemaId)
+        };
+
+        Guid projetoId = Guid.NewGuid();
+        ProjetoMap.Projetos = new()
+        {
+            MockEntityHelper.GetNewProjeto(sistemaId, projetoId)
+        };
+
+        Guid workflowId = Guid.NewGuid();
+        WorkflowMap.Workflows = new()
+        {
+            MockEntityHelper.GetNewWorkflow(workflowId)
+        };
+
+        Guid recursoId = Guid.NewGuid();
+        RecursoMap.Recursos = new()
+        {
+            MockEntityHelper.GetNewRecurso(recursoId)
+        };
+
+        Guid tipoTarefaId = Guid.NewGuid();
+        TipoTarefaMap.TipoTarefas = new()
+        {
+            MockEntityHelper.GetNewTipoTarefa(tipoTarefaId)
+        };
+
+        Guid tarefaId = Guid.NewGuid();
+        TarefaMap.Tarefas = new()
+        {
+            MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId)
+        };
+
+        RecursoTarefaMap.RecursoTarefas = new()
+        {
+            MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId)
+        };
+
+        modelBuilder.ApplyConfiguration(new SistemaMap());
         modelBuilder.ApplyConfiguration(new ApontamentoMap());
         modelBuilder.ApplyConfiguration(new ImpedimentoMap());
         modelBuilder.ApplyConfiguration(new ImpedimentoTarefaMap());
@@ -26,7 +68,6 @@ public class CpnucleoContext : DbContext
         modelBuilder.ApplyConfiguration(new RecursoMap());
         modelBuilder.ApplyConfiguration(new RecursoProjetoMap());
         modelBuilder.ApplyConfiguration(new RecursoTarefaMap());
-        modelBuilder.ApplyConfiguration(new SistemaMap());
         modelBuilder.ApplyConfiguration(new TarefaMap());
         modelBuilder.ApplyConfiguration(new TipoTarefaMap());
         modelBuilder.ApplyConfiguration(new WorkflowMap());
@@ -36,10 +77,15 @@ public class CpnucleoContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder
-                .UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
+                .UseSqlite(configuration.GetConnectionString("DefaultConnection"))
                 .EnableSensitiveDataLogging();
         }
     }

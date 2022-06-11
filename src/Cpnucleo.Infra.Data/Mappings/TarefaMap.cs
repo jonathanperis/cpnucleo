@@ -2,6 +2,8 @@
 
 internal class TarefaMap : IEntityTypeConfiguration<Tarefa>
 {
+    internal static List<Tarefa> Tarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<Tarefa> builder)
     {
         builder.ToTable("CPN_TB_TAREFA");
@@ -100,5 +102,10 @@ internal class TarefaMap : IEntityTypeConfiguration<Tarefa>
 
         builder
             .Ignore(c => c.HorasRestantes);
+
+        if (Tarefas != null)
+        {
+            builder.HasData(Tarefas);
+        }
     }
 }

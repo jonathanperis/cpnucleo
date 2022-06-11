@@ -2,6 +2,8 @@
 
 internal class SistemaMap : IEntityTypeConfiguration<Sistema>
 {
+    internal static List<Sistema> Sistemas { get; set; }
+
     public void Configure(EntityTypeBuilder<Sistema> builder)
     {
         builder.ToTable("CPN_TB_SISTEMA");
@@ -40,5 +42,10 @@ internal class SistemaMap : IEntityTypeConfiguration<Sistema>
             .HasColumnName("SIS_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
+
+        if (Sistemas != null)
+        {
+            builder.HasData(Sistemas);
+        }
     }
 }
