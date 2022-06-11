@@ -35,6 +35,13 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: Apply Database Migration
+  inputs:
+    command: 'custom'
+    projects: '$(project)'
+    custom: 'dotnet ef database update'
+
+- task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: 'test'
