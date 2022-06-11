@@ -39,7 +39,7 @@ steps:
   inputs:
     command: 'custom'
     projects: '$(project)'
-    custom: 'dotnet ef database update'
+    custom: 'ef database update'
 
 - task: DotNetCoreCLI@2
   displayName: Test
