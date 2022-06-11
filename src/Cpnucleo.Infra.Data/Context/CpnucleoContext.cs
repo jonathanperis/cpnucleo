@@ -34,7 +34,10 @@ public class CpnucleoContext : DbContext
         Guid workflowId = Guid.NewGuid();
         WorkflowMap.Workflows = new()
         {
-            MockEntityHelper.GetNewWorkflow(workflowId)
+            MockEntityHelper.GetNewWorkflow("Análise", 1, workflowId),
+            MockEntityHelper.GetNewWorkflow("Desenvolvimento", 2),
+            MockEntityHelper.GetNewWorkflow("Teste", 3),
+            MockEntityHelper.GetNewWorkflow("Finalizado", 4)
         };
 
         Guid recursoId = Guid.NewGuid();
