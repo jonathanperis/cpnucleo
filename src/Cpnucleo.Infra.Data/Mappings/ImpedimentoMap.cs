@@ -2,6 +2,8 @@
 
 internal class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
 {
+    internal static List<Impedimento> Impedimentos { get; set; }
+
     public void Configure(EntityTypeBuilder<Impedimento> builder)
     {
         builder.ToTable("CPN_TB_IMPEDIMENTO");
@@ -34,5 +36,10 @@ internal class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
             .HasColumnName("IMP_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
+
+        if (Impedimentos != null)
+        {
+            builder.HasData(Impedimentos);
+        }
     }
 }

@@ -2,6 +2,8 @@
 
 internal class RecursoTarefaMap : IEntityTypeConfiguration<RecursoTarefa>
 {
+    internal static List<RecursoTarefa> RecursoTarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<RecursoTarefa> builder)
     {
         builder.ToTable("CPN_TB_RECURSO_TAREFA");
@@ -53,5 +55,10 @@ internal class RecursoTarefaMap : IEntityTypeConfiguration<RecursoTarefa>
             .HasOne(p => p.Tarefa)
             .WithMany()
             .HasForeignKey(f => f.IdTarefa);
+
+        if (RecursoTarefas != null)
+        {
+            builder.HasData(RecursoTarefas);
+        }
     }
 }

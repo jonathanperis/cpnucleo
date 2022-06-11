@@ -2,6 +2,8 @@
 
 internal class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa>
 {
+    internal static List<ImpedimentoTarefa> ImpedimentoTarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<ImpedimentoTarefa> builder)
     {
         builder.ToTable("CPN_TB_TAREFA_IMPEDIMENTO");
@@ -54,5 +56,10 @@ internal class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa
             .HasOne(p => p.Impedimento)
             .WithMany()
             .HasForeignKey(f => f.IdImpedimento);
+
+        if (ImpedimentoTarefas != null)
+        {
+            builder.HasData(ImpedimentoTarefas);
+        }
     }
 }

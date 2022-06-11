@@ -2,6 +2,8 @@
 
 internal class WorkflowMap : IEntityTypeConfiguration<Workflow>
 {
+    internal static List<Workflow> Workflows { get; set; }
+
     public void Configure(EntityTypeBuilder<Workflow> builder)
     {
         builder.ToTable("CPN_TB_WORKFLOW");
@@ -42,5 +44,10 @@ internal class WorkflowMap : IEntityTypeConfiguration<Workflow>
             .HasColumnName("WOR_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
+
+        if (Workflows != null)
+        {
+            builder.HasData(Workflows);
+        }
     }
 }

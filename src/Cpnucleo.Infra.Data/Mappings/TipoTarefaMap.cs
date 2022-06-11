@@ -2,6 +2,8 @@
 
 internal class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
 {
+    internal static List<TipoTarefa> TipoTarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<TipoTarefa> builder)
     {
         builder.ToTable("CPN_TB_TIPO_TAREFA");
@@ -43,5 +45,10 @@ internal class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
             .HasColumnName("TIP_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
+
+        if (TipoTarefas != null)
+        {
+            builder.HasData(TipoTarefas);
+        }
     }
 }

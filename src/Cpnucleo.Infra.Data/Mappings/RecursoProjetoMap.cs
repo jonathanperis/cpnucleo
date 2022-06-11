@@ -2,6 +2,8 @@
 
 internal class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjeto>
 {
+    internal static List<RecursoProjeto> RecursoProjetos { get; set; }
+
     public void Configure(EntityTypeBuilder<RecursoProjeto> builder)
     {
         builder.ToTable("CPN_TB_RECURSO_PROJETO");
@@ -47,5 +49,10 @@ internal class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjeto>
             .HasOne(p => p.Projeto)
             .WithMany()
             .HasForeignKey(f => f.IdProjeto);
+
+        if (RecursoProjetos != null)
+        {
+            builder.HasData(RecursoProjetos);
+        }
     }
 }
