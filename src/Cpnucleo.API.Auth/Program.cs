@@ -60,10 +60,10 @@ builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilte
 
 WebApplication app = builder.Build();
 
+app.MigrateDatabase();
 app.UseRouting();
 
 app.UseSwaggerConfig();
-
 app.UseApplication();
 
 app.UseHttpsRedirection();
