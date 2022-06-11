@@ -63,7 +63,6 @@ public class CpnucleoContext : DbContext
             MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId)
         };
 
-        modelBuilder.ApplyConfiguration(new SistemaMap());
         modelBuilder.ApplyConfiguration(new ApontamentoMap());
         modelBuilder.ApplyConfiguration(new ImpedimentoMap());
         modelBuilder.ApplyConfiguration(new ImpedimentoTarefaMap());
@@ -71,6 +70,7 @@ public class CpnucleoContext : DbContext
         modelBuilder.ApplyConfiguration(new RecursoMap());
         modelBuilder.ApplyConfiguration(new RecursoProjetoMap());
         modelBuilder.ApplyConfiguration(new RecursoTarefaMap());
+        modelBuilder.ApplyConfiguration(new SistemaMap());
         modelBuilder.ApplyConfiguration(new TarefaMap());
         modelBuilder.ApplyConfiguration(new TipoTarefaMap());
         modelBuilder.ApplyConfiguration(new WorkflowMap());
