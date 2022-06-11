@@ -49,12 +49,12 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
-  displayName: Create SQL Scripts
+  displayName: Apply Database Migration
   inputs:
     command: custom
     projects: '$(project)'
     custom: 'ef '
-    arguments: database update --project $(project)
+    arguments: database update --project Cpnucleo.API
 
 - task: DotNetCoreCLI@2
   displayName: Test
