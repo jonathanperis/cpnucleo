@@ -53,7 +53,7 @@ steps:
   inputs:
     command: 'custom'
     projects: '$(project)'
-    custom: 'ef database update'
+    custom: 'dotnet-ef database update'
 
 - task: DotNetCoreCLI@2
   displayName: Create SQL Scripts
