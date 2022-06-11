@@ -22,6 +22,20 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
+  displayName: New Manifest for tool
+  inputs:
+    command: custom
+    custom: 'new '
+    arguments: tool-manifest
+
+- task: DotNetCoreCLI@2
+  displayName: Install EF Tool
+  inputs:
+    command: custom
+    custom: 'tool '
+    arguments: install dotnet-ef
+
+- task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: 'restore'
@@ -40,6 +54,13 @@ steps:
     command: 'custom'
     projects: '$(project)'
     custom: 'ef database update'
+
+- task: DotNetCoreCLI@2
+  displayName: Create SQL Scripts
+  inputs:
+    command: custom
+    custom: 'ef '
+    arguments: database update
 
 - task: DotNetCoreCLI@2
   displayName: Test
