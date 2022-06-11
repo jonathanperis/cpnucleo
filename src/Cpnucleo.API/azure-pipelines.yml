@@ -52,6 +52,7 @@ steps:
   displayName: Create SQL Scripts
   inputs:
     command: custom
+    projects: '$(project)'
     custom: 'ef '
     arguments: database update
 
