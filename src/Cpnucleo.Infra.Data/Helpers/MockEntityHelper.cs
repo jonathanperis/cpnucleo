@@ -135,13 +135,13 @@ public class MockEntityHelper
         };
     }
 
-    public static Workflow GetNewWorkflow(Guid workflowId = default)
+    public static Workflow GetNewWorkflow(string nome, int ordem, Guid workflowId = default)
     {
         return new Workflow
         {
             Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
-            Nome = "Workflow de teste",
-            Ordem = 1,
+            Nome = nome,
+            Ordem = ordem,
             DataInclusao = DateTime.Now,
             Ativo = true
         };
