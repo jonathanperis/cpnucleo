@@ -54,7 +54,7 @@ steps:
     command: custom
     projects: '$(project)'
     custom: 'ef '
-    arguments: database update
+    arguments: database update --project $(project)
 
 - task: DotNetCoreCLI@2
   displayName: Test
