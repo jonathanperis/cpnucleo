@@ -36,8 +36,8 @@ steps:
 
 - powershell: |
    dotnet tool install --global dotnet-ef --ignore-failed-sources
-
    dotnet-ef database update --connection "Data Source=Cpnucleo.db"
+   dir
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
   displayName: 'Generate Database Migrations'
 
