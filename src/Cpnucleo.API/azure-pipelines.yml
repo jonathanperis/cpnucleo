@@ -45,19 +45,11 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
   displayName: 'List Files'
 
-# Copy files
-# Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
 - task: CopyFiles@2
   inputs:
-    #sourceFolder: # Optional
-    contents: $(System.DefaultWorkingDirectory)\src\Cpnucleo.Infra.Data\Cpnucleo.db 
+    sourceFolder: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
+    contents: 'Cpnucleo.db' 
     targetFolder: $(build.artifactstagingdirectory)
-    #cleanTargetFolder: false # Optional
-    #overWrite: false # Optional
-    #flattenFolders: false # Optional
-    #preserveTimestamp: false # Optional
-    #retryCount: 0 # Optional
-    #ignoreMakeDirErrors: false # Optional
 
 - powershell: |
    ls
@@ -77,6 +69,7 @@ steps:
     publishWebProjects: false
     projects: '$(project)'
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
+    zipAfterPublish: false
 
 - powershell: |
    ls
