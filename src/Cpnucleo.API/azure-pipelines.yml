@@ -39,7 +39,12 @@ steps:
 
    dotnet-ef database update --connection "Data Source=Cpnucleo.db"
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
-  displayName: 'Generate SQL script from migrations'
+  displayName: 'Generate Database Migrations'
+
+  - powershell: |
+   ls -s
+  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
+  displayName: 'List Files'
 
 - task: DotNetCoreCLI@2
   displayName: Test
