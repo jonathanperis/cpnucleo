@@ -40,20 +40,15 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
   displayName: 'Generate Database Migrations'
 
-- powershell: |
-   ls
-  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
-  displayName: 'List Files'
-
 - task: CopyFiles@2
   inputs:
     sourceFolder: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
     contents: 'Cpnucleo.db' 
-    targetFolder: $(build.artifactstagingdirectory)
+    targetFolder: '$(build.artifactstagingdirectory)/Cpnucleo.API'
 
 - powershell: |
    ls
-  workingDirectory: $(build.artifactstagingdirectory)
+  workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
   displayName: 'List Files 2'
 
 - task: DotNetCoreCLI@2
@@ -73,7 +68,7 @@ steps:
 
 - powershell: |
    ls
-  workingDirectory: $(build.artifactstagingdirectory)
+  workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
   displayName: 'List Files 3'
 
 - task: PublishBuildArtifacts@1
