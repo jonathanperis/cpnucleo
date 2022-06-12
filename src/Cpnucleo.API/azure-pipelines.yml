@@ -79,6 +79,11 @@ steps:
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
     zipAfterPublish: True
 
+- powershell: |
+   ls
+  workingDirectory: $(build.artifactstagingdirectory)
+  displayName: 'List Files 3'
+
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
