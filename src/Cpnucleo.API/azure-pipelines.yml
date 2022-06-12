@@ -41,11 +41,6 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
   displayName: 'Generate Database Migrations'
 
-  - powershell: |
-   ls -s
-  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
-  displayName: 'List Files'
-
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
