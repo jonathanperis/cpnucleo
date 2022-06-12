@@ -71,6 +71,24 @@ steps:
   workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
   displayName: 'List Files 3'
 
+# Archive files
+# Compress files into .7z, .tar.gz, or .zip
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(build.artifactstagingdirectory)/Cpnucleo.API' 
+    #includeRootFolder: true 
+    archiveType: 'zip'
+    #tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
+    archiveFile: '$(build.artifactstagingdirectory)/Cpnucleo.API.zip' 
+    #replaceExistingArchive: true 
+    #verbose: # Optional
+    #quiet: # Optional
+
+- powershell: |
+   ls
+  workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
+  displayName: 'List Files 4'
+
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
