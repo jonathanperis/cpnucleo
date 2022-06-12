@@ -60,9 +60,9 @@ steps:
     #ignoreMakeDirErrors: false # Optional
 
 - powershell: |
-   Copy-Item "C:\Wabash\Logfiles\mar1604.log.txt" -Destination "C:\Presentation"
-  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.API/'
-  displayName: 'Generate Database Migrations 3'
+   ls
+  workingDirectory: $(build.artifactstagingdirectory)
+  displayName: 'List Files 2'
 
 - task: DotNetCoreCLI@2
   displayName: Test
