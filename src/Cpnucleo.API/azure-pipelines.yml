@@ -37,7 +37,7 @@ steps:
 - powershell: |
    dotnet tool install --global dotnet-ef --ignore-failed-sources
 
-   dotnet-ef migrations script --idempotent --no-build --output "$(build.artifactstagingdirectory)/Database/MigrationScript.sql" --configuration $(BuildConfiguration)  --startup-project ../Cpnucleo.API --context 'CpnucleoContext'
+   dotnet-ef database update --connection "Data Source=Cpnucleo.db"
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
   displayName: 'Generate SQL script from migrations'
 
