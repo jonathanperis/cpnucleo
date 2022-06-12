@@ -50,7 +50,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     #sourceFolder: # Optional
-    contents: $(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/Cpnucleo.db 
+    contents: $(System.DefaultWorkingDirectory)\src\Cpnucleo.Infra.Data\Cpnucleo.db 
     targetFolder: $(build.artifactstagingdirectory)
     #cleanTargetFolder: false # Optional
     #overWrite: false # Optional
@@ -77,7 +77,6 @@ steps:
     publishWebProjects: false
     projects: '$(project)'
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-    zipAfterPublish: True
 
 - powershell: |
    ls
