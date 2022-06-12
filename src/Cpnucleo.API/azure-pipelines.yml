@@ -86,8 +86,21 @@ steps:
 
 - powershell: |
    ls
-  workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
+  workingDirectory: $(build.artifactstagingdirectory)
   displayName: 'List Files 4'
+
+  # Delete files
+# Delete folders, or files matching a pattern
+- task: DeleteFiles@1
+  inputs:
+    #SourceFolder: # Optional
+    Contents: '$(build.artifactstagingdirectory)/Cpnucleo.API' 
+    #RemoveSourceFolder: # Optional
+
+- powershell: |
+   ls
+  workingDirectory: $(build.artifactstagingdirectory)
+  displayName: 'List Files 5'
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
