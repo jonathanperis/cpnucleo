@@ -41,22 +41,26 @@ steps:
   displayName: 'Generate Database Migrations'
 
 - powershell: |
-   dir
-  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
-  displayName: 'Generate Database Migrations 2'
-
-- powershell: |
-   dir
-  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.API/'
-  displayName: 'Generate Database Migrations 3'
-
-- powershell: |
    ls
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
-  displayName: 'Generate Database Migrations 2'
+  displayName: 'List Files'
+
+# Copy files
+# Copy files from a source folder to a target folder using patterns matching file paths (not folder paths)
+- task: CopyFiles@2
+  inputs:
+    #sourceFolder: # Optional
+    contents: $(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/Cpnucleo.db 
+    targetFolder: $(build.artifactstagingdirectory)
+    #cleanTargetFolder: false # Optional
+    #overWrite: false # Optional
+    #flattenFolders: false # Optional
+    #preserveTimestamp: false # Optional
+    #retryCount: 0 # Optional
+    #ignoreMakeDirErrors: false # Optional
 
 - powershell: |
-   ls
+   Copy-Item "C:\Wabash\Logfiles\mar1604.log.txt" -Destination "C:\Presentation"
   workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.API/'
   displayName: 'Generate Database Migrations 3'
 
