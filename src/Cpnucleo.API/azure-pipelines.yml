@@ -22,20 +22,6 @@ steps:
     includePreviewVersions: true
 
 - task: DotNetCoreCLI@2
-  displayName: New Manifest for tool
-  inputs:
-    command: custom
-    custom: 'new '
-    arguments: tool-manifest
-
-- task: DotNetCoreCLI@2
-  displayName: Install EF Tool
-  inputs:
-    command: custom
-    custom: 'tool '
-    arguments: install dotnet-ef
-
-- task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: 'restore'
@@ -48,12 +34,12 @@ steps:
     projects: '$(project)'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: Apply Database Migration
-  inputs:
-    command: custom
-    custom: 'ef '
-    arguments: database update
+- powershell: |
+   dotnet tool install --global dotnet-ef --ignore-failed-sources
+
+   dotnet-ef migrations script --idempotent --no-build --output "$(build.artifactstagingdirectory)/Database/MigrationScript.sql" --configuration $(BuildConfiguration)  --startup-project ../Cpnucleo.API --context 'CpnucleoContext'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/Cpnucleo.Infra.Data/'
+  displayName: 'Generate SQL script from migrations'
 
 - task: DotNetCoreCLI@2
   displayName: Test
