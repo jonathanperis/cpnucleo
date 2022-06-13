@@ -59,7 +59,7 @@ steps:
     publishWebProjects: false
     projects: '$(project)'
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-    zipAfterPublish: true
+    zipAfterPublish: false
 
 # Archive files
 # Compress files into .7z, .tar.gz, or .zip
