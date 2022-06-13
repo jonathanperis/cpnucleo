@@ -42,6 +42,7 @@ steps:
   displayName: 'Generate Database Migrations'
 
 - task: CopyFiles@2
+  displayName: Copy SQLite Database to Staging
   inputs:
     sourceFolder: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
     contents: 'Cpnucleo.db' 
@@ -63,6 +64,7 @@ steps:
     zipAfterPublish: false
 
 - task: ArchiveFiles@2
+  displayName: Archive Artifact
   inputs:
     rootFolderOrFile: '$(build.artifactstagingdirectory)/$(projectName)' 
     includeRootFolder: false 
