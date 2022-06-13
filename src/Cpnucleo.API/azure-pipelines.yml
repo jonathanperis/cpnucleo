@@ -95,5 +95,5 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: $(build.artifactstagingdirectory)
+    PathtoPublish: '$(build.artifactstagingdirectory)/Cpnucleo.API'
     TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
