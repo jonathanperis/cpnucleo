@@ -6,6 +6,7 @@ pr:
 variables:
   solution: '**/*.sln'
   project: '**/Cpnucleo.API/*.csproj'
+  projectName: 'Cpnucleo.API'
   buildConfiguration: 'Release'  
 
 pool:
@@ -44,7 +45,7 @@ steps:
   inputs:
     sourceFolder: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
     contents: 'Cpnucleo.db' 
-    targetFolder: '$(build.artifactstagingdirectory)/Cpnucleo.API'
+    targetFolder: '$(build.artifactstagingdirectory)/$(projectName)'
 
 - task: DotNetCoreCLI@2
   displayName: Test
@@ -61,39 +62,15 @@ steps:
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
     zipAfterPublish: false
 
-# Archive files
-# Compress files into .7z, .tar.gz, or .zip
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(build.artifactstagingdirectory)/Cpnucleo.API' 
+    rootFolderOrFile: '$(build.artifactstagingdirectory)/$(projectName)' 
     includeRootFolder: false 
     archiveType: 'zip'
-    #tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
-    archiveFile: '$(build.artifactstagingdirectory)/Cpnucleo.API.zip' 
-    #replaceExistingArchive: true 
-    #verbose: # Optional
-    #quiet: # Optional
-
-- powershell: |
-   ls
-  workingDirectory: $(build.artifactstagingdirectory)
-  displayName: 'List Files 4'
-
-# Delete files
-# Delete folders, or files matching a pattern
-- task: DeleteFiles@1
-  inputs:
-    SourceFolder: # Optional
-    Contents: '$(build.artifactstagingdirectory)/Cpnucleo.API' 
-    #RemoveSourceFolder: # Optional
-
-- powershell: |
-   ls
-  workingDirectory: $(build.artifactstagingdirectory)
-  displayName: 'List Files 5'
+    archiveFile: '$(build.artifactstagingdirectory)/$(projectName).zip' 
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/Cpnucleo.API'
+    PathtoPublish: '$(build.artifactstagingdirectory)/$(projectName).zip'
     TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
