@@ -53,7 +53,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 WebApplication app = builder.Build();
 
-app.MigrateDatabase();
+if (app.Environment.IsDevelopment())
+{
+    app.MigrateDatabase();
+}
+
 app.UseRouting();
 app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 

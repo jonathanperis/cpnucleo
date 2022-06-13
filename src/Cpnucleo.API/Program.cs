@@ -66,7 +66,11 @@ builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilte
 
 WebApplication app = builder.Build();
 
-app.MigrateDatabase();
+if (app.Environment.IsDevelopment())
+{
+    app.MigrateDatabase();
+}
+
 app.UseRouting();
 
 app.UseCors("AllowCpcnuleoClients");
