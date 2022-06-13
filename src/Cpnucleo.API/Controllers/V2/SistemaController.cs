@@ -30,7 +30,14 @@ public class SistemaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IEnumerable<Sistema>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.SistemaRepository.AllAsync(getDependencies);
+        try
+        {
+            return await _unitOfWork.SistemaRepository.AllAsync(getDependencies);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
 
     /// <summary>
