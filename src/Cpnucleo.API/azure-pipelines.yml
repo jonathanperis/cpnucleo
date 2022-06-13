@@ -46,11 +46,6 @@ steps:
     contents: 'Cpnucleo.db' 
     targetFolder: '$(build.artifactstagingdirectory)/Cpnucleo.API'
 
-- powershell: |
-   ls
-  workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
-  displayName: 'List Files 2'
-
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
@@ -64,19 +59,14 @@ steps:
     publishWebProjects: false
     projects: '$(project)'
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-    zipAfterPublish: false
-
-- powershell: |
-   ls
-  workingDirectory: '$(build.artifactstagingdirectory)/Cpnucleo.API'
-  displayName: 'List Files 3'
+    zipAfterPublish: true
 
 # Archive files
 # Compress files into .7z, .tar.gz, or .zip
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(build.artifactstagingdirectory)/Cpnucleo.API' 
-    #includeRootFolder: true 
+    includeRootFolder: false 
     archiveType: 'zip'
     #tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
     archiveFile: '$(build.artifactstagingdirectory)/Cpnucleo.API.zip' 
@@ -89,11 +79,11 @@ steps:
   workingDirectory: $(build.artifactstagingdirectory)
   displayName: 'List Files 4'
 
-  # Delete files
+# Delete files
 # Delete folders, or files matching a pattern
 - task: DeleteFiles@1
   inputs:
-    #SourceFolder: # Optional
+    SourceFolder: # Optional
     Contents: '$(build.artifactstagingdirectory)/Cpnucleo.API' 
     #RemoveSourceFolder: # Optional
 
