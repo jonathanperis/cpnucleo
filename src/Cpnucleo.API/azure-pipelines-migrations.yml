@@ -6,6 +6,7 @@ pr:
 variables:
   solution: '**/*.sln'
   project: '**/Cpnucleo.API/*.csproj'
+  projectName: 'Cpnucleo.API'
   buildConfiguration: 'Release'  
 
 pool:
@@ -34,6 +35,19 @@ steps:
     projects: '$(project)'
     arguments: '--configuration $(buildConfiguration)'
 
+- powershell: |
+   dotnet tool install --global dotnet-ef --ignore-failed-sources
+   dotnet-ef database update --connection "Data Source=Cpnucleo.db"
+  workingDirectory: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
+  displayName: 'Generate Database Migrations'
+
+- task: CopyFiles@2
+  displayName: Copy SQLite Database to Staging
+  inputs:
+    sourceFolder: '$(System.DefaultWorkingDirectory)/src/Cpnucleo.Infra.Data/'
+    contents: 'Cpnucleo.db' 
+    targetFolder: '$(build.artifactstagingdirectory)/$(projectName)'
+
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
@@ -47,10 +61,18 @@ steps:
     publishWebProjects: false
     projects: '$(project)'
     arguments: --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)
-    zipAfterPublish: True
+    zipAfterPublish: false
+
+- task: ArchiveFiles@2
+  displayName: Archive Artifact
+  inputs:
+    rootFolderOrFile: '$(build.artifactstagingdirectory)/$(projectName)' 
+    includeRootFolder: false 
+    archiveType: 'zip'
+    archiveFile: '$(build.artifactstagingdirectory)/$(projectName).zip' 
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: $(build.artifactstagingdirectory)
+    PathtoPublish: '$(build.artifactstagingdirectory)/$(projectName).zip'
     TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
