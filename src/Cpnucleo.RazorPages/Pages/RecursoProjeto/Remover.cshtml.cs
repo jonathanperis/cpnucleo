@@ -39,7 +39,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "RemoveRecursoProjeto", new RemoveRecursoProjetoCommand { Id = RecursoProjeto.Id });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "RemoveRecursoProjeto", new RemoveRecursoProjetoCommand(RecursoProjeto.Id));
 
             if (result == OperationResult.Failed)
             {

@@ -73,7 +73,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand { Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
+            OperationResult result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand(Guid.Empty, obj.Projeto.Nome, obj.Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -118,7 +118,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand { Id = obj.Projeto.Id, Nome = obj.Projeto.Nome, IdSistema = obj.Projeto.IdSistema });
+            OperationResult result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand(obj.Projeto.Id, obj.Projeto.Nome, obj.Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand { Id = obj.Projeto.Id });
+            OperationResult result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand(obj.Projeto.Id));
 
             if (result == OperationResult.Failed)
             {

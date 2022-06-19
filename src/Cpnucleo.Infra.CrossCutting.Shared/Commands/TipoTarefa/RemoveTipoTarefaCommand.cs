@@ -1,6 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.TipoTarefa;
 
-public class RemoveTipoTarefaCommand : BaseCommand, IRequest<OperationResult>
-{
-    public Guid Id { get; set; }
-}
+public record RemoveTipoTarefaCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

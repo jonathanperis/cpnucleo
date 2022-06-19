@@ -67,7 +67,7 @@ public class ImpedimentoController : BaseController
                 return View();
             }
 
-            OperationResult result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand { Nome = obj.Impedimento.Nome });
+            OperationResult result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand(Guid.Empty, obj.Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {
@@ -112,7 +112,7 @@ public class ImpedimentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoGrpcService.UpdateImpedimento(new UpdateImpedimentoCommand { Id = obj.Impedimento.Id, Nome = obj.Impedimento.Nome });
+            OperationResult result = await _impedimentoGrpcService.UpdateImpedimento(new UpdateImpedimentoCommand(obj.Impedimento.Id, obj.Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {
@@ -157,7 +157,7 @@ public class ImpedimentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoGrpcService.RemoveImpedimento(new RemoveImpedimentoCommand { Id = obj.Impedimento.Id });
+            OperationResult result = await _impedimentoGrpcService.RemoveImpedimento(new RemoveImpedimentoCommand(obj.Impedimento.Id));
 
             if (result == OperationResult.Failed)
             {

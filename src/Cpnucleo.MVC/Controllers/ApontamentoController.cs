@@ -62,7 +62,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand { Descricao = obj.Apontamento.Descricao, IdRecurso = obj.Apontamento.IdRecurso, IdTarefa = obj.Apontamento.IdTarefa, QtdHoras = obj.Apontamento.QtdHoras, DataApontamento = obj.Apontamento.DataApontamento });
+            OperationResult result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand(Guid.Empty, obj.Apontamento.Descricao, obj.Apontamento.DataApontamento, obj.Apontamento.QtdHoras, obj.Apontamento.IdTarefa, obj.Apontamento.IdRecurso));
 
             if (result == OperationResult.Failed)
             {
@@ -107,7 +107,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand { Id = obj.Apontamento.Id });
+            OperationResult result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand(obj.Apontamento.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -152,7 +152,7 @@ public class ApontamentoController : BaseController
                 return Json(new { success = false, message = "", body = ViewModel });
             }
 
-            OperationResult result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand { Id = idTarefa, IdWorkflow = idWorkflow });
+            OperationResult result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand(idTarefa, idWorkflow));
 
             if (result == OperationResult.Failed)
             {
