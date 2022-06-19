@@ -95,51 +95,6 @@ public class RecursoProjetoController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Alterar(Guid id)
-    {
-        try
-        {
-            await CarregarDados(id);
-
-            return View(ViewModel);
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            return View();
-        }
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Alterar(RecursoProjetoViewModel obj)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
-            {
-                await CarregarDados(obj.RecursoProjeto.Id);
-
-                return View(ViewModel);
-            }
-
-            OperationResult result = await _recursoProjetoGrpcService.UpdateRecursoProjeto(new UpdateRecursoProjetoCommand(obj.RecursoProjeto.Id, obj.RecursoProjeto.IdRecurso, obj.RecursoProjeto.IdProjeto));
-
-            if (result == OperationResult.Failed)
-            {
-                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
-                return View();
-            }
-
-            return RedirectToAction("Listar", new { idProjeto = obj.RecursoProjeto.IdProjeto });
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            return View();
-        }
-    }
-
-    [HttpGet]
     public async Task<IActionResult> Remover(Guid id)
     {
         try
