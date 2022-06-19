@@ -43,7 +43,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "CreateImpedimentoTarefa", new CreateImpedimentoTarefaCommand { Descricao = ImpedimentoTarefa.Descricao, IdImpedimento = ImpedimentoTarefa.IdImpedimento, IdTarefa = ImpedimentoTarefa.IdTarefa });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "CreateImpedimentoTarefa", new CreateImpedimentoTarefaCommand(Guid.Empty, ImpedimentoTarefa.Descricao, ImpedimentoTarefa.IdTarefa, ImpedimentoTarefa.IdImpedimento));
 
             if (result == OperationResult.Failed)
             {

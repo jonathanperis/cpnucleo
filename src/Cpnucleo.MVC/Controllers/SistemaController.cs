@@ -67,7 +67,7 @@ public class SistemaController : BaseController
                 return View();
             }
 
-            OperationResult result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand { Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
+            OperationResult result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand(Guid.Empty, obj.Sistema.Nome, obj.Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {
@@ -112,7 +112,7 @@ public class SistemaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand { Id = obj.Sistema.Id, Nome = obj.Sistema.Nome, Descricao = obj.Sistema.Descricao });
+            OperationResult result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand(obj.Sistema.Id, obj.Sistema.Nome, obj.Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {
@@ -157,7 +157,7 @@ public class SistemaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand { Id = obj.Sistema.Id });
+            OperationResult result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand(obj.Sistema.Id));
 
             if (result == OperationResult.Failed)
             {

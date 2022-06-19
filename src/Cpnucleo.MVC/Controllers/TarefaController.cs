@@ -83,7 +83,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand { Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
+            OperationResult result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand(Guid.Empty, obj.Tarefa.Nome, obj.Tarefa.DataInicio, obj.Tarefa.DataTermino, obj.Tarefa.QtdHoras, obj.Tarefa.Detalhe, obj.Tarefa.IdProjeto, obj.Tarefa.IdWorkflow, obj.Tarefa.IdRecurso, obj.Tarefa.IdTipoTarefa));
 
             if (result == OperationResult.Failed)
             {
@@ -128,7 +128,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _tarefaGrpcService.UpdateTarefa(new UpdateTarefaCommand { Id = obj.Tarefa.Id, Nome = obj.Tarefa.Nome, DataInicio = obj.Tarefa.DataInicio, DataTermino = obj.Tarefa.DataTermino, QtdHoras = obj.Tarefa.QtdHoras, Detalhe = obj.Tarefa.Detalhe, IdProjeto = obj.Tarefa.IdProjeto, IdWorkflow = obj.Tarefa.IdWorkflow, IdRecurso = obj.Tarefa.IdRecurso, IdTipoTarefa = obj.Tarefa.IdTipoTarefa });
+            OperationResult result = await _tarefaGrpcService.UpdateTarefa(new UpdateTarefaCommand(obj.Tarefa.Id, obj.Tarefa.Nome, obj.Tarefa.DataInicio, obj.Tarefa.DataTermino, obj.Tarefa.QtdHoras, obj.Tarefa.Detalhe, obj.Tarefa.IdProjeto, obj.Tarefa.IdWorkflow, obj.Tarefa.IdRecurso, obj.Tarefa.IdTipoTarefa));
 
             if (result == OperationResult.Failed)
             {
@@ -173,7 +173,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _tarefaGrpcService.RemoveTarefa(new RemoveTarefaCommand { Id = obj.Tarefa.Id });
+            OperationResult result = await _tarefaGrpcService.RemoveTarefa(new RemoveTarefaCommand(obj.Tarefa.Id));
 
             if (result == OperationResult.Failed)
             {

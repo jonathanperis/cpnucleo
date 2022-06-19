@@ -1,6 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.Workflow;
 
-public class RemoveWorkflowCommand : BaseCommand, IRequest<OperationResult>
-{
-    public Guid Id { get; set; }
-}
+public record RemoveWorkflowCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;
