@@ -67,7 +67,7 @@ public class RecursoController : BaseController
                 return View();
             }
 
-            OperationResult result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand { Nome = obj.Recurso.Nome, Login = obj.Recurso.Login, Senha = obj.Recurso.Senha });
+            OperationResult result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand(Guid.Empty, obj.Recurso.Nome, obj.Recurso.Login, obj.Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {
@@ -112,7 +112,7 @@ public class RecursoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand { Id = obj.Recurso.Id, Nome = obj.Recurso.Nome, Senha = obj.Recurso.Senha });
+            OperationResult result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand(obj.Recurso.Id, obj.Recurso.Nome, obj.Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {
@@ -157,7 +157,7 @@ public class RecursoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand { Id = obj.Recurso.Id });
+            OperationResult result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand(obj.Recurso.Id));
 
             if (result == OperationResult.Failed)
             {

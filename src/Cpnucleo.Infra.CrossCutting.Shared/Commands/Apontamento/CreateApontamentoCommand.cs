@@ -1,11 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.Apontamento;
 
-public class CreateApontamentoCommand : BaseCommand, IRequest<OperationResult>
-{
-    public Guid Id { get; set; }
-    public string Descricao { get; set; }
-    public DateTime DataApontamento { get; set; }
-    public int QtdHoras { get; set; }
-    public Guid IdTarefa { get; set; }
-    public Guid IdRecurso { get; set; }
-}
+public record CreateApontamentoCommand(Guid Id, string Descricao, DateTime DataApontamento, int QtdHoras, Guid IdTarefa, Guid IdRecurso) : BaseCommand, IRequest<OperationResult>;

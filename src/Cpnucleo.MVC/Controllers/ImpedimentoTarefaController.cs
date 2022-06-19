@@ -77,7 +77,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand { Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
+            OperationResult result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand(Guid.Empty, obj.ImpedimentoTarefa.Descricao, obj.ImpedimentoTarefa.IdTarefa, obj.ImpedimentoTarefa.IdImpedimento));
 
             if (result == OperationResult.Failed)
             {
@@ -122,7 +122,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoTarefaGrpcService.UpdateImpedimentoTarefa(new UpdateImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id, Descricao = obj.ImpedimentoTarefa.Descricao, IdImpedimento = obj.ImpedimentoTarefa.IdImpedimento, IdTarefa = obj.ImpedimentoTarefa.IdTarefa });
+            OperationResult result = await _impedimentoTarefaGrpcService.UpdateImpedimentoTarefa(new UpdateImpedimentoTarefaCommand(obj.ImpedimentoTarefa.Id, obj.ImpedimentoTarefa.Descricao, obj.ImpedimentoTarefa.IdTarefa, obj.ImpedimentoTarefa.IdImpedimento));
 
             if (result == OperationResult.Failed)
             {
@@ -167,7 +167,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoTarefaGrpcService.RemoveImpedimentoTarefa(new RemoveImpedimentoTarefaCommand { Id = obj.ImpedimentoTarefa.Id });
+            OperationResult result = await _impedimentoTarefaGrpcService.RemoveImpedimentoTarefa(new RemoveImpedimentoTarefaCommand(obj.ImpedimentoTarefa.Id));
 
             if (result == OperationResult.Failed)
             {

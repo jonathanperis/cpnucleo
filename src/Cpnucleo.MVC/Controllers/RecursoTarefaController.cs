@@ -77,52 +77,7 @@ public class RecursoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
-
-            if (result == OperationResult.Failed)
-            {
-                ModelState.AddModelError(string.Empty, "Não foi possível processar a solicitação no momento.");
-                return View();
-            }
-
-            return RedirectToAction("Listar", new { idTarefa = obj.RecursoTarefa.IdTarefa });
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            return View();
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Alterar(Guid id)
-    {
-        try
-        {
-            await CarregarDados(id);
-
-            return View(ViewModel);
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            return View();
-        }
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Alterar(RecursoTarefaViewModel obj)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
-            {
-                await CarregarDados(obj.RecursoTarefa.Id);
-
-                return View(ViewModel);
-            }
-
-            OperationResult result = await _recursoTarefaGrpcService.UpdateRecursoTarefa(new UpdateRecursoTarefaCommand { IdRecurso = obj.RecursoTarefa.IdRecurso, IdTarefa = obj.RecursoTarefa.IdTarefa });
+            OperationResult result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand(Guid.Empty, obj.RecursoTarefa.IdRecurso, obj.RecursoTarefa.IdTarefa));
 
             if (result == OperationResult.Failed)
             {
@@ -167,7 +122,7 @@ public class RecursoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoTarefaGrpcService.RemoveRecursoTarefa(new RemoveRecursoTarefaCommand { Id = obj.RecursoTarefa.Id });
+            OperationResult result = await _recursoTarefaGrpcService.RemoveRecursoTarefa(new RemoveRecursoTarefaCommand(obj.RecursoTarefa.Id));
 
             if (result == OperationResult.Failed)
             {

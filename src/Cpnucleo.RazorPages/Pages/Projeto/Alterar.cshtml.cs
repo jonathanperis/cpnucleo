@@ -41,7 +41,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "UpdateProjeto", new UpdateProjetoCommand { Id = Projeto.Id, Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "UpdateProjeto", new UpdateProjetoCommand(Projeto.Id, Projeto.Nome, Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {

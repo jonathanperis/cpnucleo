@@ -41,7 +41,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "UpdateImpedimentoTarefa", new UpdateImpedimentoTarefaCommand { Id = ImpedimentoTarefa.Id, Descricao = ImpedimentoTarefa.Descricao, IdTarefa = ImpedimentoTarefa.IdTarefa, IdImpedimento = ImpedimentoTarefa.IdImpedimento });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "UpdateImpedimentoTarefa", new UpdateImpedimentoTarefaCommand(ImpedimentoTarefa.Id, ImpedimentoTarefa.Descricao, ImpedimentoTarefa.IdTarefa, ImpedimentoTarefa.IdImpedimento));
 
             if (result == OperationResult.Failed)
             {

@@ -22,7 +22,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand { Nome = Workflow.Nome, Ordem = Workflow.Ordem });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand(Guid.Empty, Workflow.Nome, Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {

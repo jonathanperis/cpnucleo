@@ -67,7 +67,7 @@ public class WorkflowController : BaseController
                 return View();
             }
 
-            OperationResult result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand { Nome = obj.Workflow.Nome, Ordem = obj.Workflow.Ordem });
+            OperationResult result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand(Guid.Empty, obj.Workflow.Nome, obj.Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {
@@ -112,7 +112,7 @@ public class WorkflowController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand { Id = obj.Workflow.Id, Nome = obj.Workflow.Nome, Ordem = obj.Workflow.Ordem });
+            OperationResult result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand(obj.Workflow.Id, obj.Workflow.Nome, obj.Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {
@@ -157,7 +157,7 @@ public class WorkflowController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _workflowGrpcService.RemoveWorkflow(new RemoveWorkflowCommand { Id = obj.Workflow.Id });
+            OperationResult result = await _workflowGrpcService.RemoveWorkflow(new RemoveWorkflowCommand(obj.Workflow.Id));
 
             if (result == OperationResult.Failed)
             {

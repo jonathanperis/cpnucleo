@@ -46,7 +46,7 @@ public class ListarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand { Descricao = Apontamento.Descricao, IdRecurso = Apontamento.IdRecurso, IdTarefa = Apontamento.IdTarefa, QtdHoras = Apontamento.QtdHoras, DataApontamento = Apontamento.DataApontamento });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand(Guid.Empty, Apontamento.Descricao, Apontamento.DataApontamento, Apontamento.QtdHoras, Apontamento.IdTarefa, Apontamento.IdRecurso));
 
             if (result == OperationResult.Failed)
             {

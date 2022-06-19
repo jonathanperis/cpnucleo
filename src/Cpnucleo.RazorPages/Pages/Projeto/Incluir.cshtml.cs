@@ -41,7 +41,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand { Nome = Projeto.Nome, IdSistema = Projeto.IdSistema });
+            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand(Guid.Empty, Projeto.Nome, Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {

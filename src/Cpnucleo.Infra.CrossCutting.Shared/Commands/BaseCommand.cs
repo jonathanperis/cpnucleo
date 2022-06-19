@@ -3,4 +3,4 @@
 namespace Cpnucleo.Infra.CrossCutting.Shared.Commands;
 
 [MessagePackObject(true)]
-public abstract class BaseCommand { }
+public abstract record BaseCommand();
