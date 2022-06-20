@@ -171,7 +171,7 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetApontamentoViewModel result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery { Id = id });
+        GetApontamentoViewModel result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -187,7 +187,7 @@ public class ApontamentoController : BaseController
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        GetApontamentoByRecursoViewModel result = await _apontamentoGrpcService.GetApontamentoByRecurso(new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+        GetApontamentoByRecursoViewModel result = await _apontamentoGrpcService.GetApontamentoByRecurso(new GetApontamentoByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -197,7 +197,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.Lista = result.Apontamentos;
 
-        GetTarefaByRecursoViewModel result2 = await _tarefaGrpcService.GetTarefaByRecurso(new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+        GetTarefaByRecursoViewModel result2 = await _tarefaGrpcService.GetTarefaByRecurso(new GetTarefaByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -210,7 +210,7 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDadosFluxoTrabalho()
     {
-        ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+        ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {

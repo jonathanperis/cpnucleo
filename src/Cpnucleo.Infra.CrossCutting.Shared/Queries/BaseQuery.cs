@@ -3,4 +3,4 @@
 namespace Cpnucleo.Infra.CrossCutting.Shared.Queries;
 
 [MessagePackObject(true)]
-public abstract class BaseQuery { }
+public abstract record BaseQuery();

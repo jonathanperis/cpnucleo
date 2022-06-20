@@ -180,11 +180,11 @@ public class ProjetoController : BaseController
         }
     }
 
-    private async Task CarregarDados(Guid? id = default)
+    private async Task CarregarDados(Guid? idProjeto = default)
     {
-        if (id is not null)
+        if (idProjeto is not null)
         {
-            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = id.Value });
+            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery(idProjeto.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -195,7 +195,7 @@ public class ProjetoController : BaseController
             ViewModel.Projeto = result.Projeto;
         }
 
-        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

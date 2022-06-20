@@ -1,6 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.TipoTarefa;
 
-public class ListTipoTarefaQuery : BaseQuery, IRequest<ListTipoTarefaViewModel>
-{
-    public bool GetDependencies { get; set; }
-}
+public record ListTipoTarefaQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListTipoTarefaViewModel>;

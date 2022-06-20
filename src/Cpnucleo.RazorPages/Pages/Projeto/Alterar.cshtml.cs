@@ -60,7 +60,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idProjeto)
     {
-        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery { Id = idProjeto });
+        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery(idProjeto));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -70,7 +70,7 @@ public class AlterarModel : PageModel
 
         Projeto = result.Projeto;
 
-        ListSistemaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
+        ListSistemaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

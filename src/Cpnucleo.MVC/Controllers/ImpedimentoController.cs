@@ -32,7 +32,7 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            ListImpedimentoViewModel result = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery { });
+            ListImpedimentoViewModel result = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -176,7 +176,7 @@ public class ImpedimentoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetImpedimentoViewModel result = await _impedimentoGrpcService.GetImpedimento(new GetImpedimentoQuery { Id = id });
+        GetImpedimentoViewModel result = await _impedimentoGrpcService.GetImpedimento(new GetImpedimentoQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {

@@ -18,7 +18,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            ListRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
+            ListRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {

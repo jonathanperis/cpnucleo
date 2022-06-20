@@ -58,7 +58,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idWorkflow)
     {
-        GetWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery { Id = idWorkflow });
+        GetWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
 
         if (result.OperationResult == OperationResult.Failed)
         {

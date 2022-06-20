@@ -58,7 +58,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idImpedimentoTarefa)
     {
-        GetImpedimentoTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa });
+        GetImpedimentoTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefa", new GetImpedimentoTarefaQuery(idImpedimentoTarefa));
 
         if (result.OperationResult == OperationResult.Failed)
         {

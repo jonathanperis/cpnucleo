@@ -32,7 +32,7 @@ public class RecursoController : BaseController
     {
         try
         {
-            ListRecursoViewModel result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+            ListRecursoViewModel result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -176,7 +176,7 @@ public class RecursoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetRecursoViewModel result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery { Id = id });
+        GetRecursoViewModel result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {

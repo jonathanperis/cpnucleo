@@ -19,7 +19,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            GetImpedimentoTarefaByTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaByTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefaByTarefa", new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
+            GetImpedimentoTarefaByTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetImpedimentoTarefaByTarefaViewModel>("ImpedimentoTarefa", "GetImpedimentoTarefaByTarefa", new GetImpedimentoTarefaByTarefaQuery(idTarefa));
 
             if (result.OperationResult == OperationResult.Failed)
             {

@@ -59,7 +59,7 @@ public class FluxoTrabalhoModel : PageModel
 
     private async Task CarregarDados()
     {
-        ListWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
+        ListWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -69,7 +69,7 @@ public class FluxoTrabalhoModel : PageModel
 
         Lista = result.Workflows;
 
-        ListTarefaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery { GetDependencies = true });
+        ListTarefaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery(true));
 
         if (result2.OperationResult == OperationResult.Failed)
         {

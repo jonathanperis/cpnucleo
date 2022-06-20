@@ -190,11 +190,11 @@ public class TarefaController : BaseController
         }
     }
 
-    private async Task CarregarDados(Guid? id = default)
+    private async Task CarregarDados(Guid? idTarefa = default)
     {
-        if (id is not null)
+        if (idTarefa is not null)
         {
-            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = id.Value });
+            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery(idTarefa.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -205,7 +205,7 @@ public class TarefaController : BaseController
             ViewModel.Tarefa = result.Tarefa;
         }
 
-        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {
@@ -215,7 +215,7 @@ public class TarefaController : BaseController
 
         ViewModel.SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
 
-        ListProjetoViewModel result3 = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { });
+        ListProjetoViewModel result3 = await _projetoGrpcService.ListProjeto(new ListProjetoQuery());
 
         if (result3.OperationResult == OperationResult.Failed)
         {
@@ -225,7 +225,7 @@ public class TarefaController : BaseController
 
         ViewModel.SelectProjetos = new SelectList(result3.Projetos, "Id", "Nome");
 
-        ListWorkflowViewModel result4 = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+        ListWorkflowViewModel result4 = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
 
         if (result4.OperationResult == OperationResult.Failed)
         {
@@ -235,7 +235,7 @@ public class TarefaController : BaseController
 
         ViewModel.SelectWorkflows = new SelectList(result4.Workflows, "Id", "Nome");
 
-        ListTipoTarefaViewModel result5 = await _tipoTarefaGrpcService.ListTipoTarefa(new ListTipoTarefaQuery { });
+        ListTipoTarefaViewModel result5 = await _tipoTarefaGrpcService.ListTipoTarefa(new ListTipoTarefaQuery());
 
         if (result5.OperationResult == OperationResult.Failed)
         {

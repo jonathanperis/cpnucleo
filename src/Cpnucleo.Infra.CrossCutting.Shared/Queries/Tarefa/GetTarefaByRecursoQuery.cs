@@ -1,6 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Tarefa;
 
-public class GetTarefaByRecursoQuery : BaseQuery, IRequest<GetTarefaByRecursoViewModel>
-{
-    public Guid IdRecurso { get; set; }
-}
+public record GetTarefaByRecursoQuery(Guid IdRecurso) : BaseQuery, IRequest<GetTarefaByRecursoViewModel>;

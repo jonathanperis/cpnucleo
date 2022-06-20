@@ -32,7 +32,7 @@ public class SistemaController : BaseController
     {
         try
         {
-            ListSistemaViewModel result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery { });
+            ListSistemaViewModel result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -176,7 +176,7 @@ public class SistemaController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetSistemaViewModel result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery { Id = id });
+        GetSistemaViewModel result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {

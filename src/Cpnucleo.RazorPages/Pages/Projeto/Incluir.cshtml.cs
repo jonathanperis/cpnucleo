@@ -60,7 +60,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados()
     {
-        ListSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
+        ListSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {
