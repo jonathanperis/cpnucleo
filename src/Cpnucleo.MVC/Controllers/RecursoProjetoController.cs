@@ -36,7 +36,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            GetRecursoProjetoByProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new GetRecursoProjetoByProjetoQuery { IdProjeto = idProjeto });
+            GetRecursoProjetoByProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new GetRecursoProjetoByProjetoQuery(idProjeto));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -143,7 +143,7 @@ public class RecursoProjetoController : BaseController
     {
         if (idRecursoProjeto is not null)
         {
-            GetRecursoProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery { Id = idRecursoProjeto.Value });
+            GetRecursoProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery(idRecursoProjeto.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -156,7 +156,7 @@ public class RecursoProjetoController : BaseController
 
         if (idProjeto is not null)
         {
-            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery { Id = idProjeto.Value });
+            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery(idProjeto.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -167,7 +167,7 @@ public class RecursoProjetoController : BaseController
             ViewModel.Projeto = result.Projeto;
         }
 
-        ListRecursoViewModel result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery { });
+        ListRecursoViewModel result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

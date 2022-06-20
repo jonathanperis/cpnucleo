@@ -1,6 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Workflow;
 
-public class GetWorkflowQuery : BaseQuery, IRequest<GetWorkflowViewModel>
-{
-    public Guid Id { get; set; }
-}
+public record GetWorkflowQuery(Guid Id) : BaseQuery, IRequest<GetWorkflowViewModel>;

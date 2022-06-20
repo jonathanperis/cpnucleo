@@ -68,7 +68,7 @@ public class ListarModel : PageModel
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        GetApontamentoByRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new GetApontamentoByRecursoQuery { IdRecurso = idRecurso });
+        GetApontamentoByRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new GetApontamentoByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -78,7 +78,7 @@ public class ListarModel : PageModel
 
         Lista = result.Apontamentos;
 
-        GetTarefaByRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new GetTarefaByRecursoQuery { IdRecurso = idRecurso });
+        GetTarefaByRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new GetTarefaByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {

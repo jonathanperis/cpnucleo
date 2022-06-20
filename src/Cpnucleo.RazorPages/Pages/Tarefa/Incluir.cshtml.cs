@@ -66,7 +66,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados()
     {
-        ListProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", new ListProjetoQuery { });
+        ListProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListProjetoViewModel>("Projeto", "ListProjeto", new ListProjetoQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -76,7 +76,7 @@ public class IncluirModel : PageModel
 
         SelectProjetos = new SelectList(result.Projetos, "Id", "Nome");
 
-        ListSistemaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery { });
+        ListSistemaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {
@@ -86,7 +86,7 @@ public class IncluirModel : PageModel
 
         SelectSistemas = new SelectList(result2.Sistemas, "Id", "Nome");
 
-        ListWorkflowViewModel result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
+        ListWorkflowViewModel result3 = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery());
 
         if (result3.OperationResult == OperationResult.Failed)
         {
@@ -96,7 +96,7 @@ public class IncluirModel : PageModel
 
         SelectWorkflows = new SelectList(result3.Workflows, "Id", "Nome");
 
-        ListTipoTarefaViewModel result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", new ListTipoTarefaQuery { });
+        ListTipoTarefaViewModel result4 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTipoTarefaViewModel>("TipoTarefa", "ListTipoTarefa", new ListTipoTarefaQuery());
 
         if (result4.OperationResult == OperationResult.Failed)
         {

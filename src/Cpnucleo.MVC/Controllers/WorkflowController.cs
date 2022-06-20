@@ -32,7 +32,7 @@ public class WorkflowController : BaseController
     {
         try
         {
-            ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery { });
+            ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -176,7 +176,7 @@ public class WorkflowController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetWorkflowViewModel result = await _workflowGrpcService.GetWorkflow(new GetWorkflowQuery { Id = id });
+        GetWorkflowViewModel result = await _workflowGrpcService.GetWorkflow(new GetWorkflowQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {
