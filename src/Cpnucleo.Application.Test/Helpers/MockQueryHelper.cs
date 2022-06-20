@@ -4,217 +4,136 @@ public class MockQueryHelper
 {
     public static GetSistemaQuery GetNewGetSistemaQuery(Guid sistemaId = default)
     {
-        return new GetSistemaQuery
-        {
-            Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId
-        };
+        return new GetSistemaQuery(sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId);
     }
 
-    public static ListSistemaQuery GetNewListSistemaQuery(bool getDependencies = default)
+    public static ListSistemaQuery GetNewListSistemaQuery(bool getDependencies = false)
     {
-        return new ListSistemaQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListSistemaQuery(getDependencies);
     }
 
     public static GetProjetoQuery GetNewGetProjetoQuery(Guid projetoId = default)
     {
-        return new GetProjetoQuery
-        {
-            Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId
-        };
+        return new GetProjetoQuery(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
     }
 
-    public static ListProjetoQuery GetNewListProjetoQuery(bool getDependencies = default)
+    public static ListProjetoQuery GetNewListProjetoQuery(bool getDependencies = false)
     {
-        return new ListProjetoQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListProjetoQuery(getDependencies);
     }
 
     public static GetWorkflowQuery GetNewGetWorkflowQuery(Guid workflowId = default)
     {
-        return new GetWorkflowQuery
-        {
-            Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId
-        };
+        return new GetWorkflowQuery(workflowId == Guid.Empty ? Guid.NewGuid() : workflowId);
     }
 
-    public static ListWorkflowQuery GetNewListWorkflowQuery(bool getDependencies = default)
+    public static ListWorkflowQuery GetNewListWorkflowQuery(bool getDependencies = false)
     {
-        return new ListWorkflowQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListWorkflowQuery(getDependencies);
     }
 
     public static GetImpedimentoQuery GetNewGetImpedimentoQuery(Guid impedimentoId = default)
     {
-        return new GetImpedimentoQuery
-        {
-            Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId
-        };
+        return new GetImpedimentoQuery(impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId);
     }
 
-    public static ListImpedimentoQuery GetNewListImpedimentoQuery(bool getDependencies = default)
+    public static ListImpedimentoQuery GetNewListImpedimentoQuery(bool getDependencies = false)
     {
-        return new ListImpedimentoQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListImpedimentoQuery(getDependencies);
     }
 
     public static GetRecursoQuery GetNewGetRecursoQuery(Guid recursoId = default)
     {
-        return new GetRecursoQuery
-        {
-            Id = recursoId == Guid.Empty ? Guid.NewGuid() : recursoId
-        };
+        return new GetRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
     }
 
-    public static ListRecursoQuery GetNewListRecursoQuery(bool getDependencies = default)
+    public static ListRecursoQuery GetNewListRecursoQuery(bool getDependencies = false)
     {
-        return new ListRecursoQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListRecursoQuery(getDependencies);
     }
 
     public static GetApontamentoQuery GetNewGetApontamentoQuery(Guid apontamentoId = default)
     {
-        return new GetApontamentoQuery
-        {
-            Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId
-        };
+        return new GetApontamentoQuery(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId);
     }
 
     public static GetApontamentoByRecursoQuery GetApontamentoByRecursoQuery(Guid recursoId = default)
     {
-        return new GetApontamentoByRecursoQuery
-        {
-            IdRecurso = recursoId == Guid.Empty ? Guid.NewGuid() : recursoId
-        };
+        return new GetApontamentoByRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
     }
 
-    public static ListApontamentoQuery GetNewListApontamentoQuery(bool getDependencies = default)
+    public static ListApontamentoQuery GetNewListApontamentoQuery(bool getDependencies = false)
     {
-        return new ListApontamentoQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListApontamentoQuery(getDependencies);
     }
 
     public static GetTarefaQuery GetNewGetTarefaQuery(Guid tarefaId = default)
     {
-        return new GetTarefaQuery
-        {
-            Id = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId
-        };
+        return new GetTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
     }
 
     public static GetTarefaByRecursoQuery GetNewGetTarefaByRecursoQuery(Guid recursoId = default)
     {
-        return new GetTarefaByRecursoQuery
-        {
-            IdRecurso = recursoId == Guid.Empty ? Guid.NewGuid() : recursoId
-        };
+        return new GetTarefaByRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
     }
 
-    public static ListTarefaQuery GetNewListTarefaQuery(bool getDependencies = default)
+    public static ListTarefaQuery GetNewListTarefaQuery(bool getDependencies = false)
     {
-        return new ListTarefaQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListTarefaQuery(getDependencies);
     }
 
     public static GetTipoTarefaQuery GetNewGetTipoTarefaQuery(Guid tipoTarefaId = default)
     {
-        return new GetTipoTarefaQuery
-        {
-            Id = tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId
-        };
+        return new GetTipoTarefaQuery(tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId);
     }
 
-    public static ListTipoTarefaQuery GetNewListTipoTarefaQuery(bool getDependencies = default)
+    public static ListTipoTarefaQuery GetNewListTipoTarefaQuery(bool getDependencies = false)
     {
-        return new ListTipoTarefaQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListTipoTarefaQuery(getDependencies);
     }
 
     public static GetImpedimentoTarefaQuery GetNewGetImpedimentoTarefaQuery(Guid impedimentoTarefaId = default)
     {
-        return new GetImpedimentoTarefaQuery
-        {
-            Id = impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId
-        };
+        return new GetImpedimentoTarefaQuery(impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId);
     }
 
     public static GetImpedimentoTarefaByTarefaQuery GetNewGetImpedimentoTarefaByTarefaQuery(Guid tarefaId = default)
     {
-        return new GetImpedimentoTarefaByTarefaQuery
-        {
-            IdTarefa = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId
-        };
+        return new GetImpedimentoTarefaByTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
     }
 
-    public static ListImpedimentoTarefaQuery GetNewListImpedimentoTarefaQuery(bool getDependencies = default)
+    public static ListImpedimentoTarefaQuery GetNewListImpedimentoTarefaQuery(bool getDependencies = false)
     {
-        return new ListImpedimentoTarefaQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListImpedimentoTarefaQuery(getDependencies);
     }
 
     public static GetRecursoProjetoQuery GetNewGetRecursoProjetoQuery(Guid recursoProjetoId = default)
     {
-        return new GetRecursoProjetoQuery
-        {
-            Id = recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId
-        };
+        return new GetRecursoProjetoQuery(recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId);
     }
 
     public static GetRecursoProjetoByProjetoQuery GetNewGetRecursoProjetoByProjetoQuery(Guid projetoId = default)
     {
-        return new GetRecursoProjetoByProjetoQuery
-        {
-            IdProjeto = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId
-        };
+        return new GetRecursoProjetoByProjetoQuery(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
     }
 
-    public static ListRecursoProjetoQuery GetNewListRecursoProjetoQuery(bool getDependencies = default)
+    public static ListRecursoProjetoQuery GetNewListRecursoProjetoQuery(bool getDependencies = false)
     {
-        return new ListRecursoProjetoQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListRecursoProjetoQuery(getDependencies);
     }
 
     public static GetRecursoTarefaQuery GetNewGetRecursoTarefaQuery(Guid recursoTarefaId = default)
     {
-        return new GetRecursoTarefaQuery
-        {
-            Id = recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId
-        };
+        return new GetRecursoTarefaQuery(recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId);
     }
 
     public static GetRecursoTarefaByTarefaQuery GetNewGetRecursoTarefaByTarefaQuery(Guid tarefaId = default)
     {
-        return new GetRecursoTarefaByTarefaQuery
-        {
-            IdTarefa = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId
-        };
+        return new GetRecursoTarefaByTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
     }
 
-    public static ListRecursoTarefaQuery GetNewListRecursoTarefaQuery(bool getDependencies = default)
+    public static ListRecursoTarefaQuery GetNewListRecursoTarefaQuery(bool getDependencies = false)
     {
-        return new ListRecursoTarefaQuery
-        {
-            GetDependencies = getDependencies
-        };
+        return new ListRecursoTarefaQuery(getDependencies);
     }
 }

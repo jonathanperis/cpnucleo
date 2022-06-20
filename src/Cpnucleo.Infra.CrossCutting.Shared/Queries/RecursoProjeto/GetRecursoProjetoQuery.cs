@@ -1,6 +1,3 @@
 ﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.RecursoProjeto;
 
-public class GetRecursoProjetoQuery : BaseQuery, IRequest<GetRecursoProjetoViewModel>
-{
-    public Guid Id { get; set; }
-}
+public record GetRecursoProjetoQuery(Guid Id) : BaseQuery, IRequest<GetRecursoProjetoViewModel>;

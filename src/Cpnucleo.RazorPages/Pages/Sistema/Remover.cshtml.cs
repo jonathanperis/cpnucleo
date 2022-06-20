@@ -58,7 +58,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idSistema)
     {
-        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery { Id = idSistema });
+        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
 
         if (result.OperationResult == OperationResult.Failed)
         {

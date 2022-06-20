@@ -62,7 +62,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados(Guid idProjeto)
     {
-        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery { Id = idProjeto });
+        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery(idProjeto));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -72,7 +72,7 @@ public class IncluirModel : PageModel
 
         Projeto = result.Projeto;
 
-        ListRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery { });
+        ListRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

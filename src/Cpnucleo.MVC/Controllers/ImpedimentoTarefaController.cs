@@ -36,7 +36,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            GetImpedimentoTarefaByTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new GetImpedimentoTarefaByTarefaQuery { IdTarefa = idTarefa });
+            GetImpedimentoTarefaByTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new GetImpedimentoTarefaByTarefaQuery(idTarefa));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -188,7 +188,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         if (idImpedimentoTarefa is not null)
         {
-            GetImpedimentoTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefa(new GetImpedimentoTarefaQuery { Id = idImpedimentoTarefa.Value });
+            GetImpedimentoTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefa(new GetImpedimentoTarefaQuery(idImpedimentoTarefa.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -201,7 +201,7 @@ public class ImpedimentoTarefaController : BaseController
 
         if (idTarefa is not null)
         {
-            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery { Id = idTarefa.Value });
+            GetTarefaViewModel result = await _tarefaGrpcService.GetTarefa(new GetTarefaQuery(idTarefa.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -212,7 +212,7 @@ public class ImpedimentoTarefaController : BaseController
             ViewModel.Tarefa = result.Tarefa;
         }
 
-        ListImpedimentoViewModel result2 = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery { });
+        ListImpedimentoViewModel result2 = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

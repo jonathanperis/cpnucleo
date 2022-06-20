@@ -18,7 +18,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            ListWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery { });
+            ListWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListWorkflowViewModel>("Workflow", "ListWorkflow", new ListWorkflowQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
