@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Cpnucleo.Infra.CrossCutting.Shared\Cpnucleo.Infra.CrossCutting.Shared.csproj" />
-	</ItemGroup>	
+		<ProjectReference Include="..\Cpnucleo.Shared\Cpnucleo.Shared.csproj" />
+	</ItemGroup>
 
 </Project>
