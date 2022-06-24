@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Shared.Requests.Auth;
-using Cpnucleo.MVC.Services;
+﻿using Cpnucleo.MVC.Services;
 using Cpnucleo.MVC.Services.Interfaces;
 using Cpnucleo.Shared.Common.Models;
 using Cpnucleo.Shared.Requests.Auth;
