@@ -4,6 +4,7 @@ using Cpnucleo.Application.Queries.Sistema;
 using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Cpnucleo.Shared.Commands.Sistema;
 using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Events.Sistema;
 using Cpnucleo.Shared.Queries.Sistema;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
@@ -113,7 +114,7 @@ public class SistemaHandlerTest
 
         Guid sistemaId = Guid.NewGuid();
 
-        Mock<IEventHandler> mockServiceBus = ServiceBusHelper.GetInstance(new RemoveSistemaEvent { Id = sistemaId });
+        Mock<IEventHandler> mockServiceBus = ServiceBusHelper.GetInstance(new RemoveSistemaEvent(sistemaId));
 
         Sistema sistema = MockEntityHelper.GetNewSistema(sistemaId);
 

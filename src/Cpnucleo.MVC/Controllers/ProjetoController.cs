@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Shared.Common.Interfaces;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Projeto;
-using Cpnucleo.Shared.Queries.Sistema;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ProjetoController : BaseController

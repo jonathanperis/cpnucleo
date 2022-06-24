@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.Interfaces;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Sistema;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class SistemaController : BaseController

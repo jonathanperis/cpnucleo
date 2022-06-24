@@ -11,5 +11,9 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Cpnucleo.Shared\Cpnucleo.Shared.csproj" />
+	</ItemGroup>
 	
 </Project>

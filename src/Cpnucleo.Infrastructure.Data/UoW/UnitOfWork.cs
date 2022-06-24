@@ -1,5 +1,6 @@
 ﻿using Cpnucleo.Application.Common.Repositories.UoW;
 using Cpnucleo.Infrastructure.Data.Context;
+using Cpnucleo.Infrastructure.Data.Repositories;
 
 namespace Cpnucleo.Infrastructure.Data.UoW;
 

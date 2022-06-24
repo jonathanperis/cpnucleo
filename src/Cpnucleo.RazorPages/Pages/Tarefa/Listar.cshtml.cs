@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Tarefa;
-
-namespace Cpnucleo.RazorPages.Pages.Tarefa;
+﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
 public class ListarModel : PageModel

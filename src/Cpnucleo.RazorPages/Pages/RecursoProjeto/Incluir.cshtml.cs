@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Projeto;
-using Cpnucleo.Shared.Queries.Recurso;
-
-namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
+﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
 [Authorize]
 public class IncluirModel : PageModel

@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Common.Interfaces;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Impedimento;
-using Cpnucleo.Shared.Queries.ImpedimentoTarefa;
-using Cpnucleo.Shared.Queries.Tarefa;
-
-namespace Cpnucleo.MVC.Controllers;
+﻿namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ImpedimentoTarefaController : BaseController
