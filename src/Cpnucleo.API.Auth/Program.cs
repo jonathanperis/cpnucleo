@@ -12,9 +12,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDomain();
-builder.Services.AddInfraData();
+builder.Services.AddInfrastructureData();
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
+builder.Services.AddInfrastructureBus(builder.Configuration);
 
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();

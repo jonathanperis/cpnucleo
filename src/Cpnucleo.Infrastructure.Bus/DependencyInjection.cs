@@ -9,7 +9,7 @@ namespace Cpnucleo.Infrastructure.Bus;
 
 public static class DependencyInjection
 {
-    public static void AddInfraCrossCuttingBus(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructureBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IEventHandler, EventHandler>();
 

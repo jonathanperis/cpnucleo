@@ -10,9 +10,9 @@ using System.Text;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDomain();
-builder.Services.AddInfraData();
+builder.Services.AddInfrastructureData();
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddInfraCrossCuttingBus(builder.Configuration);
+builder.Services.AddInfrastructureBus(builder.Configuration);
 
 builder.Services.AddGrpc();
 builder.Services.AddMagicOnion();
