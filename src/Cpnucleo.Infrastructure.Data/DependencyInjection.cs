@@ -7,7 +7,7 @@ namespace Cpnucleo.Infrastructure.Data;
 
 public static class DependencyInjection
 {
-    public static void AddInfraData(this IServiceCollection services)
+    public static void AddInfrastructureData(this IServiceCollection services)
     {
         services.AddScoped<CpnucleoContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
