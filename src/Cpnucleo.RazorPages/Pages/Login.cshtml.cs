@@ -1,6 +1,4 @@
 ﻿using Cpnucleo.RazorPages.Services;
-using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
 using Cpnucleo.Shared.Requests.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

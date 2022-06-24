@@ -1,6 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Cpnucleo.Infrastructure.Bus.Events.Sistema;
 using Cpnucleo.Infrastructure.Bus.Interfaces;
+using Cpnucleo.Shared.Events.Sistema;
 using Ev.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
