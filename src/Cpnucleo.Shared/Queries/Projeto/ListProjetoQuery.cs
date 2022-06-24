@@ -1,3 +1,3 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Projeto;
+﻿namespace Cpnucleo.Shared.Queries.Projeto;
 
 public record ListProjetoQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListProjetoViewModel>;

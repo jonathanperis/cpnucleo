@@ -1,4 +1,11 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Projeto;
+using Cpnucleo.Shared.Queries.Sistema;
+using Cpnucleo.Shared.Queries.TipoTarefa;
+using Cpnucleo.Shared.Queries.Workflow;
+
+namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
 public class IncluirModel : PageModel

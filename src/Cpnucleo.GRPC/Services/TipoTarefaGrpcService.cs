@@ -1,4 +1,9 @@
-﻿namespace Cpnucleo.GRPC.Services;
+﻿using Cpnucleo.Shared.Commands.TipoTarefa;
+using Cpnucleo.Shared.Common.Interfaces;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.TipoTarefa;
+
+namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoTarefaGrpcService

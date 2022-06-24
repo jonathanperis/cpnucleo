@@ -1,5 +1,8 @@
 ﻿using Cpnucleo.Application.Commands.RecursoTarefa;
 using Cpnucleo.Application.Queries.RecursoTarefa;
+using Cpnucleo.Shared.Commands.RecursoTarefa;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.RecursoTarefa;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

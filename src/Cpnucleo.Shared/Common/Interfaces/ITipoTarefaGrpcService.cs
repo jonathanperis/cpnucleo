@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Common.Interfaces;
+﻿using Cpnucleo.Shared.Commands.TipoTarefa;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.TipoTarefa;
+
+namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface ITipoTarefaGrpcService : IService<ITipoTarefaGrpcService>
 {

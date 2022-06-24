@@ -1,11 +1,11 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
-using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+using Cpnucleo.Infrastructure.Bus.Events.Sistema;
+using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Ev.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cpnucleo.Infra.CrossCutting.Bus;
+namespace Cpnucleo.Infrastructure.Bus;
 
 public static class DependencyInjection
 {

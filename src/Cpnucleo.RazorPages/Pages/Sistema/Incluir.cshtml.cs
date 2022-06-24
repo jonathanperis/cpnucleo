@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
 public class IncluirModel : PageModel

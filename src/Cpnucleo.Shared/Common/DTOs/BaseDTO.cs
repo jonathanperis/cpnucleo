@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace Cpnucleo.Infra.CrossCutting.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.DTOs;
 
 [MessagePackObject(true)]
 public abstract class BaseDTO

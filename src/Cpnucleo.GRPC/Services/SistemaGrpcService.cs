@@ -1,4 +1,9 @@
-﻿namespace Cpnucleo.GRPC.Services;
+﻿using Cpnucleo.Shared.Commands.Sistema;
+using Cpnucleo.Shared.Common.Interfaces;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Sistema;
+
+namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpcService

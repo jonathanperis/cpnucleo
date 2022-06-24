@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.Workflow;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Workflow;
+
+namespace Cpnucleo.Application.Queries.Workflow;
 
 public class GetWorkflowHandler : IRequestHandler<GetWorkflowQuery, GetWorkflowViewModel>
 {

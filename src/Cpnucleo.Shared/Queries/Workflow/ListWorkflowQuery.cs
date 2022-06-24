@@ -1,3 +1,3 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Workflow;
+﻿namespace Cpnucleo.Shared.Queries.Workflow;
 
 public record ListWorkflowQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListWorkflowViewModel>;

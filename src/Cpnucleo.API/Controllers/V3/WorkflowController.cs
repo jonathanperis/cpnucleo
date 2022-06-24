@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.Workflow;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Workflow;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

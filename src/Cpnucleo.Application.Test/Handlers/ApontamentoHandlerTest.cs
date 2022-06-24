@@ -1,5 +1,8 @@
 ﻿using Cpnucleo.Application.Commands.Apontamento;
 using Cpnucleo.Application.Queries.Apontamento;
+using Cpnucleo.Shared.Commands.Apontamento;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Apontamento;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

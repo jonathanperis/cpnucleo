@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.ImpedimentoTarefa;
+
+namespace Cpnucleo.Application.Queries.ImpedimentoTarefa;
 
 public class GetImpedimentoTarefaHandler : IRequestHandler<GetImpedimentoTarefaQuery, GetImpedimentoTarefaViewModel>
 {

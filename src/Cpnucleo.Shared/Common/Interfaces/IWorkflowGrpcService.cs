@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Common.Interfaces;
+﻿using Cpnucleo.Shared.Commands.Workflow;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Workflow;
+
+namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IWorkflowGrpcService : IService<IWorkflowGrpcService>
 {

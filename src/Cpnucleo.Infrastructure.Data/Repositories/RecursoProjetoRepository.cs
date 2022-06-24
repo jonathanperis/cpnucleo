@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.Infra.Data.Repositories;
+﻿using Cpnucleo.Infrastructure.Data.Context;
+
+namespace Cpnucleo.Infrastructure.Data.Repositories;
 
 internal class RecursoProjetoRepository : GenericRepository<RecursoProjeto>, IRecursoProjetoRepository
 {

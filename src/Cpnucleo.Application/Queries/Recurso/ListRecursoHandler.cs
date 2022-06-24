@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.Recurso;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Recurso;
+
+namespace Cpnucleo.Application.Queries.Recurso;
 
 public class ListRecursoHandler : IRequestHandler<ListRecursoQuery, ListRecursoViewModel>
 {

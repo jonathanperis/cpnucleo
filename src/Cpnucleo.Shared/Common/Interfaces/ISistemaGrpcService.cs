@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Common.Interfaces;
+﻿using Cpnucleo.Shared.Commands.Sistema;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Sistema;
+
+namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface ISistemaGrpcService : IService<ISistemaGrpcService>
 {

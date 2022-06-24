@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
+﻿namespace Cpnucleo.Infrastructure.Bus.Events.Sistema;
 
 public class RemoveSistemaEvent
 {

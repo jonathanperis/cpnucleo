@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Application.Commands.Tarefa;
+﻿using Cpnucleo.Shared.Commands.Tarefa;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Application.Commands.Tarefa;
 
 public class UpdateTarefaByWorkflowHandler : IRequestHandler<UpdateTarefaByWorkflowCommand, OperationResult>
 {

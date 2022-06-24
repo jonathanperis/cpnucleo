@@ -1,3 +1,6 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.Recurso;
+﻿using Cpnucleo.Shared.Commands;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Commands.Recurso;
 
 public record RemoveRecursoCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+﻿using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Moq;
 
 namespace Cpnucleo.Application.Test.Helpers;

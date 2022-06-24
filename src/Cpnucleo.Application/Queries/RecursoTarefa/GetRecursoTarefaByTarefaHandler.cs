@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.RecursoTarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.RecursoTarefa;
+
+namespace Cpnucleo.Application.Queries.RecursoTarefa;
 
 public class GetRecursoTarefaByTarefaHandler : IRequestHandler<GetRecursoTarefaByTarefaQuery, GetRecursoTarefaByTarefaViewModel>
 {

@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Recurso;
+
+namespace Cpnucleo.RazorPages.Pages.Recurso;
 
 [Authorize]
 public class RemoverModel : PageModel

@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Recurso;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Queries.Recurso;
 
 public record ListRecursoViewModel : BaseQuery
 {

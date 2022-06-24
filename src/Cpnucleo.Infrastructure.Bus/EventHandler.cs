@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+﻿using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Ev.ServiceBus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cpnucleo.Infra.CrossCutting.Bus;
+namespace Cpnucleo.Infrastructure.Bus;
 
 public class EventHandler : IEventHandler
 {

@@ -1,3 +1,6 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.Sistema;
+﻿using Cpnucleo.Shared.Commands;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Commands.Sistema;
 
 public record CreateSistemaCommand(Guid Id, string Nome, string Descricao) : BaseCommand, IRequest<OperationResult>;

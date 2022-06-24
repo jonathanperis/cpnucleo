@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.Application.Queries.Recurso;
+﻿using Cpnucleo.Shared.Queries.Recurso;
+
+namespace Cpnucleo.Application.Queries.Recurso;
 
 public class GetRecursoQueryValidator : AbstractValidator<GetRecursoQuery>
 {

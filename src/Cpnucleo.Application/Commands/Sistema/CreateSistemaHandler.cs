@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Application.Commands.Sistema;
+﻿using Cpnucleo.Shared.Commands.Sistema;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Application.Commands.Sistema;
 
 public class CreateSistemaHandler : IRequestHandler<CreateSistemaCommand, OperationResult>
 {

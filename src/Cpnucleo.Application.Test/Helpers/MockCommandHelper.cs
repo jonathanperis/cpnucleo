@@ -1,4 +1,16 @@
-﻿namespace Cpnucleo.Application.Test.Helpers;
+﻿using Cpnucleo.Shared.Commands.Apontamento;
+using Cpnucleo.Shared.Commands.Impedimento;
+using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
+using Cpnucleo.Shared.Commands.Projeto;
+using Cpnucleo.Shared.Commands.Recurso;
+using Cpnucleo.Shared.Commands.RecursoProjeto;
+using Cpnucleo.Shared.Commands.RecursoTarefa;
+using Cpnucleo.Shared.Commands.Sistema;
+using Cpnucleo.Shared.Commands.Tarefa;
+using Cpnucleo.Shared.Commands.TipoTarefa;
+using Cpnucleo.Shared.Commands.Workflow;
+
+namespace Cpnucleo.Application.Test.Helpers;
 
 public class MockCommandHelper
 {

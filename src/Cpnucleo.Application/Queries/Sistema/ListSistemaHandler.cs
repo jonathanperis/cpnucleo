@@ -1,4 +1,7 @@
 ﻿using Cpnucleo.Application.Hubs;
+using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Sistema;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Cpnucleo.Application.Queries.Sistema;

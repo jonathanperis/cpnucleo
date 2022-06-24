@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.Apontamento;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Apontamento;
+
+namespace Cpnucleo.Application.Queries.Apontamento;
 
 public class GetApontamentoHandler : IRequestHandler<GetApontamentoQuery, GetApontamentoViewModel>
 {

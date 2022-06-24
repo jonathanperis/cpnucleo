@@ -1,3 +1,6 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.Impedimento;
+﻿using Cpnucleo.Shared.Commands;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Commands.Impedimento;
 
 public record UpdateImpedimentoCommand(Guid Id, string Nome) : BaseCommand, IRequest<OperationResult>;

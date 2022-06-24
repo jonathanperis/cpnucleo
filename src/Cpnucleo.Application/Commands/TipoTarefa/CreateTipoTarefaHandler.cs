@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Application.Commands.TipoTarefa;
+﻿using Cpnucleo.Shared.Commands.TipoTarefa;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Application.Commands.TipoTarefa;
 
 public class CreateTipoTarefaHandler : IRequestHandler<CreateTipoTarefaCommand, OperationResult>
 {

@@ -1,4 +1,6 @@
 ﻿using Cpnucleo.Application.Common.Security.Interfaces;
+using Cpnucleo.Shared.Commands.Recurso;
+using Cpnucleo.Shared.Common.Models;
 
 namespace Cpnucleo.Application.Commands.Recurso;
 

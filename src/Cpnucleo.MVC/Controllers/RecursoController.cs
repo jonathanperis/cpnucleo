@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Common.Interfaces;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Recurso;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class RecursoController : BaseController

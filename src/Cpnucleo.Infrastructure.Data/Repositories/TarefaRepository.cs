@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Infra.Data.Repositories;
+﻿using Cpnucleo.Infrastructure.Data.Context;
+using Cpnucleo.Infrastructure.Data.Extensions;
+
+namespace Cpnucleo.Infrastructure.Data.Repositories;
 
 internal class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepository
 {

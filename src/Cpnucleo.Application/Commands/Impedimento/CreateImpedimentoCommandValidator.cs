@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.Application.Commands.Impedimento;
+﻿using Cpnucleo.Shared.Commands.Impedimento;
+
+namespace Cpnucleo.Application.Commands.Impedimento;
 
 public class CreateImpedimentoCommandValidator : AbstractValidator<CreateImpedimentoCommand>
 {
