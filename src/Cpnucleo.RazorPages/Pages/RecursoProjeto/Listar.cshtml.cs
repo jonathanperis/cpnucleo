@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.RecursoProjeto;
-
-namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
+﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
 [Authorize]
 public class ListarModel : PageModel

@@ -1,5 +1,3 @@
-using Cpnucleo.Shared.Common.DTOs;
-
 namespace Cpnucleo.MVC.Models;
 
 public class RecursoProjetoViewModel

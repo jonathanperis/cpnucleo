@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Workflow;
-
-namespace Cpnucleo.RazorPages.Pages.Workflow;
+﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
 public class ListarModel : PageModel

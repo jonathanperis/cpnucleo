@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infrastructure.Bus.Events.Sistema;
-using Cpnucleo.Shared.Common.DTOs;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Events.Sistema;
 using Ev.ServiceBus.Reception;
 
 namespace Cpnucleo.Application.Events.Sistema;

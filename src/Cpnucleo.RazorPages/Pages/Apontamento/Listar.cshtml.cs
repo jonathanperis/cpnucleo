@@ -1,8 +1,4 @@
 ﻿using Cpnucleo.RazorPages.Services;
-using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Apontamento;
-using Cpnucleo.Shared.Queries.Tarefa;
 using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Pages.Apontamento;

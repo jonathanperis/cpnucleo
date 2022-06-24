@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.RazorPages.Pages.Impedimento;
+﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
 public class IncluirModel : PageModel

@@ -3,7 +3,7 @@ using Cpnucleo.Application.Common.Security;
 using Cpnucleo.Application.Common.Security.Interfaces;
 using Cpnucleo.Application.Events.Sistema;
 using Cpnucleo.Application.Hubs;
-using Cpnucleo.Infrastructure.Bus.Events.Sistema;
+using Cpnucleo.Shared.Events.Sistema;
 using Ev.ServiceBus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;

@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Tarefa;
-using Cpnucleo.Shared.Queries.Workflow;
-
-namespace Cpnucleo.RazorPages.Pages.Apontamento;
+﻿namespace Cpnucleo.RazorPages.Pages.Apontamento;
 
 [Authorize]
 public class FluxoTrabalhoModel : PageModel

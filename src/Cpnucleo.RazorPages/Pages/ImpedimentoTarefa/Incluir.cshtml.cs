@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Impedimento;
-using Cpnucleo.Shared.Queries.Tarefa;
-
-namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
+﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
 [Authorize]
 public class IncluirModel : PageModel
