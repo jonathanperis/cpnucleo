@@ -1,7 +1,6 @@
 ﻿using Cpnucleo.Application.Commands.Sistema;
 using Cpnucleo.Application.Hubs;
 using Cpnucleo.Application.Queries.Sistema;
-using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
 using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Cpnucleo.Shared.Commands.Sistema;
 using Cpnucleo.Shared.Common.Models;

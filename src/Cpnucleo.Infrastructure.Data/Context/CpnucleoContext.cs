@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Infra.Data.Mappings;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infrastructure.Data.Context;
 

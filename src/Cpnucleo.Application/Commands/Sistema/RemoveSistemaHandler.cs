@@ -1,5 +1,4 @@
-﻿using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
-using Cpnucleo.Infrastructure.Bus.Interfaces;
+﻿using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Cpnucleo.Shared.Commands.Sistema;
 using Cpnucleo.Shared.Common.Models;
 
