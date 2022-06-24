@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Infra.Data.Mappings;
 using Microsoft.Extensions.Configuration;
 
-namespace Cpnucleo.Infra.Data.Context;
+namespace Cpnucleo.Infrastructure.Data.Context;
 
 public class CpnucleoContext : DbContext
 {

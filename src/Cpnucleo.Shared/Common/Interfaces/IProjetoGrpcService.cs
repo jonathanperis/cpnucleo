@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Common.Interfaces;
+﻿using Cpnucleo.Shared.Commands.Projeto;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Projeto;
+
+namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IProjetoGrpcService : IService<IProjetoGrpcService>
 {

@@ -1,4 +1,4 @@
-namespace Cpnucleo.Infra.CrossCutting.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.DTOs;
 
 public class RecursoProjetoDTO : BaseDTO
 {

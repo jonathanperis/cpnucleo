@@ -1,8 +1,9 @@
 ﻿using Cpnucleo.Application.Common.Repositories.UoW;
-using Cpnucleo.Infra.Data.UoW;
+using Cpnucleo.Infrastructure.Data.Context;
+using Cpnucleo.Infrastructure.Data.UoW;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cpnucleo.Infra.Data;
+namespace Cpnucleo.Infrastructure.Data;
 
 public static class DependencyInjection
 {

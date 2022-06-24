@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.Application.Commands.Tarefa;
+﻿using Cpnucleo.Shared.Commands.Tarefa;
+
+namespace Cpnucleo.Application.Commands.Tarefa;
 
 public class CreateTarefaCommandValidator : AbstractValidator<CreateTarefaCommand>
 {

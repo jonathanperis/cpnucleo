@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.Sistema;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Sistema;
+
+namespace Cpnucleo.Application.Queries.Sistema;
 
 public class GetSistemaHandler : IRequestHandler<GetSistemaQuery, GetSistemaViewModel>
 {

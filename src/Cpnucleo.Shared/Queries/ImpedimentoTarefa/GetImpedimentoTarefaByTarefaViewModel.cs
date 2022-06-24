@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.ImpedimentoTarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Queries.ImpedimentoTarefa;
 
 public record GetImpedimentoTarefaByTarefaViewModel : BaseQuery
 {

@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Common.Interfaces;
+﻿using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.ImpedimentoTarefa;
+
+namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IImpedimentoTarefaGrpcService : IService<IImpedimentoTarefaGrpcService>
 {

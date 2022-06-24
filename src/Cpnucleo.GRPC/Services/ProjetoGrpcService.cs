@@ -1,4 +1,9 @@
-﻿namespace Cpnucleo.GRPC.Services;
+﻿using Cpnucleo.Shared.Commands.Projeto;
+using Cpnucleo.Shared.Common.Interfaces;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Projeto;
+
+namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpcService

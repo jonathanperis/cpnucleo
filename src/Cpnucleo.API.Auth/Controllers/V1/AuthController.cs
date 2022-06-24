@@ -1,8 +1,8 @@
-﻿using Cpnucleo.API.Services;
-using Cpnucleo.Infra.CrossCutting.Shared.Common.Models;
-using Cpnucleo.Infra.CrossCutting.Shared.Requests.Auth;
+﻿using Cpnucleo.API.Auth.Services;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Requests.Auth;
 
-namespace Cpnucleo.API.Controllers.V2;
+namespace Cpnucleo.API.Auth.Controllers.V1;
 
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}")]

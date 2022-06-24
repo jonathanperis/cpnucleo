@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.TipoTarefa;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.TipoTarefa;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

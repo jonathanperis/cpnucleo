@@ -2,8 +2,8 @@
 using Cpnucleo.API.Filters;
 using Cpnucleo.Application;
 using Cpnucleo.Domain;
-using Cpnucleo.Infra.CrossCutting.Bus;
-using Cpnucleo.Infra.Data;
+using Cpnucleo.Infrastructure.Bus;
+using Cpnucleo.Infrastructure.Data;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

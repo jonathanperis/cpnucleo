@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Cpnucleo.API.Services;
+namespace Cpnucleo.API.Auth.Services;
 
 public static class TokenService
 {

@@ -1,3 +1,5 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Impedimento;
+﻿using Cpnucleo.Shared.Queries;
+
+namespace Cpnucleo.Shared.Queries.Impedimento;
 
 public record GetImpedimentoQuery(Guid Id) : BaseQuery, IRequest<GetImpedimentoViewModel>;

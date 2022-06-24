@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
 public class IncluirModel : PageModel

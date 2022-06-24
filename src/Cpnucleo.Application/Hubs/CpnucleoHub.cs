@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Cpnucleo.Application.Hubs;
 

@@ -1,5 +1,8 @@
 ﻿using Cpnucleo.Application.Commands.Workflow;
 using Cpnucleo.Application.Queries.Workflow;
+using Cpnucleo.Shared.Commands.Workflow;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Workflow;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

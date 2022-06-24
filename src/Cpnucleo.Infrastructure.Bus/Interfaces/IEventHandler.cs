@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Bus.Interfaces;
+﻿namespace Cpnucleo.Infrastructure.Bus.Interfaces;
 
 public interface IEventHandler
 {

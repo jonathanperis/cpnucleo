@@ -1,4 +1,9 @@
 ﻿using Cpnucleo.MVC.Services;
+using Cpnucleo.Shared.Common.Interfaces;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Apontamento;
+using Cpnucleo.Shared.Queries.Tarefa;
+using Cpnucleo.Shared.Queries.Workflow;
 using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Controllers;
