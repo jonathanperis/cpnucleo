@@ -1,4 +1,5 @@
-﻿global using Cpnucleo.Shared.Commands.Apontamento;
+﻿global using Cpnucleo.MVC.Models;
+global using Cpnucleo.Shared.Commands.Apontamento;
 global using Cpnucleo.Shared.Commands.Impedimento;
 global using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
 global using Cpnucleo.Shared.Commands.Projeto;
@@ -22,7 +23,6 @@ global using Cpnucleo.Shared.Queries.Sistema;
 global using Cpnucleo.Shared.Queries.Tarefa;
 global using Cpnucleo.Shared.Queries.TipoTarefa;
 global using Cpnucleo.Shared.Queries.Workflow;
-global using Cpnucleo.MVC.Models;
 global using MagicOnion.Client;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
