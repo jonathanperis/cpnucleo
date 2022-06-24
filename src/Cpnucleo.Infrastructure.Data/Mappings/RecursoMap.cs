@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.Data.Mappings;
+﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
 internal class RecursoMap : IEntityTypeConfiguration<Recurso>
 {

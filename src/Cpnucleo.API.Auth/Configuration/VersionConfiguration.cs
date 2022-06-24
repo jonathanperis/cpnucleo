@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.API.Configuration;
+﻿namespace Cpnucleo.API.Auth.Configuration;
 
 public static class VersionConfiguration
 {

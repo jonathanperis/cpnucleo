@@ -1,4 +1,16 @@
-﻿namespace Cpnucleo.Application.Test.Helpers;
+﻿using Cpnucleo.Shared.Queries.Apontamento;
+using Cpnucleo.Shared.Queries.Impedimento;
+using Cpnucleo.Shared.Queries.ImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.Projeto;
+using Cpnucleo.Shared.Queries.Recurso;
+using Cpnucleo.Shared.Queries.RecursoProjeto;
+using Cpnucleo.Shared.Queries.RecursoTarefa;
+using Cpnucleo.Shared.Queries.Sistema;
+using Cpnucleo.Shared.Queries.Tarefa;
+using Cpnucleo.Shared.Queries.TipoTarefa;
+using Cpnucleo.Shared.Queries.Workflow;
+
+namespace Cpnucleo.Application.Test.Helpers;
 
 public class MockQueryHelper
 {

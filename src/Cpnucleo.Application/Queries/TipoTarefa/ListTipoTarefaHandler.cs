@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.Application.Queries.TipoTarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.TipoTarefa;
+
+namespace Cpnucleo.Application.Queries.TipoTarefa;
 
 public class ListTipoTarefaHandler : IRequestHandler<ListTipoTarefaQuery, ListTipoTarefaViewModel>
 {

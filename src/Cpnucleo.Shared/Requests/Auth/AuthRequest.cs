@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Requests.Auth;
+﻿namespace Cpnucleo.Shared.Requests.Auth;
 
 public class AuthRequest : IRequest<AuthResponse>
 {

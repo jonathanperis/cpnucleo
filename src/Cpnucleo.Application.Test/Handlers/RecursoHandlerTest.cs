@@ -1,7 +1,9 @@
 ﻿using Cpnucleo.Application.Commands.Recurso;
-using Cpnucleo.Application.Commands.Recurso.UpdateRecurso;
 using Cpnucleo.Application.Common.Security.Interfaces;
 using Cpnucleo.Application.Queries.Recurso;
+using Cpnucleo.Shared.Commands.Recurso;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Recurso;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.ImpedimentoTarefa;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 [Authorize]
 [ApiController]

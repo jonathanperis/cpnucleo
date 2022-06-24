@@ -1,3 +1,6 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Commands.Projeto;
+﻿using Cpnucleo.Shared.Commands;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Commands.Projeto;
 
 public record RemoveProjetoCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

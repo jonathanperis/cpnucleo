@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.Apontamento;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Queries.Apontamento;
 
 public record GetApontamentoByRecursoViewModel : BaseQuery
 {

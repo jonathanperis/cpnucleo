@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Queries.TipoTarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+
+namespace Cpnucleo.Shared.Queries.TipoTarefa;
 
 public record ListTipoTarefaViewModel : BaseQuery
 {

@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Cpnucleo.Infrastructure.Data.Context;
+using Cpnucleo.Infrastructure.Data.Extensions;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Cpnucleo.Infra.Data.Repositories;
+namespace Cpnucleo.Infrastructure.Data.Repositories;
 
 internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
 {

@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Infra.CrossCutting.Bus.Events.Sistema;
+﻿using Cpnucleo.Infrastructure.Bus.Events.Sistema;
+using Cpnucleo.Shared.Common.DTOs;
 using Ev.ServiceBus.Reception;
 
 namespace Cpnucleo.Application.Events.Sistema;

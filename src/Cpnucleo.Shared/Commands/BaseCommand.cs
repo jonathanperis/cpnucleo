@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace Cpnucleo.Infra.CrossCutting.Shared.Commands;
+namespace Cpnucleo.Shared.Commands;
 
 [MessagePackObject(true)]
 public abstract record BaseCommand();

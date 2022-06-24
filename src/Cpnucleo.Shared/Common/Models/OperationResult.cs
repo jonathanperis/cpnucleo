@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infra.CrossCutting.Shared.Common.Models;
+﻿namespace Cpnucleo.Shared.Common.Models;
 
 public enum OperationResult
 {

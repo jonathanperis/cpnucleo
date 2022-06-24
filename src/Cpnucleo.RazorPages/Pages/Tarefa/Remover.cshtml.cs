@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
+﻿using Cpnucleo.Shared.Common.DTOs;
+using Cpnucleo.Shared.Common.Models;
+using Cpnucleo.Shared.Queries.Tarefa;
+
+namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
 public class RemoverModel : PageModel

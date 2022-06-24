@@ -1,6 +1,8 @@
 ﻿using Cpnucleo.Application.Common.Security.Interfaces;
+using Cpnucleo.Shared.Commands.Recurso;
+using Cpnucleo.Shared.Common.Models;
 
-namespace Cpnucleo.Application.Commands.Recurso.UpdateRecurso;
+namespace Cpnucleo.Application.Commands.Recurso;
 
 public class UpdateRecursoHandler : IRequestHandler<UpdateRecursoCommand, OperationResult>
 {
