@@ -24,8 +24,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Cpnucleo.Application\Cpnucleo.Application.csproj" />
-		<ProjectReference Include="..\..\src\Cpnucleo.Infra.Data\Cpnucleo.Infra.Data.csproj" />
+		<ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
+		<ProjectReference Include="..\Cpnucleo.Infrastructure.Data\Cpnucleo.Infrastructure.Data.csproj" />
 	</ItemGroup>
 
 </Project>

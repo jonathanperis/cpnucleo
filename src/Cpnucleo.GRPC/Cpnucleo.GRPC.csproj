@@ -17,7 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infra.Data\Cpnucleo.Infra.Data.csproj" />
+		<ProjectReference Include="..\Cpnucleo.Infrastructure.Data\Cpnucleo.Infrastructure.Data.csproj" />
 	</ItemGroup>	
 
 </Project>
