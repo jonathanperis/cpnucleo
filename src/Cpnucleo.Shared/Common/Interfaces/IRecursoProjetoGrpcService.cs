@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RecursoProjeto;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.RecursoProjeto;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IRecursoProjetoGrpcService : IService<IRecursoProjetoGrpcService>
 {

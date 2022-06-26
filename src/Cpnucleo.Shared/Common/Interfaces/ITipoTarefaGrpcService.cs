@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.TipoTarefa;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.TipoTarefa;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface ITipoTarefaGrpcService : IService<ITipoTarefaGrpcService>
 {
