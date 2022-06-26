@@ -1,8 +1,6 @@
 ﻿using Cpnucleo.Application.Commands.TipoTarefa;
 using Cpnucleo.Application.Queries.TipoTarefa;
 using Cpnucleo.Shared.Commands.TipoTarefa;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.TipoTarefa;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

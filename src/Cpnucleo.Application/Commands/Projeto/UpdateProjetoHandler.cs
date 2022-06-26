@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Projeto;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.Projeto;
+﻿namespace Cpnucleo.Application.Commands.Projeto;
 
 public class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand, OperationResult>
 {

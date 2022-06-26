@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Impedimento;
-
-namespace Cpnucleo.Application.Queries.Impedimento;
+﻿namespace Cpnucleo.Application.Queries.Impedimento;
 
 public class ListImpedimentoHandler : IRequestHandler<ListImpedimentoQuery, ListImpedimentoViewModel>
 {
