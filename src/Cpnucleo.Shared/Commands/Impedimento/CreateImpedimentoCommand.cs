@@ -1,5 +1,3 @@
-﻿using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Shared.Commands.Impedimento;
+﻿namespace Cpnucleo.Shared.Commands.Impedimento;
 
 public record CreateImpedimentoCommand(Guid Id, string Nome) : BaseCommand, IRequest<OperationResult>;

@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Tarefa;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Tarefa;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface ITarefaGrpcService : IService<ITarefaGrpcService>
 {

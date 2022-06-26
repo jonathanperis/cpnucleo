@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Shared.Queries.ImpedimentoTarefa;
+﻿namespace Cpnucleo.Shared.Queries.ImpedimentoTarefa;
 
 public record ListImpedimentoTarefaViewModel : BaseQuery
 {

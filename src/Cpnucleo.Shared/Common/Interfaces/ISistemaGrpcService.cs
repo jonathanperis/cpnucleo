@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Sistema;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Sistema;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface ISistemaGrpcService : IService<ISistemaGrpcService>
 {

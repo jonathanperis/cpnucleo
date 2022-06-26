@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Apontamento;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Apontamento;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
 {

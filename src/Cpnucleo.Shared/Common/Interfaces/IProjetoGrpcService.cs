@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Projeto;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Projeto;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IProjetoGrpcService : IService<IProjetoGrpcService>
 {
