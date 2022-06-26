@@ -7,6 +7,7 @@ global using Cpnucleo.Shared.Commands.RecursoProjeto;
 global using Cpnucleo.Shared.Commands.RecursoTarefa;
 global using Cpnucleo.Shared.Commands.Sistema;
 global using Cpnucleo.Shared.Commands.Tarefa;
+global using Cpnucleo.Shared.Commands.TipoTarefa;
 global using Cpnucleo.Shared.Commands.Workflow;
 global using Cpnucleo.Shared.Common.Interfaces;
 global using Cpnucleo.Shared.Common.Models;

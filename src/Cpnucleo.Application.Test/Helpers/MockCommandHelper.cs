@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.TipoTarefa;
-
-namespace Cpnucleo.Application.Test.Helpers;
+﻿namespace Cpnucleo.Application.Test.Helpers;
 
 public class MockCommandHelper
 {

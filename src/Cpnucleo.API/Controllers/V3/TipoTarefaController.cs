@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.TipoTarefa;
-
-namespace Cpnucleo.API.Controllers.V3;
+﻿namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

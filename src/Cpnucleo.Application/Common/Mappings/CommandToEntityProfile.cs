@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.TipoTarefa;
-
-namespace Cpnucleo.Application.Common.Mappings
+﻿namespace Cpnucleo.Application.Common.Mappings
 {
     public class CommandToEntityProfile : Profile
     {
