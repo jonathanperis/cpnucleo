@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Sistema;
-
-namespace Cpnucleo.Application.Commands.Sistema;
+﻿namespace Cpnucleo.Application.Commands.Sistema;
 
 public class CreateSistemaCommandValidator : AbstractValidator<CreateSistemaCommand>
 {

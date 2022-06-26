@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.TipoTarefa;
-
-namespace Cpnucleo.Application.Queries.TipoTarefa;
+﻿namespace Cpnucleo.Application.Queries.TipoTarefa;
 
 public class GetTipoTarefaQueryValidator : AbstractValidator<GetTipoTarefaQuery>
 {

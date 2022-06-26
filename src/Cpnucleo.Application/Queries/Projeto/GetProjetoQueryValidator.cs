@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.Projeto;
-
-namespace Cpnucleo.Application.Queries.Projeto;
+﻿namespace Cpnucleo.Application.Queries.Projeto;
 
 public class GetProjetoQueryValidator : AbstractValidator<GetProjetoQuery>
 {

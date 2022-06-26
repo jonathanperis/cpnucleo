@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Projeto;
-
-namespace Cpnucleo.Application.Commands.Projeto;
+﻿namespace Cpnucleo.Application.Commands.Projeto;
 
 public class CreateProjetoCommandValidator : AbstractValidator<CreateProjetoCommand>
 {

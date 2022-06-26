@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Sistema;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.Sistema;
+﻿namespace Cpnucleo.Application.Commands.Sistema;
 
 public class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand, OperationResult>
 {

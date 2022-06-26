@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Workflow;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.Workflow;
+﻿namespace Cpnucleo.Application.Commands.Workflow;
 
 public class CreateWorkflowHandler : IRequestHandler<CreateWorkflowCommand, OperationResult>
 {

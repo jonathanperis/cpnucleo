@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RecursoTarefa;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.RecursoTarefa;
+﻿namespace Cpnucleo.Application.Commands.RecursoTarefa;
 
 public class RemoveRecursoTarefaHandler : IRequestHandler<RemoveRecursoTarefaCommand, OperationResult>
 {

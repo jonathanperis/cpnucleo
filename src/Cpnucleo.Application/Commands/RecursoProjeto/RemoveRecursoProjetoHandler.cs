@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RecursoProjeto;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.RecursoProjeto;
+﻿namespace Cpnucleo.Application.Commands.RecursoProjeto;
 
 public class RemoveRecursoProjetoHandler : IRequestHandler<RemoveRecursoProjetoCommand, OperationResult>
 {

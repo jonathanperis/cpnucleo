@@ -1,5 +1,4 @@
 ﻿using Cpnucleo.Shared.Commands.TipoTarefa;
-using Cpnucleo.Shared.Common.Models;
 
 namespace Cpnucleo.Application.Commands.TipoTarefa;
 

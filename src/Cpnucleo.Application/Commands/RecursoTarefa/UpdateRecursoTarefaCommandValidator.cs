@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RecursoTarefa;
-
-namespace Cpnucleo.Application.Commands.RecursoTarefa;
+﻿namespace Cpnucleo.Application.Commands.RecursoTarefa;
 
 public class UpdateRecursoTarefaCommandValidator : AbstractValidator<UpdateRecursoTarefaCommand>
 {

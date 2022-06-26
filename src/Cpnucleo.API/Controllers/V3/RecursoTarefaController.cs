@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RecursoTarefa;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.RecursoTarefa;
-
-namespace Cpnucleo.API.Controllers.V3;
+﻿namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]
