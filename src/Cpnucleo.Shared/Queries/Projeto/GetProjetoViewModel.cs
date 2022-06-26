@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Shared.Queries.Projeto;
+﻿namespace Cpnucleo.Shared.Queries.Projeto;
 
 public record GetProjetoViewModel : BaseQuery
 {

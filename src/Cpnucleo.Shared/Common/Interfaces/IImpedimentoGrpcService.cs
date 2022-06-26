@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Impedimento;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Impedimento;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IImpedimentoGrpcService : IService<IImpedimentoGrpcService>
 {

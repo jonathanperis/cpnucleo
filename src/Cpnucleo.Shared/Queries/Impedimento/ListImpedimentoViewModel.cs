@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Shared.Queries.Impedimento;
+﻿namespace Cpnucleo.Shared.Queries.Impedimento;
 
 public record ListImpedimentoViewModel : BaseQuery
 {

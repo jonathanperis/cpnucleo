@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RecursoTarefa;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.RecursoTarefa;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IRecursoTarefaGrpcService : IService<IRecursoTarefaGrpcService>
 {

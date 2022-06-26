@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Shared.Queries.Sistema;
+﻿namespace Cpnucleo.Shared.Queries.Sistema;
 
 public record GetSistemaViewModel : BaseQuery
 {
