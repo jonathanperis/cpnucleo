@@ -1,6 +1,4 @@
 ﻿using Cpnucleo.Infrastructure.Bus.Interfaces;
-using Cpnucleo.Shared.Commands.Sistema;
-using Cpnucleo.Shared.Common.Models;
 using Cpnucleo.Shared.Events.Sistema;
 
 namespace Cpnucleo.Application.Commands.Sistema;

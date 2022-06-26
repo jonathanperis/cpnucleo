@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-
-namespace Cpnucleo.Application.Common.Mappings;
+﻿namespace Cpnucleo.Application.Common.Mappings;
 
 public class EntityToDTOProfile : Profile
 {

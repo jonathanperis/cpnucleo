@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.Tarefa;
-
-namespace Cpnucleo.Application.Queries.Tarefa;
+﻿namespace Cpnucleo.Application.Queries.Tarefa;
 
 public class GetTarefaByRecursoQueryValidator : AbstractValidator<GetTarefaByRecursoQuery>
 {

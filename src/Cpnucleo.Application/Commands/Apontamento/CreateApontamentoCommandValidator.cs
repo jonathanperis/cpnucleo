@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Apontamento;
-
-namespace Cpnucleo.Application.Commands.Apontamento;
+﻿namespace Cpnucleo.Application.Commands.Apontamento;
 
 public class CreateApontamentoCommandValidator : AbstractValidator<CreateApontamentoCommand>
 {

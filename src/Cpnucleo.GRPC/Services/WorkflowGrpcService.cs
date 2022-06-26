@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Workflow;
-using Cpnucleo.Shared.Common.Interfaces;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Workflow;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowGrpcService

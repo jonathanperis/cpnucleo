@@ -1,8 +1,5 @@
 ﻿using Cpnucleo.Application.Commands.RecursoProjeto;
 using Cpnucleo.Application.Queries.RecursoProjeto;
-using Cpnucleo.Shared.Commands.RecursoProjeto;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.RecursoProjeto;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

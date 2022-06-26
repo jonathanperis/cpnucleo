@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Tarefa;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.Tarefa;
+﻿namespace Cpnucleo.Application.Commands.Tarefa;
 
 public class CreateTarefaHandler : IRequestHandler<CreateTarefaCommand, OperationResult>
 {

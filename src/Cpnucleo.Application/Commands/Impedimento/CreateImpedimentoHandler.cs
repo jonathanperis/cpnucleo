@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Impedimento;
-using Cpnucleo.Shared.Common.Models;
-
-namespace Cpnucleo.Application.Commands.Impedimento;
+﻿namespace Cpnucleo.Application.Commands.Impedimento;
 
 public class CreateImpedimentoHandler : IRequestHandler<CreateImpedimentoCommand, OperationResult>
 {

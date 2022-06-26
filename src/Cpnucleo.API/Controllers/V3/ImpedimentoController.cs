@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Impedimento;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Impedimento;
-
-namespace Cpnucleo.API.Controllers.V3;
+﻿namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

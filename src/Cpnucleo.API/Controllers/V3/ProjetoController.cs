@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.Projeto;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Projeto;
-
-namespace Cpnucleo.API.Controllers.V3;
+﻿namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

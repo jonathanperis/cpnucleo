@@ -1,8 +1,5 @@
 ﻿using Cpnucleo.Application.Commands.Impedimento;
 using Cpnucleo.Application.Queries.Impedimento;
-using Cpnucleo.Shared.Commands.Impedimento;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Impedimento;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

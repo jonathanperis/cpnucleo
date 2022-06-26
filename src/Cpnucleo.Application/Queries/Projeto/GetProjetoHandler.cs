@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.Projeto;
-
-namespace Cpnucleo.Application.Queries.Projeto;
+﻿namespace Cpnucleo.Application.Queries.Projeto;
 
 public class GetProjetoHandler : IRequestHandler<GetProjetoQuery, GetProjetoViewModel>
 {

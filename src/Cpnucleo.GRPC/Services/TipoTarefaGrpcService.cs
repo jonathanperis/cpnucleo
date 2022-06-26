@@ -1,7 +1,4 @@
 ﻿using Cpnucleo.Shared.Commands.TipoTarefa;
-using Cpnucleo.Shared.Common.Interfaces;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.TipoTarefa;
 
 namespace Cpnucleo.GRPC.Services;
 

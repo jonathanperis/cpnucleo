@@ -1,8 +1,5 @@
 ﻿using Cpnucleo.Application.Commands.ImpedimentoTarefa;
 using Cpnucleo.Application.Queries.ImpedimentoTarefa;
-using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.ImpedimentoTarefa;
 
 namespace Cpnucleo.Application.Test.Handlers;
 

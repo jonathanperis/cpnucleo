@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Shared.Common.DTOs;
-using Cpnucleo.Shared.Common.Models;
-using Cpnucleo.Shared.Queries.RecursoProjeto;
-
-namespace Cpnucleo.Application.Queries.RecursoProjeto;
+﻿namespace Cpnucleo.Application.Queries.RecursoProjeto;
 
 public class ListRecursoProjetoHandler : IRequestHandler<ListRecursoProjetoQuery, ListRecursoProjetoViewModel>
 {

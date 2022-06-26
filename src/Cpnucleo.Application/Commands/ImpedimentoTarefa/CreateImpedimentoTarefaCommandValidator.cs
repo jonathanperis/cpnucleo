@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
-
-namespace Cpnucleo.Application.Commands.ImpedimentoTarefa;
+﻿namespace Cpnucleo.Application.Commands.ImpedimentoTarefa;
 
 public class CreateImpedimentoTarefaCommandValidator : AbstractValidator<CreateImpedimentoTarefaCommand>
 {
