@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class Impedimento : BaseEntity
+public sealed record Impedimento : BaseEntity
 {
     public string Nome { get; set; }
 }

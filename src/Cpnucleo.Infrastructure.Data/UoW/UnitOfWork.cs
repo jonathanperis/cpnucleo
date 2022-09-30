@@ -4,7 +4,7 @@ using Cpnucleo.Infrastructure.Data.Repositories;
 
 namespace Cpnucleo.Infrastructure.Data.UoW;
 
-public class UnitOfWork : IUnitOfWork
+public sealed class UnitOfWork : IUnitOfWork
 {
     private readonly CpnucleoContext _context;
 

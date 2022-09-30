@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
+internal sealed class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
 {
     public void Configure(EntityTypeBuilder<Apontamento> builder)
     {

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Apontamento;
 
-public class GetApontamentoByRecursoHandler : IRequestHandler<GetApontamentoByRecursoQuery, GetApontamentoByRecursoViewModel>
+public sealed class GetApontamentoByRecursoHandler : IRequestHandler<GetApontamentoByRecursoQuery, GetApontamentoByRecursoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

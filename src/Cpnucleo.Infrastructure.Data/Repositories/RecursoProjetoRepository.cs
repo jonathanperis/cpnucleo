@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class RecursoProjetoRepository : GenericRepository<RecursoProjeto>, IRecursoProjetoRepository
+internal sealed class RecursoProjetoRepository : GenericRepository<RecursoProjeto>, IRecursoProjetoRepository
 {
     public RecursoProjetoRepository(CpnucleoContext context)
         : base(context) { }

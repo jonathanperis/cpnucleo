@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Projeto;
 
-public class CreateProjetoCommandValidator : AbstractValidator<CreateProjetoCommand>
+public sealed class CreateProjetoCommandValidator : AbstractValidator<CreateProjetoCommand>
 {
     public CreateProjetoCommandValidator()
     {

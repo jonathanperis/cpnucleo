@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class ImpedimentoTarefaRepository : GenericRepository<ImpedimentoTarefa>, IImpedimentoTarefaRepository
+internal sealed class ImpedimentoTarefaRepository : GenericRepository<ImpedimentoTarefa>, IImpedimentoTarefaRepository
 {
     public ImpedimentoTarefaRepository(CpnucleoContext context)
         : base(context) { }

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.TipoTarefa;
 
-public class RemoveTipoTarefaHandler : IRequestHandler<RemoveTipoTarefaCommand, OperationResult>
+public sealed class RemoveTipoTarefaHandler : IRequestHandler<RemoveTipoTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

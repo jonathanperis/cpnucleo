@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.RecursoTarefa;
 
-public class RemoveRecursoTarefaCommandValidator : AbstractValidator<RemoveRecursoTarefaCommand>
+public sealed class RemoveRecursoTarefaCommandValidator : AbstractValidator<RemoveRecursoTarefaCommand>
 {
     public RemoveRecursoTarefaCommandValidator()
     {

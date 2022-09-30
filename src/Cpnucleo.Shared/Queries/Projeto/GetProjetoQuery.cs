@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.Projeto;
 
-public record GetProjetoQuery(Guid Id) : BaseQuery, IRequest<GetProjetoViewModel>;
+public sealed record GetProjetoQuery(Guid Id) : BaseQuery, IRequest<GetProjetoViewModel>;

@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class RecursoTarefa : BaseEntity
+public sealed record RecursoTarefa : BaseEntity
 {
     public int PercentualTarefa { get; set; }
 

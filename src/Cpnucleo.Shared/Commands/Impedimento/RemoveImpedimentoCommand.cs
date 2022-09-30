@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.Impedimento;
 
-public record RemoveImpedimentoCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveImpedimentoCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

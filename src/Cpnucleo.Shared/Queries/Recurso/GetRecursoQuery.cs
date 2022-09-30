@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.Recurso;
 
-public record GetRecursoQuery(Guid Id) : BaseQuery, IRequest<GetRecursoViewModel>;
+public sealed record GetRecursoQuery(Guid Id) : BaseQuery, IRequest<GetRecursoViewModel>;

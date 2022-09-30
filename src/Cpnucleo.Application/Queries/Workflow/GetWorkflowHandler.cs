@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Workflow;
 
-public class GetWorkflowHandler : IRequestHandler<GetWorkflowQuery, GetWorkflowViewModel>
+public sealed class GetWorkflowHandler : IRequestHandler<GetWorkflowQuery, GetWorkflowViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class RecursoProjetoDTO : BaseDTO
+public sealed record RecursoProjetoDTO : BaseDTO
 {
     [Display(Name = "Recurso")]
     [Required(ErrorMessage = "Necessário informar o {0}.")]

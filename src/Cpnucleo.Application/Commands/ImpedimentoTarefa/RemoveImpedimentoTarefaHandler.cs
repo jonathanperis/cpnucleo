@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.ImpedimentoTarefa;
 
-public class RemoveImpedimentoTarefaHandler : IRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult>
+public sealed class RemoveImpedimentoTarefaHandler : IRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

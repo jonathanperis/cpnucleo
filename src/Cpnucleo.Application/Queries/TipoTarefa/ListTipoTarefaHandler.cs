@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.TipoTarefa;
 
-public class ListTipoTarefaHandler : IRequestHandler<ListTipoTarefaQuery, ListTipoTarefaViewModel>
+public sealed class ListTipoTarefaHandler : IRequestHandler<ListTipoTarefaQuery, ListTipoTarefaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Shared.Common.DTOs;
 
-public class AuthDTO
+public sealed record AuthDTO
 {
     [Display(Name = "Login")]
     [Required(ErrorMessage = "Necessário informar o {0}.")]

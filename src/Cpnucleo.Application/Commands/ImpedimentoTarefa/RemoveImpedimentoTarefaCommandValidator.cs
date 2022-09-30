@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.ImpedimentoTarefa;
 
-public class RemoveImpedimentoTarefaCommandValidator : AbstractValidator<RemoveImpedimentoTarefaCommand>
+public sealed class RemoveImpedimentoTarefaCommandValidator : AbstractValidator<RemoveImpedimentoTarefaCommand>
 {
     public RemoveImpedimentoTarefaCommandValidator()
     {

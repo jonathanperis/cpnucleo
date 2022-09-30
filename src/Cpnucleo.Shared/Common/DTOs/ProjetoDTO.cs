@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class ProjetoDTO : BaseDTO
+public sealed record ProjetoDTO : BaseDTO
 {
     [Display(Name = "Nome")]
     [Required(ErrorMessage = "Necessário informar o {0} do Projeto.")]

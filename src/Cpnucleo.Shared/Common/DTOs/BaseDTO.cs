@@ -3,7 +3,7 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
 [MessagePackObject(true)]
-public abstract class BaseDTO
+public abstract record BaseDTO
 {
     [System.ComponentModel.DataAnnotations.Key]
     [Display(Name = "Id")]

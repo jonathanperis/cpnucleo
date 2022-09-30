@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Apontamento;
 
-public class RemoveApontamentoHandler : IRequestHandler<RemoveApontamentoCommand, OperationResult>
+public sealed class RemoveApontamentoHandler : IRequestHandler<RemoveApontamentoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

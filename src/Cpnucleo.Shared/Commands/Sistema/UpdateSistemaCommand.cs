@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.Sistema;
 
-public record UpdateSistemaCommand(Guid Id, string Nome, string Descricao) : BaseCommand, IRequest<OperationResult>;
+public sealed record UpdateSistemaCommand(Guid Id, string Nome, string Descricao) : BaseCommand, IRequest<OperationResult>;

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Sistema;
 
-public class CreateSistemaHandler : IRequestHandler<CreateSistemaCommand, OperationResult>
+public sealed class CreateSistemaHandler : IRequestHandler<CreateSistemaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

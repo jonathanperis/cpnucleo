@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class WorkflowMap : IEntityTypeConfiguration<Workflow>
+internal sealed class WorkflowMap : IEntityTypeConfiguration<Workflow>
 {
     public void Configure(EntityTypeBuilder<Workflow> builder)
     {

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Apontamento;
 
-public class CreateApontamentoHandler : IRequestHandler<CreateApontamentoCommand, OperationResult>
+public sealed class CreateApontamentoHandler : IRequestHandler<CreateApontamentoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

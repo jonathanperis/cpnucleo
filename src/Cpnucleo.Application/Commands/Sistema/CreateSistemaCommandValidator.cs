@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Sistema;
 
-public class CreateSistemaCommandValidator : AbstractValidator<CreateSistemaCommand>
+public sealed class CreateSistemaCommandValidator : AbstractValidator<CreateSistemaCommand>
 {
     public CreateSistemaCommandValidator()
     {

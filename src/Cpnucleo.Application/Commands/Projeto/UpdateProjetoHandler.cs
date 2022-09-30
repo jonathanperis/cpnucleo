@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Projeto;
 
-public class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand, OperationResult>
+public sealed class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

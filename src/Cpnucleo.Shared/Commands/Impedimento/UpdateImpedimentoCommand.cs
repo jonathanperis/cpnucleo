@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.Impedimento;
 
-public record UpdateImpedimentoCommand(Guid Id, string Nome) : BaseCommand, IRequest<OperationResult>;
+public sealed record UpdateImpedimentoCommand(Guid Id, string Nome) : BaseCommand, IRequest<OperationResult>;

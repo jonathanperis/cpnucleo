@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Recurso;
 
-public class RemoveRecursoCommandValidator : AbstractValidator<RemoveRecursoCommand>
+public sealed class RemoveRecursoCommandValidator : AbstractValidator<RemoveRecursoCommand>
 {
     public RemoveRecursoCommandValidator()
     {

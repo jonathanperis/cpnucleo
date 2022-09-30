@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Workflow;
 
-public class UpdateWorkflowHandler : IRequestHandler<UpdateWorkflowCommand, OperationResult>
+public sealed class UpdateWorkflowHandler : IRequestHandler<UpdateWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

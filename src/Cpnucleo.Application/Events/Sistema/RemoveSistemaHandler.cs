@@ -3,7 +3,7 @@ using Ev.ServiceBus.Reception;
 
 namespace Cpnucleo.Application.Events.Sistema;
 
-public class RemoveSistemaHandler : IMessageReceptionHandler<RemoveSistemaEvent>
+public sealed class RemoveSistemaHandler : IMessageReceptionHandler<RemoveSistemaEvent>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

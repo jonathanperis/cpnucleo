@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Workflow;
 
-public class UpdateWorkflowCommandValidator : AbstractValidator<UpdateWorkflowCommand>
+public sealed class UpdateWorkflowCommandValidator : AbstractValidator<UpdateWorkflowCommand>
 {
     public UpdateWorkflowCommandValidator()
     {

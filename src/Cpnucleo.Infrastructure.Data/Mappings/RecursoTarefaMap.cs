@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class RecursoTarefaMap : IEntityTypeConfiguration<RecursoTarefa>
+internal sealed class RecursoTarefaMap : IEntityTypeConfiguration<RecursoTarefa>
 {
     public void Configure(EntityTypeBuilder<RecursoTarefa> builder)
     {

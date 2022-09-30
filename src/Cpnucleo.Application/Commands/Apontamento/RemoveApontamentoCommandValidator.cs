@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Apontamento;
 
-public class RemoveApontamentoCommandValidator : AbstractValidator<RemoveApontamentoCommand>
+public sealed class RemoveApontamentoCommandValidator : AbstractValidator<RemoveApontamentoCommand>
 {
     public RemoveApontamentoCommandValidator()
     {
