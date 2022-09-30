@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Impedimento;
 
-public class GetImpedimentoQueryValidator : AbstractValidator<GetImpedimentoQuery>
+public sealed class GetImpedimentoQueryValidator : AbstractValidator<GetImpedimentoQuery>
 {
     public GetImpedimentoQueryValidator()
     {

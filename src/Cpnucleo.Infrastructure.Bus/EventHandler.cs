@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cpnucleo.Infrastructure.Bus;
 
-public class EventHandler : IEventHandler
+internal sealed class EventHandler : IEventHandler
 {
     private readonly IServiceProvider _serviceProvider;
 

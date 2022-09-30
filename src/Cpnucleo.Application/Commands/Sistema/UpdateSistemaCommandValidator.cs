@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Sistema;
 
-public class UpdateSistemaCommandValidator : AbstractValidator<UpdateSistemaCommand>
+public sealed class UpdateSistemaCommandValidator : AbstractValidator<UpdateSistemaCommand>
 {
     public UpdateSistemaCommandValidator()
     {

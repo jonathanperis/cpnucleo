@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.Sistema;
 
-public record RemoveSistemaCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveSistemaCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

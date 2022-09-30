@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class ApontamentoDTO : BaseDTO
+public sealed record ApontamentoDTO : BaseDTO
 {
     [Display(Name = "Descrição")]
     [Required(ErrorMessage = "Necessário informar a {0} do Apontamento.")]

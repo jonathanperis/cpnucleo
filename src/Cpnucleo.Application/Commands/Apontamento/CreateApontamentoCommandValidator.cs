@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Apontamento;
 
-public class CreateApontamentoCommandValidator : AbstractValidator<CreateApontamentoCommand>
+public sealed class CreateApontamentoCommandValidator : AbstractValidator<CreateApontamentoCommand>
 {
     public CreateApontamentoCommandValidator()
     {

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Sistema;
 
-public class GetSistemaHandler : IRequestHandler<GetSistemaQuery, GetSistemaViewModel>
+public sealed class GetSistemaHandler : IRequestHandler<GetSistemaQuery, GetSistemaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

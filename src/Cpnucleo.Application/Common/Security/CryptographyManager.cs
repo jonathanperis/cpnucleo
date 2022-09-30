@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Cpnucleo.Application.Common.Security;
 
-public class CryptographyManager : ICryptographyManager
+public sealed class CryptographyManager : ICryptographyManager
 {
     public void CryptPbkdf2(string item, out string itemCrypt, out string salt)
     {

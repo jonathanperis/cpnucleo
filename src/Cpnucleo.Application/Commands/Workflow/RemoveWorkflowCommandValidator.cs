@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Workflow;
 
-public class RemoveWorkflowCommandValidator : AbstractValidator<RemoveWorkflowCommand>
+public sealed class RemoveWorkflowCommandValidator : AbstractValidator<RemoveWorkflowCommand>
 {
     public RemoveWorkflowCommandValidator()
     {

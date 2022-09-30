@@ -1,6 +1,6 @@
 namespace Cpnucleo.MVC.Models;
 
-public class SistemaViewModel
+public sealed record SistemaViewModel
 {
     public SistemaDTO Sistema { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Recurso;
 
-public class GetRecursoHandler : IRequestHandler<GetRecursoQuery, GetRecursoViewModel>
+public sealed class GetRecursoHandler : IRequestHandler<GetRecursoQuery, GetRecursoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

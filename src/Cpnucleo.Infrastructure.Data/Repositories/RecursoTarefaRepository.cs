@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class RecursoTarefaRepository : GenericRepository<RecursoTarefa>, IRecursoTarefaRepository
+internal sealed class RecursoTarefaRepository : GenericRepository<RecursoTarefa>, IRecursoTarefaRepository
 {
     public RecursoTarefaRepository(CpnucleoContext context)
         : base(context) { }

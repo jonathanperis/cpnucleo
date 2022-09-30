@@ -3,7 +3,7 @@ using Cpnucleo.Shared.Requests.Auth;
 
 namespace Cpnucleo.Application.Requests.Auth;
 
-public class AuthHandler : IRequestHandler<AuthRequest, AuthResponse>
+public sealed class AuthHandler : IRequestHandler<AuthRequest, AuthResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

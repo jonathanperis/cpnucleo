@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class RecursoProjeto : BaseEntity
+public sealed record RecursoProjeto : BaseEntity
 {
     public Guid IdRecurso { get; set; }
 

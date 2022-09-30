@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.RecursoTarefa;
 
-public class GetRecursoTarefaQueryValidator : AbstractValidator<GetRecursoTarefaQuery>
+public sealed class GetRecursoTarefaQueryValidator : AbstractValidator<GetRecursoTarefaQuery>
 {
     public GetRecursoTarefaQueryValidator()
     {

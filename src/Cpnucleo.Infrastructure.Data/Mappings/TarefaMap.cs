@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class TarefaMap : IEntityTypeConfiguration<Tarefa>
+internal sealed class TarefaMap : IEntityTypeConfiguration<Tarefa>
 {
     public void Configure(EntityTypeBuilder<Tarefa> builder)
     {

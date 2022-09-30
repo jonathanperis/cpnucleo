@@ -1,6 +1,6 @@
 namespace Cpnucleo.MVC.Models;
 
-public class ProjetoViewModel
+public sealed record ProjetoViewModel
 {
     public ProjetoDTO Projeto { get; set; }
 

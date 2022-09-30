@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Apontamento;
 
-public class ListApontamentoHandler : IRequestHandler<ListApontamentoQuery, ListApontamentoViewModel>
+public sealed class ListApontamentoHandler : IRequestHandler<ListApontamentoQuery, ListApontamentoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

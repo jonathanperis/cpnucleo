@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class Projeto : BaseEntity
+public sealed record Projeto : BaseEntity
 {
     public string Nome { get; set; }
 

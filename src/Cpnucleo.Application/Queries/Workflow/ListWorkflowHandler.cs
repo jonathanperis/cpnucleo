@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Workflow;
 
-public class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, ListWorkflowViewModel>
+public sealed class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, ListWorkflowViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

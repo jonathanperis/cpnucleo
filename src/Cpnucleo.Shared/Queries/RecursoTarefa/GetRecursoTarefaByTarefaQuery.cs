@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.RecursoTarefa;
 
-public record GetRecursoTarefaByTarefaQuery(Guid IdTarefa) : BaseQuery, IRequest<GetRecursoTarefaByTarefaViewModel>;
+public sealed record GetRecursoTarefaByTarefaQuery(Guid IdTarefa) : BaseQuery, IRequest<GetRecursoTarefaByTarefaViewModel>;

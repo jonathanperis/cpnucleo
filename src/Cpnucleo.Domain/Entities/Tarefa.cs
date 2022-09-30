@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class Tarefa : BaseEntity
+public sealed record Tarefa : BaseEntity
 {
     public string Nome { get; set; }
 

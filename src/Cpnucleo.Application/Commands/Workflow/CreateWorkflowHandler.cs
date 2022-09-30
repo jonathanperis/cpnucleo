@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Workflow;
 
-public class CreateWorkflowHandler : IRequestHandler<CreateWorkflowCommand, OperationResult>
+public sealed class CreateWorkflowHandler : IRequestHandler<CreateWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

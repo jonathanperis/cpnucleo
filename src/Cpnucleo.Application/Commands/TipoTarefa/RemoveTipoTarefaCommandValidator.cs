@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.TipoTarefa;
 
-public class RemoveTipoTarefaCommandValidator : AbstractValidator<RemoveTipoTarefaCommand>
+public sealed class RemoveTipoTarefaCommandValidator : AbstractValidator<RemoveTipoTarefaCommand>
 {
     public RemoveTipoTarefaCommandValidator()
     {

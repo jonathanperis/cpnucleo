@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class TipoTarefa : BaseEntity
+public sealed record TipoTarefa : BaseEntity
 {
     public string Nome { get; set; }
 

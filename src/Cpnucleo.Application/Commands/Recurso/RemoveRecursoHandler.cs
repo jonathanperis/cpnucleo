@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Recurso;
 
-public class RemoveRecursoHandler : IRequestHandler<RemoveRecursoCommand, OperationResult>
+public sealed class RemoveRecursoHandler : IRequestHandler<RemoveRecursoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

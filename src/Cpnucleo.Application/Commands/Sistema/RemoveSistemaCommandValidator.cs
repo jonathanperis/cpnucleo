@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Sistema;
 
-public class RemoveSistemaCommandValidator : AbstractValidator<RemoveSistemaCommand>
+public sealed class RemoveSistemaCommandValidator : AbstractValidator<RemoveSistemaCommand>
 {
     public RemoveSistemaCommandValidator()
     {

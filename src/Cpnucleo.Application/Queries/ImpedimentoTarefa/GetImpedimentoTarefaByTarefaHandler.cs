@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa;
 
-public class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImpedimentoTarefaByTarefaQuery, GetImpedimentoTarefaByTarefaViewModel>
+public sealed class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImpedimentoTarefaByTarefaQuery, GetImpedimentoTarefaByTarefaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

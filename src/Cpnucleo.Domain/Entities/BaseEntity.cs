@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Domain.Entities;
 
-public abstract class BaseEntity
+public abstract record BaseEntity
 {
     public BaseEntity()
     {

@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.Tarefa;
 
-public record ListTarefaQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListTarefaViewModel>;
+public sealed record ListTarefaQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListTarefaViewModel>;

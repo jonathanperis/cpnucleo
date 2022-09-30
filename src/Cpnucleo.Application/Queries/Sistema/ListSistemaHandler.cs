@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Cpnucleo.Application.Queries.Sistema;
 
-public class ListSistemaHandler : IRequestHandler<ListSistemaQuery, ListSistemaViewModel>
+public sealed class ListSistemaHandler : IRequestHandler<ListSistemaQuery, ListSistemaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

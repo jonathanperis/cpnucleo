@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Tarefa;
 
-public class CreateTarefaHandler : IRequestHandler<CreateTarefaCommand, OperationResult>
+public sealed class CreateTarefaHandler : IRequestHandler<CreateTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

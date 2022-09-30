@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Application.Commands.Recurso;
 
-public class UpdateRecursoHandler : IRequestHandler<UpdateRecursoCommand, OperationResult>
+public sealed class UpdateRecursoHandler : IRequestHandler<UpdateRecursoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICryptographyManager _cryptographyManager;

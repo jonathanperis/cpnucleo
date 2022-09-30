@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
+internal sealed class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
 {
     public void Configure(EntityTypeBuilder<TipoTarefa> builder)
     {

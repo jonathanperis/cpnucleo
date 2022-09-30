@@ -3,7 +3,7 @@ using Cpnucleo.Shared.Events.Sistema;
 
 namespace Cpnucleo.Application.Commands.Sistema;
 
-public class RemoveSistemaHandler : IRequestHandler<RemoveSistemaCommand, OperationResult>
+public sealed class RemoveSistemaHandler : IRequestHandler<RemoveSistemaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEventHandler _eventHandler;

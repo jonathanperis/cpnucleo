@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Recurso;
 
-public class CreateRecursoCommandValidator : AbstractValidator<CreateRecursoCommand>
+public sealed class CreateRecursoCommandValidator : AbstractValidator<CreateRecursoCommand>
 {
     public CreateRecursoCommandValidator()
     {
