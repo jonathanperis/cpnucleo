@@ -1,7 +1,6 @@
 ﻿using Cpnucleo.API.Auth.Configuration;
 using Cpnucleo.API.Auth.Filters;
 using Cpnucleo.Application;
-using Cpnucleo.Application.Common.Bus;
 using Cpnucleo.Domain;
 using Cpnucleo.Infrastructure.Data;
 using FluentValidation.AspNetCore;

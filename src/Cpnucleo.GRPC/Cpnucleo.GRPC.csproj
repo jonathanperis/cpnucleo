@@ -4,12 +4,11 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<UserSecretsId>667fd26c-d449-4a3d-b7cd-bf2e859c27ab</UserSecretsId>
+		<UserSecretsId>47bd8656-a13b-4536-b2b0-56991710daa1</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
-		<PackageReference Include="Grpc.AspNetCore.Web" Version="2.49.0" />
 		<PackageReference Include="MagicOnion.Server" Version="4.5.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0-rc.1.22427.2" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
