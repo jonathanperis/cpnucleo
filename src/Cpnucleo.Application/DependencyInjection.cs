@@ -33,7 +33,7 @@ public static class DependencyInjection
         });
 
         services.AddSignalR()
-                .AddAzureSignalR(configuration["AzureSignalR:DefaultConnection"]);
+                .AddAzureSignalR(configuration["AzureSignalR_DefaultConnection"]);
 
         services.AddScoped<IEventHandler, EventHandler>();
 
@@ -41,7 +41,7 @@ public static class DependencyInjection
         {
             settings.Enabled = true;
             settings.ReceiveMessages = true;
-            settings.WithConnection(configuration["AzureServiceBus:DefaultConnection"], new ServiceBusClientOptions());
+            settings.WithConnection(configuration["AzureServiceBus_DefaultConnection"], new ServiceBusClientOptions());
         });
 
         services.RegisterServiceBusDispatch().ToQueue("CpnucleoDefaultQueue", builder =>
