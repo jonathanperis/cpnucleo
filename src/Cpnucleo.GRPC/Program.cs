@@ -1,5 +1,4 @@
 using Cpnucleo.Application;
-using Cpnucleo.Application.Common.Bus;
 using Cpnucleo.Domain;
 using Cpnucleo.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +32,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim(ClaimTypes.Hash);
     });
 });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(x =>
     {
@@ -50,11 +50,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5020);
+    options.ListenAnyIP(5021, listenOptions =>
+    {
+        listenOptions.UseHttps();
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+    });
+});
+
 WebApplication app = builder.Build();
 
 app.UseRouting();
-app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-
 app.UseCors(x =>
 {
     // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
@@ -72,11 +80,6 @@ app.UseApplication();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapMagicOnionService().RequireCors("AllowAll");
-
-    endpoints.MapGet("/", async context =>
-    {
-        await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-    });
 });
 
 app.Run();
