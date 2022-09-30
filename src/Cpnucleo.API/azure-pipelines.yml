@@ -9,7 +9,7 @@ variables:
   buildConfiguration: 'Release'  
 
 pool:
-  vmImage: 'ubuntu-20.04'
+  vmImage: 'windows-latest'
 
 name: $(date:yyyyMMdd)$(rev:.r)
 
