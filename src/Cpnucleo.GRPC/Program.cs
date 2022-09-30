@@ -1,6 +1,6 @@
 using Cpnucleo.Application;
+using Cpnucleo.Application.Common.Bus;
 using Cpnucleo.Domain;
-using Cpnucleo.Infrastructure.Bus;
 using Cpnucleo.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +12,6 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDomain();
 builder.Services.AddInfrastructureData();
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddInfrastructureBus(builder.Configuration);
 
 builder.Services.AddGrpc();
 builder.Services.AddMagicOnion();

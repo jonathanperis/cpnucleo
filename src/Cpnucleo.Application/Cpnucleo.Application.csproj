@@ -17,7 +17,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infrastructure.Bus\Cpnucleo.Infrastructure.Bus.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Shared\Cpnucleo.Shared.csproj" />
 	</ItemGroup>
 

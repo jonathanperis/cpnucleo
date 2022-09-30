@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System.Text;
 
-namespace Cpnucleo.Infrastructure.Bus;
+namespace Cpnucleo.Application.Common.Bus;
 
 internal sealed class PayloadSerializer : IMessagePayloadSerializer
 {
