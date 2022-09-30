@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Tarefa;
 
-public class UpdateTarefaHandler : IRequestHandler<UpdateTarefaCommand, OperationResult>
+public sealed class UpdateTarefaHandler : IRequestHandler<UpdateTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

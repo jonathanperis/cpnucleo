@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Sistema;
 
-public class GetSistemaQueryValidator : AbstractValidator<GetSistemaQuery>
+public sealed class GetSistemaQueryValidator : AbstractValidator<GetSistemaQuery>
 {
     public GetSistemaQueryValidator()
     {

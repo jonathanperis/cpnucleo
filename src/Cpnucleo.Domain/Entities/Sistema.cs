@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class Sistema : BaseEntity
+public sealed record Sistema : BaseEntity
 {
     public string Nome { get; set; }
 

@@ -1,6 +1,6 @@
 namespace Cpnucleo.MVC.Models;
 
-public class RecursoTarefaViewModel
+public sealed record RecursoTarefaViewModel
 {
     public RecursoTarefaDTO RecursoTarefa { get; set; }
 

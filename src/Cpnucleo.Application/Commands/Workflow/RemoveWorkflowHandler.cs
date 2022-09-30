@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Workflow;
 
-public class RemoveWorkflowHandler : IRequestHandler<RemoveWorkflowCommand, OperationResult>
+public sealed class RemoveWorkflowHandler : IRequestHandler<RemoveWorkflowCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

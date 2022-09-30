@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Application.Commands.Recurso;
 
-public class CreateRecursoHandler : IRequestHandler<CreateRecursoCommand, OperationResult>
+public sealed class CreateRecursoHandler : IRequestHandler<CreateRecursoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class Workflow : BaseEntity
+public sealed record Workflow : BaseEntity
 {
     public string Nome { get; set; }
 

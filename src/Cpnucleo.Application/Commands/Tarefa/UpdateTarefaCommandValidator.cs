@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Tarefa;
 
-public class UpdateTarefaCommandValidator : AbstractValidator<UpdateTarefaCommand>
+public sealed class UpdateTarefaCommandValidator : AbstractValidator<UpdateTarefaCommand>
 {
     public UpdateTarefaCommandValidator()
     {

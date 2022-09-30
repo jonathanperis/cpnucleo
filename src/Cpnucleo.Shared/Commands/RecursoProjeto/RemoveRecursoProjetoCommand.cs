@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.RecursoProjeto;
 
-public record RemoveRecursoProjetoCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveRecursoProjetoCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

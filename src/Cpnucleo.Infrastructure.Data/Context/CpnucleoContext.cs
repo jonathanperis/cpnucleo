@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infrastructure.Data.Context;
 
-public class CpnucleoContext : DbContext
+public sealed class CpnucleoContext : DbContext
 {
     private readonly IConfiguration _configuration;
 

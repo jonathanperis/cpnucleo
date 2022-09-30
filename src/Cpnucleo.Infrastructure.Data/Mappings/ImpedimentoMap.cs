@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
+internal sealed class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
 {
     public void Configure(EntityTypeBuilder<Impedimento> builder)
     {

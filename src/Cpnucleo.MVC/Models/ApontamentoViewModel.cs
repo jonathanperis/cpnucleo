@@ -1,6 +1,6 @@
 namespace Cpnucleo.MVC.Models;
 
-public class ApontamentoViewModel
+public sealed record ApontamentoViewModel
 {
     public ApontamentoDTO Apontamento { get; set; }
 

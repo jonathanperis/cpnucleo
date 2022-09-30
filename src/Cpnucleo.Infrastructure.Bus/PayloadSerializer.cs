@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Cpnucleo.Infrastructure.Bus;
 
-internal class PayloadSerializer : IMessagePayloadSerializer
+internal sealed class PayloadSerializer : IMessagePayloadSerializer
 {
     private static readonly JsonSerializerSettings Settings = new JsonSerializerSettings()
     {

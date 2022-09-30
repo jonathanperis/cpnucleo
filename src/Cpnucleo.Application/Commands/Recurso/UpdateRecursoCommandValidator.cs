@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Recurso;
 
-public class UpdateRecursoCommandValidator : AbstractValidator<UpdateRecursoCommand>
+public sealed class UpdateRecursoCommandValidator : AbstractValidator<UpdateRecursoCommand>
 {
     public UpdateRecursoCommandValidator()
     {

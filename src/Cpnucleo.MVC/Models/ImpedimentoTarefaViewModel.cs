@@ -1,6 +1,6 @@
 namespace Cpnucleo.MVC.Models;
 
-public class ImpedimentoTarefaViewModel
+public sealed record ImpedimentoTarefaViewModel
 {
     public ImpedimentoTarefaDTO ImpedimentoTarefa { get; set; }
 

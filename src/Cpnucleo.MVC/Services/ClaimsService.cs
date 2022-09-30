@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.MVC.Services;
 
-public static class ClaimsService
+internal static class ClaimsService
 {
     public static ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
     {

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Workflow;
 
-public class GetWorkflowQueryValidator : AbstractValidator<GetWorkflowQuery>
+public sealed class GetWorkflowQueryValidator : AbstractValidator<GetWorkflowQuery>
 {
     public GetWorkflowQueryValidator()
     {

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class ProjetoMap : IEntityTypeConfiguration<Projeto>
+internal sealed class ProjetoMap : IEntityTypeConfiguration<Projeto>
 {
     public void Configure(EntityTypeBuilder<Projeto> builder)
     {

@@ -3,7 +3,7 @@ using Cpnucleo.Infrastructure.Data.Extensions;
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class RecursoRepository : GenericRepository<Recurso>, IRecursoRepository
+internal sealed class RecursoRepository : GenericRepository<Recurso>, IRecursoRepository
 {
     public RecursoRepository(CpnucleoContext context)
         : base(context) { }

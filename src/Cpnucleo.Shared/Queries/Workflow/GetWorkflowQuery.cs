@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.Workflow;
 
-public record GetWorkflowQuery(Guid Id) : BaseQuery, IRequest<GetWorkflowViewModel>;
+public sealed record GetWorkflowQuery(Guid Id) : BaseQuery, IRequest<GetWorkflowViewModel>;

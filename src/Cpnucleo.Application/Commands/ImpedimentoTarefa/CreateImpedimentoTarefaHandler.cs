@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.ImpedimentoTarefa;
 
-public class CreateImpedimentoTarefaHandler : IRequestHandler<CreateImpedimentoTarefaCommand, OperationResult>
+public sealed class CreateImpedimentoTarefaHandler : IRequestHandler<CreateImpedimentoTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

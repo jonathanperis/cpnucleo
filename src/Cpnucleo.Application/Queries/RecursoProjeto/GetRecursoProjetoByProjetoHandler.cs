@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.RecursoProjeto;
 
-public class GetRecursoProjetoByProjetoHandler : IRequestHandler<GetRecursoProjetoByProjetoQuery, GetRecursoProjetoByProjetoViewModel>
+public sealed class GetRecursoProjetoByProjetoHandler : IRequestHandler<GetRecursoProjetoByProjetoQuery, GetRecursoProjetoByProjetoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -67,7 +67,7 @@ public class HomeController : Controller
                 return View();
             }
 
-            AuthResponse result = await _cpnucleoAuthApiClient.PostAsync<AuthResponse>("auth", new AuthRequest { Usuario = obj.Auth.Usuario, Senha = obj.Auth.Senha });
+            AuthResponse result = await _cpnucleoAuthApiClient.PostAsync<AuthResponse>("auth", new AuthRequest(obj.Auth.Usuario, obj.Auth.Senha));
 
             if (result.Status == OperationResult.Failed)
             {

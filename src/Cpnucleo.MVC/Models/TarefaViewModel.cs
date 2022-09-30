@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Models;
 
-public class TarefaViewModel
+public sealed record TarefaViewModel
 {
     public TarefaDTO Tarefa { get; set; }
 

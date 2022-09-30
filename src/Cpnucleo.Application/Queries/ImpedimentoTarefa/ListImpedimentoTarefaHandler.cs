@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa;
 
-public class ListImpedimentoTarefaHandler : IRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaViewModel>
+public sealed class ListImpedimentoTarefaHandler : IRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

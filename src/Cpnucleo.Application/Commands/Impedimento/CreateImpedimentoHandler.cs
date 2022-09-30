@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Impedimento;
 
-public class CreateImpedimentoHandler : IRequestHandler<CreateImpedimentoCommand, OperationResult>
+public sealed class CreateImpedimentoHandler : IRequestHandler<CreateImpedimentoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

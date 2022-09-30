@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa>
+internal sealed class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa>
 {
     public void Configure(EntityTypeBuilder<ImpedimentoTarefa> builder)
     {

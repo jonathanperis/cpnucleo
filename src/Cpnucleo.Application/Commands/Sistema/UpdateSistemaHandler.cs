@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Sistema;
 
-public class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand, OperationResult>
+public sealed class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

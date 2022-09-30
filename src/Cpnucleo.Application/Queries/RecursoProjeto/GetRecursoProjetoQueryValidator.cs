@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.RecursoProjeto;
 
-public class GetRecursoProjetoQueryValidator : AbstractValidator<GetRecursoProjetoQuery>
+public sealed class GetRecursoProjetoQueryValidator : AbstractValidator<GetRecursoProjetoQuery>
 {
     public GetRecursoProjetoQueryValidator()
     {

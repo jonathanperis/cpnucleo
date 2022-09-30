@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Shared.Requests.Auth;
 
-public class AuthResponse
+public sealed record AuthResponse()
 {
     public string Token { get; set; }
     public RecursoDTO Recurso { get; set; }

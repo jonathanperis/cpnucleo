@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Application.Hubs;
 
-public class CpnucleoHub : Hub
+public sealed class CpnucleoHub : Hub
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

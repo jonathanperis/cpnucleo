@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class ApontamentoRepository : GenericRepository<Apontamento>, IApontamentoRepository
+internal sealed class ApontamentoRepository : GenericRepository<Apontamento>, IApontamentoRepository
 {
     public ApontamentoRepository(CpnucleoContext context)
         : base(context) { }

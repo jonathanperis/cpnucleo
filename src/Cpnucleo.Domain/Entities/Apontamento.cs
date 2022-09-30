@@ -1,6 +1,6 @@
 namespace Cpnucleo.Domain.Entities;
 
-public class Apontamento : BaseEntity
+public sealed record Apontamento : BaseEntity
 {
     public string Descricao { get; set; }
 

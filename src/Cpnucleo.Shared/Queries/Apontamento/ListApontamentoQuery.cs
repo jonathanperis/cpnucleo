@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.Apontamento;
 
-public record ListApontamentoQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListApontamentoViewModel>;
+public sealed record ListApontamentoQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListApontamentoViewModel>;

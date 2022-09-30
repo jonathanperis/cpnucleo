@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class TarefaDTO : BaseDTO //:IValidatableObject
+public sealed record TarefaDTO : BaseDTO //:IValidatableObject
 {
     [Display(Name = "Nome")]
     [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Impedimento;
 
-public class ListImpedimentoHandler : IRequestHandler<ListImpedimentoQuery, ListImpedimentoViewModel>
+public sealed class ListImpedimentoHandler : IRequestHandler<ListImpedimentoQuery, ListImpedimentoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Tarefa;
 
-public class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery, GetTarefaByRecursoViewModel>
+public sealed class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery, GetTarefaByRecursoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

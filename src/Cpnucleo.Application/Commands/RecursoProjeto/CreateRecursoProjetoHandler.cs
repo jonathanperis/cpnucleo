@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.RecursoProjeto;
 
-public class CreateRecursoProjetoHandler : IRequestHandler<CreateRecursoProjetoCommand, OperationResult>
+public sealed class CreateRecursoProjetoHandler : IRequestHandler<CreateRecursoProjetoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.TipoTarefa;
 
-public class CreateTipoTarefaHandler : IRequestHandler<CreateTipoTarefaCommand, OperationResult>
+public sealed class CreateTipoTarefaHandler : IRequestHandler<CreateTipoTarefaCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class RecursoTarefaDTO : BaseDTO
+public sealed record RecursoTarefaDTO : BaseDTO
 {
     [Display(Name = "Recurso")]
     [Required(ErrorMessage = "Necessário informar o {0}.")]

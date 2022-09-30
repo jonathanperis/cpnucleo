@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Apontamento;
 
-public class GetApontamentoQueryValidator : AbstractValidator<GetApontamentoQuery>
+public sealed class GetApontamentoQueryValidator : AbstractValidator<GetApontamentoQuery>
 {
     public GetApontamentoQueryValidator()
     {

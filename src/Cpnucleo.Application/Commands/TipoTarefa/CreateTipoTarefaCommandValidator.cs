@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.TipoTarefa;
 
-public class CreateTipoTarefaCommandValidator : AbstractValidator<CreateTipoTarefaCommand>
+public sealed class CreateTipoTarefaCommandValidator : AbstractValidator<CreateTipoTarefaCommand>
 {
     public CreateTipoTarefaCommandValidator()
     {

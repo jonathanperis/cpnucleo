@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.ImpedimentoTarefa;
 
-public record RemoveImpedimentoTarefaCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveImpedimentoTarefaCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

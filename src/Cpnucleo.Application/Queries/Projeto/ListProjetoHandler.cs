@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Projeto;
 
-public class ListProjetoHandler : IRequestHandler<ListProjetoQuery, ListProjetoViewModel>
+public sealed class ListProjetoHandler : IRequestHandler<ListProjetoQuery, ListProjetoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

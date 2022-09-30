@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Application.Requests.Auth;
 
-public class GetAuthQueryValidator : AbstractValidator<AuthRequest>
+public sealed class GetAuthQueryValidator : AbstractValidator<AuthRequest>
 {
     public GetAuthQueryValidator()
     {

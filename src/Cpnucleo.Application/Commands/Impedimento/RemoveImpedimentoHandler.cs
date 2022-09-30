@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Impedimento;
 
-public class RemoveImpedimentoHandler : IRequestHandler<RemoveImpedimentoCommand, OperationResult>
+public sealed class RemoveImpedimentoHandler : IRequestHandler<RemoveImpedimentoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

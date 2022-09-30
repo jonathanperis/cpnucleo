@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class ImpedimentoTarefaDTO : BaseDTO
+public sealed record ImpedimentoTarefaDTO : BaseDTO
 {
     [Display(Name = "Descrição")]
     [Required(ErrorMessage = "Necessário informar a {0} do Impedimento.")]

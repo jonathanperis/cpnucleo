@@ -2,7 +2,7 @@
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class WorkflowRepository : GenericRepository<Workflow>, IWorkflowRepository
+internal sealed class WorkflowRepository : GenericRepository<Workflow>, IWorkflowRepository
 {
     public WorkflowRepository(CpnucleoContext context)
         : base(context) { }

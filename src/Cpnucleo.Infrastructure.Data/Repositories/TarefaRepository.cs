@@ -3,7 +3,7 @@ using Cpnucleo.Infrastructure.Data.Extensions;
 
 namespace Cpnucleo.Infrastructure.Data.Repositories;
 
-internal class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepository
+internal sealed class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepository
 {
     public TarefaRepository(CpnucleoContext context)
         : base(context) { }

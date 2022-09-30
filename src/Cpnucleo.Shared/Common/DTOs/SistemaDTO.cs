@@ -1,6 +1,6 @@
 namespace Cpnucleo.Shared.Common.DTOs;
 
-public class SistemaDTO : BaseDTO
+public sealed record SistemaDTO : BaseDTO
 {
     [Display(Name = "Nome")]
     [Required(ErrorMessage = "Necessário informar o {0} do Sistema.")]

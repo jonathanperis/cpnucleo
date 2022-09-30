@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class RecursoMap : IEntityTypeConfiguration<Recurso>
+internal sealed class RecursoMap : IEntityTypeConfiguration<Recurso>
 {
     public void Configure(EntityTypeBuilder<Recurso> builder)
     {

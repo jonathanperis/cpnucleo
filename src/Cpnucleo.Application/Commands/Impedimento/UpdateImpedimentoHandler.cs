@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Impedimento;
 
-public class UpdateImpedimentoHandler : IRequestHandler<UpdateImpedimentoCommand, OperationResult>
+public sealed class UpdateImpedimentoHandler : IRequestHandler<UpdateImpedimentoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

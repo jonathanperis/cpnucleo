@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
 
-internal class SistemaMap : IEntityTypeConfiguration<Sistema>
+internal sealed class SistemaMap : IEntityTypeConfiguration<Sistema>
 {
     public void Configure(EntityTypeBuilder<Sistema> builder)
     {

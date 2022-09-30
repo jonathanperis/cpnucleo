@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Projeto;
 
-public class RemoveProjetoHandler : IRequestHandler<RemoveProjetoCommand, OperationResult>
+public sealed class RemoveProjetoHandler : IRequestHandler<RemoveProjetoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

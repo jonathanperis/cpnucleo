@@ -1,6 +1,6 @@
 namespace Cpnucleo.MVC.Models;
 
-public class WorkflowViewModel
+public sealed record WorkflowViewModel
 {
     public WorkflowDTO Workflow { get; set; }
 

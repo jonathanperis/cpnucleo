@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Commands.Apontamento;
 
-public class UpdateApontamentoHandler : IRequestHandler<UpdateApontamentoCommand, OperationResult>
+public sealed class UpdateApontamentoHandler : IRequestHandler<UpdateApontamentoCommand, OperationResult>
 {
     private readonly IUnitOfWork _unitOfWork;
 

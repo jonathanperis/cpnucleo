@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Services;
 
-internal class AuthHeaderHandler : DelegatingHandler
+internal sealed class AuthHeaderHandler : DelegatingHandler
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
