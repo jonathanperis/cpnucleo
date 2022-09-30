@@ -1,5 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Cpnucleo.Application.Common.Behaviors;
+using Cpnucleo.Application.Common.Bus;
+using Cpnucleo.Application.Common.Bus.Interfaces;
 using Cpnucleo.Application.Common.Security;
 using Cpnucleo.Application.Common.Security.Interfaces;
 using Cpnucleo.Application.Events.Sistema;
@@ -10,8 +12,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using Cpnucleo.Application.Common.Bus;
-using Cpnucleo.Application.Common.Bus.Interfaces;
 using EventHandler = Cpnucleo.Application.Common.Bus.EventHandler;
 
 namespace Cpnucleo.Application;
