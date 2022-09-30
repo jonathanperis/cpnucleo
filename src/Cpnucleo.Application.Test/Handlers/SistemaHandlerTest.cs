@@ -1,7 +1,7 @@
 ﻿using Cpnucleo.Application.Commands.Sistema;
+using Cpnucleo.Application.Common.Bus.Interfaces;
 using Cpnucleo.Application.Hubs;
 using Cpnucleo.Application.Queries.Sistema;
-using Cpnucleo.Infrastructure.Bus.Interfaces;
 using Cpnucleo.Shared.Events.Sistema;
 using Microsoft.AspNetCore.SignalR;
 using Moq;

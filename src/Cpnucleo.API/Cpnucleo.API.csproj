@@ -22,7 +22,6 @@
 		<ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
 		<ProjectReference Include="..\Cpnucleo.Infrastructure.Data\Cpnucleo.Infrastructure.Data.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infrastructure.Bus\Cpnucleo.Infrastructure.Bus.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

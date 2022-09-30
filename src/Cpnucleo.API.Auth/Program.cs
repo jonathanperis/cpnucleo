@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.API.Auth.Configuration;
 using Cpnucleo.API.Auth.Filters;
 using Cpnucleo.Application;
+using Cpnucleo.Application.Common.Bus;
 using Cpnucleo.Domain;
-using Cpnucleo.Infrastructure.Bus;
 using Cpnucleo.Infrastructure.Data;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDomain();
 builder.Services.AddInfrastructureData();
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddInfrastructureBus(builder.Configuration);
 
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();

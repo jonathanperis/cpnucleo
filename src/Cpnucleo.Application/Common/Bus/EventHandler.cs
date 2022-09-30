@@ -1,8 +1,8 @@
-﻿using Cpnucleo.Infrastructure.Bus.Interfaces;
+﻿using Cpnucleo.Application.Common.Bus.Interfaces;
 using Ev.ServiceBus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cpnucleo.Infrastructure.Bus;
+namespace Cpnucleo.Application.Common.Bus;
 
 internal sealed class EventHandler : IEventHandler
 {
