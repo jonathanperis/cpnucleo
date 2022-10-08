@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Common.Security.Interfaces;
+﻿using Cpnucleo.Domain.Common.Security.Interfaces;
 using System.Security.Cryptography;
 
 namespace Cpnucleo.Application.Common.Security;

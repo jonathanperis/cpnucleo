@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.Common.Security.Interfaces;
+﻿namespace Cpnucleo.Domain.Common.Security.Interfaces;
 
 public interface ICryptographyManager
 {
