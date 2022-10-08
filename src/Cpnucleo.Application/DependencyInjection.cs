@@ -1,9 +1,9 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Cpnucleo.Application.Common.Behaviors;
 using Cpnucleo.Application.Common.Bus;
-using Cpnucleo.Application.Common.Bus.Interfaces;
+using Cpnucleo.Domain.Common.Bus.Interfaces;
 using Cpnucleo.Application.Common.Security;
-using Cpnucleo.Application.Common.Security.Interfaces;
+using Cpnucleo.Domain.Common.Security.Interfaces;
 using Cpnucleo.Application.Events.Sistema;
 using Cpnucleo.Application.Hubs;
 using Cpnucleo.Shared.Events.Sistema;

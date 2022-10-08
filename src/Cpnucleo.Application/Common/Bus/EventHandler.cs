@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Common.Bus.Interfaces;
+﻿using Cpnucleo.Domain.Common.Bus.Interfaces;
 using Ev.ServiceBus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 

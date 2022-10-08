@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Common.Security.Interfaces;
+﻿using Cpnucleo.Domain.Common.Security.Interfaces;
 
 namespace Cpnucleo.API.Controllers.V2;
 

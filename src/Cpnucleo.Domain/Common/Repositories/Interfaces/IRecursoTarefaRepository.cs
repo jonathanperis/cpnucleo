@@ -1,4 +1,4 @@
-namespace Cpnucleo.Application.Common.Repositories.Interfaces;
+namespace Cpnucleo.Domain.Common.Repositories.Interfaces;
 
 public interface IRecursoTarefaRepository : IGenericRepository<RecursoTarefa>
 {

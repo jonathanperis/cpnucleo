@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Common.Repositories.UoW;
+﻿using Cpnucleo.Domain.Common.Repositories.UoW;
 using Cpnucleo.Infrastructure.Context;
 using Cpnucleo.Infrastructure.Repositories;
 
