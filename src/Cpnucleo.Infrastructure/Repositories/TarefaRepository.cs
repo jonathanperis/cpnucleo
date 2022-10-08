@@ -1,7 +1,7 @@
-﻿using Cpnucleo.Infrastructure.Data.Context;
-using Cpnucleo.Infrastructure.Data.Extensions;
+﻿using Cpnucleo.Infrastructure.Context;
+using Cpnucleo.Infrastructure.Extensions;
 
-namespace Cpnucleo.Infrastructure.Data.Repositories;
+namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepository
 {

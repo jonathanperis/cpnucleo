@@ -1,8 +1,8 @@
 ﻿using Cpnucleo.Application.Common.Repositories.UoW;
-using Cpnucleo.Infrastructure.Data.Context;
-using Cpnucleo.Infrastructure.Data.Repositories;
+using Cpnucleo.Infrastructure.Context;
+using Cpnucleo.Infrastructure.Repositories;
 
-namespace Cpnucleo.Infrastructure.Data.UoW;
+namespace Cpnucleo.Infrastructure.UoW;
 
 public sealed class UnitOfWork : IUnitOfWork
 {

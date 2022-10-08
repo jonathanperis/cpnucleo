@@ -1,7 +1,7 @@
-﻿using Cpnucleo.Infrastructure.Data.Extensions;
+﻿using Cpnucleo.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Cpnucleo.Infrastructure.Data.Extensions;
+namespace Cpnucleo.Infrastructure.Extensions;
 
 internal static partial class CustomExtensions
 {

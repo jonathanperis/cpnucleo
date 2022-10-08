@@ -1,5 +1,5 @@
-﻿using Cpnucleo.Infrastructure.Data.Context;
-using Cpnucleo.Infrastructure.Data.UoW;
+﻿using Cpnucleo.Infrastructure.Context;
+using Cpnucleo.Infrastructure.UoW;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cpnucleo.Application.Test.Helpers;

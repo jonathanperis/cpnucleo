@@ -8,10 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="FluentAssertions" Version="6.7.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0-preview-20220726-02" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0-rc.1.22426.7" />
-		<PackageReference Include="Moq" Version="4.18.2" />
+		<PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
 		<PackageReference Include="xunit" Version="2.4.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,8 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infrastructure\Cpnucleo.Infrastructure.csproj" />
+	  <ProjectReference Include="..\Cpnucleo.API\Cpnucleo.API.csproj" />
+	  <ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
+	  <ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
+	  <ProjectReference Include="..\Cpnucleo.Infrastructure\Cpnucleo.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
