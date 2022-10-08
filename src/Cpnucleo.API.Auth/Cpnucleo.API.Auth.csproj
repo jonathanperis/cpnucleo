@@ -20,7 +20,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
-		<ProjectReference Include="..\Cpnucleo.Infrastructure.Data\Cpnucleo.Infrastructure.Data.csproj" />
+		<ProjectReference Include="..\Cpnucleo.Infrastructure\Cpnucleo.Infrastructure.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

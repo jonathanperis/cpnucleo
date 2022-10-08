@@ -2,7 +2,7 @@
 using Cpnucleo.API.Auth.Filters;
 using Cpnucleo.Application;
 using Cpnucleo.Domain;
-using Cpnucleo.Infrastructure.Data;
+using Cpnucleo.Infrastructure;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
