@@ -1,43 +1,45 @@
-﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
+﻿namespace Cpnucleo.Infrastructure.Mappings;
 
-internal sealed class SistemaMap : IEntityTypeConfiguration<Sistema>
+internal sealed class WorkflowMap : IEntityTypeConfiguration<Workflow>
 {
-    public void Configure(EntityTypeBuilder<Sistema> builder)
+    public void Configure(EntityTypeBuilder<Workflow> builder)
     {
-        builder.ToTable("CPN_TB_SISTEMA");
+        builder.ToTable("CPN_TB_WORKFLOW");
 
         builder.Property(c => c.Id)
-            .HasColumnName("SIS_ID")
+            .HasColumnName("WOR_ID")
             .HasColumnType("uniqueidentifier")
             .IsRequired();
 
         builder.Property(c => c.Nome)
-            .HasColumnName("SIS_NOME")
+            .HasColumnName("WOR_NOME")
             .HasColumnType("varchar(50)")
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.Property(c => c.Descricao)
-            .HasColumnName("SIS_DESCRICAO")
-            .HasColumnType("varchar(450)")
-            .HasMaxLength(450)
+        builder.Property(c => c.Ordem)
+            .HasColumnName("WOR_ORDEM")
+            .HasColumnType("int")
             .IsRequired();
 
+        builder
+            .Ignore(c => c.TamanhoColuna);
+
         builder.Property(c => c.DataInclusao)
-            .HasColumnName("SIS_DATA_INCLUSAO")
+            .HasColumnName("WOR_DATA_INCLUSAO")
             .HasColumnType("datetime")
             .IsRequired();
 
         builder.Property(c => c.DataAlteracao)
-            .HasColumnName("SIS_DATA_ALTERACAO")
+            .HasColumnName("WOR_DATA_ALTERACAO")
             .HasColumnType("datetime");
 
         builder.Property(c => c.DataExclusao)
-            .HasColumnName("SIS_DATA_EXCLUSAO")
+            .HasColumnName("WOR_DATA_EXCLUSAO")
             .HasColumnType("datetime");
 
         builder.Property(c => c.Ativo)
-            .HasColumnName("SIS_ATIVO")
+            .HasColumnName("WOR_ATIVO")
             .HasColumnType("bit")
             .IsRequired();
     }

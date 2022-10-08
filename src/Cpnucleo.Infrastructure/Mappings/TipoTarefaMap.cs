@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Infrastructure.Data.Mappings;
+﻿namespace Cpnucleo.Infrastructure.Mappings;
 
 internal sealed class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
 {

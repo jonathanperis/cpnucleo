@@ -1,6 +1,6 @@
-﻿using Cpnucleo.Infrastructure.Data.Context;
+﻿using Cpnucleo.Infrastructure.Context;
 
-namespace Cpnucleo.Infrastructure.Data.Repositories;
+namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class ImpedimentoTarefaRepository : GenericRepository<ImpedimentoTarefa>, IImpedimentoTarefaRepository
 {

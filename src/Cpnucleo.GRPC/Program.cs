@@ -1,6 +1,6 @@
 using Cpnucleo.Application;
 using Cpnucleo.Domain;
-using Cpnucleo.Infrastructure.Data;
+using Cpnucleo.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
