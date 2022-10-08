@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Cpnucleo.API\Cpnucleo.API.csproj" />
+	  <ProjectReference Include="..\Cpnucleo.GRPC\Cpnucleo.GRPC.csproj" />
 	  <ProjectReference Include="..\Cpnucleo.Application\Cpnucleo.Application.csproj" />
 	  <ProjectReference Include="..\Cpnucleo.Domain\Cpnucleo.Domain.csproj" />
 	  <ProjectReference Include="..\Cpnucleo.Infrastructure\Cpnucleo.Infrastructure.csproj" />
