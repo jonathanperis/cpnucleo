@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Application.Common.Bus.Interfaces;
+﻿using Cpnucleo.Domain.Common.Bus.Interfaces;
 using Moq;
 
 namespace Cpnucleo.Application.Test.Helpers;

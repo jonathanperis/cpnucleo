@@ -1,4 +1,4 @@
-﻿namespace Cpnucleo.Application.Common.Bus.Interfaces;
+﻿namespace Cpnucleo.Domain.Common.Bus.Interfaces;
 
 public interface IEventHandler
 {

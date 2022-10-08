@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Application.Common.Security;
-using Cpnucleo.Application.Common.Security.Interfaces;
+using Cpnucleo.Domain.Common.Security.Interfaces;
 
 namespace Cpnucleo.Application.Test.Helpers;
 

@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Application.Commands.Sistema;
-using Cpnucleo.Application.Common.Bus.Interfaces;
+using Cpnucleo.Domain.Common.Bus.Interfaces;
 using Cpnucleo.Application.Hubs;
 using Cpnucleo.Application.Queries.Sistema;
 using Cpnucleo.Shared.Events.Sistema;

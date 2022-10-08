@@ -1,5 +1,5 @@
 ﻿global using AutoMapper;
-global using Cpnucleo.Application.Common.Repositories.UoW;
+global using Cpnucleo.Domain.Common.Repositories.UoW;
 global using Cpnucleo.Domain.Entities;
 global using Cpnucleo.Domain.Services.Interfaces;
 global using Cpnucleo.Shared.Commands.Apontamento;
