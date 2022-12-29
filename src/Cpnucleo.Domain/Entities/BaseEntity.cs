@@ -9,6 +9,8 @@ public abstract record BaseEntity
 
     public Guid Id { get; set; }
 
+    public long ClusteredKey { get; set; }
+
     public DateTime DataInclusao { get; set; }
 
     public DateTime? DataAlteracao { get; set; }
