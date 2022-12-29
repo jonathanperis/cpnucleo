@@ -4,39 +4,38 @@ internal sealed class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjet
 {
     public void Configure(EntityTypeBuilder<RecursoProjeto> builder)
     {
-        builder.ToTable("CPN_TB_RECURSO_PROJETO");
+        builder
+            .ToTable("RecursosProjetos", "public");
 
         builder.Property(c => c.Id)
-            .HasColumnName("RPROJ_ID")
-            .HasColumnType("uniqueidentifier")
-            .IsRequired();
+            .IsRequired()
+            .ValueGeneratedNever();
+
+        builder
+            .Property(e => e.ClusteredKey)
+            .ValueGeneratedOnAdd();
 
         builder.Property(c => c.IdRecurso)
-            .HasColumnName("REC_ID")
-            .HasColumnType("uniqueidentifier")
             .IsRequired();
 
         builder.Property(c => c.IdProjeto)
-            .HasColumnName("PROJ_ID")
-            .HasColumnType("uniqueidentifier")
             .IsRequired();
 
         builder.Property(c => c.DataInclusao)
-            .HasColumnName("RPROJ_DATA_INCLUSAO")
-            .HasColumnType("datetime")
+            .IsRequired();
+
+        builder.Property(c => c.DataExclusao);
+
+        builder.Property(c => c.Ativo)
             .IsRequired();
 
         builder
-            .Ignore(c => c.DataAlteracao);
+            .HasKey(nameof(BaseEntity.Id))
+            .IsClustered(false);
 
-        builder.Property(c => c.DataExclusao)
-            .HasColumnName("RPROJ_DATA_EXCLUSAO")
-            .HasColumnType("datetime");
-
-        builder.Property(c => c.Ativo)
-            .HasColumnName("RPROJ_ATIVO")
-            .HasColumnType("bit")
-            .IsRequired();
+        builder
+            .HasIndex(nameof(BaseEntity.ClusteredKey))
+            .IsClustered(true);
 
         builder
             .HasOne(p => p.Recurso)
@@ -47,5 +46,8 @@ internal sealed class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjet
             .HasOne(p => p.Projeto)
             .WithMany()
             .HasForeignKey(f => f.IdProjeto);
+
+        builder
+            .Ignore(c => c.DataAlteracao);
     }
 }
