@@ -2,6 +2,8 @@
 
 internal sealed class ProjetoMap : IEntityTypeConfiguration<Projeto>
 {
+    internal static List<Projeto> Projetos { get; set; }
+
     public void Configure(EntityTypeBuilder<Projeto> builder)
     {
         builder
@@ -44,5 +46,10 @@ internal sealed class ProjetoMap : IEntityTypeConfiguration<Projeto>
             .HasOne(p => p.Sistema)
             .WithMany()
             .HasForeignKey(f => f.IdSistema);
+
+        if (Projetos != null)
+        {
+            builder.HasData(Projetos);
+        }
     }
 }

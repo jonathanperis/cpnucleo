@@ -2,6 +2,8 @@
 
 internal sealed class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
 {
+    internal static List<Impedimento> Impedimentos { get; set; }
+
     public void Configure(EntityTypeBuilder<Impedimento> builder)
     {
         builder
@@ -36,5 +38,10 @@ internal sealed class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
         builder
             .HasIndex(nameof(BaseEntity.ClusteredKey))
             .IsClustered(true);
+
+        if (Impedimentos != null)
+        {
+            builder.HasData(Impedimentos);
+        }
     }
 }
