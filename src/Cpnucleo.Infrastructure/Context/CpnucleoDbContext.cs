@@ -20,6 +20,34 @@ public sealed class CpnucleoDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //SeedData();
+
+        modelBuilder.ApplyConfiguration(new ApontamentoMap());
+        modelBuilder.ApplyConfiguration(new ImpedimentoMap());
+        modelBuilder.ApplyConfiguration(new ImpedimentoTarefaMap());
+        modelBuilder.ApplyConfiguration(new ProjetoMap());
+        modelBuilder.ApplyConfiguration(new RecursoMap());
+        modelBuilder.ApplyConfiguration(new RecursoProjetoMap());
+        modelBuilder.ApplyConfiguration(new RecursoTarefaMap());
+        modelBuilder.ApplyConfiguration(new SistemaMap());
+        modelBuilder.ApplyConfiguration(new TarefaMap());
+        modelBuilder.ApplyConfiguration(new TipoTarefaMap());
+        modelBuilder.ApplyConfiguration(new WorkflowMap());
+
+        base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder
+                .UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
+        }
+    }
+
+    private void SeedData()
+    {
         Guid sistemaId = Guid.NewGuid();
         SistemaMap.Sistemas = new()
         {
@@ -63,28 +91,5 @@ public sealed class CpnucleoDbContext : DbContext
         {
             MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId)
         };
-
-        modelBuilder.ApplyConfiguration(new ApontamentoMap());
-        modelBuilder.ApplyConfiguration(new ImpedimentoMap());
-        modelBuilder.ApplyConfiguration(new ImpedimentoTarefaMap());
-        modelBuilder.ApplyConfiguration(new ProjetoMap());
-        modelBuilder.ApplyConfiguration(new RecursoMap());
-        modelBuilder.ApplyConfiguration(new RecursoProjetoMap());
-        modelBuilder.ApplyConfiguration(new RecursoTarefaMap());
-        modelBuilder.ApplyConfiguration(new SistemaMap());
-        modelBuilder.ApplyConfiguration(new TarefaMap());
-        modelBuilder.ApplyConfiguration(new TipoTarefaMap());
-        modelBuilder.ApplyConfiguration(new WorkflowMap());
-
-        base.OnModelCreating(modelBuilder);
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder
-                .UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
-        }
     }
 }
