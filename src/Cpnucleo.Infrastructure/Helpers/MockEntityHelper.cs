@@ -8,11 +8,11 @@ internal sealed class MockEntityHelper
         {
             Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
             Descricao = "Descrição do Apontamento de teste",
-            DataApontamento = DateTime.Now,
+            DataApontamento = DateTime.UtcNow,
             QtdHoras = 8,
             IdTarefa = tarefaId,
             IdRecurso = recursoId,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -23,7 +23,7 @@ internal sealed class MockEntityHelper
         {
             Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId,
             Nome = "Impedimento de teste",
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -36,7 +36,7 @@ internal sealed class MockEntityHelper
             Descricao = "Descrição do Impedimento Tarefa de teste",
             IdTarefa = tarefaId,
             IdImpedimento = impedimentoId,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -48,7 +48,7 @@ internal sealed class MockEntityHelper
             Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId,
             Nome = "Projeto de teste",
             IdSistema = sistemaId,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -62,7 +62,7 @@ internal sealed class MockEntityHelper
             Login = "usuario.teste",
             Senha = "k8n3YJ7em+uo32BbpRNgjB+kX6uRCJLN7V1L4Q7WwUqDrpz00uCHi+wOLJBZJkOQ",
             Salt = "okVTEMBEAbjnjKmD3On1qKwDT0+vfBRAzDM/T7vHqH+gZJxV8/9rRhqiALLlLC7r",
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -74,7 +74,7 @@ internal sealed class MockEntityHelper
             Id = recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId,
             IdProjeto = projetoId,
             IdRecurso = recursoId,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -87,7 +87,7 @@ internal sealed class MockEntityHelper
             PercentualTarefa = 25,
             IdTarefa = tarefaId,
             IdRecurso = recursoId,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -99,7 +99,7 @@ internal sealed class MockEntityHelper
             Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
             Nome = "Sistema de teste",
             Descricao = "Descrição do sistema de teste",
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -110,14 +110,14 @@ internal sealed class MockEntityHelper
         {
             Id = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId,
             Nome = "Sistema de teste",
-            DataInicio = DateTime.Now,
-            DataTermino = DateTime.Now.AddDays(5),
+            DataInicio = DateTime.UtcNow,
+            DataTermino = DateTime.UtcNow.AddDays(5),
             QtdHoras = 40,
             IdProjeto = projetoId,
             IdWorkflow = workflowId,
             IdRecurso = recursoId,
             IdTipoTarefa = tipoTarefaId,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -130,7 +130,7 @@ internal sealed class MockEntityHelper
             Nome = "TipoTarefa de teste",
             Element = "success-element",
             Image = "success.png",
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
@@ -142,7 +142,7 @@ internal sealed class MockEntityHelper
             Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
             Nome = nome,
             Ordem = ordem,
-            DataInclusao = DateTime.Now,
+            DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
