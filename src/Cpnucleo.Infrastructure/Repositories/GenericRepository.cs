@@ -6,9 +6,9 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    protected readonly CpnucleoContext _context;
+    protected readonly CpnucleoDbContext _context;
 
-    public GenericRepository(CpnucleoContext context)
+    public GenericRepository(CpnucleoDbContext context)
     {
         _context = context;
     }
