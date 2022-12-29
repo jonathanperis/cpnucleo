@@ -4,7 +4,7 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class ApontamentoRepository : GenericRepository<Apontamento>, IApontamentoRepository
 {
-    public ApontamentoRepository(CpnucleoContext context)
+    public ApontamentoRepository(CpnucleoDbContext context)
         : base(context) { }
 
     public async Task<IEnumerable<Apontamento>> GetApontamentoByRecursoAsync(Guid idRecurso)

@@ -4,7 +4,7 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class WorkflowRepository : GenericRepository<Workflow>, IWorkflowRepository
 {
-    public WorkflowRepository(CpnucleoContext context)
+    public WorkflowRepository(CpnucleoDbContext context)
         : base(context) { }
 
     public async Task<int> GetQuantidadeColunasAsync()

@@ -3,16 +3,16 @@ using Microsoft.Extensions.Configuration;
 
 namespace Cpnucleo.Infrastructure.Context;
 
-public sealed class CpnucleoContext : DbContext
+public sealed class CpnucleoDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
 
-    public CpnucleoContext(IConfiguration configuration)
+    public CpnucleoDbContext(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public CpnucleoContext(DbContextOptions<CpnucleoContext> options)
+    public CpnucleoDbContext(DbContextOptions<CpnucleoDbContext> options)
         : base(options)
     {
     }
@@ -39,8 +39,7 @@ public sealed class CpnucleoContext : DbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder
-                .UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging();
+                .UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
         }
     }
 }

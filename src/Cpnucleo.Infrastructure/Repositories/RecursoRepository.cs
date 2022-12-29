@@ -5,7 +5,7 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class RecursoRepository : GenericRepository<Recurso>, IRecursoRepository
 {
-    public RecursoRepository(CpnucleoContext context)
+    public RecursoRepository(CpnucleoDbContext context)
         : base(context) { }
 
     public Task<Recurso> AddAsync(Recurso entity, string salt)
