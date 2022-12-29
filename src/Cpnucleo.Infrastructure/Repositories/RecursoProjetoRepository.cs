@@ -4,7 +4,7 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class RecursoProjetoRepository : GenericRepository<RecursoProjeto>, IRecursoProjetoRepository
 {
-    public RecursoProjetoRepository(CpnucleoContext context)
+    public RecursoProjetoRepository(CpnucleoDbContext context)
         : base(context) { }
 
     public async Task<IEnumerable<RecursoProjeto>> GetRecursoProjetoByProjetoAsync(Guid idProjeto)

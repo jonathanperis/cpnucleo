@@ -6,9 +6,9 @@ namespace Cpnucleo.Infrastructure.UoW;
 
 public sealed class UnitOfWork : IUnitOfWork
 {
-    private readonly CpnucleoContext _context;
+    private readonly CpnucleoDbContext _context;
 
-    public UnitOfWork(CpnucleoContext context)
+    public UnitOfWork(CpnucleoDbContext context)
     {
         _context = context;
     }

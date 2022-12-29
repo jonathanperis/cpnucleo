@@ -4,7 +4,7 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class ImpedimentoTarefaRepository : GenericRepository<ImpedimentoTarefa>, IImpedimentoTarefaRepository
 {
-    public ImpedimentoTarefaRepository(CpnucleoContext context)
+    public ImpedimentoTarefaRepository(CpnucleoDbContext context)
         : base(context) { }
 
     public async Task<IEnumerable<ImpedimentoTarefa>> GetImpedimentoTarefaByTarefaAsync(Guid idTarefa)

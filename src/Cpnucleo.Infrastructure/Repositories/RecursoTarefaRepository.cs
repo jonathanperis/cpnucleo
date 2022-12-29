@@ -4,7 +4,7 @@ namespace Cpnucleo.Infrastructure.Repositories;
 
 internal sealed class RecursoTarefaRepository : GenericRepository<RecursoTarefa>, IRecursoTarefaRepository
 {
-    public RecursoTarefaRepository(CpnucleoContext context)
+    public RecursoTarefaRepository(CpnucleoDbContext context)
         : base(context) { }
 
     public async Task<IEnumerable<RecursoTarefa>> GetRecursoTarefaByTarefaAsync(Guid idTarefa)
