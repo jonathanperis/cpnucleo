@@ -2,6 +2,8 @@
 
 internal sealed class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
 {
+    internal static List<TipoTarefa> TiposTarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<TipoTarefa> builder)
     {
         builder
@@ -42,6 +44,11 @@ internal sealed class TipoTarefaMap : IEntityTypeConfiguration<TipoTarefa>
             .IsClustered(true);
 
         builder
-            .Ignore(c => c.Element);
+        .Ignore(c => c.Element);
+
+        if (TiposTarefas != null)
+        {
+            builder.HasData(TiposTarefas);
+        }
     }
 }

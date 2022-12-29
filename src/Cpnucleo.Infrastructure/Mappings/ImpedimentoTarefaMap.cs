@@ -2,6 +2,8 @@
 
 internal sealed class ImpedimentoTarefaMap : IEntityTypeConfiguration<ImpedimentoTarefa>
 {
+    internal static List<ImpedimentoTarefa> ImpedimentosTarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<ImpedimentoTarefa> builder)
     {
         builder
@@ -52,5 +54,10 @@ internal sealed class ImpedimentoTarefaMap : IEntityTypeConfiguration<Impediment
             .HasOne(p => p.Impedimento)
             .WithMany()
             .HasForeignKey(f => f.IdImpedimento);
+
+        if (ImpedimentosTarefas != null)
+        {
+            builder.HasData(ImpedimentosTarefas);
+        }
     }
 }

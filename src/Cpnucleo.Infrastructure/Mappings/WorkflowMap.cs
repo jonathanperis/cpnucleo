@@ -2,6 +2,8 @@
 
 internal sealed class WorkflowMap : IEntityTypeConfiguration<Workflow>
 {
+    internal static List<Workflow> Workflows { get; set; }
+
     public void Configure(EntityTypeBuilder<Workflow> builder)
     {
         builder
@@ -42,5 +44,10 @@ internal sealed class WorkflowMap : IEntityTypeConfiguration<Workflow>
 
         builder
             .Ignore(c => c.TamanhoColuna);
+
+        if (Workflows != null)
+        {
+            builder.HasData(Workflows);
+        }
     }
 }
