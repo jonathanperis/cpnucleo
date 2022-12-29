@@ -2,6 +2,8 @@
 
 internal sealed class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
 {
+    internal static List<Apontamento> Apontamentos { get; set; }
+
     public void Configure(EntityTypeBuilder<Apontamento> builder)
     {
         builder
@@ -53,5 +55,10 @@ internal sealed class ApontamentoMap : IEntityTypeConfiguration<Apontamento>
             .HasOne(p => p.Tarefa)
             .WithMany()
             .HasForeignKey(f => f.IdTarefa);
+
+        if (Apontamentos != null)
+        {
+            builder.HasData(Apontamentos);
+        }
     }
 }

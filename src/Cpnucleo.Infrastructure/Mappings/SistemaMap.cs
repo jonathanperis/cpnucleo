@@ -2,6 +2,8 @@
 
 internal sealed class SistemaMap : IEntityTypeConfiguration<Sistema>
 {
+    internal static List<Sistema> Sistemas { get; set; }
+
     public void Configure(EntityTypeBuilder<Sistema> builder)
     {
         builder
@@ -40,5 +42,10 @@ internal sealed class SistemaMap : IEntityTypeConfiguration<Sistema>
         builder
             .HasIndex(nameof(BaseEntity.ClusteredKey))
             .IsClustered(true);
+
+        if (Sistemas != null)
+        {
+            builder.HasData(Sistemas);
+        }
     }
 }

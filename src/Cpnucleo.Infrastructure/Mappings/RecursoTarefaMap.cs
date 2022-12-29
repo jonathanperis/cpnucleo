@@ -2,6 +2,8 @@
 
 internal sealed class RecursoTarefaMap : IEntityTypeConfiguration<RecursoTarefa>
 {
+    internal static List<RecursoTarefa> RecursosTarefas { get; set; }
+
     public void Configure(EntityTypeBuilder<RecursoTarefa> builder)
     {
         builder
@@ -51,6 +53,11 @@ internal sealed class RecursoTarefaMap : IEntityTypeConfiguration<RecursoTarefa>
             .HasForeignKey(f => f.IdTarefa);
 
         builder
-            .Ignore(c => c.DataAlteracao);
+        .Ignore(c => c.DataAlteracao);
+
+        if (RecursosTarefas != null)
+        {
+            builder.HasData(RecursosTarefas);
+        }
     }
 }

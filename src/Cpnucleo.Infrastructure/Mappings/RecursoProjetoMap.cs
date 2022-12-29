@@ -2,6 +2,8 @@
 
 internal sealed class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjeto>
 {
+    internal static List<RecursoProjeto> RecursosProjetos { get; set; }
+
     public void Configure(EntityTypeBuilder<RecursoProjeto> builder)
     {
         builder
@@ -48,6 +50,11 @@ internal sealed class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjet
             .HasForeignKey(f => f.IdProjeto);
 
         builder
-            .Ignore(c => c.DataAlteracao);
+        .Ignore(c => c.DataAlteracao);
+
+        if (RecursosProjetos != null)
+        {
+            builder.HasData(RecursosProjetos);
+        }
     }
 }

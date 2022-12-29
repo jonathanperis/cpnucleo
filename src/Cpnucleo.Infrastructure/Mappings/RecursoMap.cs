@@ -2,6 +2,8 @@
 
 internal sealed class RecursoMap : IEntityTypeConfiguration<Recurso>
 {
+    internal static List<Recurso> Recursos { get; set; }
+
     public void Configure(EntityTypeBuilder<Recurso> builder)
     {
         builder
@@ -51,5 +53,10 @@ internal sealed class RecursoMap : IEntityTypeConfiguration<Recurso>
 
         builder
             .Ignore(c => c.Token);
+
+        if (Recursos != null)
+        {
+            builder.HasData(Recursos);
+        }
     }
 }
