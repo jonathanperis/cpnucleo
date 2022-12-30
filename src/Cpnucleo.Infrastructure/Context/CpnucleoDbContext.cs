@@ -46,7 +46,7 @@ public sealed class CpnucleoDbContext : DbContext
         }
     }
 
-    private void SeedData()
+    private static void SeedData()
     {
         Guid sistemaId = Guid.Parse("b865f5ca-d3c2-46ff-96c8-860207b563c9");
         SistemaMap.Sistemas = new()
