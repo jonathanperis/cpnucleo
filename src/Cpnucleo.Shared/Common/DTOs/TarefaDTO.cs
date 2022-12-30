@@ -57,7 +57,7 @@ public sealed record TarefaDTO : BaseDTO //:IValidatableObject
 
     // public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     // {
-    //     if (DataInicio < DateTime.Now.Date)
+    //     if (DataInicio < DateTime.UtcNow.Date)
     //     {
     //         yield return new ValidationResult(
     //             "Data de Início não pode ser anterior a data atual.",

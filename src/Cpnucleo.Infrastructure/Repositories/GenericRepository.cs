@@ -21,7 +21,7 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         }
 
         entity.Ativo = true;
-        entity.DataInclusao = DateTime.Now;
+        entity.DataInclusao = DateTime.UtcNow;
 
         EntityEntry<TEntity> result = await _context.AddAsync(entity);
 
@@ -30,7 +30,7 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
     public void Update(TEntity entity)
     {
-        entity.DataAlteracao = DateTime.Now;
+        entity.DataAlteracao = DateTime.UtcNow;
 
         _context.Update(entity);
     }
@@ -69,7 +69,7 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         TEntity entity = await GetAsync(id);
 
         entity.Ativo = false;
-        entity.DataExclusao = DateTime.Now;
+        entity.DataExclusao = DateTime.UtcNow;
 
         Update(entity);
     }

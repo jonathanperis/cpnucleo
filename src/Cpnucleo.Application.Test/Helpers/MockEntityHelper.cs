@@ -8,7 +8,7 @@ public class MockEntityHelper
         {
             Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
             Descricao = "Descrição do Apontamento de teste",
-            DataApontamento = DateTime.Now,
+            DataApontamento = DateTime.UtcNow,
             QtdHoras = 8,
             IdTarefa = tarefaId,
             IdRecurso = recursoId,
@@ -94,8 +94,8 @@ public class MockEntityHelper
         {
             Id = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId,
             Nome = "Sistema de teste",
-            DataInicio = DateTime.Now,
-            DataTermino = DateTime.Now.AddDays(5),
+            DataInicio = DateTime.UtcNow,
+            DataTermino = DateTime.UtcNow.AddDays(5),
             QtdHoras = 40,
             IdProjeto = projetoId,
             IdWorkflow = workflowId,
