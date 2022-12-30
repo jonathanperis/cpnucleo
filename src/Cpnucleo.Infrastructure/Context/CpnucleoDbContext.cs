@@ -1,7 +1,6 @@
 ﻿using Cpnucleo.Infrastructure.Helpers;
 using Cpnucleo.Infrastructure.Mappings;
 using Microsoft.Extensions.Configuration;
-using System.Collections;
 
 namespace Cpnucleo.Infrastructure.Context;
 
