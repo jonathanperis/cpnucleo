@@ -79,7 +79,7 @@ public class MockCommandHelper
 
     public static CreateApontamentoCommand GetNewCreateApontamentoCommand(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
     {
-        return new CreateApontamentoCommand(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId, "Descrição do Apontamento de teste", DateTime.Now, 8, tarefaId, recursoId);
+        return new CreateApontamentoCommand(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId, "Descrição do Apontamento de teste", DateTime.UtcNow, 8, tarefaId, recursoId);
     }
 
     public static RemoveApontamentoCommand GetNewRemoveApontamentoCommand(Guid apontamentoId = default)
@@ -89,12 +89,12 @@ public class MockCommandHelper
 
     public static UpdateApontamentoCommand GetNewUpdateApontamentoCommand(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
     {
-        return new UpdateApontamentoCommand(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId, "Descrição do Apontamento de teste - alterado", DateTime.Now, 10, tarefaId, recursoId);
+        return new UpdateApontamentoCommand(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId, "Descrição do Apontamento de teste - alterado", DateTime.UtcNow, 10, tarefaId, recursoId);
     }
 
     public static CreateTarefaCommand GetNewCreateTarefaCommand(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId = default)
     {
-        return new CreateTarefaCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId, "Tarefa de teste", DateTime.Now, DateTime.Now.AddDays(5), 40, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
+        return new CreateTarefaCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId, "Tarefa de teste", DateTime.UtcNow, DateTime.UtcNow.AddDays(5), 40, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
     }
 
     public static RemoveTarefaCommand GetNewRemoveTarefaCommand(Guid tarefaId = default)
@@ -104,7 +104,7 @@ public class MockCommandHelper
 
     public static UpdateTarefaCommand GetNewUpdateTarefaCommand(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId = default)
     {
-        return new UpdateTarefaCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId, "Tarefa de teste - alterado", DateTime.Now, DateTime.Now.AddDays(8), 55, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
+        return new UpdateTarefaCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId, "Tarefa de teste - alterado", DateTime.UtcNow, DateTime.UtcNow.AddDays(8), 55, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
     }
 
     public static UpdateTarefaByWorkflowCommand GetNewUpdateTarefaByWorkflowCommand(Guid workflowId, Guid tarefaId = default)

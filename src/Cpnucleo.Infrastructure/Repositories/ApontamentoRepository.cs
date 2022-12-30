@@ -9,7 +9,7 @@ internal sealed class ApontamentoRepository : GenericRepository<Apontamento>, IA
 
     public async Task<IEnumerable<Apontamento>> GetApontamentoByRecursoAsync(Guid idRecurso)
     {
-        Expression<Func<Apontamento, bool>> predicate = x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.Now.AddDays(-30) && x.Ativo;
+        Expression<Func<Apontamento, bool>> predicate = x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.UtcNow.AddDays(-30) && x.Ativo;
 
         return await All(predicate, true)
             .ToListAsync();

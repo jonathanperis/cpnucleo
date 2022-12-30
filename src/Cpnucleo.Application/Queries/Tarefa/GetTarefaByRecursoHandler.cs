@@ -46,11 +46,11 @@ public sealed class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecur
             {
                 item.TipoTarefa.Element = "warning-element";
             }
-            else if (DateTime.Now.Date >= item.DataInicio && DateTime.Now.Date <= item.DataTermino)
+            else if (DateTime.UtcNow.Date >= item.DataInicio && DateTime.UtcNow.Date <= item.DataTermino)
             {
                 item.TipoTarefa.Element = "success-element";
             }
-            else if (DateTime.Now.Date > item.DataTermino)
+            else if (DateTime.UtcNow.Date > item.DataTermino)
             {
                 item.TipoTarefa.Element = "danger-element";
             }
