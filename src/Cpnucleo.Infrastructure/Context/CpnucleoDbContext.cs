@@ -21,7 +21,7 @@ public sealed class CpnucleoDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //SeedData();
+        SeedData();
 
         modelBuilder.ApplyConfiguration(new ApontamentoMap());
         modelBuilder.ApplyConfiguration(new ImpedimentoMap());
