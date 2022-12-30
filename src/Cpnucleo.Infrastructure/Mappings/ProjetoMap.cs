@@ -13,8 +13,7 @@ internal sealed class ProjetoMap : IEntityTypeConfiguration<Projeto>
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder
-            .Property(e => e.ClusteredKey)
+        builder.Property(e => e.ClusteredKey)
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.Nome)

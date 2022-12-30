@@ -13,8 +13,7 @@ internal sealed class RecursoProjetoMap : IEntityTypeConfiguration<RecursoProjet
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder
-            .Property(e => e.ClusteredKey)
+        builder.Property(e => e.ClusteredKey)
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.IdRecurso)
