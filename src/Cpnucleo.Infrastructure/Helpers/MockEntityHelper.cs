@@ -2,17 +2,19 @@
 
 internal sealed class MockEntityHelper
 {
+    internal static DateTime defaultDate = DateTime.SpecifyKind(new DateTime(2000, 1, 1), DateTimeKind.Utc);
+
     internal static Apontamento GetNewApontamento(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
     {
         return new Apontamento
         {
             Id = apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId,
             Descricao = "Descrição do Apontamento de teste",
-            DataApontamento = DateTime.UtcNow,
+            DataApontamento = defaultDate,
             QtdHoras = 8,
             IdTarefa = tarefaId,
             IdRecurso = recursoId,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -23,7 +25,7 @@ internal sealed class MockEntityHelper
         {
             Id = impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId,
             Nome = "Impedimento de teste",
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -36,7 +38,7 @@ internal sealed class MockEntityHelper
             Descricao = "Descrição do Impedimento Tarefa de teste",
             IdTarefa = tarefaId,
             IdImpedimento = impedimentoId,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -48,7 +50,7 @@ internal sealed class MockEntityHelper
             Id = projetoId == Guid.Empty ? Guid.NewGuid() : projetoId,
             Nome = "Projeto de teste",
             IdSistema = sistemaId,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -62,7 +64,7 @@ internal sealed class MockEntityHelper
             Login = "usuario.teste",
             Senha = "k8n3YJ7em+uo32BbpRNgjB+kX6uRCJLN7V1L4Q7WwUqDrpz00uCHi+wOLJBZJkOQ",
             Salt = "okVTEMBEAbjnjKmD3On1qKwDT0+vfBRAzDM/T7vHqH+gZJxV8/9rRhqiALLlLC7r",
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -74,7 +76,7 @@ internal sealed class MockEntityHelper
             Id = recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId,
             IdProjeto = projetoId,
             IdRecurso = recursoId,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -87,7 +89,7 @@ internal sealed class MockEntityHelper
             PercentualTarefa = 25,
             IdTarefa = tarefaId,
             IdRecurso = recursoId,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -99,7 +101,7 @@ internal sealed class MockEntityHelper
             Id = sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId,
             Nome = "Sistema de teste",
             Descricao = "Descrição do sistema de teste",
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -110,27 +112,26 @@ internal sealed class MockEntityHelper
         {
             Id = tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId,
             Nome = "Sistema de teste",
-            DataInicio = DateTime.UtcNow,
-            DataTermino = DateTime.UtcNow.AddDays(5),
+            DataInicio = defaultDate,
+            DataTermino = defaultDate.AddDays(5),
             QtdHoras = 40,
             IdProjeto = projetoId,
             IdWorkflow = workflowId,
             IdRecurso = recursoId,
             IdTipoTarefa = tipoTarefaId,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
 
-    internal static TipoTarefa GetNewTipoTarefa(Guid tipoTarefaId = default)
+    internal static TipoTarefa GetNewTipoTarefa(string nome, string image, Guid tipoTarefaId = default)
     {
         return new TipoTarefa
         {
             Id = tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId,
-            Nome = "TipoTarefa de teste",
-            Element = "success-element",
-            Image = "success.png",
-            DataInclusao = DateTime.UtcNow,
+            Nome = nome,
+            Image = image,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }
@@ -142,7 +143,7 @@ internal sealed class MockEntityHelper
             Id = workflowId == Guid.Empty ? Guid.NewGuid() : workflowId,
             Nome = nome,
             Ordem = ordem,
-            DataInclusao = DateTime.UtcNow,
+            DataInclusao = defaultDate,
             Ativo = true
         };
     }

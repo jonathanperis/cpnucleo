@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cpnucleo.Infrastructure.Migrations
 {
     [DbContext(typeof(CpnucleoDbContext))]
-    [Migration("20221229225925_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221230024942_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
