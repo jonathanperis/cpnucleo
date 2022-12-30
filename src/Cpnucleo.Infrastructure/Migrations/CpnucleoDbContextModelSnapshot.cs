@@ -198,17 +198,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.HasIndex("IdSistema");
 
                     b.ToTable("Projetos", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("38e2dce9-9f48-486a-88c1-12985c3b72ef"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9185),
-                            IdSistema = new Guid("b865f5ca-d3c2-46ff-96c8-860207b563c9"),
-                            Nome = "Projeto de teste"
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.Recurso", b =>
@@ -261,19 +250,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("Recursos", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ae9cab55-01f8-4bd1-8ca0-92f174bb1aa0"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9222),
-                            Login = "usuario.teste",
-                            Nome = "Recurso de teste",
-                            Salt = "okVTEMBEAbjnjKmD3On1qKwDT0+vfBRAzDM/T7vHqH+gZJxV8/9rRhqiALLlLC7r",
-                            Senha = "k8n3YJ7em+uo32BbpRNgjB+kX6uRCJLN7V1L4Q7WwUqDrpz00uCHi+wOLJBZJkOQ"
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.RecursoProjeto", b =>
@@ -355,18 +331,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.HasIndex("IdTarefa");
 
                     b.ToTable("RecursosTarefas", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("c38956cb-3f2a-4934-a042-2a8bccdcb2ed"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9327),
-                            IdRecurso = new Guid("ae9cab55-01f8-4bd1-8ca0-92f174bb1aa0"),
-                            IdTarefa = new Guid("82fe661a-620b-40b5-980a-4104b03ce873"),
-                            PercentualTarefa = 25
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.Sistema", b =>
@@ -409,17 +373,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("Sistemas", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b865f5ca-d3c2-46ff-96c8-860207b563c9"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9117),
-                            Descricao = "Descrição do sistema de teste",
-                            Nome = "Sistema de teste"
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.Tarefa", b =>
@@ -490,23 +443,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.HasIndex("IdWorkflow");
 
                     b.ToTable("Tarefas", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("82fe661a-620b-40b5-980a-4104b03ce873"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9315),
-                            DataInicio = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9278),
-                            DataTermino = new DateTime(2023, 1, 3, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9279),
-                            IdProjeto = new Guid("38e2dce9-9f48-486a-88c1-12985c3b72ef"),
-                            IdRecurso = new Guid("ae9cab55-01f8-4bd1-8ca0-92f174bb1aa0"),
-                            IdTipoTarefa = new Guid("91d6a672-22dc-4b90-8d7f-0533d2150c44"),
-                            IdWorkflow = new Guid("0c17bf58-c14b-44de-8883-e7616bf29134"),
-                            Nome = "Sistema de teste",
-                            QtdHoras = 40
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.TipoTarefa", b =>
@@ -549,17 +485,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("TiposTarefas", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("91d6a672-22dc-4b90-8d7f-0533d2150c44"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9232),
-                            Image = "success.png",
-                            Nome = "TipoTarefa de teste"
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.Workflow", b =>
@@ -600,44 +525,6 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:Clustered", true);
 
                     b.ToTable("Workflows", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0c17bf58-c14b-44de-8883-e7616bf29134"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9198),
-                            Nome = "Análise",
-                            Ordem = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("4562c0b8-d476-46eb-a58d-1ff3a86266ac"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9203),
-                            Nome = "Desenvolvimento",
-                            Ordem = 2
-                        },
-                        new
-                        {
-                            Id = new Guid("bef7c738-0396-4fe0-af66-a4629261fc8e"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9205),
-                            Nome = "Teste",
-                            Ordem = 3
-                        },
-                        new
-                        {
-                            Id = new Guid("d3af39ba-e690-47e5-a40d-0d849e07a294"),
-                            Ativo = true,
-                            ClusteredKey = 0L,
-                            DataInclusao = new DateTime(2022, 12, 29, 23, 43, 31, 667, DateTimeKind.Utc).AddTicks(9208),
-                            Nome = "Finalizado",
-                            Ordem = 4
-                        });
                 });
 
             modelBuilder.Entity("Cpnucleo.Domain.Entities.Apontamento", b =>
