@@ -13,8 +13,7 @@ internal sealed class ImpedimentoTarefaMap : IEntityTypeConfiguration<Impediment
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder
-            .Property(e => e.ClusteredKey)
+        builder.Property(e => e.ClusteredKey)
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.Descricao)
