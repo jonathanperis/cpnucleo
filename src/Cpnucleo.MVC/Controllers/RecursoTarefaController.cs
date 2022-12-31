@@ -36,7 +36,7 @@ public class RecursoTarefaController : BaseController
     {
         try
         {
-            GetRecursoTarefaByTarefaViewModel result = await _recursoTarefaGrpcService.GetRecursoTarefaByTarefa(new GetRecursoTarefaByTarefaQuery(idTarefa));
+            ListRecursoTarefaByTarefaViewModel result = await _recursoTarefaGrpcService.GetRecursoTarefaByTarefa(new ListRecursoTarefaByTarefaQuery(idTarefa));
 
             if (result.OperationResult == OperationResult.Failed)
             {

@@ -12,5 +12,5 @@ public interface IApontamentoGrpcService : IService<IApontamentoGrpcService>
 
     UnaryResult<OperationResult> RemoveApontamento(RemoveApontamentoCommand command);
 
-    UnaryResult<GetApontamentoByRecursoViewModel> GetApontamentoByRecurso(GetApontamentoByRecursoQuery query);
+    UnaryResult<ListApontamentoByRecursoViewModel> GetApontamentoByRecurso(ListApontamentoByRecursoQuery query);
 }

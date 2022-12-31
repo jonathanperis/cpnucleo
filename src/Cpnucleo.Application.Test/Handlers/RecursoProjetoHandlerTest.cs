@@ -96,11 +96,11 @@ public class RecursoProjetoHandlerTest
 
         await unitOfWork.SaveChangesAsync();
 
-        GetRecursoProjetoByProjetoQuery request = MockQueryHelper.GetNewGetRecursoProjetoByProjetoQuery(projetoId);
+        ListRecursoProjetoByProjetoQuery request = MockQueryHelper.GetNewGetRecursoProjetoByProjetoQuery(projetoId);
 
         // Act
         GetRecursoProjetoByProjetoHandler handler = new(unitOfWork, mapper);
-        GetRecursoProjetoByProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+        ListRecursoProjetoByProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.RecursoProjetos != null);

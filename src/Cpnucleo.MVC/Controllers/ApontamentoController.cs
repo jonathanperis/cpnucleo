@@ -187,7 +187,7 @@ public class ApontamentoController : BaseController
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        GetApontamentoByRecursoViewModel result = await _apontamentoGrpcService.GetApontamentoByRecurso(new GetApontamentoByRecursoQuery(idRecurso));
+        ListApontamentoByRecursoViewModel result = await _apontamentoGrpcService.GetApontamentoByRecurso(new ListApontamentoByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -197,7 +197,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.Lista = result.Apontamentos;
 
-        GetTarefaByRecursoViewModel result2 = await _tarefaGrpcService.GetTarefaByRecurso(new GetTarefaByRecursoQuery(idRecurso));
+        ListTarefaByRecursoViewModel result2 = await _tarefaGrpcService.GetTarefaByRecurso(new ListTarefaByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {

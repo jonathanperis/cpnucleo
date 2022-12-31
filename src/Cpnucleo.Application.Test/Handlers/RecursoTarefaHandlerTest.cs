@@ -114,11 +114,11 @@ public class RecursoTarefaHandlerTest
 
         await unitOfWork.SaveChangesAsync();
 
-        GetRecursoTarefaByTarefaQuery request = MockQueryHelper.GetNewGetRecursoTarefaByTarefaQuery(tarefaId);
+        ListRecursoTarefaByTarefaQuery request = MockQueryHelper.GetNewGetRecursoTarefaByTarefaQuery(tarefaId);
 
         // Act
         GetRecursoTarefaByTarefaHandler handler = new(unitOfWork, mapper);
-        GetRecursoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        ListRecursoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.RecursoTarefas != null);

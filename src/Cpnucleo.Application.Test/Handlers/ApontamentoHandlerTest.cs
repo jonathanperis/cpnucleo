@@ -114,11 +114,11 @@ public class ApontamentoHandlerTest
 
         await unitOfWork.SaveChangesAsync();
 
-        GetApontamentoByRecursoQuery request = MockQueryHelper.GetApontamentoByRecursoQuery(recursoId);
+        ListApontamentoByRecursoQuery request = MockQueryHelper.GetApontamentoByRecursoQuery(recursoId);
 
         // Act
         GetApontamentoByRecursoHandler handler = new(unitOfWork, mapper);
-        GetApontamentoByRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
+        ListApontamentoByRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Apontamentos != null);

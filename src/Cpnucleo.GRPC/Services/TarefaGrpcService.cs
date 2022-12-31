@@ -61,7 +61,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// Consulta um tarefa por recurso na base de dados.
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
-    public async UnaryResult<GetTarefaByRecursoViewModel> GetTarefaByRecurso(GetTarefaByRecursoQuery query)
+    public async UnaryResult<ListTarefaByRecursoViewModel> GetTarefaByRecurso(ListTarefaByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }

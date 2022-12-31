@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Apontamento;
 
-public sealed class GetApontamentoByRecursoHandler : IRequestHandler<GetApontamentoByRecursoQuery, GetApontamentoByRecursoViewModel>
+public sealed class GetApontamentoByRecursoHandler : IRequestHandler<ListApontamentoByRecursoQuery, ListApontamentoByRecursoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -11,7 +11,7 @@ public sealed class GetApontamentoByRecursoHandler : IRequestHandler<GetApontame
         _mapper = mapper;
     }
 
-    public async Task<GetApontamentoByRecursoViewModel> Handle(GetApontamentoByRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<ListApontamentoByRecursoViewModel> Handle(ListApontamentoByRecursoQuery request, CancellationToken cancellationToken)
     {
         List<ApontamentoDTO> apontamentos = await _unitOfWork.ApontamentoRepository.ListApontamentoByRecurso(request.IdRecurso)
             .ProjectTo<ApontamentoDTO>(_mapper.ConfigurationProvider)
@@ -19,9 +19,9 @@ public sealed class GetApontamentoByRecursoHandler : IRequestHandler<GetApontame
 
         if (apontamentos is null)
         {
-            return new GetApontamentoByRecursoViewModel { OperationResult = OperationResult.NotFound };
+            return new ListApontamentoByRecursoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        return new GetApontamentoByRecursoViewModel { Apontamentos = apontamentos, OperationResult = OperationResult.Success };
+        return new ListApontamentoByRecursoViewModel { Apontamentos = apontamentos, OperationResult = OperationResult.Success };
     }
 }

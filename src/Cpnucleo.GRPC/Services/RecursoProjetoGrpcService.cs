@@ -61,7 +61,7 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// Consulta um recurso de projeto por projeto na base de dados.
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
-    public async UnaryResult<GetRecursoProjetoByProjetoViewModel> GetRecursoProjetoByProjeto(GetRecursoProjetoByProjetoQuery query)
+    public async UnaryResult<ListRecursoProjetoByProjetoViewModel> GetRecursoProjetoByProjeto(ListRecursoProjetoByProjetoQuery query)
     {
         return await _mediator.Send(query);
     }

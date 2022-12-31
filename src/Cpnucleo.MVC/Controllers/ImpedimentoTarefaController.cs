@@ -36,7 +36,7 @@ public class ImpedimentoTarefaController : BaseController
     {
         try
         {
-            GetImpedimentoTarefaByTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new GetImpedimentoTarefaByTarefaQuery(idTarefa));
+            ListImpedimentoTarefaByTarefaViewModel result = await _impedimentoTarefaGrpcService.GetImpedimentoTarefaByTarefa(new ListImpedimentoTarefaByTarefaQuery(idTarefa));
 
             if (result.OperationResult == OperationResult.Failed)
             {
