@@ -27,3 +27,4 @@ global using Cpnucleo.Shared.Queries.Workflow;
 global using MediatR;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;

@@ -6,9 +6,9 @@ public interface IGenericRepository<TEntity> : IDisposable
 
     void Update(TEntity entity);
 
-    Task<TEntity> GetAsync(Guid id);
+    IQueryable<TEntity> Get(Guid id);
 
-    Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false);
+    IQueryable<TEntity> All(bool getDependencies = false);
 
     Task RemoveAsync(Guid id);
 

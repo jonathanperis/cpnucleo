@@ -1,4 +1,5 @@
 ﻿global using AutoMapper;
+global using AutoMapper.QueryableExtensions;
 global using Cpnucleo.Domain.Common.Repositories.UoW;
 global using Cpnucleo.Domain.Entities;
 global using Cpnucleo.Domain.Services.Interfaces;
@@ -28,3 +29,4 @@ global using Cpnucleo.Shared.Queries.TipoTarefa;
 global using Cpnucleo.Shared.Queries.Workflow;
 global using FluentValidation;
 global using MediatR;
+global using Microsoft.EntityFrameworkCore;

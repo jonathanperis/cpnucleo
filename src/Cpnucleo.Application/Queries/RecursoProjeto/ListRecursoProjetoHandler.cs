@@ -13,15 +13,15 @@ public sealed class ListRecursoProjetoHandler : IRequestHandler<ListRecursoProje
 
     public async Task<ListRecursoProjetoViewModel> Handle(ListRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.RecursoProjeto> recursoProjetos = await _unitOfWork.RecursoProjetoRepository.AllAsync(request.GetDependencies);
+        List<RecursoProjetoDTO> recursoProjetos = await _unitOfWork.RecursoProjetoRepository.All(request.GetDependencies)
+            .ProjectTo<RecursoProjetoDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (recursoProjetos == null)
+        if (recursoProjetos is null)
         {
             return new ListRecursoProjetoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<RecursoProjetoDTO> result = _mapper.Map<IEnumerable<RecursoProjetoDTO>>(recursoProjetos);
-
-        return new ListRecursoProjetoViewModel { RecursoProjetos = result, OperationResult = OperationResult.Success };
+        return new ListRecursoProjetoViewModel { RecursoProjetos = recursoProjetos, OperationResult = OperationResult.Success };
     }
 }

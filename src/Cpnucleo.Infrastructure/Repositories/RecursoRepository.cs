@@ -15,11 +15,11 @@ internal sealed class RecursoRepository : GenericRepository<Recurso>, IRecursoRe
         return AddAsync(entity);
     }
 
-    public async Task<Recurso> GetRecursoByLoginAsync(string login)
+    public IQueryable<Recurso> GetRecursoByLogin(string login)
     {
-        return await _context.Set<Recurso>()
+        return _context.Set<Recurso>()
             .AsQueryable()
             .Include(_context.GetIncludePaths(typeof(Recurso)))
-            .FirstOrDefaultAsync(x => x.Login == login && x.Ativo);
+            .Where(x => x.Login == login && x.Ativo);
     }
 }

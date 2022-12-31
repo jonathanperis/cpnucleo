@@ -13,15 +13,15 @@ public sealed class GetWorkflowHandler : IRequestHandler<GetWorkflowQuery, GetWo
 
     public async Task<GetWorkflowViewModel> Handle(GetWorkflowQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
+        WorkflowDTO workflow = await _unitOfWork.WorkflowRepository.Get(request.Id)
+            .ProjectTo<WorkflowDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (workflow == null)
+        if (workflow is null)
         {
             return new GetWorkflowViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        WorkflowDTO result = _mapper.Map<WorkflowDTO>(workflow);
-
-        return new GetWorkflowViewModel { Workflow = result, OperationResult = OperationResult.Success };
+        return new GetWorkflowViewModel { Workflow = workflow, OperationResult = OperationResult.Success };
     }
 }

@@ -15,7 +15,7 @@ public sealed class CreateImpedimentoHandler : IRequestHandler<CreateImpedimento
     {
         await _unitOfWork.ImpedimentoRepository.AddAsync(_mapper.Map<Domain.Entities.Impedimento>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

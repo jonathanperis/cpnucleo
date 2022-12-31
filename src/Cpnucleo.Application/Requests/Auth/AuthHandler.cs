@@ -23,9 +23,10 @@ public sealed class AuthHandler : IRequestHandler<AuthRequest, AuthResponse>
             Status = OperationResult.Failed
         };
 
-        Recurso recurso = await _unitOfWork.RecursoRepository.GetRecursoByLoginAsync(request.Usuario);
+        Recurso recurso = await _unitOfWork.RecursoRepository.GetRecursoByLogin(request.Usuario)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (recurso == null)
+        if (recurso is null)
         {
             result.Status = OperationResult.NotFound;
 

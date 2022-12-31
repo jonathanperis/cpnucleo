@@ -13,15 +13,15 @@ public sealed class GetSistemaHandler : IRequestHandler<GetSistemaQuery, GetSist
 
     public async Task<GetSistemaViewModel> Handle(GetSistemaQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Sistema sistema = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
+        SistemaDTO sistema = await _unitOfWork.SistemaRepository.Get(request.Id)
+            .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (sistema == null)
+        if (sistema is null)
         {
             return new GetSistemaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        SistemaDTO result = _mapper.Map<SistemaDTO>(sistema);
-
-        return new GetSistemaViewModel { Sistema = result, OperationResult = OperationResult.Success };
+        return new GetSistemaViewModel { Sistema = sistema, OperationResult = OperationResult.Success };
     }
 }

@@ -31,12 +31,10 @@ internal sealed class ImpedimentoMap : IEntityTypeConfiguration<Impedimento>
             .IsRequired();
 
         builder
-            .HasKey(nameof(BaseEntity.Id))
-            .IsClustered(false);
+            .HasKey(nameof(BaseEntity.Id));
 
         builder
-            .HasIndex(nameof(BaseEntity.ClusteredKey))
-            .IsClustered(true);
+            .HasIndex(nameof(BaseEntity.ClusteredKey));
 
         if (Impedimentos != null)
         {

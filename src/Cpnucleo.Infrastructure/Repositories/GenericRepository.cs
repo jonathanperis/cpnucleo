@@ -35,12 +35,12 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         _context.Update(entity);
     }
 
-    public async Task<TEntity> GetAsync(Guid id)
+    public IQueryable<TEntity> Get(Guid id)
     {
-        return await _context.Set<TEntity>()
+        return _context.Set<TEntity>()
             .AsQueryable()
             .Include(_context.GetIncludePaths(typeof(TEntity)))
-            .FirstOrDefaultAsync(x => x.Id == id && x.Ativo);
+            .Where(x => x.Id == id && x.Ativo);
     }
 
     protected IQueryable<TEntity> All(Expression<Func<TEntity, bool>> predicate, bool getDependencies = false)
@@ -56,17 +56,16 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             .Where(predicate);
     }
 
-    public async Task<IEnumerable<TEntity>> AllAsync(bool getDependencies = false)
+    public IQueryable<TEntity> All(bool getDependencies = false)
     {
         Expression<Func<TEntity, bool>> predicate = x => x.Ativo;
 
-        return await All(predicate, getDependencies)
-            .ToListAsync();
+        return All(predicate, getDependencies);
     }
 
     public async Task RemoveAsync(Guid id)
     {
-        TEntity entity = await GetAsync(id);
+        TEntity entity = await Get(id).FirstAsync();
 
         entity.Ativo = false;
         entity.DataExclusao = DateTime.UtcNow;

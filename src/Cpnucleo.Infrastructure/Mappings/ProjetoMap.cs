@@ -34,12 +34,10 @@ internal sealed class ProjetoMap : IEntityTypeConfiguration<Projeto>
             .IsRequired();
 
         builder
-            .HasKey(nameof(BaseEntity.Id))
-            .IsClustered(false);
+            .HasKey(nameof(BaseEntity.Id));
 
         builder
-            .HasIndex(nameof(BaseEntity.ClusteredKey))
-            .IsClustered(true);
+            .HasIndex(nameof(BaseEntity.ClusteredKey));
 
         builder
             .HasOne(p => p.Sistema)

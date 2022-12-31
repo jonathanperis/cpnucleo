@@ -7,11 +7,10 @@ internal sealed class ImpedimentoTarefaRepository : GenericRepository<Impediment
     public ImpedimentoTarefaRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public async Task<IEnumerable<ImpedimentoTarefa>> GetImpedimentoTarefaByTarefaAsync(Guid idTarefa)
+    public IQueryable<ImpedimentoTarefa> GetImpedimentoTarefaByTarefa(Guid idTarefa)
     {
         Expression<Func<ImpedimentoTarefa, bool>> predicate = x => x.IdTarefa == idTarefa && x.Ativo;
 
-        return await All(predicate, true)
-            .ToListAsync();
+        return All(predicate, true);
     }
 }

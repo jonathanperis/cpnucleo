@@ -13,15 +13,15 @@ public sealed class ListRecursoTarefaHandler : IRequestHandler<ListRecursoTarefa
 
     public async Task<ListRecursoTarefaViewModel> Handle(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.RecursoTarefa> recursoTarefas = await _unitOfWork.RecursoTarefaRepository.AllAsync(request.GetDependencies);
+        List<RecursoTarefaDTO> recursoTarefas = await _unitOfWork.RecursoTarefaRepository.All(request.GetDependencies)
+            .ProjectTo<RecursoTarefaDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (recursoTarefas == null)
+        if (recursoTarefas is null)
         {
             return new ListRecursoTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<RecursoTarefaDTO> result = _mapper.Map<IEnumerable<RecursoTarefaDTO>>(recursoTarefas);
-
-        return new ListRecursoTarefaViewModel { RecursoTarefas = result, OperationResult = OperationResult.Success };
+        return new ListRecursoTarefaViewModel { RecursoTarefas = recursoTarefas, OperationResult = OperationResult.Success };
     }
 }
