@@ -13,7 +13,7 @@ public sealed class ListProjetoHandler : IRequestHandler<ListProjetoQuery, ListP
 
     public async Task<ListProjetoViewModel> Handle(ListProjetoQuery request, CancellationToken cancellationToken)
     {
-        List<ProjetoDTO> projetos = await _unitOfWork.ProjetoRepository.All(request.GetDependencies)
+        List<ProjetoDTO> projetos = await _unitOfWork.ProjetoRepository.List(request.GetDependencies)
             .ProjectTo<ProjetoDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

@@ -29,7 +29,7 @@ public class SistemaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Sistema>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.SistemaRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.SistemaRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>

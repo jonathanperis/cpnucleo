@@ -7,7 +7,7 @@ internal sealed class RecursoTarefaRepository : GenericRepository<RecursoTarefa>
     public RecursoTarefaRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public IQueryable<RecursoTarefa> GetRecursoTarefaByTarefa(Guid idTarefa)
+    public IQueryable<RecursoTarefa> ListRecursoTarefaByTarefa(Guid idTarefa)
     {
         Expression<Func<RecursoTarefa, bool>> predicate = x => x.IdTarefa == idTarefa && x.Ativo;
 

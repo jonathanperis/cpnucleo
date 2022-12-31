@@ -30,7 +30,7 @@ public class TipoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<TipoTarefa>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.TipoTarefaRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.TipoTarefaRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>

@@ -30,7 +30,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<ImpedimentoTarefa>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.ImpedimentoTarefaRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<ImpedimentoTarefa>> GetByTarefa(Guid idTarefa)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(idTarefa).ToListAsync();
+        return await _unitOfWork.ImpedimentoTarefaRepository.ListImpedimentoTarefaByTarefa(idTarefa).ToListAsync();
     }
 
     /// <summary>

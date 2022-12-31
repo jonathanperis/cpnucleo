@@ -18,7 +18,7 @@ public sealed class ListSistemaHandler : IRequestHandler<ListSistemaQuery, ListS
 
     public async Task<ListSistemaViewModel> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
     {
-        List<SistemaDTO> sistemas = await _unitOfWork.SistemaRepository.All(request.GetDependencies)
+        List<SistemaDTO> sistemas = await _unitOfWork.SistemaRepository.List(request.GetDependencies)
             .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

@@ -30,7 +30,7 @@ public class RecursoProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<RecursoProjeto>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.RecursoProjetoRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.RecursoProjetoRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class RecursoProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<RecursoProjeto>> GetByProjeto(Guid idRecurso)
     {
-        return await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjeto(idRecurso).ToListAsync();
+        return await _unitOfWork.RecursoProjetoRepository.ListRecursoProjetoByProjeto(idRecurso).ToListAsync();
     }
 
     /// <summary>

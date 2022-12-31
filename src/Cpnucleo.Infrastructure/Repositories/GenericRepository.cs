@@ -56,7 +56,7 @@ internal class GenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             .Where(predicate);
     }
 
-    public IQueryable<TEntity> All(bool getDependencies = false)
+    public IQueryable<TEntity> List(bool getDependencies = false)
     {
         Expression<Func<TEntity, bool>> predicate = x => x.Ativo;
 

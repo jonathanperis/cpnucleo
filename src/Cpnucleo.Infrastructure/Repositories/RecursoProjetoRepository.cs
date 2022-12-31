@@ -7,7 +7,7 @@ internal sealed class RecursoProjetoRepository : GenericRepository<RecursoProjet
     public RecursoProjetoRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public IQueryable<RecursoProjeto> GetRecursoProjetoByProjeto(Guid idProjeto)
+    public IQueryable<RecursoProjeto> ListRecursoProjetoByProjeto(Guid idProjeto)
     {
         Expression<Func<RecursoProjeto, bool>> predicate = x => x.IdProjeto == idProjeto && x.Ativo;
 

@@ -13,7 +13,7 @@ public sealed class GetRecursoProjetoByProjetoHandler : IRequestHandler<GetRecur
 
     public async Task<GetRecursoProjetoByProjetoViewModel> Handle(GetRecursoProjetoByProjetoQuery request, CancellationToken cancellationToken)
     {
-        List<RecursoProjetoDTO> recursoProjetos = await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjeto(request.IdProjeto)
+        List<RecursoProjetoDTO> recursoProjetos = await _unitOfWork.RecursoProjetoRepository.ListRecursoProjetoByProjeto(request.IdProjeto)
             .ProjectTo<RecursoProjetoDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

@@ -13,7 +13,7 @@ public sealed class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImp
 
     public async Task<GetImpedimentoTarefaByTarefaViewModel> Handle(GetImpedimentoTarefaByTarefaQuery request, CancellationToken cancellationToken)
     {
-        List<ImpedimentoTarefaDTO> impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(request.IdTarefa)
+        List<ImpedimentoTarefaDTO> impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.ListImpedimentoTarefaByTarefa(request.IdTarefa)
             .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

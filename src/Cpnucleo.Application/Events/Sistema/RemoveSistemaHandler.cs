@@ -17,6 +17,6 @@ public sealed class RemoveSistemaHandler : IMessageReceptionHandler<RemoveSistem
     public async Task Handle(RemoveSistemaEvent @event, CancellationToken cancellationToken)
     {
         //Some business logic here.
-        List<SistemaDTO> sistemas = _mapper.Map<List<SistemaDTO>>(await _unitOfWork.SistemaRepository.All(true).ToListAsync());
+        List<SistemaDTO> sistemas = _mapper.Map<List<SistemaDTO>>(await _unitOfWork.SistemaRepository.List(true).ToListAsync());
     }
 }

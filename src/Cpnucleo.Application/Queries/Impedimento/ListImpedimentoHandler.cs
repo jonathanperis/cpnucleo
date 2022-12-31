@@ -13,7 +13,7 @@ public sealed class ListImpedimentoHandler : IRequestHandler<ListImpedimentoQuer
 
     public async Task<ListImpedimentoViewModel> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
     {
-        List<ImpedimentoDTO> impedimentos = await _unitOfWork.ImpedimentoRepository.All(request.GetDependencies)
+        List<ImpedimentoDTO> impedimentos = await _unitOfWork.ImpedimentoRepository.List(request.GetDependencies)
             .ProjectTo<ImpedimentoDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

@@ -8,7 +8,7 @@ public interface IGenericRepository<TEntity> : IDisposable
 
     IQueryable<TEntity> Get(Guid id);
 
-    IQueryable<TEntity> All(bool getDependencies = false);
+    IQueryable<TEntity> List(bool getDependencies = false);
 
     Task RemoveAsync(Guid id);
 

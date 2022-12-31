@@ -15,7 +15,7 @@ public sealed class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, Lis
 
     public async Task<ListWorkflowViewModel> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
-        List<WorkflowDTO> workflows = await _unitOfWork.WorkflowRepository.All(request.GetDependencies)
+        List<WorkflowDTO> workflows = await _unitOfWork.WorkflowRepository.List(request.GetDependencies)
             .ProjectTo<WorkflowDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

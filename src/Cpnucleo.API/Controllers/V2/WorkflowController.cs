@@ -32,7 +32,7 @@ public class WorkflowController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Workflow>> Get(bool getDependencies = false)
     {
-        List<Workflow> result = await _unitOfWork.WorkflowRepository.All(getDependencies).ToListAsync();
+        List<Workflow> result = await _unitOfWork.WorkflowRepository.List(getDependencies).ToListAsync();
 
         int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 

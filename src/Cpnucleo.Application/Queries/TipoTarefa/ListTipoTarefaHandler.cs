@@ -13,7 +13,7 @@ public sealed class ListTipoTarefaHandler : IRequestHandler<ListTipoTarefaQuery,
 
     public async Task<ListTipoTarefaViewModel> Handle(ListTipoTarefaQuery request, CancellationToken cancellationToken)
     {
-        List<TipoTarefaDTO> tipoTarefas = await _unitOfWork.TipoTarefaRepository.All(request.GetDependencies)
+        List<TipoTarefaDTO> tipoTarefas = await _unitOfWork.TipoTarefaRepository.List(request.GetDependencies)
             .ProjectTo<TipoTarefaDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

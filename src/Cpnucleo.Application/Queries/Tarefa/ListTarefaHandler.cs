@@ -15,7 +15,7 @@ public sealed class ListTarefaHandler : IRequestHandler<ListTarefaQuery, ListTar
 
     public async Task<ListTarefaViewModel> Handle(ListTarefaQuery request, CancellationToken cancellationToken)
     {
-        List<TarefaDTO> tarefas = await _unitOfWork.TarefaRepository.All(request.GetDependencies)
+        List<TarefaDTO> tarefas = await _unitOfWork.TarefaRepository.List(request.GetDependencies)
             .ProjectTo<TarefaDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
@@ -40,7 +40,7 @@ public sealed class ListTarefaHandler : IRequestHandler<ListTarefaQuery, ListTar
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-            List<ImpedimentoTarefaDTO> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(item.Id)
+            List<ImpedimentoTarefaDTO> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.ListImpedimentoTarefaByTarefa(item.Id)
                 .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

@@ -30,7 +30,7 @@ public class ImpedimentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Impedimento>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ImpedimentoRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.ImpedimentoRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>

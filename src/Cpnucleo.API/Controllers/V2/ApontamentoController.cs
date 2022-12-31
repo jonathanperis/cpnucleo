@@ -30,7 +30,7 @@ public class ApontamentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Apontamento>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ApontamentoRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.ApontamentoRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class ApontamentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Apontamento>> GetByRecurso(Guid idRecurso)
     {
-        return await _unitOfWork.ApontamentoRepository.GetApontamentoByRecurso(idRecurso).ToListAsync();
+        return await _unitOfWork.ApontamentoRepository.ListApontamentoByRecurso(idRecurso).ToListAsync();
     }
 
     /// <summary>
