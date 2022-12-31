@@ -57,7 +57,7 @@ public class ApontamentoController : ControllerBase
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     [HttpGet]
     [Route("GetApontamentoByRecurso")]
-    public async Task<ActionResult<GetApontamentoByRecursoViewModel>> GetApontamentoByRecurso([FromQuery] GetApontamentoByRecursoQuery query)
+    public async Task<ActionResult<ListApontamentoByRecursoViewModel>> GetApontamentoByRecurso([FromQuery] ListApontamentoByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }

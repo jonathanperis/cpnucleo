@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.ImpedimentoTarefa;
 
-public sealed class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImpedimentoTarefaByTarefaQuery, GetImpedimentoTarefaByTarefaViewModel>
+public sealed class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<ListImpedimentoTarefaByTarefaQuery, ListImpedimentoTarefaByTarefaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -11,7 +11,7 @@ public sealed class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImp
         _mapper = mapper;
     }
 
-    public async Task<GetImpedimentoTarefaByTarefaViewModel> Handle(GetImpedimentoTarefaByTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<ListImpedimentoTarefaByTarefaViewModel> Handle(ListImpedimentoTarefaByTarefaQuery request, CancellationToken cancellationToken)
     {
         List<ImpedimentoTarefaDTO> impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.ListImpedimentoTarefaByTarefa(request.IdTarefa)
             .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
@@ -19,9 +19,9 @@ public sealed class GetImpedimentoTarefaByTarefaHandler : IRequestHandler<GetImp
 
         if (impedimentoTarefas is null)
         {
-            return new GetImpedimentoTarefaByTarefaViewModel { OperationResult = OperationResult.NotFound };
+            return new ListImpedimentoTarefaByTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        return new GetImpedimentoTarefaByTarefaViewModel { ImpedimentoTarefas = impedimentoTarefas, OperationResult = OperationResult.Success };
+        return new ListImpedimentoTarefaByTarefaViewModel { ImpedimentoTarefas = impedimentoTarefas, OperationResult = OperationResult.Success };
     }
 }

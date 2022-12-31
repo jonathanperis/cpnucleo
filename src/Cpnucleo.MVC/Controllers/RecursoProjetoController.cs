@@ -36,7 +36,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            GetRecursoProjetoByProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new GetRecursoProjetoByProjetoQuery(idProjeto));
+            ListRecursoProjetoByProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new ListRecursoProjetoByProjetoQuery(idProjeto));
 
             if (result.OperationResult == OperationResult.Failed)
             {

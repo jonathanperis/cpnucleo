@@ -61,7 +61,7 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// Consulta um impedimento de tarefa por tarefa na base de dados.
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
-    public async UnaryResult<GetImpedimentoTarefaByTarefaViewModel> GetImpedimentoTarefaByTarefa(GetImpedimentoTarefaByTarefaQuery query)
+    public async UnaryResult<ListImpedimentoTarefaByTarefaViewModel> GetImpedimentoTarefaByTarefa(ListImpedimentoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }

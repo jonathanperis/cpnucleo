@@ -123,11 +123,11 @@ public class ImpedimentoTarefaHandlerTest
 
         await unitOfWork.SaveChangesAsync();
 
-        GetImpedimentoTarefaByTarefaQuery request = MockQueryHelper.GetNewGetImpedimentoTarefaByTarefaQuery(tarefaId);
+        ListImpedimentoTarefaByTarefaQuery request = MockQueryHelper.GetNewGetImpedimentoTarefaByTarefaQuery(tarefaId);
 
         // Act
         GetImpedimentoTarefaByTarefaHandler handler = new(unitOfWork, mapper);
-        GetImpedimentoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        ListImpedimentoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.ImpedimentoTarefas != null);
