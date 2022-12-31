@@ -15,7 +15,7 @@ public sealed class CreateRecursoTarefaHandler : IRequestHandler<CreateRecursoTa
     {
         await _unitOfWork.RecursoTarefaRepository.AddAsync(_mapper.Map<Domain.Entities.RecursoTarefa>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

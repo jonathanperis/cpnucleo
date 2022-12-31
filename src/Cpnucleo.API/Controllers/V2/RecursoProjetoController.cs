@@ -28,9 +28,9 @@ public class RecursoProjetoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<RecursoProjeto>> Get(bool getDependencies = false)
+    public async Task<List<RecursoProjeto>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.RecursoProjetoRepository.AllAsync(getDependencies);
+        return await _unitOfWork.RecursoProjetoRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -47,9 +47,9 @@ public class RecursoProjetoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet("GetByProjeto/{idRecurso}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<RecursoProjeto>> GetByProjeto(Guid idRecurso)
+    public async Task<List<RecursoProjeto>> GetByProjeto(Guid idRecurso)
     {
-        return await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjetoAsync(idRecurso);
+        return await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjeto(idRecurso).ToListAsync();
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class RecursoProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RecursoProjeto>> Get(Guid id)
     {
-        RecursoProjeto recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(id);
+        RecursoProjeto recursoProjeto = await _unitOfWork.RecursoProjetoRepository.Get(id).FirstOrDefaultAsync();
 
         if (recursoProjeto == null)
         {
@@ -212,7 +212,7 @@ public class RecursoProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        RecursoProjeto obj = await _unitOfWork.RecursoProjetoRepository.GetAsync(id);
+        RecursoProjeto obj = await _unitOfWork.RecursoProjetoRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -227,6 +227,6 @@ public class RecursoProjetoController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.RecursoProjetoRepository.GetAsync(id) != null;
+        return await _unitOfWork.RecursoProjetoRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

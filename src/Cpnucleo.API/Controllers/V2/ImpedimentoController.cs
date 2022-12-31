@@ -28,9 +28,9 @@ public class ImpedimentoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Impedimento>> Get(bool getDependencies = false)
+    public async Task<List<Impedimento>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ImpedimentoRepository.AllAsync(getDependencies);
+        return await _unitOfWork.ImpedimentoRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class ImpedimentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Impedimento>> Get(Guid id)
     {
-        Impedimento impedimento = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
+        Impedimento impedimento = await _unitOfWork.ImpedimentoRepository.Get(id).FirstOrDefaultAsync();
 
         if (impedimento == null)
         {
@@ -191,7 +191,7 @@ public class ImpedimentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Impedimento obj = await _unitOfWork.ImpedimentoRepository.GetAsync(id);
+        Impedimento obj = await _unitOfWork.ImpedimentoRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -206,6 +206,6 @@ public class ImpedimentoController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.ImpedimentoRepository.GetAsync(id) != null;
+        return await _unitOfWork.ImpedimentoRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

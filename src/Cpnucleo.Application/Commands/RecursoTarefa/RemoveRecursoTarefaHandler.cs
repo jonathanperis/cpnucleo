@@ -11,16 +11,16 @@ public sealed class RemoveRecursoTarefaHandler : IRequestHandler<RemoveRecursoTa
 
     public async Task<OperationResult> Handle(RemoveRecursoTarefaCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.RecursoTarefa recursoTarefa = await _unitOfWork.RecursoTarefaRepository.GetAsync(request.Id);
+        Domain.Entities.RecursoTarefa recursoTarefa = await _unitOfWork.RecursoTarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (recursoTarefa == null)
+        if (recursoTarefa is null)
         {
             return OperationResult.NotFound;
         }
 
         await _unitOfWork.RecursoTarefaRepository.RemoveAsync(request.Id);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

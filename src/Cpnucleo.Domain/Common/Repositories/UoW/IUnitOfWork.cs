@@ -16,5 +16,5 @@ public interface IUnitOfWork : IDisposable
     IGenericRepository<TipoTarefa> TipoTarefaRepository { get; }
     IWorkflowRepository WorkflowRepository { get; }
 
-    Task<bool> SaveChangesAsync();
+    Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

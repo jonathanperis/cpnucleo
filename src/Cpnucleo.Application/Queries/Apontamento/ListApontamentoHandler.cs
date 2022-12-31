@@ -13,15 +13,15 @@ public sealed class ListApontamentoHandler : IRequestHandler<ListApontamentoQuer
 
     public async Task<ListApontamentoViewModel> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.Apontamento> apontamentos = await _unitOfWork.ApontamentoRepository.AllAsync(request.GetDependencies);
+        List<ApontamentoDTO> apontamentos = await _unitOfWork.ApontamentoRepository.All(request.GetDependencies)
+            .ProjectTo<ApontamentoDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (apontamentos == null)
+        if (apontamentos is null)
         {
             return new ListApontamentoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<ApontamentoDTO> result = _mapper.Map<IEnumerable<ApontamentoDTO>>(apontamentos);
-
-        return new ListApontamentoViewModel { Apontamentos = result, OperationResult = OperationResult.Success };
+        return new ListApontamentoViewModel { Apontamentos = apontamentos, OperationResult = OperationResult.Success };
     }
 }

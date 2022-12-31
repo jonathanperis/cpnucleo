@@ -15,21 +15,21 @@ public sealed class ListWorkflowHandler : IRequestHandler<ListWorkflowQuery, Lis
 
     public async Task<ListWorkflowViewModel> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.Workflow> workflows = await _unitOfWork.WorkflowRepository.AllAsync(request.GetDependencies);
+        List<WorkflowDTO> workflows = await _unitOfWork.WorkflowRepository.All(request.GetDependencies)
+            .ProjectTo<WorkflowDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (workflows == null)
+        if (workflows is null)
         {
             return new ListWorkflowViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<WorkflowDTO> result = _mapper.Map<IEnumerable<WorkflowDTO>>(workflows);
+        await PreencherDadosAdicionaisAsync(workflows);
 
-        await PreencherDadosAdicionaisAsync(result);
-
-        return new ListWorkflowViewModel { Workflows = result, OperationResult = OperationResult.Success };
+        return new ListWorkflowViewModel { Workflows = workflows, OperationResult = OperationResult.Success };
     }
 
-    private async Task PreencherDadosAdicionaisAsync(IEnumerable<WorkflowDTO> lista)
+    private async Task PreencherDadosAdicionaisAsync(List<WorkflowDTO> lista)
     {
         int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 

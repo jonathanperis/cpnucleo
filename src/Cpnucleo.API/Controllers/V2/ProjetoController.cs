@@ -28,9 +28,9 @@ public class ProjetoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Projeto>> Get(bool getDependencies = false)
+    public async Task<List<Projeto>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ProjetoRepository.AllAsync(getDependencies);
+        return await _unitOfWork.ProjetoRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class ProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Projeto>> Get(Guid id)
     {
-        Projeto projeto = await _unitOfWork.ProjetoRepository.GetAsync(id);
+        Projeto projeto = await _unitOfWork.ProjetoRepository.Get(id).FirstOrDefaultAsync();
 
         if (projeto == null)
         {
@@ -193,7 +193,7 @@ public class ProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Projeto obj = await _unitOfWork.ProjetoRepository.GetAsync(id);
+        Projeto obj = await _unitOfWork.ProjetoRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -208,6 +208,6 @@ public class ProjetoController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.ProjetoRepository.GetAsync(id) != null;
+        return await _unitOfWork.ProjetoRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

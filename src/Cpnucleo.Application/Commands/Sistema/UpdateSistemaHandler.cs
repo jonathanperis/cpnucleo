@@ -11,9 +11,9 @@ public sealed class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand,
 
     public async Task<OperationResult> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Sistema sistema = await _unitOfWork.SistemaRepository.GetAsync(request.Id);
+        Domain.Entities.Sistema sistema = await _unitOfWork.SistemaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (sistema == null)
+        if (sistema is null)
         {
             return OperationResult.NotFound;
         }
@@ -23,7 +23,7 @@ public sealed class UpdateSistemaHandler : IRequestHandler<UpdateSistemaCommand,
 
         _unitOfWork.SistemaRepository.Update(sistema);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

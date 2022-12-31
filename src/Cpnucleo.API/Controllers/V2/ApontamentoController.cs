@@ -28,9 +28,9 @@ public class ApontamentoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Apontamento>> Get(bool getDependencies = false)
+    public async Task<List<Apontamento>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ApontamentoRepository.AllAsync(getDependencies);
+        return await _unitOfWork.ApontamentoRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -47,9 +47,9 @@ public class ApontamentoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet("GetByRecurso/{idRecurso}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Apontamento>> GetByRecurso(Guid idRecurso)
+    public async Task<List<Apontamento>> GetByRecurso(Guid idRecurso)
     {
-        return await _unitOfWork.ApontamentoRepository.GetApontamentoByRecursoAsync(idRecurso);
+        return await _unitOfWork.ApontamentoRepository.GetApontamentoByRecurso(idRecurso).ToListAsync();
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class ApontamentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Apontamento>> Get(Guid id)
     {
-        Apontamento apontamento = await _unitOfWork.ApontamentoRepository.GetAsync(id);
+        Apontamento apontamento = await _unitOfWork.ApontamentoRepository.Get(id).FirstOrDefaultAsync();
 
         if (apontamento == null)
         {
@@ -222,7 +222,7 @@ public class ApontamentoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Apontamento obj = await _unitOfWork.ApontamentoRepository.GetAsync(id);
+        Apontamento obj = await _unitOfWork.ApontamentoRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -237,6 +237,6 @@ public class ApontamentoController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.ApontamentoRepository.GetAsync(id) != null;
+        return await _unitOfWork.ApontamentoRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

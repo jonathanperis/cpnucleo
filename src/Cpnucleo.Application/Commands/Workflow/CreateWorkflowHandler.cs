@@ -15,7 +15,7 @@ public sealed class CreateWorkflowHandler : IRequestHandler<CreateWorkflowComman
     {
         await _unitOfWork.WorkflowRepository.AddAsync(_mapper.Map<Domain.Entities.Workflow>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

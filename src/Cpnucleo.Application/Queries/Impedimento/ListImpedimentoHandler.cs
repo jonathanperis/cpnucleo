@@ -13,15 +13,15 @@ public sealed class ListImpedimentoHandler : IRequestHandler<ListImpedimentoQuer
 
     public async Task<ListImpedimentoViewModel> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.Impedimento> impedimentos = await _unitOfWork.ImpedimentoRepository.AllAsync(request.GetDependencies);
+        List<ImpedimentoDTO> impedimentos = await _unitOfWork.ImpedimentoRepository.All(request.GetDependencies)
+            .ProjectTo<ImpedimentoDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (impedimentos == null)
+        if (impedimentos is null)
         {
             return new ListImpedimentoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<ImpedimentoDTO> result = _mapper.Map<IEnumerable<ImpedimentoDTO>>(impedimentos);
-
-        return new ListImpedimentoViewModel { Impedimentos = result, OperationResult = OperationResult.Success };
+        return new ListImpedimentoViewModel { Impedimentos = impedimentos, OperationResult = OperationResult.Success };
     }
 }

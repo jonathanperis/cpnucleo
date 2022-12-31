@@ -8,13 +8,12 @@ internal sealed class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepos
     public TarefaRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public async Task<IEnumerable<Tarefa>> GetTarefaByRecursoAsync(Guid idRecurso)
+    public IQueryable<Tarefa> GetTarefaByRecurso(Guid idRecurso)
     {
-        return await _context.Set<RecursoTarefa>()
+        return _context.Set<RecursoTarefa>()
             .AsQueryable()
             .Include(_context.GetIncludePaths(typeof(RecursoTarefa)))
             .Where(x => x.IdRecurso == idRecurso && x.Ativo)
-            .Select(x => x.Tarefa)
-            .ToListAsync();
+            .Select(x => x.Tarefa);
     }
 }

@@ -13,15 +13,15 @@ public sealed class GetTipoTarefaHandler : IRequestHandler<GetTipoTarefaQuery, G
 
     public async Task<GetTipoTarefaViewModel> Handle(GetTipoTarefaQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id);
+        TipoTarefaDTO tipoTarefa = await _unitOfWork.TipoTarefaRepository.Get(request.Id)
+            .ProjectTo<TipoTarefaDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (tipoTarefa == null)
+        if (tipoTarefa is null)
         {
             return new GetTipoTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        TipoTarefaDTO result = _mapper.Map<TipoTarefaDTO>(tipoTarefa);
-
-        return new GetTipoTarefaViewModel { TipoTarefa = result, OperationResult = OperationResult.Success };
+        return new GetTipoTarefaViewModel { TipoTarefa = tipoTarefa, OperationResult = OperationResult.Success };
     }
 }

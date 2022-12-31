@@ -15,7 +15,7 @@ public sealed class CreateRecursoProjetoHandler : IRequestHandler<CreateRecursoP
     {
         await _unitOfWork.RecursoProjetoRepository.AddAsync(_mapper.Map<Domain.Entities.RecursoProjeto>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

@@ -13,15 +13,15 @@ public sealed class ListImpedimentoTarefaHandler : IRequestHandler<ListImpedimen
 
     public async Task<ListImpedimentoTarefaViewModel> Handle(ListImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.ImpedimentoTarefa> impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.AllAsync(request.GetDependencies);
+        List<ImpedimentoTarefaDTO> impedimentoTarefas = await _unitOfWork.ImpedimentoTarefaRepository.All(request.GetDependencies)
+            .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (impedimentoTarefas == null)
+        if (impedimentoTarefas is null)
         {
             return new ListImpedimentoTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<ImpedimentoTarefaDTO> result = _mapper.Map<IEnumerable<ImpedimentoTarefaDTO>>(impedimentoTarefas);
-
-        return new ListImpedimentoTarefaViewModel { ImpedimentoTarefas = result, OperationResult = OperationResult.Success };
+        return new ListImpedimentoTarefaViewModel { ImpedimentoTarefas = impedimentoTarefas, OperationResult = OperationResult.Success };
     }
 }

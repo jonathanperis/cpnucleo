@@ -28,9 +28,9 @@ public class TipoTarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<TipoTarefa>> Get(bool getDependencies = false)
+    public async Task<List<TipoTarefa>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.TipoTarefaRepository.AllAsync(getDependencies);
+        return await _unitOfWork.TipoTarefaRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class TipoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TipoTarefa>> Get(Guid id)
     {
-        TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.GetAsync(id);
+        TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (tipoTarefa == null)
         {
@@ -193,7 +193,7 @@ public class TipoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        TipoTarefa obj = await _unitOfWork.TipoTarefaRepository.GetAsync(id);
+        TipoTarefa obj = await _unitOfWork.TipoTarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -208,6 +208,6 @@ public class TipoTarefaController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.TipoTarefaRepository.GetAsync(id) != null;
+        return await _unitOfWork.TipoTarefaRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

@@ -11,9 +11,9 @@ public sealed class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand,
 
     public async Task<OperationResult> Handle(UpdateProjetoCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Projeto projeto = await _unitOfWork.ProjetoRepository.GetAsync(request.Id);
+        Domain.Entities.Projeto projeto = await _unitOfWork.ProjetoRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (projeto == null)
+        if (projeto is null)
         {
             return OperationResult.NotFound;
         }
@@ -23,7 +23,7 @@ public sealed class UpdateProjetoHandler : IRequestHandler<UpdateProjetoCommand,
 
         _unitOfWork.ProjetoRepository.Update(projeto);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

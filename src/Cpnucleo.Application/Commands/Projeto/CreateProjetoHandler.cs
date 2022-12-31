@@ -15,7 +15,7 @@ public sealed class CreateProjetoHandler : IRequestHandler<CreateProjetoCommand,
     {
         await _unitOfWork.ProjetoRepository.AddAsync(_mapper.Map<Domain.Entities.Projeto>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

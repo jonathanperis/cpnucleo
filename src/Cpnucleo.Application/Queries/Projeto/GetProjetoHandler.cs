@@ -13,15 +13,15 @@ public sealed class GetProjetoHandler : IRequestHandler<GetProjetoQuery, GetProj
 
     public async Task<GetProjetoViewModel> Handle(GetProjetoQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Projeto projeto = await _unitOfWork.ProjetoRepository.GetAsync(request.Id);
+        ProjetoDTO projeto = await _unitOfWork.ProjetoRepository.Get(request.Id)
+            .ProjectTo<ProjetoDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (projeto == null)
+        if (projeto is null)
         {
             return new GetProjetoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        ProjetoDTO result = _mapper.Map<ProjetoDTO>(projeto);
-
-        return new GetProjetoViewModel { Projeto = result, OperationResult = OperationResult.Success };
+        return new GetProjetoViewModel { Projeto = projeto, OperationResult = OperationResult.Success };
     }
 }

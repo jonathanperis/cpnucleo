@@ -11,9 +11,9 @@ public sealed class UpdateImpedimentoTarefaHandler : IRequestHandler<UpdateImped
 
     public async Task<OperationResult> Handle(UpdateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id);
+        Domain.Entities.ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (impedimentoTarefa == null)
+        if (impedimentoTarefa is null)
         {
             return OperationResult.NotFound;
         }
@@ -24,7 +24,7 @@ public sealed class UpdateImpedimentoTarefaHandler : IRequestHandler<UpdateImped
 
         _unitOfWork.ImpedimentoTarefaRepository.Update(impedimentoTarefa);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

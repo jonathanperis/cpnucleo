@@ -7,12 +7,11 @@ internal sealed class ApontamentoRepository : GenericRepository<Apontamento>, IA
     public ApontamentoRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public async Task<IEnumerable<Apontamento>> GetApontamentoByRecursoAsync(Guid idRecurso)
+    public IQueryable<Apontamento> GetApontamentoByRecurso(Guid idRecurso)
     {
         Expression<Func<Apontamento, bool>> predicate = x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.UtcNow.AddDays(-30) && x.Ativo;
 
-        return await All(predicate, true)
-            .ToListAsync();
+        return All(predicate, true);
     }
 
     public async Task<int> GetTotalHorasByRecursoAsync(Guid idRecurso, Guid idTarefa)

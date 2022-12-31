@@ -28,9 +28,9 @@ public class ImpedimentoTarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<ImpedimentoTarefa>> Get(bool getDependencies = false)
+    public async Task<List<ImpedimentoTarefa>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.AllAsync(getDependencies);
+        return await _unitOfWork.ImpedimentoTarefaRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -47,9 +47,9 @@ public class ImpedimentoTarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet("GetByTarefa/{idTarefa}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<ImpedimentoTarefa>> GetByTarefa(Guid idTarefa)
+    public async Task<List<ImpedimentoTarefa>> GetByTarefa(Guid idTarefa)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(idTarefa);
+        return await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(idTarefa).ToListAsync();
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ImpedimentoTarefa>> Get(Guid id)
     {
-        ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id);
+        ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (impedimentoTarefa == null)
         {
@@ -214,7 +214,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        ImpedimentoTarefa obj = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id);
+        ImpedimentoTarefa obj = await _unitOfWork.ImpedimentoTarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -229,6 +229,6 @@ public class ImpedimentoTarefaController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(id) != null;
+        return await _unitOfWork.ImpedimentoTarefaRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

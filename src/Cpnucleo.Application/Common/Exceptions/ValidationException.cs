@@ -10,7 +10,7 @@ public class ValidationException : Exception
         Errors = new Dictionary<string, string[]>();
     }
 
-    public ValidationException(IEnumerable<ValidationFailure> failures)
+    public ValidationException(List<ValidationFailure> failures)
         : this()
     {
         Errors = failures

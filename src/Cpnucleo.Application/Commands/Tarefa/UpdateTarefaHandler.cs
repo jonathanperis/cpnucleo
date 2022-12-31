@@ -11,9 +11,9 @@ public sealed class UpdateTarefaHandler : IRequestHandler<UpdateTarefaCommand, O
 
     public async Task<OperationResult> Handle(UpdateTarefaCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
+        Domain.Entities.Tarefa tarefa = await _unitOfWork.TarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (tarefa == null)
+        if (tarefa is null)
         {
             return OperationResult.NotFound;
         }
@@ -29,7 +29,7 @@ public sealed class UpdateTarefaHandler : IRequestHandler<UpdateTarefaCommand, O
 
         _unitOfWork.TarefaRepository.Update(tarefa);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

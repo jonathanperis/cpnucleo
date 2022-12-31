@@ -11,16 +11,16 @@ public sealed class RemoveRecursoHandler : IRequestHandler<RemoveRecursoCommand,
 
     public async Task<OperationResult> Handle(RemoveRecursoCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
+        Domain.Entities.Recurso recurso = await _unitOfWork.RecursoRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (recurso == null)
+        if (recurso is null)
         {
             return OperationResult.NotFound;
         }
 
         await _unitOfWork.RecursoRepository.RemoveAsync(request.Id);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

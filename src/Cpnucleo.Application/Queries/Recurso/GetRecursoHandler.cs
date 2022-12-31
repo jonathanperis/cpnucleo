@@ -13,17 +13,17 @@ public sealed class GetRecursoHandler : IRequestHandler<GetRecursoQuery, GetRecu
 
     public async Task<GetRecursoViewModel> Handle(GetRecursoQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
+        RecursoDTO recurso = await _unitOfWork.RecursoRepository.Get(request.Id)
+            .ProjectTo<RecursoDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (recurso == null)
+        if (recurso is null)
         {
             return new GetRecursoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        RecursoDTO result = _mapper.Map<RecursoDTO>(recurso);
+        recurso.Senha = null;
 
-        result.Senha = null;
-
-        return new GetRecursoViewModel { Recurso = result, OperationResult = OperationResult.Success };
+        return new GetRecursoViewModel { Recurso = recurso, OperationResult = OperationResult.Success };
     }
 }

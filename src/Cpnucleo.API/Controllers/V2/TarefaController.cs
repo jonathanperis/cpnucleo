@@ -30,9 +30,9 @@ public class TarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Tarefa>> Get(bool getDependencies = false)
+    public async Task<List<Tarefa>> Get(bool getDependencies = false)
     {
-        IEnumerable<Tarefa> result = await _unitOfWork.TarefaRepository.AllAsync(getDependencies);
+        List<Tarefa> result = await _unitOfWork.TarefaRepository.All(getDependencies).ToListAsync();
 
         return await PreencherDadosAdicionaisAsync(result);
     }
@@ -55,7 +55,7 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Tarefa>> Get(Guid id)
     {
-        Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(id);
+        Tarefa tarefa = await _unitOfWork.TarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (tarefa == null)
         {
@@ -79,9 +79,9 @@ public class TarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet("GetByRecurso/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Tarefa>> GetByRecurso(Guid id)
+    public async Task<List<Tarefa>> GetByRecurso(Guid id)
     {
-        IEnumerable<Tarefa> result = await _unitOfWork.TarefaRepository.GetTarefaByRecursoAsync(id);
+        List<Tarefa> result = await _unitOfWork.TarefaRepository.GetTarefaByRecurso(id).ToListAsync();
 
         return await PreencherDadosAdicionaisAsync(result);
     }
@@ -245,7 +245,7 @@ public class TarefaController : ControllerBase
 
         try
         {
-            Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(id);
+            Tarefa tarefa = await _unitOfWork.TarefaRepository.Get(id).FirstOrDefaultAsync();
 
             tarefa.IdWorkflow = obj.Id;
             tarefa.Workflow = obj;
@@ -287,7 +287,7 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Tarefa obj = await _unitOfWork.TarefaRepository.GetAsync(id);
+        Tarefa obj = await _unitOfWork.TarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -302,10 +302,10 @@ public class TarefaController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.TarefaRepository.GetAsync(id) != null;
+        return await _unitOfWork.TarefaRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 
-    private async Task<IEnumerable<Tarefa>> PreencherDadosAdicionaisAsync(IEnumerable<Tarefa> lista)
+    private async Task<List<Tarefa>> PreencherDadosAdicionaisAsync(List<Tarefa> lista)
     {
         int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 
@@ -316,7 +316,7 @@ public class TarefaController : ControllerBase
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-            IEnumerable<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(item.Id);
+            List<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(item.Id).ToListAsync();
 
             if (impedimentos.Any())
             {

@@ -15,21 +15,21 @@ public sealed class ListTarefaHandler : IRequestHandler<ListTarefaQuery, ListTar
 
     public async Task<ListTarefaViewModel> Handle(ListTarefaQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.Tarefa> tarefas = await _unitOfWork.TarefaRepository.AllAsync(request.GetDependencies);
+        List<TarefaDTO> tarefas = await _unitOfWork.TarefaRepository.All(request.GetDependencies)
+            .ProjectTo<TarefaDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (tarefas == null)
+        if (tarefas is null)
         {
             return new ListTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<TarefaDTO> result = _mapper.Map<IEnumerable<TarefaDTO>>(tarefas);
+        await PreencherDadosAdicionaisAsync(tarefas, cancellationToken);
 
-        await PreencherDadosAdicionaisAsync(result);
-
-        return new ListTarefaViewModel { Tarefas = result, OperationResult = OperationResult.Success };
+        return new ListTarefaViewModel { Tarefas = tarefas, OperationResult = OperationResult.Success };
     }
 
-    private async Task PreencherDadosAdicionaisAsync(IEnumerable<TarefaDTO> lista)
+    private async Task PreencherDadosAdicionaisAsync(List<TarefaDTO> lista, CancellationToken cancellationToken)
     {
         int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 
@@ -40,7 +40,9 @@ public sealed class ListTarefaHandler : IRequestHandler<ListTarefaQuery, ListTar
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-            IEnumerable<Domain.Entities.ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefaAsync(item.Id);
+            List<ImpedimentoTarefaDTO> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(item.Id)
+                .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
             if (impedimentos.Any())
             {

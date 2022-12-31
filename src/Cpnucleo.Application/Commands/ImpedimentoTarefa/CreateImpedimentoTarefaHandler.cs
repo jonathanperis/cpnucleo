@@ -15,7 +15,7 @@ public sealed class CreateImpedimentoTarefaHandler : IRequestHandler<CreateImped
     {
         await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(_mapper.Map<Domain.Entities.ImpedimentoTarefa>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

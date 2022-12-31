@@ -11,16 +11,16 @@ public sealed class RemoveWorkflowHandler : IRequestHandler<RemoveWorkflowComman
 
     public async Task<OperationResult> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (workflow == null)
+        if (workflow is null)
         {
             return OperationResult.NotFound;
         }
 
         await _unitOfWork.WorkflowRepository.RemoveAsync(request.Id);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

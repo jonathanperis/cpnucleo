@@ -33,9 +33,9 @@ public class RecursoController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Recurso>> Get(bool getDependencies = false)
+    public async Task<List<Recurso>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.RecursoRepository.AllAsync(getDependencies);
+        return await _unitOfWork.RecursoRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class RecursoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Recurso>> Get(Guid id)
     {
-        Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(id);
+        Recurso recurso = await _unitOfWork.RecursoRepository.Get(id).FirstOrDefaultAsync();
 
         recurso.Senha = null;
         recurso.Salt = null;
@@ -215,7 +215,7 @@ public class RecursoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Recurso obj = await _unitOfWork.RecursoRepository.GetAsync(id);
+        Recurso obj = await _unitOfWork.RecursoRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -230,6 +230,6 @@ public class RecursoController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.RecursoRepository.GetAsync(id) != null;
+        return await _unitOfWork.RecursoRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

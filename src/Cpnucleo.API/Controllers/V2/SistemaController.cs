@@ -28,9 +28,9 @@ public class SistemaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Sistema>> Get(bool getDependencies = false)
+    public async Task<List<Sistema>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.SistemaRepository.AllAsync(getDependencies);
+        return await _unitOfWork.SistemaRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class SistemaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Sistema>> Get(Guid id)
     {
-        Sistema sistema = await _unitOfWork.SistemaRepository.GetAsync(id);
+        Sistema sistema = await _unitOfWork.SistemaRepository.Get(id).FirstOrDefaultAsync();
 
         if (sistema == null)
         {
@@ -193,7 +193,7 @@ public class SistemaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Sistema obj = await _unitOfWork.SistemaRepository.GetAsync(id);
+        Sistema obj = await _unitOfWork.SistemaRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -208,6 +208,6 @@ public class SistemaController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.SistemaRepository.GetAsync(id) != null;
+        return await _unitOfWork.SistemaRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

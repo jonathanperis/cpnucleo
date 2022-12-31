@@ -23,7 +23,7 @@ public sealed class CreateRecursoHandler : IRequestHandler<CreateRecursoCommand,
 
         await _unitOfWork.RecursoRepository.AddAsync(_mapper.Map<Domain.Entities.Recurso>(requestWithSenha), salt);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

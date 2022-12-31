@@ -13,15 +13,15 @@ public sealed class GetRecursoProjetoByProjetoHandler : IRequestHandler<GetRecur
 
     public async Task<GetRecursoProjetoByProjetoViewModel> Handle(GetRecursoProjetoByProjetoQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.RecursoProjeto> recursoProjetos = await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjetoAsync(request.IdProjeto);
+        List<RecursoProjetoDTO> recursoProjetos = await _unitOfWork.RecursoProjetoRepository.GetRecursoProjetoByProjeto(request.IdProjeto)
+            .ProjectTo<RecursoProjetoDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (recursoProjetos == null)
+        if (recursoProjetos is null)
         {
             return new GetRecursoProjetoByProjetoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<RecursoProjetoDTO> result = _mapper.Map<IEnumerable<RecursoProjetoDTO>>(recursoProjetos);
-
-        return new GetRecursoProjetoByProjetoViewModel { RecursoProjetos = result, OperationResult = OperationResult.Success };
+        return new GetRecursoProjetoByProjetoViewModel { RecursoProjetos = recursoProjetos, OperationResult = OperationResult.Success };
     }
 }

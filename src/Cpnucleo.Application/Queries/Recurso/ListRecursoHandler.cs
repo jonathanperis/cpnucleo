@@ -13,15 +13,15 @@ public sealed class ListRecursoHandler : IRequestHandler<ListRecursoQuery, ListR
 
     public async Task<ListRecursoViewModel> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.Recurso> recursos = await _unitOfWork.RecursoRepository.AllAsync(request.GetDependencies);
+        List<RecursoDTO> recursos = await _unitOfWork.RecursoRepository.All(request.GetDependencies)
+            .ProjectTo<RecursoDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (recursos == null)
+        if (recursos is null)
         {
             return new ListRecursoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<RecursoDTO> result = _mapper.Map<IEnumerable<RecursoDTO>>(recursos);
-
-        return new ListRecursoViewModel { Recursos = result, OperationResult = OperationResult.Success };
+        return new ListRecursoViewModel { Recursos = recursos, OperationResult = OperationResult.Success };
     }
 }

@@ -11,16 +11,16 @@ public sealed class RemoveApontamentoHandler : IRequestHandler<RemoveApontamento
 
     public async Task<OperationResult> Handle(RemoveApontamentoCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Apontamento apontamento = await _unitOfWork.ApontamentoRepository.GetAsync(request.Id);
+        Domain.Entities.Apontamento apontamento = await _unitOfWork.ApontamentoRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (apontamento == null)
+        if (apontamento is null)
         {
             return OperationResult.NotFound;
         }
 
         await _unitOfWork.ApontamentoRepository.RemoveAsync(request.Id);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

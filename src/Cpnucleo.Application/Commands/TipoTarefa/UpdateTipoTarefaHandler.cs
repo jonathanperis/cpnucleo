@@ -11,9 +11,9 @@ public sealed class UpdateTipoTarefaHandler : IRequestHandler<UpdateTipoTarefaCo
 
     public async Task<OperationResult> Handle(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.GetAsync(request.Id);
+        Domain.Entities.TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (tipoTarefa == null)
+        if (tipoTarefa is null)
         {
             return OperationResult.NotFound;
         }
@@ -23,7 +23,7 @@ public sealed class UpdateTipoTarefaHandler : IRequestHandler<UpdateTipoTarefaCo
 
         _unitOfWork.TipoTarefaRepository.Update(tipoTarefa);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 
