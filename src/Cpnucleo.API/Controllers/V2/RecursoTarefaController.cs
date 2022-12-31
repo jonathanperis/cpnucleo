@@ -30,7 +30,7 @@ public class RecursoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<RecursoTarefa>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.RecursoTarefaRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.RecursoTarefaRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class RecursoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<RecursoTarefa>> GetByTarefa(Guid idTarefa)
     {
-        return await _unitOfWork.RecursoTarefaRepository.GetRecursoTarefaByTarefa(idTarefa).ToListAsync();
+        return await _unitOfWork.RecursoTarefaRepository.ListRecursoTarefaByTarefa(idTarefa).ToListAsync();
     }
 
     /// <summary>

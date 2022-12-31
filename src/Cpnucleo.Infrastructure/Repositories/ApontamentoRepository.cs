@@ -7,7 +7,7 @@ internal sealed class ApontamentoRepository : GenericRepository<Apontamento>, IA
     public ApontamentoRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public IQueryable<Apontamento> GetApontamentoByRecurso(Guid idRecurso)
+    public IQueryable<Apontamento> ListApontamentoByRecurso(Guid idRecurso)
     {
         Expression<Func<Apontamento, bool>> predicate = x => x.IdRecurso == idRecurso && x.DataApontamento.Value > DateTime.UtcNow.AddDays(-30) && x.Ativo;
 

@@ -8,7 +8,7 @@ internal sealed class TarefaRepository : GenericRepository<Tarefa>, ITarefaRepos
     public TarefaRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public IQueryable<Tarefa> GetTarefaByRecurso(Guid idRecurso)
+    public IQueryable<Tarefa> ListTarefaByRecurso(Guid idRecurso)
     {
         return _context.Set<RecursoTarefa>()
             .AsQueryable()
