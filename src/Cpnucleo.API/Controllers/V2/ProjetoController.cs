@@ -30,7 +30,7 @@ public class ProjetoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Projeto>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.ProjetoRepository.All(getDependencies).ToListAsync();
+        return await _unitOfWork.ProjetoRepository.List(getDependencies).ToListAsync();
     }
 
     /// <summary>

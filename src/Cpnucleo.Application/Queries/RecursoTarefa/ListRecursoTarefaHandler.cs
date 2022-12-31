@@ -13,7 +13,7 @@ public sealed class ListRecursoTarefaHandler : IRequestHandler<ListRecursoTarefa
 
     public async Task<ListRecursoTarefaViewModel> Handle(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
-        List<RecursoTarefaDTO> recursoTarefas = await _unitOfWork.RecursoTarefaRepository.All(request.GetDependencies)
+        List<RecursoTarefaDTO> recursoTarefas = await _unitOfWork.RecursoTarefaRepository.List(request.GetDependencies)
             .ProjectTo<RecursoTarefaDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

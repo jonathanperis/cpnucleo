@@ -13,7 +13,7 @@ public sealed class ListRecursoHandler : IRequestHandler<ListRecursoQuery, ListR
 
     public async Task<ListRecursoViewModel> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
     {
-        List<RecursoDTO> recursos = await _unitOfWork.RecursoRepository.All(request.GetDependencies)
+        List<RecursoDTO> recursos = await _unitOfWork.RecursoRepository.List(request.GetDependencies)
             .ProjectTo<RecursoDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

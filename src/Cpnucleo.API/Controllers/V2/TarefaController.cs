@@ -32,7 +32,7 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Tarefa>> Get(bool getDependencies = false)
     {
-        List<Tarefa> result = await _unitOfWork.TarefaRepository.All(getDependencies).ToListAsync();
+        List<Tarefa> result = await _unitOfWork.TarefaRepository.List(getDependencies).ToListAsync();
 
         return await PreencherDadosAdicionaisAsync(result);
     }
@@ -81,7 +81,7 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<List<Tarefa>> GetByRecurso(Guid id)
     {
-        List<Tarefa> result = await _unitOfWork.TarefaRepository.GetTarefaByRecurso(id).ToListAsync();
+        List<Tarefa> result = await _unitOfWork.TarefaRepository.ListTarefaByRecurso(id).ToListAsync();
 
         return await PreencherDadosAdicionaisAsync(result);
     }
@@ -316,7 +316,7 @@ public class TarefaController : ControllerBase
             item.HorasConsumidas = await _unitOfWork.ApontamentoRepository.GetTotalHorasByRecursoAsync(item.IdRecurso, item.Id);
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
 
-            List<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.GetImpedimentoTarefaByTarefa(item.Id).ToListAsync();
+            List<ImpedimentoTarefa> impedimentos = await _unitOfWork.ImpedimentoTarefaRepository.ListImpedimentoTarefaByTarefa(item.Id).ToListAsync();
 
             if (impedimentos.Any())
             {

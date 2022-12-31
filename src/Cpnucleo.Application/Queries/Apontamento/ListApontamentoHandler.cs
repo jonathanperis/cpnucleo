@@ -13,7 +13,7 @@ public sealed class ListApontamentoHandler : IRequestHandler<ListApontamentoQuer
 
     public async Task<ListApontamentoViewModel> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
-        List<ApontamentoDTO> apontamentos = await _unitOfWork.ApontamentoRepository.All(request.GetDependencies)
+        List<ApontamentoDTO> apontamentos = await _unitOfWork.ApontamentoRepository.List(request.GetDependencies)
             .ProjectTo<ApontamentoDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
