@@ -15,7 +15,7 @@ public sealed class CreateTipoTarefaHandler : IRequestHandler<CreateTipoTarefaCo
     {
         await _unitOfWork.TipoTarefaRepository.AddAsync(_mapper.Map<Domain.Entities.TipoTarefa>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

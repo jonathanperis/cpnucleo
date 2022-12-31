@@ -28,9 +28,9 @@ public class RecursoTarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<RecursoTarefa>> Get(bool getDependencies = false)
+    public async Task<List<RecursoTarefa>> Get(bool getDependencies = false)
     {
-        return await _unitOfWork.RecursoTarefaRepository.AllAsync(getDependencies);
+        return await _unitOfWork.RecursoTarefaRepository.All(getDependencies).ToListAsync();
     }
 
     /// <summary>
@@ -47,9 +47,9 @@ public class RecursoTarefaController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet("GetByTarefa/{idTarefa}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<RecursoTarefa>> GetByTarefa(Guid idTarefa)
+    public async Task<List<RecursoTarefa>> GetByTarefa(Guid idTarefa)
     {
-        return await _unitOfWork.RecursoTarefaRepository.GetRecursoTarefaByTarefaAsync(idTarefa);
+        return await _unitOfWork.RecursoTarefaRepository.GetRecursoTarefaByTarefa(idTarefa).ToListAsync();
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class RecursoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RecursoTarefa>> Get(Guid id)
     {
-        RecursoTarefa recursoTarefa = await _unitOfWork.RecursoTarefaRepository.GetAsync(id);
+        RecursoTarefa recursoTarefa = await _unitOfWork.RecursoTarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (recursoTarefa == null)
         {
@@ -214,7 +214,7 @@ public class RecursoTarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        RecursoTarefa obj = await _unitOfWork.RecursoTarefaRepository.GetAsync(id);
+        RecursoTarefa obj = await _unitOfWork.RecursoTarefaRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -229,6 +229,6 @@ public class RecursoTarefaController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.RecursoTarefaRepository.GetAsync(id) != null;
+        return await _unitOfWork.RecursoTarefaRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }

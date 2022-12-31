@@ -13,15 +13,15 @@ public sealed class GetImpedimentoHandler : IRequestHandler<GetImpedimentoQuery,
 
     public async Task<GetImpedimentoViewModel> Handle(GetImpedimentoQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Impedimento impedimento = await _unitOfWork.ImpedimentoRepository.GetAsync(request.Id);
+        ImpedimentoDTO impedimento = await _unitOfWork.ImpedimentoRepository.Get(request.Id)
+            .ProjectTo<ImpedimentoDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (impedimento == null)
+        if (impedimento is null)
         {
             return new GetImpedimentoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        ImpedimentoDTO result = _mapper.Map<ImpedimentoDTO>(impedimento);
-
-        return new GetImpedimentoViewModel { Impedimento = result, OperationResult = OperationResult.Success };
+        return new GetImpedimentoViewModel { Impedimento = impedimento, OperationResult = OperationResult.Success };
     }
 }

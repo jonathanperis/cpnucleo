@@ -15,7 +15,7 @@ public sealed class CreateSistemaHandler : IRequestHandler<CreateSistemaCommand,
     {
         await _unitOfWork.SistemaRepository.AddAsync(_mapper.Map<Domain.Entities.Sistema>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

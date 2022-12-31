@@ -15,7 +15,7 @@ public sealed class CreateTarefaHandler : IRequestHandler<CreateTarefaCommand, O
     {
         await _unitOfWork.TarefaRepository.AddAsync(_mapper.Map<Domain.Entities.Tarefa>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

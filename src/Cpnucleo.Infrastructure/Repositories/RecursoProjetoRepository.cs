@@ -7,11 +7,10 @@ internal sealed class RecursoProjetoRepository : GenericRepository<RecursoProjet
     public RecursoProjetoRepository(CpnucleoDbContext context)
         : base(context) { }
 
-    public async Task<IEnumerable<RecursoProjeto>> GetRecursoProjetoByProjetoAsync(Guid idProjeto)
+    public IQueryable<RecursoProjeto> GetRecursoProjetoByProjeto(Guid idProjeto)
     {
         Expression<Func<RecursoProjeto, bool>> predicate = x => x.IdProjeto == idProjeto && x.Ativo;
 
-        return await All(predicate, true)
-            .ToListAsync();
+        return All(predicate, true);
     }
 }

@@ -168,9 +168,9 @@ public sealed class UnitOfWork : IUnitOfWork
         }
     }
 
-    public async Task<bool> SaveChangesAsync()
+    public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.SaveChangesAsync() > 0;
+        return await _context.SaveChangesAsync(cancellationToken) > 0;
     }
 
     public void Dispose()

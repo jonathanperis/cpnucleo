@@ -12,6 +12,7 @@
 		<PackageReference Include="Ev.ServiceBus" Version="4.5.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
 		<PackageReference Include="Microsoft.Azure.SignalR" Version="1.19.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 	</ItemGroup>
 

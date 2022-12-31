@@ -11,16 +11,16 @@ public sealed class RemoveImpedimentoTarefaHandler : IRequestHandler<RemoveImped
 
     public async Task<OperationResult> Handle(RemoveImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.GetAsync(request.Id);
+        Domain.Entities.ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (impedimentoTarefa == null)
+        if (impedimentoTarefa is null)
         {
             return OperationResult.NotFound;
         }
 
         await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(request.Id);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

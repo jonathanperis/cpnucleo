@@ -15,9 +15,9 @@ public sealed class UpdateRecursoHandler : IRequestHandler<UpdateRecursoCommand,
 
     public async Task<OperationResult> Handle(UpdateRecursoCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Recurso recurso = await _unitOfWork.RecursoRepository.GetAsync(request.Id);
+        Domain.Entities.Recurso recurso = await _unitOfWork.RecursoRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (recurso == null)
+        if (recurso is null)
         {
             return OperationResult.NotFound;
         }
@@ -31,7 +31,7 @@ public sealed class UpdateRecursoHandler : IRequestHandler<UpdateRecursoCommand,
 
         _unitOfWork.RecursoRepository.Update(recurso);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

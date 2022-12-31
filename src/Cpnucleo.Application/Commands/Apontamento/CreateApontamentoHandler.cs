@@ -15,7 +15,7 @@ public sealed class CreateApontamentoHandler : IRequestHandler<CreateApontamento
     {
         await _unitOfWork.ApontamentoRepository.AddAsync(_mapper.Map<Domain.Entities.Apontamento>(request));
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

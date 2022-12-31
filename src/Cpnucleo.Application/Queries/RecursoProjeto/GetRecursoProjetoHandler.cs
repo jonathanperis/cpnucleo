@@ -13,15 +13,15 @@ public sealed class GetRecursoProjetoHandler : IRequestHandler<GetRecursoProjeto
 
     public async Task<GetRecursoProjetoViewModel> Handle(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.RecursoProjeto recursoProjeto = await _unitOfWork.RecursoProjetoRepository.GetAsync(request.Id);
+        RecursoProjetoDTO recursoProjeto = await _unitOfWork.RecursoProjetoRepository.Get(request.Id)
+            .ProjectTo<RecursoProjetoDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (recursoProjeto == null)
+        if (recursoProjeto is null)
         {
             return new GetRecursoProjetoViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        RecursoProjetoDTO result = _mapper.Map<RecursoProjetoDTO>(recursoProjeto);
-
-        return new GetRecursoProjetoViewModel { RecursoProjeto = result, OperationResult = OperationResult.Success };
+        return new GetRecursoProjetoViewModel { RecursoProjeto = recursoProjeto, OperationResult = OperationResult.Success };
     }
 }

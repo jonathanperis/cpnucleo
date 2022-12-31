@@ -13,15 +13,15 @@ public sealed class GetTarefaHandler : IRequestHandler<GetTarefaQuery, GetTarefa
 
     public async Task<GetTarefaViewModel> Handle(GetTarefaQuery request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
+        TarefaDTO tarefa = await _unitOfWork.TarefaRepository.Get(request.Id)
+            .ProjectTo<TarefaDTO>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (tarefa == null)
+        if (tarefa is null)
         {
             return new GetTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        TarefaDTO result = _mapper.Map<TarefaDTO>(tarefa);
-
-        return new GetTarefaViewModel { Tarefa = result, OperationResult = OperationResult.Success };
+        return new GetTarefaViewModel { Tarefa = tarefa, OperationResult = OperationResult.Success };
     }
 }

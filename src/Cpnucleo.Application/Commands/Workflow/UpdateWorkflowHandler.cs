@@ -11,9 +11,9 @@ public sealed class UpdateWorkflowHandler : IRequestHandler<UpdateWorkflowComman
 
     public async Task<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.Id);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (workflow == null)
+        if (workflow is null)
         {
             return OperationResult.NotFound;
         }
@@ -23,7 +23,7 @@ public sealed class UpdateWorkflowHandler : IRequestHandler<UpdateWorkflowComman
 
         _unitOfWork.WorkflowRepository.Update(workflow);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

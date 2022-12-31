@@ -11,16 +11,16 @@ public sealed class UpdateTarefaByWorkflowHandler : IRequestHandler<UpdateTarefa
 
     public async Task<OperationResult> Handle(UpdateTarefaByWorkflowCommand request, CancellationToken cancellationToken)
     {
-        Domain.Entities.Tarefa tarefa = await _unitOfWork.TarefaRepository.GetAsync(request.Id);
+        Domain.Entities.Tarefa tarefa = await _unitOfWork.TarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
 
-        if (tarefa == null)
+        if (tarefa is null)
         {
             return OperationResult.NotFound;
         }
 
-        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(request.IdWorkflow);
+        Domain.Entities.Workflow workflow = await _unitOfWork.WorkflowRepository.Get(request.IdWorkflow).FirstOrDefaultAsync(cancellationToken);
 
-        if (workflow == null)
+        if (workflow is null)
         {
             return OperationResult.Failed;
         }
@@ -30,7 +30,7 @@ public sealed class UpdateTarefaByWorkflowHandler : IRequestHandler<UpdateTarefa
 
         _unitOfWork.TarefaRepository.Update(tarefa);
 
-        bool success = await _unitOfWork.SaveChangesAsync();
+        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

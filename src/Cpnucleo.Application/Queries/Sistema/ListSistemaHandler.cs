@@ -18,17 +18,17 @@ public sealed class ListSistemaHandler : IRequestHandler<ListSistemaQuery, ListS
 
     public async Task<ListSistemaViewModel> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
     {
-        IEnumerable<Domain.Entities.Sistema> sistemas = await _unitOfWork.SistemaRepository.AllAsync(request.GetDependencies);
+        List<SistemaDTO> sistemas = await _unitOfWork.SistemaRepository.All(request.GetDependencies)
+            .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        if (sistemas == null)
+        if (sistemas is null)
         {
             return new ListSistemaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        IEnumerable<SistemaDTO> result = _mapper.Map<IEnumerable<SistemaDTO>>(sistemas);
-
         await _hubContext.Clients.All.SendAsync("broadcastMessage", "Broadcast: Test Message.", "Lorem ipsum dolor sit amet", cancellationToken);
 
-        return new ListSistemaViewModel { Sistemas = result, OperationResult = OperationResult.Success };
+        return new ListSistemaViewModel { Sistemas = sistemas, OperationResult = OperationResult.Success };
     }
 }

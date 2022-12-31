@@ -30,9 +30,9 @@ public class WorkflowController : ControllerBase
     /// <response code="500">Erro no processamento da requisição</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IEnumerable<Workflow>> Get(bool getDependencies = false)
+    public async Task<List<Workflow>> Get(bool getDependencies = false)
     {
-        IEnumerable<Workflow> result = await _unitOfWork.WorkflowRepository.AllAsync(getDependencies);
+        List<Workflow> result = await _unitOfWork.WorkflowRepository.All(getDependencies).ToListAsync();
 
         int colunas = await _unitOfWork.WorkflowRepository.GetQuantidadeColunasAsync();
 
@@ -62,7 +62,7 @@ public class WorkflowController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Workflow>> Get(Guid id)
     {
-        Workflow workflow = await _unitOfWork.WorkflowRepository.GetAsync(id);
+        Workflow workflow = await _unitOfWork.WorkflowRepository.Get(id).FirstOrDefaultAsync();
 
         if (workflow == null)
         {
@@ -208,7 +208,7 @@ public class WorkflowController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        Workflow obj = await _unitOfWork.WorkflowRepository.GetAsync(id);
+        Workflow obj = await _unitOfWork.WorkflowRepository.Get(id).FirstOrDefaultAsync();
 
         if (obj == null)
         {
@@ -223,6 +223,6 @@ public class WorkflowController : ControllerBase
 
     private async Task<bool> ObjExists(Guid id)
     {
-        return await _unitOfWork.WorkflowRepository.GetAsync(id) != null;
+        return await _unitOfWork.WorkflowRepository.Get(id).FirstOrDefaultAsync() != null;
     }
 }
