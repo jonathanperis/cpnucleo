@@ -19,7 +19,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            GetRecursoTarefaByTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoTarefaByTarefaViewModel>("RecursoTarefa", "GetRecursoTarefaByTarefa", new GetRecursoTarefaByTarefaQuery(idTarefa));
+            ListRecursoTarefaByTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListRecursoTarefaByTarefaViewModel>("RecursoTarefa", "GetRecursoTarefaByTarefa", new ListRecursoTarefaByTarefaQuery(idTarefa));
 
             if (result.OperationResult == OperationResult.Failed)
             {

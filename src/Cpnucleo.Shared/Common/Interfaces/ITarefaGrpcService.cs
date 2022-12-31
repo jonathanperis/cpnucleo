@@ -12,7 +12,7 @@ public interface ITarefaGrpcService : IService<ITarefaGrpcService>
 
     UnaryResult<OperationResult> RemoveTarefa(RemoveTarefaCommand command);
 
-    UnaryResult<GetTarefaByRecursoViewModel> GetTarefaByRecurso(GetTarefaByRecursoQuery query);
+    UnaryResult<ListTarefaByRecursoViewModel> GetTarefaByRecurso(ListTarefaByRecursoQuery query);
 
     UnaryResult<OperationResult> UpdateTarefaByWorkflow(UpdateTarefaByWorkflowCommand command);
 }

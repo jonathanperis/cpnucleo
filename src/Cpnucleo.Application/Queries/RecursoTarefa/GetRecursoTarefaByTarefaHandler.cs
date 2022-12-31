@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.RecursoTarefa;
 
-public sealed class GetRecursoTarefaByTarefaHandler : IRequestHandler<GetRecursoTarefaByTarefaQuery, GetRecursoTarefaByTarefaViewModel>
+public sealed class GetRecursoTarefaByTarefaHandler : IRequestHandler<ListRecursoTarefaByTarefaQuery, ListRecursoTarefaByTarefaViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -11,7 +11,7 @@ public sealed class GetRecursoTarefaByTarefaHandler : IRequestHandler<GetRecurso
         _mapper = mapper;
     }
 
-    public async Task<GetRecursoTarefaByTarefaViewModel> Handle(GetRecursoTarefaByTarefaQuery request, CancellationToken cancellationToken)
+    public async Task<ListRecursoTarefaByTarefaViewModel> Handle(ListRecursoTarefaByTarefaQuery request, CancellationToken cancellationToken)
     {
         List<RecursoTarefaDTO> recursoTarefas = await _unitOfWork.RecursoTarefaRepository.ListRecursoTarefaByTarefa(request.IdTarefa)
             .ProjectTo<RecursoTarefaDTO>(_mapper.ConfigurationProvider)
@@ -19,9 +19,9 @@ public sealed class GetRecursoTarefaByTarefaHandler : IRequestHandler<GetRecurso
 
         if (recursoTarefas is null)
         {
-            return new GetRecursoTarefaByTarefaViewModel { OperationResult = OperationResult.NotFound };
+            return new ListRecursoTarefaByTarefaViewModel { OperationResult = OperationResult.NotFound };
         }
 
-        return new GetRecursoTarefaByTarefaViewModel { RecursoTarefas = recursoTarefas, OperationResult = OperationResult.Success };
+        return new ListRecursoTarefaByTarefaViewModel { RecursoTarefas = recursoTarefas, OperationResult = OperationResult.Success };
     }
 }

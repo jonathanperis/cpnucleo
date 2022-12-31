@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Queries.Tarefa;
 
-public sealed class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecursoQuery, GetTarefaByRecursoViewModel>
+public sealed class GetTarefaByRecursoHandler : IRequestHandler<ListTarefaByRecursoQuery, ListTarefaByRecursoViewModel>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -13,7 +13,7 @@ public sealed class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecur
         _workflowService = workflowService;
     }
 
-    public async Task<GetTarefaByRecursoViewModel> Handle(GetTarefaByRecursoQuery request, CancellationToken cancellationToken)
+    public async Task<ListTarefaByRecursoViewModel> Handle(ListTarefaByRecursoQuery request, CancellationToken cancellationToken)
     {
         List<TarefaDTO> tarefas = await _unitOfWork.TarefaRepository.ListTarefaByRecurso(request.IdRecurso)
             .ProjectTo<TarefaDTO>(_mapper.ConfigurationProvider)
@@ -21,12 +21,12 @@ public sealed class GetTarefaByRecursoHandler : IRequestHandler<GetTarefaByRecur
 
         if (tarefas is null)
         {
-            return new GetTarefaByRecursoViewModel { OperationResult = OperationResult.NotFound };
+            return new ListTarefaByRecursoViewModel { OperationResult = OperationResult.NotFound };
         }
 
         await PreencherDadosAdicionaisAsync(tarefas, cancellationToken);
 
-        return new GetTarefaByRecursoViewModel { Tarefas = tarefas, OperationResult = OperationResult.Success };
+        return new ListTarefaByRecursoViewModel { Tarefas = tarefas, OperationResult = OperationResult.Success };
     }
 
     private async Task PreencherDadosAdicionaisAsync(List<TarefaDTO> lista, CancellationToken cancellationToken)

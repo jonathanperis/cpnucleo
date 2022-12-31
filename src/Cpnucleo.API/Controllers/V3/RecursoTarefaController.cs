@@ -57,7 +57,7 @@ public class RecursoTarefaController : ControllerBase
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     [HttpGet]
     [Route("GetRecursoTarefaByTarefa")]
-    public async Task<ActionResult<GetRecursoTarefaByTarefaViewModel>> GetRecursoTarefaByTarefa([FromQuery] GetRecursoTarefaByTarefaQuery query)
+    public async Task<ActionResult<ListRecursoTarefaByTarefaViewModel>> GetRecursoTarefaByTarefa([FromQuery] ListRecursoTarefaByTarefaQuery query)
     {
         return await _mediator.Send(query);
     }

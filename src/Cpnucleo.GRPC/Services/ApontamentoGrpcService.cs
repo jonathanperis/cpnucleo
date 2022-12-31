@@ -61,7 +61,7 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// Consulta um apontamento por recurso na base de dados.
     /// </remarks>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
-    public async UnaryResult<GetApontamentoByRecursoViewModel> GetApontamentoByRecurso(GetApontamentoByRecursoQuery query)
+    public async UnaryResult<ListApontamentoByRecursoViewModel> GetApontamentoByRecurso(ListApontamentoByRecursoQuery query)
     {
         return await _mediator.Send(query);
     }
