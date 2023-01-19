@@ -63,11 +63,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.Property<int>("QtdHoras")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.HasIndex("IdTarefa");
 
@@ -102,11 +100,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.ToTable("Impedimentos", "public");
                 });
@@ -145,11 +141,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.Property<Guid>("IdTarefa")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.HasIndex("IdImpedimento");
 
@@ -189,11 +183,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.HasIndex("IdSistema");
 
@@ -254,11 +246,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.ToTable("Recursos", "public");
 
@@ -302,11 +292,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.Property<Guid>("IdRecurso")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.HasIndex("IdProjeto");
 
@@ -344,11 +332,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.Property<int>("PercentualTarefa")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.HasIndex("IdRecurso");
 
@@ -402,11 +388,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.ToTable("Sistemas", "public");
 
@@ -475,11 +459,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.Property<int>("QtdHoras")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.HasIndex("IdProjeto");
 
@@ -542,11 +524,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.ToTable("TiposTarefas", "public");
 
@@ -620,11 +600,9 @@ namespace Cpnucleo.Infrastructure.Migrations
                     b.Property<int>("Ordem")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id")
-                        .HasAnnotation("SqlServer:Clustered", false);
+                    b.HasKey("Id");
 
-                    b.HasIndex("ClusteredKey")
-                        .HasAnnotation("SqlServer:Clustered", true);
+                    b.HasIndex("ClusteredKey");
 
                     b.ToTable("Workflows", "public");
 
