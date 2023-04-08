@@ -1,4 +1,10 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.CreateTipoTarefa;
+using Cpnucleo.Shared.Commands.RemoveTipoTarefa;
+using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
+using Cpnucleo.Shared.Queries.GetTipoTarefa;
+using Cpnucleo.Shared.Queries.ListTipoTarefa;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

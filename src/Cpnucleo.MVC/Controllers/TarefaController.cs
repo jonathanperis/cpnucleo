@@ -1,4 +1,11 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetTarefa;
+using Cpnucleo.Shared.Queries.ListProjeto;
+using Cpnucleo.Shared.Queries.ListSistema;
+using Cpnucleo.Shared.Queries.ListTarefa;
+using Cpnucleo.Shared.Queries.ListTipoTarefa;
+using Cpnucleo.Shared.Queries.ListWorkflow;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class TarefaController : BaseController

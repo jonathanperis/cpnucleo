@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
+﻿using Cpnucleo.Shared.Queries.ListWorkflow;
+
+namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
 public class ListarModel : PageModel

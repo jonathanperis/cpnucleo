@@ -1,4 +1,9 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.GetTarefa;
+using Cpnucleo.Shared.Queries.ListImpedimento;
+using Cpnucleo.Shared.Queries.ListImpedimentoTarefaByTarefa;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ImpedimentoTarefaController : BaseController

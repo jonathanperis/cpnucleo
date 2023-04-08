@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
+﻿using Cpnucleo.Shared.Queries.GetRecurso;
+
+namespace Cpnucleo.RazorPages.Pages.Recurso;
 
 [Authorize]
 public class AlterarModel : PageModel

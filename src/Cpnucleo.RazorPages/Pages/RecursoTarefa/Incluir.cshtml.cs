@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
+﻿using Cpnucleo.Shared.Queries.GetTarefa;
+using Cpnucleo.Shared.Queries.ListRecurso;
+
+namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
 
 [Authorize]
 public class IncluirModel : PageModel

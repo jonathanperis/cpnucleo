@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
+﻿using Cpnucleo.Shared.Queries.ListSistema;
+
+namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
 public class ListarModel : PageModel

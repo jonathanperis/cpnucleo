@@ -1,4 +1,4 @@
-﻿using Cpnucleo.Domain.Common.Security.Interfaces;
+﻿using Cpnucleo.Domain.Common.Security;
 using Cpnucleo.Shared.Requests.Auth;
 
 namespace Cpnucleo.Application.Requests.Auth;

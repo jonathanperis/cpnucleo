@@ -1,21 +1,16 @@
 ﻿namespace Cpnucleo.Domain.Entities;
 
-public abstract record BaseEntity
+public abstract class BaseEntity
 {
-    public BaseEntity()
-    {
-        Ativo = true;
-    }
+    public Guid Id { get; protected set; }
 
-    public Guid Id { get; set; }
+    public long ClusteredKey { get; protected set; }
 
-    public long ClusteredKey { get; set; }
+    public DateTime DataInclusao { get; protected set; }
 
-    public DateTime DataInclusao { get; set; }
+    public DateTime? DataAlteracao { get; protected set; }
 
-    public DateTime? DataAlteracao { get; set; }
+    public DateTime? DataExclusao { get; protected set; }
 
-    public DateTime? DataExclusao { get; set; }
-
-    public bool Ativo { get; set; }
+    public bool Ativo { get; protected set; }
 }

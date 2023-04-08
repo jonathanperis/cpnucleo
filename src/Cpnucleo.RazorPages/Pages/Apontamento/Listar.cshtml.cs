@@ -1,4 +1,6 @@
 ﻿using Cpnucleo.RazorPages.Services;
+using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
+using Cpnucleo.Shared.Queries.ListTarefaByRecurso;
 using System.Security.Claims;
 
 namespace Cpnucleo.RazorPages.Pages.Apontamento;

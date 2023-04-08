@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
+﻿using Cpnucleo.Shared.Queries.GetImpedimento;
+
+namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
 public class AlterarModel : PageModel

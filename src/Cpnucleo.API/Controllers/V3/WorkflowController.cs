@@ -1,4 +1,10 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.CreateWorkflow;
+using Cpnucleo.Shared.Commands.RemoveWorkflow;
+using Cpnucleo.Shared.Commands.UpdateWorkflow;
+using Cpnucleo.Shared.Queries.GetWorkflow;
+using Cpnucleo.Shared.Queries.ListWorkflow;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetWorkflow;
+using Cpnucleo.Shared.Queries.ListWorkflow;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class WorkflowController : BaseController

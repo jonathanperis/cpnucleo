@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
+﻿using Cpnucleo.Shared.Queries.ListImpedimento;
+
+namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
 public class ListarModel : PageModel

@@ -20,7 +20,7 @@ public class SistemaHandlerTest
         CreateSistemaCommand request = MockCommandHelper.GetNewCreateSistemaCommand();
 
         // Act
-        CreateSistemaHandler handler = new(unitOfWork, mapper);
+        CreateSistemaCommandHandler handler = new(unitOfWork, mapper);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -64,7 +64,7 @@ public class SistemaHandlerTest
         GetSistemaQuery request = MockQueryHelper.GetNewGetSistemaQuery(sistemaId);
 
         // Act
-        GetSistemaHandler handler = new(unitOfWork, mapper);
+        GetSistemaQueryHandler handler = new(unitOfWork, mapper);
         GetSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -93,7 +93,7 @@ public class SistemaHandlerTest
         ListSistemaQuery request = MockQueryHelper.GetNewListSistemaQuery();
 
         // Act
-        ListSistemaHandler handler = new(unitOfWork, mapper, mockSignalR.Object);
+        ListSistemaQueryHandler handler = new(unitOfWork, mapper, mockSignalR.Object);
         ListSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -124,10 +124,10 @@ public class SistemaHandlerTest
         GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery(sistemaId);
 
         // Act
-        RemoveSistemaHandler handler = new(unitOfWork, mockServiceBus.Object);
+        RemoveSistemaCommandHandler handler = new(unitOfWork, mockServiceBus.Object);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetSistemaHandler handler2 = new(unitOfWork, mapper);
+        GetSistemaQueryHandler handler2 = new(unitOfWork, mapper);
         GetSistemaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -155,10 +155,10 @@ public class SistemaHandlerTest
         GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery(sistemaId);
 
         // Act
-        UpdateSistemaHandler handler = new(unitOfWork);
+        UpdateSistemaCommandHandler handler = new(unitOfWork);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetSistemaHandler handler2 = new(unitOfWork, mapper);
+        GetSistemaQueryHandler handler2 = new(unitOfWork, mapper);
         GetSistemaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

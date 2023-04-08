@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
+﻿using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
+
+namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
 [Authorize]
 public class ListarModel : PageModel

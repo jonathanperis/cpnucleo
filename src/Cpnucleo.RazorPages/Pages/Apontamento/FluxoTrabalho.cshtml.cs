@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Apontamento;
+﻿using Cpnucleo.Shared.Queries.ListTarefa;
+using Cpnucleo.Shared.Queries.ListWorkflow;
+
+namespace Cpnucleo.RazorPages.Pages.Apontamento;
 
 [Authorize]
 public class FluxoTrabalhoModel : PageModel

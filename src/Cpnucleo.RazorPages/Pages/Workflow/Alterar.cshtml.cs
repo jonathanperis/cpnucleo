@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
+﻿using Cpnucleo.Shared.Queries.GetWorkflow;
+
+namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
 public class AlterarModel : PageModel

@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
+﻿using Cpnucleo.Shared.Queries.ListTarefa;
+
+namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
 public class ListarModel : PageModel
