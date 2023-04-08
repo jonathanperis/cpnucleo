@@ -28,15 +28,15 @@ public sealed class Tarefa : BaseEntity
 
     public TipoTarefa? TipoTarefa { get; private set; }
 
-    public static Tarefa Create(string nome, 
-                                DateTime dataInicio, 
-                                DateTime dataTermino, 
-                                int qtdHoras, 
-                                string detalhe, 
-                                Guid idProjeto, 
-                                Guid idWorkflow, 
-                                Guid idRecurso, 
-                                Guid idTipoTarefa, 
+    public static Tarefa Create(string nome,
+                                DateTime dataInicio,
+                                DateTime dataTermino,
+                                int qtdHoras,
+                                string detalhe,
+                                Guid idProjeto,
+                                Guid idWorkflow,
+                                Guid idRecurso,
+                                Guid idTipoTarefa,
                                 Guid id = default)
     {
         return new Tarefa

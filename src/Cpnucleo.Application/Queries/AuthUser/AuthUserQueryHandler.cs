@@ -38,7 +38,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
 
         bool success = Recurso.VerifyPassword(request.Senha, recurso.Senha!, recurso.Salt!);
 
-        if (!success) 
+        if (!success)
         {
             result.Status = OperationResult.NotFound;
 

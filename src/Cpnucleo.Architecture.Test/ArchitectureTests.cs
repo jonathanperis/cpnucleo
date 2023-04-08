@@ -9,14 +9,14 @@ public class ArchitectureTests
 
     [Fact]
     public void Domain_Should_Not_HaveDependencyOnOtherProjects()
-    { 
+    {
         // Arrange
         var assembly = typeof(Domain.Entities.BaseEntity).Assembly;
 
         var otherProjects = new[]
         {
-            ApplicationNamespace, 
-            InfrastructureNamespace, 
+            ApplicationNamespace,
+            InfrastructureNamespace,
             ServicesNamespace
         };
 
