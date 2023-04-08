@@ -18,15 +18,19 @@ public sealed class GetRecursoQueryHandler : IRequestHandler<GetRecursoQuery, Ge
     {
         var recurso = await _context.Recursos
             .Where(x => x.Id == request.Id && x.Ativo)
-            .ProjectTo<RecursoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => new RecursoDTO
+            {
+                Id = x.Id,
+                Nome = x.Nome,
+                Login = x.Login,
+                DataInclusao = x.DataInclusao,
+            })
             .FirstOrDefaultAsync(cancellationToken);
 
         if (recurso is null)
         {
             return new GetRecursoViewModel { OperationResult = OperationResult.NotFound };
         }
-
-        recurso.Senha = null;
 
         return new GetRecursoViewModel { Recurso = recurso, OperationResult = OperationResult.Success };
     }

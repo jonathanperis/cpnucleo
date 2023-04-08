@@ -12,11 +12,11 @@ public sealed class ImpedimentoTarefa : BaseEntity
 
     public Impedimento? Impedimento { get; private set; }
 
-    public static ImpedimentoTarefa Create(string descricao, Guid idTarefa, Guid idImpedimento)
+    public static ImpedimentoTarefa Create(string descricao, Guid idTarefa, Guid idImpedimento, Guid id = default)
     {
         return new ImpedimentoTarefa
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Descricao = descricao,
             IdTarefa = idTarefa,
             IdImpedimento = idImpedimento,

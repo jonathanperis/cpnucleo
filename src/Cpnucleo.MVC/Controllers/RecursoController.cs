@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Shared.Queries.GetRecurso;
+﻿using Cpnucleo.Shared.Commands.CreateRecurso;
+using Cpnucleo.Shared.Commands.RemoveRecurso;
+using Cpnucleo.Shared.Commands.UpdateRecurso;
+using Cpnucleo.Shared.Queries.GetRecurso;
 using Cpnucleo.Shared.Queries.ListRecurso;
 
 namespace Cpnucleo.MVC.Controllers;
@@ -70,7 +73,7 @@ public class RecursoController : BaseController
                 return View();
             }
 
-            OperationResult result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand(Guid.Empty, obj.Recurso.Nome, obj.Recurso.Login, obj.Recurso.Senha));
+            OperationResult result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand(obj.Recurso.Nome, obj.Recurso.Login, obj.Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {

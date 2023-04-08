@@ -6,11 +6,11 @@ public sealed class Sistema : BaseEntity
 
     public string? Descricao { get; private set; }
 
-    public static Sistema Create(string nome, string descricao)
+    public static Sistema Create(string nome, string descricao, Guid id = default)
     {
         return new Sistema
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             Descricao = descricao,
             DataInclusao = DateTime.UtcNow,

@@ -6,8 +6,6 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMvcConfigSetup(builder.Configuration);
-
 builder.Services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
 
 builder.Services.Configure<ApplicationConfigurations>(

@@ -36,11 +36,12 @@ public sealed class Tarefa : BaseEntity
                                 Guid idProjeto, 
                                 Guid idWorkflow, 
                                 Guid idRecurso, 
-                                Guid idTipoTarefa)
+                                Guid idTipoTarefa, 
+                                Guid id = default)
     {
         return new Tarefa
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             DataInicio = dataInicio,
             DataTermino = dataTermino,
@@ -55,7 +56,7 @@ public sealed class Tarefa : BaseEntity
         };
     }
 
-    public static Tarefa Create(Tarefa item,
+    public static Tarefa Update(Tarefa item,
                                 string nome,
                                 DateTime dataInicio,
                                 DateTime dataTermino,
@@ -75,6 +76,14 @@ public sealed class Tarefa : BaseEntity
         item.IdWorkflow = idWorkflow;
         item.IdRecurso = idRecurso;
         item.IdTipoTarefa = idTipoTarefa;
+        item.DataAlteracao = DateTime.UtcNow;
+
+        return item;
+    }
+
+    public static Tarefa UpdateWorkflow(Tarefa item, Guid idWorkflow)
+    {
+        item.IdWorkflow = idWorkflow;
         item.DataAlteracao = DateTime.UtcNow;
 
         return item;

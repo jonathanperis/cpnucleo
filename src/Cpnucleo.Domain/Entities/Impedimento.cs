@@ -4,11 +4,11 @@ public sealed class Impedimento : BaseEntity
 {
     public string? Nome { get; private set; }
 
-    public static Impedimento Create(string nome)
+    public static Impedimento Create(string nome, Guid id = default)
     {
         return new Impedimento
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             DataInclusao = DateTime.UtcNow,
             Ativo = true

@@ -1,15 +1,6 @@
 ﻿global using AutoMapper;
 global using AutoMapper.QueryableExtensions;
 global using Cpnucleo.Domain.Entities;
-global using Cpnucleo.Shared.Commands.Apontamento;
-global using Cpnucleo.Shared.Commands.Impedimento;
-global using Cpnucleo.Shared.Commands.ImpedimentoTarefa;
-global using Cpnucleo.Shared.Commands.Projeto;
-global using Cpnucleo.Shared.Commands.Recurso;
-global using Cpnucleo.Shared.Commands.RecursoProjeto;
-global using Cpnucleo.Shared.Commands.RecursoTarefa;
-global using Cpnucleo.Shared.Commands.Tarefa;
-global using Cpnucleo.Shared.Commands.TipoTarefa;
 global using Cpnucleo.Shared.Common.DTOs;
 global using Cpnucleo.Shared.Common.Models;
 global using FluentValidation;

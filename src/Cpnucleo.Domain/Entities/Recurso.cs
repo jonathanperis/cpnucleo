@@ -1,3 +1,5 @@
+using Cpnucleo.Domain.Common.Security;
+
 namespace Cpnucleo.Domain.Entities;
 
 public sealed class Recurso : BaseEntity
@@ -10,25 +12,28 @@ public sealed class Recurso : BaseEntity
 
     public string? Salt { get; private set; }
 
-    public static Recurso Create(string nome, string login, string senha, string salt)
+    public static Recurso Create(string nome, string login, string senha, Guid id = default)
     {
+        CryptographyManager.CryptPbkdf2(senha, out string senhaCrypt, out string salt);
+
         return new Recurso
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             Login = login,
-            Senha = senha,
+            Senha = senhaCrypt,
             Salt = salt,
             DataInclusao = DateTime.UtcNow,
             Ativo = true
         };
     }
 
-    public static Recurso Update(Recurso item, string nome, string login, string senha, string salt)
+    public static Recurso Update(Recurso item, string nome, string senha)
     {
+        CryptographyManager.CryptPbkdf2(senha, out string senhaCrypt, out string salt);
+
         item.Nome = nome;
-        item.Login = login;
-        item.Senha = senha;
+        item.Senha = senhaCrypt;
         item.Salt = salt;
         item.DataAlteracao = DateTime.UtcNow;
 
@@ -41,5 +46,10 @@ public sealed class Recurso : BaseEntity
         item.DataExclusao = DateTime.UtcNow;
 
         return item;
+    }
+
+    public static bool VerifyPassword(string senha, string senhaCrypt, string salt)
+    {
+        return CryptographyManager.VerifyPbkdf2(senha, senhaCrypt, salt);
     }
 }

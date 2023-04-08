@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetSistema;
+﻿using Cpnucleo.Shared.Commands.UpdateSistema;
+using Cpnucleo.Shared.Queries.GetSistema;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema;
 
@@ -41,7 +42,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "UpdateSistema", new UpdateSistemaCommand(Sistema.Id, Sistema.Nome, Sistema.Descricao));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "UpdateSistema", new UpdateSistemaCommand(Sistema.Id, Sistema.Nome, Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +61,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idSistema)
     {
-        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
+        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
 
         if (result.OperationResult == OperationResult.Failed)
         {

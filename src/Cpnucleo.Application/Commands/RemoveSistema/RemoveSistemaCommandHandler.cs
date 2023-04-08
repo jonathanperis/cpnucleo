@@ -1,7 +1,7 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Domain.Common.Bus;
+﻿using Cpnucleo.Application.Common.Bus;
+using Cpnucleo.Application.Common.Context;
 using Cpnucleo.Shared.Commands.RemoveSistema;
-using Cpnucleo.Shared.Events.Sistema;
+using Cpnucleo.Shared.Events.RemoveSistema;
 
 namespace Cpnucleo.Application.Commands.RemoveSistema;
 

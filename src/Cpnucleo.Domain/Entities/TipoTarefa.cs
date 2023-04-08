@@ -6,11 +6,11 @@ public sealed class TipoTarefa : BaseEntity
 
     public string? Image { get; private set; }
 
-    public static TipoTarefa Create(string nome, string image)
+    public static TipoTarefa Create(string nome, string image, Guid id = default)
     {
         return new TipoTarefa
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             Image = image,
             DataInclusao = DateTime.UtcNow,

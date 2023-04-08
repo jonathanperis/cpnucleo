@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetTarefa;
+﻿using Cpnucleo.Shared.Commands.CreateImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.GetTarefa;
 using Cpnucleo.Shared.Queries.ListImpedimento;
 
 namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
@@ -46,7 +47,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("ImpedimentoTarefa", "CreateImpedimentoTarefa", new CreateImpedimentoTarefaCommand(Guid.Empty, ImpedimentoTarefa.Descricao, ImpedimentoTarefa.IdTarefa, ImpedimentoTarefa.IdImpedimento));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("ImpedimentoTarefa", "CreateImpedimentoTarefa", new CreateImpedimentoTarefaCommand(ImpedimentoTarefa.Descricao, ImpedimentoTarefa.IdTarefa, ImpedimentoTarefa.IdImpedimento));
 
             if (result == OperationResult.Failed)
             {
@@ -65,7 +66,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados(Guid idTarefa)
     {
-        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery(idTarefa));
+        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery(idTarefa));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -75,7 +76,7 @@ public class IncluirModel : PageModel
 
         Tarefa = result.Tarefa;
 
-        ListImpedimentoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", new ListImpedimentoQuery());
+        ListImpedimentoViewModel result2 = await _cpnucleoApiClient.ExecuteAsync<ListImpedimentoViewModel>("Impedimento", "ListImpedimento", new ListImpedimentoQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

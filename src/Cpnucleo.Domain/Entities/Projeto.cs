@@ -8,11 +8,11 @@ public sealed class Projeto : BaseEntity
 
     public Sistema? Sistema { get; private set; }
 
-    public static Projeto Create(string nome, Guid idSistema)
+    public static Projeto Create(string nome, Guid idSistema, Guid id = default)
     {
         return new Projeto
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             IdSistema = idSistema,
             DataInclusao = DateTime.UtcNow,

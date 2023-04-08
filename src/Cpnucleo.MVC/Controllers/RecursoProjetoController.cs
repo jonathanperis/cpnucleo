@@ -1,4 +1,6 @@
-﻿using Cpnucleo.Shared.Queries.GetProjeto;
+﻿using Cpnucleo.Shared.Commands.CreateRecursoProjeto;
+using Cpnucleo.Shared.Commands.RemoveRecursoProjeto;
+using Cpnucleo.Shared.Queries.GetProjeto;
 using Cpnucleo.Shared.Queries.GetRecursoProjeto;
 using Cpnucleo.Shared.Queries.ListRecurso;
 using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
@@ -82,7 +84,7 @@ public class RecursoProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand(Guid.Empty, obj.RecursoProjeto.IdRecurso, obj.RecursoProjeto.IdProjeto));
+            OperationResult result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand(obj.RecursoProjeto.IdRecurso, obj.RecursoProjeto.IdProjeto));
 
             if (result == OperationResult.Failed)
             {

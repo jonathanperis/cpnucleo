@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Shared.Queries.GetTarefa;
+﻿using Cpnucleo.Shared.Commands.CreateTarefa;
+using Cpnucleo.Shared.Commands.RemoveTarefa;
+using Cpnucleo.Shared.Commands.UpdateTarefa;
+using Cpnucleo.Shared.Queries.GetTarefa;
 using Cpnucleo.Shared.Queries.ListProjeto;
 using Cpnucleo.Shared.Queries.ListSistema;
 using Cpnucleo.Shared.Queries.ListTarefa;
@@ -90,7 +93,7 @@ public class TarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand(Guid.Empty, obj.Tarefa.Nome, obj.Tarefa.DataInicio, obj.Tarefa.DataTermino, obj.Tarefa.QtdHoras, obj.Tarefa.Detalhe, obj.Tarefa.IdProjeto, obj.Tarefa.IdWorkflow, obj.Tarefa.IdRecurso, obj.Tarefa.IdTipoTarefa));
+            OperationResult result = await _tarefaGrpcService.CreateTarefa(new CreateTarefaCommand(obj.Tarefa.Nome, obj.Tarefa.DataInicio, obj.Tarefa.DataTermino, obj.Tarefa.QtdHoras, obj.Tarefa.Detalhe, obj.Tarefa.IdProjeto, obj.Tarefa.IdWorkflow, obj.Tarefa.IdRecurso, obj.Tarefa.IdTipoTarefa));
 
             if (result == OperationResult.Failed)
             {

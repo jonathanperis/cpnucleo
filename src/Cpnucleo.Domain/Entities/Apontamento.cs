@@ -14,11 +14,11 @@ public sealed class Apontamento : BaseEntity
 
     public Tarefa? Tarefa { get; private set; }
 
-    public static Apontamento Create(string descricao, DateTime dataApontamento, int qtdHoras, Guid idTarefa, Guid idRecurso)
+    public static Apontamento Create(string descricao, DateTime dataApontamento, int qtdHoras, Guid idTarefa, Guid idRecurso, Guid id = default)
     {
         return new Apontamento
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Descricao = descricao,
             DataApontamento = dataApontamento,
             QtdHoras = qtdHoras,

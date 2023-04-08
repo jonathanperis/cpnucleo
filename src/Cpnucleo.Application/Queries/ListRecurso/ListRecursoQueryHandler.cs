@@ -1,22 +1,31 @@
-﻿using Cpnucleo.Shared.Queries.ListRecurso;
+﻿using Cpnucleo.Application.Common.Context;
+using Cpnucleo.Shared.Queries.ListRecurso;
 
 namespace Cpnucleo.Application.Queries.ListRecurso;
 
 public sealed class ListRecursoQueryHandler : IRequestHandler<ListRecursoQuery, ListRecursoViewModel>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public ListRecursoQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public ListRecursoQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
-        _unitOfWork = unitOfWork;
+        _context = context;
         _mapper = mapper;
     }
 
     public async Task<ListRecursoViewModel> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
     {
-        List<RecursoDTO> recursos = await _unitOfWork.RecursoRepository.List(request.GetDependencies)
-            .ProjectTo<RecursoDTO>(_mapper.ConfigurationProvider)
+        var recursos = await _context.Recursos
+            .Where(x => x.Ativo)
+            .OrderBy(x => x.DataInclusao)
+            .Select(x => new RecursoDTO
+            {
+                Id = x.Id,
+                Nome = x.Nome,
+                Login = x.Login,
+                DataInclusao = x.DataInclusao,
+            })
             .ToListAsync(cancellationToken);
 
         if (recursos is null)

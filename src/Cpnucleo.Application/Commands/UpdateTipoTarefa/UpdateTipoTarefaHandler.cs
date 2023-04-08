@@ -1,31 +1,31 @@
-﻿using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
+﻿using Cpnucleo.Application.Common.Context;
+using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
 
 namespace Cpnucleo.Application.Commands.UpdateTipoTarefa;
 
-public sealed class UpdateTipoTarefaHandler : IRequestHandler<UpdateTipoTarefaCommand, OperationResult>
+public sealed class UpdateTipoTarefaCommandHandler : IRequestHandler<UpdateTipoTarefaCommand, OperationResult>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IApplicationDbContext _context;
 
-    public UpdateTipoTarefaHandler(IUnitOfWork unitOfWork)
+    public UpdateTipoTarefaCommandHandler(IApplicationDbContext context)
     {
-        _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task<OperationResult> Handle(UpdateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
-        TipoTarefa tipoTarefa = await _unitOfWork.TipoTarefaRepository.Get(request.Id).FirstOrDefaultAsync(cancellationToken);
+        var tipoTarefa = await _context.TipoTarefas
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (tipoTarefa is null)
         {
             return OperationResult.NotFound;
         }
 
-        tipoTarefa.Nome = request.Nome;
-        tipoTarefa.Image = request.Image;
+        tipoTarefa = Domain.Entities.TipoTarefa.Update(tipoTarefa, request.Nome, request.Image);
+        _context.TipoTarefas.Update(tipoTarefa);
 
-        _unitOfWork.TipoTarefaRepository.Update(tipoTarefa);
-
-        bool success = await _unitOfWork.SaveChangesAsync(cancellationToken);
+        bool success = await _context.SaveChangesAsync(cancellationToken);
 
         OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
 

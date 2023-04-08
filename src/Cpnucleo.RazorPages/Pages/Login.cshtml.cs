@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Services;
-using Cpnucleo.Shared.Requests.Auth;
+using Cpnucleo.Shared.Queries.AuthUser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
@@ -8,10 +8,10 @@ namespace Cpnucleo.RazorPages.Pages;
 
 public class LoginModel : PageModel
 {
-    private readonly ICpnucleoAuthApiClient _cpnucleoAuthApiClient;
+    private readonly ICpnucleoApiClient _cpnucleoAuthApiClient;
     private readonly IConfiguration _configuration;
 
-    public LoginModel(ICpnucleoAuthApiClient cpnucleoApiClient, IConfiguration configuration)
+    public LoginModel(ICpnucleoApiClient cpnucleoApiClient, IConfiguration configuration)
     {
         _cpnucleoAuthApiClient = cpnucleoApiClient;
         _configuration = configuration;
@@ -51,7 +51,7 @@ public class LoginModel : PageModel
                 return Page();
             }
 
-            AuthResponse result = await _cpnucleoAuthApiClient.PostAsync<AuthResponse>("auth", new AuthRequest(Auth.Usuario, Auth.Senha));
+            var result = await _cpnucleoAuthApiClient.ExecuteAsync<AuthUserViewModel>("Auth", "AuthUser", new AuthUserQuery(Auth.Usuario, Auth.Senha));
 
             if (result.Status == OperationResult.Failed)
             {

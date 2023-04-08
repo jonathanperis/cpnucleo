@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Shared.Queries.GetProjeto;
+﻿using Cpnucleo.Shared.Commands.CreateProjeto;
+using Cpnucleo.Shared.Commands.RemoveProjeto;
+using Cpnucleo.Shared.Commands.UpdateProjeto;
+using Cpnucleo.Shared.Queries.GetProjeto;
 using Cpnucleo.Shared.Queries.ListProjeto;
 using Cpnucleo.Shared.Queries.ListSistema;
 
@@ -77,7 +80,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand(Guid.Empty, obj.Projeto.Nome, obj.Projeto.IdSistema));
+            OperationResult result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand(obj.Projeto.Nome, obj.Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {

@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Shared.Queries.GetWorkflow;
+﻿using Cpnucleo.Shared.Commands.CreateWorkflow;
+using Cpnucleo.Shared.Commands.RemoveWorkflow;
+using Cpnucleo.Shared.Commands.UpdateWorkflow;
+using Cpnucleo.Shared.Queries.GetWorkflow;
 using Cpnucleo.Shared.Queries.ListWorkflow;
 
 namespace Cpnucleo.MVC.Controllers;
@@ -70,7 +73,7 @@ public class WorkflowController : BaseController
                 return View();
             }
 
-            OperationResult result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand(Guid.Empty, obj.Workflow.Nome, obj.Workflow.Ordem));
+            OperationResult result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand(obj.Workflow.Nome, obj.Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {

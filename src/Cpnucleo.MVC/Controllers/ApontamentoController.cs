@@ -1,4 +1,7 @@
 ﻿using Cpnucleo.MVC.Services;
+using Cpnucleo.Shared.Commands.CreateApontamento;
+using Cpnucleo.Shared.Commands.RemoveApontamento;
+using Cpnucleo.Shared.Commands.UpdateTarefaByWorkflow;
 using Cpnucleo.Shared.Queries.GetApontamento;
 using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
 using Cpnucleo.Shared.Queries.ListTarefa;
@@ -67,7 +70,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand(Guid.Empty, obj.Apontamento.Descricao, obj.Apontamento.DataApontamento, obj.Apontamento.QtdHoras, obj.Apontamento.IdTarefa, obj.Apontamento.IdRecurso));
+            OperationResult result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand(obj.Apontamento.Descricao, obj.Apontamento.DataApontamento, obj.Apontamento.QtdHoras, obj.Apontamento.IdTarefa, obj.Apontamento.IdRecurso));
 
             if (result == OperationResult.Failed)
             {
