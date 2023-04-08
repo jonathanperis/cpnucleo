@@ -6,11 +6,11 @@ public sealed class Workflow : BaseEntity
 
     public int Ordem { get; private set; }
 
-    public static Workflow Create(string nome, int ordem)
+    public static Workflow Create(string nome, int ordem, Guid id = default)
     {
         return new Workflow
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             Nome = nome,
             Ordem = ordem,
             DataInclusao = DateTime.UtcNow,

@@ -12,12 +12,12 @@ public sealed class RecursoTarefa : BaseEntity
 
     public Tarefa? Tarefa { get; private set; }
 
-    public static RecursoTarefa Create(int percentualTarefa, Guid idRecurso, Guid idTarefa)
+    public static RecursoTarefa Create(Guid idRecurso, Guid idTarefa, Guid id = default)
     {
         return new RecursoTarefa
         {
-            Id = Guid.NewGuid(),
-            PercentualTarefa = percentualTarefa,
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
+            PercentualTarefa = 0,
             IdRecurso = idRecurso,
             IdTarefa = idTarefa,
             DataInclusao = DateTime.UtcNow,
@@ -25,9 +25,9 @@ public sealed class RecursoTarefa : BaseEntity
         };
     }
 
-    public static RecursoTarefa Update(RecursoTarefa item, int percentualTarefa, Guid idRecurso, Guid idTarefa)
+    public static RecursoTarefa Update(RecursoTarefa item, Guid idRecurso, Guid idTarefa)
     {
-        item.PercentualTarefa = percentualTarefa;
+        item.PercentualTarefa = 0;
         item.IdRecurso = idRecurso;
         item.IdTarefa = idTarefa;
         item.DataAlteracao = DateTime.UtcNow;

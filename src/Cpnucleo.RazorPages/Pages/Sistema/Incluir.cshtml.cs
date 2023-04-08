@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Sistema;
+﻿using Cpnucleo.Shared.Commands.CreateSistema;
+
+namespace Cpnucleo.RazorPages.Pages.Sistema;
 
 [Authorize]
 public class IncluirModel : PageModel
@@ -22,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "CreateSistema", new CreateSistemaCommand(Sistema.Nome, Sistema.Descricao));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "CreateSistema", new CreateSistemaCommand(Sistema.Nome, Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {

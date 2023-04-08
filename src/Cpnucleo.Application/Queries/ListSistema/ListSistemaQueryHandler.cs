@@ -1,5 +1,5 @@
 ﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Application.Hubs;
+using Cpnucleo.Application.Common.Hubs;
 using Cpnucleo.Shared.Queries.ListSistema;
 using Microsoft.AspNetCore.SignalR;
 

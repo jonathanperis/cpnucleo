@@ -1,55 +1,40 @@
-﻿namespace Cpnucleo.API.Controllers.V2;
+﻿using Cpnucleo.Shared.Commands.CreateImpedimentoTarefa;
+using Cpnucleo.Shared.Commands.RemoveImpedimentoTarefa;
+using Cpnucleo.Shared.Commands.UpdateImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.GetImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.ListImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.ListImpedimentoTarefaByTarefa;
 
+namespace Cpnucleo.API.Controllers.V2;
+
+[Authorize]
+[ApiController]
+[ApiVersion("2")]
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}/[controller]")]
-[ApiController]
-[ApiVersion("2", Deprecated = true)]
-//[Authorize]
 public class ImpedimentoTarefaController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMediator _mediator;
 
-    public ImpedimentoTarefaController(IUnitOfWork unitOfWork)
+    public ImpedimentoTarefaController(IMediator mediator)
     {
-        _unitOfWork = unitOfWork;
+        _mediator = mediator;
     }
 
     /// <summary>
-    /// Listar impedimentos de tarefa
+    /// Listar impedimentos de tarefas
     /// </summary>
     /// <remarks>
-    /// # Listar impedimentos de tarefa
+    /// # Listar impedimentos de tarefas
     /// 
-    /// Lista impedimentos de tarefa da base de dados.
+    /// Lista impedimentos de tarefas da base de dados.
     /// </remarks>
-    /// <param name="getDependencies">Listar dependências do objeto</param>        
-    /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<ImpedimentoTarefa>> Get(bool getDependencies = false)
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("ListImpedimentoTarefa")]
+    public async Task<ActionResult<ListImpedimentoTarefaViewModel>> ListImpedimentoTarefa([FromBody] ListImpedimentoTarefaQuery query)
     {
-        return await _unitOfWork.ImpedimentoTarefaRepository.List(getDependencies).ToListAsync();
-    }
-
-    /// <summary>
-    /// Listar impedimentos de tarefa por id tarefa
-    /// </summary>
-    /// <remarks>
-    /// # Listar impedimentos de tarefa por id tarefa
-    /// 
-    /// Lista impedimentos de tarefa por id tarefa na base de dados.
-    /// </remarks>
-    /// <param name="idTarefa">Id da tarefa</param>        
-    /// <response code="200">Retorna uma lista de impedimentos de tarefa</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet("GetByTarefa/{idTarefa}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<ImpedimentoTarefa>> GetByTarefa(Guid idTarefa)
-    {
-        return await _unitOfWork.ImpedimentoTarefaRepository.ListImpedimentoTarefaByTarefa(idTarefa).ToListAsync();
+        return await _mediator.Send(query);
     }
 
     /// <summary>
@@ -60,24 +45,28 @@ public class ImpedimentoTarefaController : ControllerBase
     /// 
     /// Consulta um impedimento de tarefa na base de dados.
     /// </remarks>
-    /// <param name="id">Id do impedimento de tarefa</param>        
-    /// <response code="200">Retorna um impedimento de tarefa</response>
-    /// <response code="404">Impedimento de tarefa não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet("{id}", Name = "GetImpedimentoTarefa")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ImpedimentoTarefa>> Get(Guid id)
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("GetImpedimentoTarefa")]
+    public async Task<ActionResult<GetImpedimentoTarefaViewModel>> GetImpedimentoTarefa([FromBody] GetImpedimentoTarefaQuery query)
     {
-        ImpedimentoTarefa impedimentoTarefa = await _unitOfWork.ImpedimentoTarefaRepository.Get(id).FirstOrDefaultAsync();
+        return await _mediator.Send(query);
+    }
 
-        if (impedimentoTarefa == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(impedimentoTarefa);
+    /// <summary>
+    /// Consultar impedimento de tarefa por tarefa
+    /// </summary>
+    /// <remarks>
+    /// # Consultar impedimento de tarefa por tarefa
+    /// 
+    /// Consulta um impedimento de tarefa por tarefa na base de dados.
+    /// </remarks>
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("GetImpedimentoTarefaByTarefa")]
+    public async Task<ActionResult<ListImpedimentoTarefaByTarefaViewModel>> GetImpedimentoTarefaByTarefa([FromBody] ListImpedimentoTarefaByTarefaQuery query)
+    {
+        return await _mediator.Send(query);
     }
 
     /// <summary>
@@ -87,52 +76,13 @@ public class ImpedimentoTarefaController : ControllerBase
     /// # Incluir impedimento de tarefa
     /// 
     /// Inclui um impedimento de tarefa na base de dados.
-    /// 
-    /// # Sample request:
-    ///
-    ///     POST /impedimentoTarefa
-    ///     {
-    ///        "descricao": "Descrição do novo impedimento de tarefa",
-    ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idImpedimento": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
-    ///     }
     /// </remarks>
-    /// <param name="obj">Impedimento de tarefa</param>        
-    /// <response code="201">Impedimento de tarefa cadastrado com sucesso</response>
-    /// <response code="400">Objetos não preenchidos corretamente</response>
-    /// <response code="409">Guid informado já consta na base de dados</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [ProducesResponseType(typeof(ImpedimentoTarefa), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ImpedimentoTarefa>> Post([FromBody] ImpedimentoTarefa obj)
+    [Route("CreateImpedimentoTarefa")]
+    public async Task<ActionResult<OperationResult>> CreateImpedimentoTarefa([FromBody] CreateImpedimentoTarefaCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        try
-        {
-            obj = await _unitOfWork.ImpedimentoTarefaRepository.AddAsync(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            if (await ObjExists(obj.Id))
-            {
-                return Conflict();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return CreatedAtRoute("GetImpedimentoTarefa", new { id = obj.Id }, obj);
+        return await _mediator.Send(command);
     }
 
     /// <summary>
@@ -142,58 +92,13 @@ public class ImpedimentoTarefaController : ControllerBase
     /// # Alterar impedimento de tarefa
     /// 
     /// Altera um impedimento de tarefa na base de dados.
-    /// 
-    /// # Sample request:
-    ///
-    ///     PUT /impedimentoTarefa
-    ///     {
-    ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "descricao": "Descrição do novo impedimento de tarefa - alterado",
-    ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idImpedimento": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
-    ///     }
     /// </remarks>
-    /// <param name="id">Id do impedimento de tarefa</param>        
-    /// <param name="obj">Impedimento de tarefa</param>        
-    /// <response code="204">Impedimento de tarefa alterado com sucesso</response>
-    /// <response code="400">ID informado não é válido</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Put(Guid id, [FromBody] ImpedimentoTarefa obj)
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
+    [HttpPost]
+    [Route("UpdateImpedimentoTarefa")]
+    public async Task<ActionResult<OperationResult>> UpdateImpedimentoTarefa([FromBody] UpdateImpedimentoTarefaCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        if (id != obj.Id)
-        {
-            return BadRequest();
-        }
-
-        try
-        {
-            _unitOfWork.ImpedimentoTarefaRepository.Update(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            if (!await ObjExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+        return await _mediator.Send(command);
     }
 
     /// <summary>
@@ -204,31 +109,11 @@ public class ImpedimentoTarefaController : ControllerBase
     /// 
     /// Remove um impedimento de tarefa da base de dados.
     /// </remarks>
-    /// <param name="id">Id do impedimento de tarefa</param>        
-    /// <response code="204">Impedimento de tarefa removido com sucesso</response>
-    /// <response code="404">Impedimento de tarefa não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(Guid id)
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
+    [HttpPost]
+    [Route("RemoveImpedimentoTarefa")]
+    public async Task<ActionResult<OperationResult>> RemoveImpedimentoTarefa([FromBody] RemoveImpedimentoTarefaCommand command)
     {
-        ImpedimentoTarefa obj = await _unitOfWork.ImpedimentoTarefaRepository.Get(id).FirstOrDefaultAsync();
-
-        if (obj == null)
-        {
-            return NotFound();
-        }
-
-        await _unitOfWork.ImpedimentoTarefaRepository.RemoveAsync(id);
-        await _unitOfWork.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    private async Task<bool> ObjExists(Guid id)
-    {
-        return await _unitOfWork.ImpedimentoTarefaRepository.Get(id).FirstOrDefaultAsync() != null;
+        return await _mediator.Send(command);
     }
 }

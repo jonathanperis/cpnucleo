@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetSistema;
+﻿using Cpnucleo.Shared.Commands.RemoveSistema;
+using Cpnucleo.Shared.Queries.GetSistema;
 
 namespace Cpnucleo.RazorPages.Pages.Sistema;
 
@@ -41,7 +42,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Sistema", "RemoveSistema", new RemoveSistemaCommand(Sistema.Id));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "RemoveSistema", new RemoveSistemaCommand(Sistema.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +61,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idSistema)
     {
-        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
+        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
 
         if (result.OperationResult == OperationResult.Failed)
         {

@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Workflow;
+﻿using Cpnucleo.Shared.Commands.CreateWorkflow;
+
+namespace Cpnucleo.RazorPages.Pages.Workflow;
 
 [Authorize]
 public class IncluirModel : PageModel
@@ -22,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand(Guid.Empty, Workflow.Nome, Workflow.Ordem));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand(Workflow.Nome, Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {

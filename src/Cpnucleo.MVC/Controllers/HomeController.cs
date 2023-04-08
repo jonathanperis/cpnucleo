@@ -1,22 +1,22 @@
 ﻿using Cpnucleo.MVC.Services;
-using Cpnucleo.MVC.Services.Interfaces;
-using Cpnucleo.Shared.Requests.Auth;
+using Cpnucleo.Shared.Queries.AuthUser;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Controllers;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
-    private readonly ICpnucleoAuthApiClient _cpnucleoAuthApiClient;
+    private readonly IAuthUserGrpcService _authUserGrpcService;
     private readonly IConfiguration _configuration;
 
     private HomeViewModel _viewModel;
 
-    public HomeController(ICpnucleoAuthApiClient cpnucleoApiService, IConfiguration configuration)
+    public HomeController(IConfiguration configuration)
+        : base(configuration)
     {
-        _cpnucleoAuthApiClient = cpnucleoApiService;
+        _authUserGrpcService = MagicOnionClient.Create<IAuthUserGrpcService>(CreateAuthenticatedChannel());
         _configuration = configuration;
     }
 
@@ -67,7 +67,7 @@ public class HomeController : Controller
                 return View();
             }
 
-            AuthResponse result = await _cpnucleoAuthApiClient.PostAsync<AuthResponse>("auth", new AuthRequest(obj.Auth.Usuario, obj.Auth.Senha));
+            var result = await _authUserGrpcService.AuthUser(new AuthUserQuery(obj.Auth.Usuario, obj.Auth.Senha));
 
             if (result.Status == OperationResult.Failed)
             {

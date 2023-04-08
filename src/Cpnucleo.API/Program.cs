@@ -1,9 +1,6 @@
 ﻿using Cpnucleo.API.Configuration;
-using Cpnucleo.API.Filters;
 using Cpnucleo.Application;
-using Cpnucleo.Domain;
 using Cpnucleo.Infrastructure;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -11,9 +8,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDomain();
-builder.Services.AddInfrastructureData();
-builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
@@ -29,15 +25,6 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
-    {
-        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
-        policy.RequireClaim(ClaimTypes.PrimarySid);
-        policy.RequireClaim(ClaimTypes.Hash);
-    });
-});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(x =>
     {
@@ -55,8 +42,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>())
-    .AddFluentValidation(x => x.AutomaticValidationEnabled = false)
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
+    {
+        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
+        policy.RequireClaim(ClaimTypes.PrimarySid);
+        policy.RequireClaim(ClaimTypes.Hash);
+    });
+});
+
+builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
         options.SuppressMapClientErrors = true;

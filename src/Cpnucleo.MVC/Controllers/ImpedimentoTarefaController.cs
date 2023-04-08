@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Shared.Queries.GetImpedimentoTarefa;
+﻿using Cpnucleo.Shared.Commands.CreateImpedimentoTarefa;
+using Cpnucleo.Shared.Commands.RemoveImpedimentoTarefa;
+using Cpnucleo.Shared.Commands.UpdateImpedimentoTarefa;
+using Cpnucleo.Shared.Queries.GetImpedimentoTarefa;
 using Cpnucleo.Shared.Queries.GetTarefa;
 using Cpnucleo.Shared.Queries.ListImpedimento;
 using Cpnucleo.Shared.Queries.ListImpedimentoTarefaByTarefa;
@@ -82,7 +85,7 @@ public class ImpedimentoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand(Guid.Empty, obj.ImpedimentoTarefa.Descricao, obj.ImpedimentoTarefa.IdTarefa, obj.ImpedimentoTarefa.IdImpedimento));
+            OperationResult result = await _impedimentoTarefaGrpcService.CreateImpedimentoTarefa(new CreateImpedimentoTarefaCommand(obj.ImpedimentoTarefa.Descricao, obj.ImpedimentoTarefa.IdTarefa, obj.ImpedimentoTarefa.IdImpedimento));
 
             if (result == OperationResult.Failed)
             {

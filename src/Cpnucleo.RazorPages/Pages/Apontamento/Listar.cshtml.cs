@@ -1,4 +1,5 @@
 ﻿using Cpnucleo.RazorPages.Services;
+using Cpnucleo.Shared.Commands.CreateApontamento;
 using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
 using Cpnucleo.Shared.Queries.ListTarefaByRecurso;
 using System.Security.Claims;
@@ -48,7 +49,7 @@ public class ListarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand(Guid.Empty, Apontamento.Descricao, Apontamento.DataApontamento, Apontamento.QtdHoras, Apontamento.IdTarefa, Apontamento.IdRecurso));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Apontamento", "CreateApontamento", new CreateApontamentoCommand(Apontamento.Descricao, Apontamento.DataApontamento, Apontamento.QtdHoras, Apontamento.IdTarefa, Apontamento.IdRecurso));
 
             if (result == OperationResult.Failed)
             {
@@ -70,7 +71,7 @@ public class ListarModel : PageModel
         string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        ListApontamentoByRecursoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new ListApontamentoByRecursoQuery(idRecurso));
+        ListApontamentoByRecursoViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListApontamentoByRecursoViewModel>("Apontamento", "GetApontamentoByRecurso", new ListApontamentoByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -80,7 +81,7 @@ public class ListarModel : PageModel
 
         Lista = result.Apontamentos;
 
-        ListTarefaByRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new ListTarefaByRecursoQuery(idRecurso));
+        ListTarefaByRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteAsync<ListTarefaByRecursoViewModel>("Tarefa", "GetTarefaByRecurso", new ListTarefaByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {

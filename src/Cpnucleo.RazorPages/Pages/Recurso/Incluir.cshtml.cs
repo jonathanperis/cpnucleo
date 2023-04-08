@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
+﻿using Cpnucleo.Shared.Commands.CreateRecurso;
+
+namespace Cpnucleo.RazorPages.Pages.Recurso;
 
 [Authorize]
 public class IncluirModel : PageModel
@@ -22,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Recurso", "CreateRecurso", new CreateRecursoCommand(Guid.Empty, Recurso.Nome, Recurso.Login, Recurso.Senha));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Recurso", "CreateRecurso", new CreateRecursoCommand(Recurso.Nome, Recurso.Login, Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {

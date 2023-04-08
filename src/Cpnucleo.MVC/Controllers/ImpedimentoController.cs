@@ -1,4 +1,7 @@
-﻿using Cpnucleo.Shared.Queries.GetImpedimento;
+﻿using Cpnucleo.Shared.Commands.CreateImpedimento;
+using Cpnucleo.Shared.Commands.RemoveImpedimento;
+using Cpnucleo.Shared.Commands.UpdateImpedimento;
+using Cpnucleo.Shared.Queries.GetImpedimento;
 using Cpnucleo.Shared.Queries.ListImpedimento;
 
 namespace Cpnucleo.MVC.Controllers;
@@ -70,7 +73,7 @@ public class ImpedimentoController : BaseController
                 return View();
             }
 
-            OperationResult result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand(Guid.Empty, obj.Impedimento.Nome));
+            OperationResult result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand(obj.Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {
