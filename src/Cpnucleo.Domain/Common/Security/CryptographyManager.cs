@@ -21,7 +21,7 @@ internal sealed class CryptographyManager
         byte[] itemBytes = Convert.FromBase64String(itemCrypt);
 
         using Rfc2898DeriveBytes deriveBytes = new(item, saltBytes);
-        
+
         byte[] newItem = deriveBytes.GetBytes(48);
 
         if (!newItem.SequenceEqual(itemBytes))
