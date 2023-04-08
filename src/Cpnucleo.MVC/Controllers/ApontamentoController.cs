@@ -1,4 +1,9 @@
 ﻿using Cpnucleo.MVC.Services;
+using Cpnucleo.Shared.Queries.GetApontamento;
+using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
+using Cpnucleo.Shared.Queries.ListTarefa;
+using Cpnucleo.Shared.Queries.ListTarefaByRecurso;
+using Cpnucleo.Shared.Queries.ListWorkflow;
 using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Controllers;

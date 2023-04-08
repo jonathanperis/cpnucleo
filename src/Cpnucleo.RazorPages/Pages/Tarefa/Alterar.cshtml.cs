@@ -1,4 +1,10 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Tarefa;
+﻿using Cpnucleo.Shared.Queries.GetTarefa;
+using Cpnucleo.Shared.Queries.ListProjeto;
+using Cpnucleo.Shared.Queries.ListSistema;
+using Cpnucleo.Shared.Queries.ListTipoTarefa;
+using Cpnucleo.Shared.Queries.ListWorkflow;
+
+namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
 [Authorize]
 public class AlterarModel : PageModel

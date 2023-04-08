@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Projeto;
+﻿using Cpnucleo.Shared.Queries.GetProjeto;
+using Cpnucleo.Shared.Queries.ListSistema;
+
+namespace Cpnucleo.RazorPages.Pages.Projeto;
 
 [Authorize]
 public class AlterarModel : PageModel

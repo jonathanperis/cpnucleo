@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
+﻿using Cpnucleo.Shared.Queries.ListImpedimentoTarefaByTarefa;
+
+namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
 [Authorize]
 public class ListarModel : PageModel

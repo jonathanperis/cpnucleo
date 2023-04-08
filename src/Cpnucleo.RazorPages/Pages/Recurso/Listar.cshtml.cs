@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Recurso;
+﻿using Cpnucleo.Shared.Queries.ListRecurso;
+
+namespace Cpnucleo.RazorPages.Pages.Recurso;
 
 [Authorize]
 public class ListarModel : PageModel

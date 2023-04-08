@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Projeto;
+﻿using Cpnucleo.Shared.Queries.GetProjeto;
+
+namespace Cpnucleo.RazorPages.Pages.Projeto;
 
 [Authorize]
 public class RemoverModel : PageModel

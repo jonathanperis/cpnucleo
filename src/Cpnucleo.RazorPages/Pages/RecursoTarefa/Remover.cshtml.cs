@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
+﻿using Cpnucleo.Shared.Queries.GetRecursoTarefa;
+
+namespace Cpnucleo.RazorPages.Pages.RecursoTarefa;
 
 [Authorize]
 public class RemoverModel : PageModel

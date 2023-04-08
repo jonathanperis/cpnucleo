@@ -1,4 +1,9 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetRecursoTarefa;
+using Cpnucleo.Shared.Queries.GetTarefa;
+using Cpnucleo.Shared.Queries.ListRecurso;
+using Cpnucleo.Shared.Queries.ListRecursoTarefaByTarefa;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class RecursoTarefaController : BaseController

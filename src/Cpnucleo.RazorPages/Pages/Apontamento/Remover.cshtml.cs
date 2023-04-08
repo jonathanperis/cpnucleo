@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Apontamento;
+﻿using Cpnucleo.Shared.Queries.GetApontamento;
+
+namespace Cpnucleo.RazorPages.Pages.Apontamento;
 
 [Authorize]
 public class RemoverModel : PageModel
