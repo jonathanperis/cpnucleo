@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetImpedimento;
+using Cpnucleo.Shared.Queries.ListImpedimento;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ImpedimentoController : BaseController

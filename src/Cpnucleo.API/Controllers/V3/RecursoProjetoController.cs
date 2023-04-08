@@ -1,4 +1,11 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.CreateRecursoProjeto;
+using Cpnucleo.Shared.Commands.RemoveRecursoProjeto;
+using Cpnucleo.Shared.Commands.UpdateRecursoProjeto;
+using Cpnucleo.Shared.Queries.GetRecursoProjeto;
+using Cpnucleo.Shared.Queries.ListRecursoProjeto;
+using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Projeto;
+﻿using Cpnucleo.Shared.Queries.ListSistema;
+
+namespace Cpnucleo.RazorPages.Pages.Projeto;
 
 [Authorize]
 public class IncluirModel : PageModel

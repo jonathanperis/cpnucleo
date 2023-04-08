@@ -1,4 +1,9 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetProjeto;
+using Cpnucleo.Shared.Queries.GetRecursoProjeto;
+using Cpnucleo.Shared.Queries.ListRecurso;
+using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class RecursoProjetoController : BaseController

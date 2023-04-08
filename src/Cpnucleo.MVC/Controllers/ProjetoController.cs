@@ -1,4 +1,8 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetProjeto;
+using Cpnucleo.Shared.Queries.ListProjeto;
+using Cpnucleo.Shared.Queries.ListSistema;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class ProjetoController : BaseController

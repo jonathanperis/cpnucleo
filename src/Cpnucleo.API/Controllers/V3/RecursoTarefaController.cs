@@ -1,4 +1,11 @@
-﻿namespace Cpnucleo.API.Controllers.V3;
+﻿using Cpnucleo.Shared.Commands.CreateRecursoTarefa;
+using Cpnucleo.Shared.Commands.RemoveRecursoTarefa;
+using Cpnucleo.Shared.Commands.UpdateRecursoTarefa;
+using Cpnucleo.Shared.Queries.GetRecursoTarefa;
+using Cpnucleo.Shared.Queries.ListRecursoTarefa;
+using Cpnucleo.Shared.Queries.ListRecursoTarefaByTarefa;
+
+namespace Cpnucleo.API.Controllers.V3;
 
 //[Authorize]
 [ApiController]

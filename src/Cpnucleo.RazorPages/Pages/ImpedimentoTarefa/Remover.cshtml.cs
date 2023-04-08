@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
+﻿using Cpnucleo.Shared.Queries.GetImpedimentoTarefa;
+
+namespace Cpnucleo.RazorPages.Pages.ImpedimentoTarefa;
 
 [Authorize]
 public class RemoverModel : PageModel

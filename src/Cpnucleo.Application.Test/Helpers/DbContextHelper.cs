@@ -8,11 +8,11 @@ public class DbContextHelper
 {
     public static IUnitOfWork GetContext()
     {
-        DbContextOptions<CpnucleoDbContext> options = new DbContextOptionsBuilder<CpnucleoDbContext>()
+        DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        CpnucleoDbContext context = new(options);
+        ApplicationDbContext context = new(options);
         context.SaveChanges();
 
         UnitOfWork unitOfWork = new(context);

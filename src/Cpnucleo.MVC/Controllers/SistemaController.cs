@@ -1,4 +1,7 @@
-﻿namespace Cpnucleo.MVC.Controllers;
+﻿using Cpnucleo.Shared.Queries.GetSistema;
+using Cpnucleo.Shared.Queries.ListSistema;
+
+namespace Cpnucleo.MVC.Controllers;
 
 [Authorize]
 public class SistemaController : BaseController
@@ -67,7 +70,7 @@ public class SistemaController : BaseController
                 return View();
             }
 
-            OperationResult result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand(Guid.Empty, obj.Sistema.Nome, obj.Sistema.Descricao));
+            OperationResult result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand(obj.Sistema.Nome, obj.Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {

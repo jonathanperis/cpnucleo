@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.API.Controllers.V2;
+﻿using Cpnucleo.Domain.Services;
+
+namespace Cpnucleo.API.Controllers.V2;
 
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}/[controller]")]
