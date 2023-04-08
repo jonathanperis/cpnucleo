@@ -1,55 +1,40 @@
-﻿namespace Cpnucleo.API.Controllers.V2;
+﻿using Cpnucleo.Shared.Commands.CreateRecursoProjeto;
+using Cpnucleo.Shared.Commands.RemoveRecursoProjeto;
+using Cpnucleo.Shared.Commands.UpdateRecursoProjeto;
+using Cpnucleo.Shared.Queries.GetRecursoProjeto;
+using Cpnucleo.Shared.Queries.ListRecursoProjeto;
+using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
 
+namespace Cpnucleo.API.Controllers.V2;
+
+[Authorize]
+[ApiController]
+[ApiVersion("2")]
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}/[controller]")]
-[ApiController]
-[ApiVersion("2", Deprecated = true)]
-//[Authorize]
 public class RecursoProjetoController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMediator _mediator;
 
-    public RecursoProjetoController(IUnitOfWork unitOfWork)
+    public RecursoProjetoController(IMediator mediator)
     {
-        _unitOfWork = unitOfWork;
+        _mediator = mediator;
     }
 
     /// <summary>
-    /// Listar recursos de projeto
+    /// Listar recursos de projetos
     /// </summary>
     /// <remarks>
-    /// # Listar recursos de projeto
+    /// # Listar recursos de projetos
     /// 
-    /// Lista recursos de projeto da base de dados.
+    /// Lista recursos de projetos da base de dados.
     /// </remarks>
-    /// <param name="getDependencies">Listar dependências do objeto</param>        
-    /// <response code="200">Retorna uma lista de recursos de projeto</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<RecursoProjeto>> Get(bool getDependencies = false)
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("ListRecursoProjeto")]
+    public async Task<ActionResult<ListRecursoProjetoViewModel>> ListRecursoProjeto([FromBody] ListRecursoProjetoQuery query)
     {
-        return await _unitOfWork.RecursoProjetoRepository.List(getDependencies).ToListAsync();
-    }
-
-    /// <summary>
-    /// Listar recursos de projeto por id recurso
-    /// </summary>
-    /// <remarks>
-    /// # Listar recursos de projeto por id recurso
-    /// 
-    /// Lista recursos de projeto por id recurso na base de dados.
-    /// </remarks>
-    /// <param name="idRecurso">Id do recurso</param>        
-    /// <response code="200">Retorna uma lista de recursos de projeto</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet("GetByProjeto/{idRecurso}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<RecursoProjeto>> GetByProjeto(Guid idRecurso)
-    {
-        return await _unitOfWork.RecursoProjetoRepository.ListRecursoProjetoByProjeto(idRecurso).ToListAsync();
+        return await _mediator.Send(query);
     }
 
     /// <summary>
@@ -60,24 +45,28 @@ public class RecursoProjetoController : ControllerBase
     /// 
     /// Consulta um recurso de projeto na base de dados.
     /// </remarks>
-    /// <param name="id">Id do recurso de projeto</param>        
-    /// <response code="200">Retorna um recurso de projeto</response>
-    /// <response code="404">Recurso de projeto não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet("{id}", Name = "GetRecursoProjeto")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RecursoProjeto>> Get(Guid id)
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("GetRecursoProjeto")]
+    public async Task<ActionResult<GetRecursoProjetoViewModel>> GetRecursoProjeto([FromBody] GetRecursoProjetoQuery query)
     {
-        RecursoProjeto recursoProjeto = await _unitOfWork.RecursoProjetoRepository.Get(id).FirstOrDefaultAsync();
+        return await _mediator.Send(query);
+    }
 
-        if (recursoProjeto == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(recursoProjeto);
+    /// <summary>
+    /// Consultar recurso de projeto por projeto
+    /// </summary>
+    /// <remarks>
+    /// # Consultar recurso de projeto por projeto
+    /// 
+    /// Consulta um recurso de projeto por projeto na base de dados.
+    /// </remarks>
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("GetRecursoProjetoByProjeto")]
+    public async Task<ActionResult<ListRecursoProjetoByProjetoViewModel>> GetRecursoProjetoByProjeto([FromBody] ListRecursoProjetoByProjetoQuery query)
+    {
+        return await _mediator.Send(query);
     }
 
     /// <summary>
@@ -87,51 +76,13 @@ public class RecursoProjetoController : ControllerBase
     /// # Incluir recurso de projeto
     /// 
     /// Inclui um recurso de projeto na base de dados.
-    /// 
-    /// # Sample request:
-    ///
-    ///     POST /recursoProjeto
-    ///     {
-    ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
-    ///     }
     /// </remarks>
-    /// <param name="obj">Recurso de projeto</param>        
-    /// <response code="201">Recurso de projeto cadastrado com sucesso</response>
-    /// <response code="400">Objetos não preenchidos corretamente</response>
-    /// <response code="409">Guid informado já consta na base de dados</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [ProducesResponseType(typeof(RecursoProjeto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<RecursoProjeto>> Post([FromBody] RecursoProjeto obj)
+    [Route("CreateRecursoProjeto")]
+    public async Task<ActionResult<OperationResult>> CreateRecursoProjeto([FromBody] CreateRecursoProjetoCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        try
-        {
-            obj = await _unitOfWork.RecursoProjetoRepository.AddAsync(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            if (await ObjExists(obj.Id))
-            {
-                return Conflict();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return CreatedAtRoute("GetRecursoProjeto", new { id = obj.Id }, obj);
+        return await _mediator.Send(command);
     }
 
     /// <summary>
@@ -141,57 +92,13 @@ public class RecursoProjetoController : ControllerBase
     /// # Alterar recurso de projeto
     /// 
     /// Altera um recurso de projeto na base de dados.
-    /// 
-    /// # Sample request:
-    ///
-    ///     PUT /recursoProjeto
-    ///     {
-    ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idProjeto": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
-    ///     }
     /// </remarks>
-    /// <param name="id">Id do recurso de projeto</param>        
-    /// <param name="obj">Recurso de projeto</param>        
-    /// <response code="204">Recurso de projeto alterado com sucesso</response>
-    /// <response code="400">ID informado não é válido</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Put(Guid id, [FromBody] RecursoProjeto obj)
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
+    [HttpPost]
+    [Route("UpdateRecursoProjeto")]
+    public async Task<ActionResult<OperationResult>> UpdateRecursoProjeto([FromBody] UpdateRecursoProjetoCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        if (id != obj.Id)
-        {
-            return BadRequest();
-        }
-
-        try
-        {
-            _unitOfWork.RecursoProjetoRepository.Update(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            if (!await ObjExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+        return await _mediator.Send(command);
     }
 
     /// <summary>
@@ -202,31 +109,11 @@ public class RecursoProjetoController : ControllerBase
     /// 
     /// Remove um recurso de projeto da base de dados.
     /// </remarks>
-    /// <param name="id">Id do recurso de projeto</param>        
-    /// <response code="204">Recurso de projeto removido com sucesso</response>
-    /// <response code="404">Recurso de projeto não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(Guid id)
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
+    [HttpPost]
+    [Route("RemoveRecursoProjeto")]
+    public async Task<ActionResult<OperationResult>> RemoveRecursoProjeto([FromBody] RemoveRecursoProjetoCommand command)
     {
-        RecursoProjeto obj = await _unitOfWork.RecursoProjetoRepository.Get(id).FirstOrDefaultAsync();
-
-        if (obj == null)
-        {
-            return NotFound();
-        }
-
-        await _unitOfWork.RecursoProjetoRepository.RemoveAsync(id);
-        await _unitOfWork.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    private async Task<bool> ObjExists(Guid id)
-    {
-        return await _unitOfWork.RecursoProjetoRepository.Get(id).FirstOrDefaultAsync() != null;
+        return await _mediator.Send(command);
     }
 }

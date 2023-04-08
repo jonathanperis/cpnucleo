@@ -10,11 +10,11 @@ public sealed class RecursoProjeto : BaseEntity
 
     public Projeto? Projeto { get; private set; }
 
-    public static RecursoProjeto Create(Guid idRecurso, Guid idProjeto)
+    public static RecursoProjeto Create(Guid idRecurso, Guid idProjeto, Guid id = default)
     {
         return new RecursoProjeto
         {
-            Id = Guid.NewGuid(),
+            Id = id == Guid.Empty ? Guid.NewGuid() : id,
             IdRecurso = idRecurso,
             IdProjeto = idProjeto,
             DataInclusao = DateTime.UtcNow,

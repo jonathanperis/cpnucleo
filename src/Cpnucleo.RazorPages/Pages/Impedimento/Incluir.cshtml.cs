@@ -1,4 +1,6 @@
-﻿namespace Cpnucleo.RazorPages.Pages.Impedimento;
+﻿using Cpnucleo.Shared.Commands.CreateImpedimento;
+
+namespace Cpnucleo.RazorPages.Pages.Impedimento;
 
 [Authorize]
 public class IncluirModel : PageModel
@@ -22,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Impedimento", "CreateImpedimento", new CreateImpedimentoCommand(Guid.Empty, Impedimento.Nome));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Impedimento", "CreateImpedimento", new CreateImpedimentoCommand(Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {

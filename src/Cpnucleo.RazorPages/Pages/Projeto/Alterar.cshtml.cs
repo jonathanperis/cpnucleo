@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetProjeto;
+﻿using Cpnucleo.Shared.Commands.UpdateProjeto;
+using Cpnucleo.Shared.Queries.GetProjeto;
 using Cpnucleo.Shared.Queries.ListSistema;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto;
@@ -44,7 +45,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "UpdateProjeto", new UpdateProjetoCommand(Projeto.Id, Projeto.Nome, Projeto.IdSistema));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Projeto", "UpdateProjeto", new UpdateProjetoCommand(Projeto.Id, Projeto.Nome, Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -63,7 +64,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idProjeto)
     {
-        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery(idProjeto));
+        GetProjetoViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetProjetoViewModel>("Projeto", "GetProjeto", new GetProjetoQuery(idProjeto));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -73,7 +74,7 @@ public class AlterarModel : PageModel
 
         Projeto = result.Projeto;
 
-        ListSistemaViewModel result2 = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
+        ListSistemaViewModel result2 = await _cpnucleoApiClient.ExecuteAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

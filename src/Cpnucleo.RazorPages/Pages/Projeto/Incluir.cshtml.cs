@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.ListSistema;
+﻿using Cpnucleo.Shared.Commands.CreateProjeto;
+using Cpnucleo.Shared.Queries.ListSistema;
 
 namespace Cpnucleo.RazorPages.Pages.Projeto;
 
@@ -43,7 +44,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand(Guid.Empty, Projeto.Nome, Projeto.IdSistema));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand(Projeto.Nome, Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -62,7 +63,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados()
     {
-        ListSistemaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
+        ListSistemaViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {

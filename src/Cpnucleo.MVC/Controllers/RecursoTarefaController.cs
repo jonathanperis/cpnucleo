@@ -1,4 +1,6 @@
-﻿using Cpnucleo.Shared.Queries.GetRecursoTarefa;
+﻿using Cpnucleo.Shared.Commands.CreateRecursoTarefa;
+using Cpnucleo.Shared.Commands.RemoveRecursoTarefa;
+using Cpnucleo.Shared.Queries.GetRecursoTarefa;
 using Cpnucleo.Shared.Queries.GetTarefa;
 using Cpnucleo.Shared.Queries.ListRecurso;
 using Cpnucleo.Shared.Queries.ListRecursoTarefaByTarefa;
@@ -82,7 +84,7 @@ public class RecursoTarefaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand(Guid.Empty, obj.RecursoTarefa.IdRecurso, obj.RecursoTarefa.IdTarefa));
+            OperationResult result = await _recursoTarefaGrpcService.CreateRecursoTarefa(new CreateRecursoTarefaCommand(obj.RecursoTarefa.IdRecurso, obj.RecursoTarefa.IdTarefa));
 
             if (result == OperationResult.Failed)
             {

@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetTarefa;
+﻿using Cpnucleo.Shared.Commands.RemoveTarefa;
+using Cpnucleo.Shared.Queries.GetTarefa;
 
 namespace Cpnucleo.RazorPages.Pages.Tarefa;
 
@@ -41,7 +42,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Tarefa", "RemoveTarefa", new RemoveTarefaCommand(Tarefa.Id));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Tarefa", "RemoveTarefa", new RemoveTarefaCommand(Tarefa.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +61,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idTarefa)
     {
-        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery(idTarefa));
+        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery(idTarefa));
 
         if (result.OperationResult == OperationResult.Failed)
         {

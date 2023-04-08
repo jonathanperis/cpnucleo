@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetRecursoProjeto;
+﻿using Cpnucleo.Shared.Commands.RemoveRecursoProjeto;
+using Cpnucleo.Shared.Queries.GetRecursoProjeto;
 
 namespace Cpnucleo.RazorPages.Pages.RecursoProjeto;
 
@@ -41,7 +42,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("RecursoProjeto", "RemoveRecursoProjeto", new RemoveRecursoProjetoCommand(RecursoProjeto.Id));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("RecursoProjeto", "RemoveRecursoProjeto", new RemoveRecursoProjetoCommand(RecursoProjeto.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +61,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idRecursoProjeto)
     {
-        GetRecursoProjetoViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetRecursoProjetoViewModel>("RecursoProjeto", "GetRecursoProjeto", new GetRecursoProjetoQuery(idRecursoProjeto));
+        GetRecursoProjetoViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetRecursoProjetoViewModel>("RecursoProjeto", "GetRecursoProjeto", new GetRecursoProjetoQuery(idRecursoProjeto));
 
         if (result.OperationResult == OperationResult.Failed)
         {

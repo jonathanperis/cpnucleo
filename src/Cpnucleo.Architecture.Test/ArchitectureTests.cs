@@ -11,7 +11,7 @@ public class ArchitectureTests
     public void Domain_Should_Not_HaveDependencyOnOtherProjects()
     { 
         // Arrange
-        var assembly = typeof(Domain.DependencyInjection).Assembly;
+        var assembly = typeof(Domain.Entities.BaseEntity).Assembly;
 
         var otherProjects = new[]
         {

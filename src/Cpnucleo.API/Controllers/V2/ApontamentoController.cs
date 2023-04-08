@@ -1,17 +1,24 @@
-﻿namespace Cpnucleo.API.Controllers.V2;
+﻿using Cpnucleo.Shared.Commands.CreateApontamento;
+using Cpnucleo.Shared.Commands.RemoveApontamento;
+using Cpnucleo.Shared.Commands.UpdateApontamento;
+using Cpnucleo.Shared.Queries.GetApontamento;
+using Cpnucleo.Shared.Queries.ListApontamento;
+using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
 
+namespace Cpnucleo.API.Controllers.V2;
+
+[Authorize]
+[ApiController]
+[ApiVersion("2")]
 [Produces("application/json")]
 [Route("api/v{version:apiVersion}/[controller]")]
-[ApiController]
-[ApiVersion("2", Deprecated = true)]
-//[Authorize]
 public class ApontamentoController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMediator _mediator;
 
-    public ApontamentoController(IUnitOfWork unitOfWork)
+    public ApontamentoController(IMediator mediator)
     {
-        _unitOfWork = unitOfWork;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -20,36 +27,14 @@ public class ApontamentoController : ControllerBase
     /// <remarks>
     /// # Listar apontamentos
     /// 
-    /// Lista apontamentos na base de dados.
+    /// Lista apontamentos da base de dados.
     /// </remarks>
-    /// <param name="getDependencies">Listar dependências do objeto</param>        
-    /// <response code="200">Retorna uma lista de apontamentos</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<Apontamento>> Get(bool getDependencies = false)
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("ListApontamento")]
+    public async Task<ActionResult<ListApontamentoViewModel>> ListApontamento([FromBody] ListApontamentoQuery query)
     {
-        return await _unitOfWork.ApontamentoRepository.List(getDependencies).ToListAsync();
-    }
-
-    /// <summary>
-    /// Listar apontamentos por id recurso
-    /// </summary>
-    /// <remarks>
-    /// # Listar apontamentos por id recurso
-    /// 
-    /// Lista apontamentos por id recurso da base de dados.
-    /// </remarks>
-    /// <param name="idRecurso">Id do recurso</param>        
-    /// <response code="200">Retorna uma lista de apontamentos</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet("GetByRecurso/{idRecurso}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<List<Apontamento>> GetByRecurso(Guid idRecurso)
-    {
-        return await _unitOfWork.ApontamentoRepository.ListApontamentoByRecurso(idRecurso).ToListAsync();
+        return await _mediator.Send(query);
     }
 
     /// <summary>
@@ -60,24 +45,28 @@ public class ApontamentoController : ControllerBase
     /// 
     /// Consulta um apontamento na base de dados.
     /// </remarks>
-    /// <param name="id">Id do apontamento</param>        
-    /// <response code="200">Retorna um apontamento</response>
-    /// <response code="404">Apontamento não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpGet("{id}", Name = "GetApontamento")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Apontamento>> Get(Guid id)
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("GetApontamento")]
+    public async Task<ActionResult<GetApontamentoViewModel>> GetApontamento([FromBody] GetApontamentoQuery query)
     {
-        Apontamento apontamento = await _unitOfWork.ApontamentoRepository.Get(id).FirstOrDefaultAsync();
+        return await _mediator.Send(query);
+    }
 
-        if (apontamento == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(apontamento);
+    /// <summary>
+    /// Consultar apontamento por recurso
+    /// </summary>
+    /// <remarks>
+    /// # Consultar apontamento por recurso
+    /// 
+    /// Consulta um apontamento por recurso na base de dados.
+    /// </remarks>
+    /// <param name="query">Objeto de consulta com os parametros necessários</param>        
+    [HttpPost]
+    [Route("GetApontamentoByRecurso")]
+    public async Task<ActionResult<ListApontamentoByRecursoViewModel>> GetApontamentoByRecurso([FromBody] ListApontamentoByRecursoQuery query)
+    {
+        return await _mediator.Send(query);
     }
 
     /// <summary>
@@ -87,55 +76,13 @@ public class ApontamentoController : ControllerBase
     /// # Incluir apontamento
     /// 
     /// Inclui um apontamento na base de dados.
-    /// 
-    /// # Sample request:
-    ///
-    ///     POST /apontamento
-    ///     {
-    ///        "descricao": "Descrição do novo apontamento",
-    ///        "dataApontamento": "2019-09-21T15:56:00.503Z",
-    ///        "qtdHoras": 6,
-    ///        "percentualConcluido": 10,
-    ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91"
-    ///     }
     /// </remarks>
-    /// <param name="obj">Apontamento</param>        
-    /// <response code="201">Apontamento cadastrado com sucesso</response>
-    /// <response code="400">Objetos não preenchidos corretamente</response>
-    /// <response code="409">Guid informado já consta na base de dados</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
     [HttpPost]
-    [ProducesResponseType(typeof(Apontamento), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<Apontamento>> Post([FromBody] Apontamento obj)
+    [Route("CreateApontamento")]
+    public async Task<ActionResult<OperationResult>> CreateApontamento([FromBody] CreateApontamentoCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        try
-        {
-            obj = await _unitOfWork.ApontamentoRepository.AddAsync(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            if (await ObjExists(obj.Id))
-            {
-                return Conflict();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return CreatedAtRoute("GetApontamento", new { id = obj.Id }, obj);
+        return await _mediator.Send(command);
     }
 
     /// <summary>
@@ -145,63 +92,13 @@ public class ApontamentoController : ControllerBase
     /// # Alterar apontamento
     /// 
     /// Altera um apontamento na base de dados.
-    /// 
-    /// # Sample request:
-    ///
-    ///     PUT /apontamento
-    ///     {
-    ///        "id": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "descricao": "Descrição do novo apontamento - alterado",
-    ///        "dataApontamento": "2019-09-21T15:56:00.503Z",
-    ///        "qtdHoras": 6,
-    ///        "percentualConcluido": 10,
-    ///        "idTarefa": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "idRecurso": "fffc0a28-b9e9-4ffd-0053-08d73d64fb91",
-    ///        "dataInclusao": "2019-09-21T19:15:23.519Z"
-    ///     }
     /// </remarks>
-    /// <param name="id">Id do apontamento</param>        
-    /// <param name="obj">Apontamento</param>        
-    /// <response code="204">Apontamento alterado com sucesso</response>
-    /// <response code="400">ID informado não é válido</response>
-    /// <response code="404">Atendimento não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Put(Guid id, [FromBody] Apontamento obj)
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
+    [HttpPost]
+    [Route("UpdateApontamento")]
+    public async Task<ActionResult<OperationResult>> UpdateApontamento([FromBody] UpdateApontamentoCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        if (id != obj.Id)
-        {
-            return BadRequest();
-        }
-
-        try
-        {
-            _unitOfWork.ApontamentoRepository.Update(obj);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            if (!await ObjExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+        return await _mediator.Send(command);
     }
 
     /// <summary>
@@ -212,31 +109,11 @@ public class ApontamentoController : ControllerBase
     /// 
     /// Remove um apontamento da base de dados.
     /// </remarks>
-    /// <param name="id">Id do apontamento</param>        
-    /// <response code="204">Apontamento removido com sucesso</response>
-    /// <response code="404">Apontamento não encontrado</response>
-    /// <response code="401">Acesso não autorizado</response>
-    /// <response code="500">Erro no processamento da requisição</response>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(Guid id)
+    /// <param name="command">Objeto de envio com os parametros necessários</param>        
+    [HttpPost]
+    [Route("RemoveApontamento")]
+    public async Task<ActionResult<OperationResult>> RemoveApontamento([FromBody] RemoveApontamentoCommand command)
     {
-        Apontamento obj = await _unitOfWork.ApontamentoRepository.Get(id).FirstOrDefaultAsync();
-
-        if (obj == null)
-        {
-            return NotFound();
-        }
-
-        await _unitOfWork.ApontamentoRepository.RemoveAsync(id);
-        await _unitOfWork.SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    private async Task<bool> ObjExists(Guid id)
-    {
-        return await _unitOfWork.ApontamentoRepository.Get(id).FirstOrDefaultAsync() != null;
+        return await _mediator.Send(command);
     }
 }

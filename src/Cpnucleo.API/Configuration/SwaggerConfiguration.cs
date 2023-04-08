@@ -9,29 +9,11 @@ public static class SwaggerConfiguration
     {
         services.AddSwaggerGen(config =>
         {
-            config.SwaggerDoc("v3", new OpenApiInfo
-            {
-                Version = "v3",
-                Title = "Cpnucleo API",
-                Description = "Cpnucleo example ASP.NET Core Web API (CQRS)",
-                Contact = new OpenApiContact
-                {
-                    Name = "Jonathan Peris",
-                    Email = "jperis.silva@gmail.com",
-                    Url = new Uri("https://jonathanperis.github.io"),
-                },
-                License = new OpenApiLicense
-                {
-                    Name = "Use under MIT",
-                    Url = new Uri("https://en.wikipedia.org/wiki/MIT_License"),
-                }
-            });
-
             config.SwaggerDoc("v2", new OpenApiInfo
             {
                 Version = "v2",
                 Title = "Cpnucleo API",
-                Description = "Cpnucleo example ASP.NET Core Web API (Unit of Work) (deprecated)",
+                Description = "Cpnucleo example ASP.NET Core Web API (CQRS)",
                 Contact = new OpenApiContact
                 {
                     Name = "Jonathan Peris",
@@ -103,7 +85,6 @@ public static class SwaggerConfiguration
         {
             string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
 
-            c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v3/swagger.json", "V3");
             c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v2/swagger.json", "V2");
             c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "V1");
 

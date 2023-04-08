@@ -1,4 +1,5 @@
-﻿using Cpnucleo.Shared.Queries.GetWorkflow;
+﻿using Cpnucleo.Shared.Commands.UpdateWorkflow;
+using Cpnucleo.Shared.Queries.GetWorkflow;
 
 namespace Cpnucleo.RazorPages.Pages.Workflow;
 
@@ -41,7 +42,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteCommandAsync<OperationResult>("Workflow", "UpdateWorkflow", new UpdateWorkflowCommand(Workflow.Id, Workflow.Nome, Workflow.Ordem));
+            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "UpdateWorkflow", new UpdateWorkflowCommand(Workflow.Id, Workflow.Nome, Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {
@@ -60,7 +61,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idWorkflow)
     {
-        GetWorkflowViewModel result = await _cpnucleoApiClient.ExecuteQueryAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
+        GetWorkflowViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
 
         if (result.OperationResult == OperationResult.Failed)
         {
