@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.GetApontamento;
-
-namespace Cpnucleo.Application.Queries.GetApontamento;
+﻿namespace Cpnucleo.Application.Queries.GetApontamento;
 
 public sealed class GetApontamentoQueryHandler : IRequestHandler<GetApontamentoQuery, GetApontamentoViewModel>
 {

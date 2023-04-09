@@ -1,6 +1,4 @@
-﻿using ValidationException = Cpnucleo.Application.Common.Exceptions.ValidationException;
-
-namespace Cpnucleo.Application.Common.Behaviors;
+﻿namespace Cpnucleo.Application.Common.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>

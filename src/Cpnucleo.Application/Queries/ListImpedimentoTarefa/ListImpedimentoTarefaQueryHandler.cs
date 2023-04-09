@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListImpedimentoTarefa;
-
-namespace Cpnucleo.Application.Queries.ListImpedimentoTarefa;
+﻿namespace Cpnucleo.Application.Queries.ListImpedimentoTarefa;
 
 public sealed class ListImpedimentoTarefaQueryHandler : IRequestHandler<ListImpedimentoTarefaQuery, ListImpedimentoTarefaViewModel>
 {

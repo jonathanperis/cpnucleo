@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.CreateRecurso;
-
-namespace Cpnucleo.Application.Commands.CreateRecurso;
+﻿namespace Cpnucleo.Application.Commands.CreateRecurso;
 
 public sealed class CreateRecursoCommandHandler : IRequestHandler<CreateRecursoCommand, OperationResult>
 {

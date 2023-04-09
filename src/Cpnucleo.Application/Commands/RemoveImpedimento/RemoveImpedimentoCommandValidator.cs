@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RemoveImpedimento;
-
-namespace Cpnucleo.Application.Commands.RemoveImpedimento;
+﻿namespace Cpnucleo.Application.Commands.RemoveImpedimento;
 
 public sealed class RemoveImpedimentoCommandValidator : AbstractValidator<RemoveImpedimentoCommand>
 {

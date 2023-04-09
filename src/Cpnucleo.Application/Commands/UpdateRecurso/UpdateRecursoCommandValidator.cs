@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.UpdateRecurso;
-
-namespace Cpnucleo.Application.Commands.UpdateRecurso;
+﻿namespace Cpnucleo.Application.Commands.UpdateRecurso;
 
 public sealed class UpdateRecursoCommandValidator : AbstractValidator<UpdateRecursoCommand>
 {

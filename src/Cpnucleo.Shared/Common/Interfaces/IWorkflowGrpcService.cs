@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateWorkflow;
-using Cpnucleo.Shared.Commands.RemoveWorkflow;
-using Cpnucleo.Shared.Commands.UpdateWorkflow;
-using Cpnucleo.Shared.Queries.GetWorkflow;
-using Cpnucleo.Shared.Queries.ListWorkflow;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IWorkflowGrpcService : IService<IWorkflowGrpcService>
 {

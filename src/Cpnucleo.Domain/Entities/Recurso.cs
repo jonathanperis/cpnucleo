@@ -1,5 +1,3 @@
-using Cpnucleo.Domain.Common.Security;
-
 namespace Cpnucleo.Domain.Entities;
 
 public sealed class Recurso : BaseEntity

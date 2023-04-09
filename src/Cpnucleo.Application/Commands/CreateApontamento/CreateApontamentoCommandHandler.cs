@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.CreateApontamento;
-
-namespace Cpnucleo.Application.Commands.CreateApontamento;
+﻿namespace Cpnucleo.Application.Commands.CreateApontamento;
 
 public sealed class CreateApontamentoCommandHandler : IRequestHandler<CreateApontamentoCommand, OperationResult>
 {

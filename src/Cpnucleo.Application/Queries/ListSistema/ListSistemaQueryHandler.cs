@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Application.Common.Hubs;
-using Cpnucleo.Shared.Queries.ListSistema;
-using Microsoft.AspNetCore.SignalR;
-
-namespace Cpnucleo.Application.Queries.ListSistema;
+﻿namespace Cpnucleo.Application.Queries.ListSistema;
 
 public sealed class ListSistemaQueryHandler : IRequestHandler<ListSistemaQuery, ListSistemaViewModel>
 {

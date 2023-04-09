@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Infrastructure.Common.Helpers;
-using Cpnucleo.Infrastructure.Common.Mappings;
-using Microsoft.Extensions.Configuration;
-
-namespace Cpnucleo.Infrastructure.Common.Context;
+﻿namespace Cpnucleo.Infrastructure.Common.Context;
 
 public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 {

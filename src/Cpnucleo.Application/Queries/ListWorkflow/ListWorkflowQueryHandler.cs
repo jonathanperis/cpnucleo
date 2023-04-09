@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListWorkflow;
-
-namespace Cpnucleo.Application.Queries.ListWorkflow;
+﻿namespace Cpnucleo.Application.Queries.ListWorkflow;
 
 public sealed class ListWorkflowQueryHandler : IRequestHandler<ListWorkflowQuery, ListWorkflowViewModel>
 {

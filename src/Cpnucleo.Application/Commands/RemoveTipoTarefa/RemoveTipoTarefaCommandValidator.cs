@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RemoveTipoTarefa;
-
-namespace Cpnucleo.Application.Commands.RemoveTipoTarefa;
+﻿namespace Cpnucleo.Application.Commands.RemoveTipoTarefa;
 
 public sealed class RemoveTipoTarefaCommandValidator : AbstractValidator<RemoveTipoTarefaCommand>
 {

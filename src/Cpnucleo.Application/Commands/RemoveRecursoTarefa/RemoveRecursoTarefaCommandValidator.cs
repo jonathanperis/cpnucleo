@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RemoveRecursoTarefa;
-
-namespace Cpnucleo.Application.Commands.RemoveRecursoTarefa;
+﻿namespace Cpnucleo.Application.Commands.RemoveRecursoTarefa;
 
 public sealed class RemoveRecursoTarefaCommandValidator : AbstractValidator<RemoveRecursoTarefaCommand>
 {

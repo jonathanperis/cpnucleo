@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.GetSistema;
-
-namespace Cpnucleo.Application.Queries.GetSistema;
+﻿namespace Cpnucleo.Application.Queries.GetSistema;
 
 public sealed class GetSistemaQueryHandler : IRequestHandler<GetSistemaQuery, GetSistemaViewModel>
 {

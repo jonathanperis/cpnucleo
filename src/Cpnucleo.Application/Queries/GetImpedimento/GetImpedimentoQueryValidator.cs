@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.GetImpedimento;
-
-namespace Cpnucleo.Application.Queries.GetImpedimento;
+﻿namespace Cpnucleo.Application.Queries.GetImpedimento;
 
 public sealed class GetImpedimentoQueryValidator : AbstractValidator<GetImpedimentoQuery>
 {

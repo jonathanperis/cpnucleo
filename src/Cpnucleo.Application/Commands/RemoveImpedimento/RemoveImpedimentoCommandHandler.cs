@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveImpedimento;
-
-namespace Cpnucleo.Application.Commands.RemoveImpedimento;
+﻿namespace Cpnucleo.Application.Commands.RemoveImpedimento;
 
 public sealed class RemoveImpedimentoCommandHandler : IRequestHandler<RemoveImpedimentoCommand, OperationResult>
 {

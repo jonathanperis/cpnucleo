@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.GetWorkflow;
-
-namespace Cpnucleo.Application.Queries.GetWorkflow;
+﻿namespace Cpnucleo.Application.Queries.GetWorkflow;
 
 public sealed class GetWorkflowQueryHandler : IRequestHandler<GetWorkflowQuery, GetWorkflowViewModel>
 {

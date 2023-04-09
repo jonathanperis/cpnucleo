@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.GetRecurso;
-
-namespace Cpnucleo.Application.Queries.GetRecurso;
+﻿namespace Cpnucleo.Application.Queries.GetRecurso;
 
 public sealed class GetRecursoQueryHandler : IRequestHandler<GetRecursoQuery, GetRecursoViewModel>
 {

@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateRecurso;
-
-namespace Cpnucleo.Application.Commands.CreateRecurso;
+﻿namespace Cpnucleo.Application.Commands.CreateRecurso;
 
 public sealed class CreateRecursoCommandValidator : AbstractValidator<CreateRecursoCommand>
 {
