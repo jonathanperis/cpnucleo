@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveImpedimentoTarefa;
-
-namespace Cpnucleo.Application.Commands.RemoveImpedimentoTarefa;
+﻿namespace Cpnucleo.Application.Commands.RemoveImpedimentoTarefa;
 
 public sealed class RemoveImpedimentoTarefaCommandHandler : IRequestHandler<RemoveImpedimentoTarefaCommand, OperationResult>
 {

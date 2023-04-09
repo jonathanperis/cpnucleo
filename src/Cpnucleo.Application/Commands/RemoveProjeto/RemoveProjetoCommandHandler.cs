@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveProjeto;
-
-namespace Cpnucleo.Application.Commands.RemoveProjeto;
+﻿namespace Cpnucleo.Application.Commands.RemoveProjeto;
 
 public sealed class RemoveProjetoCommandHandler : IRequestHandler<RemoveProjetoCommand, OperationResult>
 {

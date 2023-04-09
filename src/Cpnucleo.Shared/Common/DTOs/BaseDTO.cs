@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Cpnucleo.Shared.Common.DTOs;
+﻿namespace Cpnucleo.Shared.Common.DTOs;
 
 [MessagePackObject(true)]
 public abstract record BaseDTO

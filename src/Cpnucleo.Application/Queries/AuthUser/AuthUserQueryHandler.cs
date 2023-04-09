@@ -1,9 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Application.Common.Services;
-using Cpnucleo.Shared.Queries.AuthUser;
-using Microsoft.Extensions.Configuration;
-
-namespace Cpnucleo.Application.Queries.AuthUser;
+﻿namespace Cpnucleo.Application.Queries.AuthUser;
 
 public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUserViewModel>
 {

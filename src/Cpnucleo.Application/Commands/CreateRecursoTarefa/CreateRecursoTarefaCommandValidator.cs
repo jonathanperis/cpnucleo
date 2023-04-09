@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateRecursoTarefa;
-
-namespace Cpnucleo.Application.Commands.CreateRecursoTarefa;
+﻿namespace Cpnucleo.Application.Commands.CreateRecursoTarefa;
 
 public sealed class CreateRecursoTarefaCommandValidator : AbstractValidator<CreateRecursoTarefaCommand>
 {

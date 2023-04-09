@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.CreateImpedimentoTarefa;
-
-namespace Cpnucleo.Application.Commands.CreateImpedimentoTarefa;
+﻿namespace Cpnucleo.Application.Commands.CreateImpedimentoTarefa;
 
 public sealed class CreateImpedimentoTarefaCommandHandler : IRequestHandler<CreateImpedimentoTarefaCommand, OperationResult>
 {

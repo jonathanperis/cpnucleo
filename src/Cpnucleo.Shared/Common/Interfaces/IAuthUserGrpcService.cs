@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.AuthUser;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IAuthUserGrpcService : IService<IAuthUserGrpcService>
 {

@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.ListRecursoTarefaByTarefa;
-
-namespace Cpnucleo.Application.Queries.ListRecursoTarefaByTarefa;
+﻿namespace Cpnucleo.Application.Queries.ListRecursoTarefaByTarefa;
 
 public sealed class ListRecursoTarefaByTarefaQueryValidator : AbstractValidator<ListRecursoTarefaByTarefaQuery>
 {

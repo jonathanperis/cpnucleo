@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.GetRecursoTarefa;
-
-namespace Cpnucleo.Application.Queries.GetRecursoTarefa;
+﻿namespace Cpnucleo.Application.Queries.GetRecursoTarefa;
 
 public sealed class GetRecursoTarefaQueryHandler : IRequestHandler<GetRecursoTarefaQuery, GetRecursoTarefaViewModel>
 {

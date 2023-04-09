@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateTipoTarefa;
-
-namespace Cpnucleo.Application.Commands.CreateTipoTarefa;
+﻿namespace Cpnucleo.Application.Commands.CreateTipoTarefa;
 
 public sealed class CreateTipoTarefaCommandValidator : AbstractValidator<CreateTipoTarefaCommand>
 {

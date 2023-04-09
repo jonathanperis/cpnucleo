@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Cpnucleo.Domain.Common.Security;
+﻿namespace Cpnucleo.Domain.Common.Security;
 
 internal sealed class CryptographyManager
 {

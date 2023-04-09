@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
-
-namespace Cpnucleo.Application.Queries.ListRecursoProjetoByProjeto;
+﻿namespace Cpnucleo.Application.Queries.ListRecursoProjetoByProjeto;
 
 public sealed class ListRecursoProjetoByProjetoQueryValidator : AbstractValidator<ListRecursoProjetoByProjetoQuery>
 {

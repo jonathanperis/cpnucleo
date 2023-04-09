@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RemoveProjeto;
-
-namespace Cpnucleo.Application.Commands.RemoveProjeto;
+﻿namespace Cpnucleo.Application.Commands.RemoveProjeto;
 
 public sealed class RemoveProjetoCommandValidator : AbstractValidator<RemoveProjetoCommand>
 {

@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.ListImpedimentoTarefaByTarefa;
-
-namespace Cpnucleo.Application.Queries.ListImpedimentoTarefaByTarefa;
+﻿namespace Cpnucleo.Application.Queries.ListImpedimentoTarefaByTarefa;
 
 public sealed class ListImpedimentoTarefaByTarefaQueryValidator : AbstractValidator<ListImpedimentoTarefaByTarefaQuery>
 {

@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.CreateProjeto;
-
-namespace Cpnucleo.Application.Commands.CreateProjeto;
+﻿namespace Cpnucleo.Application.Commands.CreateProjeto;
 
 public sealed class CreateProjetoCommandHandler : IRequestHandler<CreateProjetoCommand, OperationResult>
 {

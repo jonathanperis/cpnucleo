@@ -1,16 +1,4 @@
-﻿using Azure.Messaging.ServiceBus;
-using Cpnucleo.Application.Common.Bus;
-using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Application.Common.Security;
-using Cpnucleo.Infrastructure.Common.Bus;
-using Cpnucleo.Infrastructure.Common.Context;
-using Cpnucleo.Infrastructure.Common.Security;
-using Ev.ServiceBus;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using EventHandler = Cpnucleo.Infrastructure.Common.Bus.EventHandler;
-
-namespace Cpnucleo.Infrastructure;
+﻿namespace Cpnucleo.Infrastructure;
 
 public static class DependencyInjection
 {
