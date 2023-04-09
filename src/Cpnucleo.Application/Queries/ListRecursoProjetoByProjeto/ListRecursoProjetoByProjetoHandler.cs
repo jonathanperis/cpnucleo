@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
-
-namespace Cpnucleo.Application.Queries.ListRecursoProjetoByProjeto;
+﻿namespace Cpnucleo.Application.Queries.ListRecursoProjetoByProjeto;
 
 public sealed class ListRecursoProjetoByProjetoQueryHandler : IRequestHandler<ListRecursoProjetoByProjetoQuery, ListRecursoProjetoByProjetoViewModel>
 {

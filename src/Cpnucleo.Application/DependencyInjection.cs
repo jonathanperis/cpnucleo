@@ -1,13 +1,4 @@
-﻿using Cpnucleo.Application.Common.Behaviors;
-using Cpnucleo.Application.Common.Hubs;
-using Cpnucleo.Application.Events.RemoveSistema;
-using Cpnucleo.Shared.Events.RemoveSistema;
-using Ev.ServiceBus;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
-namespace Cpnucleo.Application;
+﻿namespace Cpnucleo.Application;
 
 public static class DependencyInjection
 {

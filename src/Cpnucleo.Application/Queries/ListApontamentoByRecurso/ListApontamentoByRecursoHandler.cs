@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
-
-namespace Cpnucleo.Application.Queries.ListApontamentoByRecurso;
+﻿namespace Cpnucleo.Application.Queries.ListApontamentoByRecurso;
 
 public sealed class ListApontamentoByRecursoQueryHandler : IRequestHandler<ListApontamentoByRecursoQuery, ListApontamentoByRecursoViewModel>
 {

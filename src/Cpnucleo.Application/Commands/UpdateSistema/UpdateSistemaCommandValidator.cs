@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.UpdateSistema;
-
-namespace Cpnucleo.Application.Commands.UpdateSistema;
+﻿namespace Cpnucleo.Application.Commands.UpdateSistema;
 
 public sealed class UpdateSistemaCommandValidator : AbstractValidator<UpdateSistemaCommand>
 {

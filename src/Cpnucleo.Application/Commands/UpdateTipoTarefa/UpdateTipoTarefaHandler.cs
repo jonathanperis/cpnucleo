@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
-
-namespace Cpnucleo.Application.Commands.UpdateTipoTarefa;
+﻿namespace Cpnucleo.Application.Commands.UpdateTipoTarefa;
 
 public sealed class UpdateTipoTarefaCommandHandler : IRequestHandler<UpdateTipoTarefaCommand, OperationResult>
 {

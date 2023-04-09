@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.CreateSistema;
-
-namespace Cpnucleo.Application.Commands.CreateSistema;
+﻿namespace Cpnucleo.Application.Commands.CreateSistema;
 
 public sealed class CreateSistemaCommandHandler : IRequestHandler<CreateSistemaCommand, OperationResult>
 {

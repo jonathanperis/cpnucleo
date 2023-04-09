@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveRecurso;
-
-namespace Cpnucleo.Application.Commands.RemoveRecurso;
+﻿namespace Cpnucleo.Application.Commands.RemoveRecurso;
 
 public sealed class RemoveRecursoCommandHandler : IRequestHandler<RemoveRecursoCommand, OperationResult>
 {

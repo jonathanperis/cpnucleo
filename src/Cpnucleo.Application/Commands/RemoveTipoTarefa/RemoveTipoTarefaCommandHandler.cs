@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveTipoTarefa;
-
-namespace Cpnucleo.Application.Commands.RemoveTipoTarefa;
+﻿namespace Cpnucleo.Application.Commands.RemoveTipoTarefa;
 
 public sealed class RemoveTipoTarefaCommandHandler : IRequestHandler<RemoveTipoTarefaCommand, OperationResult>
 {

@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateImpedimento;
-using Cpnucleo.Shared.Commands.RemoveImpedimento;
-using Cpnucleo.Shared.Commands.UpdateImpedimento;
-using Cpnucleo.Shared.Queries.GetImpedimento;
-using Cpnucleo.Shared.Queries.ListImpedimento;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface IImpedimentoGrpcService : IService<IImpedimentoGrpcService>
 {

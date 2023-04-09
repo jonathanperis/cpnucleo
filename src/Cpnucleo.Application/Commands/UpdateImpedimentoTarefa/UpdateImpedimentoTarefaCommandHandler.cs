@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.UpdateImpedimentoTarefa;
-
-namespace Cpnucleo.Application.Commands.UpdateImpedimentoTarefa;
+﻿namespace Cpnucleo.Application.Commands.UpdateImpedimentoTarefa;
 
 public sealed class UpdateImpedimentoTarefaCommandHandler : IRequestHandler<UpdateImpedimentoTarefaCommand, OperationResult>
 {

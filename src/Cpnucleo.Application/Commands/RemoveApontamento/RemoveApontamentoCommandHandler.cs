@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveApontamento;
-
-namespace Cpnucleo.Application.Commands.RemoveApontamento;
+﻿namespace Cpnucleo.Application.Commands.RemoveApontamento;
 
 public sealed class RemoveApontamentoCommandHandler : IRequestHandler<RemoveApontamentoCommand, OperationResult>
 {

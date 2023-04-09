@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
-
-namespace Cpnucleo.Application.Commands.UpdateTipoTarefa;
+﻿namespace Cpnucleo.Application.Commands.UpdateTipoTarefa;
 
 public sealed class UpdateTipoTarefaCommandValidator : AbstractValidator<UpdateTipoTarefaCommand>
 {

@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.UpdateWorkflow;
-
-namespace Cpnucleo.Application.Commands.UpdateWorkflow;
+﻿namespace Cpnucleo.Application.Commands.UpdateWorkflow;
 
 public sealed class UpdateWorkflowCommandHandler : IRequestHandler<UpdateWorkflowCommand, OperationResult>
 {

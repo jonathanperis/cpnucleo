@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListImpedimento;
-
-namespace Cpnucleo.Application.Queries.ListImpedimento;
+﻿namespace Cpnucleo.Application.Queries.ListImpedimento;
 
 public sealed class ListImpedimentoQueryHandler : IRequestHandler<ListImpedimentoQuery, ListImpedimentoViewModel>
 {

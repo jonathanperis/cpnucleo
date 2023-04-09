@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.UpdateWorkflow;
-
-namespace Cpnucleo.Application.Commands.UpdateWorkflow;
+﻿namespace Cpnucleo.Application.Commands.UpdateWorkflow;
 
 public sealed class UpdateWorkflowCommandValidator : AbstractValidator<UpdateWorkflowCommand>
 {

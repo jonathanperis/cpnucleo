@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.UpdateTarefaByWorkflow;
-
-namespace Cpnucleo.Application.Commands.UpdateTarefaByWorkflow;
+﻿namespace Cpnucleo.Application.Commands.UpdateTarefaByWorkflow;
 
 public sealed class UpdateTarefaByWorkflowCommandValidator : AbstractValidator<UpdateTarefaByWorkflowCommand>
 {

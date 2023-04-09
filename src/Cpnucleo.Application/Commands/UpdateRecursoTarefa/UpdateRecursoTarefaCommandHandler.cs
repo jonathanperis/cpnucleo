@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.UpdateRecursoTarefa;
-
-namespace Cpnucleo.Application.Commands.UpdateRecursoTarefa;
+﻿namespace Cpnucleo.Application.Commands.UpdateRecursoTarefa;
 
 public sealed class UpdateRecursoTarefaCommandHandler : IRequestHandler<UpdateRecursoTarefaCommand, OperationResult>
 {

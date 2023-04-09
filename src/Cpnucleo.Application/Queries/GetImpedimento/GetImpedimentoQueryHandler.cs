@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.GetImpedimento;
-
-namespace Cpnucleo.Application.Queries.GetImpedimento;
+﻿namespace Cpnucleo.Application.Queries.GetImpedimento;
 
 public sealed class GetImpedimentoQueryHandler : IRequestHandler<GetImpedimentoQuery, GetImpedimentoViewModel>
 {

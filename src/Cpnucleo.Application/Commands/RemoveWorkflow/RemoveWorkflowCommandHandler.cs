@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.RemoveWorkflow;
-
-namespace Cpnucleo.Application.Commands.RemoveWorkflow;
+﻿namespace Cpnucleo.Application.Commands.RemoveWorkflow;
 
 public sealed class RemoveWorkflowCommandHandler : IRequestHandler<RemoveWorkflowCommand, OperationResult>
 {

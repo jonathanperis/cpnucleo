@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Domain.Constants;
-using Cpnucleo.Shared.Queries.ListTarefa;
-
-namespace Cpnucleo.Application.Queries.ListTarefa;
+﻿namespace Cpnucleo.Application.Queries.ListTarefa;
 
 public sealed class ListTarefaQueryHandler : IRequestHandler<ListTarefaQuery, ListTarefaViewModel>
 {

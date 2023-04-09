@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.ListApontamentoByRecurso;
-
-namespace Cpnucleo.Application.Queries.GetApontamentoByRecurso;
+﻿namespace Cpnucleo.Application.Queries.GetApontamentoByRecurso;
 
 public sealed class ListApontamentoByRecursoQueryValidator : AbstractValidator<ListApontamentoByRecursoQuery>
 {

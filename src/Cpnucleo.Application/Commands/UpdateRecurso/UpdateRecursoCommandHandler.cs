@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.UpdateRecurso;
-
-namespace Cpnucleo.Application.Commands.UpdateRecurso;
+﻿namespace Cpnucleo.Application.Commands.UpdateRecurso;
 
 public sealed class UpdateRecursoCommandHandler : IRequestHandler<UpdateRecursoCommand, OperationResult>
 {

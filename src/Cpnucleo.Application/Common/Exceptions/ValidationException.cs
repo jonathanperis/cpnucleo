@@ -1,6 +1,4 @@
-﻿using FluentValidation.Results;
-
-namespace Cpnucleo.Application.Common.Exceptions;
+﻿namespace Cpnucleo.Application.Common.Exceptions;
 
 public class ValidationException : Exception
 {

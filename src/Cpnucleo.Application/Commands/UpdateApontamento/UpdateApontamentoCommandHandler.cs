@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Commands.UpdateApontamento;
-
-namespace Cpnucleo.Application.Commands.UpdateApontamento;
+﻿namespace Cpnucleo.Application.Commands.UpdateApontamento;
 
 public sealed class UpdateApontamentoCommandHandler : IRequestHandler<UpdateApontamentoCommand, OperationResult>
 {

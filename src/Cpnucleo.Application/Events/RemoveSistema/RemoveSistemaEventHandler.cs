@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Events.RemoveSistema;
-using Ev.ServiceBus.Reception;
-
-namespace Cpnucleo.Application.Events.RemoveSistema;
+﻿namespace Cpnucleo.Application.Events.RemoveSistema;
 
 public sealed class RemoveSistemaEventHandler : IMessageReceptionHandler<RemoveSistemaEvent>
 {

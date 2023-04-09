@@ -1,10 +1,4 @@
-﻿using Ev.ServiceBus.Abstractions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System.Text;
-
-namespace Cpnucleo.Infrastructure.Common.Bus;
+﻿namespace Cpnucleo.Infrastructure.Common.Bus;
 
 internal sealed class PayloadSerializer : IMessagePayloadSerializer
 {

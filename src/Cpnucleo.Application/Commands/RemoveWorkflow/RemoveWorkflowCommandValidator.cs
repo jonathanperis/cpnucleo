@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.RemoveWorkflow;
-
-namespace Cpnucleo.Application.Commands.RemoveWorkflow;
+﻿namespace Cpnucleo.Application.Commands.RemoveWorkflow;
 
 public sealed class RemoveWorkflowCommandValidator : AbstractValidator<RemoveWorkflowCommand>
 {

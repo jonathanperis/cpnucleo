@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.UpdateProjeto;
-
-namespace Cpnucleo.Application.Commands.UpdateProjeto;
+﻿namespace Cpnucleo.Application.Commands.UpdateProjeto;
 
 public sealed class UpdateProjetoCommandValidator : AbstractValidator<UpdateProjetoCommand>
 {

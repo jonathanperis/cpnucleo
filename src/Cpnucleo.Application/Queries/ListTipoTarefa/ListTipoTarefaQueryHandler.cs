@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListTipoTarefa;
-
-namespace Cpnucleo.Application.Queries.ListTipoTarefa;
+﻿namespace Cpnucleo.Application.Queries.ListTipoTarefa;
 
 public sealed class ListTipoTarefaQueryHandler : IRequestHandler<ListTipoTarefaQuery, ListTipoTarefaViewModel>
 {

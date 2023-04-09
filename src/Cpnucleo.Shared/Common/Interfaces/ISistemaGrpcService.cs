@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateSistema;
-using Cpnucleo.Shared.Commands.RemoveSistema;
-using Cpnucleo.Shared.Commands.UpdateSistema;
-using Cpnucleo.Shared.Queries.GetSistema;
-using Cpnucleo.Shared.Queries.ListSistema;
-
-namespace Cpnucleo.Shared.Common.Interfaces;
+﻿namespace Cpnucleo.Shared.Common.Interfaces;
 
 public interface ISistemaGrpcService : IService<ISistemaGrpcService>
 {

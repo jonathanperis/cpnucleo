@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Microsoft.AspNetCore.SignalR;
-
-namespace Cpnucleo.Application.Common.Hubs;
+﻿namespace Cpnucleo.Application.Common.Hubs;
 
 public sealed class ApplicationHub : Hub
 {

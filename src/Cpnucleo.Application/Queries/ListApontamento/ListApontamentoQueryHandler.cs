@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Common.Context;
-using Cpnucleo.Shared.Queries.ListApontamento;
-
-namespace Cpnucleo.Application.Queries.ListApontamento;
+﻿namespace Cpnucleo.Application.Queries.ListApontamento;
 
 public sealed class ListApontamentoQueryHandler : IRequestHandler<ListApontamentoQuery, ListApontamentoViewModel>
 {
