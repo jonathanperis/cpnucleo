@@ -1,11 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateRecursoProjeto;
-using Cpnucleo.Shared.Commands.RemoveRecursoProjeto;
-using Cpnucleo.Shared.Commands.UpdateRecursoProjeto;
-using Cpnucleo.Shared.Queries.GetRecursoProjeto;
-using Cpnucleo.Shared.Queries.ListRecursoProjeto;
-using Cpnucleo.Shared.Queries.ListRecursoProjetoByProjeto;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>, IRecursoProjetoGrpcService
