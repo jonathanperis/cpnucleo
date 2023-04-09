@@ -1,11 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateRecursoTarefa;
-using Cpnucleo.Shared.Commands.RemoveRecursoTarefa;
-using Cpnucleo.Shared.Commands.UpdateRecursoTarefa;
-using Cpnucleo.Shared.Queries.GetRecursoTarefa;
-using Cpnucleo.Shared.Queries.ListRecursoTarefa;
-using Cpnucleo.Shared.Queries.ListRecursoTarefaByTarefa;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, IRecursoTarefaGrpcService
