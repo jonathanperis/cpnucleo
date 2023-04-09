@@ -1,7 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Reflection;
-
-namespace Cpnucleo.API.Configuration;
+﻿namespace Cpnucleo.API.Configuration;
 
 public static class SwaggerConfiguration
 {

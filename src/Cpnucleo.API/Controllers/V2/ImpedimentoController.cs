@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateImpedimento;
-using Cpnucleo.Shared.Commands.RemoveImpedimento;
-using Cpnucleo.Shared.Commands.UpdateImpedimento;
-using Cpnucleo.Shared.Queries.GetImpedimento;
-using Cpnucleo.Shared.Queries.ListImpedimento;
-
-namespace Cpnucleo.API.Controllers.V2;
+﻿namespace Cpnucleo.API.Controllers.V2;
 
 [Authorize]
 [ApiController]

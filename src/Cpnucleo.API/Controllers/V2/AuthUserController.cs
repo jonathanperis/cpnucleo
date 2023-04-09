@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.AuthUser;
-
-namespace Cpnucleo.API.Controllers.V2;
+﻿namespace Cpnucleo.API.Controllers.V2;
 
 [ApiController]
 [ApiVersion("2")]

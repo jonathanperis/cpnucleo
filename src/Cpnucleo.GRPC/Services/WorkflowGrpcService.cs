@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateWorkflow;
-using Cpnucleo.Shared.Commands.RemoveWorkflow;
-using Cpnucleo.Shared.Commands.UpdateWorkflow;
-using Cpnucleo.Shared.Queries.GetWorkflow;
-using Cpnucleo.Shared.Queries.ListWorkflow;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowGrpcService

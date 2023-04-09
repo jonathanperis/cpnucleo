@@ -1,6 +1,4 @@
-﻿using Cpnucleo.Shared.Queries.AuthUser;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 public class AuthUserGrpcService : ServiceBase<IAuthUserGrpcService>, IAuthUserGrpcService
 {

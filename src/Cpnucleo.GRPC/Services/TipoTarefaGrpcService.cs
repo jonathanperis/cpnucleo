@@ -1,10 +1,4 @@
-﻿using Cpnucleo.Shared.Commands.CreateTipoTarefa;
-using Cpnucleo.Shared.Commands.RemoveTipoTarefa;
-using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
-using Cpnucleo.Shared.Queries.GetTipoTarefa;
-using Cpnucleo.Shared.Queries.ListTipoTarefa;
-
-namespace Cpnucleo.GRPC.Services;
+﻿namespace Cpnucleo.GRPC.Services;
 
 [Authorize]
 public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoTarefaGrpcService
