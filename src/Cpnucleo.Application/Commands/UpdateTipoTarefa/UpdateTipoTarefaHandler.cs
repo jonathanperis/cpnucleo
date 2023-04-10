@@ -19,7 +19,7 @@ public sealed class UpdateTipoTarefaCommandHandler : IRequestHandler<UpdateTipoT
             return OperationResult.NotFound;
         }
 
-        tipoTarefa = Domain.Entities.TipoTarefa.Update(tipoTarefa, request.Nome, request.Image);
+        tipoTarefa = TipoTarefa.Update(tipoTarefa, request.Nome, request.Image);
         _context.TipoTarefas.Update(tipoTarefa);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

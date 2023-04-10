@@ -11,7 +11,7 @@ public sealed class CreateWorkflowCommandHandler : IRequestHandler<CreateWorkflo
 
     public async Task<OperationResult> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        var workflow = Domain.Entities.Workflow.Create(request.Nome, request.Ordem);
+        var workflow = Workflow.Create(request.Nome, request.Ordem);
         _context.Workflows.Add(workflow);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

@@ -12,14 +12,14 @@ public sealed class RecursoTarefa : BaseEntity
 
     public Tarefa? Tarefa { get; private set; }
 
-    public static RecursoTarefa Create(Guid idRecurso, Guid idTarefa, Guid id = default)
+    public static RecursoTarefa Create(Guid idTarefa, Guid idRecurso, Guid id = default)
     {
         return new RecursoTarefa
         {
             Id = id == Guid.Empty ? Guid.NewGuid() : id,
             PercentualTarefa = 0,
-            IdRecurso = idRecurso,
             IdTarefa = idTarefa,
+            IdRecurso = idRecurso,
             DataInclusao = DateTime.UtcNow,
             Ativo = true
         };

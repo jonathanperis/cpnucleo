@@ -1,10 +1,10 @@
 ﻿namespace Cpnucleo.Infrastructure.Common.Bus;
 
-internal sealed class EventHandler : IEventHandler
+internal sealed class EventManager : IEventManager
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public EventHandler(IServiceProvider serviceProvider)
+    public EventManager(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }

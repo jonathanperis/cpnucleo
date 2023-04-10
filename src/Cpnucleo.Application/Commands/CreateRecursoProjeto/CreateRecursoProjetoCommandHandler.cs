@@ -11,7 +11,7 @@ public sealed class CreateRecursoProjetoCommandHandler : IRequestHandler<CreateR
 
     public async Task<OperationResult> Handle(CreateRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
-        var recursoProjeto = Domain.Entities.RecursoProjeto.Create(request.IdRecurso, request.IdProjeto);
+        var recursoProjeto = RecursoProjeto.Create(request.IdProjeto, request.IdRecurso);
         _context.RecursoProjetos.Add(recursoProjeto);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

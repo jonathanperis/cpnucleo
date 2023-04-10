@@ -19,7 +19,7 @@ public sealed class UpdateRecursoCommandHandler : IRequestHandler<UpdateRecursoC
             return OperationResult.NotFound;
         }
 
-        recurso = Domain.Entities.Recurso.Update(recurso, request.Nome, request.Senha);
+        recurso = Recurso.Update(recurso, request.Nome, request.Senha);
         _context.Recursos.Update(recurso);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

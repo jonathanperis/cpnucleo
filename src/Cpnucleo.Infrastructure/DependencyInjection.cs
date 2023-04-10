@@ -10,7 +10,7 @@ public static class DependencyInjection
         services.AddSignalR()
                 .AddAzureSignalR(configuration["AzureSignalR_DefaultConnection"]);
 
-        services.AddScoped<IEventHandler, EventHandler>();
+        services.AddScoped<IEventManager, EventManager>();
 
         services.AddServiceBus<PayloadSerializer>(settings =>
         {

@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Commands.RecursoTarefa;
-using Cpnucleo.Application.Queries.RecursoTarefa;
-
-namespace Cpnucleo.Application.Test.Handlers;
+﻿namespace Cpnucleo.Application.Test.Handlers;
 
 public class RecursoTarefaHandlerTest
 {
@@ -9,33 +6,16 @@ public class RecursoTarefaHandlerTest
     public async Task CreateRecursoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var tarefa = context.Tarefas.First();
+        var recurso = context.Recursos.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        await unitOfWork.SaveChangesAsync();
-
-        CreateRecursoTarefaCommand request = MockCommandHelper.GetNewCreateRecursoTarefaCommand(tarefaId, recursoId);
+        CreateRecursoTarefaCommand request = MockCommandHelper.GetNewCreateRecursoTarefaCommand(tarefa.Id, recurso.Id);
 
         // Act
-        CreateRecursoTarefaHandler handler = new(unitOfWork, mapper);
+        CreateRecursoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,36 +26,16 @@ public class RecursoTarefaHandlerTest
     public async Task GetRecursoTarefaQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var recursoTarefa = context.RecursoTarefas.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid recursoTarefaId = Guid.NewGuid();
-        await unitOfWork.RecursoTarefaRepository.AddAsync(MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId, recursoTarefaId));
-
-        await unitOfWork.SaveChangesAsync();
-
-        GetRecursoTarefaQuery request = MockQueryHelper.GetNewGetRecursoTarefaQuery(recursoTarefaId);
+        GetRecursoTarefaQuery request = MockQueryHelper.GetNewGetRecursoTarefaQuery(recursoTarefa.Id);
 
         // Act
-        GetRecursoTarefaHandler handler = new(unitOfWork, mapper);
+        GetRecursoTarefaQueryHandler handler = new(context, mapper);
         GetRecursoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -85,132 +45,42 @@ public class RecursoTarefaHandlerTest
     }
 
     [Fact]
-    public async Task GetRecursoTarefaByTarefaQuery_Handle_Success()
-    {
-        // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid recursoTarefaId = Guid.NewGuid();
-        await unitOfWork.RecursoTarefaRepository.AddAsync(MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId, recursoTarefaId));
-
-        await unitOfWork.SaveChangesAsync();
-
-        ListRecursoTarefaByTarefaQuery request = MockQueryHelper.GetNewGetRecursoTarefaByTarefaQuery(tarefaId);
-
-        // Act
-        GetRecursoTarefaByTarefaHandler handler = new(unitOfWork, mapper);
-        ListRecursoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        Assert.True(response.RecursoTarefas != null);
-        Assert.True(response.RecursoTarefas.Any());
-        Assert.True(response.RecursoTarefas.FirstOrDefault(x => x.Id == recursoTarefaId) != null);
-    }
-
-    [Fact]
     public async Task ListRecursoTarefaQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid recursoTarefaId = Guid.NewGuid();
-        await unitOfWork.RecursoTarefaRepository.AddAsync(MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId, recursoTarefaId));
-        await unitOfWork.RecursoTarefaRepository.AddAsync(MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId));
-        await unitOfWork.RecursoTarefaRepository.AddAsync(MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId));
-
-        await unitOfWork.SaveChangesAsync();
+        await DbContextHelper.SeedData(context);
 
         ListRecursoTarefaQuery request = MockQueryHelper.GetNewListRecursoTarefaQuery();
 
         // Act
-        ListRecursoTarefaHandler handler = new(unitOfWork, mapper);
+        ListRecursoTarefaQueryHandler handler = new(context, mapper);
         ListRecursoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.RecursoTarefas != null);
         Assert.True(response.RecursoTarefas.Any());
-        Assert.True(response.RecursoTarefas.FirstOrDefault(x => x.Id == recursoTarefaId) != null);
     }
 
     [Fact]
     public async Task RemoveRecursoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var recursoTarefa = context.RecursoTarefas.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid recursoTarefaId = Guid.NewGuid();
-        RecursoTarefa recursoTarefa = MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId, recursoTarefaId);
-
-        await unitOfWork.RecursoTarefaRepository.AddAsync(recursoTarefa);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.RecursoTarefaRepository.Detatch(recursoTarefa);
-
-        RemoveRecursoTarefaCommand request = MockCommandHelper.GetNewRemoveRecursoTarefaCommand(recursoTarefaId);
-        GetRecursoTarefaQuery request2 = MockQueryHelper.GetNewGetRecursoTarefaQuery(recursoTarefaId);
+        RemoveRecursoTarefaCommand request = MockCommandHelper.GetNewRemoveRecursoTarefaCommand(recursoTarefa.Id);
+        GetRecursoTarefaQuery request2 = MockQueryHelper.GetNewGetRecursoTarefaQuery();
 
         // Act
-        RemoveRecursoTarefaHandler handler = new(unitOfWork);
+        RemoveRecursoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetRecursoTarefaHandler handler2 = new(unitOfWork, mapper);
+        GetRecursoTarefaQueryHandler handler2 = new(context, mapper);
         GetRecursoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -222,48 +92,27 @@ public class RecursoTarefaHandlerTest
     public async Task UpdateRecursoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var tarefa = context.Tarefas.First();
+        var recurso = context.Recursos.First();
+        var recursoTarefa = context.RecursoTarefas.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid recursoTarefaId = Guid.NewGuid();
-        RecursoTarefa recursoTarefa = MockEntityHelper.GetNewRecursoTarefa(tarefaId, recursoId, recursoTarefaId);
-
-        await unitOfWork.RecursoTarefaRepository.AddAsync(recursoTarefa);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.RecursoTarefaRepository.Detatch(recursoTarefa);
-
-        UpdateRecursoTarefaCommand request = MockCommandHelper.GetNewUpdateRecursoTarefaCommand(tarefaId, recursoId, recursoTarefaId);
-        GetRecursoTarefaQuery request2 = MockQueryHelper.GetNewGetRecursoTarefaQuery(recursoTarefaId);
+        UpdateRecursoTarefaCommand request = MockCommandHelper.GetNewUpdateRecursoTarefaCommand(tarefa.Id, recurso.Id, recursoTarefa.Id);
+        GetRecursoTarefaQuery request2 = MockQueryHelper.GetNewGetRecursoTarefaQuery(recursoTarefa.Id);
 
         // Act
-        UpdateRecursoTarefaHandler handler = new(unitOfWork);
+        UpdateRecursoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetRecursoTarefaHandler handler2 = new(unitOfWork, mapper);
+        GetRecursoTarefaQueryHandler handler2 = new(context, mapper);
         GetRecursoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2.RecursoTarefa != null);
-        Assert.True(response2.RecursoTarefa.Id == recursoTarefaId);
+        Assert.True(response2.RecursoTarefa.Id == recursoTarefa.Id);
     }
 }

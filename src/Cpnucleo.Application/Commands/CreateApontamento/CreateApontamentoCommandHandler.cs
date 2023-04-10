@@ -11,7 +11,7 @@ public sealed class CreateApontamentoCommandHandler : IRequestHandler<CreateApon
 
     public async Task<OperationResult> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken)
     {
-        var apontamento = Domain.Entities.Apontamento.Create(request.Descricao, request.DataApontamento, request.QtdHoras, request.IdTarefa, request.IdRecurso);
+        var apontamento = Apontamento.Create(request.Descricao, request.DataApontamento, request.QtdHoras, request.IdTarefa, request.IdRecurso);
         _context.Apontamentos.Add(apontamento);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

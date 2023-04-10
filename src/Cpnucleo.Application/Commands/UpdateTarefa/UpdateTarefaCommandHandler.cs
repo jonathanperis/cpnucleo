@@ -19,7 +19,7 @@ public sealed class UpdateTarefaCommandHandler : IRequestHandler<UpdateTarefaCom
             return OperationResult.NotFound;
         }
 
-        tarefa = Domain.Entities.Tarefa.Update(tarefa,
+        tarefa = Tarefa.Update(tarefa,
                                                    request.Nome,
                                                    request.DataInicio,
                                                    request.DataTermino,

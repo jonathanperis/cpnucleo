@@ -19,7 +19,7 @@ public sealed class RemoveTipoTarefaCommandHandler : IRequestHandler<RemoveTipoT
             return OperationResult.NotFound;
         }
 
-        tipoTarefa = Domain.Entities.TipoTarefa.Remove(tipoTarefa);
+        tipoTarefa = TipoTarefa.Remove(tipoTarefa);
         _context.TipoTarefas.Update(tipoTarefa); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

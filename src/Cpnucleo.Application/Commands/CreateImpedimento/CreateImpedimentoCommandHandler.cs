@@ -11,7 +11,7 @@ public sealed class CreateImpedimentoCommandHandler : IRequestHandler<CreateImpe
 
     public async Task<OperationResult> Handle(CreateImpedimentoCommand request, CancellationToken cancellationToken)
     {
-        var impedimento = Domain.Entities.Impedimento.Create(request.Nome);
+        var impedimento = Impedimento.Create(request.Nome);
         _context.Impedimentos.Add(impedimento);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

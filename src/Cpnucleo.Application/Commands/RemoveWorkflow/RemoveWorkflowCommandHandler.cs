@@ -19,7 +19,7 @@ public sealed class RemoveWorkflowCommandHandler : IRequestHandler<RemoveWorkflo
             return OperationResult.NotFound;
         }
 
-        workflow = Domain.Entities.Workflow.Remove(workflow);
+        workflow = Workflow.Remove(workflow);
         _context.Workflows.Update(workflow); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

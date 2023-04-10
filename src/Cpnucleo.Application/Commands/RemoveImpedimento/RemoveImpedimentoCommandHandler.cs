@@ -19,7 +19,7 @@ public sealed class RemoveImpedimentoCommandHandler : IRequestHandler<RemoveImpe
             return OperationResult.NotFound;
         }
 
-        impedimento = Domain.Entities.Impedimento.Remove(impedimento);
+        impedimento = Impedimento.Remove(impedimento);
         _context.Impedimentos.Update(impedimento); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

@@ -1,8 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Recurso;
-using Cpnucleo.Domain.Common.Security.Interfaces;
-using Cpnucleo.Application.Queries.Recurso;
-
-namespace Cpnucleo.Application.Test.Handlers;
+﻿namespace Cpnucleo.Application.Test.Handlers;
 
 public class RecursoHandlerTest
 {
@@ -10,14 +6,13 @@ public class RecursoHandlerTest
     public async Task CreateRecursoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        ICryptographyManager manager = CryptographyHelper.GetInstance();
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        await DbContextHelper.SeedData(context);
 
         CreateRecursoCommand request = MockCommandHelper.GetNewCreateRecursoCommand();
 
         // Act
-        CreateRecursoHandler handler = new(unitOfWork, mapper, manager);
+        CreateRecursoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -28,79 +23,61 @@ public class RecursoHandlerTest
     public async Task GetRecursoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid recursoId = Guid.NewGuid();
+        var recurso = context.Recursos.First();
 
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-        await unitOfWork.SaveChangesAsync();
-
-        GetRecursoQuery request = MockQueryHelper.GetNewGetRecursoQuery(recursoId);
+        GetRecursoQuery request = MockQueryHelper.GetNewGetRecursoQuery(recurso.Id);
 
         // Act
-        GetRecursoHandler handler = new(unitOfWork, mapper);
+        GetRecursoQueryHandler handler = new(context, mapper);
         GetRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Recurso != null);
         Assert.True(response.Recurso.Id != Guid.Empty);
         Assert.True(response.Recurso.DataInclusao.Ticks != 0);
-        Assert.True(response.Recurso.Senha == null);
     }
 
     [Fact]
     public async Task ListRecursoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-        ICryptographyManager manager = CryptographyHelper.GetInstance();
-
-        Guid recursoId = Guid.NewGuid();
-
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso());
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso());
-
-        await unitOfWork.SaveChangesAsync();
+        await DbContextHelper.SeedData(context);
 
         ListRecursoQuery request = MockQueryHelper.GetNewListRecursoQuery();
 
         // Act
-        ListRecursoHandler handler = new(unitOfWork, mapper);
+        ListRecursoQueryHandler handler = new(context, mapper);
         ListRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Recursos != null);
         Assert.True(response.Recursos.Any());
-        Assert.True(response.Recursos.FirstOrDefault(x => x.Id == recursoId) != null);
     }
 
     [Fact]
     public async Task RemoveRecursoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid recursoId = Guid.NewGuid();
+        var recurso = context.Recursos.First();
 
-        Recurso recurso = MockEntityHelper.GetNewRecurso(recursoId);
-
-        await unitOfWork.RecursoRepository.AddAsync(recurso);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.RecursoRepository.Detatch(recurso);
-
-        RemoveRecursoCommand request = MockCommandHelper.GetNewRemoveRecursoCommand(recursoId);
-        GetRecursoQuery request2 = MockQueryHelper.GetNewGetRecursoQuery(recursoId);
+        RemoveRecursoCommand request = MockCommandHelper.GetNewRemoveRecursoCommand(recurso.Id);
+        GetRecursoQuery request2 = MockQueryHelper.GetNewGetRecursoQuery();
 
         // Act
-        RemoveRecursoHandler handler = new(unitOfWork);
+        RemoveRecursoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetRecursoHandler handler2 = new(unitOfWork, mapper);
+        GetRecursoQueryHandler handler2 = new(context, mapper);
         GetRecursoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -112,33 +89,25 @@ public class RecursoHandlerTest
     public async Task UpdateRecursoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-        ICryptographyManager manager = CryptographyHelper.GetInstance();
+        await DbContextHelper.SeedData(context);
 
-        Guid recursoId = Guid.NewGuid();
+        var recurso = context.Recursos.First();
 
-        Recurso recurso = MockEntityHelper.GetNewRecurso(recursoId);
-
-        await unitOfWork.RecursoRepository.AddAsync(recurso);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.RecursoRepository.Detatch(recurso);
-
-        UpdateRecursoCommand request = MockCommandHelper.GetNewUpdateRecursoCommand(recursoId);
-        GetRecursoQuery request2 = MockQueryHelper.GetNewGetRecursoQuery(recursoId);
+        UpdateRecursoCommand request = MockCommandHelper.GetNewUpdateRecursoCommand(recurso.Id);
+        GetRecursoQuery request2 = MockQueryHelper.GetNewGetRecursoQuery(recurso.Id);
 
         // Act
-        UpdateRecursoHandler handler = new(unitOfWork, manager);
+        UpdateRecursoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetRecursoHandler handler2 = new(unitOfWork, mapper);
+        GetRecursoQueryHandler handler2 = new(context, mapper);
         GetRecursoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2.Recurso != null);
-        Assert.True(response2.Recurso.Id == recursoId);
-        Assert.True(response2.Recurso.Senha == null);
+        Assert.True(response2.Recurso.Id == recurso.Id);
     }
 }

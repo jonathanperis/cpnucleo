@@ -54,7 +54,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         }
     }
 
-    public async new Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
+    public async new Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await base.SaveChangesAsync(cancellationToken) > 0;
     }

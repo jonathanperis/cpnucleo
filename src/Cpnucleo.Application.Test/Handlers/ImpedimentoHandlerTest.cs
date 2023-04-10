@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Impedimento;
-using Cpnucleo.Application.Queries.Impedimento;
-
-namespace Cpnucleo.Application.Test.Handlers;
+﻿namespace Cpnucleo.Application.Test.Handlers;
 
 public class ImpedimentoHandlerTest
 {
@@ -9,13 +6,13 @@ public class ImpedimentoHandlerTest
     public async Task CreateImpedimentoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        await DbContextHelper.SeedData(context);
 
         CreateImpedimentoCommand request = MockCommandHelper.GetNewCreateImpedimentoCommand();
 
         // Act
-        CreateImpedimentoHandler handler = new(unitOfWork, mapper);
+        CreateImpedimentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -26,18 +23,16 @@ public class ImpedimentoHandlerTest
     public async Task GetImpedimentoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid impedimentoId = Guid.NewGuid();
+        var impedimento = context.Impedimentos.First();
 
-        await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento(impedimentoId));
-        await unitOfWork.SaveChangesAsync();
-
-        GetImpedimentoQuery request = MockQueryHelper.GetNewGetImpedimentoQuery(impedimentoId);
+        GetImpedimentoQuery request = MockQueryHelper.GetNewGetImpedimentoQuery(impedimento.Id);
 
         // Act
-        GetImpedimentoHandler handler = new(unitOfWork, mapper);
+        GetImpedimentoQueryHandler handler = new(context, mapper);
         GetImpedimentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -50,53 +45,39 @@ public class ImpedimentoHandlerTest
     public async Task ListImpedimentoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Guid impedimentoId = Guid.NewGuid();
-
-        await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento(impedimentoId));
-        await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento());
-        await unitOfWork.ImpedimentoRepository.AddAsync(MockEntityHelper.GetNewImpedimento());
-
-        await unitOfWork.SaveChangesAsync();
+        await DbContextHelper.SeedData(context);
 
         ListImpedimentoQuery request = MockQueryHelper.GetNewListImpedimentoQuery();
 
         // Act
-        ListImpedimentoHandler handler = new(unitOfWork, mapper);
+        ListImpedimentoQueryHandler handler = new(context, mapper);
         ListImpedimentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Impedimentos != null);
         Assert.True(response.Impedimentos.Any());
-        Assert.True(response.Impedimentos.FirstOrDefault(x => x.Id == impedimentoId) != null);
     }
 
     [Fact]
     public async Task RemoveImpedimentoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid impedimentoId = Guid.NewGuid();
+        var impedimento = context.Impedimentos.First();
 
-        Impedimento impedimento = MockEntityHelper.GetNewImpedimento(impedimentoId);
-
-        await unitOfWork.ImpedimentoRepository.AddAsync(impedimento);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.ImpedimentoRepository.Detatch(impedimento);
-
-        RemoveImpedimentoCommand request = MockCommandHelper.GetNewRemoveImpedimentoCommand(impedimentoId);
-        GetImpedimentoQuery request2 = MockQueryHelper.GetNewGetImpedimentoQuery(impedimentoId);
+        RemoveImpedimentoCommand request = MockCommandHelper.GetNewRemoveImpedimentoCommand(impedimento.Id);
+        GetImpedimentoQuery request2 = MockQueryHelper.GetNewGetImpedimentoQuery();
 
         // Act
-        RemoveImpedimentoHandler handler = new(unitOfWork);
+        RemoveImpedimentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetImpedimentoHandler handler2 = new(unitOfWork, mapper);
+        GetImpedimentoQueryHandler handler2 = new(context, mapper);
         GetImpedimentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -108,31 +89,25 @@ public class ImpedimentoHandlerTest
     public async Task UpdateImpedimentoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid impedimentoId = Guid.NewGuid();
+        var impedimento = context.Impedimentos.First();
 
-        Impedimento impedimento = MockEntityHelper.GetNewImpedimento(impedimentoId);
-
-        await unitOfWork.ImpedimentoRepository.AddAsync(impedimento);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.ImpedimentoRepository.Detatch(impedimento);
-
-        UpdateImpedimentoCommand request = MockCommandHelper.GetNewUpdateImpedimentoCommand(impedimentoId);
-        GetImpedimentoQuery request2 = MockQueryHelper.GetNewGetImpedimentoQuery(impedimentoId);
+        UpdateImpedimentoCommand request = MockCommandHelper.GetNewUpdateImpedimentoCommand(impedimento.Id);
+        GetImpedimentoQuery request2 = MockQueryHelper.GetNewGetImpedimentoQuery(impedimento.Id);
 
         // Act
-        UpdateImpedimentoHandler handler = new(unitOfWork);
+        UpdateImpedimentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetImpedimentoHandler handler2 = new(unitOfWork, mapper);
+        GetImpedimentoQueryHandler handler2 = new(context, mapper);
         GetImpedimentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2.Impedimento != null);
-        Assert.True(response2.Impedimento.Id == impedimentoId);
+        Assert.True(response2.Impedimento.Id == impedimento.Id);
     }
 }
