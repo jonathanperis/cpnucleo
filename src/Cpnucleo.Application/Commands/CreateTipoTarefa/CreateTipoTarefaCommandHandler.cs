@@ -11,7 +11,7 @@ public sealed class CreateTipoTarefaCommandHandler : IRequestHandler<CreateTipoT
 
     public async Task<OperationResult> Handle(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
-        var tipoTarefa = Domain.Entities.TipoTarefa.Create(request.Nome, request.Image);
+        var tipoTarefa = TipoTarefa.Create(request.Nome, request.Image);
         _context.TipoTarefas.Add(tipoTarefa);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

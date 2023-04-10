@@ -11,7 +11,7 @@ public sealed class CreateTarefaCommandHandler : IRequestHandler<CreateTarefaCom
 
     public async Task<OperationResult> Handle(CreateTarefaCommand request, CancellationToken cancellationToken)
     {
-        var tarefa = Domain.Entities.Tarefa.Create(request.Nome,
+        var tarefa = Tarefa.Create(request.Nome,
                                                    request.DataInicio,
                                                    request.DataTermino,
                                                    request.QtdHoras,

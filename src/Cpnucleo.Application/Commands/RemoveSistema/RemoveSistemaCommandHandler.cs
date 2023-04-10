@@ -3,9 +3,9 @@
 public sealed class RemoveSistemaCommandHandler : IRequestHandler<RemoveSistemaCommand, OperationResult>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IEventHandler _eventHandler;
+    private readonly IEventManager _eventHandler;
 
-    public RemoveSistemaCommandHandler(IApplicationDbContext context, IEventHandler eventHandler)
+    public RemoveSistemaCommandHandler(IApplicationDbContext context, IEventManager eventHandler)
     {
         _context = context;
         _eventHandler = eventHandler;

@@ -19,7 +19,7 @@ public sealed class RemoveRecursoTarefaCommandHandler : IRequestHandler<RemoveRe
             return OperationResult.NotFound;
         }
 
-        recursoTarefa = Domain.Entities.RecursoTarefa.Remove(recursoTarefa);
+        recursoTarefa = RecursoTarefa.Remove(recursoTarefa);
         _context.RecursoTarefas.Update(recursoTarefa); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

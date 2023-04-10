@@ -11,7 +11,7 @@ public sealed class CreateImpedimentoTarefaCommandHandler : IRequestHandler<Crea
 
     public async Task<OperationResult> Handle(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
-        var impedimentoTarefa = Domain.Entities.ImpedimentoTarefa.Create(request.Descricao, request.IdTarefa, request.IdImpedimento);
+        var impedimentoTarefa = ImpedimentoTarefa.Create(request.Descricao, request.IdTarefa, request.IdImpedimento);
         _context.ImpedimentoTarefas.Add(impedimentoTarefa);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

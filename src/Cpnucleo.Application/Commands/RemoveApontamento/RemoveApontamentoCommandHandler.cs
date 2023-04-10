@@ -19,7 +19,7 @@ public sealed class RemoveApontamentoCommandHandler : IRequestHandler<RemoveApon
             return OperationResult.NotFound;
         }
 
-        apontamento = Domain.Entities.Apontamento.Remove(apontamento);
+        apontamento = Apontamento.Remove(apontamento);
         _context.Apontamentos.Update(apontamento); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

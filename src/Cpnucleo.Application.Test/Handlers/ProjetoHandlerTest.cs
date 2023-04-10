@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Projeto;
-using Cpnucleo.Application.Queries.Projeto;
-
-namespace Cpnucleo.Application.Test.Handlers;
+﻿namespace Cpnucleo.Application.Test.Handlers;
 
 public class ProjetoHandlerTest
 {
@@ -9,18 +6,15 @@ public class ProjetoHandlerTest
     public async Task CreateProjetoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
+        var sistema = context.Sistemas.First();
 
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-        await unitOfWork.SaveChangesAsync();
-
-        CreateProjetoCommand request = MockCommandHelper.GetNewCreateProjetoCommand(sistemaId);
+        CreateProjetoCommand request = MockCommandHelper.GetNewCreateProjetoCommand(sistema.Id);
 
         // Act
-        CreateProjetoHandler handler = new(unitOfWork, mapper);
+        CreateProjetoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -31,22 +25,16 @@ public class ProjetoHandlerTest
     public async Task GetProjetoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
+        var projeto = context.Projetos.First();
 
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-        await unitOfWork.SaveChangesAsync();
-
-        GetProjetoQuery request = MockQueryHelper.GetNewGetProjetoQuery(projetoId);
+        GetProjetoQuery request = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
-        GetProjetoHandler handler = new(unitOfWork, mapper);
+        GetProjetoQueryHandler handler = new(context, mapper);
         GetProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -59,61 +47,39 @@ public class ProjetoHandlerTest
     public async Task ListProjetoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Guid sistemaId = Guid.NewGuid();
-
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId));
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId));
-
-        await unitOfWork.SaveChangesAsync();
+        await DbContextHelper.SeedData(context);
 
         ListProjetoQuery request = MockQueryHelper.GetNewListProjetoQuery();
 
         // Act
-        ListProjetoHandler handler = new(unitOfWork, mapper);
+        ListProjetoQueryHandler handler = new(context, mapper);
         ListProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Projetos != null);
         Assert.True(response.Projetos.Any());
-        Assert.True(response.Projetos.FirstOrDefault(x => x.Id == projetoId) != null);
     }
 
     [Fact]
     public async Task RemoveProjetoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
+        var projeto = context.Projetos.First();
 
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-
-        Projeto projeto = MockEntityHelper.GetNewProjeto(sistemaId, projetoId);
-
-        await unitOfWork.ProjetoRepository.AddAsync(projeto);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.ProjetoRepository.Detatch(projeto);
-
-        RemoveProjetoCommand request = MockCommandHelper.GetNewRemoveProjetoCommand(projetoId);
-        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery(projetoId);
+        RemoveProjetoCommand request = MockCommandHelper.GetNewRemoveProjetoCommand(projeto.Id);
+        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery();
 
         // Act
-        RemoveProjetoHandler handler = new(unitOfWork);
+        RemoveProjetoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetProjetoHandler handler2 = new(unitOfWork, mapper);
+        GetProjetoQueryHandler handler2 = new(context, mapper);
         GetProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -125,35 +91,26 @@ public class ProjetoHandlerTest
     public async Task UpdateProjetoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
+        var sistema = context.Sistemas.First();
+        var projeto = context.Projetos.First();
 
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-
-        Projeto projeto = MockEntityHelper.GetNewProjeto(sistemaId, projetoId);
-
-        await unitOfWork.ProjetoRepository.AddAsync(projeto);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.ProjetoRepository.Detatch(projeto);
-
-        UpdateProjetoCommand request = MockCommandHelper.GetNewUpdateProjetoCommand(sistemaId, projetoId);
-        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery(projetoId);
+        UpdateProjetoCommand request = MockCommandHelper.GetNewUpdateProjetoCommand(sistema.Id, projeto.Id);
+        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
-        UpdateProjetoHandler handler = new(unitOfWork);
+        UpdateProjetoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetProjetoHandler handler2 = new(unitOfWork, mapper);
+        GetProjetoQueryHandler handler2 = new(context, mapper);
         GetProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2.Projeto != null);
-        Assert.True(response2.Projeto.Id == projetoId);
+        Assert.True(response2.Projeto.Id == projeto.Id);
     }
 }

@@ -19,7 +19,7 @@ public sealed class UpdateImpedimentoTarefaCommandHandler : IRequestHandler<Upda
             return OperationResult.NotFound;
         }
 
-        impedimentoTarefa = Domain.Entities.ImpedimentoTarefa.Update(impedimentoTarefa, request.Descricao, request.IdTarefa, request.IdImpedimento);
+        impedimentoTarefa = ImpedimentoTarefa.Update(impedimentoTarefa, request.Descricao, request.IdTarefa, request.IdImpedimento);
         _context.ImpedimentoTarefas.Update(impedimentoTarefa);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

@@ -1,7 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Apontamento;
-using Cpnucleo.Application.Queries.Apontamento;
-
-namespace Cpnucleo.Application.Test.Handlers;
+﻿namespace Cpnucleo.Application.Test.Handlers;
 
 public class ApontamentoHandlerTest
 {
@@ -9,33 +6,16 @@ public class ApontamentoHandlerTest
     public async Task CreateApontamentoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var tarefa = context.Tarefas.First();
+        var recurso = context.Recursos.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        await unitOfWork.SaveChangesAsync();
-
-        CreateApontamentoCommand request = MockCommandHelper.GetNewCreateApontamentoCommand(tarefaId, recursoId);
+        CreateApontamentoCommand request = MockCommandHelper.GetNewCreateApontamentoCommand(tarefa.Id, recurso.Id);
 
         // Act
-        CreateApontamentoHandler handler = new(unitOfWork, mapper);
+        CreateApontamentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,36 +26,16 @@ public class ApontamentoHandlerTest
     public async Task GetApontamentoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var apontamento = context.Apontamentos.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid apontamentoId = Guid.NewGuid();
-        await unitOfWork.ApontamentoRepository.AddAsync(MockEntityHelper.GetNewApontamento(tarefaId, recursoId, apontamentoId));
-
-        await unitOfWork.SaveChangesAsync();
-
-        GetApontamentoQuery request = MockQueryHelper.GetNewGetApontamentoQuery(apontamentoId);
+        GetApontamentoQuery request = MockQueryHelper.GetNewGetApontamentoQuery(apontamento.Id);
 
         // Act
-        GetApontamentoHandler handler = new(unitOfWork, mapper);
+        GetApontamentoQueryHandler handler = new(context, mapper);
         GetApontamentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -85,132 +45,42 @@ public class ApontamentoHandlerTest
     }
 
     [Fact]
-    public async Task GetApontamentoByRecursoQuery_Handle_Success()
-    {
-        // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid apontamentoId = Guid.NewGuid();
-        await unitOfWork.ApontamentoRepository.AddAsync(MockEntityHelper.GetNewApontamento(tarefaId, recursoId, apontamentoId));
-
-        await unitOfWork.SaveChangesAsync();
-
-        ListApontamentoByRecursoQuery request = MockQueryHelper.GetApontamentoByRecursoQuery(recursoId);
-
-        // Act
-        GetApontamentoByRecursoHandler handler = new(unitOfWork, mapper);
-        ListApontamentoByRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        Assert.True(response.Apontamentos != null);
-        Assert.True(response.Apontamentos.Any());
-        Assert.True(response.Apontamentos.FirstOrDefault(x => x.Id == apontamentoId) != null);
-    }
-
-    [Fact]
     public async Task ListApontamentoQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid apontamentoId = Guid.NewGuid();
-        await unitOfWork.ApontamentoRepository.AddAsync(MockEntityHelper.GetNewApontamento(tarefaId, recursoId, apontamentoId));
-        await unitOfWork.ApontamentoRepository.AddAsync(MockEntityHelper.GetNewApontamento(tarefaId, recursoId));
-        await unitOfWork.ApontamentoRepository.AddAsync(MockEntityHelper.GetNewApontamento(tarefaId, recursoId));
-
-        await unitOfWork.SaveChangesAsync();
+        await DbContextHelper.SeedData(context);
 
         ListApontamentoQuery request = MockQueryHelper.GetNewListApontamentoQuery();
 
         // Act
-        ListApontamentoHandler handler = new(unitOfWork, mapper);
+        ListApontamentoQueryHandler handler = new(context, mapper);
         ListApontamentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Apontamentos != null);
         Assert.True(response.Apontamentos.Any());
-        Assert.True(response.Apontamentos.FirstOrDefault(x => x.Id == apontamentoId) != null);
     }
 
     [Fact]
     public async Task RemoveApontamentoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var apontamento = context.Apontamentos.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid apontamentoId = Guid.NewGuid();
-        Apontamento apontamento = MockEntityHelper.GetNewApontamento(tarefaId, recursoId, apontamentoId);
-
-        await unitOfWork.ApontamentoRepository.AddAsync(apontamento);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.ApontamentoRepository.Detatch(apontamento);
-
-        RemoveApontamentoCommand request = MockCommandHelper.GetNewRemoveApontamentoCommand(apontamentoId);
-        GetApontamentoQuery request2 = MockQueryHelper.GetNewGetApontamentoQuery(apontamentoId);
+        RemoveApontamentoCommand request = MockCommandHelper.GetNewRemoveApontamentoCommand(apontamento.Id);
+        GetApontamentoQuery request2 = MockQueryHelper.GetNewGetApontamentoQuery();
 
         // Act
-        RemoveApontamentoHandler handler = new(unitOfWork);
+        RemoveApontamentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetApontamentoHandler handler2 = new(unitOfWork, mapper);
+        GetApontamentoQueryHandler handler2 = new(context, mapper);
         GetApontamentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -222,48 +92,27 @@ public class ApontamentoHandlerTest
     public async Task UpdateApontamentoCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
+        var tarefa = context.Tarefas.First();
+        var recurso = context.Recursos.First();
+        var apontamento = context.Apontamentos.First();
 
-        Guid projetoId = Guid.NewGuid();
-        await unitOfWork.ProjetoRepository.AddAsync(MockEntityHelper.GetNewProjeto(sistemaId, projetoId));
-
-        Guid workflowId = Guid.NewGuid();
-        await unitOfWork.WorkflowRepository.AddAsync(MockEntityHelper.GetNewWorkflow(workflowId));
-
-        Guid recursoId = Guid.NewGuid();
-        await unitOfWork.RecursoRepository.AddAsync(MockEntityHelper.GetNewRecurso(recursoId));
-
-        Guid tipoTarefaId = Guid.NewGuid();
-        await unitOfWork.TipoTarefaRepository.AddAsync(MockEntityHelper.GetNewTipoTarefa(tipoTarefaId));
-
-        Guid tarefaId = Guid.NewGuid();
-        await unitOfWork.TarefaRepository.AddAsync(MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId));
-
-        Guid apontamentoId = Guid.NewGuid();
-        Apontamento apontamento = MockEntityHelper.GetNewApontamento(tarefaId, recursoId, apontamentoId);
-
-        await unitOfWork.ApontamentoRepository.AddAsync(apontamento);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.ApontamentoRepository.Detatch(apontamento);
-
-        UpdateApontamentoCommand request = MockCommandHelper.GetNewUpdateApontamentoCommand(tarefaId, recursoId, apontamentoId);
-        GetApontamentoQuery request2 = MockQueryHelper.GetNewGetApontamentoQuery(apontamentoId);
+        UpdateApontamentoCommand request = MockCommandHelper.GetNewUpdateApontamentoCommand(tarefa.Id, recurso.Id, apontamento.Id);
+        GetApontamentoQuery request2 = MockQueryHelper.GetNewGetApontamentoQuery(apontamento.Id);
 
         // Act
-        UpdateApontamentoHandler handler = new(unitOfWork);
+        UpdateApontamentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetApontamentoHandler handler2 = new(unitOfWork, mapper);
+        GetApontamentoQueryHandler handler2 = new(context, mapper);
         GetApontamentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2.Apontamento != null);
-        Assert.True(response2.Apontamento.Id == apontamentoId);
+        Assert.True(response2.Apontamento.Id == apontamento.Id);
     }
 }

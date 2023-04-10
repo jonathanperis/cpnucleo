@@ -19,7 +19,7 @@ public sealed class UpdateTarefaByWorkflowCommandHandler : IRequestHandler<Updat
             return OperationResult.NotFound;
         }
 
-        tarefa = Domain.Entities.Tarefa.UpdateWorkflow(tarefa, request.IdWorkflow);
+        tarefa = Tarefa.UpdateWorkflow(tarefa, request.IdWorkflow);
         _context.Tarefas.Update(tarefa);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

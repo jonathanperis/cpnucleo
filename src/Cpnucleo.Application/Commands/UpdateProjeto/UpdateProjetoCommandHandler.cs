@@ -19,7 +19,7 @@ public sealed class UpdateProjetoCommandHandler : IRequestHandler<UpdateProjetoC
             return OperationResult.NotFound;
         }
 
-        projeto = Domain.Entities.Projeto.Update(projeto, request.Nome, request.IdSistema);
+        projeto = Projeto.Update(projeto, request.Nome, request.IdSistema);
         _context.Projetos.Update(projeto);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);
