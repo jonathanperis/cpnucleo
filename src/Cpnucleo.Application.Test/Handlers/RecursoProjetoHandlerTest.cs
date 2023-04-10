@@ -115,4 +115,25 @@ public class RecursoProjetoHandlerTest
         Assert.True(response2.RecursoProjeto != null);
         Assert.True(response2.RecursoProjeto.Id == recursoProjeto.Id);
     }
+
+    [Fact]
+    public async Task ListRecursoProjetoByProjetoQuery_Handle_Success()
+    {
+        // Arrange
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
+
+        var projeto = context.Projetos.First();
+
+        ListRecursoProjetoByProjetoQuery request = MockQueryHelper.GetNewListRecursoProjetoByProjetoQuery(projeto.Id);
+
+        // Act
+        ListRecursoProjetoByProjetoQueryHandler handler = new(context, mapper);
+        ListRecursoProjetoByProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        Assert.True(response.RecursoProjetos != null);
+        Assert.True(response.RecursoProjetos.Any());
+    }
 }
