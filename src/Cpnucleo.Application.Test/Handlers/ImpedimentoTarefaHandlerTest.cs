@@ -74,7 +74,7 @@ public class ImpedimentoTarefaHandlerTest
         var impedimentoTarefa = context.ImpedimentoTarefas.First();
 
         RemoveImpedimentoTarefaCommand request = MockCommandHelper.GetNewRemoveImpedimentoTarefaCommand(impedimentoTarefa.Id);
-        GetImpedimentoTarefaQuery request2 = MockQueryHelper.GetNewGetImpedimentoTarefaQuery();
+        GetImpedimentoTarefaQuery request2 = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
 
         // Act
         RemoveImpedimentoTarefaCommandHandler handler = new(context);

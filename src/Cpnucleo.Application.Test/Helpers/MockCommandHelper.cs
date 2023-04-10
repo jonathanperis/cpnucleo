@@ -7,14 +7,14 @@ public class MockCommandHelper
         return new CreateSistemaCommand("Sistema de teste", "Descrição do sistema de teste");
     }
 
-    public static RemoveSistemaCommand GetNewRemoveSistemaCommand(Guid sistemaId = default)
+    public static RemoveSistemaCommand GetNewRemoveSistemaCommand(Guid sistemaId)
     {
-        return new RemoveSistemaCommand(sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId);
+        return new RemoveSistemaCommand(sistemaId);
     }
 
-    public static UpdateSistemaCommand GetNewUpdateSistemaCommand(Guid sistemaId = default)
+    public static UpdateSistemaCommand GetNewUpdateSistemaCommand(Guid sistemaId)
     {
-        return new UpdateSistemaCommand(sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId, "Sistema de teste - alterado", "Descrição do sistema de teste - alterado");
+        return new UpdateSistemaCommand(sistemaId, "Sistema de teste - alterado", "Descrição do sistema de teste - alterado");
     }
 
     public static CreateProjetoCommand GetNewCreateProjetoCommand(Guid sistemaId)
@@ -22,14 +22,14 @@ public class MockCommandHelper
         return new CreateProjetoCommand("Projeto de teste", sistemaId);
     }
 
-    public static RemoveProjetoCommand GetNewRemoveProjetoCommand(Guid projetoId = default)
+    public static RemoveProjetoCommand GetNewRemoveProjetoCommand(Guid projetoId)
     {
-        return new RemoveProjetoCommand(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
+        return new RemoveProjetoCommand(projetoId);
     }
 
-    public static UpdateProjetoCommand GetNewUpdateProjetoCommand(Guid sistemaId, Guid projetoId = default)
+    public static UpdateProjetoCommand GetNewUpdateProjetoCommand(Guid sistemaId, Guid projetoId)
     {
-        return new UpdateProjetoCommand(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId, "Projeto de teste - alterado", sistemaId);
+        return new UpdateProjetoCommand(projetoId, "Projeto de teste - alterado", sistemaId);
     }
 
     public static CreateWorkflowCommand GetNewCreateWorkflowCommand()
@@ -37,14 +37,14 @@ public class MockCommandHelper
         return new CreateWorkflowCommand("Workflow de teste", 1);
     }
 
-    public static RemoveWorkflowCommand GetNewRemoveWorkflowCommand(Guid workflowId = default)
+    public static RemoveWorkflowCommand GetNewRemoveWorkflowCommand(Guid workflowId)
     {
-        return new RemoveWorkflowCommand(workflowId == Guid.Empty ? Guid.NewGuid() : workflowId);
+        return new RemoveWorkflowCommand(workflowId);
     }
 
-    public static UpdateWorkflowCommand GetNewUpdateWorkflowCommand(Guid workflowId = default)
+    public static UpdateWorkflowCommand GetNewUpdateWorkflowCommand(Guid workflowId)
     {
-        return new UpdateWorkflowCommand(workflowId == Guid.Empty ? Guid.NewGuid() : workflowId, "Workflow de teste - alterado", 2);
+        return new UpdateWorkflowCommand(workflowId, "Workflow de teste - alterado", 2);
     }
 
     public static CreateImpedimentoCommand GetNewCreateImpedimentoCommand()
@@ -52,14 +52,14 @@ public class MockCommandHelper
         return new CreateImpedimentoCommand("Impedimento de teste");
     }
 
-    public static RemoveImpedimentoCommand GetNewRemoveImpedimentoCommand(Guid impedimentoId = default)
+    public static RemoveImpedimentoCommand GetNewRemoveImpedimentoCommand(Guid impedimentoId)
     {
-        return new RemoveImpedimentoCommand(impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId);
+        return new RemoveImpedimentoCommand(impedimentoId);
     }
 
-    public static UpdateImpedimentoCommand GetNewUpdateImpedimentoCommand(Guid impedimentoId = default)
+    public static UpdateImpedimentoCommand GetNewUpdateImpedimentoCommand(Guid impedimentoId)
     {
-        return new UpdateImpedimentoCommand(impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId, "Impedimento de teste - alterado");
+        return new UpdateImpedimentoCommand(impedimentoId, "Impedimento de teste - alterado");
     }
 
     public static CreateRecursoCommand GetNewCreateRecursoCommand()
@@ -67,14 +67,14 @@ public class MockCommandHelper
         return new CreateRecursoCommand("Recurso de teste", "usuario.teste", "12345678");
     }
 
-    public static RemoveRecursoCommand GetNewRemoveRecursoCommand(Guid recursoId = default)
+    public static RemoveRecursoCommand GetNewRemoveRecursoCommand(Guid recursoId)
     {
-        return new RemoveRecursoCommand(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
+        return new RemoveRecursoCommand(recursoId);
     }
 
-    public static UpdateRecursoCommand GetNewUpdateRecursoCommand(Guid recursoId = default)
+    public static UpdateRecursoCommand GetNewUpdateRecursoCommand(Guid recursoId)
     {
-        return new UpdateRecursoCommand(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId, "Recurso de teste - alterado", "1234567890");
+        return new UpdateRecursoCommand(recursoId, "Recurso de teste - alterado", "1234567890");
     }
 
     public static CreateApontamentoCommand GetNewCreateApontamentoCommand(Guid tarefaId, Guid recursoId)
@@ -82,14 +82,14 @@ public class MockCommandHelper
         return new CreateApontamentoCommand("Descrição do Apontamento de teste", DateTime.UtcNow, 8, tarefaId, recursoId);
     }
 
-    public static RemoveApontamentoCommand GetNewRemoveApontamentoCommand(Guid apontamentoId = default)
+    public static RemoveApontamentoCommand GetNewRemoveApontamentoCommand(Guid apontamentoId)
     {
-        return new RemoveApontamentoCommand(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId);
+        return new RemoveApontamentoCommand(apontamentoId);
     }
 
-    public static UpdateApontamentoCommand GetNewUpdateApontamentoCommand(Guid tarefaId, Guid recursoId, Guid apontamentoId = default)
+    public static UpdateApontamentoCommand GetNewUpdateApontamentoCommand(Guid tarefaId, Guid recursoId, Guid apontamentoId)
     {
-        return new UpdateApontamentoCommand(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId, "Descrição do Apontamento de teste - alterado", DateTime.UtcNow, 10, tarefaId, recursoId);
+        return new UpdateApontamentoCommand(apontamentoId, "Descrição do Apontamento de teste - alterado", DateTime.UtcNow, 10, tarefaId, recursoId);
     }
 
     public static CreateTarefaCommand GetNewCreateTarefaCommand(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId)
@@ -97,19 +97,19 @@ public class MockCommandHelper
         return new CreateTarefaCommand("Tarefa de teste", DateTime.UtcNow, DateTime.UtcNow.AddDays(5), 40, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
     }
 
-    public static RemoveTarefaCommand GetNewRemoveTarefaCommand(Guid tarefaId = default)
+    public static RemoveTarefaCommand GetNewRemoveTarefaCommand(Guid tarefaId)
     {
-        return new RemoveTarefaCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
+        return new RemoveTarefaCommand(tarefaId);
     }
 
-    public static UpdateTarefaCommand GetNewUpdateTarefaCommand(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId = default)
+    public static UpdateTarefaCommand GetNewUpdateTarefaCommand(Guid projetoId, Guid workflowId, Guid recursoId, Guid tipoTarefaId, Guid tarefaId)
     {
-        return new UpdateTarefaCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId, "Tarefa de teste - alterado", DateTime.UtcNow, DateTime.UtcNow.AddDays(8), 55, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
+        return new UpdateTarefaCommand(tarefaId, "Tarefa de teste - alterado", DateTime.UtcNow, DateTime.UtcNow.AddDays(8), 55, string.Empty, projetoId, workflowId, recursoId, tipoTarefaId);
     }
 
-    public static UpdateTarefaByWorkflowCommand GetNewUpdateTarefaByWorkflowCommand(Guid workflowId, Guid tarefaId = default)
+    public static UpdateTarefaByWorkflowCommand GetNewUpdateTarefaByWorkflowCommand(Guid workflowId, Guid tarefaId)
     {
-        return new UpdateTarefaByWorkflowCommand(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId, workflowId);
+        return new UpdateTarefaByWorkflowCommand(tarefaId, workflowId);
     }
 
     public static CreateTipoTarefaCommand GetNewCreateTipoTarefaCommand()
@@ -117,14 +117,14 @@ public class MockCommandHelper
         return new CreateTipoTarefaCommand("Tipo Tarefa de teste", "success.png");
     }
 
-    public static RemoveTipoTarefaCommand GetNewRemoveTipoTarefaCommand(Guid tipoTarefaId = default)
+    public static RemoveTipoTarefaCommand GetNewRemoveTipoTarefaCommand(Guid tipoTarefaId)
     {
-        return new RemoveTipoTarefaCommand(tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId);
+        return new RemoveTipoTarefaCommand(tipoTarefaId);
     }
 
-    public static UpdateTipoTarefaCommand GetNewUpdateTipoTarefaCommand(Guid tipoTarefaId = default)
+    public static UpdateTipoTarefaCommand GetNewUpdateTipoTarefaCommand(Guid tipoTarefaId)
     {
-        return new UpdateTipoTarefaCommand(tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId, "Tipo Tarefa de teste - alterado", "warning.png");
+        return new UpdateTipoTarefaCommand(tipoTarefaId, "Tipo Tarefa de teste - alterado", "warning.png");
     }
 
     public static CreateImpedimentoTarefaCommand GetNewCreateImpedimentoTarefaCommand(Guid tarefaId, Guid impedimentoId)
@@ -132,14 +132,14 @@ public class MockCommandHelper
         return new CreateImpedimentoTarefaCommand("Descrição do Impedimento Tarefa de teste", tarefaId, impedimentoId);
     }
 
-    public static RemoveImpedimentoTarefaCommand GetNewRemoveImpedimentoTarefaCommand(Guid impedimentoTarefaId = default)
+    public static RemoveImpedimentoTarefaCommand GetNewRemoveImpedimentoTarefaCommand(Guid impedimentoTarefaId)
     {
-        return new RemoveImpedimentoTarefaCommand(impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId);
+        return new RemoveImpedimentoTarefaCommand(impedimentoTarefaId);
     }
 
-    public static UpdateImpedimentoTarefaCommand GetNewUpdateImpedimentoTarefaCommand(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId = default)
+    public static UpdateImpedimentoTarefaCommand GetNewUpdateImpedimentoTarefaCommand(Guid tarefaId, Guid impedimentoId, Guid impedimentoTarefaId)
     {
-        return new UpdateImpedimentoTarefaCommand(impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId, "Descrição do Impedimento Tarefa de teste - alterado", tarefaId, impedimentoId);
+        return new UpdateImpedimentoTarefaCommand(impedimentoTarefaId, "Descrição do Impedimento Tarefa de teste - alterado", tarefaId, impedimentoId);
     }
 
     public static CreateRecursoProjetoCommand GetNewCreateRecursoProjetoCommand(Guid projetoId, Guid recursoId)
@@ -147,14 +147,14 @@ public class MockCommandHelper
         return new CreateRecursoProjetoCommand(recursoId, projetoId);
     }
 
-    public static RemoveRecursoProjetoCommand GetNewRemoveRecursoProjetoCommand(Guid recursoProjetoId = default)
+    public static RemoveRecursoProjetoCommand GetNewRemoveRecursoProjetoCommand(Guid recursoProjetoId)
     {
-        return new RemoveRecursoProjetoCommand(recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId);
+        return new RemoveRecursoProjetoCommand(recursoProjetoId);
     }
 
-    public static UpdateRecursoProjetoCommand GetNewUpdateRecursoProjetoCommand(Guid projetoId, Guid recursoId, Guid recursoProjetoId = default)
+    public static UpdateRecursoProjetoCommand GetNewUpdateRecursoProjetoCommand(Guid projetoId, Guid recursoId, Guid recursoProjetoId)
     {
-        return new UpdateRecursoProjetoCommand(recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId, recursoId, projetoId);
+        return new UpdateRecursoProjetoCommand(recursoProjetoId, recursoId, projetoId);
     }
 
     public static CreateRecursoTarefaCommand GetNewCreateRecursoTarefaCommand(Guid tarefaId, Guid recursoId)
@@ -162,13 +162,13 @@ public class MockCommandHelper
         return new CreateRecursoTarefaCommand(recursoId, tarefaId);
     }
 
-    public static RemoveRecursoTarefaCommand GetNewRemoveRecursoTarefaCommand(Guid recursoTarefaId = default)
+    public static RemoveRecursoTarefaCommand GetNewRemoveRecursoTarefaCommand(Guid recursoTarefaId)
     {
-        return new RemoveRecursoTarefaCommand(recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId);
+        return new RemoveRecursoTarefaCommand(recursoTarefaId);
     }
 
-    public static UpdateRecursoTarefaCommand GetNewUpdateRecursoTarefaCommand(Guid tarefaId, Guid recursoId, Guid recursoTarefaId = default)
+    public static UpdateRecursoTarefaCommand GetNewUpdateRecursoTarefaCommand(Guid tarefaId, Guid recursoId, Guid recursoTarefaId)
     {
-        return new UpdateRecursoTarefaCommand(recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId, recursoId, tarefaId);
+        return new UpdateRecursoTarefaCommand(recursoTarefaId, recursoId, tarefaId);
     }
 }

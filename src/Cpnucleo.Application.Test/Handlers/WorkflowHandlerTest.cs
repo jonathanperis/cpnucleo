@@ -71,7 +71,7 @@ public class WorkflowHandlerTest
         var workflow = context.Workflows.First();
 
         RemoveWorkflowCommand request = MockCommandHelper.GetNewRemoveWorkflowCommand(workflow.Id);
-        GetWorkflowQuery request2 = MockQueryHelper.GetNewGetWorkflowQuery();
+        GetWorkflowQuery request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
 
         // Act
         RemoveWorkflowCommandHandler handler = new(context);
