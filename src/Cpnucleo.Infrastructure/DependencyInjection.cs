@@ -5,7 +5,6 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-        services.AddScoped<ICryptographyManager, CryptographyManager>();
 
         services.AddSignalR()
                 .AddAzureSignalR(configuration["AzureSignalR_DefaultConnection"]);
