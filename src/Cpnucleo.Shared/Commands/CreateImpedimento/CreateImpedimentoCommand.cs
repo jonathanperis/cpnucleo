@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.CreateImpedimento;
 
-public sealed record CreateImpedimentoCommand(string Nome) : BaseCommand, IRequest<OperationResult>;
+public sealed record CreateImpedimentoCommand(string Nome, Guid Id = default) : BaseCommand, IRequest<OperationResult>;

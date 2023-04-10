@@ -74,7 +74,7 @@ public class SistemaHandlerTest
         IEventManager eventManager = EventManagerHelper.GetInstance(new RemoveSistemaEvent(sistema.Id));
 
         RemoveSistemaCommand request = MockCommandHelper.GetNewRemoveSistemaCommand(sistema.Id);
-        GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery();
+        GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery(sistema.Id);
 
         // Act
         RemoveSistemaCommandHandler handler = new(context, eventManager);

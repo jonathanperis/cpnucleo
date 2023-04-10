@@ -74,7 +74,7 @@ public class RecursoTarefaHandlerTest
         var recursoTarefa = context.RecursoTarefas.First();
 
         RemoveRecursoTarefaCommand request = MockCommandHelper.GetNewRemoveRecursoTarefaCommand(recursoTarefa.Id);
-        GetRecursoTarefaQuery request2 = MockQueryHelper.GetNewGetRecursoTarefaQuery();
+        GetRecursoTarefaQuery request2 = MockQueryHelper.GetNewGetRecursoTarefaQuery(recursoTarefa.Id);
 
         // Act
         RemoveRecursoTarefaCommandHandler handler = new(context);

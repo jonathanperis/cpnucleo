@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Commands.CreateProjeto;
 
-public sealed record CreateProjetoCommand(string Nome, Guid IdSistema) : BaseCommand, IRequest<OperationResult>;
+public sealed record CreateProjetoCommand(string Nome, Guid IdSistema, Guid Id = default) : BaseCommand, IRequest<OperationResult>;

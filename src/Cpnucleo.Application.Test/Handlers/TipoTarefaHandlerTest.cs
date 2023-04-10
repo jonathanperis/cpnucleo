@@ -71,7 +71,7 @@ public class TipoTarefaHandlerTest
         var tipoTarefa = context.TipoTarefas.First();
 
         RemoveTipoTarefaCommand request = MockCommandHelper.GetNewRemoveTipoTarefaCommand(tipoTarefa.Id);
-        GetTipoTarefaQuery request2 = MockQueryHelper.GetNewGetTipoTarefaQuery();
+        GetTipoTarefaQuery request2 = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
 
         // Act
         RemoveTipoTarefaCommandHandler handler = new(context);

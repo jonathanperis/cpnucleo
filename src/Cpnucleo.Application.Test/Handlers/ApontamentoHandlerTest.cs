@@ -74,7 +74,7 @@ public class ApontamentoHandlerTest
         var apontamento = context.Apontamentos.First();
 
         RemoveApontamentoCommand request = MockCommandHelper.GetNewRemoveApontamentoCommand(apontamento.Id);
-        GetApontamentoQuery request2 = MockQueryHelper.GetNewGetApontamentoQuery();
+        GetApontamentoQuery request2 = MockQueryHelper.GetNewGetApontamentoQuery(apontamento.Id);
 
         // Act
         RemoveApontamentoCommandHandler handler = new(context);

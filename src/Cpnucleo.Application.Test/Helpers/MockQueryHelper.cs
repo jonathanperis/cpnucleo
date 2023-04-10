@@ -2,9 +2,9 @@
 
 public class MockQueryHelper
 {
-    public static GetSistemaQuery GetNewGetSistemaQuery(Guid sistemaId = default)
+    public static GetSistemaQuery GetNewGetSistemaQuery(Guid sistemaId)
     {
-        return new GetSistemaQuery(sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId);
+        return new GetSistemaQuery(sistemaId);
     }
 
     public static ListSistemaQuery GetNewListSistemaQuery()
@@ -12,9 +12,9 @@ public class MockQueryHelper
         return new ListSistemaQuery();
     }
 
-    public static GetProjetoQuery GetNewGetProjetoQuery(Guid projetoId = default)
+    public static GetProjetoQuery GetNewGetProjetoQuery(Guid projetoId)
     {
-        return new GetProjetoQuery(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
+        return new GetProjetoQuery(projetoId);
     }
 
     public static ListProjetoQuery GetNewListProjetoQuery()
@@ -22,9 +22,9 @@ public class MockQueryHelper
         return new ListProjetoQuery();
     }
 
-    public static GetWorkflowQuery GetNewGetWorkflowQuery(Guid workflowId = default)
+    public static GetWorkflowQuery GetNewGetWorkflowQuery(Guid workflowId)
     {
-        return new GetWorkflowQuery(workflowId == Guid.Empty ? Guid.NewGuid() : workflowId);
+        return new GetWorkflowQuery(workflowId);
     }
 
     public static ListWorkflowQuery GetNewListWorkflowQuery()
@@ -32,9 +32,9 @@ public class MockQueryHelper
         return new ListWorkflowQuery();
     }
 
-    public static GetImpedimentoQuery GetNewGetImpedimentoQuery(Guid impedimentoId = default)
+    public static GetImpedimentoQuery GetNewGetImpedimentoQuery(Guid impedimentoId)
     {
-        return new GetImpedimentoQuery(impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId);
+        return new GetImpedimentoQuery(impedimentoId);
     }
 
     public static ListImpedimentoQuery GetNewListImpedimentoQuery()
@@ -42,9 +42,9 @@ public class MockQueryHelper
         return new ListImpedimentoQuery();
     }
 
-    public static GetRecursoQuery GetNewGetRecursoQuery(Guid recursoId = default)
+    public static GetRecursoQuery GetNewGetRecursoQuery(Guid recursoId)
     {
-        return new GetRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
+        return new GetRecursoQuery(recursoId);
     }
 
     public static ListRecursoQuery GetNewListRecursoQuery()
@@ -52,14 +52,14 @@ public class MockQueryHelper
         return new ListRecursoQuery();
     }
 
-    public static GetApontamentoQuery GetNewGetApontamentoQuery(Guid apontamentoId = default)
+    public static GetApontamentoQuery GetNewGetApontamentoQuery(Guid apontamentoId)
     {
-        return new GetApontamentoQuery(apontamentoId == Guid.Empty ? Guid.NewGuid() : apontamentoId);
+        return new GetApontamentoQuery(apontamentoId);
     }
 
-    public static ListApontamentoByRecursoQuery GetApontamentoByRecursoQuery(Guid recursoId = default)
+    public static ListApontamentoByRecursoQuery GetApontamentoByRecursoQuery(Guid recursoId)
     {
-        return new ListApontamentoByRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
+        return new ListApontamentoByRecursoQuery(recursoId);
     }
 
     public static ListApontamentoQuery GetNewListApontamentoQuery()
@@ -67,14 +67,14 @@ public class MockQueryHelper
         return new ListApontamentoQuery();
     }
 
-    public static GetTarefaQuery GetNewGetTarefaQuery(Guid tarefaId = default)
+    public static GetTarefaQuery GetNewGetTarefaQuery(Guid tarefaId)
     {
-        return new GetTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
+        return new GetTarefaQuery(tarefaId);
     }
 
-    public static ListTarefaByRecursoQuery GetNewGetTarefaByRecursoQuery(Guid recursoId = default)
+    public static ListTarefaByRecursoQuery GetNewGetTarefaByRecursoQuery(Guid recursoId)
     {
-        return new ListTarefaByRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
+        return new ListTarefaByRecursoQuery(recursoId);
     }
 
     public static ListTarefaQuery GetNewListTarefaQuery()
@@ -82,9 +82,9 @@ public class MockQueryHelper
         return new ListTarefaQuery();
     }
 
-    public static GetTipoTarefaQuery GetNewGetTipoTarefaQuery(Guid tipoTarefaId = default)
+    public static GetTipoTarefaQuery GetNewGetTipoTarefaQuery(Guid tipoTarefaId)
     {
-        return new GetTipoTarefaQuery(tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId);
+        return new GetTipoTarefaQuery(tipoTarefaId);
     }
 
     public static ListTipoTarefaQuery GetNewListTipoTarefaQuery()
@@ -92,14 +92,14 @@ public class MockQueryHelper
         return new ListTipoTarefaQuery();
     }
 
-    public static GetImpedimentoTarefaQuery GetNewGetImpedimentoTarefaQuery(Guid impedimentoTarefaId = default)
+    public static GetImpedimentoTarefaQuery GetNewGetImpedimentoTarefaQuery(Guid impedimentoTarefaId)
     {
-        return new GetImpedimentoTarefaQuery(impedimentoTarefaId == Guid.Empty ? Guid.NewGuid() : impedimentoTarefaId);
+        return new GetImpedimentoTarefaQuery(impedimentoTarefaId);
     }
 
-    public static ListImpedimentoTarefaByTarefaQuery GetNewGetImpedimentoTarefaByTarefaQuery(Guid tarefaId = default)
+    public static ListImpedimentoTarefaByTarefaQuery GetNewGetImpedimentoTarefaByTarefaQuery(Guid tarefaId)
     {
-        return new ListImpedimentoTarefaByTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
+        return new ListImpedimentoTarefaByTarefaQuery(tarefaId);
     }
 
     public static ListImpedimentoTarefaQuery GetNewListImpedimentoTarefaQuery()
@@ -107,14 +107,14 @@ public class MockQueryHelper
         return new ListImpedimentoTarefaQuery();
     }
 
-    public static GetRecursoProjetoQuery GetNewGetRecursoProjetoQuery(Guid recursoProjetoId = default)
+    public static GetRecursoProjetoQuery GetNewGetRecursoProjetoQuery(Guid recursoProjetoId)
     {
-        return new GetRecursoProjetoQuery(recursoProjetoId == Guid.Empty ? Guid.NewGuid() : recursoProjetoId);
+        return new GetRecursoProjetoQuery(recursoProjetoId);
     }
 
-    public static ListRecursoProjetoByProjetoQuery GetNewGetRecursoProjetoByProjetoQuery(Guid projetoId = default)
+    public static ListRecursoProjetoByProjetoQuery GetNewGetRecursoProjetoByProjetoQuery(Guid projetoId)
     {
-        return new ListRecursoProjetoByProjetoQuery(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
+        return new ListRecursoProjetoByProjetoQuery(projetoId);
     }
 
     public static ListRecursoProjetoQuery GetNewListRecursoProjetoQuery()
@@ -122,14 +122,14 @@ public class MockQueryHelper
         return new ListRecursoProjetoQuery();
     }
 
-    public static GetRecursoTarefaQuery GetNewGetRecursoTarefaQuery(Guid recursoTarefaId = default)
+    public static GetRecursoTarefaQuery GetNewGetRecursoTarefaQuery(Guid recursoTarefaId)
     {
-        return new GetRecursoTarefaQuery(recursoTarefaId == Guid.Empty ? Guid.NewGuid() : recursoTarefaId);
+        return new GetRecursoTarefaQuery(recursoTarefaId);
     }
 
-    public static ListRecursoTarefaByTarefaQuery GetNewGetRecursoTarefaByTarefaQuery(Guid tarefaId = default)
+    public static ListRecursoTarefaByTarefaQuery GetNewGetRecursoTarefaByTarefaQuery(Guid tarefaId)
     {
-        return new ListRecursoTarefaByTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
+        return new ListRecursoTarefaByTarefaQuery(tarefaId);
     }
 
     public static ListRecursoTarefaQuery GetNewListRecursoTarefaQuery()

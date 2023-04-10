@@ -73,7 +73,7 @@ public class ProjetoHandlerTest
         var projeto = context.Projetos.First();
 
         RemoveProjetoCommand request = MockCommandHelper.GetNewRemoveProjetoCommand(projeto.Id);
-        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery();
+        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
         RemoveProjetoCommandHandler handler = new(context);
