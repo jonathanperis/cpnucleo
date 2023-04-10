@@ -57,7 +57,7 @@ public class MockQueryHelper
         return new GetApontamentoQuery(apontamentoId);
     }
 
-    public static ListApontamentoByRecursoQuery GetApontamentoByRecursoQuery(Guid recursoId)
+    public static ListApontamentoByRecursoQuery GetNewListApontamentoByRecursoQuery(Guid recursoId)
     {
         return new ListApontamentoByRecursoQuery(recursoId);
     }
@@ -72,7 +72,7 @@ public class MockQueryHelper
         return new GetTarefaQuery(tarefaId);
     }
 
-    public static ListTarefaByRecursoQuery GetNewGetTarefaByRecursoQuery(Guid recursoId)
+    public static ListTarefaByRecursoQuery GetNewListTarefaByRecursoQuery(Guid recursoId)
     {
         return new ListTarefaByRecursoQuery(recursoId);
     }
@@ -97,7 +97,7 @@ public class MockQueryHelper
         return new GetImpedimentoTarefaQuery(impedimentoTarefaId);
     }
 
-    public static ListImpedimentoTarefaByTarefaQuery GetNewGetImpedimentoTarefaByTarefaQuery(Guid tarefaId)
+    public static ListImpedimentoTarefaByTarefaQuery GetNewListImpedimentoTarefaByTarefaQuery(Guid tarefaId)
     {
         return new ListImpedimentoTarefaByTarefaQuery(tarefaId);
     }
@@ -112,7 +112,7 @@ public class MockQueryHelper
         return new GetRecursoProjetoQuery(recursoProjetoId);
     }
 
-    public static ListRecursoProjetoByProjetoQuery GetNewGetRecursoProjetoByProjetoQuery(Guid projetoId)
+    public static ListRecursoProjetoByProjetoQuery GetNewListRecursoProjetoByProjetoQuery(Guid projetoId)
     {
         return new ListRecursoProjetoByProjetoQuery(projetoId);
     }
@@ -127,7 +127,7 @@ public class MockQueryHelper
         return new GetRecursoTarefaQuery(recursoTarefaId);
     }
 
-    public static ListRecursoTarefaByTarefaQuery GetNewGetRecursoTarefaByTarefaQuery(Guid tarefaId)
+    public static ListRecursoTarefaByTarefaQuery GetNewListRecursoTarefaByTarefaQuery(Guid tarefaId)
     {
         return new ListRecursoTarefaByTarefaQuery(tarefaId);
     }
