@@ -9,7 +9,7 @@ public static class RazorPagesConfig
     {
         services
             .AddRefitClient<ICpnucleoApiClient>()
-            .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v3"))
+            .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{configuration.GetValue<string>("AppSettings:UrlCpnucleoApi")}/api/v2"))
             .AddHttpMessageHandler<AuthHeaderHandler>();
     }
 }

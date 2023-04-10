@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.ListImpedimento;
 
-public sealed record ListImpedimentoQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListImpedimentoViewModel>;
+public sealed record ListImpedimentoQuery() : BaseQuery, IRequest<ListImpedimentoViewModel>;

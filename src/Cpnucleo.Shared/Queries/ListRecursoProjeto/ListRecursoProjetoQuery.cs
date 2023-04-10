@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.ListRecursoProjeto;
 
-public sealed record ListRecursoProjetoQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListRecursoProjetoViewModel>;
+public sealed record ListRecursoProjetoQuery() : BaseQuery, IRequest<ListRecursoProjetoViewModel>;

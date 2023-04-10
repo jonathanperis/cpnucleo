@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Queries.ListWorkflow;
 
-public sealed record ListWorkflowQuery(bool GetDependencies = false) : BaseQuery, IRequest<ListWorkflowViewModel>;
+public sealed record ListWorkflowQuery() : BaseQuery, IRequest<ListWorkflowViewModel>;
