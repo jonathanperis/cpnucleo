@@ -19,7 +19,7 @@ public sealed class UpdateImpedimentoCommandHandler : IRequestHandler<UpdateImpe
             return OperationResult.NotFound;
         }
 
-        impedimento = Domain.Entities.Impedimento.Update(impedimento, request.Nome);
+        impedimento = Impedimento.Update(impedimento, request.Nome);
         _context.Impedimentos.Update(impedimento);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

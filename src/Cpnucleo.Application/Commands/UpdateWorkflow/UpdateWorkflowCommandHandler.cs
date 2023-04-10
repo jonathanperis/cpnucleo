@@ -19,7 +19,7 @@ public sealed class UpdateWorkflowCommandHandler : IRequestHandler<UpdateWorkflo
             return OperationResult.NotFound;
         }
 
-        workflow = Domain.Entities.Workflow.Update(workflow, request.Nome, request.Ordem);
+        workflow = Workflow.Update(workflow, request.Nome, request.Ordem);
         _context.Workflows.Update(workflow);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

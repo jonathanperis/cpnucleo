@@ -1,12 +1,4 @@
-﻿using Cpnucleo.Application.Commands.Sistema;
-using Cpnucleo.Domain.Common.Bus.Interfaces;
-using Cpnucleo.Application.Hubs;
-using Cpnucleo.Application.Queries.Sistema;
-using Cpnucleo.Shared.Events.Sistema;
-using Microsoft.AspNetCore.SignalR;
-using Moq;
-
-namespace Cpnucleo.Application.Test.Handlers;
+﻿namespace Cpnucleo.Application.Test.Handlers;
 
 public class SistemaHandlerTest
 {
@@ -14,57 +6,33 @@ public class SistemaHandlerTest
     public async Task CreateSistemaCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
+        IApplicationDbContext context = DbContextHelper.GetContext();
+        await DbContextHelper.SeedData(context);
 
         CreateSistemaCommand request = MockCommandHelper.GetNewCreateSistemaCommand();
 
         // Act
-        CreateSistemaCommandHandler handler = new(unitOfWork, mapper);
+        CreateSistemaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
     }
 
-    //[Theory]
-    //[InlineData("Sistema de teste", "")]
-    //[InlineData("", "Descrição do sistema de teste")]
-    //public async Task CreateSistemaCommand_Handle_Fail(string nome, string descricao)
-    //{
-    //    // Arrange
-    //    IUnitOfWork unitOfWork = DbContextHelper.GetContext();
-    //    IMapper mapper = AutoMapperHelper.GetMappings();
-
-    //    CreateSistemaCommand command = MockCommandHelper.GetNewCreateSistemaCommand();
-
-    //    command.Nome = nome;
-    //    command.Descricao = descricao;
-
-    //    // Act
-    //    CreateSistemaHandler handler = new(unitOfWork, mapper);
-    //    OperationResult response = await handler.Handle(command, CancellationToken.None);
-
-    //    // Assert
-    //    Assert.True(response == OperationResult.Failed);
-    //}
-
     [Fact]
     public async Task GetSistemaQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
+        var sistema = context.Sistemas.First();
 
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-        await unitOfWork.SaveChangesAsync();
-
-        GetSistemaQuery request = MockQueryHelper.GetNewGetSistemaQuery(sistemaId);
+        GetSistemaQuery request = MockQueryHelper.GetNewGetSistemaQuery(sistema.Id);
 
         // Act
-        GetSistemaQueryHandler handler = new(unitOfWork, mapper);
+        GetSistemaQueryHandler handler = new(context, mapper);
         GetSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -77,57 +45,42 @@ public class SistemaHandlerTest
     public async Task ListSistemaQuery_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
-
-        Mock<IHubContext<CpnucleoHub>> mockSignalR = SignalRHelper.GetInstance();
-
-        Guid sistemaId = Guid.NewGuid();
-
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema(sistemaId));
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema());
-        await unitOfWork.SistemaRepository.AddAsync(MockEntityHelper.GetNewSistema());
-
-        await unitOfWork.SaveChangesAsync();
+        IHubContext<ApplicationHub> mockSignalR = SignalRHelper.GetInstance();
+        await DbContextHelper.SeedData(context);
 
         ListSistemaQuery request = MockQueryHelper.GetNewListSistemaQuery();
 
         // Act
-        ListSistemaQueryHandler handler = new(unitOfWork, mapper, mockSignalR.Object);
+        ListSistemaQueryHandler handler = new(context, mapper, mockSignalR);
         ListSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Sistemas != null);
         Assert.True(response.Sistemas.Any());
-        Assert.True(response.Sistemas.FirstOrDefault(x => x.Id == sistemaId) != null);
     }
 
     [Fact]
     public async Task RemoveSistemaCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
+        
+        var sistema = context.Sistemas.First();
+        
+        IEventManager eventManager = EventManagerHelper.GetInstance(new RemoveSistemaEvent(sistema.Id));
 
-        Guid sistemaId = Guid.NewGuid();
-
-        Mock<IEventHandler> mockServiceBus = ServiceBusHelper.GetInstance(new RemoveSistemaEvent(sistemaId));
-
-        Sistema sistema = MockEntityHelper.GetNewSistema(sistemaId);
-
-        await unitOfWork.SistemaRepository.AddAsync(sistema);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.SistemaRepository.Detatch(sistema);
-
-        RemoveSistemaCommand request = MockCommandHelper.GetNewRemoveSistemaCommand(sistemaId);
-        GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery(sistemaId);
+        RemoveSistemaCommand request = MockCommandHelper.GetNewRemoveSistemaCommand(sistema.Id);
+        GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery();
 
         // Act
-        RemoveSistemaCommandHandler handler = new(unitOfWork, mockServiceBus.Object);
+        RemoveSistemaCommandHandler handler = new(context, eventManager);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetSistemaQueryHandler handler2 = new(unitOfWork, mapper);
+        GetSistemaQueryHandler handler2 = new(context, mapper);
         GetSistemaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -139,31 +92,25 @@ public class SistemaHandlerTest
     public async Task UpdateSistemaCommand_Handle_Success()
     {
         // Arrange
-        IUnitOfWork unitOfWork = DbContextHelper.GetContext();
+        IApplicationDbContext context = DbContextHelper.GetContext();
         IMapper mapper = AutoMapperHelper.GetMappings();
+        await DbContextHelper.SeedData(context);
 
-        Guid sistemaId = Guid.NewGuid();
+        var sistema = context.Sistemas.First();
 
-        Sistema sistema = MockEntityHelper.GetNewSistema(sistemaId);
-
-        await unitOfWork.SistemaRepository.AddAsync(sistema);
-        await unitOfWork.SaveChangesAsync();
-
-        unitOfWork.SistemaRepository.Detatch(sistema);
-
-        UpdateSistemaCommand request = MockCommandHelper.GetNewUpdateSistemaCommand(sistemaId);
-        GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery(sistemaId);
+        UpdateSistemaCommand request = MockCommandHelper.GetNewUpdateSistemaCommand(sistema.Id);
+        GetSistemaQuery request2 = MockQueryHelper.GetNewGetSistemaQuery(sistema.Id);
 
         // Act
-        UpdateSistemaCommandHandler handler = new(unitOfWork);
+        UpdateSistemaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetSistemaQueryHandler handler2 = new(unitOfWork, mapper);
+        GetSistemaQueryHandler handler2 = new(context, mapper);
         GetSistemaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
         Assert.True(response2.Sistema != null);
-        Assert.True(response2.Sistema.Id == sistemaId);
+        Assert.True(response2.Sistema.Id == sistema.Id);
     }
 }

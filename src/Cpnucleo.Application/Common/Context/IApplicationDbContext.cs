@@ -14,5 +14,5 @@ public interface IApplicationDbContext
     DbSet<TipoTarefa> TipoTarefas { get; set; }
     DbSet<Workflow> Workflows { get; set; }
 
-    Task<bool> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

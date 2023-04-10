@@ -19,7 +19,7 @@ public sealed class UpdateApontamentoCommandHandler : IRequestHandler<UpdateApon
             return OperationResult.NotFound;
         }
 
-        apontamento = Domain.Entities.Apontamento.Update(apontamento, request.Descricao, request.DataApontamento, request.QtdHoras, request.IdTarefa, request.IdRecurso);
+        apontamento = Apontamento.Update(apontamento, request.Descricao, request.DataApontamento, request.QtdHoras, request.IdTarefa, request.IdRecurso);
         _context.Apontamentos.Update(apontamento);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

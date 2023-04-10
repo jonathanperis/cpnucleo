@@ -7,9 +7,9 @@ public class MockQueryHelper
         return new GetSistemaQuery(sistemaId == Guid.Empty ? Guid.NewGuid() : sistemaId);
     }
 
-    public static ListSistemaQuery GetNewListSistemaQuery(bool getDependencies = false)
+    public static ListSistemaQuery GetNewListSistemaQuery()
     {
-        return new ListSistemaQuery(getDependencies);
+        return new ListSistemaQuery();
     }
 
     public static GetProjetoQuery GetNewGetProjetoQuery(Guid projetoId = default)
@@ -17,9 +17,9 @@ public class MockQueryHelper
         return new GetProjetoQuery(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
     }
 
-    public static ListProjetoQuery GetNewListProjetoQuery(bool getDependencies = false)
+    public static ListProjetoQuery GetNewListProjetoQuery()
     {
-        return new ListProjetoQuery(getDependencies);
+        return new ListProjetoQuery();
     }
 
     public static GetWorkflowQuery GetNewGetWorkflowQuery(Guid workflowId = default)
@@ -27,9 +27,9 @@ public class MockQueryHelper
         return new GetWorkflowQuery(workflowId == Guid.Empty ? Guid.NewGuid() : workflowId);
     }
 
-    public static ListWorkflowQuery GetNewListWorkflowQuery(bool getDependencies = false)
+    public static ListWorkflowQuery GetNewListWorkflowQuery()
     {
-        return new ListWorkflowQuery(getDependencies);
+        return new ListWorkflowQuery();
     }
 
     public static GetImpedimentoQuery GetNewGetImpedimentoQuery(Guid impedimentoId = default)
@@ -37,9 +37,9 @@ public class MockQueryHelper
         return new GetImpedimentoQuery(impedimentoId == Guid.Empty ? Guid.NewGuid() : impedimentoId);
     }
 
-    public static ListImpedimentoQuery GetNewListImpedimentoQuery(bool getDependencies = false)
+    public static ListImpedimentoQuery GetNewListImpedimentoQuery()
     {
-        return new ListImpedimentoQuery(getDependencies);
+        return new ListImpedimentoQuery();
     }
 
     public static GetRecursoQuery GetNewGetRecursoQuery(Guid recursoId = default)
@@ -47,9 +47,9 @@ public class MockQueryHelper
         return new GetRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
     }
 
-    public static ListRecursoQuery GetNewListRecursoQuery(bool getDependencies = false)
+    public static ListRecursoQuery GetNewListRecursoQuery()
     {
-        return new ListRecursoQuery(getDependencies);
+        return new ListRecursoQuery();
     }
 
     public static GetApontamentoQuery GetNewGetApontamentoQuery(Guid apontamentoId = default)
@@ -62,9 +62,9 @@ public class MockQueryHelper
         return new ListApontamentoByRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
     }
 
-    public static ListApontamentoQuery GetNewListApontamentoQuery(bool getDependencies = false)
+    public static ListApontamentoQuery GetNewListApontamentoQuery()
     {
-        return new ListApontamentoQuery(getDependencies);
+        return new ListApontamentoQuery();
     }
 
     public static GetTarefaQuery GetNewGetTarefaQuery(Guid tarefaId = default)
@@ -77,9 +77,9 @@ public class MockQueryHelper
         return new ListTarefaByRecursoQuery(recursoId == Guid.Empty ? Guid.NewGuid() : recursoId);
     }
 
-    public static ListTarefaQuery GetNewListTarefaQuery(bool getDependencies = false)
+    public static ListTarefaQuery GetNewListTarefaQuery()
     {
-        return new ListTarefaQuery(getDependencies);
+        return new ListTarefaQuery();
     }
 
     public static GetTipoTarefaQuery GetNewGetTipoTarefaQuery(Guid tipoTarefaId = default)
@@ -87,9 +87,9 @@ public class MockQueryHelper
         return new GetTipoTarefaQuery(tipoTarefaId == Guid.Empty ? Guid.NewGuid() : tipoTarefaId);
     }
 
-    public static ListTipoTarefaQuery GetNewListTipoTarefaQuery(bool getDependencies = false)
+    public static ListTipoTarefaQuery GetNewListTipoTarefaQuery()
     {
-        return new ListTipoTarefaQuery(getDependencies);
+        return new ListTipoTarefaQuery();
     }
 
     public static GetImpedimentoTarefaQuery GetNewGetImpedimentoTarefaQuery(Guid impedimentoTarefaId = default)
@@ -102,9 +102,9 @@ public class MockQueryHelper
         return new ListImpedimentoTarefaByTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
     }
 
-    public static ListImpedimentoTarefaQuery GetNewListImpedimentoTarefaQuery(bool getDependencies = false)
+    public static ListImpedimentoTarefaQuery GetNewListImpedimentoTarefaQuery()
     {
-        return new ListImpedimentoTarefaQuery(getDependencies);
+        return new ListImpedimentoTarefaQuery();
     }
 
     public static GetRecursoProjetoQuery GetNewGetRecursoProjetoQuery(Guid recursoProjetoId = default)
@@ -117,9 +117,9 @@ public class MockQueryHelper
         return new ListRecursoProjetoByProjetoQuery(projetoId == Guid.Empty ? Guid.NewGuid() : projetoId);
     }
 
-    public static ListRecursoProjetoQuery GetNewListRecursoProjetoQuery(bool getDependencies = false)
+    public static ListRecursoProjetoQuery GetNewListRecursoProjetoQuery()
     {
-        return new ListRecursoProjetoQuery(getDependencies);
+        return new ListRecursoProjetoQuery();
     }
 
     public static GetRecursoTarefaQuery GetNewGetRecursoTarefaQuery(Guid recursoTarefaId = default)
@@ -132,8 +132,8 @@ public class MockQueryHelper
         return new ListRecursoTarefaByTarefaQuery(tarefaId == Guid.Empty ? Guid.NewGuid() : tarefaId);
     }
 
-    public static ListRecursoTarefaQuery GetNewListRecursoTarefaQuery(bool getDependencies = false)
+    public static ListRecursoTarefaQuery GetNewListRecursoTarefaQuery()
     {
-        return new ListRecursoTarefaQuery(getDependencies);
+        return new ListRecursoTarefaQuery();
     }
 }

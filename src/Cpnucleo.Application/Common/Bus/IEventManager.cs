@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Common.Bus;
 
-public interface IEventHandler
+public interface IEventManager
 {
     Task PublishEventAsync<T>(T @event);
 }

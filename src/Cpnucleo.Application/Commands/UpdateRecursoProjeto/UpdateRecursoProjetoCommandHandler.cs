@@ -19,7 +19,7 @@ public sealed class UpdateRecursoProjetoCommandHandler : IRequestHandler<UpdateR
             return OperationResult.NotFound;
         }
 
-        recursoProjeto = Domain.Entities.RecursoProjeto.Update(recursoProjeto, request.IdRecurso, request.IdProjeto);
+        recursoProjeto = RecursoProjeto.Update(recursoProjeto, request.IdRecurso, request.IdProjeto);
         _context.RecursoProjetos.Update(recursoProjeto);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

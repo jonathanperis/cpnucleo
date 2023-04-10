@@ -19,7 +19,7 @@ public sealed class UpdateRecursoTarefaCommandHandler : IRequestHandler<UpdateRe
             return OperationResult.NotFound;
         }
 
-        recursoTarefa = Domain.Entities.RecursoTarefa.Update(recursoTarefa, request.IdRecurso, request.IdTarefa);
+        recursoTarefa = RecursoTarefa.Update(recursoTarefa, request.IdRecurso, request.IdTarefa);
         _context.RecursoTarefas.Update(recursoTarefa);
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

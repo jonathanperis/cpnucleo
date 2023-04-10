@@ -19,7 +19,7 @@ public sealed class RemoveRecursoProjetoCommandHandler : IRequestHandler<RemoveR
             return OperationResult.NotFound;
         }
 
-        recursoProjeto = Domain.Entities.RecursoProjeto.Remove(recursoProjeto);
+        recursoProjeto = RecursoProjeto.Remove(recursoProjeto);
         _context.RecursoProjetos.Update(recursoProjeto); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);

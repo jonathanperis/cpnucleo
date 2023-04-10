@@ -19,7 +19,7 @@ public sealed class RemoveImpedimentoTarefaCommandHandler : IRequestHandler<Remo
             return OperationResult.NotFound;
         }
 
-        impedimentoTarefa = Domain.Entities.ImpedimentoTarefa.Remove(impedimentoTarefa);
+        impedimentoTarefa = ImpedimentoTarefa.Remove(impedimentoTarefa);
         _context.ImpedimentoTarefas.Update(impedimentoTarefa); //JONATHAN - Soft Delete.
 
         bool success = await _context.SaveChangesAsync(cancellationToken);
