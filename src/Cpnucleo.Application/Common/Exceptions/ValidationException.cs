@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Common.Exceptions;
 
-public class ValidationException : Exception
+internal sealed class ValidationException : Exception
 {
     public ValidationException()
         : base("One or more validation failures have occurred.")

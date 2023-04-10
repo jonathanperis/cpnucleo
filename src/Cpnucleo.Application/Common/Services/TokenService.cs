@@ -1,6 +1,6 @@
 ﻿namespace Cpnucleo.Application.Common.Services;
 
-internal class TokenService
+internal sealed class TokenService
 {
     public static string GenerateToken(string id, string key, string issuer, int expires)
     {
