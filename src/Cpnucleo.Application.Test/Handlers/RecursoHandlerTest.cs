@@ -71,7 +71,7 @@ public class RecursoHandlerTest
         var recurso = context.Recursos.First();
 
         RemoveRecursoCommand request = MockCommandHelper.GetNewRemoveRecursoCommand(recurso.Id);
-        GetRecursoQuery request2 = MockQueryHelper.GetNewGetRecursoQuery();
+        GetRecursoQuery request2 = MockQueryHelper.GetNewGetRecursoQuery(recurso.Id);
 
         // Act
         RemoveRecursoCommandHandler handler = new(context);

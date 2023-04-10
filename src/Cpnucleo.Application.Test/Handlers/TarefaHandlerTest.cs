@@ -76,7 +76,7 @@ public class TarefaHandlerTest
         var tarefa = context.Tarefas.First();
 
         RemoveTarefaCommand request = MockCommandHelper.GetNewRemoveTarefaCommand(tarefa.Id);
-        GetTarefaQuery request2 = MockQueryHelper.GetNewGetTarefaQuery();
+        GetTarefaQuery request2 = MockQueryHelper.GetNewGetTarefaQuery(tarefa.Id);
 
         // Act
         RemoveTarefaCommandHandler handler = new(context);

@@ -71,7 +71,7 @@ public class ImpedimentoHandlerTest
         var impedimento = context.Impedimentos.First();
 
         RemoveImpedimentoCommand request = MockCommandHelper.GetNewRemoveImpedimentoCommand(impedimento.Id);
-        GetImpedimentoQuery request2 = MockQueryHelper.GetNewGetImpedimentoQuery();
+        GetImpedimentoQuery request2 = MockQueryHelper.GetNewGetImpedimentoQuery(impedimento.Id);
 
         // Act
         RemoveImpedimentoCommandHandler handler = new(context);
