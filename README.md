@@ -1,7 +1,7 @@
 # Cpnucleo 
 A sample solution that implements the best praticles when building a .NET projects
 
-[![CodeFactor](https://www.codefactor.io/repository/github/jonathanperis/cpnucleo/badge)](https://www.codefactor.io/repository/github/jonathanperis/cpnucleo) [![BCH compliance](https://bettercodehub.com/edge/badge/jonathanperis/cpnucleo?branch=master)](https://bettercodehub.com/) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jonathanperis_cpnucleo&metric=alert_status)](https://sonarcloud.io/dashboard?id=jonathanperis_cpnucleo)
+[![CodeFactor](https://www.codefactor.io/repository/github/jonathanperis/cpnucleo/badge)](https://www.codefactor.io/repository/github/jonathanperis/cpnucleo) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jonathanperis_cpnucleo&metric=alert_status)](https://sonarcloud.io/dashboard?id=jonathanperis_cpnucleo)
 
 # Build Status
 
@@ -12,10 +12,6 @@ A sample solution that implements the best praticles when building a .NET projec
 - [Cpnucleo MVC](https://cpnucleo-mvc.azurewebsites.net) (Uses gRPC Cpnucleo as backend)
 
 [![Build status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo%20-%20MVC%20-%20ASP.NET%20Core%20-%20CI)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=9)
-
-- [Auth API Cpnucleo](https://api-cpnucleo-auth.azurewebsites.net/swagger)
-
-[![Build Status](https://dev.azure.com/peris-studio/cpnucleo/_apis/build/status/Cpnucleo.API.Auth?branchName=master)](https://dev.azure.com/peris-studio/cpnucleo/_build/latest?definitionId=18&branchName=master)
 
 - [API Cpnucleo](https://api-cpnucleo.azurewebsites.net/swagger)
 
