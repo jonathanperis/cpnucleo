@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class RecursoProjetoController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public RecursoProjetoController(IMediator mediator)
+    public RecursoProjetoController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class RecursoProjetoController : ControllerBase
     [Route("ListRecursoProjeto")]
     public async Task<ActionResult<ListRecursoProjetoViewModel>> ListRecursoProjeto([FromBody] ListRecursoProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class RecursoProjetoController : ControllerBase
     [Route("GetRecursoProjeto")]
     public async Task<ActionResult<GetRecursoProjetoViewModel>> GetRecursoProjeto([FromBody] GetRecursoProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class RecursoProjetoController : ControllerBase
     [Route("GetRecursoProjetoByProjeto")]
     public async Task<ActionResult<ListRecursoProjetoByProjetoViewModel>> GetRecursoProjetoByProjeto([FromBody] ListRecursoProjetoByProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class RecursoProjetoController : ControllerBase
     [Route("CreateRecursoProjeto")]
     public async Task<ActionResult<OperationResult>> CreateRecursoProjeto([FromBody] CreateRecursoProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class RecursoProjetoController : ControllerBase
     [Route("UpdateRecursoProjeto")]
     public async Task<ActionResult<OperationResult>> UpdateRecursoProjeto([FromBody] UpdateRecursoProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -107,6 +107,6 @@ public class RecursoProjetoController : ControllerBase
     [Route("RemoveRecursoProjeto")]
     public async Task<ActionResult<OperationResult>> RemoveRecursoProjeto([FromBody] RemoveRecursoProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

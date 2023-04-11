@@ -3,11 +3,11 @@
 [Authorize]
 public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>, IRecursoProjetoGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public RecursoProjetoGrpcService(IMediator mediator)
+    public RecursoProjetoGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateRecursoProjeto(CreateRecursoProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListRecursoProjetoViewModel> ListRecursoProjeto(ListRecursoProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetRecursoProjetoViewModel> GetRecursoProjeto(GetRecursoProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListRecursoProjetoByProjetoViewModel> GetRecursoProjetoByProjeto(ListRecursoProjetoByProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveRecursoProjeto(RemoveRecursoProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class RecursoProjetoGrpcService : ServiceBase<IRecursoProjetoGrpcService>
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateRecursoProjeto(UpdateRecursoProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

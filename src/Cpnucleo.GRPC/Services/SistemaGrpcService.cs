@@ -3,11 +3,11 @@
 [Authorize]
 public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public SistemaGrpcService(IMediator mediator)
+    public SistemaGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateSistema(CreateSistemaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListSistemaViewModel> ListSistema(ListSistemaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetSistemaViewModel> GetSistema(GetSistemaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveSistema(RemoveSistemaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class SistemaGrpcService : ServiceBase<ISistemaGrpcService>, ISistemaGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateSistema(UpdateSistemaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

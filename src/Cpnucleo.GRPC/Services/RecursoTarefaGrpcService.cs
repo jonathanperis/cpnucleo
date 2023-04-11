@@ -3,11 +3,11 @@
 [Authorize]
 public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, IRecursoTarefaGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public RecursoTarefaGrpcService(IMediator mediator)
+    public RecursoTarefaGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateRecursoTarefa(CreateRecursoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListRecursoTarefaViewModel> ListRecursoTarefa(ListRecursoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetRecursoTarefaViewModel> GetRecursoTarefa(GetRecursoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListRecursoTarefaByTarefaViewModel> GetRecursoTarefaByTarefa(ListRecursoTarefaByTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveRecursoTarefa(RemoveRecursoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class RecursoTarefaGrpcService : ServiceBase<IRecursoTarefaGrpcService>, 
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateRecursoTarefa(UpdateRecursoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

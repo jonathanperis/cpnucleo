@@ -3,11 +3,11 @@
 [Authorize]
 public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public WorkflowGrpcService(IMediator mediator)
+    public WorkflowGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateWorkflow(CreateWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListWorkflowViewModel> ListWorkflow(ListWorkflowQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetWorkflowViewModel> GetWorkflow(GetWorkflowQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveWorkflow(RemoveWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class WorkflowGrpcService : ServiceBase<IWorkflowGrpcService>, IWorkflowG
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateWorkflow(UpdateWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

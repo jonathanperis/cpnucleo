@@ -3,11 +3,11 @@
 [Authorize]
 public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoTarefaGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public TipoTarefaGrpcService(IMediator mediator)
+    public TipoTarefaGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateTipoTarefa(CreateTipoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListTipoTarefaViewModel> ListTipoTarefa(ListTipoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetTipoTarefaViewModel> GetTipoTarefa(GetTipoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveTipoTarefa(RemoveTipoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class TipoTarefaGrpcService : ServiceBase<ITipoTarefaGrpcService>, ITipoT
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateTipoTarefa(UpdateTipoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

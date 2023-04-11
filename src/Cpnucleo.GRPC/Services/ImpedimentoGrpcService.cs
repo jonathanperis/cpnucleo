@@ -3,11 +3,11 @@
 [Authorize]
 public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImpedimentoGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ImpedimentoGrpcService(IMediator mediator)
+    public ImpedimentoGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateImpedimento(CreateImpedimentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListImpedimentoViewModel> ListImpedimento(ListImpedimentoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetImpedimentoViewModel> GetImpedimento(GetImpedimentoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveImpedimento(RemoveImpedimentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class ImpedimentoGrpcService : ServiceBase<IImpedimentoGrpcService>, IImp
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateImpedimento(UpdateImpedimentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }
