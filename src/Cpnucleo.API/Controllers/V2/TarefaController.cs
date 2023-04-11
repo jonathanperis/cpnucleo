@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class TarefaController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public TarefaController(IMediator mediator)
+    public TarefaController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class TarefaController : ControllerBase
     [Route("ListTarefa")]
     public async Task<ActionResult<ListTarefaViewModel>> ListTarefa([FromBody] ListTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class TarefaController : ControllerBase
     [Route("GetTarefa")]
     public async Task<ActionResult<GetTarefaViewModel>> GetTarefa([FromBody] GetTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class TarefaController : ControllerBase
     [Route("GetTarefaByRecurso")]
     public async Task<ActionResult<ListTarefaByRecursoViewModel>> GetTarefaByRecurso([FromBody] ListTarefaByRecursoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class TarefaController : ControllerBase
     [Route("CreateTarefa")]
     public async Task<ActionResult<OperationResult>> CreateTarefa([FromBody] CreateTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class TarefaController : ControllerBase
     [Route("UpdateTarefa")]
     public async Task<ActionResult<OperationResult>> UpdateTarefa([FromBody] UpdateTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class TarefaController : ControllerBase
     [Route("UpdateTarefaByWorkflow")]
     public async Task<ActionResult<OperationResult>> UpdateTarefaByWorkflow([FromBody] UpdateTarefaByWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -123,6 +123,6 @@ public class TarefaController : ControllerBase
     [Route("RemoveTarefa")]
     public async Task<ActionResult<OperationResult>> RemoveTarefa([FromBody] RemoveTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

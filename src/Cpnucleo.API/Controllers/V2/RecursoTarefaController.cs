@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class RecursoTarefaController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public RecursoTarefaController(IMediator mediator)
+    public RecursoTarefaController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class RecursoTarefaController : ControllerBase
     [Route("ListRecursoTarefa")]
     public async Task<ActionResult<ListRecursoTarefaViewModel>> ListRecursoTarefa([FromBody] ListRecursoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class RecursoTarefaController : ControllerBase
     [Route("GetRecursoTarefa")]
     public async Task<ActionResult<GetRecursoTarefaViewModel>> GetRecursoTarefa([FromBody] GetRecursoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class RecursoTarefaController : ControllerBase
     [Route("GetRecursoTarefaByTarefa")]
     public async Task<ActionResult<ListRecursoTarefaByTarefaViewModel>> GetRecursoTarefaByTarefa([FromBody] ListRecursoTarefaByTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class RecursoTarefaController : ControllerBase
     [Route("CreateRecursoTarefa")]
     public async Task<ActionResult<OperationResult>> CreateRecursoTarefa([FromBody] CreateRecursoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class RecursoTarefaController : ControllerBase
     [Route("UpdateRecursoTarefa")]
     public async Task<ActionResult<OperationResult>> UpdateRecursoTarefa([FromBody] UpdateRecursoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -107,6 +107,6 @@ public class RecursoTarefaController : ControllerBase
     [Route("RemoveRecursoTarefa")]
     public async Task<ActionResult<OperationResult>> RemoveRecursoTarefa([FromBody] RemoveRecursoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

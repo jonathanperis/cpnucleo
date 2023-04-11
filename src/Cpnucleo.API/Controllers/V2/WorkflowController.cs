@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class WorkflowController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public WorkflowController(IMediator mediator)
+    public WorkflowController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class WorkflowController : ControllerBase
     [Route("ListWorkflow")]
     public async Task<ActionResult<ListWorkflowViewModel>> ListWorkflow([FromBody] ListWorkflowQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class WorkflowController : ControllerBase
     [Route("GetWorkflow")]
     public async Task<ActionResult<GetWorkflowViewModel>> GetWorkflow([FromBody] GetWorkflowQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class WorkflowController : ControllerBase
     [Route("CreateWorkflow")]
     public async Task<ActionResult<OperationResult>> CreateWorkflow([FromBody] CreateWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class WorkflowController : ControllerBase
     [Route("UpdateWorkflow")]
     public async Task<ActionResult<OperationResult>> UpdateWorkflow([FromBody] UpdateWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class WorkflowController : ControllerBase
     [Route("RemoveWorkflow")]
     public async Task<ActionResult<OperationResult>> RemoveWorkflow([FromBody] RemoveWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

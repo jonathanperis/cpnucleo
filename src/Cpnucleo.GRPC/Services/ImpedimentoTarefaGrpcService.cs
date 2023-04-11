@@ -3,11 +3,11 @@
 [Authorize]
 public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcService>, IImpedimentoTarefaGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ImpedimentoTarefaGrpcService(IMediator mediator)
+    public ImpedimentoTarefaGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateImpedimentoTarefa(CreateImpedimentoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListImpedimentoTarefaViewModel> ListImpedimentoTarefa(ListImpedimentoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetImpedimentoTarefaViewModel> GetImpedimentoTarefa(GetImpedimentoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListImpedimentoTarefaByTarefaViewModel> GetImpedimentoTarefaByTarefa(ListImpedimentoTarefaByTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveImpedimentoTarefa(RemoveImpedimentoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class ImpedimentoTarefaGrpcService : ServiceBase<IImpedimentoTarefaGrpcSe
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateImpedimentoTarefa(UpdateImpedimentoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

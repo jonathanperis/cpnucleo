@@ -3,11 +3,11 @@
 [Authorize]
 public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ProjetoGrpcService(IMediator mediator)
+    public ProjetoGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateProjeto(CreateProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListProjetoViewModel> ListProjeto(ListProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetProjetoViewModel> GetProjeto(GetProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveProjeto(RemoveProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class ProjetoGrpcService : ServiceBase<IProjetoGrpcService>, IProjetoGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateProjeto(UpdateProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

@@ -3,11 +3,11 @@
 [Authorize]
 public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApontamentoGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ApontamentoGrpcService(IMediator mediator)
+    public ApontamentoGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateApontamento(CreateApontamentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListApontamentoViewModel> ListApontamento(ListApontamentoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetApontamentoViewModel> GetApontamento(GetApontamentoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListApontamentoByRecursoViewModel> GetApontamentoByRecurso(ListApontamentoByRecursoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveApontamento(RemoveApontamentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class ApontamentoGrpcService : ServiceBase<IApontamentoGrpcService>, IApo
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateApontamento(UpdateApontamentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

@@ -3,11 +3,11 @@
 [Authorize]
 public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public RecursoGrpcService(IMediator mediator)
+    public RecursoGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateRecurso(CreateRecursoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListRecursoViewModel> ListRecurso(ListRecursoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetRecursoViewModel> GetRecurso(GetRecursoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveRecurso(RemoveRecursoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -77,6 +77,6 @@ public class RecursoGrpcService : ServiceBase<IRecursoGrpcService>, IRecursoGrpc
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateRecurso(UpdateRecursoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }
