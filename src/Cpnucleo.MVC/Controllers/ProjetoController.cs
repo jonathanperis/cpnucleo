@@ -41,7 +41,7 @@ public class ProjetoController : BaseController
     {
         try
         {
-            ListProjetoViewModel result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery { GetDependencies = true });
+            ListProjetoViewModel result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {

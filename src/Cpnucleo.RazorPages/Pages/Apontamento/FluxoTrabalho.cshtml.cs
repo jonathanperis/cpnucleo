@@ -73,7 +73,7 @@ public class FluxoTrabalhoModel : PageModel
 
         Lista = result.Workflows;
 
-        ListTarefaViewModel result2 = await _cpnucleoApiClient.ExecuteAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery(true));
+        ListTarefaViewModel result2 = await _cpnucleoApiClient.ExecuteAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {
