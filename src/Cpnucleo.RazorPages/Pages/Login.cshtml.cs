@@ -51,7 +51,7 @@ public class LoginModel : PageModel
                 return Page();
             }
 
-            var result = await _cpnucleoAuthApiClient.ExecuteAsync<AuthUserViewModel>("Auth", "AuthUser", new AuthUserQuery(Auth.Usuario, Auth.Senha));
+            var result = await _cpnucleoAuthApiClient.ExecuteAsync<AuthUserViewModel>("AuthUser", "AuthUser", new AuthUserQuery(Auth.Usuario, Auth.Senha));
 
             if (result.Status == OperationResult.Failed)
             {

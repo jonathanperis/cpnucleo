@@ -50,7 +50,7 @@ public class TarefaController : BaseController
     {
         try
         {
-            ListTarefaViewModel result = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
+            ListTarefaViewModel result = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {

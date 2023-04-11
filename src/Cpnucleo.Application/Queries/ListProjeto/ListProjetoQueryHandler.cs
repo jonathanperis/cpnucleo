@@ -16,7 +16,6 @@ public sealed class ListProjetoQueryHandler : IRequestHandler<ListProjetoQuery, 
         var projetos = await _context.Projetos
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .Include(x => x.Sistema)
             .ProjectTo<ProjetoDTO>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

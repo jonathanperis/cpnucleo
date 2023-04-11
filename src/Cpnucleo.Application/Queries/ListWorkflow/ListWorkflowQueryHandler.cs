@@ -24,6 +24,10 @@ public sealed class ListWorkflowQueryHandler : IRequestHandler<ListWorkflowQuery
             return new ListWorkflowViewModel { OperationResult = OperationResult.NotFound };
         }
 
+        var colunas = _context.Workflows.Where(x => x.Ativo).Count();
+
+        workflows.ForEach(x => x.TamanhoColuna = Workflow.GetTamanhoColuna(colunas));
+
         return new ListWorkflowViewModel { Workflows = workflows, OperationResult = OperationResult.Success };
     }
 }
