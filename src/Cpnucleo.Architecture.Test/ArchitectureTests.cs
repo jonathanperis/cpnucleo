@@ -5,7 +5,7 @@ public class ArchitectureTests
     private const string DomainNamespace = "Cpnucleo.Domain";
     private const string ApplicationNamespace = "Cpnucleo.Application";
     private const string InfrastructureNamespace = "Cpnucleo.Infrastructure";
-    private const string ServicesNamespace = "Cpnucleo.API";
+    private const string ServicesNamespace = "Cpnucleo.GRPC";
 
     [Fact]
     public void Domain_Should_Not_HaveDependencyOnOtherProjects()
