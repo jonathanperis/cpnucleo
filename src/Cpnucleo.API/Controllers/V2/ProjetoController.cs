@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class ProjetoController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ProjetoController(IMediator mediator)
+    public ProjetoController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class ProjetoController : ControllerBase
     [Route("ListProjeto")]
     public async Task<ActionResult<ListProjetoViewModel>> ListProjeto([FromBody] ListProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class ProjetoController : ControllerBase
     [Route("GetProjeto")]
     public async Task<ActionResult<GetProjetoViewModel>> GetProjeto([FromBody] GetProjetoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class ProjetoController : ControllerBase
     [Route("CreateProjeto")]
     public async Task<ActionResult<OperationResult>> CreateProjeto([FromBody] CreateProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class ProjetoController : ControllerBase
     [Route("UpdateProjeto")]
     public async Task<ActionResult<OperationResult>> UpdateProjeto([FromBody] UpdateProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class ProjetoController : ControllerBase
     [Route("RemoveProjeto")]
     public async Task<ActionResult<OperationResult>> RemoveProjeto([FromBody] RemoveProjetoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

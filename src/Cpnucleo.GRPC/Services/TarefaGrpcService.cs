@@ -3,11 +3,11 @@
 [Authorize]
 public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public TarefaGrpcService(IMediator mediator)
+    public TarefaGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> CreateTarefa(CreateTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListTarefaViewModel> ListTarefa(ListTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<GetTarefaViewModel> GetTarefa(GetTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<ListTarefaByRecursoViewModel> GetTarefaByRecurso(ListTarefaByRecursoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> RemoveTarefa(RemoveTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateTarefa(UpdateTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -105,6 +105,6 @@ public class TarefaGrpcService : ServiceBase<ITarefaGrpcService>, ITarefaGrpcSer
     /// <param name="command">Objeto de envio com os parametros necessários</param>        
     public async UnaryResult<OperationResult> UpdateTarefaByWorkflow(UpdateTarefaByWorkflowCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

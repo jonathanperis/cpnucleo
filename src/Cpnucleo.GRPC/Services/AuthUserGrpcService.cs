@@ -2,11 +2,11 @@
 
 public class AuthUserGrpcService : ServiceBase<IAuthUserGrpcService>, IAuthUserGrpcService
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public AuthUserGrpcService(IMediator mediator)
+    public AuthUserGrpcService(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -20,6 +20,6 @@ public class AuthUserGrpcService : ServiceBase<IAuthUserGrpcService>, IAuthUserG
     /// <param name="query">Objeto de consulta com os parametros necessários</param>        
     public async UnaryResult<AuthUserViewModel> AuthUser(AuthUserQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 }

@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class ImpedimentoTarefaController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ImpedimentoTarefaController(IMediator mediator)
+    public ImpedimentoTarefaController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [Route("ListImpedimentoTarefa")]
     public async Task<ActionResult<ListImpedimentoTarefaViewModel>> ListImpedimentoTarefa([FromBody] ListImpedimentoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [Route("GetImpedimentoTarefa")]
     public async Task<ActionResult<GetImpedimentoTarefaViewModel>> GetImpedimentoTarefa([FromBody] GetImpedimentoTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [Route("GetImpedimentoTarefaByTarefa")]
     public async Task<ActionResult<ListImpedimentoTarefaByTarefaViewModel>> GetImpedimentoTarefaByTarefa([FromBody] ListImpedimentoTarefaByTarefaQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [Route("CreateImpedimentoTarefa")]
     public async Task<ActionResult<OperationResult>> CreateImpedimentoTarefa([FromBody] CreateImpedimentoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class ImpedimentoTarefaController : ControllerBase
     [Route("UpdateImpedimentoTarefa")]
     public async Task<ActionResult<OperationResult>> UpdateImpedimentoTarefa([FromBody] UpdateImpedimentoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -107,6 +107,6 @@ public class ImpedimentoTarefaController : ControllerBase
     [Route("RemoveImpedimentoTarefa")]
     public async Task<ActionResult<OperationResult>> RemoveImpedimentoTarefa([FromBody] RemoveImpedimentoTarefaCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }

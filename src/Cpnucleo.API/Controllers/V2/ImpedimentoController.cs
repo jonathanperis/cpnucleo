@@ -7,11 +7,11 @@
 [Route("api/v{version:apiVersion}/[controller]")]
 public class ImpedimentoController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
 
-    public ImpedimentoController(IMediator mediator)
+    public ImpedimentoController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class ImpedimentoController : ControllerBase
     [Route("ListImpedimento")]
     public async Task<ActionResult<ListImpedimentoViewModel>> ListImpedimento([FromBody] ListImpedimentoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class ImpedimentoController : ControllerBase
     [Route("GetImpedimento")]
     public async Task<ActionResult<GetImpedimentoViewModel>> GetImpedimento([FromBody] GetImpedimentoQuery query)
     {
-        return await _mediator.Send(query);
+        return await _sender.Send(query);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class ImpedimentoController : ControllerBase
     [Route("CreateImpedimento")]
     public async Task<ActionResult<OperationResult>> CreateImpedimento([FromBody] CreateImpedimentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class ImpedimentoController : ControllerBase
     [Route("UpdateImpedimento")]
     public async Task<ActionResult<OperationResult>> UpdateImpedimento([FromBody] UpdateImpedimentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 
     /// <summary>
@@ -91,6 +91,6 @@ public class ImpedimentoController : ControllerBase
     [Route("RemoveImpedimento")]
     public async Task<ActionResult<OperationResult>> RemoveImpedimento([FromBody] RemoveImpedimentoCommand command)
     {
-        return await _mediator.Send(command);
+        return await _sender.Send(command);
     }
 }
