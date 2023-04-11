@@ -20,7 +20,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            ListTarefaViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery(true));
+            ListTarefaViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListTarefaViewModel>("Tarefa", "ListTarefa", new ListTarefaQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {

@@ -228,7 +228,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.ListaWorkflow = result.Workflows;
 
-        ListTarefaViewModel result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery { GetDependencies = true });
+        ListTarefaViewModel result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {
