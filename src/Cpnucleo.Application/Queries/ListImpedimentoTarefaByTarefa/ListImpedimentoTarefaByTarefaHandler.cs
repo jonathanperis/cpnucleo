@@ -3,20 +3,20 @@
 public sealed class ListImpedimentoTarefaByTarefaQueryHandler : IRequestHandler<ListImpedimentoTarefaByTarefaQuery, ListImpedimentoTarefaByTarefaViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListImpedimentoTarefaByTarefaQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListImpedimentoTarefaByTarefaQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListImpedimentoTarefaByTarefaViewModel> Handle(ListImpedimentoTarefaByTarefaQuery request, CancellationToken cancellationToken)
     {
         var impedimentoTarefas = await _context.ImpedimentoTarefas
+            .AsNoTracking()
+            .Include(x => x.Tarefa)
             .Where(x => x.IdTarefa == request.IdTarefa && x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (impedimentoTarefas is null)

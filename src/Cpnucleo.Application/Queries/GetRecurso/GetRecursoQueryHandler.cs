@@ -3,25 +3,18 @@
 public sealed class GetRecursoQueryHandler : IRequestHandler<GetRecursoQuery, GetRecursoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetRecursoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetRecursoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<GetRecursoViewModel> Handle(GetRecursoQuery request, CancellationToken cancellationToken)
     {
         var recurso = await _context.Recursos
+            .AsNoTracking()
             .Where(x => x.Id == request.Id && x.Ativo)
-            .Select(x => new RecursoDTO
-            {
-                Id = x.Id,
-                Nome = x.Nome,
-                Login = x.Login,
-                DataInclusao = x.DataInclusao,
-            })
+            .Select(x => x.MapToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (recurso is null)

@@ -77,7 +77,7 @@ public class ArchitectureTests
     }
 
     [Fact]
-    public void Services_Should_HaveDependencyOnMediatR()
+    public void Services_Should_HaveDependencyOnMediator()
     {
         // Arrange
         var assembly = typeof(GRPC.Services.SistemaGrpcService).Assembly;
@@ -88,7 +88,7 @@ public class ArchitectureTests
             .That()
             .HaveNameEndingWith("Service")
             .Should()
-            .HaveDependencyOn("MediatR")
+            .HaveDependencyOn("Mediator")
             .GetResult();
 
         // Assert

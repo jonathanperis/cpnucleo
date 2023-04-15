@@ -3,12 +3,10 @@
 public sealed class ApplicationHub : Hub
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ApplicationHub(IApplicationDbContext context, IMapper mapper)
+    public ApplicationHub(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task Echo(string name, string message)
@@ -17,7 +15,7 @@ public sealed class ApplicationHub : Hub
         var sistemas = await _context.Sistemas
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync();
 
         await Clients.Client(Context.ConnectionId).SendAsync("echo", name, $"{message} (echo from server)");

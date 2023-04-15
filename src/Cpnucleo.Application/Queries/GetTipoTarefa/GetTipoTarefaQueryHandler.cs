@@ -3,19 +3,18 @@
 public sealed class GetTipoTarefaQueryHandler : IRequestHandler<GetTipoTarefaQuery, GetTipoTarefaViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetTipoTarefaQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetTipoTarefaQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<GetTipoTarefaViewModel> Handle(GetTipoTarefaQuery request, CancellationToken cancellationToken)
     {
         var tipoTarefa = await _context.TipoTarefas
+            .AsNoTracking()
             .Where(x => x.Id == request.Id && x.Ativo)
-            .ProjectTo<TipoTarefaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (tipoTarefa is null)
