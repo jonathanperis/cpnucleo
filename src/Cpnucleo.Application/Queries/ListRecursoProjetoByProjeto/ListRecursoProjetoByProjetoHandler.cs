@@ -3,20 +3,21 @@
 public sealed class ListRecursoProjetoByProjetoQueryHandler : IRequestHandler<ListRecursoProjetoByProjetoQuery, ListRecursoProjetoByProjetoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListRecursoProjetoByProjetoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListRecursoProjetoByProjetoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListRecursoProjetoByProjetoViewModel> Handle(ListRecursoProjetoByProjetoQuery request, CancellationToken cancellationToken)
     {
         var recursoProjetos = await _context.RecursoProjetos
+            .AsNoTracking()
+            .Include(x => x.Recurso)
+            .Include(x => x.Projeto)
             .Where(x => x.IdProjeto == request.IdProjeto && x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<RecursoProjetoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (recursoProjetos is null)

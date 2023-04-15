@@ -1,5 +1,4 @@
-﻿global using AutoMapper;
-global using Cpnucleo.Application.Commands.CreateApontamento;
+﻿global using Cpnucleo.Application.Commands.CreateApontamento;
 global using Cpnucleo.Application.Commands.CreateImpedimento;
 global using Cpnucleo.Application.Commands.CreateImpedimentoTarefa;
 global using Cpnucleo.Application.Commands.CreateProjeto;
@@ -36,7 +35,6 @@ global using Cpnucleo.Application.Commands.UpdateWorkflow;
 global using Cpnucleo.Application.Common.Bus;
 global using Cpnucleo.Application.Common.Context;
 global using Cpnucleo.Application.Common.Hubs;
-global using Cpnucleo.Application.Common.Mappings;
 global using Cpnucleo.Application.Queries.GetApontamento;
 global using Cpnucleo.Application.Queries.GetImpedimento;
 global using Cpnucleo.Application.Queries.GetImpedimentoTarefa;

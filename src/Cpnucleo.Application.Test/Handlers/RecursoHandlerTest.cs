@@ -7,7 +7,6 @@ public class RecursoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         CreateRecursoCommand request = MockCommandHelper.GetNewCreateRecursoCommand();
 
@@ -24,15 +23,13 @@ public class RecursoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var recurso = context.Recursos.First();
 
         GetRecursoQuery request = MockQueryHelper.GetNewGetRecursoQuery(recurso.Id);
 
         // Act
-        GetRecursoQueryHandler handler = new(context, mapper);
+        GetRecursoQueryHandler handler = new(context);
         GetRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,13 +43,11 @@ public class RecursoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListRecursoQuery request = MockQueryHelper.GetNewListRecursoQuery();
 
         // Act
-        ListRecursoQueryHandler handler = new(context, mapper);
+        ListRecursoQueryHandler handler = new(context);
         ListRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -65,8 +60,6 @@ public class RecursoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var recurso = context.Recursos.First();
 
@@ -77,7 +70,7 @@ public class RecursoHandlerTest
         RemoveRecursoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetRecursoQueryHandler handler2 = new(context, mapper);
+        GetRecursoQueryHandler handler2 = new(context);
         GetRecursoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -90,8 +83,6 @@ public class RecursoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var recurso = context.Recursos.First();
 
@@ -102,7 +93,7 @@ public class RecursoHandlerTest
         UpdateRecursoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetRecursoQueryHandler handler2 = new(context, mapper);
+        GetRecursoQueryHandler handler2 = new(context);
         GetRecursoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

@@ -3,20 +3,21 @@
 public sealed class ListRecursoTarefaQueryHandler : IRequestHandler<ListRecursoTarefaQuery, ListRecursoTarefaViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListRecursoTarefaQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListRecursoTarefaQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListRecursoTarefaViewModel> Handle(ListRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
         var recursoTarefas = await _context.RecursoTarefas
+            .AsNoTracking()
+            .Include(x => x.Recurso)
+            .Include(x => x.Tarefa)
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<RecursoTarefaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (recursoTarefas is null)

@@ -7,7 +7,6 @@ public class TipoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         CreateTipoTarefaCommand request = MockCommandHelper.GetNewCreateTipoTarefaCommand();
 
@@ -24,15 +23,13 @@ public class TipoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tipoTarefa = context.TipoTarefas.First();
 
         GetTipoTarefaQuery request = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
 
         // Act
-        GetTipoTarefaQueryHandler handler = new(context, mapper);
+        GetTipoTarefaQueryHandler handler = new(context);
         GetTipoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,13 +43,11 @@ public class TipoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListTipoTarefaQuery request = MockQueryHelper.GetNewListTipoTarefaQuery();
 
         // Act
-        ListTipoTarefaQueryHandler handler = new(context, mapper);
+        ListTipoTarefaQueryHandler handler = new(context);
         ListTipoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -65,8 +60,6 @@ public class TipoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tipoTarefa = context.TipoTarefas.First();
 
@@ -77,7 +70,7 @@ public class TipoTarefaHandlerTest
         RemoveTipoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetTipoTarefaQueryHandler handler2 = new(context, mapper);
+        GetTipoTarefaQueryHandler handler2 = new(context);
         GetTipoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -90,8 +83,6 @@ public class TipoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tipoTarefa = context.TipoTarefas.First();
 
@@ -102,7 +93,7 @@ public class TipoTarefaHandlerTest
         UpdateTipoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetTipoTarefaQueryHandler handler2 = new(context, mapper);
+        GetTipoTarefaQueryHandler handler2 = new(context);
         GetTipoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

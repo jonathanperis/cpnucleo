@@ -3,20 +3,19 @@
 public sealed class GetProjetoQueryHandler : IRequestHandler<GetProjetoQuery, GetProjetoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetProjetoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetProjetoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<GetProjetoViewModel> Handle(GetProjetoQuery request, CancellationToken cancellationToken)
     {
         var projeto = await _context.Projetos
-            .Where(x => x.Id == request.Id && x.Ativo)
+            .AsNoTracking()
             .Include(x => x.Sistema)
-            .ProjectTo<ProjetoDTO>(_mapper.ConfigurationProvider)
+            .Where(x => x.Id == request.Id && x.Ativo)
+            .Select(x => x.MapToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (projeto is null)
