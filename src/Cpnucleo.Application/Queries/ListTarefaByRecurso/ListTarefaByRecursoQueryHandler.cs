@@ -3,20 +3,23 @@
 public sealed class ListTarefaByRecursoQueryHandler : IRequestHandler<ListTarefaByRecursoQuery, ListTarefaByRecursoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListTarefaByRecursoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListTarefaByRecursoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListTarefaByRecursoViewModel> Handle(ListTarefaByRecursoQuery request, CancellationToken cancellationToken)
     {
         var tarefas = await _context.Tarefas
+            .AsNoTracking()
+            .Include(x => x.Projeto)
+            .Include(x => x.Recurso)
+            .Include(x => x.Workflow)
+            .Include(x => x.TipoTarefa)
             .Where(x => x.IdRecurso == request.IdRecurso && x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<TarefaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (tarefas is null)
@@ -46,7 +49,7 @@ public sealed class ListTarefaByRecursoQueryHandler : IRequestHandler<ListTarefa
             var impedimentos = await _context.ImpedimentoTarefas
                 .Where(x => x.IdTarefa == item.Id && x.Ativo)
                 .OrderBy(x => x.DataInclusao)
-                .ProjectTo<ImpedimentoTarefaDTO>(_mapper.ConfigurationProvider)
+                .Select(x => x.MapToDto())
                 .ToListAsync(cancellationToken);
 
             if (impedimentos.Any())

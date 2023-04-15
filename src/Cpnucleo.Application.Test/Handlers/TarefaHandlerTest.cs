@@ -7,7 +7,6 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         var projeto = context.Projetos.First();
         var workflow = context.Workflows.First();
@@ -29,15 +28,13 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
 
         GetTarefaQuery request = MockQueryHelper.GetNewGetTarefaQuery(tarefa.Id);
 
         // Act
-        GetTarefaQueryHandler handler = new(context, mapper);
+        GetTarefaQueryHandler handler = new(context);
         GetTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -51,13 +48,11 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListTarefaQuery request = MockQueryHelper.GetNewListTarefaQuery();
 
         // Act
-        ListTarefaQueryHandler handler = new(context, mapper);
+        ListTarefaQueryHandler handler = new(context);
         ListTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -70,8 +65,6 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
 
@@ -82,7 +75,7 @@ public class TarefaHandlerTest
         RemoveTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetTarefaQueryHandler handler2 = new(context, mapper);
+        GetTarefaQueryHandler handler2 = new(context);
         GetTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -95,8 +88,6 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
         
         var projeto = context.Projetos.First();
         var workflow = context.Workflows.First();
@@ -111,7 +102,7 @@ public class TarefaHandlerTest
         UpdateTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetTarefaQueryHandler handler2 = new(context, mapper);
+        GetTarefaQueryHandler handler2 = new(context);
         GetTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -125,8 +116,6 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var workflow = context.Workflows.First();
         var tarefa = context.Tarefas.First();
@@ -138,7 +127,7 @@ public class TarefaHandlerTest
         UpdateTarefaByWorkflowCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetTarefaQueryHandler handler2 = new(context, mapper);
+        GetTarefaQueryHandler handler2 = new(context);
         GetTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -153,15 +142,13 @@ public class TarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var recurso = context.Recursos.First();
 
         ListTarefaByRecursoQuery request = MockQueryHelper.GetNewListTarefaByRecursoQuery(recurso.Id);
 
         // Act
-        ListTarefaByRecursoQueryHandler handler = new(context, mapper);
+        ListTarefaByRecursoQueryHandler handler = new(context);
         ListTarefaByRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert

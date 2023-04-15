@@ -3,12 +3,10 @@
 public sealed class RemoveSistemaEventHandler : IMessageReceptionHandler<RemoveSistemaEvent>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public RemoveSistemaEventHandler(IApplicationDbContext context, IMapper mapper)
+    public RemoveSistemaEventHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task Handle(RemoveSistemaEvent @event, CancellationToken cancellationToken)
@@ -17,7 +15,7 @@ public sealed class RemoveSistemaEventHandler : IMessageReceptionHandler<RemoveS
         var sistemas = await _context.Sistemas
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
     }
 }

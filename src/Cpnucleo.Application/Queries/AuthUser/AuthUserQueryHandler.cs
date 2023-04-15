@@ -3,13 +3,11 @@
 public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUserViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
 
-    public AuthUserQueryHandler(IApplicationDbContext context, IMapper mapper, IConfiguration configuration)
+    public AuthUserQueryHandler(IApplicationDbContext context, IConfiguration configuration)
     {
         _context = context;
-        _mapper = mapper;
         _configuration = configuration;
     }
 
@@ -21,6 +19,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
         };
 
         var recurso = await _context.Recursos
+            .AsNoTracking()
             .Where(x => x.Login == request.Usuario && x.Ativo)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -40,7 +39,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
             return result;
         }
 
-        result.Recurso = _mapper.Map<RecursoDTO>(recurso);
+        result.Recurso = recurso.MapToDto();
         result.Recurso.Senha = null;
 
         int.TryParse(_configuration["Jwt:Expires"], out int jwtExpires);

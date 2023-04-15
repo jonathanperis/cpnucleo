@@ -1,22 +1,24 @@
-﻿namespace Cpnucleo.Application.Queries.ListProjeto;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Cpnucleo.Application.Queries.ListProjeto;
 
 public sealed class ListProjetoQueryHandler : IRequestHandler<ListProjetoQuery, ListProjetoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListProjetoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListProjetoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListProjetoViewModel> Handle(ListProjetoQuery request, CancellationToken cancellationToken)
     {
         var projetos = await _context.Projetos
+            .AsNoTracking()
+            .Include(x => x.Sistema)
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<ProjetoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (projetos is null)

@@ -3,20 +3,20 @@
 public sealed class ListApontamentoQueryHandler : IRequestHandler<ListApontamentoQuery, ListApontamentoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListApontamentoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListApontamentoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListApontamentoViewModel> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
         var apontamentos = await _context.Apontamentos
+            .AsNoTracking()
+            .Include(x => x.Tarefa)
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<ApontamentoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (apontamentos is null)

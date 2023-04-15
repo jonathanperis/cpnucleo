@@ -3,22 +3,21 @@
 public sealed class ListSistemaQueryHandler : IRequestHandler<ListSistemaQuery, ListSistemaViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly IHubContext<ApplicationHub> _hubContext;
 
-    public ListSistemaQueryHandler(IApplicationDbContext context, IMapper mapper, IHubContext<ApplicationHub> hubContext)
+    public ListSistemaQueryHandler(IApplicationDbContext context, IHubContext<ApplicationHub> hubContext)
     {
         _context = context;
-        _mapper = mapper;
         _hubContext = hubContext;
     }
 
     public async ValueTask<ListSistemaViewModel> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
     {
         var sistemas = await _context.Sistemas
+            .AsNoTracking()
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (sistemas is null)

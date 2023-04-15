@@ -3,20 +3,19 @@
 public sealed class ListWorkflowQueryHandler : IRequestHandler<ListWorkflowQuery, ListWorkflowViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListWorkflowQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListWorkflowQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListWorkflowViewModel> Handle(ListWorkflowQuery request, CancellationToken cancellationToken)
     {
         var workflows = await _context.Workflows
+            .AsNoTracking()
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<WorkflowDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (workflows is null)

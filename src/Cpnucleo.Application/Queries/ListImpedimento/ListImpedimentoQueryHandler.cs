@@ -3,20 +3,19 @@
 public sealed class ListImpedimentoQueryHandler : IRequestHandler<ListImpedimentoQuery, ListImpedimentoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListImpedimentoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListImpedimentoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListImpedimentoViewModel> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
     {
         var impedimentos = await _context.Impedimentos
+            .AsNoTracking()
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .ProjectTo<ImpedimentoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (impedimentos is null)

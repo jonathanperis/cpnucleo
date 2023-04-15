@@ -7,7 +7,6 @@ public class ProjetoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         var sistema = context.Sistemas.First();
 
@@ -26,15 +25,13 @@ public class ProjetoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var projeto = context.Projetos.First();
 
         GetProjetoQuery request = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
-        GetProjetoQueryHandler handler = new(context, mapper);
+        GetProjetoQueryHandler handler = new(context);
         GetProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -48,13 +45,11 @@ public class ProjetoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListProjetoQuery request = MockQueryHelper.GetNewListProjetoQuery();
 
         // Act
-        ListProjetoQueryHandler handler = new(context, mapper);
+        ListProjetoQueryHandler handler = new(context);
         ListProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -67,8 +62,6 @@ public class ProjetoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var projeto = context.Projetos.First();
 
@@ -79,7 +72,7 @@ public class ProjetoHandlerTest
         RemoveProjetoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetProjetoQueryHandler handler2 = new(context, mapper);
+        GetProjetoQueryHandler handler2 = new(context);
         GetProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -92,8 +85,6 @@ public class ProjetoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var sistema = context.Sistemas.First();
         var projeto = context.Projetos.First();
@@ -105,7 +96,7 @@ public class ProjetoHandlerTest
         UpdateProjetoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetProjetoQueryHandler handler2 = new(context, mapper);
+        GetProjetoQueryHandler handler2 = new(context);
         GetProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

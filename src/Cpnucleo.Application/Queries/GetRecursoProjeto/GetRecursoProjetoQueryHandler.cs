@@ -3,19 +3,20 @@
 public sealed class GetRecursoProjetoQueryHandler : IRequestHandler<GetRecursoProjetoQuery, GetRecursoProjetoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetRecursoProjetoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetRecursoProjetoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<GetRecursoProjetoViewModel> Handle(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
         var recursoProjeto = await _context.RecursoProjetos
+            .AsNoTracking()
+            .Include(x => x.Recurso)
+            .Include(x => x.Projeto)
             .Where(x => x.Id == request.Id && x.Ativo)
-            .ProjectTo<RecursoProjetoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (recursoProjeto is null)

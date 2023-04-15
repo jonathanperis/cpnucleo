@@ -3,19 +3,18 @@
 public sealed class GetImpedimentoQueryHandler : IRequestHandler<GetImpedimentoQuery, GetImpedimentoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetImpedimentoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetImpedimentoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<GetImpedimentoViewModel> Handle(GetImpedimentoQuery request, CancellationToken cancellationToken)
     {
         var impedimento = await _context.Impedimentos
+            .AsNoTracking()
             .Where(x => x.Id == request.Id && x.Ativo)
-            .ProjectTo<ImpedimentoDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (impedimento is null)

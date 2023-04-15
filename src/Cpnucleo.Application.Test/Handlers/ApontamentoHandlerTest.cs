@@ -7,7 +7,6 @@ public class ApontamentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
         var recurso = context.Recursos.First();
@@ -27,15 +26,13 @@ public class ApontamentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var apontamento = context.Apontamentos.First();
 
         GetApontamentoQuery request = MockQueryHelper.GetNewGetApontamentoQuery(apontamento.Id);
 
         // Act
-        GetApontamentoQueryHandler handler = new(context, mapper);
+        GetApontamentoQueryHandler handler = new(context);
         GetApontamentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -49,13 +46,11 @@ public class ApontamentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListApontamentoQuery request = MockQueryHelper.GetNewListApontamentoQuery();
 
         // Act
-        ListApontamentoQueryHandler handler = new(context, mapper);
+        ListApontamentoQueryHandler handler = new(context);
         ListApontamentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -68,8 +63,6 @@ public class ApontamentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var apontamento = context.Apontamentos.First();
 
@@ -80,7 +73,7 @@ public class ApontamentoHandlerTest
         RemoveApontamentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetApontamentoQueryHandler handler2 = new(context, mapper);
+        GetApontamentoQueryHandler handler2 = new(context);
         GetApontamentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -93,8 +86,6 @@ public class ApontamentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
         var recurso = context.Recursos.First();
@@ -107,7 +98,7 @@ public class ApontamentoHandlerTest
         UpdateApontamentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetApontamentoQueryHandler handler2 = new(context, mapper);
+        GetApontamentoQueryHandler handler2 = new(context);
         GetApontamentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -121,15 +112,13 @@ public class ApontamentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var recurso = context.Recursos.First();
 
         ListApontamentoByRecursoQuery request = MockQueryHelper.GetNewListApontamentoByRecursoQuery(recurso.Id);
 
         // Act
-        ListApontamentoByRecursoQueryHandler handler = new(context, mapper);
+        ListApontamentoByRecursoQueryHandler handler = new(context);
         ListApontamentoByRecursoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert

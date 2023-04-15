@@ -3,26 +3,19 @@
 public sealed class ListRecursoQueryHandler : IRequestHandler<ListRecursoQuery, ListRecursoViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public ListRecursoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public ListRecursoQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<ListRecursoViewModel> Handle(ListRecursoQuery request, CancellationToken cancellationToken)
     {
         var recursos = await _context.Recursos
+            .AsNoTracking()
             .Where(x => x.Ativo)
             .OrderBy(x => x.DataInclusao)
-            .Select(x => new RecursoDTO
-            {
-                Id = x.Id,
-                Nome = x.Nome,
-                Login = x.Login,
-                DataInclusao = x.DataInclusao,
-            })
+            .Select(x => x.MapToDto())
             .ToListAsync(cancellationToken);
 
         if (recursos is null)

@@ -7,7 +7,6 @@ public class SistemaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         CreateSistemaCommand request = MockCommandHelper.GetNewCreateSistemaCommand();
 
@@ -24,15 +23,13 @@ public class SistemaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var sistema = context.Sistemas.First();
 
         GetSistemaQuery request = MockQueryHelper.GetNewGetSistemaQuery(sistema.Id);
 
         // Act
-        GetSistemaQueryHandler handler = new(context, mapper);
+        GetSistemaQueryHandler handler = new(context);
         GetSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,14 +43,12 @@ public class SistemaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
         IHubContext<ApplicationHub> mockSignalR = SignalRHelper.GetInstance();
-        await DbContextHelper.SeedData(context);
 
         ListSistemaQuery request = MockQueryHelper.GetNewListSistemaQuery();
 
         // Act
-        ListSistemaQueryHandler handler = new(context, mapper, mockSignalR);
+        ListSistemaQueryHandler handler = new(context, mockSignalR);
         ListSistemaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -66,8 +61,6 @@ public class SistemaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
         
         var sistema = context.Sistemas.First();
         
@@ -80,7 +73,7 @@ public class SistemaHandlerTest
         RemoveSistemaCommandHandler handler = new(context, eventManager);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetSistemaQueryHandler handler2 = new(context, mapper);
+        GetSistemaQueryHandler handler2 = new(context);
         GetSistemaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -93,8 +86,6 @@ public class SistemaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var sistema = context.Sistemas.First();
 
@@ -105,7 +96,7 @@ public class SistemaHandlerTest
         UpdateSistemaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetSistemaQueryHandler handler2 = new(context, mapper);
+        GetSistemaQueryHandler handler2 = new(context);
         GetSistemaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

@@ -7,7 +7,6 @@ public class ImpedimentoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
         var impedimento = context.Impedimentos.First();
@@ -27,15 +26,13 @@ public class ImpedimentoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var impedimentoTarefa = context.ImpedimentoTarefas.First();
 
         GetImpedimentoTarefaQuery request = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
 
         // Act
-        GetImpedimentoTarefaQueryHandler handler = new(context, mapper);
+        GetImpedimentoTarefaQueryHandler handler = new(context);
         GetImpedimentoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -49,13 +46,11 @@ public class ImpedimentoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListImpedimentoTarefaQuery request = MockQueryHelper.GetNewListImpedimentoTarefaQuery();
 
         // Act
-        ListImpedimentoTarefaQueryHandler handler = new(context, mapper);
+        ListImpedimentoTarefaQueryHandler handler = new(context);
         ListImpedimentoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -68,8 +63,6 @@ public class ImpedimentoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var impedimentoTarefa = context.ImpedimentoTarefas.First();
 
@@ -80,7 +73,7 @@ public class ImpedimentoTarefaHandlerTest
         RemoveImpedimentoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetImpedimentoTarefaQueryHandler handler2 = new(context, mapper);
+        GetImpedimentoTarefaQueryHandler handler2 = new(context);
         GetImpedimentoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -93,8 +86,6 @@ public class ImpedimentoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
         var impedimento = context.Impedimentos.First();
@@ -107,7 +98,7 @@ public class ImpedimentoTarefaHandlerTest
         UpdateImpedimentoTarefaCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetImpedimentoTarefaQueryHandler handler2 = new(context, mapper);
+        GetImpedimentoTarefaQueryHandler handler2 = new(context);
         GetImpedimentoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -121,15 +112,13 @@ public class ImpedimentoTarefaHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var tarefa = context.Tarefas.First();
 
         ListImpedimentoTarefaByTarefaQuery request = MockQueryHelper.GetNewListImpedimentoTarefaByTarefaQuery(tarefa.Id);
 
         // Act
-        ListImpedimentoTarefaByTarefaQueryHandler handler = new(context, mapper);
+        ListImpedimentoTarefaByTarefaQueryHandler handler = new(context);
         ListImpedimentoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert

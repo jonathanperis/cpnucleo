@@ -7,7 +7,6 @@ public class WorkflowHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         CreateWorkflowCommand request = MockCommandHelper.GetNewCreateWorkflowCommand();
 
@@ -24,15 +23,13 @@ public class WorkflowHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var workflow = context.Workflows.First();
 
         GetWorkflowQuery request = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
 
         // Act
-        GetWorkflowQueryHandler handler = new(context, mapper);
+        GetWorkflowQueryHandler handler = new(context);
         GetWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,13 +43,11 @@ public class WorkflowHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListWorkflowQuery request = MockQueryHelper.GetNewListWorkflowQuery();
 
         // Act
-        ListWorkflowQueryHandler handler = new(context, mapper);
+        ListWorkflowQueryHandler handler = new(context);
         ListWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -65,8 +60,6 @@ public class WorkflowHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var workflow = context.Workflows.First();
 
@@ -77,7 +70,7 @@ public class WorkflowHandlerTest
         RemoveWorkflowCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetWorkflowQueryHandler handler2 = new(context, mapper);
+        GetWorkflowQueryHandler handler2 = new(context);
         GetWorkflowViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -90,8 +83,6 @@ public class WorkflowHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var workflow = context.Workflows.First();
 
@@ -102,7 +93,7 @@ public class WorkflowHandlerTest
         UpdateWorkflowCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetWorkflowQueryHandler handler2 = new(context, mapper);
+        GetWorkflowQueryHandler handler2 = new(context);
         GetWorkflowViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

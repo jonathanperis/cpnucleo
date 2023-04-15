@@ -7,7 +7,6 @@ public class ImpedimentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        await DbContextHelper.SeedData(context);
 
         CreateImpedimentoCommand request = MockCommandHelper.GetNewCreateImpedimentoCommand();
 
@@ -24,15 +23,13 @@ public class ImpedimentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var impedimento = context.Impedimentos.First();
 
         GetImpedimentoQuery request = MockQueryHelper.GetNewGetImpedimentoQuery(impedimento.Id);
 
         // Act
-        GetImpedimentoQueryHandler handler = new(context, mapper);
+        GetImpedimentoQueryHandler handler = new(context);
         GetImpedimentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -46,13 +43,11 @@ public class ImpedimentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         ListImpedimentoQuery request = MockQueryHelper.GetNewListImpedimentoQuery();
 
         // Act
-        ListImpedimentoQueryHandler handler = new(context, mapper);
+        ListImpedimentoQueryHandler handler = new(context);
         ListImpedimentoViewModel response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
@@ -65,8 +60,6 @@ public class ImpedimentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var impedimento = context.Impedimentos.First();
 
@@ -77,7 +70,7 @@ public class ImpedimentoHandlerTest
         RemoveImpedimentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetImpedimentoQueryHandler handler2 = new(context, mapper);
+        GetImpedimentoQueryHandler handler2 = new(context);
         GetImpedimentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
@@ -90,8 +83,6 @@ public class ImpedimentoHandlerTest
     {
         // Arrange
         IApplicationDbContext context = DbContextHelper.GetContext();
-        IMapper mapper = AutoMapperHelper.GetMappings();
-        await DbContextHelper.SeedData(context);
 
         var impedimento = context.Impedimentos.First();
 
@@ -102,7 +93,7 @@ public class ImpedimentoHandlerTest
         UpdateImpedimentoCommandHandler handler = new(context);
         OperationResult response = await handler.Handle(request, CancellationToken.None);
 
-        GetImpedimentoQueryHandler handler2 = new(context, mapper);
+        GetImpedimentoQueryHandler handler2 = new(context);
         GetImpedimentoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert

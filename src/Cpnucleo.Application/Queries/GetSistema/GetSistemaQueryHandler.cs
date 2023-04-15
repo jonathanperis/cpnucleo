@@ -3,19 +3,18 @@
 public sealed class GetSistemaQueryHandler : IRequestHandler<GetSistemaQuery, GetSistemaViewModel>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetSistemaQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetSistemaQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async ValueTask<GetSistemaViewModel> Handle(GetSistemaQuery request, CancellationToken cancellationToken)
     {
         var sistema = await _context.Sistemas
+            .AsNoTracking()
             .Where(x => x.Id == request.Id && x.Ativo)
-            .ProjectTo<SistemaDTO>(_mapper.ConfigurationProvider)
+            .Select(x => x.MapToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (sistema is null)
