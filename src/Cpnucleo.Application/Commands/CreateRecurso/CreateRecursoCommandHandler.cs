@@ -9,7 +9,7 @@ public sealed class CreateRecursoCommandHandler : IRequestHandler<CreateRecursoC
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(CreateRecursoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(CreateRecursoCommand request, CancellationToken cancellationToken)
     {
         var recurso = Recurso.Create(request.Nome, request.Login, request.Senha);
         _context.Recursos.Add(recurso);

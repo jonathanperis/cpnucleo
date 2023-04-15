@@ -9,7 +9,7 @@ public sealed class CreateWorkflowCommandHandler : IRequestHandler<CreateWorkflo
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
     {
         var workflow = Workflow.Create(request.Nome, request.Ordem);
         _context.Workflows.Add(workflow);

@@ -11,7 +11,7 @@ public sealed class GetWorkflowQueryHandler : IRequestHandler<GetWorkflowQuery, 
         _mapper = mapper;
     }
 
-    public async Task<GetWorkflowViewModel> Handle(GetWorkflowQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetWorkflowViewModel> Handle(GetWorkflowQuery request, CancellationToken cancellationToken)
     {
         var workflow = await _context.Workflows
             .Where(x => x.Id == request.Id && x.Ativo)

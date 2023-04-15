@@ -13,7 +13,7 @@ public sealed class ListSistemaQueryHandler : IRequestHandler<ListSistemaQuery, 
         _hubContext = hubContext;
     }
 
-    public async Task<ListSistemaViewModel> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<ListSistemaViewModel> Handle(ListSistemaQuery request, CancellationToken cancellationToken)
     {
         var sistemas = await _context.Sistemas
             .Where(x => x.Ativo)

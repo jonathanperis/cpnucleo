@@ -11,7 +11,7 @@ public sealed class GetRecursoTarefaQueryHandler : IRequestHandler<GetRecursoTar
         _mapper = mapper;
     }
 
-    public async Task<GetRecursoTarefaViewModel> Handle(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetRecursoTarefaViewModel> Handle(GetRecursoTarefaQuery request, CancellationToken cancellationToken)
     {
         var recursoTarefa = await _context.RecursoTarefas
             .Where(x => x.Id == request.Id && x.Ativo)

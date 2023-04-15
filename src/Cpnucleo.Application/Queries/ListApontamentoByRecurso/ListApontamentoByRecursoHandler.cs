@@ -11,7 +11,7 @@ public sealed class ListApontamentoByRecursoQueryHandler : IRequestHandler<ListA
         _mapper = mapper;
     }
 
-    public async Task<ListApontamentoByRecursoViewModel> Handle(ListApontamentoByRecursoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<ListApontamentoByRecursoViewModel> Handle(ListApontamentoByRecursoQuery request, CancellationToken cancellationToken)
     {
         var apontamentos = await _context.Apontamentos
             .Where(x => x.IdRecurso == request.IdRecurso && x.Ativo)

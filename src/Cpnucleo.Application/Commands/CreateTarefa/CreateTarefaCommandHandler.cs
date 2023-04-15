@@ -9,7 +9,7 @@ public sealed class CreateTarefaCommandHandler : IRequestHandler<CreateTarefaCom
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(CreateTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(CreateTarefaCommand request, CancellationToken cancellationToken)
     {
         var tarefa = Tarefa.Create(request.Nome,
                                                    request.DataInicio,

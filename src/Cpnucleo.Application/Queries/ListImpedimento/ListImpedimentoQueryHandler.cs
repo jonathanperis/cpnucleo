@@ -11,7 +11,7 @@ public sealed class ListImpedimentoQueryHandler : IRequestHandler<ListImpediment
         _mapper = mapper;
     }
 
-    public async Task<ListImpedimentoViewModel> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<ListImpedimentoViewModel> Handle(ListImpedimentoQuery request, CancellationToken cancellationToken)
     {
         var impedimentos = await _context.Impedimentos
             .Where(x => x.Ativo)

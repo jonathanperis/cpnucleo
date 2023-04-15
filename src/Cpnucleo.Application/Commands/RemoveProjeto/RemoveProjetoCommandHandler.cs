@@ -9,7 +9,7 @@ public sealed class RemoveProjetoCommandHandler : IRequestHandler<RemoveProjetoC
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(RemoveProjetoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(RemoveProjetoCommand request, CancellationToken cancellationToken)
     {
         var projeto = await _context.Projetos
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
