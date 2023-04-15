@@ -77,7 +77,7 @@ global using Ev.ServiceBus;
 global using Ev.ServiceBus.Reception;
 global using FluentValidation;
 global using FluentValidation.Results;
-global using MediatR;
+global using Mediator;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.EntityFrameworkCore;

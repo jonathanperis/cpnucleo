@@ -9,7 +9,7 @@ public sealed class CreateTipoTarefaCommandHandler : IRequestHandler<CreateTipoT
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(CreateTipoTarefaCommand request, CancellationToken cancellationToken)
     {
         var tipoTarefa = TipoTarefa.Create(request.Nome, request.Image);
         _context.TipoTarefas.Add(tipoTarefa);

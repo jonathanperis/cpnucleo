@@ -11,7 +11,7 @@ public sealed class GetImpedimentoQueryHandler : IRequestHandler<GetImpedimentoQ
         _mapper = mapper;
     }
 
-    public async Task<GetImpedimentoViewModel> Handle(GetImpedimentoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetImpedimentoViewModel> Handle(GetImpedimentoQuery request, CancellationToken cancellationToken)
     {
         var impedimento = await _context.Impedimentos
             .Where(x => x.Id == request.Id && x.Ativo)

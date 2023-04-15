@@ -64,7 +64,7 @@ global using Cpnucleo.Shared.Queries.ListTarefa;
 global using Cpnucleo.Shared.Queries.ListTarefaByRecurso;
 global using Cpnucleo.Shared.Queries.ListTipoTarefa;
 global using Cpnucleo.Shared.Queries.ListWorkflow;
-global using MediatR;
+global using Mediator;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;

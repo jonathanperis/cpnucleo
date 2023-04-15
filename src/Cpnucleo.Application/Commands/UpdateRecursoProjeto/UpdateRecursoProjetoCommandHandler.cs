@@ -9,7 +9,7 @@ public sealed class UpdateRecursoProjetoCommandHandler : IRequestHandler<UpdateR
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(UpdateRecursoProjetoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(UpdateRecursoProjetoCommand request, CancellationToken cancellationToken)
     {
         var recursoProjeto = await _context.RecursoProjetos
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

@@ -11,7 +11,7 @@ public sealed class GetSistemaQueryHandler : IRequestHandler<GetSistemaQuery, Ge
         _mapper = mapper;
     }
 
-    public async Task<GetSistemaViewModel> Handle(GetSistemaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetSistemaViewModel> Handle(GetSistemaQuery request, CancellationToken cancellationToken)
     {
         var sistema = await _context.Sistemas
             .Where(x => x.Id == request.Id && x.Ativo)

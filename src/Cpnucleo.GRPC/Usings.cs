@@ -66,7 +66,7 @@ global using Cpnucleo.Shared.Queries.ListTipoTarefa;
 global using Cpnucleo.Shared.Queries.ListWorkflow;
 global using MagicOnion;
 global using MagicOnion.Server;
-global using MediatR;
+global using Mediator;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.IdentityModel.Tokens;

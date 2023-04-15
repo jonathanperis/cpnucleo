@@ -11,7 +11,7 @@ public sealed class ListApontamentoQueryHandler : IRequestHandler<ListApontament
         _mapper = mapper;
     }
 
-    public async Task<ListApontamentoViewModel> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<ListApontamentoViewModel> Handle(ListApontamentoQuery request, CancellationToken cancellationToken)
     {
         var apontamentos = await _context.Apontamentos
             .Where(x => x.Ativo)
