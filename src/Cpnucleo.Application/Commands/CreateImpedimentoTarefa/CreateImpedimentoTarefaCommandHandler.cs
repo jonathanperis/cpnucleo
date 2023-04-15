@@ -9,7 +9,7 @@ public sealed class CreateImpedimentoTarefaCommandHandler : IRequestHandler<Crea
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(CreateImpedimentoTarefaCommand request, CancellationToken cancellationToken)
     {
         var impedimentoTarefa = ImpedimentoTarefa.Create(request.Descricao, request.IdTarefa, request.IdImpedimento);
         _context.ImpedimentoTarefas.Add(impedimentoTarefa);

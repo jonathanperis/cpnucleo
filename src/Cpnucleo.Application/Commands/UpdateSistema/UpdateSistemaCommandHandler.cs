@@ -9,7 +9,7 @@ public sealed class UpdateSistemaCommandHandler : IRequestHandler<UpdateSistemaC
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(UpdateSistemaCommand request, CancellationToken cancellationToken)
     {
         var sistema = await _context.Sistemas
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

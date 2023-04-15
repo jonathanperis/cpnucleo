@@ -63,6 +63,6 @@ global using Cpnucleo.Shared.Queries.ListTarefaByRecurso;
 global using Cpnucleo.Shared.Queries.ListTipoTarefa;
 global using Cpnucleo.Shared.Queries.ListWorkflow;
 global using MagicOnion;
-global using MediatR;
+global using Mediator;
 global using MessagePack;
 global using System.ComponentModel.DataAnnotations;

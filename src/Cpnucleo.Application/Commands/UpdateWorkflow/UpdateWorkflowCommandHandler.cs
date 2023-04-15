@@ -9,7 +9,7 @@ public sealed class UpdateWorkflowCommandHandler : IRequestHandler<UpdateWorkflo
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
         var workflow = await _context.Workflows
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

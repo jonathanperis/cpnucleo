@@ -9,7 +9,7 @@ public sealed class UpdateTarefaCommandHandler : IRequestHandler<UpdateTarefaCom
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(UpdateTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(UpdateTarefaCommand request, CancellationToken cancellationToken)
     {
         var tarefa = await _context.Tarefas
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

@@ -11,7 +11,7 @@ public sealed class GetApontamentoQueryHandler : IRequestHandler<GetApontamentoQ
         _mapper = mapper;
     }
 
-    public async Task<GetApontamentoViewModel> Handle(GetApontamentoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetApontamentoViewModel> Handle(GetApontamentoQuery request, CancellationToken cancellationToken)
     {
         var apontamento = await _context.Apontamentos
             .Where(x => x.Id == request.Id && x.Ativo)

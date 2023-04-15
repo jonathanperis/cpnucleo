@@ -9,7 +9,7 @@ public sealed class UpdateApontamentoCommandHandler : IRequestHandler<UpdateApon
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(UpdateApontamentoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(UpdateApontamentoCommand request, CancellationToken cancellationToken)
     {
         var apontamento = await _context.Apontamentos
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

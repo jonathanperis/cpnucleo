@@ -9,7 +9,7 @@ public sealed class RemoveTarefaCommandHandler : IRequestHandler<RemoveTarefaCom
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(RemoveTarefaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(RemoveTarefaCommand request, CancellationToken cancellationToken)
     {
         var tarefa = await _context.Tarefas
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

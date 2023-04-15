@@ -9,7 +9,7 @@ public sealed class UpdateImpedimentoCommandHandler : IRequestHandler<UpdateImpe
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(UpdateImpedimentoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(UpdateImpedimentoCommand request, CancellationToken cancellationToken)
     {
         var impedimento = await _context.Impedimentos
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

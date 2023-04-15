@@ -11,7 +11,7 @@ public sealed class RemoveSistemaCommandHandler : IRequestHandler<RemoveSistemaC
         _eventHandler = eventHandler;
     }
 
-    public async Task<OperationResult> Handle(RemoveSistemaCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(RemoveSistemaCommand request, CancellationToken cancellationToken)
     {
         var sistema = await _context.Sistemas
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

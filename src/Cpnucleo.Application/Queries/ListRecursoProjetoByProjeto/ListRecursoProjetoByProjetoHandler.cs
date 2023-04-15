@@ -11,7 +11,7 @@ public sealed class ListRecursoProjetoByProjetoQueryHandler : IRequestHandler<Li
         _mapper = mapper;
     }
 
-    public async Task<ListRecursoProjetoByProjetoViewModel> Handle(ListRecursoProjetoByProjetoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<ListRecursoProjetoByProjetoViewModel> Handle(ListRecursoProjetoByProjetoQuery request, CancellationToken cancellationToken)
     {
         var recursoProjetos = await _context.RecursoProjetos
             .Where(x => x.IdProjeto == request.IdProjeto && x.Ativo)

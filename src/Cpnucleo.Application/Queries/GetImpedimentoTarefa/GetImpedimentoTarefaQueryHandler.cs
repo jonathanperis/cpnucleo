@@ -11,7 +11,7 @@ public sealed class GetImpedimentoTarefaQueryHandler : IRequestHandler<GetImpedi
         _mapper = mapper;
     }
 
-    public async Task<GetImpedimentoTarefaViewModel> Handle(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetImpedimentoTarefaViewModel> Handle(GetImpedimentoTarefaQuery request, CancellationToken cancellationToken)
     {
         var impedimentoTarefa = await _context.ImpedimentoTarefas
             .Where(x => x.Id == request.Id && x.Ativo)

@@ -9,7 +9,7 @@ public sealed class CreateApontamentoCommandHandler : IRequestHandler<CreateApon
         _context = context;
     }
 
-    public async Task<OperationResult> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken)
+    public async ValueTask<OperationResult> Handle(CreateApontamentoCommand request, CancellationToken cancellationToken)
     {
         var apontamento = Apontamento.Create(request.Descricao, request.DataApontamento, request.QtdHoras, request.IdTarefa, request.IdRecurso);
         _context.Apontamentos.Add(apontamento);

@@ -13,7 +13,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
         _configuration = configuration;
     }
 
-    public async Task<AuthUserViewModel> Handle(AuthUserQuery request, CancellationToken cancellationToken)
+    public async ValueTask<AuthUserViewModel> Handle(AuthUserQuery request, CancellationToken cancellationToken)
     {
         AuthUserViewModel result = new()
         {

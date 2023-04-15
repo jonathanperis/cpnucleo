@@ -11,7 +11,7 @@ public sealed class GetRecursoProjetoQueryHandler : IRequestHandler<GetRecursoPr
         _mapper = mapper;
     }
 
-    public async Task<GetRecursoProjetoViewModel> Handle(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
+    public async ValueTask<GetRecursoProjetoViewModel> Handle(GetRecursoProjetoQuery request, CancellationToken cancellationToken)
     {
         var recursoProjeto = await _context.RecursoProjetos
             .Where(x => x.Id == request.Id && x.Ativo)
