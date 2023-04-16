@@ -4,6 +4,8 @@ public sealed class RemoveSistemaCommandValidator : AbstractValidator<RemoveSist
 {
     public RemoveSistemaCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Sistema");
     }
 }

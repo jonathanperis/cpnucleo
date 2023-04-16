@@ -4,8 +4,16 @@ public sealed class UpdateRecursoProjetoCommandValidator : AbstractValidator<Upd
 {
     public UpdateRecursoProjetoCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.IdRecurso).NotEmpty();
-        RuleFor(x => x.IdProjeto).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Recurso Projeto");
+
+        RuleFor(x => x.IdRecurso)
+            .NotEmpty()
+            .WithMessage("Recurso Projeto deve conter um Recurso");
+
+        RuleFor(x => x.IdProjeto)
+            .NotEmpty()
+            .WithMessage("Recurso Projeto deve conter um Projeto");
     }
 }

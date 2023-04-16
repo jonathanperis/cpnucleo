@@ -4,9 +4,20 @@ public sealed class CreateTipoTarefaCommandValidator : AbstractValidator<CreateT
 {
     public CreateTipoTarefaCommandValidator()
     {
-        RuleFor(x => x.Nome).NotEmpty();
-        RuleFor(x => x.Nome).MaximumLength(50);
-        RuleFor(x => x.Image).NotEmpty();
-        RuleFor(x => x.Image).MaximumLength(50);
+        RuleFor(x => x.Nome)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Nome do Tipo Tarefa");
+
+        RuleFor(x => x.Nome)
+            .MaximumLength(50)
+            .WithMessage("Nome pode conter no máximo 50 caractéres");
+
+        RuleFor(x => x.Image)
+            .NotEmpty()
+            .WithMessage("Necessário informar a Imagem do Tipo Tarefa");
+
+        RuleFor(x => x.Image)
+            .MaximumLength(50)
+            .WithMessage("Imagem pode conter no máximo 50 caractéres");
     }
 }

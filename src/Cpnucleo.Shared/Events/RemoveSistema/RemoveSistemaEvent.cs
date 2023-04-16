@@ -1,3 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Events.RemoveSistema;
 
-public sealed record RemoveSistemaEvent(Guid Id);
+public sealed record RemoveSistemaEvent(Guid Id, string Nome);

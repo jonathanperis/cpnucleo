@@ -4,7 +4,12 @@ public sealed class CreateRecursoTarefaCommandValidator : AbstractValidator<Crea
 {
     public CreateRecursoTarefaCommandValidator()
     {
-        RuleFor(x => x.IdRecurso).NotEmpty();
-        RuleFor(x => x.IdTarefa).NotEmpty();
+        RuleFor(x => x.IdRecurso)
+            .NotEmpty()
+            .WithMessage("Recurso Tarefa deve conter um Recurso");
+
+        RuleFor(x => x.IdTarefa)
+            .NotEmpty()
+            .WithMessage("Recurso Tarefa deve conter uma Tarefa");
     }
 }

@@ -4,8 +4,16 @@ public sealed class UpdateRecursoTarefaCommandValidator : AbstractValidator<Upda
 {
     public UpdateRecursoTarefaCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.IdRecurso).NotEmpty();
-        RuleFor(x => x.IdTarefa).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Recurso Tarefa");
+
+        RuleFor(x => x.IdRecurso)
+            .NotEmpty()
+            .WithMessage("Recurso Tarefa deve conter um Recurso");
+
+        RuleFor(x => x.IdTarefa)
+            .NotEmpty()
+            .WithMessage("Recurso Tarefa deve conter uma Tarefa");
     }
 }
