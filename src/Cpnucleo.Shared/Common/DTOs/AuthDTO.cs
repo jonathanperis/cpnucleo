@@ -1,8 +1,3 @@
 ﻿namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record AuthDto
-{
-    public string? Usuario { get; set; }
-
-    public string? Senha { get; set; }
-}
+public sealed record AuthDto(string? Usuario, string? Senha);
