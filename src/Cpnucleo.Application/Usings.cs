@@ -4,7 +4,7 @@ global using Cpnucleo.Application.Common.Context;
 global using Cpnucleo.Application.Common.Hubs;
 global using Cpnucleo.Application.Common.Mappings;
 global using Cpnucleo.Application.Common.Services;
-global using Cpnucleo.Application.Events.RemoveSistema;
+global using Cpnucleo.Application.Events;
 global using Cpnucleo.Domain.Constants;
 global using Cpnucleo.Domain.Entities;
 global using Cpnucleo.Shared.Commands.CreateApontamento;

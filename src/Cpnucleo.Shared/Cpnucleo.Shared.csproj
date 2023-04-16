@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
 		<PackageReference Include="MagicOnion.Abstractions" Version="5.1.5" />
 		<PackageReference Include="Mediator.Abstractions" Version="2.1.1" />
 	</ItemGroup>
