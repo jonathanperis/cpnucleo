@@ -14,7 +14,7 @@ public class AlterarModel : PageModel
     }
 
     [BindProperty]
-    public RecursoDTO Recurso { get; set; }
+    public RecursoDto Recurso { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

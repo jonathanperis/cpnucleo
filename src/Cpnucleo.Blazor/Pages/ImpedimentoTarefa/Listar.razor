@@ -89,12 +89,12 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private ImpedimentoTarefaDTO impedimentoTarefa;
-    private IEnumerable<ImpedimentoTarefaDTO> impedimentoTarefas;
+    private ImpedimentoTarefaDto impedimentoTarefa;
+    private IEnumerable<ImpedimentoTarefaDto> impedimentoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        impedimentoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoTarefaDTO>>("impedimentoTarefa", "getByTarefa", "", IdTarefa);
+        impedimentoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoTarefaDto>>("impedimentoTarefa", "getByTarefa", "", IdTarefa);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Impedimentos (Tarefa)");
     }

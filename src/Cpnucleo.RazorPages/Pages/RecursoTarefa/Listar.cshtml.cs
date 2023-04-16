@@ -13,9 +13,9 @@ public class ListarModel : PageModel
     }
 
     [BindProperty]
-    public RecursoTarefaDTO RecursoTarefa { get; set; }
+    public RecursoTarefaDto RecursoTarefa { get; set; }
 
-    public IEnumerable<RecursoTarefaDTO> Lista { get; set; }
+    public IEnumerable<RecursoTarefaDto> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid idTarefa)
     {

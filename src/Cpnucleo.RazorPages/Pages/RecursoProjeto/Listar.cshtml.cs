@@ -13,9 +13,9 @@ public class ListarModel : PageModel
     }
 
     [BindProperty]
-    public RecursoProjetoDTO RecursoProjeto { get; set; }
+    public RecursoProjetoDto RecursoProjeto { get; set; }
 
-    public IEnumerable<RecursoProjetoDTO> Lista { get; set; }
+    public IEnumerable<RecursoProjetoDto> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid idProjeto)
     {

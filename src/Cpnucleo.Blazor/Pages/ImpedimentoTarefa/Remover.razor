@@ -80,11 +80,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ImpedimentoTarefaDTO model = new ImpedimentoTarefaDTO();
+    private ImpedimentoTarefaDto model = new ImpedimentoTarefaDto();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiClient.GetAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", "", Id);
+        model = await cpnucleoApiClient.GetAsync<ImpedimentoTarefaDto>("impedimentoTarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()

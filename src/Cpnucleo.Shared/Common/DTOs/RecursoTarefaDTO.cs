@@ -1,6 +1,6 @@
-namespace Cpnucleo.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record RecursoTarefaDTO : BaseDTO
+public sealed record RecursoTarefaDto : BaseDto
 {
     [Display(Name = "Recurso")]
     [Required(ErrorMessage = "Necessário informar o {0}.")]
@@ -10,7 +10,7 @@ public sealed record RecursoTarefaDTO : BaseDTO
     [Required(ErrorMessage = "Necessário informar o {0}.")]
     public Guid IdTarefa { get; set; }
 
-    public RecursoDTO? Recurso { get; set; }
+    public RecursoDto? Recurso { get; set; }
 
-    public TarefaDTO? Tarefa { get; set; }
+    public TarefaDto? Tarefa { get; set; }
 }

@@ -14,7 +14,7 @@ public class RemoverModel : PageModel
     }
 
     [BindProperty]
-    public TarefaDTO Tarefa { get; set; }
+    public TarefaDto Tarefa { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

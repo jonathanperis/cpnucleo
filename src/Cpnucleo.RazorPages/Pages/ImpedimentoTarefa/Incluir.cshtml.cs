@@ -15,9 +15,9 @@ public class IncluirModel : PageModel
     }
 
     [BindProperty]
-    public ImpedimentoTarefaDTO ImpedimentoTarefa { get; set; }
+    public ImpedimentoTarefaDto ImpedimentoTarefa { get; set; }
 
-    public TarefaDTO Tarefa { get; set; }
+    public TarefaDto Tarefa { get; set; }
 
     public SelectList SelectImpedimentos { get; set; }
 

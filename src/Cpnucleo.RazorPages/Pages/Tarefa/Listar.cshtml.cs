@@ -12,9 +12,9 @@ public class ListarModel : PageModel
         _cpnucleoApiClient = cpnucleoApiClient;
     }
 
-    public TarefaDTO Tarefa { get; set; }
+    public TarefaDto Tarefa { get; set; }
 
-    public IEnumerable<TarefaDTO> Lista { get; set; }
+    public IEnumerable<TarefaDto> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {

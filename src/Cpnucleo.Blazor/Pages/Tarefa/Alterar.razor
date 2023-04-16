@@ -144,17 +144,17 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private TarefaDTO model = new TarefaDTO();
-    private IEnumerable<ProjetoDTO> projetos;
-    private IEnumerable<WorkflowDTO> workflows;
-    private IEnumerable<TipoTarefaDTO> tipoTarefas;
+    private TarefaDto model = new TarefaDto();
+    private IEnumerable<ProjetoDto> projetos;
+    private IEnumerable<WorkflowDto> workflows;
+    private IEnumerable<TipoTarefaDto> tipoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        projetos = await cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", "");
-        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", "");
-        tipoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", "");
-        model = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", Id);
+        projetos = await cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDto>>("projeto", "");
+        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDto>>("workflow", "");
+        tipoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDto>>("tipoTarefa", "");
+        model = await cpnucleoApiClient.GetAsync<TarefaDto>("tarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()

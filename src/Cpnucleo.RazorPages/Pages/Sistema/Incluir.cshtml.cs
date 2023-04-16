@@ -13,7 +13,7 @@ public class IncluirModel : PageModel
     }
 
     [BindProperty]
-    public SistemaDTO Sistema { get; set; }
+    public SistemaDto Sistema { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {
