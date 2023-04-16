@@ -135,11 +135,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private TarefaDTO model = new TarefaDTO();
+    private TarefaDto model = new TarefaDto();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", Id);
+        model = await cpnucleoApiClient.GetAsync<TarefaDto>("tarefa", "", Id);
     }
 
     private async Task HandleValidSubmit()

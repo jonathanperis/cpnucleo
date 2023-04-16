@@ -2,6 +2,6 @@
 
 public sealed record ListRecursoProjetoByProjetoViewModel : BaseQuery
 {
-    public IEnumerable<RecursoProjetoDTO> RecursoProjetos { get; set; }
+    public IEnumerable<RecursoProjetoDto> RecursoProjetos { get; set; }
     public OperationResult OperationResult { get; set; }
 }

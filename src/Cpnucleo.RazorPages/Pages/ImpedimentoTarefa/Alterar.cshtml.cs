@@ -15,7 +15,7 @@ public class AlterarModel : PageModel
     }
 
     [BindProperty]
-    public ImpedimentoTarefaDTO ImpedimentoTarefa { get; set; }
+    public ImpedimentoTarefaDto ImpedimentoTarefa { get; set; }
 
     public SelectList SelectImpedimentos { get; set; }
 

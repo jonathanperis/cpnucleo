@@ -1,20 +1,20 @@
 ﻿namespace Cpnucleo.Application.Common.Mappings;
 
 [Mapper]
-internal static partial class EntityToDTOMapper
+internal static partial class EntityToDtoMapper
 {
-    public static partial ApontamentoDTO MapToDto(this Apontamento item);
-    public static partial ImpedimentoDTO MapToDto(this Impedimento item);
-    public static partial ImpedimentoTarefaDTO MapToDto(this ImpedimentoTarefa item);
-    public static partial ProjetoDTO MapToDto(this Projeto item);
+    public static partial ApontamentoDto MapToDto(this Apontamento item);
+    public static partial ImpedimentoDto MapToDto(this Impedimento item);
+    public static partial ImpedimentoTarefaDto MapToDto(this ImpedimentoTarefa item);
+    public static partial ProjetoDto MapToDto(this Projeto item);
     
     [MapperIgnoreSource(nameof(Recurso.Senha))]
-    public static partial RecursoDTO MapToDto(this Recurso item);
+    public static partial RecursoDto MapToDto(this Recurso item);
     
-    public static partial RecursoProjetoDTO MapToDto(this RecursoProjeto item);
-    public static partial RecursoTarefaDTO MapToDto(this RecursoTarefa item);
-    public static partial SistemaDTO MapToDto(this Sistema item);
-    public static partial TarefaDTO MapToDto(this Tarefa item);
-    public static partial TipoTarefaDTO MapToDto(this TipoTarefa item);
-    public static partial WorkflowDTO MapToDto(this Workflow item);
+    public static partial RecursoProjetoDto MapToDto(this RecursoProjeto item);
+    public static partial RecursoTarefaDto MapToDto(this RecursoTarefa item);
+    public static partial SistemaDto MapToDto(this Sistema item);
+    public static partial TarefaDto MapToDto(this Tarefa item);
+    public static partial TipoTarefaDto MapToDto(this TipoTarefa item);
+    public static partial WorkflowDto MapToDto(this Workflow item);
 }

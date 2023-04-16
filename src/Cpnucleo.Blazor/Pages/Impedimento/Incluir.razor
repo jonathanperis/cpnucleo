@@ -40,11 +40,11 @@
 </div>
 
 @code {
-    private ImpedimentoDTO model = new ImpedimentoDTO();
+    private ImpedimentoDto model = new ImpedimentoDto();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<ImpedimentoDTO>("impedimento", "", model);
+        await cpnucleoApiClient.PostAsync<ImpedimentoDto>("impedimento", "", model);
 
         navigationManager.NavigateTo("/impedimento/listar");
     }

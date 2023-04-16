@@ -81,12 +81,12 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private RecursoTarefaDTO recursoTarefa;
-    private IEnumerable<RecursoTarefaDTO> recursoTarefas;
+    private RecursoTarefaDto recursoTarefa;
+    private IEnumerable<RecursoTarefaDto> recursoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        recursoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoTarefaDTO>>("recursoTarefa", "getByTarefa", "", IdTarefa);
+        recursoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoTarefaDto>>("recursoTarefa", "getByTarefa", "", IdTarefa);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Recursos (Tarefa)");
     }

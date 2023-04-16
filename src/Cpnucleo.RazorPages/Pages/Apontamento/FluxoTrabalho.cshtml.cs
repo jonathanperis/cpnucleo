@@ -14,9 +14,9 @@ public class FluxoTrabalhoModel : PageModel
         _cpnucleoApiClient = cpnucleoApiClient;
     }
 
-    public IEnumerable<WorkflowDTO> Lista { get; set; }
+    public IEnumerable<WorkflowDto> Lista { get; set; }
 
-    public IEnumerable<TarefaDTO> ListaTarefas { get; set; }
+    public IEnumerable<TarefaDto> ListaTarefas { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {

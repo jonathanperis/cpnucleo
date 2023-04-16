@@ -72,11 +72,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private WorkflowDTO model = new WorkflowDTO();
+    private WorkflowDto model = new WorkflowDto();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiClient.GetAsync<WorkflowDTO>("workflow", "", Id);
+        model = await cpnucleoApiClient.GetAsync<WorkflowDto>("workflow", "", Id);
     }
 
     private async Task HandleValidSubmit()

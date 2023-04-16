@@ -113,28 +113,28 @@
 </div>
 
 @code {
-    private TarefaDTO model = new TarefaDTO();
-    private IEnumerable<ProjetoDTO> projetos;
-    private IEnumerable<WorkflowDTO> workflows;
-    private IEnumerable<TipoTarefaDTO> tipoTarefas;
+    private TarefaDto model = new TarefaDto();
+    private IEnumerable<ProjetoDto> projetos;
+    private IEnumerable<WorkflowDto> workflows;
+    private IEnumerable<TipoTarefaDto> tipoTarefas;
 
     protected override async Task OnInitializedAsync()
     {
         model.IdRecurso = new Guid("dcde1113-ab83-489e-ac0c-d7de2caa2279");
 
-        projetos = await cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDTO>>("projeto", "");
+        projetos = await cpnucleoApiClient.GetAsync<IEnumerable<ProjetoDto>>("projeto", "");
         model.IdProjeto = projetos.FirstOrDefault().Id;
 
-        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", "");
+        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDto>>("workflow", "");
         model.IdWorkflow = workflows.FirstOrDefault().Id;
 
-        tipoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDTO>>("tipoTarefa", "");
+        tipoTarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TipoTarefaDto>>("tipoTarefa", "");
         model.IdTipoTarefa = tipoTarefas.FirstOrDefault().Id;
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<TarefaDTO>("tarefa", "", model);
+        await cpnucleoApiClient.PostAsync<TarefaDto>("tarefa", "", model);
 
         navigationManager.NavigateTo("/tarefa/listar");
     }

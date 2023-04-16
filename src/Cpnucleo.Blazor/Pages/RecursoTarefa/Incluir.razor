@@ -63,14 +63,14 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private RecursoTarefaDTO model = new RecursoTarefaDTO();
-    private TarefaDTO tarefa;
-    private IEnumerable<RecursoDTO> recursos;
+    private RecursoTarefaDto model = new RecursoTarefaDto();
+    private TarefaDto tarefa;
+    private IEnumerable<RecursoDto> recursos;
 
     protected override async Task OnInitializedAsync()
     {
-        tarefa = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", IdTarefa);
-        recursos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", "");
+        tarefa = await cpnucleoApiClient.GetAsync<TarefaDto>("tarefa", "", IdTarefa);
+        recursos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoDto>>("recurso", "");
 
         model.IdTarefa = IdTarefa;
         model.IdRecurso = recursos.FirstOrDefault().Id;
@@ -78,7 +78,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<RecursoTarefaDTO>("recursoTarefa", "", model);
+        await cpnucleoApiClient.PostAsync<RecursoTarefaDto>("recursoTarefa", "", model);
 
         navigationManager.NavigateTo($"/recursoTarefa/listar/{IdTarefa}");
     }

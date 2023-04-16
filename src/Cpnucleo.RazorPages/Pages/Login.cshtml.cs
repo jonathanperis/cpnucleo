@@ -18,7 +18,7 @@ public class LoginModel : PageModel
     }
 
     [BindProperty]
-    public AuthDTO Auth { get; set; }
+    public AuthDto Auth { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string? returnUrl = null, bool logout = false)
     {

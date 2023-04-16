@@ -14,7 +14,7 @@ public class RemoverModel : PageModel
     }
 
     [BindProperty]
-    public RecursoTarefaDTO RecursoTarefa { get; set; }
+    public RecursoTarefaDto RecursoTarefa { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

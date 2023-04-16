@@ -92,12 +92,12 @@
 </div>
 
 @code {
-    private TarefaDTO tarefa;
-    private IEnumerable<TarefaDTO> tarefas;
+    private TarefaDto tarefa;
+    private IEnumerable<TarefaDto> tarefas;
 
     protected override async Task OnInitializedAsync()
     {
-        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "");
+        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDto>>("tarefa", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Tarefas");
     }

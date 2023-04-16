@@ -14,7 +14,7 @@ public class RemoverModel : PageModel
     }
 
     [BindProperty]
-    public RecursoProjetoDTO RecursoProjeto { get; set; }
+    public RecursoProjetoDto RecursoProjeto { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

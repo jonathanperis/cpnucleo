@@ -82,12 +82,12 @@
 </div>
 
 @code {
-    private SistemaDTO sistema;
-    private IEnumerable<SistemaDTO> sistemas;
+    private SistemaDto sistema;
+    private IEnumerable<SistemaDto> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", "");
+        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDto>>("sistema", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Sistemas");
     }

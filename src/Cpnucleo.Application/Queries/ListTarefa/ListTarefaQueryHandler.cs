@@ -32,7 +32,7 @@ public sealed class ListTarefaQueryHandler : IRequestHandler<ListTarefaQuery, Li
         return new ListTarefaViewModel { Tarefas = tarefas, OperationResult = OperationResult.Success };
     }
 
-    private async Task PreencherDadosAdicionaisAsync(List<TarefaDTO> lista, CancellationToken cancellationToken)
+    private async Task PreencherDadosAdicionaisAsync(List<TarefaDto> lista, CancellationToken cancellationToken)
     {
         var colunas = _context.Workflows.Where(x => x.Ativo).Count();
 

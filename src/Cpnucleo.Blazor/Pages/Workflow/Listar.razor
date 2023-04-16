@@ -82,12 +82,12 @@
 </div>
 
 @code {
-    private WorkflowDTO workflow;
-    private IEnumerable<WorkflowDTO> workflows;
+    private WorkflowDto workflow;
+    private IEnumerable<WorkflowDto> workflows;
 
     protected override async Task OnInitializedAsync()
     {
-        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDTO>>("workflow", "");
+        workflows = await cpnucleoApiClient.GetAsync<IEnumerable<WorkflowDto>>("workflow", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Workflow");
     }

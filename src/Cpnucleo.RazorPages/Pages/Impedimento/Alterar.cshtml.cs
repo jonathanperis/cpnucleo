@@ -14,7 +14,7 @@ public class AlterarModel : PageModel
     }
 
     [BindProperty]
-    public ImpedimentoDTO Impedimento { get; set; }
+    public ImpedimentoDto Impedimento { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

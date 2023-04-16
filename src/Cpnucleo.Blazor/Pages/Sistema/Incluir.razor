@@ -48,11 +48,11 @@
 </div>
 
 @code {
-    private SistemaDTO model = new SistemaDTO();
+    private SistemaDto model = new SistemaDto();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<SistemaDTO>("sistema", "", model);
+        await cpnucleoApiClient.PostAsync<SistemaDto>("sistema", "", model);
 
         navigationManager.NavigateTo("/sistema/listar");
     }

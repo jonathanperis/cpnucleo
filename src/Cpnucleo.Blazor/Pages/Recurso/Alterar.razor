@@ -91,11 +91,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private RecursoDTO model = new RecursoDTO();
+    private RecursoDto model = new RecursoDto();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiClient.GetAsync<RecursoDTO>("recurso", "", Id);
+        model = await cpnucleoApiClient.GetAsync<RecursoDto>("recurso", "", Id);
 
         await JS.InvokeVoidAsync("passwordStrenght");
     }

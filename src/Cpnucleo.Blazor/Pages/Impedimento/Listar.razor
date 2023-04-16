@@ -79,12 +79,12 @@
 </div>
 
 @code {
-    private ImpedimentoDTO impedimento;
-    private IEnumerable<ImpedimentoDTO> impedimentos;
+    private ImpedimentoDto impedimento;
+    private IEnumerable<ImpedimentoDto> impedimentos;
 
     protected override async Task OnInitializedAsync()
     {
-        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", "");
+        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDto>>("impedimento", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Impedimentos");
     }

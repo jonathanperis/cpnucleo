@@ -14,7 +14,7 @@ public class RemoverModel : PageModel
     }
 
     [BindProperty]
-    public SistemaDTO Sistema { get; set; }
+    public SistemaDto Sistema { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

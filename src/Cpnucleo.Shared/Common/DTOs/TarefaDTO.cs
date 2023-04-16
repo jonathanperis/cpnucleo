@@ -1,6 +1,6 @@
-namespace Cpnucleo.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record TarefaDTO : BaseDTO //:IValidatableObject
+public sealed record TarefaDto : BaseDto //:IValidatableObject
 {
     [Display(Name = "Nome")]
     [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
@@ -47,13 +47,13 @@ public sealed record TarefaDTO : BaseDTO //:IValidatableObject
     [Required(ErrorMessage = "Necessário informar o {0} da Tarefa.")]
     public Guid IdTipoTarefa { get; set; }
 
-    public ProjetoDTO? Projeto { get; set; }
+    public ProjetoDto? Projeto { get; set; }
 
-    public WorkflowDTO? Workflow { get; set; }
+    public WorkflowDto? Workflow { get; set; }
 
-    public RecursoDTO? Recurso { get; set; }
+    public RecursoDto? Recurso { get; set; }
 
-    public TipoTarefaDTO? TipoTarefa { get; set; }
+    public TipoTarefaDto? TipoTarefa { get; set; }
 
     // public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     // {

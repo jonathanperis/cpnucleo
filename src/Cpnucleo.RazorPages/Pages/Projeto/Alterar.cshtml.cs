@@ -15,7 +15,7 @@ public class AlterarModel : PageModel
     }
 
     [BindProperty]
-    public ProjetoDTO Projeto { get; set; }
+    public ProjetoDto Projeto { get; set; }
 
     public SelectList SelectSistemas { get; set; }
 

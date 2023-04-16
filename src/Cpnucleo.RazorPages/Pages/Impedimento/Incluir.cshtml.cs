@@ -13,7 +13,7 @@ public class IncluirModel : PageModel
     }
 
     [BindProperty]
-    public ImpedimentoDTO Impedimento { get; set; }
+    public ImpedimentoDto Impedimento { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {

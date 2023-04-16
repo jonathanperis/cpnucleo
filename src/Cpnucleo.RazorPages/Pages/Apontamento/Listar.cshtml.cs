@@ -17,11 +17,11 @@ public class ListarModel : PageModel
     }
 
     [BindProperty]
-    public ApontamentoDTO Apontamento { get; set; }
+    public ApontamentoDto Apontamento { get; set; }
 
-    public IEnumerable<ApontamentoDTO> Lista { get; set; }
+    public IEnumerable<ApontamentoDto> Lista { get; set; }
 
-    public IEnumerable<TarefaDTO> ListaTarefas { get; set; }
+    public IEnumerable<TarefaDto> ListaTarefas { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {

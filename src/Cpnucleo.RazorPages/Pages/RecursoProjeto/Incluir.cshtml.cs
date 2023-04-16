@@ -15,9 +15,9 @@ public class IncluirModel : PageModel
     }
 
     [BindProperty]
-    public RecursoProjetoDTO RecursoProjeto { get; set; }
+    public RecursoProjetoDto RecursoProjeto { get; set; }
 
-    public ProjetoDTO Projeto { get; set; }
+    public ProjetoDto Projeto { get; set; }
 
     public SelectList SelectRecursos { get; set; }
 

@@ -194,18 +194,18 @@
 </div>
 
 @code {
-    private ApontamentoDTO model = new ApontamentoDTO();
-    private IEnumerable<ApontamentoDTO> apontamentos;
-    private IEnumerable<TarefaDTO> tarefas;
+    private ApontamentoDto model = new ApontamentoDto();
+    private IEnumerable<ApontamentoDto> apontamentos;
+    private IEnumerable<TarefaDto> tarefas;
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<SistemaDTO>("apontamento", "", model);
+        await cpnucleoApiClient.PostAsync<SistemaDto>("apontamento", "", model);
 
         model.IdRecurso = new Guid("dcde1113-ab83-489e-ac0c-d7de2caa2279");
 
-        apontamentos = await cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDTO>>("apontamento", "getbyrecurso", "", model.IdRecurso);
-        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "getbyrecurso", "", model.IdRecurso);
+        apontamentos = await cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDto>>("apontamento", "getbyrecurso", "", model.IdRecurso);
+        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDto>>("tarefa", "getbyrecurso", "", model.IdRecurso);
 
         await JS.InvokeVoidAsync("fecharModalApontamento");
     }
@@ -214,8 +214,8 @@
     {
         model.IdRecurso = new Guid("dcde1113-ab83-489e-ac0c-d7de2caa2279");
 
-        apontamentos = await cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDTO>>("apontamento", "getbyrecurso", "", model.IdRecurso);
-        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDTO>>("tarefa", "getbyrecurso", "", model.IdRecurso);
+        apontamentos = await cpnucleoApiClient.GetAsync<IEnumerable<ApontamentoDto>>("apontamento", "getbyrecurso", "", model.IdRecurso);
+        tarefas = await cpnucleoApiClient.GetAsync<IEnumerable<TarefaDto>>("tarefa", "getbyrecurso", "", model.IdRecurso);
 
         await JS.InvokeVoidAsync("modalApontamento");
         await JS.InvokeVoidAsync("dataTables", "Apontamentos (Últimos 30 dias)");

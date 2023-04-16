@@ -4,9 +4,9 @@ namespace Cpnucleo.MVC.Models;
 
 public sealed record TarefaViewModel
 {
-    public TarefaDTO Tarefa { get; set; }
+    public TarefaDto Tarefa { get; set; }
 
-    public IEnumerable<TarefaDTO> Lista { get; set; }
+    public IEnumerable<TarefaDto> Lista { get; set; }
 
     public SelectList SelectProjetos { get; set; }
 

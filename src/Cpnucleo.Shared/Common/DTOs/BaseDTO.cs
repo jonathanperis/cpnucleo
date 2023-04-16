@@ -1,7 +1,7 @@
-﻿namespace Cpnucleo.Shared.Common.DTOs;
+﻿namespace Cpnucleo.Shared.Common.Dtos;
 
 [MessagePackObject(true)]
-public abstract record BaseDTO
+public abstract record BaseDto
 {
     [System.ComponentModel.DataAnnotations.Key]
     [Display(Name = "Id")]

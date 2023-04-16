@@ -14,7 +14,7 @@ public class RemoverModel : PageModel
     }
 
     [BindProperty]
-    public ApontamentoDTO Apontamento { get; set; }
+    public ApontamentoDto Apontamento { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

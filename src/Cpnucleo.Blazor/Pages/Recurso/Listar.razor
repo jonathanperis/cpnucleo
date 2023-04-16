@@ -79,12 +79,12 @@
 </div>
 
 @code {
-    private RecursoDTO recurso;
-    private IEnumerable<RecursoDTO> recursos;
+    private RecursoDto recurso;
+    private IEnumerable<RecursoDto> recursos;
 
     protected override async Task OnInitializedAsync()
     {
-        recursos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoDTO>>("recurso", "");
+        recursos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoDto>>("recurso", "");
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Recursos");
     }

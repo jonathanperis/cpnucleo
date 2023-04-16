@@ -13,7 +13,7 @@ public class IncluirModel : PageModel
     }
 
     [BindProperty]
-    public RecursoDTO Recurso { get; set; }
+    public RecursoDto Recurso { get; set; }
 
     public async Task<IActionResult> OnPostAsync()
     {

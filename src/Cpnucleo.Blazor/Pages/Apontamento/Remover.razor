@@ -87,11 +87,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ApontamentoDTO model = new ApontamentoDTO();
+    private ApontamentoDto model = new ApontamentoDto();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiClient.GetAsync<ApontamentoDTO>("apontamento", "", Id);
+        model = await cpnucleoApiClient.GetAsync<ApontamentoDto>("apontamento", "", Id);
     }
 
     private async Task HandleValidSubmit()

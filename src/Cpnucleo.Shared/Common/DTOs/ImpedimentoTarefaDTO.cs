@@ -1,6 +1,6 @@
-namespace Cpnucleo.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record ImpedimentoTarefaDTO : BaseDTO
+public sealed record ImpedimentoTarefaDto : BaseDto
 {
     [Display(Name = "Descrição")]
     [Required(ErrorMessage = "Necessário informar a {0} do Impedimento.")]
@@ -15,7 +15,7 @@ public sealed record ImpedimentoTarefaDTO : BaseDTO
     [Display(Name = "Impedimento")]
     public Guid IdImpedimento { get; set; }
 
-    public TarefaDTO? Tarefa { get; set; }
+    public TarefaDto? Tarefa { get; set; }
 
-    public ImpedimentoDTO? Impedimento { get; set; }
+    public ImpedimentoDto? Impedimento { get; set; }
 }
