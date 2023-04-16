@@ -14,9 +14,9 @@ public sealed class CreateTipoTarefaCommandHandler : IRequestHandler<CreateTipoT
         var tipoTarefa = TipoTarefa.Create(request.Nome, request.Image);
         _context.TipoTarefas.Add(tipoTarefa);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

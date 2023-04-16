@@ -38,7 +38,7 @@ public class WorkflowController : BaseController
     {
         try
         {
-            ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
+            var result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -73,7 +73,7 @@ public class WorkflowController : BaseController
                 return View();
             }
 
-            OperationResult result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand(obj.Workflow.Nome, obj.Workflow.Ordem));
+            var result = await _workflowGrpcService.CreateWorkflow(new CreateWorkflowCommand(obj.Workflow.Nome, obj.Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {
@@ -118,7 +118,7 @@ public class WorkflowController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand(obj.Workflow.Id, obj.Workflow.Nome, obj.Workflow.Ordem));
+            var result = await _workflowGrpcService.UpdateWorkflow(new UpdateWorkflowCommand(obj.Workflow.Id, obj.Workflow.Nome, obj.Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class WorkflowController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _workflowGrpcService.RemoveWorkflow(new RemoveWorkflowCommand(obj.Workflow.Id));
+            var result = await _workflowGrpcService.RemoveWorkflow(new RemoveWorkflowCommand(obj.Workflow.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -182,7 +182,7 @@ public class WorkflowController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetWorkflowViewModel result = await _workflowGrpcService.GetWorkflow(new GetWorkflowQuery(id));
+        var result = await _workflowGrpcService.GetWorkflow(new GetWorkflowQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {

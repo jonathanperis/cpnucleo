@@ -70,7 +70,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand(obj.Apontamento.Descricao, obj.Apontamento.DataApontamento, obj.Apontamento.QtdHoras, obj.Apontamento.IdTarefa, obj.Apontamento.IdRecurso));
+            var result = await _apontamentoGrpcService.CreateApontamento(new CreateApontamentoCommand(obj.Apontamento.Descricao, obj.Apontamento.DataApontamento, obj.Apontamento.QtdHoras, obj.Apontamento.IdTarefa, obj.Apontamento.IdRecurso));
 
             if (result == OperationResult.Failed)
             {
@@ -115,7 +115,7 @@ public class ApontamentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand(obj.Apontamento.Id));
+            var result = await _apontamentoGrpcService.RemoveApontamento(new RemoveApontamentoCommand(obj.Apontamento.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -160,7 +160,7 @@ public class ApontamentoController : BaseController
                 return Json(new { success = false, message = "", body = ViewModel });
             }
 
-            OperationResult result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand(idTarefa, idWorkflow));
+            var result = await _tarefaGrpcService.UpdateTarefaByWorkflow(new UpdateTarefaByWorkflowCommand(idTarefa, idWorkflow));
 
             if (result == OperationResult.Failed)
             {
@@ -179,7 +179,7 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetApontamentoViewModel result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery(id));
+        var result = await _apontamentoGrpcService.GetApontamento(new GetApontamentoQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -192,10 +192,10 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDadosListar()
     {
-        string retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
+        var retorno = ClaimsService.ReadClaimsPrincipal(HttpContext.User, ClaimTypes.PrimarySid);
         Guid idRecurso = new(retorno);
 
-        ListApontamentoByRecursoViewModel result = await _apontamentoGrpcService.GetApontamentoByRecurso(new ListApontamentoByRecursoQuery(idRecurso));
+        var result = await _apontamentoGrpcService.GetApontamentoByRecurso(new ListApontamentoByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -205,7 +205,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.Lista = result.Apontamentos;
 
-        ListTarefaByRecursoViewModel result2 = await _tarefaGrpcService.GetTarefaByRecurso(new ListTarefaByRecursoQuery(idRecurso));
+        var result2 = await _tarefaGrpcService.GetTarefaByRecurso(new ListTarefaByRecursoQuery(idRecurso));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -218,7 +218,7 @@ public class ApontamentoController : BaseController
 
     private async Task CarregarDadosFluxoTrabalho()
     {
-        ListWorkflowViewModel result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
+        var result = await _workflowGrpcService.ListWorkflow(new ListWorkflowQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -228,7 +228,7 @@ public class ApontamentoController : BaseController
 
         ViewModel.ListaWorkflow = result.Workflows;
 
-        ListTarefaViewModel result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery());
+        var result2 = await _tarefaGrpcService.ListTarefa(new ListTarefaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

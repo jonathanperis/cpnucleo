@@ -24,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "CreateSistema", new CreateSistemaCommand(Sistema.Nome, Sistema.Descricao));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "CreateSistema", new CreateSistemaCommand(Sistema.Nome, Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {

@@ -14,9 +14,9 @@ public sealed class CreateApontamentoCommandHandler : IRequestHandler<CreateApon
         var apontamento = Apontamento.Create(request.Descricao, request.DataApontamento, request.QtdHoras, request.IdTarefa, request.IdRecurso);
         _context.Apontamentos.Add(apontamento);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

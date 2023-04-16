@@ -22,9 +22,9 @@ public sealed class RemoveApontamentoCommandHandler : IRequestHandler<RemoveApon
         apontamento = Apontamento.Remove(apontamento);
         _context.Apontamentos.Update(apontamento); //JONATHAN - Soft Delete.
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

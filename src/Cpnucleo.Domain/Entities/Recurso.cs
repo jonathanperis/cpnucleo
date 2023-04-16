@@ -12,7 +12,7 @@ public sealed class Recurso : BaseEntity
 
     public static Recurso Create(string nome, string login, string senha, Guid id = default)
     {
-        CryptographyManager.CryptPbkdf2(senha, out string senhaCrypt, out string salt);
+        CryptographyManager.CryptPbkdf2(senha, out var senhaCrypt, out var salt);
 
         return new Recurso
         {
@@ -28,7 +28,7 @@ public sealed class Recurso : BaseEntity
 
     public static Recurso Update(Recurso item, string nome, string senha)
     {
-        CryptographyManager.CryptPbkdf2(senha, out string senhaCrypt, out string salt);
+        CryptographyManager.CryptPbkdf2(senha, out var senhaCrypt, out var salt);
 
         item.Nome = nome;
         item.Senha = senhaCrypt;

@@ -6,15 +6,15 @@ public class ProjetoHandlerTest
     public async Task CreateProjetoCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var sistema = context.Sistemas.First();
 
-        CreateProjetoCommand request = MockCommandHelper.GetNewCreateProjetoCommand(sistema.Id);
+        var request = MockCommandHelper.GetNewCreateProjetoCommand(sistema.Id);
 
         // Act
         CreateProjetoCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -24,15 +24,15 @@ public class ProjetoHandlerTest
     public async Task GetProjetoQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var projeto = context.Projetos.First();
 
-        GetProjetoQuery request = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
+        var request = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
         GetProjetoQueryHandler handler = new(context);
-        GetProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Projeto != null);
@@ -44,13 +44,13 @@ public class ProjetoHandlerTest
     public async Task ListProjetoQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        ListProjetoQuery request = MockQueryHelper.GetNewListProjetoQuery();
+        var request = MockQueryHelper.GetNewListProjetoQuery();
 
         // Act
         ListProjetoQueryHandler handler = new(context);
-        ListProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Projetos != null);
@@ -61,19 +61,19 @@ public class ProjetoHandlerTest
     public async Task RemoveProjetoCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var projeto = context.Projetos.First();
 
-        RemoveProjetoCommand request = MockCommandHelper.GetNewRemoveProjetoCommand(projeto.Id);
-        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
+        var request = MockCommandHelper.GetNewRemoveProjetoCommand(projeto.Id);
+        var request2 = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
         RemoveProjetoCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetProjetoQueryHandler handler2 = new(context);
-        GetProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -84,20 +84,20 @@ public class ProjetoHandlerTest
     public async Task UpdateProjetoCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var sistema = context.Sistemas.First();
         var projeto = context.Projetos.First();
 
-        UpdateProjetoCommand request = MockCommandHelper.GetNewUpdateProjetoCommand(sistema.Id, projeto.Id);
-        GetProjetoQuery request2 = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
+        var request = MockCommandHelper.GetNewUpdateProjetoCommand(sistema.Id, projeto.Id);
+        var request2 = MockQueryHelper.GetNewGetProjetoQuery(projeto.Id);
 
         // Act
         UpdateProjetoCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetProjetoQueryHandler handler2 = new(context);
-        GetProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);

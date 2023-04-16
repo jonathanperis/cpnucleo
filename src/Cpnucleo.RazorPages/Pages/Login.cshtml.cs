@@ -66,9 +66,9 @@ public class LoginModel : PageModel
                     new Claim(ClaimTypes.Hash, result.Token)
                 };
 
-                ClaimsPrincipal principal = ClaimsService.CreateClaimsPrincipal(claims);
+                var principal = ClaimsService.CreateClaimsPrincipal(claims);
 
-                int.TryParse(_configuration["Cookie:Expires"], out int expiresUtc);
+                int.TryParse(_configuration["Cookie:Expires"], out var expiresUtc);
 
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,

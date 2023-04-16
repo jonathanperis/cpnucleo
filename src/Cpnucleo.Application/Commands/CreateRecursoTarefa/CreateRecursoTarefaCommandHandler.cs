@@ -14,9 +14,9 @@ public sealed class CreateRecursoTarefaCommandHandler : IRequestHandler<CreateRe
         var recursoTarefa = RecursoTarefa.Create(request.IdTarefa, request.IdRecurso);
         _context.RecursoTarefas.Add(recursoTarefa);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

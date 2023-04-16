@@ -43,7 +43,7 @@ public class RecursoProjetoController : BaseController
     {
         try
         {
-            ListRecursoProjetoByProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new ListRecursoProjetoByProjetoQuery(idProjeto));
+            var result = await _recursoProjetoGrpcService.GetRecursoProjetoByProjeto(new ListRecursoProjetoByProjetoQuery(idProjeto));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -84,7 +84,7 @@ public class RecursoProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand(obj.RecursoProjeto.IdRecurso, obj.RecursoProjeto.IdProjeto));
+            var result = await _recursoProjetoGrpcService.CreateRecursoProjeto(new CreateRecursoProjetoCommand(obj.RecursoProjeto.IdRecurso, obj.RecursoProjeto.IdProjeto));
 
             if (result == OperationResult.Failed)
             {
@@ -129,7 +129,7 @@ public class RecursoProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoProjetoGrpcService.RemoveRecursoProjeto(new RemoveRecursoProjetoCommand(obj.RecursoProjeto.Id));
+            var result = await _recursoProjetoGrpcService.RemoveRecursoProjeto(new RemoveRecursoProjetoCommand(obj.RecursoProjeto.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -150,7 +150,7 @@ public class RecursoProjetoController : BaseController
     {
         if (idRecursoProjeto is not null)
         {
-            GetRecursoProjetoViewModel result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery(idRecursoProjeto.Value));
+            var result = await _recursoProjetoGrpcService.GetRecursoProjeto(new GetRecursoProjetoQuery(idRecursoProjeto.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class RecursoProjetoController : BaseController
 
         if (idProjeto is not null)
         {
-            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery(idProjeto.Value));
+            var result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery(idProjeto.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -174,7 +174,7 @@ public class RecursoProjetoController : BaseController
             ViewModel.Projeto = result.Projeto;
         }
 
-        ListRecursoViewModel result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery());
+        var result2 = await _recursoGrpcService.ListRecurso(new ListRecursoQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

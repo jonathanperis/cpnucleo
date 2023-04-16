@@ -22,9 +22,9 @@ public sealed class RemoveImpedimentoTarefaCommandHandler : IRequestHandler<Remo
         impedimentoTarefa = ImpedimentoTarefa.Remove(impedimentoTarefa);
         _context.ImpedimentoTarefas.Update(impedimentoTarefa); //JONATHAN - Soft Delete.
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

@@ -24,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Recurso", "CreateRecurso", new CreateRecursoCommand(Recurso.Nome, Recurso.Login, Recurso.Senha));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Recurso", "CreateRecurso", new CreateRecursoCommand(Recurso.Nome, Recurso.Login, Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {

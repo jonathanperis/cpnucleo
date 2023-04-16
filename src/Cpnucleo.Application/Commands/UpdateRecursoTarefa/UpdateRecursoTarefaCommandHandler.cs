@@ -22,9 +22,9 @@ public sealed class UpdateRecursoTarefaCommandHandler : IRequestHandler<UpdateRe
         recursoTarefa = RecursoTarefa.Update(recursoTarefa, request.IdRecurso, request.IdTarefa);
         _context.RecursoTarefas.Update(recursoTarefa);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

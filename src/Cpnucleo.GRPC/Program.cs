@@ -51,12 +51,12 @@ builder.WebHost.ConfigureKestrel(options =>
     });
 });
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 app.UseRouting();
 app.UseCors(x =>
 {
-    // Apenas necess·rio para o SignalR. ConfiguraÁ„o padr„o do CORS se aplica para utilizar apenas com gRPC.
+    // Apenas necess√°rio para o SignalR. Configura√ß√£o padr√£o do CORS se aplica para utilizar apenas com gRPC.
     x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
            .AllowAnyMethod()
            .AllowAnyHeader()

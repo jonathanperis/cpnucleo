@@ -22,9 +22,9 @@ public sealed class RemoveWorkflowCommandHandler : IRequestHandler<RemoveWorkflo
         workflow = Workflow.Remove(workflow);
         _context.Workflows.Update(workflow); //JONATHAN - Soft Delete.
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

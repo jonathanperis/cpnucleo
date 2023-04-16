@@ -22,9 +22,9 @@ public sealed class UpdateTipoTarefaCommandHandler : IRequestHandler<UpdateTipoT
         tipoTarefa = TipoTarefa.Update(tipoTarefa, request.Nome, request.Image);
         _context.TipoTarefas.Update(tipoTarefa);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

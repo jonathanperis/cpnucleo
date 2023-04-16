@@ -22,9 +22,9 @@ public sealed class CreateTarefaCommandHandler : IRequestHandler<CreateTarefaCom
                                                    request.IdTipoTarefa);
         _context.Tarefas.Add(tarefa);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

@@ -6,13 +6,13 @@ public class TipoTarefaHandlerTest
     public async Task CreateTipoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        CreateTipoTarefaCommand request = MockCommandHelper.GetNewCreateTipoTarefaCommand();
+        var request = MockCommandHelper.GetNewCreateTipoTarefaCommand();
 
         // Act
         CreateTipoTarefaCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -22,15 +22,15 @@ public class TipoTarefaHandlerTest
     public async Task GetTipoTarefaQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var tipoTarefa = context.TipoTarefas.First();
 
-        GetTipoTarefaQuery request = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
+        var request = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
 
         // Act
         GetTipoTarefaQueryHandler handler = new(context);
-        GetTipoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.TipoTarefa != null);
@@ -42,13 +42,13 @@ public class TipoTarefaHandlerTest
     public async Task ListTipoTarefaQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        ListTipoTarefaQuery request = MockQueryHelper.GetNewListTipoTarefaQuery();
+        var request = MockQueryHelper.GetNewListTipoTarefaQuery();
 
         // Act
         ListTipoTarefaQueryHandler handler = new(context);
-        ListTipoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.TipoTarefas != null);
@@ -59,19 +59,19 @@ public class TipoTarefaHandlerTest
     public async Task RemoveTipoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var tipoTarefa = context.TipoTarefas.First();
 
-        RemoveTipoTarefaCommand request = MockCommandHelper.GetNewRemoveTipoTarefaCommand(tipoTarefa.Id);
-        GetTipoTarefaQuery request2 = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
+        var request = MockCommandHelper.GetNewRemoveTipoTarefaCommand(tipoTarefa.Id);
+        var request2 = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
 
         // Act
         RemoveTipoTarefaCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetTipoTarefaQueryHandler handler2 = new(context);
-        GetTipoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -82,19 +82,19 @@ public class TipoTarefaHandlerTest
     public async Task UpdateTipoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var tipoTarefa = context.TipoTarefas.First();
 
-        UpdateTipoTarefaCommand request = MockCommandHelper.GetNewUpdateTipoTarefaCommand(tipoTarefa.Id);
-        GetTipoTarefaQuery request2 = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
+        var request = MockCommandHelper.GetNewUpdateTipoTarefaCommand(tipoTarefa.Id);
+        var request2 = MockQueryHelper.GetNewGetTipoTarefaQuery(tipoTarefa.Id);
 
         // Act
         UpdateTipoTarefaCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetTipoTarefaQueryHandler handler2 = new(context);
-        GetTipoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);

@@ -30,7 +30,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
             return result;
         }
 
-        bool success = Recurso.VerifyPassword(request.Senha, recurso.Senha!, recurso.Salt!);
+        var success = Recurso.VerifyPassword(request.Senha, recurso.Senha!, recurso.Salt!);
 
         if (!success)
         {
@@ -42,7 +42,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
         result.Recurso = recurso.MapToDto();
         result.Recurso.Senha = null;
 
-        int.TryParse(_configuration["Jwt:Expires"], out int jwtExpires);
+        int.TryParse(_configuration["Jwt:Expires"], out var jwtExpires);
         result.Token = TokenService.GenerateToken(result.Recurso.Id.ToString(), _configuration["Jwt:Key"]!, _configuration["Jwt:Issuer"]!, jwtExpires);
 
         result.Status = OperationResult.Success;

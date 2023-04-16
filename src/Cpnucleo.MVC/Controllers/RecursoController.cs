@@ -38,7 +38,7 @@ public class RecursoController : BaseController
     {
         try
         {
-            ListRecursoViewModel result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery());
+            var result = await _recursoGrpcService.ListRecurso(new ListRecursoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -73,7 +73,7 @@ public class RecursoController : BaseController
                 return View();
             }
 
-            OperationResult result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand(obj.Recurso.Nome, obj.Recurso.Login, obj.Recurso.Senha));
+            var result = await _recursoGrpcService.CreateRecurso(new CreateRecursoCommand(obj.Recurso.Nome, obj.Recurso.Login, obj.Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {
@@ -118,7 +118,7 @@ public class RecursoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand(obj.Recurso.Id, obj.Recurso.Nome, obj.Recurso.Senha));
+            var result = await _recursoGrpcService.UpdateRecurso(new UpdateRecursoCommand(obj.Recurso.Id, obj.Recurso.Nome, obj.Recurso.Senha));
 
             if (result == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class RecursoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand(obj.Recurso.Id));
+            var result = await _recursoGrpcService.RemoveRecurso(new RemoveRecursoCommand(obj.Recurso.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -182,7 +182,7 @@ public class RecursoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetRecursoViewModel result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery(id));
+        var result = await _recursoGrpcService.GetRecurso(new GetRecursoQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {

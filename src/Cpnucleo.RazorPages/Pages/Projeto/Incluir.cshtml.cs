@@ -44,7 +44,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand(Projeto.Nome, Projeto.IdSistema));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Projeto", "CreateProjeto", new CreateProjetoCommand(Projeto.Nome, Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -63,7 +63,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados()
     {
-        ListSistemaViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
+        var result = await _cpnucleoApiClient.ExecuteAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
         if (result.OperationResult == OperationResult.Failed)
         {

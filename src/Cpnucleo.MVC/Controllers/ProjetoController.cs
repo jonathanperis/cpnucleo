@@ -41,7 +41,7 @@ public class ProjetoController : BaseController
     {
         try
         {
-            ListProjetoViewModel result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery());
+            var result = await _projetoGrpcService.ListProjeto(new ListProjetoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -80,7 +80,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand(obj.Projeto.Nome, obj.Projeto.IdSistema));
+            var result = await _projetoGrpcService.CreateProjeto(new CreateProjetoCommand(obj.Projeto.Nome, obj.Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -125,7 +125,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand(obj.Projeto.Id, obj.Projeto.Nome, obj.Projeto.IdSistema));
+            var result = await _projetoGrpcService.UpdateProjeto(new UpdateProjetoCommand(obj.Projeto.Id, obj.Projeto.Nome, obj.Projeto.IdSistema));
 
             if (result == OperationResult.Failed)
             {
@@ -170,7 +170,7 @@ public class ProjetoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand(obj.Projeto.Id));
+            var result = await _projetoGrpcService.RemoveProjeto(new RemoveProjetoCommand(obj.Projeto.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -191,7 +191,7 @@ public class ProjetoController : BaseController
     {
         if (idProjeto is not null)
         {
-            GetProjetoViewModel result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery(idProjeto.Value));
+            var result = await _projetoGrpcService.GetProjeto(new GetProjetoQuery(idProjeto.Value));
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -202,7 +202,7 @@ public class ProjetoController : BaseController
             ViewModel.Projeto = result.Projeto;
         }
 
-        ListSistemaViewModel result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
+        var result2 = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

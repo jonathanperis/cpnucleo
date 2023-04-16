@@ -22,9 +22,9 @@ public sealed class RemoveProjetoCommandHandler : IRequestHandler<RemoveProjetoC
         projeto = Projeto.Remove(projeto);
         _context.Projetos.Update(projeto); //JONATHAN - Soft Delete.
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

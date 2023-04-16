@@ -20,7 +20,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            ListSistemaViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
+            var result = await _cpnucleoApiClient.ExecuteAsync<ListSistemaViewModel>("Sistema", "ListSistema", new ListSistemaQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {

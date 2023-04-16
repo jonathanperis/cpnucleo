@@ -68,8 +68,8 @@ public static class SwaggerConfiguration
                     }
             });
 
-            string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             config.IncludeXmlComments(xmlPath);
         });
     }
@@ -80,7 +80,7 @@ public static class SwaggerConfiguration
 
         app.UseSwaggerUI(c =>
         {
-            string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+            var swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
 
             c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v2/swagger.json", "V2");
             c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "V1");

@@ -38,7 +38,7 @@ public class ImpedimentoController : BaseController
     {
         try
         {
-            ListImpedimentoViewModel result = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery());
+            var result = await _impedimentoGrpcService.ListImpedimento(new ListImpedimentoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -73,7 +73,7 @@ public class ImpedimentoController : BaseController
                 return View();
             }
 
-            OperationResult result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand(obj.Impedimento.Nome));
+            var result = await _impedimentoGrpcService.CreateImpedimento(new CreateImpedimentoCommand(obj.Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {
@@ -118,7 +118,7 @@ public class ImpedimentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoGrpcService.UpdateImpedimento(new UpdateImpedimentoCommand(obj.Impedimento.Id, obj.Impedimento.Nome));
+            var result = await _impedimentoGrpcService.UpdateImpedimento(new UpdateImpedimentoCommand(obj.Impedimento.Id, obj.Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class ImpedimentoController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _impedimentoGrpcService.RemoveImpedimento(new RemoveImpedimentoCommand(obj.Impedimento.Id));
+            var result = await _impedimentoGrpcService.RemoveImpedimento(new RemoveImpedimentoCommand(obj.Impedimento.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -182,7 +182,7 @@ public class ImpedimentoController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetImpedimentoViewModel result = await _impedimentoGrpcService.GetImpedimento(new GetImpedimentoQuery(id));
+        var result = await _impedimentoGrpcService.GetImpedimento(new GetImpedimentoQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {

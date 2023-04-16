@@ -6,8 +6,8 @@ internal sealed class CryptographyManager
     {
         using Rfc2898DeriveBytes deriveBytes = new(item, 48);
 
-        byte[] saltBytes = deriveBytes.Salt;
-        byte[] itemBytes = deriveBytes.GetBytes(48);
+        var saltBytes = deriveBytes.Salt;
+        var itemBytes = deriveBytes.GetBytes(48);
 
         salt = Convert.ToBase64String(saltBytes);
         itemCrypt = Convert.ToBase64String(itemBytes);
@@ -15,12 +15,12 @@ internal sealed class CryptographyManager
 
     internal static bool VerifyPbkdf2(string item, string itemCrypt, string salt)
     {
-        byte[] saltBytes = Convert.FromBase64String(salt);
-        byte[] itemBytes = Convert.FromBase64String(itemCrypt);
+        var saltBytes = Convert.FromBase64String(salt);
+        var itemBytes = Convert.FromBase64String(itemCrypt);
 
         using Rfc2898DeriveBytes deriveBytes = new(item, saltBytes);
 
-        byte[] newItem = deriveBytes.GetBytes(48);
+        var newItem = deriveBytes.GetBytes(48);
 
         if (!newItem.SequenceEqual(itemBytes))
         {

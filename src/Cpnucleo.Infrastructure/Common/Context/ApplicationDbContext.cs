@@ -61,19 +61,19 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     private static void CreateSeedData()
     {
-        Guid sistemaId = Guid.Parse("b865f5ca-d3c2-46ff-96c8-860207b563c9");
+        var sistemaId = Guid.Parse("b865f5ca-d3c2-46ff-96c8-860207b563c9");
         SistemaMap.Sistemas = new()
         {
             MockEntityHelper.GetNewSistema(sistemaId)
         };
 
-        Guid projetoId = Guid.Parse("38e2dce9-9f48-486a-88c1-12985c3b72ef");
+        var projetoId = Guid.Parse("38e2dce9-9f48-486a-88c1-12985c3b72ef");
         ProjetoMap.Projetos = new()
         {
             MockEntityHelper.GetNewProjeto(sistemaId, projetoId)
         };
 
-        Guid workflowId = Guid.Parse("0c17bf58-c14b-44de-8883-e7616bf29134");
+        var workflowId = Guid.Parse("0c17bf58-c14b-44de-8883-e7616bf29134");
         WorkflowMap.Workflows = new()
         {
             MockEntityHelper.GetNewWorkflow("Análise", 1, workflowId),
@@ -82,13 +82,13 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
             MockEntityHelper.GetNewWorkflow("Finalizado", 4, Guid.Parse("d3af39ba-e690-47e5-a40d-0d849e07a294"))
         };
 
-        Guid recursoId = Guid.Parse("ae9cab55-01f8-4bd1-8ca0-92f174bb1aa0");
+        var recursoId = Guid.Parse("ae9cab55-01f8-4bd1-8ca0-92f174bb1aa0");
         RecursoMap.Recursos = new()
         {
             MockEntityHelper.GetNewRecurso(recursoId)
         };
 
-        Guid tipoTarefaId = Guid.Parse("9ecea6c5-dced-44a8-b4cf-9dfcf333fb0a");
+        var tipoTarefaId = Guid.Parse("9ecea6c5-dced-44a8-b4cf-9dfcf333fb0a");
         TipoTarefaMap.TiposTarefas = new()
         {
             MockEntityHelper.GetNewTipoTarefa("Projeto", "../gif/gif-projeto.gif", tipoTarefaId),
@@ -97,7 +97,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
             MockEntityHelper.GetNewTipoTarefa("Requisição", "../gif/gif-requisicao.gif", Guid.Parse("eb94316e-a987-4809-9b9d-eb88051f054c"))
         };
 
-        Guid tarefaId = Guid.Parse("82fe661a-620b-40b5-980a-4104b03ce873");
+        var tarefaId = Guid.Parse("82fe661a-620b-40b5-980a-4104b03ce873");
         TarefaMap.Tarefas = new()
         {
             MockEntityHelper.GetNewTarefa(projetoId, workflowId, recursoId, tipoTarefaId, tarefaId)

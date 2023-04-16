@@ -24,9 +24,9 @@ public sealed class RemoveSistemaCommandHandler : IRequestHandler<RemoveSistemaC
         sistema = Sistema.Remove(sistema);
         _context.Sistemas.Update(sistema); //JONATHAN - Soft Delete.
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         if (result == OperationResult.Success)
         {

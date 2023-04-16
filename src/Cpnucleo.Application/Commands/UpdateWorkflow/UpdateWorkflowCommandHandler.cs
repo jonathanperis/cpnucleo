@@ -22,9 +22,9 @@ public sealed class UpdateWorkflowCommandHandler : IRequestHandler<UpdateWorkflo
         workflow = Workflow.Update(workflow, request.Nome, request.Ordem);
         _context.Workflows.Update(workflow);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

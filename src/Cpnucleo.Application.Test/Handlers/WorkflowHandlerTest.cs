@@ -6,13 +6,13 @@ public class WorkflowHandlerTest
     public async Task CreateWorkflowCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        CreateWorkflowCommand request = MockCommandHelper.GetNewCreateWorkflowCommand();
+        var request = MockCommandHelper.GetNewCreateWorkflowCommand();
 
         // Act
         CreateWorkflowCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -22,15 +22,15 @@ public class WorkflowHandlerTest
     public async Task GetWorkflowQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var workflow = context.Workflows.First();
 
-        GetWorkflowQuery request = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
+        var request = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
 
         // Act
         GetWorkflowQueryHandler handler = new(context);
-        GetWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Workflow != null);
@@ -42,13 +42,13 @@ public class WorkflowHandlerTest
     public async Task ListWorkflowQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        ListWorkflowQuery request = MockQueryHelper.GetNewListWorkflowQuery();
+        var request = MockQueryHelper.GetNewListWorkflowQuery();
 
         // Act
         ListWorkflowQueryHandler handler = new(context);
-        ListWorkflowViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.Workflows != null);
@@ -59,19 +59,19 @@ public class WorkflowHandlerTest
     public async Task RemoveWorkflowCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var workflow = context.Workflows.First();
 
-        RemoveWorkflowCommand request = MockCommandHelper.GetNewRemoveWorkflowCommand(workflow.Id);
-        GetWorkflowQuery request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
+        var request = MockCommandHelper.GetNewRemoveWorkflowCommand(workflow.Id);
+        var request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
 
         // Act
         RemoveWorkflowCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetWorkflowQueryHandler handler2 = new(context);
-        GetWorkflowViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -82,19 +82,19 @@ public class WorkflowHandlerTest
     public async Task UpdateWorkflowCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var workflow = context.Workflows.First();
 
-        UpdateWorkflowCommand request = MockCommandHelper.GetNewUpdateWorkflowCommand(workflow.Id);
-        GetWorkflowQuery request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
+        var request = MockCommandHelper.GetNewUpdateWorkflowCommand(workflow.Id);
+        var request2 = MockQueryHelper.GetNewGetWorkflowQuery(workflow.Id);
 
         // Act
         UpdateWorkflowCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetWorkflowQueryHandler handler2 = new(context);
-        GetWorkflowViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);

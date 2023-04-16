@@ -42,7 +42,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "UpdateSistema", new UpdateSistemaCommand(Sistema.Id, Sistema.Nome, Sistema.Descricao));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Sistema", "UpdateSistema", new UpdateSistemaCommand(Sistema.Id, Sistema.Nome, Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {
@@ -61,7 +61,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idSistema)
     {
-        GetSistemaViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
+        var result = await _cpnucleoApiClient.ExecuteAsync<GetSistemaViewModel>("Sistema", "GetSistema", new GetSistemaQuery(idSistema));
 
         if (result.OperationResult == OperationResult.Failed)
         {
