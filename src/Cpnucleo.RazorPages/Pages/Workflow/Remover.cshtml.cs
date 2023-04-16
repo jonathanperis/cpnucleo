@@ -42,7 +42,7 @@ public class RemoverModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "RemoveWorkflow", new RemoveWorkflowCommand(Workflow.Id));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "RemoveWorkflow", new RemoveWorkflowCommand(Workflow.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -61,7 +61,7 @@ public class RemoverModel : PageModel
 
     private async Task CarregarDados(Guid idWorkflow)
     {
-        GetWorkflowViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
+        var result = await _cpnucleoApiClient.ExecuteAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
 
         if (result.OperationResult == OperationResult.Failed)
         {

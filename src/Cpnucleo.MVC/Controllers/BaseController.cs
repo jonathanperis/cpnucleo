@@ -20,7 +20,7 @@ public class BaseController : Controller
 
     protected GrpcChannel CreateAuthenticatedChannel()
     {
-        CallCredentials credentials = CallCredentials.FromInterceptor((context, metadata) =>
+        var credentials = CallCredentials.FromInterceptor((context, metadata) =>
         {
             if (!string.IsNullOrEmpty(Token))
             {

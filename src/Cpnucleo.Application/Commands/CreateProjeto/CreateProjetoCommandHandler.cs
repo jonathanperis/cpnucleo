@@ -14,9 +14,9 @@ public sealed class CreateProjetoCommandHandler : IRequestHandler<CreateProjetoC
         var projeto = Projeto.Create(request.Nome, request.IdSistema);
         _context.Projetos.Add(projeto);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

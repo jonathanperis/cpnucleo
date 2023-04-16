@@ -36,7 +36,7 @@ public sealed class ListTarefaByRecursoQueryHandler : IRequestHandler<ListTarefa
     {
         var colunas = _context.Workflows.Where(x => x.Ativo).Count();
 
-        foreach (TarefaDTO item in lista)
+        foreach (var item in lista)
         {
             item.Workflow.TamanhoColuna = Workflow.GetTamanhoColuna(colunas);
 

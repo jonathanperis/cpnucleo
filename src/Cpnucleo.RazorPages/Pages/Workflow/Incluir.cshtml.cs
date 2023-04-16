@@ -24,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand(Workflow.Nome, Workflow.Ordem));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "CreateWorkflow", new CreateWorkflowCommand(Workflow.Nome, Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {

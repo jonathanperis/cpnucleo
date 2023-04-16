@@ -42,7 +42,7 @@ public class AlterarModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "UpdateWorkflow", new UpdateWorkflowCommand(Workflow.Id, Workflow.Nome, Workflow.Ordem));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Workflow", "UpdateWorkflow", new UpdateWorkflowCommand(Workflow.Id, Workflow.Nome, Workflow.Ordem));
 
             if (result == OperationResult.Failed)
             {
@@ -61,7 +61,7 @@ public class AlterarModel : PageModel
 
     private async Task CarregarDados(Guid idWorkflow)
     {
-        GetWorkflowViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
+        var result = await _cpnucleoApiClient.ExecuteAsync<GetWorkflowViewModel>("Workflow", "GetWorkflow", new GetWorkflowQuery(idWorkflow));
 
         if (result.OperationResult == OperationResult.Failed)
         {

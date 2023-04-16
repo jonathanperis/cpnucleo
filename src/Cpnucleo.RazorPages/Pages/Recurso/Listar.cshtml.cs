@@ -20,7 +20,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            ListRecursoViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery());
+            var result = await _cpnucleoApiClient.ExecuteAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {

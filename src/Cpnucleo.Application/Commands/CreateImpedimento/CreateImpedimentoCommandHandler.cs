@@ -14,9 +14,9 @@ public sealed class CreateImpedimentoCommandHandler : IRequestHandler<CreateImpe
         var impedimento = Impedimento.Create(request.Nome);
         _context.Impedimentos.Add(impedimento);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

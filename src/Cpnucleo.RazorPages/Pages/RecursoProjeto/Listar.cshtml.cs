@@ -21,7 +21,7 @@ public class ListarModel : PageModel
     {
         try
         {
-            ListRecursoProjetoByProjetoViewModel result = await _cpnucleoApiClient.ExecuteAsync<ListRecursoProjetoByProjetoViewModel>("RecursoProjeto", "GetRecursoProjetoByProjeto", new ListRecursoProjetoByProjetoQuery(idProjeto));
+            var result = await _cpnucleoApiClient.ExecuteAsync<ListRecursoProjetoByProjetoViewModel>("RecursoProjeto", "GetRecursoProjetoByProjeto", new ListRecursoProjetoByProjetoQuery(idProjeto));
 
             if (result.OperationResult == OperationResult.Failed)
             {

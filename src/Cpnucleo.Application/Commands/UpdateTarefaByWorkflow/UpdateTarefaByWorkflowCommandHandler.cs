@@ -22,9 +22,9 @@ public sealed class UpdateTarefaByWorkflowCommandHandler : IRequestHandler<Updat
         tarefa = Tarefa.UpdateWorkflow(tarefa, request.IdWorkflow);
         _context.Tarefas.Update(tarefa);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

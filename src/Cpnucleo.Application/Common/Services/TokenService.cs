@@ -17,7 +17,7 @@ internal sealed class TokenService
         };
 
         JwtSecurityTokenHandler tokenHandler = new();
-        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
     }

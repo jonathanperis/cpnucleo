@@ -6,16 +6,16 @@ public class RecursoProjetoHandlerTest
     public async Task CreateRecursoProjetoCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var projeto = context.Projetos.First();
         var recurso = context.Recursos.First();
 
-        CreateRecursoProjetoCommand request = MockCommandHelper.GetNewCreateRecursoProjetoCommand(projeto.Id, recurso.Id);
+        var request = MockCommandHelper.GetNewCreateRecursoProjetoCommand(projeto.Id, recurso.Id);
 
         // Act
         CreateRecursoProjetoCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -25,15 +25,15 @@ public class RecursoProjetoHandlerTest
     public async Task GetRecursoProjetoQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var recursoProjeto = context.RecursoProjetos.First();
 
-        GetRecursoProjetoQuery request = MockQueryHelper.GetNewGetRecursoProjetoQuery(recursoProjeto.Id);
+        var request = MockQueryHelper.GetNewGetRecursoProjetoQuery(recursoProjeto.Id);
 
         // Act
         GetRecursoProjetoQueryHandler handler = new(context);
-        GetRecursoProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.RecursoProjeto != null);
@@ -45,13 +45,13 @@ public class RecursoProjetoHandlerTest
     public async Task ListRecursoProjetoQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        ListRecursoProjetoQuery request = MockQueryHelper.GetNewListRecursoProjetoQuery();
+        var request = MockQueryHelper.GetNewListRecursoProjetoQuery();
 
         // Act
         ListRecursoProjetoQueryHandler handler = new(context);
-        ListRecursoProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.RecursoProjetos != null);
@@ -62,19 +62,19 @@ public class RecursoProjetoHandlerTest
     public async Task RemoveRecursoProjetoCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var recursoProjeto = context.RecursoProjetos.First();
 
-        RemoveRecursoProjetoCommand request = MockCommandHelper.GetNewRemoveRecursoProjetoCommand(recursoProjeto.Id);
-        GetRecursoProjetoQuery request2 = MockQueryHelper.GetNewGetRecursoProjetoQuery(recursoProjeto.Id);
+        var request = MockCommandHelper.GetNewRemoveRecursoProjetoCommand(recursoProjeto.Id);
+        var request2 = MockQueryHelper.GetNewGetRecursoProjetoQuery(recursoProjeto.Id);
 
         // Act
         RemoveRecursoProjetoCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetRecursoProjetoQueryHandler handler2 = new(context);
-        GetRecursoProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -85,21 +85,21 @@ public class RecursoProjetoHandlerTest
     public async Task UpdateRecursoProjetoCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var projeto = context.Projetos.First();
         var recurso = context.Recursos.First();
         var recursoProjeto = context.RecursoProjetos.First();
 
-        UpdateRecursoProjetoCommand request = MockCommandHelper.GetNewUpdateRecursoProjetoCommand(projeto.Id, recurso.Id, recursoProjeto.Id);
-        GetRecursoProjetoQuery request2 = MockQueryHelper.GetNewGetRecursoProjetoQuery(recursoProjeto.Id);
+        var request = MockCommandHelper.GetNewUpdateRecursoProjetoCommand(projeto.Id, recurso.Id, recursoProjeto.Id);
+        var request2 = MockQueryHelper.GetNewGetRecursoProjetoQuery(recursoProjeto.Id);
 
         // Act
         UpdateRecursoProjetoCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetRecursoProjetoQueryHandler handler2 = new(context);
-        GetRecursoProjetoViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -111,15 +111,15 @@ public class RecursoProjetoHandlerTest
     public async Task ListRecursoProjetoByProjetoQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var projeto = context.Projetos.First();
 
-        ListRecursoProjetoByProjetoQuery request = MockQueryHelper.GetNewListRecursoProjetoByProjetoQuery(projeto.Id);
+        var request = MockQueryHelper.GetNewListRecursoProjetoByProjetoQuery(projeto.Id);
 
         // Act
         ListRecursoProjetoByProjetoQueryHandler handler = new(context);
-        ListRecursoProjetoByProjetoViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.RecursoProjetos != null);
