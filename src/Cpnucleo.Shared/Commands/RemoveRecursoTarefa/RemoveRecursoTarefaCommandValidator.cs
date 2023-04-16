@@ -4,6 +4,8 @@ public sealed class RemoveRecursoTarefaCommandValidator : AbstractValidator<Remo
 {
     public RemoveRecursoTarefaCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Recurso Tarefa");
     }
 }

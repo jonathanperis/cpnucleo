@@ -4,6 +4,8 @@ public sealed class RemoveProjetoCommandValidator : AbstractValidator<RemoveProj
 {
     public RemoveProjetoCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Projeto");
     }
 }

@@ -34,6 +34,7 @@ global using Cpnucleo.Shared.Commands.UpdateTipoTarefa;
 global using Cpnucleo.Shared.Commands.UpdateWorkflow;
 global using Cpnucleo.Shared.Common.Dtos;
 global using Cpnucleo.Shared.Common.Models;
+global using Cpnucleo.Shared.Events.RemoveSistema;
 global using Cpnucleo.Shared.Queries.AuthUser;
 global using Cpnucleo.Shared.Queries.GetApontamento;
 global using Cpnucleo.Shared.Queries.GetImpedimento;

@@ -4,6 +4,8 @@ public sealed class ListApontamentoByRecursoQueryValidator : AbstractValidator<L
 {
     public ListApontamentoByRecursoQueryValidator()
     {
-        RuleFor(x => x.IdRecurso).NotEmpty();
+        RuleFor(x => x.IdRecurso)
+            .NotEmpty()
+            .WithMessage("Apontamento deve conter um Recurso");
     }
 }

@@ -4,10 +4,24 @@ public sealed class UpdateSistemaCommandValidator : AbstractValidator<UpdateSist
 {
     public UpdateSistemaCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.Nome).NotEmpty();
-        RuleFor(x => x.Nome).MaximumLength(50);
-        RuleFor(x => x.Descricao).NotEmpty();
-        RuleFor(x => x.Descricao).MaximumLength(450);
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Sistema");
+
+        RuleFor(x => x.Nome)
+            .NotEmpty()
+            .WithMessage("Necessário informar a Nome do Sistema");
+
+        RuleFor(x => x.Nome)
+            .MaximumLength(50)
+            .WithMessage("Nome pode conter no máximo 50 caractéres");
+
+        RuleFor(x => x.Descricao)
+            .NotEmpty()
+            .WithMessage("Necessário informar a Descrição do Sistema");
+
+        RuleFor(x => x.Descricao)
+            .MaximumLength(450)
+            .WithMessage("Descrição pode conter no máximo 450 caractéres");
     }
 }

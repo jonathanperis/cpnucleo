@@ -4,6 +4,8 @@ public sealed class RemoveImpedimentoCommandValidator : AbstractValidator<Remove
 {
     public RemoveImpedimentoCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Impedimento");
     }
 }
