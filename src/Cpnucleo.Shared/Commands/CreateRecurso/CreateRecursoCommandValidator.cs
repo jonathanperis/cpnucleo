@@ -4,11 +4,28 @@ public sealed class CreateRecursoCommandValidator : AbstractValidator<CreateRecu
 {
     public CreateRecursoCommandValidator()
     {
-        RuleFor(x => x.Nome).NotEmpty();
-        RuleFor(x => x.Nome).MaximumLength(50);
-        RuleFor(x => x.Login).NotEmpty();
-        RuleFor(x => x.Login).MaximumLength(50);
-        RuleFor(x => x.Senha).NotEmpty();
-        RuleFor(x => x.Senha).MaximumLength(50);
+        RuleFor(x => x.Nome)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Nome do Recurso");
+
+        RuleFor(x => x.Nome)
+            .MaximumLength(50)
+            .WithMessage("Nome pode conter no máximo 50 caractéres");
+
+        RuleFor(x => x.Login)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Login do Recurso");
+
+        RuleFor(x => x.Login)
+            .MaximumLength(50)
+            .WithMessage("Login pode conter no máximo 50 caractéres");
+
+        RuleFor(x => x.Senha)
+            .NotEmpty()
+            .WithMessage("Necessário informar a Senha do Recurso");
+
+        RuleFor(x => x.Senha)
+            .MaximumLength(50)
+            .WithMessage("Senha pode conter no máximo 50 caractéres");
     }
 }

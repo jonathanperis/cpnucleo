@@ -4,6 +4,8 @@ public sealed class RemoveRecursoCommandValidator : AbstractValidator<RemoveRecu
 {
     public RemoveRecursoCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Recurso");
     }
 }

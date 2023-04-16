@@ -4,6 +4,8 @@ public sealed class ListImpedimentoTarefaByTarefaQueryValidator : AbstractValida
 {
     public ListImpedimentoTarefaByTarefaQueryValidator()
     {
-        RuleFor(x => x.IdTarefa).NotEmpty();
+        RuleFor(x => x.IdTarefa)
+            .NotEmpty()
+            .WithMessage("Impedimento Tarefa deve conter uma Tarefa");
     }
 }

@@ -4,7 +4,12 @@ public sealed class UpdateTarefaByWorkflowCommandValidator : AbstractValidator<U
 {
     public UpdateTarefaByWorkflowCommandValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.IdWorkflow).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id da Tarefa");
+
+        RuleFor(x => x.IdWorkflow)
+            .NotEmpty()
+            .WithMessage("Tarefa deve conter um Workflow");
     }
 }

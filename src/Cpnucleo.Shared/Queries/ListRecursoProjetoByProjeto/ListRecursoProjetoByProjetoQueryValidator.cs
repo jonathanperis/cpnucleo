@@ -4,6 +4,8 @@ public sealed class ListRecursoProjetoByProjetoQueryValidator : AbstractValidato
 {
     public ListRecursoProjetoByProjetoQueryValidator()
     {
-        RuleFor(x => x.IdProjeto).NotEmpty();
+        RuleFor(x => x.IdProjeto)
+            .NotEmpty()
+            .WithMessage("Recurso Projeto deve conter um Projeto");
     }
 }

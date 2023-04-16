@@ -4,6 +4,8 @@ public sealed class GetTipoTarefaQueryValidator : AbstractValidator<GetTipoTaref
 {
     public GetTipoTarefaQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Tipo Tarefa");
     }
 }

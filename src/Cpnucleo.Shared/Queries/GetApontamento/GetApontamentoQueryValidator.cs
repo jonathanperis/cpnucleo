@@ -4,6 +4,8 @@ public sealed class GetApontamentoQueryValidator : AbstractValidator<GetApontame
 {
     public GetApontamentoQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Apontamento");
     }
 }

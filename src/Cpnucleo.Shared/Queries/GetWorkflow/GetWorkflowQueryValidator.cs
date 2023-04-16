@@ -4,6 +4,8 @@ public sealed class GetWorkflowQueryValidator : AbstractValidator<GetWorkflowQue
 {
     public GetWorkflowQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Workflow");
     }
 }

@@ -30,7 +30,7 @@ public sealed class RemoveSistemaCommandHandler : IRequestHandler<RemoveSistemaC
 
         if (result == OperationResult.Success)
         {
-            await _eventHandler.PublishEventAsync(new RemoveSistemaEvent(request.Id));
+            await _eventHandler.PublishEventAsync(new RemoveSistemaEvent(sistema.Id, sistema.Nome!));
         }
 
         return result;

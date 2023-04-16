@@ -4,6 +4,8 @@ public sealed class GetRecursoTarefaQueryValidator : AbstractValidator<GetRecurs
 {
     public GetRecursoTarefaQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Recurso Tarefa");
     }
 }

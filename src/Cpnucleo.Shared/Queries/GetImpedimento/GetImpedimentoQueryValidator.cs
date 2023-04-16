@@ -4,6 +4,8 @@ public sealed class GetImpedimentoQueryValidator : AbstractValidator<GetImpedime
 {
     public GetImpedimentoQueryValidator()
     {
-        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Id do Impedimento");
     }
 }

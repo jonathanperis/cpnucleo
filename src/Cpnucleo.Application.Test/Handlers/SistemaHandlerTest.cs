@@ -64,7 +64,7 @@ public class SistemaHandlerTest
         
         var sistema = context.Sistemas.First();
         
-        var eventManager = EventManagerHelper.GetInstance(new RemoveSistemaEvent(sistema.Id));
+        var eventManager = EventManagerHelper.GetInstance(new RemoveSistemaEvent(sistema.Id, sistema.Nome!));
 
         var request = MockCommandHelper.GetNewRemoveSistemaCommand(sistema.Id);
         var request2 = MockQueryHelper.GetNewGetSistemaQuery(sistema.Id);

@@ -4,7 +4,12 @@ public sealed class CreateImpedimentoCommandValidator : AbstractValidator<Create
 {
     public CreateImpedimentoCommandValidator()
     {
-        RuleFor(x => x.Nome).NotEmpty();
-        RuleFor(x => x.Nome).MaximumLength(50);
+        RuleFor(x => x.Nome)
+            .NotEmpty()
+            .WithMessage("Necessário informar o Nome do Impedimento");
+
+        RuleFor(x => x.Nome)
+            .MaximumLength(50)
+            .WithMessage("Nome pode conter no máximo 50 caractéres");
     }
 }

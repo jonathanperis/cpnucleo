@@ -4,6 +4,8 @@ public sealed class ListTarefaByRecursoQueryValidator : AbstractValidator<ListTa
 {
     public ListTarefaByRecursoQueryValidator()
     {
-        RuleFor(x => x.IdRecurso).NotEmpty();
+        RuleFor(x => x.IdRecurso)
+            .NotEmpty()
+            .WithMessage("Tarefa deve conter um Recurso");
     }
 }
