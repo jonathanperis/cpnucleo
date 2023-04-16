@@ -50,7 +50,7 @@ builder.Services.AddControllers()
         options.SuppressMapClientErrors = true;
     });
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 app.UseRouting();
 

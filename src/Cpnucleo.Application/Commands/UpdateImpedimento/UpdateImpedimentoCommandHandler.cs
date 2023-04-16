@@ -22,9 +22,9 @@ public sealed class UpdateImpedimentoCommandHandler : IRequestHandler<UpdateImpe
         impedimento = Impedimento.Update(impedimento, request.Nome);
         _context.Impedimentos.Update(impedimento);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

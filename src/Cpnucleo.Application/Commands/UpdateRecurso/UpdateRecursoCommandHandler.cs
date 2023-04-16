@@ -22,9 +22,9 @@ public sealed class UpdateRecursoCommandHandler : IRequestHandler<UpdateRecursoC
         recurso = Recurso.Update(recurso, request.Nome, request.Senha);
         _context.Recursos.Update(recurso);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

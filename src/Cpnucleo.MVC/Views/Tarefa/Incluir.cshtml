@@ -33,8 +33,8 @@
             <form method="post" class="form-horizontal">
 
                 @{
-                    string retorno = ClaimsService.ReadClaimsPrincipal(Model.User, ClaimTypes.PrimarySid);
-                    Guid idRecurso = new Guid(retorno);
+                    var retorno = ClaimsService.ReadClaimsPrincipal(Model.User, ClaimTypes.PrimarySid);
+                    var idRecurso = new Guid(retorno);
                 }
 
                 <input type="hidden" asp-for="Tarefa.IdRecurso" value="@idRecurso" />

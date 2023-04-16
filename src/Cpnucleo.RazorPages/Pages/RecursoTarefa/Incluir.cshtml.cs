@@ -47,7 +47,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("RecursoTarefa", "CreateRecursoTarefa", new CreateRecursoTarefaCommand(RecursoTarefa.IdRecurso, RecursoTarefa.IdTarefa));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("RecursoTarefa", "CreateRecursoTarefa", new CreateRecursoTarefaCommand(RecursoTarefa.IdRecurso, RecursoTarefa.IdTarefa));
 
             if (result == OperationResult.Failed)
             {
@@ -66,7 +66,7 @@ public class IncluirModel : PageModel
 
     private async Task CarregarDados(Guid idTarefa)
     {
-        GetTarefaViewModel result = await _cpnucleoApiClient.ExecuteAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery(idTarefa));
+        var result = await _cpnucleoApiClient.ExecuteAsync<GetTarefaViewModel>("Tarefa", "GetTarefa", new GetTarefaQuery(idTarefa));
 
         if (result.OperationResult == OperationResult.Failed)
         {
@@ -76,7 +76,7 @@ public class IncluirModel : PageModel
 
         Tarefa = result.Tarefa;
 
-        ListRecursoViewModel result2 = await _cpnucleoApiClient.ExecuteAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery());
+        var result2 = await _cpnucleoApiClient.ExecuteAsync<ListRecursoViewModel>("Recurso", "ListRecurso", new ListRecursoQuery());
 
         if (result2.OperationResult == OperationResult.Failed)
         {

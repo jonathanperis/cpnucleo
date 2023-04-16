@@ -6,16 +6,16 @@ public class ImpedimentoTarefaHandlerTest
     public async Task CreateImpedimentoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var tarefa = context.Tarefas.First();
         var impedimento = context.Impedimentos.First();
 
-        CreateImpedimentoTarefaCommand request = MockCommandHelper.GetNewCreateImpedimentoTarefaCommand(tarefa.Id, impedimento.Id);
+        var request = MockCommandHelper.GetNewCreateImpedimentoTarefaCommand(tarefa.Id, impedimento.Id);
 
         // Act
         CreateImpedimentoTarefaCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -25,15 +25,15 @@ public class ImpedimentoTarefaHandlerTest
     public async Task GetImpedimentoTarefaQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var impedimentoTarefa = context.ImpedimentoTarefas.First();
 
-        GetImpedimentoTarefaQuery request = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
+        var request = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
 
         // Act
         GetImpedimentoTarefaQueryHandler handler = new(context);
-        GetImpedimentoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.ImpedimentoTarefa != null);
@@ -45,13 +45,13 @@ public class ImpedimentoTarefaHandlerTest
     public async Task ListImpedimentoTarefaQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
-        ListImpedimentoTarefaQuery request = MockQueryHelper.GetNewListImpedimentoTarefaQuery();
+        var request = MockQueryHelper.GetNewListImpedimentoTarefaQuery();
 
         // Act
         ListImpedimentoTarefaQueryHandler handler = new(context);
-        ListImpedimentoTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.ImpedimentoTarefas != null);
@@ -62,19 +62,19 @@ public class ImpedimentoTarefaHandlerTest
     public async Task RemoveImpedimentoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var impedimentoTarefa = context.ImpedimentoTarefas.First();
 
-        RemoveImpedimentoTarefaCommand request = MockCommandHelper.GetNewRemoveImpedimentoTarefaCommand(impedimentoTarefa.Id);
-        GetImpedimentoTarefaQuery request2 = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
+        var request = MockCommandHelper.GetNewRemoveImpedimentoTarefaCommand(impedimentoTarefa.Id);
+        var request2 = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
 
         // Act
         RemoveImpedimentoTarefaCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetImpedimentoTarefaQueryHandler handler2 = new(context);
-        GetImpedimentoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -85,21 +85,21 @@ public class ImpedimentoTarefaHandlerTest
     public async Task UpdateImpedimentoTarefaCommand_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var tarefa = context.Tarefas.First();
         var impedimento = context.Impedimentos.First();
         var impedimentoTarefa = context.ImpedimentoTarefas.First();
 
-        UpdateImpedimentoTarefaCommand request = MockCommandHelper.GetNewUpdateImpedimentoTarefaCommand(tarefa.Id, impedimento.Id, impedimentoTarefa.Id);
-        GetImpedimentoTarefaQuery request2 = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
+        var request = MockCommandHelper.GetNewUpdateImpedimentoTarefaCommand(tarefa.Id, impedimento.Id, impedimentoTarefa.Id);
+        var request2 = MockQueryHelper.GetNewGetImpedimentoTarefaQuery(impedimentoTarefa.Id);
 
         // Act
         UpdateImpedimentoTarefaCommandHandler handler = new(context);
-        OperationResult response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         GetImpedimentoTarefaQueryHandler handler2 = new(context);
-        GetImpedimentoTarefaViewModel response2 = await handler2.Handle(request2, CancellationToken.None);
+        var response2 = await handler2.Handle(request2, CancellationToken.None);
 
         // Assert
         Assert.True(response == OperationResult.Success);
@@ -111,15 +111,15 @@ public class ImpedimentoTarefaHandlerTest
     public async Task ListImpedimentoTarefaByTarefaQuery_Handle_Success()
     {
         // Arrange
-        IApplicationDbContext context = DbContextHelper.GetContext();
+        var context = DbContextHelper.GetContext();
 
         var tarefa = context.Tarefas.First();
 
-        ListImpedimentoTarefaByTarefaQuery request = MockQueryHelper.GetNewListImpedimentoTarefaByTarefaQuery(tarefa.Id);
+        var request = MockQueryHelper.GetNewListImpedimentoTarefaByTarefaQuery(tarefa.Id);
 
         // Act
         ListImpedimentoTarefaByTarefaQueryHandler handler = new(context);
-        ListImpedimentoTarefaByTarefaViewModel response = await handler.Handle(request, CancellationToken.None);
+        var response = await handler.Handle(request, CancellationToken.None);
 
         // Assert
         Assert.True(response.ImpedimentoTarefas != null);

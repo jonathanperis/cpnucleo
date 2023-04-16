@@ -39,7 +39,7 @@ public sealed class Workflow : BaseEntity
     {
         colunas = colunas == 1 ? 2 : colunas;
 
-        int i = 12 / colunas;
+        var i = 12 / colunas;
         return i.ToString();
     }
 }

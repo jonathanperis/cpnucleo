@@ -22,9 +22,9 @@ public sealed class UpdateSistemaCommandHandler : IRequestHandler<UpdateSistemaC
         sistema = Sistema.Update(sistema, request.Nome, request.Descricao);
         _context.Sistemas.Update(sistema);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

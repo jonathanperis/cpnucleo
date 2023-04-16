@@ -14,9 +14,9 @@ public sealed class CreateRecursoProjetoCommandHandler : IRequestHandler<CreateR
         var recursoProjeto = RecursoProjeto.Create(request.IdProjeto, request.IdRecurso);
         _context.RecursoProjetos.Add(recursoProjeto);
 
-        bool success = await _context.SaveChangesAsync(cancellationToken);
+        var success = await _context.SaveChangesAsync(cancellationToken);
 
-        OperationResult result = success ? OperationResult.Success : OperationResult.Failed;
+        var result = success ? OperationResult.Success : OperationResult.Failed;
 
         return result;
     }

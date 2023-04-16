@@ -24,7 +24,7 @@ public class IncluirModel : PageModel
                 return Page();
             }
 
-            OperationResult result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Impedimento", "CreateImpedimento", new CreateImpedimentoCommand(Impedimento.Nome));
+            var result = await _cpnucleoApiClient.ExecuteAsync<OperationResult>("Impedimento", "CreateImpedimento", new CreateImpedimentoCommand(Impedimento.Nome));
 
             if (result == OperationResult.Failed)
             {

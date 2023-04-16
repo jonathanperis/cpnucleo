@@ -38,7 +38,7 @@ public class SistemaController : BaseController
     {
         try
         {
-            ListSistemaViewModel result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
+            var result = await _sistemaGrpcService.ListSistema(new ListSistemaQuery());
 
             if (result.OperationResult == OperationResult.Failed)
             {
@@ -73,7 +73,7 @@ public class SistemaController : BaseController
                 return View();
             }
 
-            OperationResult result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand(obj.Sistema.Nome, obj.Sistema.Descricao));
+            var result = await _sistemaGrpcService.CreateSistema(new CreateSistemaCommand(obj.Sistema.Nome, obj.Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {
@@ -118,7 +118,7 @@ public class SistemaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand(obj.Sistema.Id, obj.Sistema.Nome, obj.Sistema.Descricao));
+            var result = await _sistemaGrpcService.UpdateSistema(new UpdateSistemaCommand(obj.Sistema.Id, obj.Sistema.Nome, obj.Sistema.Descricao));
 
             if (result == OperationResult.Failed)
             {
@@ -163,7 +163,7 @@ public class SistemaController : BaseController
                 return View(ViewModel);
             }
 
-            OperationResult result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand(obj.Sistema.Id));
+            var result = await _sistemaGrpcService.RemoveSistema(new RemoveSistemaCommand(obj.Sistema.Id));
 
             if (result == OperationResult.Failed)
             {
@@ -182,7 +182,7 @@ public class SistemaController : BaseController
 
     private async Task CarregarDados(Guid id)
     {
-        GetSistemaViewModel result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery(id));
+        var result = await _sistemaGrpcService.GetSistema(new GetSistemaQuery(id));
 
         if (result.OperationResult == OperationResult.Failed)
         {
