@@ -13,9 +13,9 @@ public class ListarModel : PageModel
     }
 
     [BindProperty]
-    public ImpedimentoTarefaDTO ImpedimentoTarefa { get; set; }
+    public ImpedimentoTarefaDto ImpedimentoTarefa { get; set; }
 
-    public IEnumerable<ImpedimentoTarefaDTO> Lista { get; set; }
+    public IEnumerable<ImpedimentoTarefaDto> Lista { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid idTarefa)
     {

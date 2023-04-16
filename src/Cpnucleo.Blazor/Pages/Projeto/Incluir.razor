@@ -60,18 +60,18 @@
 </div>
 
 @code {
-    private ProjetoDTO model = new ProjetoDTO();
-    private IEnumerable<SistemaDTO> sistemas;
+    private ProjetoDto model = new ProjetoDto();
+    private IEnumerable<SistemaDto> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", "");
+        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDto>>("sistema", "");
         model.IdSistema = sistemas.FirstOrDefault().Id;
     }
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<ProjetoDTO>("projeto", "", model);
+        await cpnucleoApiClient.PostAsync<ProjetoDto>("projeto", "", model);
 
         navigationManager.NavigateTo("/projeto/listar");
     }

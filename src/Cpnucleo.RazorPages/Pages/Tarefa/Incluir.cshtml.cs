@@ -17,7 +17,7 @@ public class IncluirModel : PageModel
     }
 
     [BindProperty]
-    public TarefaDTO Tarefa { get; set; }
+    public TarefaDto Tarefa { get; set; }
 
     public SelectList SelectProjetos { get; set; }
 

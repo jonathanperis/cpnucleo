@@ -1,6 +1,6 @@
-namespace Cpnucleo.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record ProjetoDTO : BaseDTO
+public sealed record ProjetoDto : BaseDto
 {
     [Display(Name = "Nome")]
     [Required(ErrorMessage = "Necessário informar o {0} do Projeto.")]
@@ -11,5 +11,5 @@ public sealed record ProjetoDTO : BaseDTO
     [Display(Name = "Sistema")]
     public Guid IdSistema { get; set; }
 
-    public SistemaDTO? Sistema { get; set; }
+    public SistemaDto? Sistema { get; set; }
 }

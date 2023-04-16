@@ -14,7 +14,7 @@ public class AlterarModel : PageModel
     }
 
     [BindProperty]
-    public WorkflowDTO Workflow { get; set; }
+    public WorkflowDto Workflow { get; set; }
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {

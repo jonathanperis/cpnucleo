@@ -1,6 +1,6 @@
-namespace Cpnucleo.Shared.Common.DTOs;
+namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record WorkflowDTO : BaseDTO
+public sealed record WorkflowDto : BaseDto
 {
     [Display(Name = "Nome")]
     [Required(ErrorMessage = "Necessário informar o {0} do Workflow.")]

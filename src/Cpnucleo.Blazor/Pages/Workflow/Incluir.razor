@@ -48,11 +48,11 @@
 </div>
 
 @code {
-    private WorkflowDTO model = new WorkflowDTO();
+    private WorkflowDto model = new WorkflowDto();
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<WorkflowDTO>("workflow", "", model);
+        await cpnucleoApiClient.PostAsync<WorkflowDto>("workflow", "", model);
 
         navigationManager.NavigateTo("/workflow/listar");
     }

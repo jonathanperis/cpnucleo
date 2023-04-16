@@ -76,13 +76,13 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private ProjetoDTO model = new ProjetoDTO();
-    private IEnumerable<SistemaDTO> sistemas;
+    private ProjetoDto model = new ProjetoDto();
+    private IEnumerable<SistemaDto> sistemas;
 
     protected override async Task OnInitializedAsync()
     {
-        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDTO>>("sistema", "");
-        model = await cpnucleoApiClient.GetAsync<ProjetoDTO>("projeto", "", Id);
+        sistemas = await cpnucleoApiClient.GetAsync<IEnumerable<SistemaDto>>("sistema", "");
+        model = await cpnucleoApiClient.GetAsync<ProjetoDto>("projeto", "", Id);
     }
 
     private async Task HandleValidSubmit()

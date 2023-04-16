@@ -81,12 +81,12 @@
     [Parameter]
     public Guid IdProjeto { get; set; }
 
-    private RecursoProjetoDTO recursoProjeto;
-    private IEnumerable<RecursoProjetoDTO> recursoProjetos;
+    private RecursoProjetoDto recursoProjeto;
+    private IEnumerable<RecursoProjetoDto> recursoProjetos;
 
     protected override async Task OnInitializedAsync()
     {
-        recursoProjetos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoProjetoDTO>>("recursoProjeto", "getByProjeto", "", IdProjeto);
+        recursoProjetos = await cpnucleoApiClient.GetAsync<IEnumerable<RecursoProjetoDto>>("recursoProjeto", "getByProjeto", "", IdProjeto);
 
         await JS.InvokeVoidAsync("dataTables", "Relação de Recursos (Projeto)");
     }

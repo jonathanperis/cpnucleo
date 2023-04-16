@@ -72,11 +72,11 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    private RecursoProjetoDTO model = new RecursoProjetoDTO();
+    private RecursoProjetoDto model = new RecursoProjetoDto();
 
     protected override async Task OnInitializedAsync()
     {
-        model = await cpnucleoApiClient.GetAsync<RecursoProjetoDTO>("recursoProjeto", "", Id);
+        model = await cpnucleoApiClient.GetAsync<RecursoProjetoDto>("recursoProjeto", "", Id);
     }
 
     private async Task HandleValidSubmit()

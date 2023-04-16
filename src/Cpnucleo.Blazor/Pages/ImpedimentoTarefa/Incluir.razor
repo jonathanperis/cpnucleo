@@ -71,14 +71,14 @@
     [Parameter]
     public Guid IdTarefa { get; set; }
 
-    private ImpedimentoTarefaDTO model = new ImpedimentoTarefaDTO();
-    private TarefaDTO tarefa;
-    private IEnumerable<ImpedimentoDTO> impedimentos;
+    private ImpedimentoTarefaDto model = new ImpedimentoTarefaDto();
+    private TarefaDto tarefa;
+    private IEnumerable<ImpedimentoDto> impedimentos;
 
     protected override async Task OnInitializedAsync()
     {
-        tarefa = await cpnucleoApiClient.GetAsync<TarefaDTO>("tarefa", "", IdTarefa);
-        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDTO>>("impedimento", "");
+        tarefa = await cpnucleoApiClient.GetAsync<TarefaDto>("tarefa", "", IdTarefa);
+        impedimentos = await cpnucleoApiClient.GetAsync<IEnumerable<ImpedimentoDto>>("impedimento", "");
 
         model.IdTarefa = IdTarefa;
         model.IdImpedimento = impedimentos.FirstOrDefault().Id;
@@ -86,7 +86,7 @@
 
     private async Task HandleValidSubmit()
     {
-        await cpnucleoApiClient.PostAsync<ImpedimentoTarefaDTO>("impedimentoTarefa", "", model);
+        await cpnucleoApiClient.PostAsync<ImpedimentoTarefaDto>("impedimentoTarefa", "", model);
 
         navigationManager.NavigateTo($"/impedimentoTarefa/listar/{IdTarefa}");
     }

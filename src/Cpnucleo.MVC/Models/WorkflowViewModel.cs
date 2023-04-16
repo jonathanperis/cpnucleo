@@ -2,7 +2,7 @@ namespace Cpnucleo.MVC.Models;
 
 public sealed record WorkflowViewModel
 {
-    public WorkflowDTO Workflow { get; set; }
+    public WorkflowDto Workflow { get; set; }
 
-    public IEnumerable<WorkflowDTO> Lista { get; set; }
+    public IEnumerable<WorkflowDto> Lista { get; set; }
 }
