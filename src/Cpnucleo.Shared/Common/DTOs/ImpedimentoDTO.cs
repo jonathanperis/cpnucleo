@@ -1,3 +1,6 @@
 namespace Cpnucleo.Shared.Common.Dtos;
 
-public sealed record ImpedimentoDto(string? Nome) : BaseDto;
+public sealed record ImpedimentoDto : BaseDto
+{
+    public string? Nome { get; set; }
+}
