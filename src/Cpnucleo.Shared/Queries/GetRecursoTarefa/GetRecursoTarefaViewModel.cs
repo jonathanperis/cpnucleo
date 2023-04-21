@@ -2,6 +2,6 @@
 
 public sealed record GetRecursoTarefaViewModel : BaseQuery
 {
-    public RecursoTarefaDto RecursoTarefa { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public RecursoTarefaDto? RecursoTarefa { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

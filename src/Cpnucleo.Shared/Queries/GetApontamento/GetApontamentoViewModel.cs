@@ -2,6 +2,6 @@
 
 public sealed record GetApontamentoViewModel : BaseQuery
 {
-    public ApontamentoDto Apontamento { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public ApontamentoDto? Apontamento { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

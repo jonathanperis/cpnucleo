@@ -15,7 +15,7 @@ public static class DependencyInjection
         {
             settings.Enabled = true;
             settings.ReceiveMessages = true;
-            settings.WithConnection(configuration["AzureServiceBus_DefaultConnection"], new ServiceBusClientOptions());
+            settings.WithConnection(configuration["AzureServiceBus_DefaultConnection"]!, new ServiceBusClientOptions());
         });
     }
 }

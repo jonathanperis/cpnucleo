@@ -2,6 +2,6 @@
 
 public sealed record ListImpedimentoViewModel : BaseQuery
 {
-    public IEnumerable<ImpedimentoDto> Impedimentos { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<ImpedimentoDto>? Impedimentos { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

@@ -2,6 +2,6 @@
 
 public sealed record ListSistemaViewModel : BaseQuery
 {
-    public IEnumerable<SistemaDto>? Sistemas { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<SistemaDto>? Sistemas { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

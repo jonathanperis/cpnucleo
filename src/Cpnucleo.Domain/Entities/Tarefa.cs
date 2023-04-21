@@ -81,7 +81,7 @@ public sealed class Tarefa : BaseEntity
         return item;
     }
 
-    public static Tarefa UpdateWorkflow(Tarefa item, Guid idWorkflow)
+    public static Tarefa Update(Tarefa item, Guid idWorkflow)
     {
         item.IdWorkflow = idWorkflow;
         item.DataAlteracao = DateTime.UtcNow;

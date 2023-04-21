@@ -2,6 +2,6 @@
 
 public sealed record GetImpedimentoViewModel : BaseQuery
 {
-    public ImpedimentoDto Impedimento { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public ImpedimentoDto? Impedimento { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }
