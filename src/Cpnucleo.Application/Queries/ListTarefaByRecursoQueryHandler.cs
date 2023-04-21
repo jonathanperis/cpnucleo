@@ -38,13 +38,21 @@ public sealed class ListTarefaByRecursoQueryHandler : IRequestHandler<ListTarefa
 
         foreach (var item in lista)
         {
-            item.Workflow.TamanhoColuna = Workflow.GetTamanhoColuna(colunas);
+            if (item.Workflow is not null)
+            {
+                item.Workflow.TamanhoColuna = Workflow.GetTamanhoColuna(colunas);
+            }
 
             item.HorasConsumidas = _context.Apontamentos
                 .Where(x => x.IdRecurso == item.IdRecurso && x.IdTarefa == item.Id && x.Ativo)
                 .Sum(x => x.QtdHoras);
 
             item.HorasRestantes = item.QtdHoras - item.HorasConsumidas;
+
+            if (item.TipoTarefa is null)
+            {
+                continue;
+            }
 
             var impedimentos = await _context.ImpedimentoTarefas
                 .Where(x => x.IdTarefa == item.Id && x.Ativo)

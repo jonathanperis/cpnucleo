@@ -2,6 +2,6 @@
 
 public sealed record ListRecursoTarefaByTarefaViewModel : BaseQuery
 {
-    public IEnumerable<RecursoTarefaDto> RecursoTarefas { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<RecursoTarefaDto>? RecursoTarefas { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

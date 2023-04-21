@@ -15,7 +15,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
     {
         AuthUserViewModel result = new()
         {
-            Status = OperationResult.Failed
+            OperationResult = OperationResult.Failed
         };
 
         var recurso = await _context.Recursos
@@ -25,7 +25,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
 
         if (recurso is null)
         {
-            result.Status = OperationResult.NotFound;
+            result.OperationResult = OperationResult.NotFound;
 
             return result;
         }
@@ -34,7 +34,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
 
         if (!success)
         {
-            result.Status = OperationResult.NotFound;
+            result.OperationResult = OperationResult.NotFound;
 
             return result;
         }
@@ -45,7 +45,7 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
         int.TryParse(_configuration["Jwt:Expires"], out var jwtExpires);
         result.Token = TokenService.GenerateToken(result.Recurso.Id.ToString(), _configuration["Jwt:Key"]!, _configuration["Jwt:Issuer"]!, jwtExpires);
 
-        result.Status = OperationResult.Success;
+        result.OperationResult = OperationResult.Success;
 
         return result;
     }

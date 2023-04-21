@@ -53,7 +53,7 @@ public class LoginModel : PageModel
 
             var result = await _cpnucleoAuthApiClient.ExecuteAsync<AuthUserViewModel>("AuthUser", "AuthUser", new AuthUserQuery(Auth.Usuario, Auth.Senha));
 
-            if (result.Status == OperationResult.Failed)
+            if (result.OperationResult == OperationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return Page();

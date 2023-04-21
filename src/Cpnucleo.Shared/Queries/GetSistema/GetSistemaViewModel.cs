@@ -3,5 +3,5 @@
 public sealed record GetSistemaViewModel : BaseQuery
 {
     public SistemaDto? Sistema { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }
