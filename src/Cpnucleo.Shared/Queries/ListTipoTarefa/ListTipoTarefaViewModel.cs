@@ -2,6 +2,6 @@
 
 public sealed record ListTipoTarefaViewModel : BaseQuery
 {
-    public IEnumerable<TipoTarefaDto> TipoTarefas { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<TipoTarefaDto>? TipoTarefas { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

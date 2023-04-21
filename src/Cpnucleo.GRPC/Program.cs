@@ -57,7 +57,7 @@ app.UseRouting();
 app.UseCors(x =>
 {
     // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
-    x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoMvc"])
+    x.WithOrigins("*")
            .AllowAnyMethod()
            .AllowAnyHeader()
            .AllowCredentials();
@@ -68,10 +68,7 @@ app.UseAuthorization();
 
 app.UseApplication();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapMagicOnionService().RequireCors("AllowAll");
-});
+app.MapMagicOnionService();
 
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 

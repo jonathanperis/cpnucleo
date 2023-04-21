@@ -22,11 +22,6 @@ internal sealed class CryptographyManager
 
         var newItem = deriveBytes.GetBytes(48);
 
-        if (!newItem.SequenceEqual(itemBytes))
-        {
-            return false;
-        }
-
-        return true;
+        return deriveBytes.GetBytes(48).SequenceEqual(itemBytes);
     }
 }

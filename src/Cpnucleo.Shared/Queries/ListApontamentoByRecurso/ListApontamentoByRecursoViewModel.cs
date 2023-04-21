@@ -2,6 +2,6 @@
 
 public sealed record ListApontamentoByRecursoViewModel : BaseQuery
 {
-    public IEnumerable<ApontamentoDto> Apontamentos { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<ApontamentoDto>? Apontamentos { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

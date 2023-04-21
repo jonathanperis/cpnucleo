@@ -2,6 +2,6 @@
 
 public sealed record ListWorkflowViewModel : BaseQuery
 {
-    public IEnumerable<WorkflowDto> Workflows { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<WorkflowDto>? Workflows { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

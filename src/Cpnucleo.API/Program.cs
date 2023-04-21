@@ -6,16 +6,10 @@ builder.Services.AddApplication();
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
-builder.Services.AddCors(options =>
+builder.Services.AddCors(p => p.AddPolicy("AllowCpcnuleoClients", builder =>
 {
-    options.AddPolicy(name: "AllowCpcnuleoClients",
-                      x =>
-                      {
-                          x.WithOrigins(builder.Configuration["AppSettings:UrlCpnucleoBlazor"])
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                      });
-});
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(x =>

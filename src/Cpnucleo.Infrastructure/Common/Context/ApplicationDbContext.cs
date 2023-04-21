@@ -2,7 +2,7 @@
 
 public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration? _configuration;
 
     public DbSet<Apontamento> Apontamentos { get; set; }
     public DbSet<Impedimento> Impedimentos { get; set; }
@@ -50,7 +50,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder
-                .UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
+                .UseNpgsql(_configuration?.GetConnectionString("DefaultConnection"));
         }
     }
 

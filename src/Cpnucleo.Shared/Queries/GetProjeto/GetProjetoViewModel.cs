@@ -2,6 +2,6 @@
 
 public sealed record GetProjetoViewModel : BaseQuery
 {
-    public ProjetoDto Projeto { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public ProjetoDto? Projeto { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

@@ -67,4 +67,3 @@ global using FluentValidation;
 global using MagicOnion;
 global using Mediator;
 global using MessagePack;
-global using System.ComponentModel.DataAnnotations;

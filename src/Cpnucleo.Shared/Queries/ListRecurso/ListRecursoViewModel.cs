@@ -2,6 +2,6 @@
 
 public sealed record ListRecursoViewModel : BaseQuery
 {
-    public IEnumerable<RecursoDto> Recursos { get; set; }
-    public OperationResult OperationResult { get; set; }
+    public List<RecursoDto>? Recursos { get; set; }
+    public required OperationResult OperationResult { get; set; }
 }

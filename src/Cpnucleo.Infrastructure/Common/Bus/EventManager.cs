@@ -12,9 +12,9 @@ internal sealed class EventManager : IEventManager
     public async Task PublishEventAsync<T>(T @event)
     {
         var publisher = _serviceProvider.GetService<IMessagePublisher>();
-        publisher.Publish(@event);
+        publisher?.Publish(@event);
 
         var dispatcher = _serviceProvider.GetService<IMessageDispatcher>();
-        await dispatcher.ExecuteDispatches();
+        await dispatcher?.ExecuteDispatches()!;
     }
 }

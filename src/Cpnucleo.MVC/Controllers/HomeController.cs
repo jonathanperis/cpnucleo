@@ -69,7 +69,7 @@ public class HomeController : BaseController
 
             var result = await _authUserGrpcService.AuthUser(new AuthUserQuery(obj.Auth.Usuario, obj.Auth.Senha));
 
-            if (result.Status == OperationResult.Failed)
+            if (result.OperationResult == OperationResult.Failed)
             {
                 ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return View();
