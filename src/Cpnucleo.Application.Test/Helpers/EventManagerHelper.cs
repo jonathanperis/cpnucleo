@@ -2,7 +2,7 @@
 
 public class EventManagerHelper
 {
-    public static IEventManager GetInstance(object @object = default)
+    public static IEventManager GetInstance(object @object)
     {
         Mock<IEventManager> mockServiceBus = new();
         mockServiceBus.Setup(x => x.PublishEventAsync(@object)).Returns(Task.CompletedTask);
