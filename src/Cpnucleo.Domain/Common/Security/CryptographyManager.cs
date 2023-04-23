@@ -20,8 +20,6 @@ internal sealed class CryptographyManager
 
         using Rfc2898DeriveBytes deriveBytes = new(item, saltBytes);
 
-        var newItem = deriveBytes.GetBytes(48);
-
         return deriveBytes.GetBytes(48).SequenceEqual(itemBytes);
     }
 }

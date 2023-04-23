@@ -6,9 +6,11 @@ builder.Services.AddApplication();
 builder.Services.AddSwaggerConfig();
 builder.Services.AddVersionConfig();
 
-builder.Services.AddCors(p => p.AddPolicy("AllowCpcnuleoClients", builder =>
+builder.Services.AddCors(p => p.AddPolicy("AllowAll", builder =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
 }));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -48,7 +50,7 @@ var app = builder.Build();
 
 app.UseRouting();
 
-app.UseCors("AllowCpcnuleoClients");
+app.UseCors("AllowAll");
 
 app.UseSwaggerConfig();
 app.UseHttpsRedirection();
