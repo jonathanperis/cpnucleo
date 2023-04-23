@@ -41,35 +41,17 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5020);
-    options.ListenAnyIP(5021, listenOptions =>
-    {
-        listenOptions.UseHttps();
-        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
-    });
-});
-
 var app = builder.Build();
 
 app.UseRouting();
-app.UseCors(x =>
-{
-    // Apenas necessário para o SignalR. Configuração padrão do CORS se aplica para utilizar apenas com gRPC.
-    x.WithOrigins("*")
-           .AllowAnyMethod()
-           .AllowAnyHeader()
-           .AllowCredentials();
-});
+app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
+
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseApplication();
-
 app.MapMagicOnionService();
-
-app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();
