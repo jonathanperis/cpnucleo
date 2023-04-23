@@ -1,6 +1,7 @@
 ﻿using Cpnucleo.MVC.Services;
 using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
 using System.Security.Claims;
 
 namespace Cpnucleo.MVC.Controllers;
@@ -33,6 +34,7 @@ public class BaseController : Controller
         _channel = GrpcChannel.ForAddress(_configuration["AppSettings:UrlCpnucleoGrpc"],
             new GrpcChannelOptions
             {
+                HttpHandler = new GrpcWebHandler(new HttpClientHandler()),
                 Credentials = ChannelCredentials.Create(new SslCredentials(), credentials),
             });
 

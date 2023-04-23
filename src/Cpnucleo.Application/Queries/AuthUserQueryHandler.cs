@@ -40,7 +40,6 @@ public sealed class AuthUserQueryHandler : IRequestHandler<AuthUserQuery, AuthUs
         }
 
         result.Recurso = recurso.MapToDto();
-        result.Recurso.Senha = null;
 
         int.TryParse(_configuration["Jwt:Expires"], out var jwtExpires);
         result.Token = TokenService.GenerateToken(result.Recurso.Id.ToString(), _configuration["Jwt:Key"]!, _configuration["Jwt:Issuer"]!, jwtExpires);
