@@ -2,7 +2,7 @@ namespace Domain;
 
 public sealed class UserProject : BaseEntity
 {
-    public Ulid Userid { get; private set; }
+    public Ulid UserId { get; private set; }
     public Ulid ProjectId   { get; private set; }
     public User? User { get; private set; }
     public Project? Project { get; private set; }
@@ -12,7 +12,7 @@ public sealed class UserProject : BaseEntity
         return new UserProject
         {   
             Id = id == Ulid.Empty ? Ulid.NewUlid () : id,
-            Userid = userId,
+            UserId = userId,
             ProjectId = projectId,
             CreatedAt = DateTime.UtcNow,
             Active = true
@@ -21,7 +21,7 @@ public sealed class UserProject : BaseEntity
 
     public static UserProject Update (UserProject obj, Ulid userId, Ulid projectId)
     {
-        obj.Userid = userId;
+        obj.UserId = userId;
         obj.ProjectId = projectId;
         obj.UpdatedAt = DateTime.UtcNow;
 

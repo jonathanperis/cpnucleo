@@ -1,6 +1,6 @@
 namespace Domain;
 
-public sealed class Timekeep : BaseEntity
+public sealed class TimeKeep : BaseEntity
 {
     public string? Description { get; private set; }
     public DateTime KeepDate { get; private set; }
@@ -10,14 +10,14 @@ public sealed class Timekeep : BaseEntity
     public Task? Task{ get; private set; }
     public User? User{ get; private set; }
 
-    public static Timekeep Create (string description,
+    public static TimeKeep Create (string description,
                                    DateTime keepDate,
                                    byte amountHours,
                                    Ulid taskId,
                                    Ulid userId,                                   
                                    Ulid id = default)
     {
-        return new Timekeep
+        return new TimeKeep
         {   
             Id = id == Ulid.Empty ? Ulid.NewUlid () : id,
             Description = description,
@@ -30,7 +30,7 @@ public sealed class Timekeep : BaseEntity
         };
     }
 
-    public static Timekeep Update (Timekeep obj,
+    public static TimeKeep Update (TimeKeep obj,
                                    string description,
                                    DateTime keepDate,
                                    byte amountHours,

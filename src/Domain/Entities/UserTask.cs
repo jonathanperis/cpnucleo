@@ -2,7 +2,7 @@ namespace Domain;
 
 public sealed class UserTask : BaseEntity
 {
-    public Ulid Userid { get; private set; }
+    public Ulid UserId { get; private set; }
     public Ulid TaskId   { get; private set; }
     public User? User { get; private set; }
     public Task? Task { get; private set; }
@@ -12,7 +12,7 @@ public sealed class UserTask : BaseEntity
         return new UserTask
         {   
             Id = id == Ulid.Empty ? Ulid.NewUlid () : id,
-            Userid = userId,
+            UserId = userId,
             TaskId = taskId,
             CreatedAt = DateTime.UtcNow,
             Active = true
@@ -21,7 +21,7 @@ public sealed class UserTask : BaseEntity
 
     public static UserTask Update (UserTask obj, Ulid userId, Ulid taskId)
     {
-        obj.Userid = userId;
+        obj.UserId = userId;
         obj.TaskId = taskId;
         obj.UpdatedAt = DateTime.UtcNow;
 
