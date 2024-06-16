@@ -1,10 +1,10 @@
 namespace Infrastructure.Common.Mappings;
 
-internal sealed class TaskMap : IEntityTypeConfiguration<Domain.Task>
+internal sealed class TaskMap : IEntityTypeConfiguration<Domain.Entities.Task>
 {
-    internal static List<Domain.Task>? Tasks { get; set; }
+    internal static List<Domain.Entities.Task>? Tasks { get; set; }
 
-    public void Configure(EntityTypeBuilder<Domain.Task> builder)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Task> builder)
     {
         builder
             .HasKey(x => x.Id);

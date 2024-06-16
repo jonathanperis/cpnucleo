@@ -1,18 +1,19 @@
-namespace Domain;
+namespace Domain.Entities;
 
 public sealed class TaskImpediment : BaseEntity
 {
     public string? Description { get; private set; }
-    public Ulid TaskId { get; private set; }
-    public Ulid ImpedimentId { get; private set; }
-    public Task? Task { get; private set; }
-    public Impediment? Impediment{ get; private set; }
 
-    public static TaskImpediment Create (string description, Ulid taskId, Ulid impedimentId, Ulid id = default)
+    public Ulid TaskId { get; private set; }
+    public Task? Task { get; private set; }
+    public Ulid ImpedimentId { get; private set; }
+    public Impediment? Impediment { get; private set; }
+
+    public static TaskImpediment Create(string description, Ulid taskId, Ulid impedimentId, Ulid id = default)
     {
         return new TaskImpediment
-        {   
-            Id = id == Ulid.Empty ? Ulid.NewUlid () : id,
+        {
+            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
             Description = description,
             TaskId = taskId,
             ImpedimentId = impedimentId,
@@ -21,12 +22,20 @@ public sealed class TaskImpediment : BaseEntity
         };
     }
 
-    public static TaskImpediment Update (TaskImpediment obj, string description, Ulid taskId, Ulid impedimentId)
+    public static TaskImpediment Update(TaskImpediment obj, string description, Ulid taskId, Ulid impedimentId)
     {
         obj.Description = description;
         obj.TaskId = taskId;
         obj.ImpedimentId = impedimentId;
         obj.UpdatedAt = DateTime.UtcNow;
+
+        return obj;
+    }
+
+    public static TaskImpediment Remove(TaskImpediment obj)
+    {
+        obj.Active = false;
+        obj.DeletedAt = DateTime.UtcNow;
 
         return obj;
     }

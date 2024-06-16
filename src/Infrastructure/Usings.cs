@@ -1,6 +1,13 @@
-global using Domain;
+global using Application.Common.Context;
+global using Application.Common.Dtos;
+global using Application.Common.Repositories;
+global using Dapper;
+global using Domain.Entities;
 global using Infrastructure.Common.Context;
 global using Infrastructure.Common.Helpers;
+global using Infrastructure.Common.Mappings;
+global using Infrastructure.Common.Repositories;
+global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;

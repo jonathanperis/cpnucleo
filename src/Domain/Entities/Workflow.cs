@@ -1,15 +1,15 @@
-namespace Domain;
+namespace Domain.Entities;
 
 public sealed class Workflow : BaseEntity
 {
     public string? Name { get; private set; }
     public byte Order { get; private set; }
 
-    public static Workflow Create (string name, byte order, Ulid id = default)
+    public static Workflow Create(string name, byte order, Ulid id = default)
     {
         return new Workflow
-        {   
-            Id = id == Ulid.Empty ? Ulid.NewUlid () : id,
+        {
+            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
             Name = name,
             Order = order,
             CreatedAt = DateTime.UtcNow,
@@ -17,11 +17,19 @@ public sealed class Workflow : BaseEntity
         };
     }
 
-    public static Workflow Update (Workflow obj, string name, byte order)
+    public static Workflow Update(Workflow obj, string name, byte order)
     {
         obj.Name = name;
         obj.Order = order;
         obj.UpdatedAt = DateTime.UtcNow;
+
+        return obj;
+    }
+
+    public static Workflow Remove(Workflow obj)
+    {
+        obj.Active = false;
+        obj.DeletedAt = DateTime.UtcNow;
 
         return obj;
     }

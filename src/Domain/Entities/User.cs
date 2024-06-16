@@ -1,4 +1,4 @@
-namespace Domain;
+namespace Domain.Entities;
 
 public sealed class User : BaseEntity
 {
@@ -7,13 +7,13 @@ public sealed class User : BaseEntity
     public string? Password { get; private set; }
     public string? Salt { get; private set; }
 
-    public static User Create (string name, string login, string password, Ulid id = default)
-    {        
+    public static User Create(string name, string login, string password, Ulid id = default)
+    {
         CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
 
         return new User
-        {   
-            Id = id == Ulid.Empty ? Ulid.NewUlid () : id,
+        {
+            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
             Name = name,
             Login = login,
             Password = encryptedPassword,
@@ -23,7 +23,7 @@ public sealed class User : BaseEntity
         };
     }
 
-    public static User Update (User obj, string name, string password)
+    public static User Update(User obj, string name, string password)
     {
         CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
 
@@ -31,6 +31,14 @@ public sealed class User : BaseEntity
         obj.Password = encryptedPassword;
         obj.Salt = salt;
         obj.UpdatedAt = DateTime.UtcNow;
+
+        return obj;
+    }
+
+    public static User Remove(User obj)
+    {
+        obj.Active = false;
+        obj.DeletedAt = DateTime.UtcNow;
 
         return obj;
     }

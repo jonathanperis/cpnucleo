@@ -1,4 +1,4 @@
-namespace Domain;
+namespace Domain.Entities;
 
 public abstract class BaseEntity
 {
@@ -7,12 +7,4 @@ public abstract class BaseEntity
     public DateTime? UpdatedAt { get; protected set; }
     public DateTime? DeletedAt { get; protected set; }
     public bool Active { get; protected set; }
-
-    public static BaseEntity Remove (BaseEntity obj)
-    {
-        obj.Active = false;
-        obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
-    }
 }
