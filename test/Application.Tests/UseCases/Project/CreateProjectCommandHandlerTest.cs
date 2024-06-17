@@ -66,7 +66,7 @@ public class CreateProjectCommandHandlerTest
     }
 
     [Fact]
-    public void Handle_ShouldFail_WhenSystemIdIsEmpty()
+    public void Handle_ShouldFail_WhenOrganizationIdIsEmpty()
     {
         // Arrange
         var command = new CreateProjectCommand("Test Project", Ulid.Empty);
@@ -77,6 +77,6 @@ public class CreateProjectCommandHandlerTest
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "SystemId"));
+        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "OrganizationId"));
     }
 }
