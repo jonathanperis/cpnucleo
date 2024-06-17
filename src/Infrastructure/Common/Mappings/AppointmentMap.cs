@@ -24,7 +24,7 @@ internal sealed class AppointmentMap : IEntityTypeConfiguration<Appointment>
         builder
             .HasOne(x => x.User)
             .WithMany()
-            .HasForeignKey(x => x.UserId);            
+            .HasForeignKey(x => x.UserId);
 
         if (Appointments != null)
         {
