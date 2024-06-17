@@ -1,19 +1,12 @@
 namespace Application.UseCases.Workflow.UpdateWorkflow;
 
-public sealed class UpdateWorkflowCommandHandler : IRequestHandler<UpdateWorkflowCommand, OperationResult>
+public sealed class UpdateWorkflowCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateWorkflowCommand, OperationResult>
 {
-    private readonly IApplicationDbContext _dbContext;
-
-    public UpdateWorkflowCommandHandler(IApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async ValueTask<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {
-        if (_dbContext.Workflows is not null)
+        if (dbContext.Workflows is not null)
         {
-            var workflow = await _dbContext.Workflows
+            var workflow = await dbContext.Workflows
                     .FirstOrDefaultAsync(w => w.Id == request.Id && w.Active, cancellationToken);
 
             if (workflow == null)
@@ -24,7 +17,7 @@ public sealed class UpdateWorkflowCommandHandler : IRequestHandler<UpdateWorkflo
             workflow = Domain.Entities.Workflow.Update(workflow, request.Name, request.Order);
         }
 
-        var result = await _dbContext.SaveChangesAsync(cancellationToken);
+        var result = await dbContext.SaveChangesAsync(cancellationToken);
 
         return result ? OperationResult.Success : OperationResult.Failed;
     }

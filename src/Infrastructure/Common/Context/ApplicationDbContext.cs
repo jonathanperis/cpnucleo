@@ -6,14 +6,14 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Impediment>? Impediments { get; set; }
     public DbSet<Project>? Projects { get; set; }
-    public DbSet<Domain.Entities.System>? Systems { get; set; }
-    public DbSet<Domain.Entities.Task>? Tasks { get; set; }
-    public DbSet<TaskImpediment>? TaskImpediments { get; set; }
-    public DbSet<TaskType>? TaskTypes { get; set; }
-    public DbSet<TimeKeep>? TimeKeeps { get; set; }
+    public DbSet<Organization>? Organizations { get; set; }
+    public DbSet<Assignment>? Assignments { get; set; }
+    public DbSet<AssignmentImpediment>? AssignmentImpediments { get; set; }
+    public DbSet<AssignmentType>? AssignmentTypes { get; set; }
+    public DbSet<Appointment>? Appointments { get; set; }
     public DbSet<User>? Users { get; set; }
     public DbSet<UserProject>? UserProjects { get; set; }
-    public DbSet<UserTask>? UserTasks { get; set; }
+    public DbSet<UserAssignment>? UserAssignments { get; set; }
     public DbSet<Workflow>? Workflows { get; set; }
 
     public ApplicationDbContext(IConfiguration configuration)
@@ -31,14 +31,14 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         // Other configurations
         modelBuilder.ApplyConfiguration(new ImpedimentMap());
         modelBuilder.ApplyConfiguration(new ProjectMap());
-        modelBuilder.ApplyConfiguration(new SystemMap());
-        modelBuilder.ApplyConfiguration(new TaskMap());
-        modelBuilder.ApplyConfiguration(new TaskImpedimentMap());
-        modelBuilder.ApplyConfiguration(new TaskTypeMap());
-        modelBuilder.ApplyConfiguration(new TimeKeepMap());
+        modelBuilder.ApplyConfiguration(new OrganizationMap());
+        modelBuilder.ApplyConfiguration(new AssignmentMap());
+        modelBuilder.ApplyConfiguration(new AssignmentImpedimentMap());
+        modelBuilder.ApplyConfiguration(new AssignmentTypeMap());
+        modelBuilder.ApplyConfiguration(new AppointmentMap());
         modelBuilder.ApplyConfiguration(new UserMap());
         modelBuilder.ApplyConfiguration(new UserProjectMap());
-        modelBuilder.ApplyConfiguration(new UserTaskMap());
+        modelBuilder.ApplyConfiguration(new UserAssignmentMap());
         modelBuilder.ApplyConfiguration(new WorkflowMap());
 
         CreateSeedData();

@@ -6,5 +6,5 @@ public interface IProjectRepository
     Task<ProjectDto?> GetProjectById(Ulid id);
     Task<List<ProjectDto>?> ListProjects();
     Task<bool> RemoveProject(Ulid id);
-    Task<bool> UpdateProject(Ulid id, string name, Ulid systemId);
+    Task<bool> UpdateProject(Ulid id, string name, Ulid organizationId);
 }

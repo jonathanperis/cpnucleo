@@ -7,7 +7,7 @@ public sealed class CreateProjectCommandValidator : AbstractValidator<CreateProj
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.");
 
-        RuleFor(x => x.SystemId)
-            .NotEmpty().WithMessage("SystemId is required.");
+        RuleFor(x => x.OrganizationId)
+            .NotEmpty().WithMessage("OrganizationId is required.");
     }
 }

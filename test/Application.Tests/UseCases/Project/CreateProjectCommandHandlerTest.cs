@@ -17,7 +17,7 @@ public class CreateProjectCommandHandlerTest
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Handle_ShouldReturnSuccess_WhenProjectIsCreatedSuccessfully()
+    public async Task Handle_ShouldReturnSuccess_WhenProjectIsCreatedSuccessfully()
     {
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
@@ -29,12 +29,12 @@ public class CreateProjectCommandHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.Success, result);
-        _dbContextMock.Verify(db => db.Projects.AddAsync(It.IsAny<Domain.Entities.Project>(), It.IsAny<CancellationToken>()), Times.Once);
+        _dbContextMock.Verify(db => db.Projects!.AddAsync(It.IsAny<Domain.Entities.Project>(), It.IsAny<CancellationToken>()), Times.Once);
         _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
+    public async Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
     {
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
@@ -46,7 +46,7 @@ public class CreateProjectCommandHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.Failed, result);
-        _dbContextMock.Verify(db => db.Projects.AddAsync(It.IsAny<Domain.Entities.Project>(), It.IsAny<CancellationToken>()), Times.Once);
+        _dbContextMock.Verify(db => db.Projects!.AddAsync(It.IsAny<Domain.Entities.Project>(), It.IsAny<CancellationToken>()), Times.Once);
         _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 

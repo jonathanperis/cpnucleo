@@ -6,7 +6,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-        services.AddScoped<ISystemRepository, SystemRepository>();
+        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IWorkflowRepository, WorkflowRepository>();
     }

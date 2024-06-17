@@ -1,18 +1,11 @@
 namespace Infrastructure.Common.Repositories;
 
 //[DapperAot]
-public class WorkflowRepository : IWorkflowRepository
+public class WorkflowRepository(IConfiguration configuration) : IWorkflowRepository
 {
-    private readonly IConfiguration _configuration;
-
-    public WorkflowRepository(IConfiguration configuration)
+    public async Task<bool> CreateWorkflow(Workflow workflow)
     {
-        _configuration = configuration;
-    }
-
-    public async Task<bool> CreateWorkflow(Domain.Entities.Workflow workflow)
-    {
-        await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
                             INSERT INTO [Workflow] ([Id], [Name], [Order], [CreatedAt], [Active])
@@ -24,7 +17,7 @@ public class WorkflowRepository : IWorkflowRepository
 
     public async Task<WorkflowDto?> GetWorkflowById(Ulid id)
     {
-        await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
                             SELECT [Id], [Name], [Order], [CreatedAt], [UpdatedAt], [Active]
@@ -37,7 +30,7 @@ public class WorkflowRepository : IWorkflowRepository
 
     public async Task<List<WorkflowDto>?> ListWorkflow()
     {
-        await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
                             SELECT [Id], [Name], [Order], [CreatedAt], [UpdatedAt], [Active]
@@ -50,7 +43,7 @@ public class WorkflowRepository : IWorkflowRepository
 
     public async Task<bool> RemoveWorkflow(Ulid id)
     {
-        await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
                             UPDATE [Workflow]
@@ -65,7 +58,7 @@ public class WorkflowRepository : IWorkflowRepository
 
     public async Task<bool> UpdateWorkflow(Ulid id, string name, byte order)
     {
-        await using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
                             UPDATE [Workflow]

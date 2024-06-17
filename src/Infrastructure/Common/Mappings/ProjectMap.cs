@@ -17,9 +17,9 @@ internal sealed class ProjectMap : IEntityTypeConfiguration<Project>
             .HasIndex(x => x.CreatedAt);
 
         builder
-            .HasOne(x => x.System)
+            .HasOne(x => x.Organization)
             .WithMany()
-            .HasForeignKey(x => x.SystemId);
+            .HasForeignKey(x => x.OrganizationId);
 
         if (Projects != null)
         {

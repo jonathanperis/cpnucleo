@@ -1,20 +1,13 @@
 namespace Application.UseCases.Project.ListProject;
 
-public sealed class ListProjectQueryHandler : IRequestHandler<ListProjectQuery, ListProjectQueryViewModel>
+public sealed class ListProjectQueryHandler(IProjectRepository projectRepository) : IRequestHandler<ListProjectQuery, ListProjectQueryViewModel>
 {
-    private readonly IProjectRepository _projectRepository;
-
-    public ListProjectQueryHandler(IProjectRepository projectRepository)
-    {
-        _projectRepository = projectRepository;
-    }
-
     public async ValueTask<ListProjectQueryViewModel> Handle(ListProjectQuery request, CancellationToken cancellationToken)
     {
-        var projects = await _projectRepository.ListProjects();
+        var projects = await projectRepository.ListProjects();
 
         var operationResult = projects is not null ? OperationResult.Success : OperationResult.NotFound;
-        var projectsList = projects ?? new List<ProjectDto>();  // Return an empty list if no projects are found
+        var projectsList = projects ?? [];  // Return an empty list if no projects are found
 
         return new ListProjectQueryViewModel(operationResult, projectsList);
     }
