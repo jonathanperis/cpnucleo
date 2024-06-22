@@ -1,0 +1,24 @@
+namespace Application.UseCases.AssignmentImpediment.UpdateAssignmentImpediment;
+
+public sealed class UpdateAssignmentImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentImpedimentCommand, OperationResult>
+{
+    public async ValueTask<OperationResult> Handle(UpdateAssignmentImpedimentCommand request, CancellationToken cancellationToken)
+    {
+        if (dbContext.AssignmentImpediments is not null)
+        {
+            var assignmentImpediment = await dbContext.AssignmentImpediments
+                .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
+
+            if (assignmentImpediment == null)
+            {
+                return OperationResult.NotFound;
+            }
+
+            assignmentImpediment = Domain.Entities.AssignmentImpediment.Update(assignmentImpediment, request.Description, request.AssignmentId, request.ImpedimentId);
+        }
+
+        var result = await dbContext.SaveChangesAsync(cancellationToken);
+
+        return result ? OperationResult.Success : OperationResult.Failed;
+    }
+}
