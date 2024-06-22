@@ -1,0 +1,14 @@
+namespace Application.UseCases.Assignment.ListAssignment;
+
+public sealed class ListAssignmentQueryHandler(IAssignmentRepository assignmentRepository) : IRequestHandler<ListAssignmentQuery, ListAssignmentQueryViewModel>
+{
+    public async ValueTask<ListAssignmentQueryViewModel> Handle(ListAssignmentQuery request, CancellationToken cancellationToken)
+    {
+        var assignments = await assignmentRepository.ListAssignments();
+
+        var operationResult = assignments is not null ? OperationResult.Success : OperationResult.NotFound;
+        var assignmentsList = assignments ?? new List<AssignmentDto>();  // Return an empty list if no assignments are found
+
+        return new ListAssignmentQueryViewModel(operationResult, assignmentsList);
+    }
+}
