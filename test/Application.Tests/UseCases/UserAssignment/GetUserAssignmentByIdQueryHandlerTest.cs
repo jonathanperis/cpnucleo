@@ -1,0 +1,72 @@
+namespace Application.Tests.UseCases.UserAssignment;
+
+public class GetUserAssignmentByIdQueryHandlerTest
+{
+    private readonly Mock<IUserAssignmentRepository> _userAssignmentRepositoryMock;
+    private readonly GetUserAssignmentByIdQueryHandler _handler;
+
+    public GetUserAssignmentByIdQueryHandlerTest()
+    {
+        _userAssignmentRepositoryMock = new Mock<IUserAssignmentRepository>();
+        _handler = new GetUserAssignmentByIdQueryHandler(_userAssignmentRepositoryMock.Object);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnUserAssignment_WhenUserAssignmentExists()
+    {
+        // Arrange
+        var userAssignmentDto = new UserAssignmentDto(Ulid.NewUlid(), Ulid.NewUlid())
+        {
+            Id = Ulid.NewUlid(),
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _userAssignmentRepositoryMock
+            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()))
+            .ReturnsAsync(userAssignmentDto);
+
+        var query = new GetUserAssignmentByIdQuery(Ulid.NewUlid());
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(OperationResult.Success, result.OperationResult);
+        Assert.NotNull(result.UserAssignment);
+        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnNotFound_WhenUserAssignmentDoesNotExist()
+    {
+        // Arrange
+        _userAssignmentRepositoryMock
+            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()))
+            .ReturnsAsync((UserAssignmentDto?)null);
+
+        var query = new GetUserAssignmentByIdQuery(Ulid.NewUlid());
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(OperationResult.NotFound, result.OperationResult);
+        Assert.Null(result.UserAssignment);
+        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()), Times.Once);
+    }
+
+    [Fact]
+    public void Handle_ShouldFail_WhenIdIsEmpty()
+    {
+        // Arrange
+        var query = new GetUserAssignmentByIdQuery(Ulid.Empty);
+        var validator = new GetUserAssignmentByIdQueryValidator();
+
+        // Act
+        var result = validator.Validate(query);
+
+        // Assert
+        Assert.False(result.IsValid);
+        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
+    }
+}
