@@ -1,0 +1,24 @@
+namespace Application.UseCases.UserProject.UpdateUserProject;
+
+public sealed class UpdateUserProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserProjectCommand, OperationResult>
+{
+    public async ValueTask<OperationResult> Handle(UpdateUserProjectCommand request, CancellationToken cancellationToken)
+    {
+        if (dbContext.UserProjects is not null)
+        {
+            var userProject = await dbContext.UserProjects
+                .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
+
+            if (userProject == null)
+            {
+                return OperationResult.NotFound;
+            }
+
+            userProject = Domain.Entities.UserProject.Update(userProject, request.UserId, request.ProjectId);
+        }
+
+        var result = await dbContext.SaveChangesAsync(cancellationToken);
+
+        return result ? OperationResult.Success : OperationResult.Failed;
+    }
+}
