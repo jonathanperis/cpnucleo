@@ -1,6 +1,7 @@
 namespace Infrastructure.Common.Helpers;
 
-public class UlidToBytesConverter(ConverterMappingHints mappingHints = null) : ValueConverter<Ulid, byte[]>(
+//For EF Core Ulid Integration
+public sealed class UlidToBytesConverter(ConverterMappingHints mappingHints = null) : ValueConverter<Ulid, byte[]>(
             convertToProviderExpression: x => x.ToByteArray(),
             convertFromProviderExpression: x => new Ulid(x),
             mappingHints: defaultHints.With(mappingHints))

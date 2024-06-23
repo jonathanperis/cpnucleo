@@ -9,7 +9,7 @@ public sealed class UpdateAssignmentCommandHandler(IApplicationDbContext dbConte
             var assignment = await dbContext.Assignments
                 .FirstOrDefaultAsync(a => a.Id == request.Id && a.Active, cancellationToken);
 
-            if (assignment == null)
+            if (assignment is null)
             {
                 return OperationResult.NotFound;
             }

@@ -9,7 +9,7 @@ public sealed class UpdateUserProjectCommandHandler(IApplicationDbContext dbCont
             var userProject = await dbContext.UserProjects
                 .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
 
-            if (userProject == null)
+            if (userProject is null)
             {
                 return OperationResult.NotFound;
             }

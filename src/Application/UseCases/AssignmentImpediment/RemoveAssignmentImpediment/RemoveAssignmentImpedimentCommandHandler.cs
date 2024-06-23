@@ -9,7 +9,7 @@ public sealed class RemoveAssignmentImpedimentCommandHandler(IApplicationDbConte
             var assignmentImpediment = await dbContext.AssignmentImpediments
                 .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
 
-            if (assignmentImpediment == null)
+            if (assignmentImpediment is null)
             {
                 return OperationResult.NotFound;
             }

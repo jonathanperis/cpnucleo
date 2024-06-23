@@ -9,7 +9,7 @@ public sealed class RemoveWorkflowCommandHandler(IApplicationDbContext dbContext
             var workflow = await dbContext.Workflows
                     .FirstOrDefaultAsync(w => w.Id == request.Id && w.Active, cancellationToken);
 
-            if (workflow == null)
+            if (workflow is null)
             {
                 return OperationResult.NotFound;
             }

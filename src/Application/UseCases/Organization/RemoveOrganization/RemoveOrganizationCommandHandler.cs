@@ -9,7 +9,7 @@ public sealed class RemoveOrganizationCommandHandler(IApplicationDbContext dbCon
             var system = await dbContext.Organizations
                 .FirstOrDefaultAsync(s => s.Id == request.Id && s.Active, cancellationToken);
 
-            if (system == null)
+            if (system is null)
             {
                 return OperationResult.NotFound;
             }

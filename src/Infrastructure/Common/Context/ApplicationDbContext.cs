@@ -28,7 +28,6 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Other configurations
         modelBuilder.ApplyConfiguration(new ImpedimentMap());
         modelBuilder.ApplyConfiguration(new ProjectMap());
         modelBuilder.ApplyConfiguration(new OrganizationMap());

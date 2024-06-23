@@ -9,7 +9,7 @@ public sealed class RemoveImpedimentCommandHandler(IApplicationDbContext dbConte
             var impediment = await dbContext.Impediments
                 .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
 
-            if (impediment == null)
+            if (impediment is null)
             {
                 return OperationResult.NotFound;
             }

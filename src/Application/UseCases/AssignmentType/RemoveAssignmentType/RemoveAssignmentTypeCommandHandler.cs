@@ -9,7 +9,7 @@ public sealed class RemoveAssignmentTypeCommandHandler(IApplicationDbContext dbC
             var assignmentType = await dbContext.AssignmentTypes
                 .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
 
-            if (assignmentType == null)
+            if (assignmentType is null)
             {
                 return OperationResult.NotFound;
             }

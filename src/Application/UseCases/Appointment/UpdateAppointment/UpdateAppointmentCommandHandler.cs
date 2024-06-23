@@ -9,7 +9,7 @@ public sealed class UpdateAppointmentCommandHandler(IApplicationDbContext dbCont
             var appointment = await dbContext.Appointments
                 .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
 
-            if (appointment == null)
+            if (appointment is null)
             {
                 return OperationResult.NotFound;
             }

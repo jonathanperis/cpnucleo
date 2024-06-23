@@ -9,7 +9,7 @@ public sealed class UpdateUserCommandHandler(IApplicationDbContext dbContext) : 
             var user = await dbContext.Users
                 .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
 
-            if (user == null)
+            if (user is null)
             {
                 return OperationResult.NotFound;
             }
