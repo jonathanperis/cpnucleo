@@ -4,7 +4,8 @@ public static class UserModule
 {
     public static void MapUserEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/api/users");
+        var group = endpoints.MapGroup("/api/users")
+            .WithTags("Users");
 
         group.MapGet("/", async (ISender sender) => 
         {
@@ -16,8 +17,7 @@ public static class UserModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.Users),
             };
-        })
-        .WithTags("Users");
+        });
 
         group.MapGet("/{id}", async (Ulid id, ISender sender) => 
         {
@@ -29,8 +29,7 @@ public static class UserModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.User),
             };
-        })
-        .WithTags("Users");
+        });
 
         group.MapPost("/", async (CreateUserCommand command, ISender sender) => 
         {
@@ -42,8 +41,7 @@ public static class UserModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Created(),
             };
-        })
-        .WithTags("Users");
+        });
 
         group.MapPut("/{id}", async (Ulid id, UpdateUserCommand command, ISender sender) => 
         {
@@ -55,8 +53,7 @@ public static class UserModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        })
-        .WithTags("Users");
+        });
 
         group.MapDelete("/{id}", async (Ulid id, ISender sender) => 
         {
@@ -68,7 +65,6 @@ public static class UserModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        })
-        .WithTags("Users");
+        });
     }
 }
