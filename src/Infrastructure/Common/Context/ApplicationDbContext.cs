@@ -49,8 +49,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder
-                .UseSqlServer(_configuration?.GetConnectionString("DefaultConnection"));
+            // optionsBuilder
+            //     .UseSqlServer(_configuration?.GetConnectionString("DefaultConnection"));
         }
     }
 

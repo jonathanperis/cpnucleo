@@ -1,0 +1,10 @@
+global using Application;
+global using Application.Common.Models;
+global using Application.UseCases.User.CreateUser;
+global using Application.UseCases.User.GetUserById;
+global using Application.UseCases.User.ListUser;
+global using Application.UseCases.User.RemoveUser;
+global using Application.UseCases.User.UpdateUser;
+global using Infrastructure;
+global using Mediator;
+global using WebApi.Modules;
