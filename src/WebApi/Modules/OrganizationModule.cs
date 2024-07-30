@@ -1,37 +1,37 @@
 namespace WebApi.Modules;
 
-public static class UserModule
+public static class OrganizationModule
 {
-    public static void MapUserEndpoints(this IEndpointRouteBuilder endpoints)
+    public static void MapOrganizationEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/api/users")
-            .WithTags("Users");
+        var group = endpoints.MapGroup("/api/organizations")
+            .WithTags("Organizations");
 
         group.MapGet("/", async (ISender sender) =>
         {
-            var result = await sender.Send(new ListUserQuery());
+            var result = await sender.Send(new ListOrganizationQuery());
 
             return result.OperationResult switch
             {
                 OperationResult.Failed => Results.Problem(),
                 OperationResult.NotFound => Results.NotFound(),
-                _ => Results.Ok(result.Users),
+                _ => Results.Ok(result.Organizations),
             };
         });
 
         group.MapGet("/{id}", async (Ulid id, ISender sender) =>
         {
-            var result = await sender.Send(new GetUserByIdQuery(id));
+            var result = await sender.Send(new GetOrganizationByIdQuery(id));
 
             return result.OperationResult switch
             {
                 OperationResult.Failed => Results.Problem(),
                 OperationResult.NotFound => Results.NotFound(),
-                _ => Results.Ok(result.User),
+                _ => Results.Ok(result.Organization),
             };
         });
 
-        group.MapPost("/", async (CreateUserCommand command, ISender sender) =>
+        group.MapPost("/", async (CreateOrganizationCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -43,7 +43,7 @@ public static class UserModule
             };
         });
 
-        group.MapPut("/{id}", async (Ulid id, UpdateUserCommand command, ISender sender) =>
+        group.MapPut("/{id}", async (Ulid id, UpdateOrganizationCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -57,7 +57,7 @@ public static class UserModule
 
         group.MapDelete("/{id}", async (Ulid id, ISender sender) =>
         {
-            var result = await sender.Send(new RemoveUserCommand(id));
+            var result = await sender.Send(new RemoveOrganizationCommand(id));
 
             return result switch
             {

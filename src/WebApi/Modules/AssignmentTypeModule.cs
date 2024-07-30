@@ -1,37 +1,37 @@
 namespace WebApi.Modules;
 
-public static class UserModule
+public static class AssignmentTypeModule
 {
-    public static void MapUserEndpoints(this IEndpointRouteBuilder endpoints)
+    public static void MapAssignmentTypeEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapGroup("/api/users")
-            .WithTags("Users");
+        var group = endpoints.MapGroup("/api/assignment-types")
+            .WithTags("AssignmentTypes");
 
         group.MapGet("/", async (ISender sender) =>
         {
-            var result = await sender.Send(new ListUserQuery());
+            var result = await sender.Send(new ListAssignmentTypeQuery());
 
             return result.OperationResult switch
             {
                 OperationResult.Failed => Results.Problem(),
                 OperationResult.NotFound => Results.NotFound(),
-                _ => Results.Ok(result.Users),
+                _ => Results.Ok(result.AssignmentTypes),
             };
         });
 
         group.MapGet("/{id}", async (Ulid id, ISender sender) =>
         {
-            var result = await sender.Send(new GetUserByIdQuery(id));
+            var result = await sender.Send(new GetAssignmentTypeByIdQuery(id));
 
             return result.OperationResult switch
             {
                 OperationResult.Failed => Results.Problem(),
                 OperationResult.NotFound => Results.NotFound(),
-                _ => Results.Ok(result.User),
+                _ => Results.Ok(result.AssignmentType),
             };
         });
 
-        group.MapPost("/", async (CreateUserCommand command, ISender sender) =>
+        group.MapPost("/", async (CreateAssignmentTypeCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -39,11 +39,11 @@ public static class UserModule
             {
                 OperationResult.Failed => Results.Problem(),
                 OperationResult.NotFound => Results.NotFound(),
-                _ => Results.Created(),
+                _ => Results.Created($"/api/assignment-types/{command.Id}", command.Id),
             };
         });
 
-        group.MapPut("/{id}", async (Ulid id, UpdateUserCommand command, ISender sender) =>
+        group.MapPut("/{id}", async (Ulid id, UpdateAssignmentTypeCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -57,7 +57,7 @@ public static class UserModule
 
         group.MapDelete("/{id}", async (Ulid id, ISender sender) =>
         {
-            var result = await sender.Send(new RemoveUserCommand(id));
+            var result = await sender.Send(new RemoveAssignmentTypeCommand(id));
 
             return result switch
             {

@@ -40,6 +40,18 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.ApplyConfiguration(new UserAssignmentMap());
         modelBuilder.ApplyConfiguration(new WorkflowMap());
 
+        modelBuilder.Entity<Impediment>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<Project>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<Organization>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<Assignment>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<AssignmentImpediment>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<AssignmentType>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<Appointment>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<User>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<UserProject>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<UserAssignment>().HasQueryFilter(x => x.Active);
+        modelBuilder.Entity<Workflow>().HasQueryFilter(x => x.Active);
+
         CreateSeedData();
 
         base.OnModelCreating(modelBuilder);
