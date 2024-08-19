@@ -9,6 +9,8 @@ var builder = WebApplication.CreateSlimBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
@@ -21,6 +23,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapHealthChecks("/healthz");
 
 app.MapAppointmentEndpoints();
 app.MapAssignmentEndpoints();
