@@ -1,5 +1,3 @@
-using Domain.Common.Repositories;
-
 namespace Infrastructure;
 
 public static class DependencyInjection

@@ -5,10 +5,10 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 {
     public async Task<bool> CreateProject(Project project)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO [Project] ([Id], [Name], [OrganizationId], [CreatedAt], [Active])
+                           INSERT INTO "Project" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @OrganizationId, @CreatedAt, @Active);
                            """;
 
@@ -17,12 +17,12 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<ProjectDto?> GetProjectById(Ulid id)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           SELECT [Id], [Name], [OrganizationId], [CreatedAt], [UpdatedAt], [Active]
-                           FROM [Project]
-                           WHERE [Id] = @Id AND [Active] = 1;
+                           SELECT "Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active"
+                           FROM "Project"
+                           WHERE "Id" = @Id AND "Active" = 1;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<ProjectDto>(sql, new { Id = id });
@@ -30,12 +30,12 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<List<ProjectDto>?> ListProjects()
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           SELECT [Id], [Name], [OrganizationId], [CreatedAt], [UpdatedAt], [Active]
-                           FROM [Project]
-                           WHERE [Active] = 1;
+                           SELECT "Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active"
+                           FROM "Project"
+                           WHERE "Active" = 1;
                            """;
 
         return (await connection.QueryAsync<ProjectDto>(sql)).AsList();
@@ -43,12 +43,12 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<bool> RemoveProject(Ulid id)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE [Project]
-                           SET [Active] = 0, [DeletedAt] = @DeletedAt
-                           WHERE [Id] = @Id;
+                           UPDATE "Project"
+                           SET "Active" = 0, "DeletedAt" = @DeletedAt
+                           WHERE "Id" = @Id;
                            """;
 
         var deletedAt = DateTime.UtcNow;
@@ -58,12 +58,12 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<bool> UpdateProject(Ulid id, string name, Ulid organizationId)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE [Project]
-                           SET [Name] = @Name, [OrganizationId] = @OrganizationId, [UpdatedAt] = @UpdatedAt
-                           WHERE [Id] = @Id;
+                           UPDATE "Project"
+                           SET "Name" = @Name, "OrganizationId" = @OrganizationId, "UpdatedAt" = @UpdatedAt
+                           WHERE "Id" = @Id;
                            """;
 
         var updatedAt = DateTime.UtcNow;

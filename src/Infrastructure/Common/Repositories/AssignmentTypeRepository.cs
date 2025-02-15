@@ -5,10 +5,10 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 {
     public async Task<bool> CreateAssignmentType(AssignmentType assignmentType)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO [AssignmentType] ([Id], [Name], [CreatedAt], [Active])
+                           INSERT INTO "AssignmentType" ("Id", "Name", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @CreatedAt, @Active);
                            """;
 
@@ -17,12 +17,12 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<AssignmentTypeDto?> GetAssignmentTypeById(Ulid id)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           SELECT [Id], [Name], [CreatedAt], [UpdatedAt], [Active]
-                           FROM [AssignmentType]
-                           WHERE [Id] = @Id AND [Active] = 1;
+                           SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
+                           FROM "AssignmentType"
+                           WHERE "Id" = @Id AND "Active" = 1;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<AssignmentTypeDto>(sql, new { Id = id });
@@ -30,12 +30,12 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<List<AssignmentTypeDto>?> ListAssignmentTypes()
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           SELECT [Id], [Name], [CreatedAt], [UpdatedAt], [Active]
-                           FROM [AssignmentType]
-                           WHERE [Active] = 1;
+                           SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
+                           FROM "AssignmentType"
+                           WHERE "Active" = 1;
                            """;
 
         return (await connection.QueryAsync<AssignmentTypeDto>(sql)).AsList();
@@ -43,12 +43,12 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<bool> RemoveAssignmentType(Ulid id)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE [AssignmentType]
-                           SET [Active] = 0, [DeletedAt] = @DeletedAt
-                           WHERE [Id] = @Id;
+                           UPDATE "AssignmentType"
+                           SET "Active" = 0, "DeletedAt" = @DeletedAt
+                           WHERE "Id" = @Id;
                            """;
 
         var deletedAt = DateTime.UtcNow;
@@ -58,12 +58,12 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<bool> UpdateAssignmentType(Ulid id, string name)
     {
-        await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE [AssignmentType]
-                           SET [Name] = @Name, [UpdatedAt] = @UpdatedAt
-                           WHERE [Id] = @Id;
+                           UPDATE "AssignmentType"
+                           SET "Name" = @Name, "UpdatedAt" = @UpdatedAt
+                           WHERE "Id" = @Id;
                            """;
 
         var updatedAt = DateTime.UtcNow;
