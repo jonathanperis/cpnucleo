@@ -1,6 +1,6 @@
 namespace Application.UseCases.Assignment.RemoveAssignment;
 
-public sealed class RemoveAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveAssignmentCommand, OperationResult>
+public sealed class RemoveAssignmentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveAssignmentCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class RemoveAssignmentCommandHandler(IApplicationDbContext dbConte
                 return OperationResult.NotFound;
             }
 
-            assignment = Domain.Entities.Assignment.Remove(assignment);
+            Domain.Entities.Assignment.Remove(assignment);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

@@ -1,3 +1,3 @@
-namespace Application.Common.Dtos;
+namespace Domain.Common.Dtos;
 
 public sealed record AssignmentImpedimentDto(string? Description, Ulid AssignmentId, Ulid ImpedimentId) : BaseDto;

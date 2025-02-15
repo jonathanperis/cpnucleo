@@ -7,10 +7,10 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [Appointment] ([Id], [Description], [KeepDate], [AmountHours], [AssignmentId], [UserId], [CreatedAt], [Active])
-                            VALUES (@Id, @Description, @KeepDate, @AmountHours, @AssignmentId, @UserId, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [Appointment] ([Id], [Description], [KeepDate], [AmountHours], [AssignmentId], [UserId], [CreatedAt], [Active])
+                           VALUES (@Id, @Description, @KeepDate, @AmountHours, @AssignmentId, @UserId, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { appointment.Id, appointment.Description, appointment.KeepDate, appointment.AmountHours, appointment.AssignmentId, appointment.UserId, appointment.CreatedAt, appointment.Active }) == 1;
     }
@@ -19,11 +19,11 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Description], [KeepDate], [AmountHours], [AssignmentId], [UserId], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Appointment]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Description], [KeepDate], [AmountHours], [AssignmentId], [UserId], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Appointment]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<AppointmentDto>(sql, new { Id = id });
     }
@@ -32,11 +32,11 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Description], [KeepDate], [AmountHours], [AssignmentId], [UserId], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Appointment]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Description], [KeepDate], [AmountHours], [AssignmentId], [UserId], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Appointment]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<AppointmentDto>(sql)).AsList();
     }
@@ -45,11 +45,11 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Appointment]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Appointment]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -60,11 +60,11 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Appointment]
-                            SET [Description] = @Description, [KeepDate] = @KeepDate, [AmountHours] = @AmountHours, [AssignmentId] = @AssignmentId, [UserId] = @UserId, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Appointment]
+                           SET [Description] = @Description, [KeepDate] = @KeepDate, [AmountHours] = @AmountHours, [AssignmentId] = @AssignmentId, [UserId] = @UserId, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

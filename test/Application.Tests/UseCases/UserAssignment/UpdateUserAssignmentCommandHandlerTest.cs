@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.UserAssignment;
 
 public class UpdateUserAssignmentCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly UpdateUserAssignmentCommandHandler _handler;
     private readonly List<Domain.Entities.UserAssignment> _userAssignments;
 
     public UpdateUserAssignmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _userAssignments = new List<Domain.Entities.UserAssignment>
-        {
+        _userAssignments =
+        [
             Domain.Entities.UserAssignment.Create(Ulid.NewUlid(), Ulid.NewUlid()),
             Domain.Entities.UserAssignment.Create(Ulid.NewUlid(), Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.UserAssignments).ReturnsDbSet(_userAssignments);
 

@@ -6,10 +6,10 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [UserProject] ([Id], [UserId], [ProjectId], [CreatedAt], [Active])
-                            VALUES (@Id, @UserId, @ProjectId, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [UserProject] ([Id], [UserId], [ProjectId], [CreatedAt], [Active])
+                           VALUES (@Id, @UserId, @ProjectId, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { userProject.Id, userProject.UserId, userProject.ProjectId, userProject.CreatedAt, userProject.Active }) == 1;
     }
@@ -18,11 +18,11 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [UserId], [ProjectId], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [UserProject]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [UserId], [ProjectId], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [UserProject]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<UserProjectDto>(sql, new { Id = id });
     }
@@ -31,11 +31,11 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [UserId], [ProjectId], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [UserProject]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [UserId], [ProjectId], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [UserProject]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<UserProjectDto>(sql)).AsList();
     }
@@ -44,11 +44,11 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [UserProject]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [UserProject]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -59,11 +59,11 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [UserProject]
-                            SET [UserId] = @UserId, [ProjectId] = @ProjectId, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [UserProject]
+                           SET [UserId] = @UserId, [ProjectId] = @ProjectId, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

@@ -17,12 +17,12 @@ public class ListAssignmentTypeQueryHandlerTest
         // Arrange
         var assignmentTypes = new List<AssignmentTypeDto>
         {
-            new AssignmentTypeDto("Test AssignmentType 1")
+            new("Test AssignmentType 1")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new AssignmentTypeDto("Test AssignmentType 2")
+            new("Test AssignmentType 2")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListAssignmentTypeQueryHandlerTest
         // Arrange
         _assignmentTypeRepositoryMock
             .Setup(repo => repo.ListAssignmentTypes())
-            .ReturnsAsync(new List<AssignmentTypeDto>());
+            .ReturnsAsync([]);
 
         var query = new ListAssignmentTypeQuery();
 

@@ -17,12 +17,12 @@ public class ListImpedimentQueryHandlerTest
         // Arrange
         var impediments = new List<ImpedimentDto>
         {
-            new ImpedimentDto("Test Impediment 1")
+            new("Test Impediment 1")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new ImpedimentDto("Test Impediment 2")
+            new("Test Impediment 2")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListImpedimentQueryHandlerTest
         // Arrange
         _impedimentRepositoryMock
             .Setup(repo => repo.ListImpediments())
-            .ReturnsAsync(new List<ImpedimentDto>());
+            .ReturnsAsync([]);
 
         var query = new ListImpedimentQuery();
 

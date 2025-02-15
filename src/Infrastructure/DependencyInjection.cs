@@ -1,3 +1,5 @@
+using Domain.Common.Repositories;
+
 namespace Infrastructure;
 
 public static class DependencyInjection
@@ -7,8 +9,10 @@ public static class DependencyInjection
         // Dapper.SqlMapper.AddTypeHandler(typeof(Ulid), new BinaryUlidHandler());
         // Dapper.SqlMapper.AddTypeHandler(typeof(Ulid), new StringUlidHandler());
 
-        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        // Ef Core
+        services.AddScoped<ApplicationDbContext>();
 
+        // Dapper
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IAssignmentRepository, AssignmentRepository>();
         services.AddScoped<IAssignmentImpedimentRepository, AssignmentImpedimentRepository>();

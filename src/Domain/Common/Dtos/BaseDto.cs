@@ -1,4 +1,4 @@
-namespace Application.Common.Dtos;
+namespace Domain.Common.Dtos;
 
 //[MessagePackObject(true)]
 // public abstract record BaseDto(Ulid Id, DateTime CreatedAt);

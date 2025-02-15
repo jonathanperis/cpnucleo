@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.Organization;
 
 public class UpdateOrganizationCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly UpdateOrganizationCommandHandler _handler;
     private readonly List<Domain.Entities.Organization> _organizations;
 
     public UpdateOrganizationCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _organizations = new List<Domain.Entities.Organization>
-        {
+        _organizations =
+        [
             Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Ulid.NewUlid()),
             Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.Organizations).ReturnsDbSet(_organizations);
 

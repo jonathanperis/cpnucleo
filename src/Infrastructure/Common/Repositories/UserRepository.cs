@@ -6,10 +6,10 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [User] ([Id], [Name], [Login], [Password], [Salt], [CreatedAt], [Active])
-                            VALUES (@Id, @Name, @Login, @Password, @Salt, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [User] ([Id], [Name], [Login], [Password], [Salt], [CreatedAt], [Active])
+                           VALUES (@Id, @Name, @Login, @Password, @Salt, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { user.Id, user.Name, user.Login, user.Password, user.Salt, user.CreatedAt, user.Active }) == 1;
     }
@@ -18,11 +18,11 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [Login], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [User]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [Login], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [User]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<UserDto>(sql, new { Id = id });
     }
@@ -31,11 +31,11 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [Login], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [User]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [Login], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [User]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<UserDto>(sql)).AsList();
     }
@@ -44,11 +44,11 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [User]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [User]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -59,11 +59,11 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [User]
-                            SET [Name] = @Name, [Password] = @Password, [Salt] = @Salt, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [User]
+                           SET [Name] = @Name, [Password] = @Password, [Salt] = @Salt, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

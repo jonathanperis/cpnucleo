@@ -2,16 +2,15 @@ namespace Application.Tests.UseCases.Workflow;
 
 public class CreateWorkflowCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly CreateWorkflowCommandHandler _handler;
-    private readonly Mock<DbSet<Domain.Entities.Workflow>> _mockWorkflowsDbSet;
 
     public CreateWorkflowCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _mockWorkflowsDbSet = new Mock<DbSet<Domain.Entities.Workflow>>();
-        _dbContextMock.Setup(db => db.Workflows).Returns(_mockWorkflowsDbSet.Object);
+        Mock<DbSet<Domain.Entities.Workflow>> mockWorkflowsDbSet = new();
+        _dbContextMock.Setup(db => db.Workflows).Returns(mockWorkflowsDbSet.Object);
 
         _handler = new CreateWorkflowCommandHandler(_dbContextMock.Object);
     }

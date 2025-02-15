@@ -1,6 +1,6 @@
 namespace Application.UseCases.Organization.UpdateOrganization;
 
-public sealed class UpdateOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateOrganizationCommand, OperationResult>
+public sealed class UpdateOrganizationCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class UpdateOrganizationCommandHandler(IApplicationDbContext dbCon
                 return OperationResult.NotFound;
             }
 
-            system = Domain.Entities.Organization.Update(system, request.Name, request.Description);
+            Domain.Entities.Organization.Update(system, request.Name, request.Description);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

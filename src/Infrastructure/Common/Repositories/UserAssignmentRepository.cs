@@ -6,10 +6,10 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [UserAssignment] ([Id], [UserId], [AssignmentId], [CreatedAt], [Active])
-                            VALUES (@Id, @UserId, @AssignmentId, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [UserAssignment] ([Id], [UserId], [AssignmentId], [CreatedAt], [Active])
+                           VALUES (@Id, @UserId, @AssignmentId, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { userAssignment.Id, userAssignment.UserId, userAssignment.AssignmentId, userAssignment.CreatedAt, userAssignment.Active }) == 1;
     }
@@ -18,11 +18,11 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [UserId], [AssignmentId], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [UserAssignment]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [UserId], [AssignmentId], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [UserAssignment]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<UserAssignmentDto>(sql, new { Id = id });
     }
@@ -31,11 +31,11 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [UserId], [AssignmentId], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [UserAssignment]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [UserId], [AssignmentId], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [UserAssignment]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<UserAssignmentDto>(sql)).AsList();
     }
@@ -44,11 +44,11 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [UserAssignment]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [UserAssignment]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -59,11 +59,11 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [UserAssignment]
-                            SET [UserId] = @UserId, [AssignmentId] = @AssignmentId, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [UserAssignment]
+                           SET [UserId] = @UserId, [AssignmentId] = @AssignmentId, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

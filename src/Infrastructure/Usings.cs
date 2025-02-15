@@ -1,7 +1,6 @@
-global using Application.Common.Context;
-global using Application.Common.Dtos;
-global using Application.Common.Repositories;
 global using Dapper;
+global using Domain.Common.Dtos;
+global using Domain.Common.Repositories;
 global using Domain.Entities;
 global using Infrastructure.Common.Context;
 global using Infrastructure.Common.Helpers;

@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.Project;
 
 public class RemoveProjectCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly RemoveProjectCommandHandler _handler;
     private readonly List<Domain.Entities.Project> _projects;
 
     public RemoveProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _projects = new List<Domain.Entities.Project>
-        {
+        _projects =
+        [
             Domain.Entities.Project.Create("Test Project 1", Ulid.NewUlid(), Ulid.NewUlid()),
             Domain.Entities.Project.Create("Test Project 2", Ulid.NewUlid(), Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.Projects).ReturnsDbSet(_projects);
 

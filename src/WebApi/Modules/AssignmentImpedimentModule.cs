@@ -1,71 +1,70 @@
-namespace WebApi.Modules
+namespace WebApi.Modules;
+
+public static class AssignmentImpedimentModule
 {
-    public static class AssignmentImpedimentModule
+    public static void MapAssignmentImpedimentEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        public static void MapAssignmentImpedimentEndpoints(this IEndpointRouteBuilder endpoints)
+        var group = endpoints.MapGroup("/api/assignment-impediments")
+            .WithTags("AssignmentImpediments");
+
+        group.MapGet("/", async (ISender sender) =>
         {
-            var group = endpoints.MapGroup("/api/assignment-impediments")
-                .WithTags("AssignmentImpediments");
+            var result = await sender.Send(new ListAssignmentImpedimentQuery());
 
-            group.MapGet("/", async (ISender sender) =>
+            return result.OperationResult switch
             {
-                var result = await sender.Send(new ListAssignmentImpedimentQuery());
+                OperationResult.Failed => Results.Problem(),
+                OperationResult.NotFound => Results.NotFound(),
+                _ => Results.Ok(result.AssignmentImpediments),
+            };
+        });
 
-                return result.OperationResult switch
-                {
-                    OperationResult.Failed => Results.Problem(),
-                    OperationResult.NotFound => Results.NotFound(),
-                    _ => Results.Ok(result.AssignmentImpediments),
-                };
-            });
+        group.MapGet("/{id}", async (Ulid id, ISender sender) =>
+        {
+            var result = await sender.Send(new GetAssignmentImpedimentByIdQuery(id));
 
-            group.MapGet("/{id}", async (Ulid id, ISender sender) =>
+            return result.OperationResult switch
             {
-                var result = await sender.Send(new GetAssignmentImpedimentByIdQuery(id));
+                OperationResult.Failed => Results.Problem(),
+                OperationResult.NotFound => Results.NotFound(),
+                _ => Results.Ok(result.AssignmentImpediment),
+            };
+        });
 
-                return result.OperationResult switch
-                {
-                    OperationResult.Failed => Results.Problem(),
-                    OperationResult.NotFound => Results.NotFound(),
-                    _ => Results.Ok(result.AssignmentImpediment),
-                };
-            });
+        group.MapPost("/", async (CreateAssignmentImpedimentCommand command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
 
-            group.MapPost("/", async (CreateAssignmentImpedimentCommand command, ISender sender) =>
+            return result switch
             {
-                var result = await sender.Send(command);
+                OperationResult.Failed => Results.Problem(),
+                OperationResult.NotFound => Results.NotFound(),
+                _ => Results.Created(),
+            };
+        });
 
-                return result switch
-                {
-                    OperationResult.Failed => Results.Problem(),
-                    OperationResult.NotFound => Results.NotFound(),
-                    _ => Results.Created(),
-                };
-            });
+        group.MapPut("/{id}", async (Ulid id, UpdateAssignmentImpedimentCommand command, ISender sender) =>
+        {
+            var result = await sender.Send(command);
 
-            group.MapPut("/{id}", async (Ulid id, UpdateAssignmentImpedimentCommand command, ISender sender) =>
+            return result switch
             {
-                var result = await sender.Send(command);
+                OperationResult.Failed => Results.Problem(),
+                OperationResult.NotFound => Results.NotFound(),
+                _ => Results.NoContent(),
+            };
+        });
 
-                return result switch
-                {
-                    OperationResult.Failed => Results.Problem(),
-                    OperationResult.NotFound => Results.NotFound(),
-                    _ => Results.NoContent(),
-                };
-            });
+        group.MapDelete("/{id}", async (Ulid id, ISender sender) =>
+        {
+            var result = await sender.Send(new RemoveAssignmentImpedimentCommand(id));
 
-            group.MapDelete("/{id}", async (Ulid id, ISender sender) =>
+            return result switch
             {
-                var result = await sender.Send(new RemoveAssignmentImpedimentCommand(id));
-
-                return result switch
-                {
-                    OperationResult.Failed => Results.Problem(),
-                    OperationResult.NotFound => Results.NotFound(),
-                    _ => Results.NoContent(),
-                };
-            });
-        }
+                OperationResult.Failed => Results.Problem(),
+                OperationResult.NotFound => Results.NotFound(),
+                _ => Results.NoContent(),
+            };
+        });
     }
 }

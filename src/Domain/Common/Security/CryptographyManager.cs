@@ -1,6 +1,6 @@
 namespace Domain.Common.Security;
 
-internal sealed class CryptographyManager
+internal abstract class CryptographyManager
 {
     internal static void CryptPbkdf2(string item, out string itemCrypt, out string salt)
     {

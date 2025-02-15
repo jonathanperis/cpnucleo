@@ -2,19 +2,21 @@ namespace Application.Tests.UseCases.Assignment;
 
 public class UpdateAssignmentCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly UpdateAssignmentCommandHandler _handler;
     private readonly List<Domain.Entities.Assignment> _assignments;
 
     public UpdateAssignmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _assignments = new List<Domain.Entities.Assignment>
-        {
-            Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid()),
-            Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 3, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
-        };
+        _assignments =
+        [
+            Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow,
+                DateTime.UtcNow.AddDays(1), 2, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid()),
+            Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow,
+                DateTime.UtcNow.AddDays(2), 3, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+        ];
 
         _dbContextMock.Setup(db => db.Assignments).ReturnsDbSet(_assignments);
 

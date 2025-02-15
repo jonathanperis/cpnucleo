@@ -1,13 +1,7 @@
 namespace Application.Common.Exceptions;
 
-internal sealed class ValidationException : Exception
+internal sealed class ValidationException() : Exception("One or more validation failures have occurred.")
 {
-    public ValidationException()
-        : base("One or more validation failures have occurred.")
-    {
-        Errors = new Dictionary<string, string[]>();
-    }
-
     public ValidationException(List<ValidationFailure> failures)
         : this()
     {
@@ -16,5 +10,5 @@ internal sealed class ValidationException : Exception
             .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
     }
 
-    public IDictionary<string, string[]> Errors { get; }
+    public IDictionary<string, string[]> Errors { get; } = new Dictionary<string, string[]>();
 }

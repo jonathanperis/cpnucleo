@@ -17,12 +17,12 @@ public class ListWorkflowQueryHandlerTest
         // Arrange
         var workflows = new List<WorkflowDto>
         {
-            new WorkflowDto("Test Workflow 1", 1)
+            new("Test Workflow 1", 1)
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new WorkflowDto("Test Workflow 2", 2)
+            new("Test Workflow 2", 2)
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListWorkflowQueryHandlerTest
         // Arrange
         _workflowRepositoryMock
             .Setup(repo => repo.ListWorkflow())
-            .ReturnsAsync(new List<WorkflowDto>());
+            .ReturnsAsync([]);
 
         var query = new ListWorkflowQuery();
 

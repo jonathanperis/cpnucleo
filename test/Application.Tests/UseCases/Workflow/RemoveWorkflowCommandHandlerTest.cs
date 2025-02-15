@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.Workflow;
 
 public class RemoveWorkflowCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly RemoveWorkflowCommandHandler _handler;
     private readonly List<Domain.Entities.Workflow> _workflows;
 
     public RemoveWorkflowCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _workflows = new List<Domain.Entities.Workflow>
-        {
+        _workflows =
+        [
             Domain.Entities.Workflow.Create("Test Workflow 1", 1, Ulid.NewUlid()),
             Domain.Entities.Workflow.Create("Test Workflow 2", 2, Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.Workflows).ReturnsDbSet(_workflows);
 

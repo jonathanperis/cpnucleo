@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.User;
 
 public class UpdateUserCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly UpdateUserCommandHandler _handler;
     private readonly List<Domain.Entities.User> _users;
 
     public UpdateUserCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _users = new List<Domain.Entities.User>
-        {
+        _users =
+        [
             Domain.Entities.User.Create("Test User 1", "testUser1", "password1"),
             Domain.Entities.User.Create("Test User 2", "testUser2", "password2")
-        };
+        ];
 
         _dbContextMock.Setup(db => db.Users).ReturnsDbSet(_users);
 

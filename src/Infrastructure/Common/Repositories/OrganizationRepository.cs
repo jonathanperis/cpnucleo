@@ -7,10 +7,10 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [Organization] ([Id], [Name], [Description], [CreatedAt], [Active])
-                            VALUES (@Id, @Name, @Description, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [Organization] ([Id], [Name], [Description], [CreatedAt], [Active])
+                           VALUES (@Id, @Name, @Description, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { organization.Id, organization.Name, organization.Description, organization.CreatedAt, organization.Active }) == 1;
     }
@@ -19,11 +19,11 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [Description], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Organization]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [Description], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Organization]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<OrganizationDto>(sql, new { Id = id });
     }
@@ -32,11 +32,11 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [Description], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Organization]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [Description], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Organization]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<OrganizationDto>(sql)).AsList();
     }
@@ -45,11 +45,11 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Organization]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Organization]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -60,11 +60,11 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Organization]
-                            SET [Name] = @Name, [Description] = @Description, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Organization]
+                           SET [Name] = @Name, [Description] = @Description, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

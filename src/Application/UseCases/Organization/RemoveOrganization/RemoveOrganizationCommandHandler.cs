@@ -1,6 +1,6 @@
 namespace Application.UseCases.Organization.RemoveOrganization;
 
-public sealed class RemoveOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveOrganizationCommand, OperationResult>
+public sealed class RemoveOrganizationCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveOrganizationCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class RemoveOrganizationCommandHandler(IApplicationDbContext dbCon
                 return OperationResult.NotFound;
             }
 
-            system = Domain.Entities.Organization.Remove(system);
+            Domain.Entities.Organization.Remove(system);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

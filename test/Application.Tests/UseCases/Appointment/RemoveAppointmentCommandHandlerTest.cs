@@ -2,19 +2,20 @@ namespace Application.Tests.UseCases.Appointment;
 
 public class RemoveAppointmentCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly RemoveAppointmentCommandHandler _handler;
     private readonly List<Domain.Entities.Appointment> _appointments;
 
     public RemoveAppointmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _appointments = new List<Domain.Entities.Appointment>
-        {
-            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid()),
+        _appointments =
+        [
+            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Ulid.NewUlid(),
+                Ulid.NewUlid()),
             Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.Appointments).ReturnsDbSet(_appointments);
 

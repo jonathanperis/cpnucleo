@@ -1,7 +1,4 @@
-global using Application.Common.Context;
-global using Application.Common.Dtos;
 global using Application.Common.Models;
-global using Application.Common.Repositories;
 global using Application.UseCases.Appointment.CreateAppointment;
 global using Application.UseCases.Appointment.GetAppointmentById;
 global using Application.UseCases.Appointment.ListAppointment;
@@ -57,6 +54,9 @@ global using Application.UseCases.Workflow.GetWorkflowById;
 global using Application.UseCases.Workflow.ListWorkflow;
 global using Application.UseCases.Workflow.RemoveWorkflow;
 global using Application.UseCases.Workflow.UpdateWorkflow;
+global using Domain.Common.Dtos;
+global using Domain.Common.Repositories;
+global using Infrastructure.Common.Context;
 global using Microsoft.EntityFrameworkCore;
 global using Moq;
 global using Moq.EntityFrameworkCore;

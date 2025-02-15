@@ -2,16 +2,15 @@ namespace Application.Tests.UseCases.Assignment;
 
 public class CreateAssignmentCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly CreateAssignmentCommandHandler _handler;
-    private readonly Mock<DbSet<Domain.Entities.Assignment>> _mockAssignmentsDbSet;
 
     public CreateAssignmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _mockAssignmentsDbSet = new Mock<DbSet<Domain.Entities.Assignment>>();
-        _dbContextMock.Setup(db => db.Assignments).Returns(_mockAssignmentsDbSet.Object);
+        Mock<DbSet<Domain.Entities.Assignment>> mockAssignmentsDbSet = new();
+        _dbContextMock.Setup(db => db.Assignments).Returns(mockAssignmentsDbSet.Object);
 
         _handler = new CreateAssignmentCommandHandler(_dbContextMock.Object);
     }
@@ -64,6 +63,4 @@ public class CreateAssignmentCommandHandlerTest
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Name"));
     }
-
-    // Other validation tests (optional)
 }

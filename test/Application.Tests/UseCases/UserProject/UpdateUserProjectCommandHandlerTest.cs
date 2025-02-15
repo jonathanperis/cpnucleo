@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.UserProject;
 
 public class UpdateUserProjectCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly UpdateUserProjectCommandHandler _handler;
     private readonly List<Domain.Entities.UserProject> _userProjects;
 
     public UpdateUserProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _userProjects = new List<Domain.Entities.UserProject>
-        {
+        _userProjects =
+        [
             Domain.Entities.UserProject.Create(Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid()),
             Domain.Entities.UserProject.Create(Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.UserProjects).ReturnsDbSet(_userProjects);
 

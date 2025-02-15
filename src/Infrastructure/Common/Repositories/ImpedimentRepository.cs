@@ -6,10 +6,10 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [Impediment] ([Id], [Name], [CreatedAt], [Active])
-                            VALUES (@Id, @Name, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [Impediment] ([Id], [Name], [CreatedAt], [Active])
+                           VALUES (@Id, @Name, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { impediment.Id, impediment.Name, impediment.CreatedAt, impediment.Active }) == 1;
     }
@@ -18,11 +18,11 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Impediment]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Impediment]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<ImpedimentDto>(sql, new { Id = id });
     }
@@ -31,11 +31,11 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Impediment]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Impediment]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<ImpedimentDto>(sql)).AsList();
     }
@@ -44,11 +44,11 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Impediment]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Impediment]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -59,11 +59,11 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Impediment]
-                            SET [Name] = @Name, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Impediment]
+                           SET [Name] = @Name, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

@@ -17,12 +17,12 @@ public class ListUserAssignmentsQueryHandlerTest
         // Arrange
         var userAssignments = new List<UserAssignmentDto>
             {
-                new UserAssignmentDto(Ulid.NewUlid(), Ulid.NewUlid())
+                new(Ulid.NewUlid(), Ulid.NewUlid())
                 {
                     Id = Ulid.NewUlid(),
                     CreatedAt = DateTime.UtcNow
                 },
-                new UserAssignmentDto(Ulid.NewUlid(), Ulid.NewUlid())
+                new(Ulid.NewUlid(), Ulid.NewUlid())
                 {
                     Id = Ulid.NewUlid(),
                     CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListUserAssignmentsQueryHandlerTest
         // Arrange
         _userAssignmentRepositoryMock
             .Setup(repo => repo.ListUserAssignments())
-            .ReturnsAsync(new List<UserAssignmentDto>());
+            .ReturnsAsync([]);
 
         var query = new ListUserAssignmentsQuery();
 

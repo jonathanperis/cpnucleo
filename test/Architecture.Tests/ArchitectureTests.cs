@@ -39,7 +39,6 @@ public class ArchitectureTests
 
         var otherProjects = new[]
         {
-            InfrastructureNamespace,
             ServicesNamespace
         };
 
@@ -76,41 +75,41 @@ public class ArchitectureTests
         testResult.IsSuccessful.Should().BeTrue();
     }
 
-    // [Fact]
-    // public void Handlers_Should_Have_DependencyOnDomain()
-    // {
-    //     // Arrange
-    //     var assembly = typeof(Application.DependencyInjection).Assembly;
+    [Fact]
+    public void Handlers_Should_Have_DependencyOnDomain()
+    {
+        // Arrange
+        var assembly = typeof(Application.DependencyInjection).Assembly;
 
-    //     // Act
-    //     var testResult = Types
-    //         .InAssembly(assembly)
-    //         .That()
-    //         .HaveNameEndingWith("Handler")
-    //         .Should()
-    //         .HaveDependencyOn(DomainNamespace)
-    //         .GetResult();
+        // Act
+        var testResult = Types
+            .InAssembly(assembly)
+            .That()
+            .HaveNameEndingWith("Handler")
+            .Should()
+            .HaveDependencyOn(DomainNamespace)
+            .GetResult();
 
-    //     // Assert
-    //     testResult.IsSuccessful.Should().BeTrue();
-    // }
+        // Assert
+        testResult.IsSuccessful.Should().BeTrue();
+    }
 
-    // [Fact]
-    // public void Services_Should_HaveDependencyOnMediator()
-    // {
-    //     // Arrange
-    //     var assembly = typeof(WebUI.Modules.TrackingTransportationModule).Assembly;
+    [Fact]
+    public void Services_Should_HaveDependencyOnMediator()
+    {
+        // Arrange
+        var assembly = typeof(WebApi.Modules.OrganizationModule).Assembly;
 
-    //     // Act
-    //     var testResult = Types
-    //         .InAssembly(assembly)
-    //         .That()
-    //         .HaveNameEndingWith("Module")
-    //         .Should()
-    //         .HaveDependencyOn("Mediator")
-    //         .GetResult();
+        // Act
+        var testResult = Types
+            .InAssembly(assembly)
+            .That()
+            .HaveNameEndingWith("Module")
+            .Should()
+            .HaveDependencyOn("Mediator")
+            .GetResult();
 
-    //     // Assert
-    //     testResult.IsSuccessful.Should().BeTrue();
-    // }
+        // Assert
+        testResult.IsSuccessful.Should().BeTrue();
+    }
 }

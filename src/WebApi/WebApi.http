@@ -1,6 +1,31 @@
 @WebApi_HostAddress = http://localhost:5064
+@organizationId = 01H1VXVNENQJ5QKZGC8XKJDA4X
 
-GET {{WebApi_HostAddress}}/weatherforecast/
+### List Organizations
+GET {{WebApi_HostAddress}}/api/organizations
 Accept: application/json
 
-###
+### Get Organization by ID
+GET {{WebApi_HostAddress}}/api/organizations/{{organizationId}}
+Accept: application/json
+
+### Create Organization
+POST {{WebApi_HostAddress}}/api/organizations
+Content-Type: application/json
+
+{
+  "name": "New Organization",
+  "description": "This is a new organization"
+}
+
+### Update Organization
+PUT {{WebApi_HostAddress}}/api/organizations/{{organizationId}}
+Content-Type: application/json
+
+{
+  "name": "Updated Organization Name",
+  "description": "This is an updated organization description"
+}
+
+### Delete Organization
+DELETE {{WebApi_HostAddress}}/api/organizations/{{organizationId}}

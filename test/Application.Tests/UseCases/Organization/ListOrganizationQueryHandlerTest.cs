@@ -17,12 +17,12 @@ public class ListOrganizationQueryHandlerTest
         // Arrange
         var organizations = new List<OrganizationDto>
         {
-            new OrganizationDto("Test Organization 1", "Description 1")
+            new("Test Organization 1", "Description 1")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new OrganizationDto("Test Organization 2", "Description 2")
+            new("Test Organization 2", "Description 2")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListOrganizationQueryHandlerTest
         // Arrange
         _organizationRepositoryMock
             .Setup(repo => repo.ListOrganization())
-            .ReturnsAsync(new List<OrganizationDto>());
+            .ReturnsAsync([]);
 
         var query = new ListOrganizationQuery();
 

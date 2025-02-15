@@ -1,4 +1,4 @@
-namespace Application.Common.Repositories;
+namespace Domain.Common.Repositories;
 
 public interface IImpedimentRepository
 {

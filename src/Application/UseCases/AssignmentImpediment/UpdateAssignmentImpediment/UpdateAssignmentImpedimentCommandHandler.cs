@@ -1,6 +1,6 @@
 namespace Application.UseCases.AssignmentImpediment.UpdateAssignmentImpediment;
 
-public sealed class UpdateAssignmentImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentImpedimentCommand, OperationResult>
+public sealed class UpdateAssignmentImpedimentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAssignmentImpedimentCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class UpdateAssignmentImpedimentCommandHandler(IApplicationDbConte
                 return OperationResult.NotFound;
             }
 
-            assignmentImpediment = Domain.Entities.AssignmentImpediment.Update(assignmentImpediment, request.Description, request.AssignmentId, request.ImpedimentId);
+            Domain.Entities.AssignmentImpediment.Update(assignmentImpediment, request.Description, request.AssignmentId, request.ImpedimentId);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

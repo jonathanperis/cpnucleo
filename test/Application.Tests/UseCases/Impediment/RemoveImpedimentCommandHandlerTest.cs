@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.Impediment;
 
 public class RemoveImpedimentCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly RemoveImpedimentCommandHandler _handler;
     private readonly List<Domain.Entities.Impediment> _impediments;
 
     public RemoveImpedimentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _impediments = new List<Domain.Entities.Impediment>
-        {
+        _impediments =
+        [
             Domain.Entities.Impediment.Create("Test Impediment 1", Ulid.NewUlid()),
             Domain.Entities.Impediment.Create("Test Impediment 2", Ulid.NewUlid())
-        };
+        ];
 
         _dbContextMock.Setup(db => db.Impediments).ReturnsDbSet(_impediments);
 

@@ -1,6 +1,6 @@
 namespace Application.UseCases.Project.CreateProject;
 
-public sealed class CreateProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateProjectCommand, OperationResult>
+public sealed class CreateProjectCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {

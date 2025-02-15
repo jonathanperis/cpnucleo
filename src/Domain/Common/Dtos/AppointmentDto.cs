@@ -1,3 +1,3 @@
-namespace Application.Common.Dtos;
+namespace Domain.Common.Dtos;
 
 public sealed record AppointmentDto(string? Description, DateTime KeepDate, byte AmountHours, Ulid AssignmentId, Ulid UserId) : BaseDto;

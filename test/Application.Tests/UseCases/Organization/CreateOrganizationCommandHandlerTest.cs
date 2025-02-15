@@ -2,16 +2,15 @@ namespace Application.Tests.UseCases.Organization;
 
 public class CreateOrganizationCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly CreateOrganizationCommandHandler _handler;
-    private readonly Mock<DbSet<Domain.Entities.Organization>> _mockOrganizationsDbSet;
 
     public CreateOrganizationCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _mockOrganizationsDbSet = new Mock<DbSet<Domain.Entities.Organization>>();
-        _dbContextMock.Setup(db => db.Organizations).Returns(_mockOrganizationsDbSet.Object);
+        Mock<DbSet<Domain.Entities.Organization>> mockOrganizationsDbSet = new();
+        _dbContextMock.Setup(db => db.Organizations).Returns(mockOrganizationsDbSet.Object);
 
         _handler = new CreateOrganizationCommandHandler(_dbContextMock.Object);
     }

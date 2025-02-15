@@ -17,12 +17,12 @@ public class ListProjectQueryHandlerTest
         // Arrange
         var projects = new List<ProjectDto>
         {
-            new ProjectDto("Test Project 1", Ulid.NewUlid())
+            new("Test Project 1", Ulid.NewUlid())
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new ProjectDto("Test Project 2", Ulid.NewUlid())
+            new("Test Project 2", Ulid.NewUlid())
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListProjectQueryHandlerTest
         // Arrange
         _projectRepositoryMock
             .Setup(repo => repo.ListProjects())
-            .ReturnsAsync(new List<ProjectDto>());
+            .ReturnsAsync([]);
 
         var query = new ListProjectQuery();
 

@@ -1,6 +1,6 @@
 namespace Application.UseCases.User.UpdateUser;
 
-public sealed class UpdateUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserCommand, OperationResult>
+public sealed class UpdateUserCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class UpdateUserCommandHandler(IApplicationDbContext dbContext) : 
                 return OperationResult.NotFound;
             }
 
-            user = Domain.Entities.User.Update(user, request.Name, request.Password);
+            Domain.Entities.User.Update(user, request.Name, request.Password);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

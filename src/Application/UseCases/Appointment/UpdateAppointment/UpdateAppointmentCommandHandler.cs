@@ -1,6 +1,6 @@
 namespace Application.UseCases.Appointment.UpdateAppointment;
 
-public sealed class UpdateAppointmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAppointmentCommand, OperationResult>
+public sealed class UpdateAppointmentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateAppointmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class UpdateAppointmentCommandHandler(IApplicationDbContext dbCont
                 return OperationResult.NotFound;
             }
 
-            appointment = Domain.Entities.Appointment.Update(appointment, request.Description, request.KeepDate, request.AmountHours, request.AssignmentId, request.UserId);
+            Domain.Entities.Appointment.Update(appointment, request.Description, request.KeepDate, request.AmountHours, request.AssignmentId, request.UserId);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

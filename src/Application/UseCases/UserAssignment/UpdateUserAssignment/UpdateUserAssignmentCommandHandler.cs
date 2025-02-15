@@ -1,6 +1,6 @@
 namespace Application.UseCases.UserAssignment.UpdateUserAssignment;
 
-public sealed class UpdateUserAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserAssignmentCommand, OperationResult>
+public sealed class UpdateUserAssignmentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateUserAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateUserAssignmentCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class UpdateUserAssignmentCommandHandler(IApplicationDbContext dbC
                 return OperationResult.NotFound;
             }
 
-            userAssignment = Domain.Entities.UserAssignment.Update(userAssignment, request.UserId, request.AssignmentId);
+            Domain.Entities.UserAssignment.Update(userAssignment, request.UserId, request.AssignmentId);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

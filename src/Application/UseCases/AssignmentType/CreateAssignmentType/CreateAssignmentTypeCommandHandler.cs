@@ -1,6 +1,6 @@
 namespace Application.UseCases.AssignmentType.CreateAssignmentType;
 
-public sealed class CreateAssignmentTypeCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateAssignmentTypeCommand, OperationResult>
+public sealed class CreateAssignmentTypeCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateAssignmentTypeCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateAssignmentTypeCommand request, CancellationToken cancellationToken)
     {

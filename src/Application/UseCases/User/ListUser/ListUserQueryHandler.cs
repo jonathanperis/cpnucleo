@@ -7,7 +7,7 @@ public sealed class ListUserQueryHandler(IUserRepository userRepository) : IRequ
         var users = await userRepository.ListUsers();
 
         var operationResult = users is not null ? OperationResult.Success : OperationResult.NotFound;
-        var usersList = users ?? new List<UserDto>();  // Return an empty list if no users are found
+        var usersList = users ?? [];  // Return an empty list if no users are found
 
         return new ListUserQueryViewModel(operationResult, usersList);
     }

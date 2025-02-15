@@ -1,6 +1,6 @@
 namespace Application.UseCases.AssignmentType.UpdateAssignmentType;
 
-public sealed class UpdateAssignmentTypeCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentTypeCommand, OperationResult>
+public sealed class UpdateAssignmentTypeCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentTypeCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAssignmentTypeCommand request, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public sealed class UpdateAssignmentTypeCommandHandler(IApplicationDbContext dbC
                 return OperationResult.NotFound;
             }
 
-            assignmentType = Domain.Entities.AssignmentType.Update(assignmentType, request.Name);
+            Domain.Entities.AssignmentType.Update(assignmentType, request.Name);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

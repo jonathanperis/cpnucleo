@@ -2,16 +2,15 @@ namespace Application.Tests.UseCases.UserProject;
 
 public class CreateUserProjectCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly CreateUserProjectCommandHandler _handler;
-    private readonly Mock<DbSet<Domain.Entities.UserProject>> _mockUserProjectsDbSet;
 
     public CreateUserProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _mockUserProjectsDbSet = new Mock<DbSet<Domain.Entities.UserProject>>();
-        _dbContextMock.Setup(db => db.UserProjects).Returns(_mockUserProjectsDbSet.Object);
+        Mock<DbSet<Domain.Entities.UserProject>> mockUserProjectsDbSet = new();
+        _dbContextMock.Setup(db => db.UserProjects).Returns(mockUserProjectsDbSet.Object);
 
         _handler = new CreateUserProjectCommandHandler(_dbContextMock.Object);
     }

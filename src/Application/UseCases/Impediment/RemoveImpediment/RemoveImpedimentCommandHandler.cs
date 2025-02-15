@@ -1,6 +1,6 @@
 namespace Application.UseCases.Impediment.RemoveImpediment;
 
-public sealed class RemoveImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveImpedimentCommand, OperationResult>
+public sealed class RemoveImpedimentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveImpedimentCommand request, CancellationToken cancellationToken)
     {
@@ -13,6 +13,8 @@ public sealed class RemoveImpedimentCommandHandler(IApplicationDbContext dbConte
             {
                 return OperationResult.NotFound;
             }
+
+            Domain.Entities.Impediment.Remove(impediment);
         }
 
         var result = await dbContext.SaveChangesAsync(cancellationToken);

@@ -17,12 +17,12 @@ public class ListAppointmentQueryHandlerTest
         // Arrange
         var appointments = new List<AppointmentDto>
         {
-            new AppointmentDto("Test Appointment 1", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test Appointment 1", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid())
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new AppointmentDto("Test Appointment 2", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test Appointment 2", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid())
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListAppointmentQueryHandlerTest
         // Arrange
         _appointmentRepositoryMock
             .Setup(repo => repo.ListAppointments())
-            .ReturnsAsync(new List<AppointmentDto>());
+            .ReturnsAsync([]);
 
         var query = new ListAppointmentQuery();
 

@@ -17,12 +17,12 @@ public class ListUserQueryHandlerTest
         // Arrange
         var users = new List<UserDto>
         {
-            new UserDto("Test User 1", "testUser1")
+            new("Test User 1", "testUser1")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new UserDto("Test User 2", "testUser2")
+            new("Test User 2", "testUser2")
             {
                 Id = Ulid.NewUlid(),
                 CreatedAt = DateTime.UtcNow
@@ -51,7 +51,7 @@ public class ListUserQueryHandlerTest
         // Arrange
         _userRepositoryMock
             .Setup(repo => repo.ListUsers())
-            .ReturnsAsync(new List<UserDto>());
+            .ReturnsAsync([]);
 
         var query = new ListUserQuery();
 

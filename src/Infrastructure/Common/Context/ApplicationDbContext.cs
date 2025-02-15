@@ -1,6 +1,6 @@
 namespace Infrastructure.Common.Context;
 
-public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext : DbContext
 {
     private readonly IConfiguration? _configuration;
 
@@ -74,7 +74,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
             .HaveConversion<UlidToBytesConverter>();
     }
 
-    public async new Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
+    public new async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
     {
         return await base.SaveChangesAsync(cancellationToken) > 0;
     }

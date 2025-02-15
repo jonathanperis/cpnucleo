@@ -7,10 +7,10 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            INSERT INTO [Workflow] ([Id], [Name], [Order], [CreatedAt], [Active])
-                            VALUES (@Id, @Name, @Order, @CreatedAt, @Active);
-                            ";
+        const string sql = """
+                           INSERT INTO [Workflow] ([Id], [Name], [Order], [CreatedAt], [Active])
+                           VALUES (@Id, @Name, @Order, @CreatedAt, @Active);
+                           """;
 
         return await connection.ExecuteAsync(sql, new { workflow.Id, workflow.Name, workflow.Order, workflow.CreatedAt, workflow.Active }) == 1;
     }
@@ -19,11 +19,11 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [Order], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Workflow]
-                            WHERE [Id] = @Id AND [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [Order], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Workflow]
+                           WHERE [Id] = @Id AND [Active] = 1;
+                           """;
 
         return await connection.QueryFirstOrDefaultAsync<WorkflowDto>(sql, new { Id = id });
     }
@@ -32,11 +32,11 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            SELECT [Id], [Name], [Order], [CreatedAt], [UpdatedAt], [Active]
-                            FROM [Workflow]
-                            WHERE [Active] = 1;
-                            ";
+        const string sql = """
+                           SELECT [Id], [Name], [Order], [CreatedAt], [UpdatedAt], [Active]
+                           FROM [Workflow]
+                           WHERE [Active] = 1;
+                           """;
 
         return (await connection.QueryAsync<WorkflowDto>(sql)).AsList();
     }
@@ -45,11 +45,11 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Workflow]
-                            SET [Active] = 0, [DeletedAt] = @DeletedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Workflow]
+                           SET [Active] = 0, [DeletedAt] = @DeletedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var deletedAt = DateTime.UtcNow;
 
@@ -60,11 +60,11 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
     {
         await using var connection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
-        const string sql = @"
-                            UPDATE [Workflow]
-                            SET [Name] = @Name, [Order] = @Order, [UpdatedAt] = @UpdatedAt
-                            WHERE [Id] = @Id;
-                            ";
+        const string sql = """
+                           UPDATE [Workflow]
+                           SET [Name] = @Name, [Order] = @Order, [UpdatedAt] = @UpdatedAt
+                           WHERE [Id] = @Id;
+                           """;
 
         var updatedAt = DateTime.UtcNow;
 

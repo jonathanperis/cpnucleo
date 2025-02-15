@@ -2,19 +2,19 @@ namespace Application.Tests.UseCases.AssignmentType;
 
 public class RemoveAssignmentTypeCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<ApplicationDbContext> _dbContextMock;
     private readonly RemoveAssignmentTypeCommandHandler _handler;
     private readonly List<Domain.Entities.AssignmentType> _assignmentTypes;
 
     public RemoveAssignmentTypeCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
+        _dbContextMock = new Mock<ApplicationDbContext>();
 
-        _assignmentTypes = new List<Domain.Entities.AssignmentType>
-        {
+        _assignmentTypes =
+        [
             Domain.Entities.AssignmentType.Create("Test AssignmentType 1"),
             Domain.Entities.AssignmentType.Create("Test AssignmentType 2")
-        };
+        ];
 
         _dbContextMock.Setup(db => db.AssignmentTypes).ReturnsDbSet(_assignmentTypes);
 
