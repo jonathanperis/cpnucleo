@@ -1,6 +1,6 @@
 namespace Application.UseCases.UserAssignment.CreateUserAssignment;
 
-public sealed class CreateUserAssignmentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateUserAssignmentCommand, OperationResult>
+public sealed class CreateUserAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateUserAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateUserAssignmentCommand request, CancellationToken cancellationToken)
     {

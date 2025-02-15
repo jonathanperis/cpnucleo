@@ -1,6 +1,6 @@
 namespace Application.UseCases.AssignmentImpediment.UpdateAssignmentImpediment;
 
-public sealed class UpdateAssignmentImpedimentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentImpedimentCommand, OperationResult>
+public sealed class UpdateAssignmentImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAssignmentImpedimentCommand request, CancellationToken cancellationToken)
     {

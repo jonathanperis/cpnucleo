@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.Project;
 
 public class UpdateProjectCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly UpdateProjectCommandHandler _handler;
     private readonly List<Domain.Entities.Project> _projects;
 
     public UpdateProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _projects =
         [

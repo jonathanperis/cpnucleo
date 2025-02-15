@@ -1,6 +1,6 @@
 namespace Application.UseCases.Workflow.UpdateWorkflow;
 
-public sealed class UpdateWorkflowCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateWorkflowCommand, OperationResult>
+public sealed class UpdateWorkflowCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateWorkflowCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
     {

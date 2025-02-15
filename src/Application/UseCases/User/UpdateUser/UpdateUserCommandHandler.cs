@@ -1,6 +1,6 @@
 namespace Application.UseCases.User.UpdateUser;
 
-public sealed class UpdateUserCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateUserCommand, OperationResult>
+public sealed class UpdateUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {

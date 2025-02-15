@@ -1,6 +1,6 @@
 namespace Application.UseCases.Appointment.UpdateAppointment;
 
-public sealed class UpdateAppointmentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateAppointmentCommand, OperationResult>
+public sealed class UpdateAppointmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAppointmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)
     {

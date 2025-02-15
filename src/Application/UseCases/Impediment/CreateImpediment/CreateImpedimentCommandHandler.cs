@@ -1,6 +1,6 @@
 namespace Application.UseCases.Impediment.CreateImpediment;
 
-public sealed class CreateImpedimentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateImpedimentCommand, OperationResult>
+public sealed class CreateImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateImpedimentCommand request, CancellationToken cancellationToken)
     {

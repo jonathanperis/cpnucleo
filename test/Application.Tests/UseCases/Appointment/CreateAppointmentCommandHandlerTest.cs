@@ -2,12 +2,12 @@ namespace Application.Tests.UseCases.Appointment;
 
 public class CreateAppointmentCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly CreateAppointmentCommandHandler _handler;
 
     public CreateAppointmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         Mock<DbSet<Domain.Entities.Appointment>> mockAppointmentsDbSet = new();
         _dbContextMock.Setup(db => db.Appointments).Returns(mockAppointmentsDbSet.Object);

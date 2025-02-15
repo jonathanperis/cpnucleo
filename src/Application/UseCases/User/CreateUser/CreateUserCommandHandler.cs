@@ -1,6 +1,6 @@
 namespace Application.UseCases.User.CreateUser;
 
-public sealed class CreateUserCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateUserCommand, OperationResult>
+public sealed class CreateUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {

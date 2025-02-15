@@ -10,7 +10,7 @@ public static class DependencyInjection
         // Dapper.SqlMapper.AddTypeHandler(typeof(Ulid), new StringUlidHandler());
 
         // Ef Core
-        services.AddScoped<ApplicationDbContext>();
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
         // Dapper
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();

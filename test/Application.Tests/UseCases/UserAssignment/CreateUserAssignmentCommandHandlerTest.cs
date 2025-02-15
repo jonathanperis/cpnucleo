@@ -2,12 +2,12 @@ namespace Application.Tests.UseCases.UserAssignment;
 
 public class CreateUserAssignmentCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly CreateUserAssignmentCommandHandler _handler;
 
     public CreateUserAssignmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         Mock<DbSet<Domain.Entities.UserAssignment>> mockUserAssignmentsDbSet = new();
         _dbContextMock.Setup(db => db.UserAssignments).Returns(mockUserAssignmentsDbSet.Object);

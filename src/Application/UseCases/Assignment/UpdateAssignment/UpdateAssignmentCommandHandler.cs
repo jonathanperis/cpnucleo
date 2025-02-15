@@ -1,6 +1,6 @@
 namespace Application.UseCases.Assignment.UpdateAssignment;
 
-public sealed class UpdateAssignmentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentCommand, OperationResult>
+public sealed class UpdateAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAssignmentCommand request, CancellationToken cancellationToken)
     {

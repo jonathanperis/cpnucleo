@@ -1,6 +1,6 @@
 namespace Application.UseCases.User.RemoveUser;
 
-public sealed class RemoveUserCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveUserCommand, OperationResult>
+public sealed class RemoveUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveUserCommand request, CancellationToken cancellationToken)
     {

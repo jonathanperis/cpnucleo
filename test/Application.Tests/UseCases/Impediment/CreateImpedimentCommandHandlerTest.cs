@@ -2,12 +2,12 @@ namespace Application.Tests.UseCases.Impediment;
 
 public class CreateImpedimentCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly CreateImpedimentCommandHandler _handler;
 
     public CreateImpedimentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         Mock<DbSet<Domain.Entities.Impediment>> mockImpedimentsDbSet = new();
         _dbContextMock.Setup(db => db.Impediments).Returns(mockImpedimentsDbSet.Object);

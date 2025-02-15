@@ -1,6 +1,6 @@
 namespace Application.UseCases.Organization.CreateOrganization;
 
-public sealed class CreateOrganizationCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateOrganizationCommand, OperationResult>
+public sealed class CreateOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {

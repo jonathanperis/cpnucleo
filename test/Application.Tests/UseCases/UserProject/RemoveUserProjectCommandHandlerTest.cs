@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.UserProject;
 
 public class RemoveUserProjectCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly RemoveUserProjectCommandHandler _handler;
     private readonly List<Domain.Entities.UserProject> _userProjects;
 
     public RemoveUserProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _userProjects =
         [

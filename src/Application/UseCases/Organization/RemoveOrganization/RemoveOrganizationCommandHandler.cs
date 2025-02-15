@@ -1,6 +1,6 @@
 namespace Application.UseCases.Organization.RemoveOrganization;
 
-public sealed class RemoveOrganizationCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveOrganizationCommand, OperationResult>
+public sealed class RemoveOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveOrganizationCommand request, CancellationToken cancellationToken)
     {

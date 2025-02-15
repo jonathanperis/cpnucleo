@@ -2,12 +2,12 @@ namespace Application.Tests.UseCases.Project;
 
 public class CreateProjectCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly CreateProjectCommandHandler _handler;
 
     public CreateProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         Mock<DbSet<Domain.Entities.Project>> mockProjectsDbSet = new();
         _dbContextMock.Setup(db => db.Projects).Returns(mockProjectsDbSet.Object);

@@ -2,12 +2,12 @@ namespace Application.Tests.UseCases.User;
 
 public class CreateUserCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly CreateUserCommandHandler _handler;
 
     public CreateUserCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         Mock<DbSet<Domain.Entities.User>> mockUsersDbSet = new();
         _dbContextMock.Setup(db => db.Users).Returns(mockUsersDbSet.Object);

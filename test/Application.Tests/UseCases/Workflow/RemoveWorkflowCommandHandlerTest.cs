@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.Workflow;
 
 public class RemoveWorkflowCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly RemoveWorkflowCommandHandler _handler;
     private readonly List<Domain.Entities.Workflow> _workflows;
 
     public RemoveWorkflowCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _workflows =
         [

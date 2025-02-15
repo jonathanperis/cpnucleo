@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.Appointment;
 
 public class RemoveAppointmentCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly RemoveAppointmentCommandHandler _handler;
     private readonly List<Domain.Entities.Appointment> _appointments;
 
     public RemoveAppointmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _appointments =
         [

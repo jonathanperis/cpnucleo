@@ -1,6 +1,6 @@
 namespace Infrastructure.Common.Context;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     private readonly IConfiguration? _configuration;
 

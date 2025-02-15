@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.User;
 
 public class RemoveUserCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly RemoveUserCommandHandler _handler;
     private readonly List<Domain.Entities.User> _users;
 
     public RemoveUserCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _users =
         [

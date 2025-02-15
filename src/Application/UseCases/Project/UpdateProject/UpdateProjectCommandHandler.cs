@@ -1,6 +1,6 @@
 namespace Application.UseCases.Project.UpdateProject;
 
-public sealed class UpdateProjectCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateProjectCommand, OperationResult>
+public sealed class UpdateProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
     {

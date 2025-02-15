@@ -2,12 +2,12 @@ namespace Application.Tests.UseCases.AssignmentType;
 
 public class CreateAssignmentTypeCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly CreateAssignmentTypeCommandHandler _handler;
 
     public CreateAssignmentTypeCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         Mock<DbSet<Domain.Entities.AssignmentType>> mockAssignmentTypesDbSet = new();
         _dbContextMock.Setup(db => db.AssignmentTypes).Returns(mockAssignmentTypesDbSet.Object);

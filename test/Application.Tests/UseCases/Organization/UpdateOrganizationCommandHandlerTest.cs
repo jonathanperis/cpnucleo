@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.Organization;
 
 public class UpdateOrganizationCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly UpdateOrganizationCommandHandler _handler;
     private readonly List<Domain.Entities.Organization> _organizations;
 
     public UpdateOrganizationCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _organizations =
         [

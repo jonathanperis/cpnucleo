@@ -1,6 +1,6 @@
 namespace Application.UseCases.Project.RemoveProject;
 
-public sealed class RemoveProjectCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveProjectCommand, OperationResult>
+public sealed class RemoveProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveProjectCommand request, CancellationToken cancellationToken)
     {

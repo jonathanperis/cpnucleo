@@ -1,6 +1,6 @@
 namespace Application.UseCases.Organization.UpdateOrganization;
 
-public sealed class UpdateOrganizationCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<UpdateOrganizationCommand, OperationResult>
+public sealed class UpdateOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
     {

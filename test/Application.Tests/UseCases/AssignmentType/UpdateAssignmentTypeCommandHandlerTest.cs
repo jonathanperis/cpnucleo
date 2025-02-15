@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.AssignmentType;
 
 public class UpdateAssignmentTypeCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly UpdateAssignmentTypeCommandHandler _handler;
     private readonly List<Domain.Entities.AssignmentType> _assignmentTypes;
 
     public UpdateAssignmentTypeCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _assignmentTypes =
         [

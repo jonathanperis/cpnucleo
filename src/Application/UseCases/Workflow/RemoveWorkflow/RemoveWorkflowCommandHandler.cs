@@ -1,6 +1,6 @@
 namespace Application.UseCases.Workflow.RemoveWorkflow;
 
-public sealed class RemoveWorkflowCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveWorkflowCommand, OperationResult>
+public sealed class RemoveWorkflowCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveWorkflowCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)
     {

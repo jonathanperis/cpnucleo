@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.Impediment;
 
 public class UpdateImpedimentCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly UpdateImpedimentCommandHandler _handler;
     private readonly List<Domain.Entities.Impediment> _impediments;
 
     public UpdateImpedimentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _impediments =
         [

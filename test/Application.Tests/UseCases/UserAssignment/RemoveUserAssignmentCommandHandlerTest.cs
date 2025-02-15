@@ -2,13 +2,13 @@ namespace Application.Tests.UseCases.UserAssignment;
 
 public class RemoveUserAssignmentCommandHandlerTest
 {
-    private readonly Mock<ApplicationDbContext> _dbContextMock;
+    private readonly Mock<IApplicationDbContext> _dbContextMock;
     private readonly RemoveUserAssignmentCommandHandler _handler;
     private readonly List<Domain.Entities.UserAssignment> _userAssignments;
 
     public RemoveUserAssignmentCommandHandlerTest()
     {
-        _dbContextMock = new Mock<ApplicationDbContext>();
+        _dbContextMock = new Mock<IApplicationDbContext>();
 
         _userAssignments =
         [

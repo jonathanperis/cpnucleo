@@ -1,6 +1,6 @@
 namespace Application.UseCases.AssignmentImpediment.RemoveAssignmentImpediment;
 
-public sealed class RemoveAssignmentImpedimentCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<RemoveAssignmentImpedimentCommand, OperationResult>
+public sealed class RemoveAssignmentImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveAssignmentImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveAssignmentImpedimentCommand request, CancellationToken cancellationToken)
     {
