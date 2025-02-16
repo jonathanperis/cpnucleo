@@ -1,11 +1,5 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
-// builder.Services.ConfigureHttpJsonOptions(options =>
-// {
-//     options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
-//     options.SerializerOptions.TypeInfoResolverChain.Insert(0, SourceGenerationContext.Default);
-// });
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -23,6 +17,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseHsts();
 
 app.MapHealthChecks("/healthz");
 

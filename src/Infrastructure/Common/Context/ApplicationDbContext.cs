@@ -61,6 +61,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
+            optionsBuilder
+                .UseNpgsql(_configuration?.GetConnectionString("DefaultConnection"));     
+
             // optionsBuilder
             //     .UseSqlServer(_configuration?.GetConnectionString("DefaultConnection"));
         }
