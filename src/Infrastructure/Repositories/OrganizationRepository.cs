@@ -1,4 +1,4 @@
-namespace Infrastructure.Common.Repositories;
+namespace Infrastructure.Repositories;
 
 //[DapperAot]
 public class OrganizationRepository(IConfiguration configuration) : IOrganizationRepository
@@ -34,7 +34,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
         const string sql = """
                            SELECT "Id", "Name", "Description", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Organization"
+                           FROM public."Organization"
                            WHERE "Active" = 1;
                            """;
 

@@ -1,51 +1,52 @@
-namespace Infrastructure.Common.Repositories;
+namespace Infrastructure.Repositories;
 
-public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRepository
+//[DapperAot]
+public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmentTypeRepository
 {
-    public async Task<bool> CreateImpediment(Impediment impediment)
+    public async Task<bool> CreateAssignmentType(AssignmentType assignmentType)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "Impediment" ("Id", "Name", "CreatedAt", "Active")
+                           INSERT INTO "AssignmentType" ("Id", "Name", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @CreatedAt, @Active);
                            """;
 
-        return await connection.ExecuteAsync(sql, new { impediment.Id, impediment.Name, impediment.CreatedAt, impediment.Active }) == 1;
+        return await connection.ExecuteAsync(sql, new { assignmentType.Id, assignmentType.Name, assignmentType.CreatedAt, assignmentType.Active }) == 1;
     }
 
-    public async Task<ImpedimentDto?> GetImpedimentById(Ulid id)
+    public async Task<AssignmentTypeDto?> GetAssignmentTypeById(Ulid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Impediment"
+                           FROM "AssignmentType"
                            WHERE "Id" = @Id AND "Active" = 1;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<ImpedimentDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<AssignmentTypeDto>(sql, new { Id = id });
     }
 
-    public async Task<List<ImpedimentDto>?> ListImpediments()
+    public async Task<List<AssignmentTypeDto>?> ListAssignmentTypes()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Impediment"
+                           FROM "AssignmentType"
                            WHERE "Active" = 1;
                            """;
 
-        return (await connection.QueryAsync<ImpedimentDto>(sql)).AsList();
+        return (await connection.QueryAsync<AssignmentTypeDto>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveImpediment(Ulid id)
+    public async Task<bool> RemoveAssignmentType(Ulid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Impediment"
+                           UPDATE "AssignmentType"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -55,12 +56,12 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateImpediment(Ulid id, string name)
+    public async Task<bool> UpdateAssignmentType(Ulid id, string name)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Impediment"
+                           UPDATE "AssignmentType"
                            SET "Name" = @Name, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

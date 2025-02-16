@@ -1,4 +1,4 @@
-namespace Domain.Common.Repositories;
+namespace Domain.Repositories;
 
 public interface IAssignmentRepository
 {

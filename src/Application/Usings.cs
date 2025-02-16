@@ -1,7 +1,7 @@
 global using Application.Common.Behaviors;
 global using Application.Common.Models;
 global using Domain.Common.Dtos;
-global using Domain.Common.Repositories;
+global using Domain.Repositories;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using Infrastructure.Common.Context;

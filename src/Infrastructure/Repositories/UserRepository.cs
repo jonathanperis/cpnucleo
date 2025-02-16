@@ -1,4 +1,4 @@
-namespace Infrastructure.Common.Repositories;
+namespace Infrastructure.Repositories;
 
 public class UserRepository(IConfiguration configuration) : IUserRepository
 {

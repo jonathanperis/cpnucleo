@@ -1,11 +1,11 @@
 global using Dapper;
 global using Domain.Common.Dtos;
-global using Domain.Common.Repositories;
 global using Domain.Entities;
+global using Domain.Repositories;
 global using Infrastructure.Common.Context;
 global using Infrastructure.Common.Helpers;
 global using Infrastructure.Common.Mappings;
-global using Infrastructure.Common.Repositories;
+global using Infrastructure.Repositories;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

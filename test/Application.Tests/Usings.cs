@@ -55,7 +55,7 @@ global using Application.UseCases.Workflow.ListWorkflow;
 global using Application.UseCases.Workflow.RemoveWorkflow;
 global using Application.UseCases.Workflow.UpdateWorkflow;
 global using Domain.Common.Dtos;
-global using Domain.Common.Repositories;
+global using Domain.Repositories;
 global using Infrastructure.Common.Context;
 global using Microsoft.EntityFrameworkCore;
 global using Moq;

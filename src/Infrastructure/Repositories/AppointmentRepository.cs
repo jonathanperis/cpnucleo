@@ -1,4 +1,4 @@
-namespace Infrastructure.Common.Repositories;
+namespace Infrastructure.Repositories;
 
 //[DapperAot]
 public class AppointmentRepository(IConfiguration configuration) : IAppointmentRepository

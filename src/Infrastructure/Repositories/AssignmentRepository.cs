@@ -1,4 +1,4 @@
-namespace Infrastructure.Common.Repositories;
+namespace Infrastructure.Repositories;
 
 //[DapperAot]
 public class AssignmentRepository(IConfiguration configuration) : IAssignmentRepository
