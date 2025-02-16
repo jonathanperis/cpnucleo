@@ -1,7 +1,10 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cpnucleo Identity API", Version = "v1" });
+});
 
 builder.Services.AddHealthChecks();
 

@@ -3,7 +3,7 @@ var builder = WebApplication.CreateSlimBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cpnucleo API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cpnucleo Service API", Version = "v1" });
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
