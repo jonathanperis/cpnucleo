@@ -7,7 +7,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "AssignmentImpediment" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "Active")
+                           INSERT INTO "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "Active")
                            VALUES (@Id, @Description, @AssignmentId, @ImpedimentId, @CreatedAt, @Active);
                            """;
 
@@ -20,8 +20,8 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
 
         const string sql = """
                            SELECT "Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "AssignmentImpediment"
-                           WHERE "Id" = @Id AND "Active" = 1;
+                           FROM "AssignmentImpediments"
+                           WHERE "Id" = @Id AND "Active" = true;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<AssignmentImpedimentDto>(sql, new { Id = id });
@@ -33,8 +33,8 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
 
         const string sql = """
                            SELECT "Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "AssignmentImpediment"
-                           WHERE "Active" = 1;
+                           FROM "AssignmentImpediments"
+                           WHERE "Active" = true;
                            """;
 
         return (await connection.QueryAsync<AssignmentImpedimentDto>(sql)).AsList();
@@ -45,7 +45,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "AssignmentImpediment"
+                           UPDATE "AssignmentImpediments"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -60,7 +60,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "AssignmentImpediment"
+                           UPDATE "AssignmentImpediments"
                            SET "Description" = @Description, "AssignmentId" = @AssignmentId, "ImpedimentId" = @ImpedimentId, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

@@ -7,7 +7,7 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "UserProject" ("Id", "UserId", "ProjectId", "CreatedAt", "Active")
+                           INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "Active")
                            VALUES (@Id, @UserId, @ProjectId, @CreatedAt, @Active);
                            """;
 
@@ -20,8 +20,8 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
 
         const string sql = """
                            SELECT "Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "UserProject"
-                           WHERE "Id" = @Id AND "Active" = 1;
+                           FROM "UserProjects"
+                           WHERE "Id" = @Id AND "Active" = true;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<UserProjectDto>(sql, new { Id = id });
@@ -33,8 +33,8 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
 
         const string sql = """
                            SELECT "Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "UserProject"
-                           WHERE "Active" = 1;
+                           FROM "UserProjects"
+                           WHERE "Active" = true;
                            """;
 
         return (await connection.QueryAsync<UserProjectDto>(sql)).AsList();
@@ -45,7 +45,7 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "UserProject"
+                           UPDATE "UserProjects"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -60,7 +60,7 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "UserProject"
+                           UPDATE "UserProjects"
                            SET "UserId" = @UserId, "ProjectId" = @ProjectId, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

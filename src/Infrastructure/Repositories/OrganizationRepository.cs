@@ -8,7 +8,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "Organization" ("Id", "Name", "Description", "CreatedAt", "Active")
+                           INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @Description, @CreatedAt, @Active);
                            """;
 
@@ -21,8 +21,8 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
         const string sql = """
                            SELECT "Id", "Name", "Description", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Organization"
-                           WHERE "Id" = @Id AND "Active" = 1;
+                           FROM "Organizations"
+                           WHERE "Id" = @Id AND "Active" = true;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<OrganizationDto>(sql, new { Id = id });
@@ -34,8 +34,8 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
         const string sql = """
                            SELECT "Id", "Name", "Description", "CreatedAt", "UpdatedAt", "Active"
-                           FROM public."Organization"
-                           WHERE "Active" = 1;
+                           FROM "Organizations"
+                           WHERE "Active" = true;
                            """;
 
         return (await connection.QueryAsync<OrganizationDto>(sql)).AsList();
@@ -46,7 +46,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Organization"
+                           UPDATE "Organizations"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -61,7 +61,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Organization"
+                           UPDATE "Organizations"
                            SET "Name" = @Name, "Description" = @Description, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

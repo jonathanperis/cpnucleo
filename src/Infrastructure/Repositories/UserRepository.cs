@@ -7,7 +7,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "User" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
+                           INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @Login, @Password, @Salt, @CreatedAt, @Active);
                            """;
 
@@ -20,8 +20,8 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 
         const string sql = """
                            SELECT "Id", "Name", "Login", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "User"
-                           WHERE "Id" = @Id AND "Active" = 1;
+                           FROM "Users"
+                           WHERE "Id" = @Id AND "Active" = true;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<UserDto>(sql, new { Id = id });
@@ -33,8 +33,8 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 
         const string sql = """
                            SELECT "Id", "Name", "Login", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "User"
-                           WHERE "Active" = 1;
+                           FROM "Users"
+                           WHERE "Active" = true;
                            """;
 
         return (await connection.QueryAsync<UserDto>(sql)).AsList();
@@ -45,7 +45,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "User"
+                           UPDATE "Users"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -60,7 +60,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "User"
+                           UPDATE "Users"
                            SET "Name" = @Name, "Password" = @Password, "Salt" = @Salt, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

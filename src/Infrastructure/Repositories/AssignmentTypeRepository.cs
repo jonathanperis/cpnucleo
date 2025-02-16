@@ -8,7 +8,7 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "AssignmentType" ("Id", "Name", "CreatedAt", "Active")
+                           INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @CreatedAt, @Active);
                            """;
 
@@ -21,8 +21,8 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "AssignmentType"
-                           WHERE "Id" = @Id AND "Active" = 1;
+                           FROM "AssignmentTypes"
+                           WHERE "Id" = @Id AND "Active" = true;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<AssignmentTypeDto>(sql, new { Id = id });
@@ -34,8 +34,8 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "AssignmentType"
-                           WHERE "Active" = 1;
+                           FROM "AssignmentTypes"
+                           WHERE "Active" = true;
                            """;
 
         return (await connection.QueryAsync<AssignmentTypeDto>(sql)).AsList();
@@ -46,7 +46,7 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "AssignmentType"
+                           UPDATE "AssignmentTypes"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -61,7 +61,7 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "AssignmentType"
+                           UPDATE "AssignmentTypes"
                            SET "Name" = @Name, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

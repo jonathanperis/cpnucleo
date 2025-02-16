@@ -7,7 +7,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "Workflow" ("Id", "Name", "Order", "CreatedAt", "Active")
+                           INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @Order, @CreatedAt, @Active);
                            """;
 
@@ -20,7 +20,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
 
         const string sql = """
                            SELECT "Id", "Name", "Order", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Workflow"
+                           FROM "Workflows"
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
@@ -33,7 +33,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
 
         const string sql = """
                            SELECT "Id", "Name", "Order", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Workflow"
+                           FROM "Workflows"
                            WHERE "Active" = true;
                            """;
 
@@ -45,7 +45,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Workflow"
+                           UPDATE "Workflows"
                            SET "Active" = false, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -60,7 +60,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Workflow"
+                           UPDATE "Workflows"
                            SET "Name" = @Name, "Order" = @Order, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

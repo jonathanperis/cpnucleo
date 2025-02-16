@@ -7,7 +7,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           INSERT INTO "Impediment" ("Id", "Name", "CreatedAt", "Active")
+                           INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @CreatedAt, @Active);
                            """;
 
@@ -20,8 +20,8 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
 
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Impediment"
-                           WHERE "Id" = @Id AND "Active" = 1;
+                           FROM "Impediments"
+                           WHERE "Id" = @Id AND "Active" = true;
                            """;
 
         return await connection.QueryFirstOrDefaultAsync<ImpedimentDto>(sql, new { Id = id });
@@ -33,8 +33,8 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
 
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Impediment"
-                           WHERE "Active" = 1;
+                           FROM "Impediments"
+                           WHERE "Active" = true;
                            """;
 
         return (await connection.QueryAsync<ImpedimentDto>(sql)).AsList();
@@ -45,7 +45,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Impediment"
+                           UPDATE "Impediments"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
                            WHERE "Id" = @Id;
                            """;
@@ -60,7 +60,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = """
-                           UPDATE "Impediment"
+                           UPDATE "Impediments"
                            SET "Name" = @Name, "UpdatedAt" = @UpdatedAt
                            WHERE "Id" = @Id;
                            """;

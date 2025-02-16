@@ -8,7 +8,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
-                            INSERT INTO ""Assignment"" (""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""Active"")
+                            INSERT INTO ""Assignments"" (""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""Active"")
                             VALUES (@Id, @Name, @Description, @StartDate, @EndDate, @AmountHours, @ProjectId, @WorkflowId, @UserId, @AssignmentTypeId, @CreatedAt, @Active);
                             ";
 
@@ -21,7 +21,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
 
         const string sql = @"
                             SELECT ""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""UpdatedAt"", ""Active""
-                            FROM ""Assignment""
+                            FROM ""Assignments""
                             WHERE ""Id"" = @Id AND ""Active"" = 1;
                             ";
 
@@ -34,7 +34,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
 
         const string sql = @"
                             SELECT ""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""UpdatedAt"", ""Active""
-                            FROM ""Assignment""
+                            FROM ""Assignments""
                             WHERE ""Active"" = 1;
                             ";
 
@@ -46,7 +46,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
-                            UPDATE ""Assignment""
+                            UPDATE ""Assignments""
                             SET ""Active"" = 0, ""DeletedAt"" = @DeletedAt
                             WHERE ""Id"" = @Id;
                             ";
@@ -61,7 +61,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
         const string sql = @"
-                            UPDATE ""Assignment""
+                            UPDATE ""Assignments""
                             SET ""Name"" = @Name, ""Description"" = @Description, ""StartDate"" = @StartDate, ""EndDate"" = @EndDate, ""AmountHours"" = @AmountHours, ""ProjectId"" = @ProjectId, ""WorkflowId"" = @WorkflowId, ""UserId"" = @UserId, ""AssignmentTypeId"" = @AssignmentTypeId, ""UpdatedAt"" = @UpdatedAt
                             WHERE ""Id"" = @Id;
                             ";
