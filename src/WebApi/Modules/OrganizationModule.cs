@@ -5,7 +5,8 @@ public static class OrganizationModule
     public static void MapOrganizationEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/organizations")
-            .WithTags("Organizations");
+            .WithTags("Organizations")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {
