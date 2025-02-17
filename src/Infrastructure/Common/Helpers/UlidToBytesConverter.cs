@@ -6,7 +6,7 @@ public sealed class UlidToBytesConverter(ConverterMappingHints mappingHints = nu
             convertFromProviderExpression: x => new Ulid(x),
             mappingHints: defaultHints.With(mappingHints))
 {
-    private static readonly ConverterMappingHints defaultHints = new ConverterMappingHints(size: 16);
+    private static readonly ConverterMappingHints defaultHints = new(size: 16);
 
     public UlidToBytesConverter() : this(null)
     {

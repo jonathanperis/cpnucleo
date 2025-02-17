@@ -6,7 +6,7 @@ public sealed class UlidToStringConverter(ConverterMappingHints mappingHints = n
             convertFromProviderExpression: x => Ulid.Parse(x),
             mappingHints: defaultHints.With(mappingHints))
 {
-    private static readonly ConverterMappingHints defaultHints = new ConverterMappingHints(size: 26);
+    private static readonly ConverterMappingHints defaultHints = new(size: 26);
 
     public UlidToStringConverter() : this(null)
     {

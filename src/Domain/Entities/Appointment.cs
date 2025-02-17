@@ -11,7 +11,7 @@ public sealed class Appointment : BaseEntity
     public Ulid UserId { get; private set; }
     public User? User { get; private set; }
 
-    public static Appointment Create(string description,
+    public static Appointment Create(string? description,
                                    DateTime keepDate,
                                    byte amountHours,
                                    Ulid assignmentId,
@@ -32,7 +32,7 @@ public sealed class Appointment : BaseEntity
     }
 
     public static Appointment Update(Appointment obj,
-                                   string description,
+                                   string? description,
                                    DateTime keepDate,
                                    byte amountHours,
                                    Ulid assignmentId,

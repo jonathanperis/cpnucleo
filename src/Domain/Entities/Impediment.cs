@@ -4,7 +4,7 @@ public sealed class Impediment : BaseEntity
 {
     public string? Name { get; private set; }
 
-    public static Impediment Create(string name, Ulid id = default)
+    public static Impediment Create(string? name, Ulid id = default)
     {
         return new Impediment
         {
@@ -15,7 +15,7 @@ public sealed class Impediment : BaseEntity
         };
     }
 
-    public static Impediment Update(Impediment obj, string name)
+    public static Impediment Update(Impediment obj, string? name)
     {
         obj.Name = name;
         obj.UpdatedAt = DateTime.UtcNow;

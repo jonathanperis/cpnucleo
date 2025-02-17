@@ -4,7 +4,7 @@ public sealed class AssignmentType : BaseEntity
 {
     public string? Name { get; private set; }
 
-    public static AssignmentType Create(string name, Ulid id = default)
+    public static AssignmentType Create(string? name, Ulid id = default)
     {
         return new AssignmentType
         {
@@ -15,7 +15,7 @@ public sealed class AssignmentType : BaseEntity
         };
     }
 
-    public static AssignmentType Update(AssignmentType obj, string name)
+    public static AssignmentType Update(AssignmentType obj, string? name)
     {
         obj.Name = name;
         obj.UpdatedAt = DateTime.UtcNow;

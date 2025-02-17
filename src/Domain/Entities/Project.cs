@@ -7,7 +7,7 @@ public sealed class Project : BaseEntity
     public Ulid OrganizationId { get; private set; }
     public Organization? Organization { get; private set; }
 
-    public static Project Create(string name, Ulid organizationId, Ulid id = default)
+    public static Project Create(string? name, Ulid organizationId, Ulid id = default)
     {
         return new Project
         {
@@ -19,7 +19,7 @@ public sealed class Project : BaseEntity
         };
     }
 
-    public static Project Update(Project obj, string name, Ulid organizationId)
+    public static Project Update(Project obj, string? name, Ulid organizationId)
     {
         obj.Name = name;
         obj.OrganizationId = organizationId;

@@ -17,8 +17,8 @@ public sealed class Assignment : BaseEntity
     public Ulid AssignmentTypeId { get; private set; }
     public AssignmentType? AssignmentType { get; private set; }
 
-    public static Assignment Create(string name,
-                               string description,
+    public static Assignment Create(string? name,
+                               string? description,
                                DateTime startDate,
                                DateTime endDate,
                                byte amountHours,
@@ -46,8 +46,8 @@ public sealed class Assignment : BaseEntity
     }
 
     public static Assignment Update(Assignment obj,
-                               string name,
-                               string description,
+                               string? name,
+                               string? description,
                                DateTime startDate,
                                DateTime endDate,
                                byte amountHours,

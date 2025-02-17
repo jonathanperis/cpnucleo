@@ -5,7 +5,7 @@ public sealed class Organization : BaseEntity
     public string? Name { get; private set; }
     public string? Description { get; private set; }
 
-    public static Organization Create(string name, string description, Ulid id = default)
+    public static Organization Create(string? name, string? description, Ulid id = default)
     {
         return new Organization
         {
@@ -17,7 +17,7 @@ public sealed class Organization : BaseEntity
         };
     }
 
-    public static Organization Update(Organization obj, string name, string description)
+    public static Organization Update(Organization obj, string? name, string? description)
     {
         obj.Name = name;
         obj.Description = description;

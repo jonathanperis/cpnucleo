@@ -7,7 +7,7 @@ public sealed class User : BaseEntity
     public string? Password { get; private set; }
     public string? Salt { get; private set; }
 
-    public static User Create(string name, string login, string password, Ulid id = default)
+    public static User Create(string? name, string? login, string? password, Ulid id = default)
     {
         CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
 
@@ -23,7 +23,7 @@ public sealed class User : BaseEntity
         };
     }
 
-    public static User Update(User obj, string name, string password)
+    public static User Update(User obj, string? name, string? password)
     {
         CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
 

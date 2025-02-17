@@ -5,7 +5,7 @@ public sealed class Workflow : BaseEntity
     public string? Name { get; private set; }
     public byte Order { get; private set; }
 
-    public static Workflow Create(string name, byte order, Ulid id = default)
+    public static Workflow Create(string? name, byte order, Ulid id = default)
     {
         return new Workflow
         {
@@ -17,7 +17,7 @@ public sealed class Workflow : BaseEntity
         };
     }
 
-    public static Workflow Update(Workflow obj, string name, byte order)
+    public static Workflow Update(Workflow obj, string? name, byte order)
     {
         obj.Name = name;
         obj.Order = order;

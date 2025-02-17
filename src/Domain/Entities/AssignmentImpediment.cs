@@ -9,7 +9,9 @@ public sealed class AssignmentImpediment : BaseEntity
     public Ulid ImpedimentId { get; private set; }
     public Impediment? Impediment { get; private set; }
 
-    public static AssignmentImpediment Create(string description, Ulid assignmentId, Ulid impedimentId, Ulid id = default)
+    public static AssignmentImpediment Create(string? description, 
+                                            Ulid assignmentId, 
+                                            Ulid impedimentId, Ulid id = default)
     {
         return new AssignmentImpediment
         {
@@ -22,7 +24,9 @@ public sealed class AssignmentImpediment : BaseEntity
         };
     }
 
-    public static AssignmentImpediment Update(AssignmentImpediment obj, string description, Ulid assignmentId, Ulid impedimentId)
+    public static AssignmentImpediment Update(AssignmentImpediment obj, 
+                                        string? description, 
+                                        Ulid assignmentId, Ulid impedimentId)
     {
         obj.Description = description;
         obj.AssignmentId = assignmentId;
