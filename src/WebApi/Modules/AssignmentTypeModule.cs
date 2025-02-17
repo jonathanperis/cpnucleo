@@ -5,7 +5,8 @@ public static class AssignmentTypeModule
     public static void MapAssignmentTypeEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/assignment-types")
-            .WithTags("AssignmentTypes");
+            .WithTags("AssignmentTypes")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {

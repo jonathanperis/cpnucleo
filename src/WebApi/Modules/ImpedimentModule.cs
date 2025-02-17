@@ -5,7 +5,8 @@ public static class ImpedimentModule
     public static void MapImpedimentEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/impediments")
-            .WithTags("Impediments");
+            .WithTags("Impediments")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {

@@ -5,7 +5,8 @@ public static class UserModule
     public static void MapUserEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/users")
-            .WithTags("Users");
+            .WithTags("Users")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {

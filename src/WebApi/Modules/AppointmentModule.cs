@@ -5,7 +5,8 @@ public static class AppointmentModule
     public static void MapAppointmentEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/appointments")
-            .WithTags("Appointments");
+            .WithTags("Appointments")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {

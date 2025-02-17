@@ -5,7 +5,8 @@ public static class ProjectModule
     public static void MapProjectEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/projects")
-            .WithTags("Projects");
+            .WithTags("Projects")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {

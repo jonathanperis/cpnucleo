@@ -5,7 +5,8 @@ public static class WorkflowModule
     public static void MapWorkflowEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/workflows")
-            .WithTags("Workflows");
+            .WithTags("Workflows")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {

@@ -5,7 +5,8 @@ public static class AssignmentModule
     public static void MapAssignmentEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/assignments")
-            .WithTags("Assignments");
+            .WithTags("Assignments")
+            .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
         {
