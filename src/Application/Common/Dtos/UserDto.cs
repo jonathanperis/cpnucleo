@@ -5,15 +5,21 @@ public sealed record UserDto : BaseDto
     public string? Name { get; set; }
     public string? Login { get; set; }
 
-    public static implicit operator UserDto(User entity)
+    public static implicit operator UserDto?(User? entity)
     {
-        var dto = new UserDto()
+        if (entity is null)
+        {
+            return null;
+        }
+        
+        var dto = new UserDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Name = entity.Name,
+            Login = entity.Login
         };
-        dto.Name = entity.Name;
-        dto.Login = entity.Login;
+        
         return dto;
     }
 

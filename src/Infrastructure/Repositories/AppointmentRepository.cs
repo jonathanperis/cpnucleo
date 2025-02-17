@@ -28,7 +28,7 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
         return await connection.QueryFirstOrDefaultAsync<Appointment>(sql, new { Id = id });
     }
 
-    public async Task<List<Appointment>?> ListAppointments()
+    public async Task<List<Appointment?>?> ListAppointments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,7 +38,7 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<Appointment>(sql)).AsList();
+        return (await connection.QueryAsync<Appointment?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveAppointment(Guid id)

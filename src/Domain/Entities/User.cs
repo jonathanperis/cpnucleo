@@ -14,13 +14,14 @@ public sealed class User : BaseEntity
         var user = new User
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = name,
+            Login = login,
+            Password = encryptedPassword,
+            Salt = salt,
+            Active = true
         };
-        user.Name = name;
-        user.Login = login;
-        user.Password = encryptedPassword;
-        user.Salt = salt;
-        user.Active = true;
+        
         return user;
     }
 

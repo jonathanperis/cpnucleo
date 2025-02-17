@@ -15,18 +15,10 @@ public class ListUserProjectQueryHandlerTest
     public async Task Handle_ShouldReturnListOfUserProjects_WhenUserProjectsExist()
     {
         // Arrange
-        var userProjects = new List<UserProjectDto>
+        var userProjects = new List<Domain.Entities.UserProject>
         {
-            new(Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new(Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
         };
 
         _userProjectRepositoryMock
@@ -71,7 +63,7 @@ public class ListUserProjectQueryHandlerTest
         // Arrange
         _userProjectRepositoryMock
             .Setup(repo => repo.ListUserProjects())
-            .ReturnsAsync((List<UserProjectDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListUserProjectQuery();
 

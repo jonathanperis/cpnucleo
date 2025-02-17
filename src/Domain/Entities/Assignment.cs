@@ -31,18 +31,19 @@ public sealed class Assignment : BaseEntity
         var assignment = new Assignment
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = name,
+            Description = description,
+            StartDate = startDate,
+            EndDate = endDate,
+            AmountHours = amountHours,
+            ProjectId = projectId,
+            WorkflowId = workflowId,
+            UserId = userId,
+            AssignmentTypeId = assignmentTypeId,
+            Active = true
         };
-        assignment.Name = name;
-        assignment.Description = description;
-        assignment.StartDate = startDate;
-        assignment.EndDate = endDate;
-        assignment.AmountHours = amountHours;
-        assignment.ProjectId = projectId;
-        assignment.WorkflowId = workflowId;
-        assignment.UserId = userId;
-        assignment.AssignmentTypeId = assignmentTypeId;
-        assignment.Active = true;
+        
         return assignment;
     }
 

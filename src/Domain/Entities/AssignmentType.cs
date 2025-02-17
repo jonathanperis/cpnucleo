@@ -9,10 +9,11 @@ public sealed class AssignmentType : BaseEntity
         var type = new AssignmentType
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = name,
+            Active = true
         };
-        type.Name = name;
-        type.Active = true;
+        
         return type;
     }
 

@@ -15,15 +15,11 @@ public class GetAssignmentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAssignment_WhenAssignmentExists()
     {
         // Arrange
-        var assignmentDto = new AssignmentDto("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var assignment = Domain.Entities.Assignment.Create("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _assignmentRepositoryMock
             .Setup(repo => repo.GetAssignmentById(It.IsAny<Guid>()))
-            .ReturnsAsync(assignmentDto);
+            .ReturnsAsync(assignment);
 
         var query = new GetAssignmentByIdQuery(Guid.NewGuid());
 
@@ -42,7 +38,7 @@ public class GetAssignmentByIdQueryHandlerTest
         // Arrange
         _assignmentRepositoryMock
             .Setup(repo => repo.GetAssignmentById(It.IsAny<Guid>()))
-            .ReturnsAsync((AssignmentDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetAssignmentByIdQuery(Guid.NewGuid());
 

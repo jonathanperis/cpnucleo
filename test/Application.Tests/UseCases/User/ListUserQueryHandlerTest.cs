@@ -15,18 +15,10 @@ public class ListUserQueryHandlerTest
     public async Task Handle_ShouldReturnListOfUsers_WhenUsersExist()
     {
         // Arrange
-        var users = new List<UserDto>
+        var users = new List<Domain.Entities.User>
         {
-            new("Test User 1", "testUser1")
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test User 2", "testUser2")
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.User.Create("Test User 1", "testUser1", "password1", Guid.NewGuid()),
+            Domain.Entities.User.Create("Test User 2", "testUser2", "password2", Guid.NewGuid())
         };
 
         _userRepositoryMock
@@ -71,7 +63,7 @@ public class ListUserQueryHandlerTest
         // Arrange
         _userRepositoryMock
             .Setup(repo => repo.ListUsers())
-            .ReturnsAsync((List<UserDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListUserQuery();
 

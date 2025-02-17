@@ -15,15 +15,11 @@ public class GetUserAssignmentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnUserAssignment_WhenUserAssignmentExists()
     {
         // Arrange
-        var userAssignmentDto = new UserAssignmentDto(Guid.NewGuid(), Guid.NewGuid())
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var userAssignment = Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid());
 
         _userAssignmentRepositoryMock
             .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()))
-            .ReturnsAsync(userAssignmentDto);
+            .ReturnsAsync(userAssignment);
 
         var query = new GetUserAssignmentByIdQuery(Guid.NewGuid());
 
@@ -42,7 +38,7 @@ public class GetUserAssignmentByIdQueryHandlerTest
         // Arrange
         _userAssignmentRepositoryMock
             .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()))
-            .ReturnsAsync((UserAssignmentDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetUserAssignmentByIdQuery(Guid.NewGuid());
 

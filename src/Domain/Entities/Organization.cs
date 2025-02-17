@@ -10,11 +10,12 @@ public sealed class Organization : BaseEntity
         var organization = new Organization
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = name,
+            Description = description,
+            Active = true
         };
-        organization.Name = name;
-        organization.Description = description;
-        organization.Active = true;
+        
         return organization;
     }
 

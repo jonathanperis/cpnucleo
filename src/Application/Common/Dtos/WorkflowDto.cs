@@ -5,15 +5,21 @@ public sealed record WorkflowDto : BaseDto
     public string? Name { get; set; }
     public byte Order { get; set; }
 
-    public static implicit operator WorkflowDto(Workflow entity)
+    public static implicit operator WorkflowDto?(Workflow? entity)
     {
-        var dto = new WorkflowDto()
+        if (entity is null)
+        {
+            return null;
+        }
+        
+        var dto = new WorkflowDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Name = entity.Name,
+            Order = entity.Order
         };
-        dto.Name = entity.Name;
-        dto.Order = entity.Order;
+        
         return dto;
     }
 

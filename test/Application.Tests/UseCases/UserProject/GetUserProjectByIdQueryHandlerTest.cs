@@ -15,15 +15,11 @@ public class GetUserProjectByIdQueryHandlerTest
     public async Task Handle_ShouldReturnUserProject_WhenUserProjectExists()
     {
         // Arrange
-        var userProjectDto = new UserProjectDto(Guid.NewGuid(), Guid.NewGuid())
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var userProject = Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         _userProjectRepositoryMock
             .Setup(repo => repo.GetUserProjectById(It.IsAny<Guid>()))
-            .ReturnsAsync(userProjectDto);
+            .ReturnsAsync(userProject);
 
         var query = new GetUserProjectByIdQuery(Guid.NewGuid());
 
@@ -42,7 +38,7 @@ public class GetUserProjectByIdQueryHandlerTest
         // Arrange
         _userProjectRepositoryMock
             .Setup(repo => repo.GetUserProjectById(It.IsAny<Guid>()))
-            .ReturnsAsync((UserProjectDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetUserProjectByIdQuery(Guid.NewGuid());
 

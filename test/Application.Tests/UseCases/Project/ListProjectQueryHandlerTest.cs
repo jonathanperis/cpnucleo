@@ -15,18 +15,10 @@ public class ListProjectQueryHandlerTest
     public async Task Handle_ShouldReturnListOfProjects_WhenProjectsExist()
     {
         // Arrange
-        var projects = new List<ProjectDto>
-        {
-            new("Test Project 1", Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test Project 2", Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+        var projects = new List<Domain.Entities.Project> 
+        { 
+            Domain.Entities.Project.Create("Test Project 1", Guid.NewGuid()), 
+            Domain.Entities.Project.Create("Test Project 2", Guid.NewGuid()) 
         };
 
         _projectRepositoryMock
@@ -71,7 +63,7 @@ public class ListProjectQueryHandlerTest
         // Arrange
         _projectRepositoryMock
             .Setup(repo => repo.ListProjects())
-            .ReturnsAsync((List<ProjectDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListProjectQuery();
 

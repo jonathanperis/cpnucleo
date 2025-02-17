@@ -5,15 +5,21 @@ public sealed record UserProjectDto : BaseDto
     public Guid UserId { get; set; }
     public Guid ProjectId { get; set; }
 
-    public static implicit operator UserProjectDto(UserProject entity)
+    public static implicit operator UserProjectDto?(UserProject? entity)
     {
-        var dto = new UserProjectDto()
+        if (entity is null)
+        {
+            return null;
+        }
+        
+        var dto = new UserProjectDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            UserId = entity.UserId,
+            ProjectId = entity.ProjectId
         };
-        dto.UserId = entity.UserId;
-        dto.ProjectId = entity.ProjectId;
+        
         return dto;
     }
 

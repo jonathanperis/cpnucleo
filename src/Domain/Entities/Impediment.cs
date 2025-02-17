@@ -9,10 +9,11 @@ public sealed class Impediment : BaseEntity
         var impediment = new Impediment
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = name,
+            Active = true
         };
-        impediment.Name = name;
-        impediment.Active = true;
+        
         return impediment;
     }
 

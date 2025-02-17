@@ -16,12 +16,13 @@ public sealed class AssignmentImpediment : BaseEntity
         var impediment = new AssignmentImpediment
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Description = description,
+            AssignmentId = assignmentId,
+            ImpedimentId = impedimentId,
+            Active = true
         };
-        impediment.Description = description;
-        impediment.AssignmentId = assignmentId;
-        impediment.ImpedimentId = impedimentId;
-        impediment.Active = true;
+        
         return impediment;
     }
 

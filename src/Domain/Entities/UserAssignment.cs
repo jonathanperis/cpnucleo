@@ -12,11 +12,12 @@ public sealed class UserAssignment : BaseEntity
         var assignment = new UserAssignment
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UserId = userId,
+            AssignmentId = assignmentId,
+            Active = true
         };
-        assignment.UserId = userId;
-        assignment.AssignmentId = assignmentId;
-        assignment.Active = true;
+        
         return assignment;
     }
 

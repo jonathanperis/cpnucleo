@@ -15,18 +15,10 @@ public class ListAssignmentTypeQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAssignmentTypes_WhenAssignmentTypesExist()
     {
         // Arrange
-        var assignmentTypes = new List<AssignmentTypeDto>
+        var assignmentTypes = new List<Domain.Entities.AssignmentType>
         {
-            new("Test AssignmentType 1")
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test AssignmentType 2")
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.AssignmentType.Create("Test AssignmentType 1", Guid.NewGuid()),
+            Domain.Entities.AssignmentType.Create("Test AssignmentType 2", Guid.NewGuid())
         };
 
         _assignmentTypeRepositoryMock
@@ -71,7 +63,7 @@ public class ListAssignmentTypeQueryHandlerTest
         // Arrange
         _assignmentTypeRepositoryMock
             .Setup(repo => repo.ListAssignmentTypes())
-            .ReturnsAsync((List<AssignmentTypeDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListAssignmentTypeQuery();
 

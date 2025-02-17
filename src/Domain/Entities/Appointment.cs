@@ -21,14 +21,15 @@ public sealed class Appointment : BaseEntity
         var appointment = new Appointment
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Description = description,
+            KeepDate = keepDate,
+            AmountHours = amountHours,
+            AssignmentId = assignmentId,
+            UserId = userId,
+            Active = true
         };
-        appointment.Description = description;
-        appointment.KeepDate = keepDate;
-        appointment.AmountHours = amountHours;
-        appointment.AssignmentId = assignmentId;
-        appointment.UserId = userId;
-        appointment.Active = true;
+        
         return appointment;
     }
 

@@ -5,15 +5,21 @@ public sealed record OrganizationDto : BaseDto
     public string? Name { get; set; }
     public string? Description { get; set; }
 
-    public static implicit operator OrganizationDto(Organization entity)
+    public static implicit operator OrganizationDto?(Organization? entity)
     {
-        var dto = new OrganizationDto()
+        if (entity is null)
+        {
+            return null;
+        }
+        
+        var dto = new OrganizationDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Name = entity.Name,
+            Description = entity.Description
         };
-        dto.Name = entity.Name;
-        dto.Description = entity.Description;
+        
         return dto;
     }
 

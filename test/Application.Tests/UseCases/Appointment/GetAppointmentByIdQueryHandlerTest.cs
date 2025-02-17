@@ -15,15 +15,17 @@ public class GetAppointmentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAppointment_WhenAppointmentExists()
     {
         // Arrange
-        var appointmentDto = new AppointmentDto("Test Appointment", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid())
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var appointment = Domain.Entities.Appointment.Create(
+            "Test Appointment",
+            DateTime.UtcNow,
+            1,
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid());
 
         _appointmentRepositoryMock
             .Setup(repo => repo.GetAppointmentById(It.IsAny<Guid>()))
-            .ReturnsAsync(appointmentDto);
+            .ReturnsAsync(appointment);
 
         var query = new GetAppointmentByIdQuery(Guid.NewGuid());
 
@@ -42,7 +44,7 @@ public class GetAppointmentByIdQueryHandlerTest
         // Arrange
         _appointmentRepositoryMock
             .Setup(repo => repo.GetAppointmentById(It.IsAny<Guid>()))
-            .ReturnsAsync((AppointmentDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetAppointmentByIdQuery(Guid.NewGuid());
 

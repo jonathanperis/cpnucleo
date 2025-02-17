@@ -4,14 +4,20 @@ public sealed record AssignmentTypeDto : BaseDto
 {
     public string? Name { get; set; }
 
-    public static implicit operator AssignmentTypeDto(AssignmentType entity)
+    public static implicit operator AssignmentTypeDto?(AssignmentType? entity)
     {
+        if (entity is null)
+        {
+            return null;
+        }
+        
         var dto = new AssignmentTypeDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Name = entity.Name
         };
-        dto.Name = entity.Name;
+        
         return dto;
     }
 

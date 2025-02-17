@@ -8,18 +8,24 @@ public sealed record AppointmentDto : BaseDto
     public Guid AssignmentId { get; set; }
     public Guid UserId { get; set; }
 
-    public static implicit operator AppointmentDto(Appointment entity)
+    public static implicit operator AppointmentDto?(Appointment? entity)
     {
-        var dto = new AppointmentDto()
+        if (entity is null)
+        {
+            return null;
+        }
+
+        var dto = new AppointmentDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Description = entity.Description,
+            KeepDate = entity.KeepDate,
+            AmountHours = entity.AmountHours,
+            AssignmentId = entity.AssignmentId,
+            UserId = entity.UserId
         };
-        dto.Description = entity.Description;
-        dto.KeepDate = entity.KeepDate;
-        dto.AmountHours = entity.AmountHours;
-        dto.AssignmentId = entity.AssignmentId;
-        dto.UserId = entity.UserId;
+        
         return dto;
     }
     

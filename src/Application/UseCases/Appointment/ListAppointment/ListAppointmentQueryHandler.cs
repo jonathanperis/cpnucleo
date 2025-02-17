@@ -8,8 +8,8 @@ public sealed class ListAppointmentQueryHandler(IAppointmentRepository appointme
 
         var operationResult = appointments is not null ? OperationResult.Success : OperationResult.NotFound;
         var appointmentsList = appointments ?? []; // Return an empty list if no appointments are found
-
-        var result = appointmentsList.Select(appointment => (AppointmentDto)appointment).ToList();
+        
+        var result = appointmentsList.Select(appointment => (AppointmentDto?)appointment).ToList();
 
         return new ListAppointmentQueryViewModel(operationResult, result);
     }

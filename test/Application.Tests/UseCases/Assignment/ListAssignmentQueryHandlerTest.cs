@@ -15,18 +15,10 @@ public class ListAssignmentQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAssignments_WhenAssignmentsExist()
     {
         // Arrange
-        var assignments = new List<AssignmentDto>
+        var assignments = new List<Domain.Entities.Assignment>
         {
-            new("Test Assignment 1", "Description 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test Assignment 2", "Description 2", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
         };
 
         _assignmentRepositoryMock
@@ -71,7 +63,7 @@ public class ListAssignmentQueryHandlerTest
         // Arrange
         _assignmentRepositoryMock
             .Setup(repo => repo.ListAssignments())
-            .ReturnsAsync((List<AssignmentDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListAssignmentQuery();
 

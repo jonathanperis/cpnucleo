@@ -15,15 +15,11 @@ public class GetAssignmentTypeByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAssignmentType_WhenAssignmentTypeExists()
     {
         // Arrange
-        var assignmentTypeDto = new AssignmentTypeDto("Test AssignmentType")
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var assignmentType = Domain.Entities.AssignmentType.Create("Test AssignmentType", Guid.NewGuid());
 
         _assignmentTypeRepositoryMock
             .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()))
-            .ReturnsAsync(assignmentTypeDto);
+            .ReturnsAsync(assignmentType);
 
         var query = new GetAssignmentTypeByIdQuery(Guid.NewGuid());
 
@@ -42,7 +38,7 @@ public class GetAssignmentTypeByIdQueryHandlerTest
         // Arrange
         _assignmentTypeRepositoryMock
             .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()))
-            .ReturnsAsync((AssignmentTypeDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetAssignmentTypeByIdQuery(Guid.NewGuid());
 

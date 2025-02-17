@@ -12,11 +12,12 @@ public sealed class UserProject : BaseEntity
         var project = new UserProject
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UserId = userId,
+            ProjectId = projectId,
+            Active = true
         };
-        project.UserId = userId;
-        project.ProjectId = projectId;
-        project.Active = true;
+        
         return project;
     }
 

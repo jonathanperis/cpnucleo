@@ -15,19 +15,11 @@ public class ListUserAssignmentsQueryHandlerTest
     public async Task Handle_ShouldReturnListOfUserAssignments_WhenUserAssignmentsExist()
     {
         // Arrange
-        var userAssignments = new List<UserAssignmentDto>
-            {
-                new(Guid.NewGuid(), Guid.NewGuid())
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedAt = DateTime.UtcNow
-                },
-                new(Guid.NewGuid(), Guid.NewGuid())
-                {
-                    Id = Guid.NewGuid(),
-                    CreatedAt = DateTime.UtcNow
-                }
-            };
+        var userAssignments = new List<Domain.Entities.UserAssignment>
+        {
+            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid())
+        };
 
         _userAssignmentRepositoryMock
             .Setup(repo => repo.ListUserAssignments())
@@ -71,7 +63,7 @@ public class ListUserAssignmentsQueryHandlerTest
         // Arrange
         _userAssignmentRepositoryMock
             .Setup(repo => repo.ListUserAssignments())
-            .ReturnsAsync((List<UserAssignmentDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListUserAssignmentsQuery();
 

@@ -20,4 +20,16 @@
 		<ProjectReference Include="..\Domain\Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Common\Services\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Remove="Common\Services\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Common\Services\**" />
+	</ItemGroup>
+
 </Project>

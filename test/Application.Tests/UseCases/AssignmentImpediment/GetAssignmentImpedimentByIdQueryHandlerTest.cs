@@ -15,15 +15,11 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAssignmentImpediment_WhenAssignmentImpedimentExists()
     {
         // Arrange
-        var assignmentImpedimentDto = new AssignmentImpedimentDto("Test AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid())
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var assignmentImpediment = Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid());
 
         _assignmentImpedimentRepositoryMock
             .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()))
-            .ReturnsAsync(assignmentImpedimentDto);
+            .ReturnsAsync(assignmentImpediment);
 
         var query = new GetAssignmentImpedimentByIdQuery(Guid.NewGuid());
 
@@ -42,7 +38,7 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
         // Arrange
         _assignmentImpedimentRepositoryMock
             .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()))
-            .ReturnsAsync((AssignmentImpedimentDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetAssignmentImpedimentByIdQuery(Guid.NewGuid());
 

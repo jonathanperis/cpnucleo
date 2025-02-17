@@ -15,18 +15,10 @@ public class ListOrganizationQueryHandlerTest
     public async Task Handle_ShouldReturnListOfOrganizations_WhenOrganizationsExist()
     {
         // Arrange
-        var organizations = new List<OrganizationDto>
+        var organizations = new List<Domain.Entities.Organization>
         {
-            new("Test Organization 1", "Description 1")
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test Organization 2", "Description 2")
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Guid.NewGuid()),
+            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Guid.NewGuid())
         };
 
         _organizationRepositoryMock
@@ -71,7 +63,7 @@ public class ListOrganizationQueryHandlerTest
         // Arrange
         _organizationRepositoryMock
             .Setup(repo => repo.ListOrganization())
-            .ReturnsAsync((List<OrganizationDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListOrganizationQuery();
 

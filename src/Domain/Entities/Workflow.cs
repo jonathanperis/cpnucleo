@@ -10,11 +10,12 @@ public sealed class Workflow : BaseEntity
         var workflow = new Workflow
         {
             Id = GetNewId(id),
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Name = name,
+            Order = order,
+            Active = true
         };
-        workflow.Name = name;
-        workflow.Order = order;
-        workflow.Active = true;
+        
         return workflow;
     }
 

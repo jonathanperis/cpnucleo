@@ -15,18 +15,10 @@ public class ListAssignmentImpedimentQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAssignmentImpediments_WhenAssignmentImpedimentsExist()
     {
         // Arrange
-        var assignmentImpediments = new List<AssignmentImpedimentDto>
+        var assignmentImpediments = new List<Domain.Entities.AssignmentImpediment>
         {
-            new("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
         };
 
         _assignmentImpedimentRepositoryMock
@@ -71,7 +63,7 @@ public class ListAssignmentImpedimentQueryHandlerTest
         // Arrange
         _assignmentImpedimentRepositoryMock
             .Setup(repo => repo.ListAssignmentImpediments())
-            .ReturnsAsync((List<AssignmentImpedimentDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListAssignmentImpedimentQuery();
 

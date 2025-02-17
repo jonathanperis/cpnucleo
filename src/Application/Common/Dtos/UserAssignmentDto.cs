@@ -5,15 +5,21 @@ public sealed record UserAssignmentDto : BaseDto
     public Guid UserId { get; set; }
     public Guid AssignmentId { get; set; }
 
-    public static implicit operator UserAssignmentDto(UserAssignment entity)
+    public static implicit operator UserAssignmentDto?(UserAssignment? entity)
     {
-        var dto = new UserAssignmentDto()
+        if (entity is null)
+        {
+            return null;
+        }
+        
+        var dto = new UserAssignmentDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            UserId = entity.UserId,
+            AssignmentId = entity.AssignmentId
         };
-        dto.UserId = entity.UserId;
-        dto.AssignmentId = entity.AssignmentId;
+        
         return dto;
     }
 

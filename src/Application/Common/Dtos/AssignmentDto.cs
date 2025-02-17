@@ -12,22 +12,28 @@ public sealed record AssignmentDto : BaseDto
     public Guid UserId { get; set; }
     public Guid AssignmentTypeId { get; set; }
 
-    public static implicit operator AssignmentDto(Assignment entity)
+    public static implicit operator AssignmentDto?(Assignment? entity)
     {
+        if (entity is null)
+        {
+            return null;
+        }
+        
         var dto = new AssignmentDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Name = entity.Name,
+            Description = entity.Description,
+            StartDate = entity.StartDate,
+            EndDate = entity.EndDate,
+            AmountHours = entity.AmountHours,
+            ProjectId = entity.ProjectId,
+            WorkflowId = entity.WorkflowId,
+            UserId = entity.UserId,
+            AssignmentTypeId = entity.AssignmentTypeId
         };
-        dto.Name = entity.Name;
-        dto.Description = entity.Description;
-        dto.StartDate = entity.StartDate;
-        dto.EndDate = entity.EndDate;
-        dto.AmountHours = entity.AmountHours;
-        dto.ProjectId = entity.ProjectId;
-        dto.WorkflowId = entity.WorkflowId;
-        dto.UserId = entity.UserId;
-        dto.AssignmentTypeId = entity.AssignmentTypeId;
+        
         return dto;
     }
 

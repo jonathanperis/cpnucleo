@@ -4,14 +4,20 @@ public sealed record ImpedimentDto : BaseDto
 {
     public string? Name { get; set; }
 
-    public static implicit operator ImpedimentDto(Impediment entity)
+    public static implicit operator ImpedimentDto?(Impediment? entity)
     {
+        if (entity is null)
+        {
+            return null;
+        }
+        
         var dto = new ImpedimentDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt
+            CreatedAt = entity.CreatedAt,
+            Name = entity.Name
         };
-        dto.Name = entity.Name;
+        
         return dto;
     }
 

@@ -15,15 +15,11 @@ public class GetUserByIdQueryHandlerTest
     public async Task Handle_ShouldReturnUser_WhenUserExists()
     {
         // Arrange
-        var userDto = new UserDto("Test User", "testUser")
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow
-        };
+        var user = Domain.Entities.User.Create("Test User", "testUser", "password123", Guid.NewGuid());
 
         _userRepositoryMock
             .Setup(repo => repo.GetUserById(It.IsAny<Guid>()))
-            .ReturnsAsync(userDto);
+            .ReturnsAsync(user);
 
         var query = new GetUserByIdQuery(Guid.NewGuid());
 
@@ -42,7 +38,7 @@ public class GetUserByIdQueryHandlerTest
         // Arrange
         _userRepositoryMock
             .Setup(repo => repo.GetUserById(It.IsAny<Guid>()))
-            .ReturnsAsync((UserDto?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new GetUserByIdQuery(Guid.NewGuid());
 

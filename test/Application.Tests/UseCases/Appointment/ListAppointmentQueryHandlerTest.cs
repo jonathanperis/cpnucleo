@@ -15,18 +15,10 @@ public class ListAppointmentQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAppointments_WhenAppointmentsExist()
     {
         // Arrange
-        var appointments = new List<AppointmentDto>
+        var appointments = new List<Domain.Entities.Appointment>
         {
-            new("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
-            {
-                Id = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
+            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
         };
 
         _appointmentRepositoryMock
@@ -71,7 +63,7 @@ public class ListAppointmentQueryHandlerTest
         // Arrange
         _appointmentRepositoryMock
             .Setup(repo => repo.ListAppointments())
-            .ReturnsAsync((List<AppointmentDto>?)null);
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
         var query = new ListAppointmentQuery();
 

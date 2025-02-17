@@ -39,6 +39,7 @@ public class ArchitectureTests
 
         var otherProjects = new[]
         {
+            InfrastructureNamespace,
             ServicesNamespace
         };
 
