@@ -10,7 +10,7 @@ dotnet ef migrations add xxxxxx -p ./src/Infrastructure -s ./src/WebApi -c 'Appl
 
 ### Apply migration (from root project folder) It will Generate SQL Scripts on ./docker-entrypoint-initdb.d folder
 ```
-dotnet ef migrations script --output ./docker-entrypoint-initdb.d/database.dump.sql --idempotent -p ./src/Infrastructure -s ./src/WebApi -c 'ApplicationDbContext'
+dotnet ef migrations script --output ./docker-entrypoint-initdb.d/001-database-dump-ddl.sql --idempotent -p ./src/Infrastructure -s ./src/WebApi -c 'ApplicationDbContext'
 ```
 
 ### Remove migration (from root project folder)
