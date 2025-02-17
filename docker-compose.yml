@@ -13,7 +13,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
-  
+    networks:
+      - network-cpnucleo
+
   webapi2:
     <<: *webapi1
     hostname: webapi2
@@ -33,6 +35,8 @@ services:
       ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
     ports:
       - "9998:8080"
+    networks:
+      - network-cpnucleo
 
   db:
     image: postgres
@@ -42,6 +46,7 @@ services:
     # depends_on:
     #   - postgres-exporter      
     volumes:
+      - db-data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: postgres
@@ -50,6 +55,8 @@ services:
     ports:
       - "5432:5432"
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
+    networks:
+      - network-cpnucleo
 
   nginx:
     image: nginx
@@ -62,7 +69,9 @@ services:
       - webapi2
     ports:
       - "9999:9999"
-
+    networks:
+      - network-cpnucleo
+      
   # postgres-exporter:
   #   image: prometheuscommunity/postgres-exporter  
   #   ports:
@@ -87,7 +96,10 @@ services:
   #     depends_on:
   #       - prometheus
 
-networks: 
-  default:
+networks:
+  network-cpnucleo:
     driver: bridge
-    name: network-cpnucleo
+
+volumes:
+  db-data:
+    driver: local
