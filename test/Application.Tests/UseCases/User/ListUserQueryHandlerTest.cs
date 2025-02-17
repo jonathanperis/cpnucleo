@@ -15,7 +15,7 @@ public class ListUserQueryHandlerTest
     public async Task Handle_ShouldReturnListOfUsers_WhenUsersExist()
     {
         // Arrange
-        var users = new List<Domain.Entities.User>
+        var users = new List<Domain.Entities.User?>
         {
             Domain.Entities.User.Create("Test User 1", "testUser1", "password1", Guid.NewGuid()),
             Domain.Entities.User.Create("Test User 2", "testUser2", "password2", Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListUserQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.Users);
+        Assert.Null(result.Users);
         _userRepositoryMock.Verify(repo => repo.ListUsers(), Times.Once);
     }
 }

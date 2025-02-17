@@ -15,7 +15,7 @@ public class ListOrganizationQueryHandlerTest
     public async Task Handle_ShouldReturnListOfOrganizations_WhenOrganizationsExist()
     {
         // Arrange
-        var organizations = new List<Domain.Entities.Organization>
+        var organizations = new List<Domain.Entities.Organization?>
         {
             Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Guid.NewGuid()),
             Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListOrganizationQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.Organizations);
+        Assert.Null(result.Organizations);
         _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
     }
 }

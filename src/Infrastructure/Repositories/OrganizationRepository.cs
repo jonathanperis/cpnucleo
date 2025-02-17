@@ -28,7 +28,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
         return await connection.QueryFirstOrDefaultAsync<Organization>(sql, new { Id = id });
     }
 
-    public async Task<List<Organization>?> ListOrganization()
+    public async Task<List<Organization?>?> ListOrganization()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,7 +38,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<Organization>(sql)).AsList();
+        return (await connection.QueryAsync<Organization?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveOrganization(Guid id)

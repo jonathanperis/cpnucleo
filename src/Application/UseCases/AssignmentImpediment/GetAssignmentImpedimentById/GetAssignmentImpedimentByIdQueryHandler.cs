@@ -8,6 +8,6 @@ public sealed class GetAssignmentImpedimentByIdQueryHandler(IAssignmentImpedimen
 
         var operationResult = assignmentImpediment is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetAssignmentImpedimentByIdQueryViewModel(operationResult, assignmentImpediment);
+        return new GetAssignmentImpedimentByIdQueryViewModel(operationResult, assignmentImpediment?.MapToDto());
     }
 }

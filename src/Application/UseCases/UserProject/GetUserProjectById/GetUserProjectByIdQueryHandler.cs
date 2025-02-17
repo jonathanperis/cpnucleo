@@ -8,6 +8,6 @@ public sealed class GetUserProjectByIdQueryHandler(IUserProjectRepository userPr
 
         var operationResult = userProject is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetUserProjectByIdQueryViewModel(operationResult, userProject);
+        return new GetUserProjectByIdQueryViewModel(operationResult, userProject?.MapToDto());
     }
 }

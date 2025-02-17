@@ -7,9 +7,10 @@ public sealed class ListOrganizationQueryHandler(IOrganizationRepository organiz
         var organizations = await organizationRepository.ListOrganization();
 
         var operationResult = organizations is not null ? OperationResult.Success : OperationResult.NotFound;
-        var organizationsList = organizations ?? [];  // Return an empty list if no organization are found
 
-        var result = organizationsList.Select(organization => (OrganizationDto)organization).ToList();
+        var result = organizations?
+                                            .Select(x => x?.MapToDto())
+                                            .ToList();
 
         return new ListOrganizationQueryViewModel(operationResult, result);
     }

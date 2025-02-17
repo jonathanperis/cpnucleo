@@ -27,7 +27,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Id = id });
     }
 
-    public async Task<List<User>?> ListUsers()
+    public async Task<List<User?>?> ListUsers()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,7 +37,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<User>(sql)).AsList();
+        return (await connection.QueryAsync<User?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveUser(Guid id)

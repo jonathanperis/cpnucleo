@@ -7,9 +7,10 @@ public sealed class ListWorkflowQueryHandler(IWorkflowRepository workflowReposit
         var workflows = await workflowRepository.ListWorkflow();
 
         var operationResult = workflows is not null ? OperationResult.Success : OperationResult.NotFound;
-        var workflowList = workflows ?? [];  // Return an empty list if no workflows are found
 
-        var result = workflowList.Select(workflow => (WorkflowDto)workflow).ToList();
+        var result = workflows?
+                                        .Select(x => x?.MapToDto())
+                                        .ToList();
 
         return new ListWorkflowQueryViewModel(operationResult, result);
     }

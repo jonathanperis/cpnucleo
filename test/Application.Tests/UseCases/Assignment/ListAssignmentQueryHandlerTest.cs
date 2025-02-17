@@ -15,7 +15,7 @@ public class ListAssignmentQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAssignments_WhenAssignmentsExist()
     {
         // Arrange
-        var assignments = new List<Domain.Entities.Assignment>
+        var assignments = new List<Domain.Entities.Assignment?>
         {
             Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
             Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListAssignmentQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.Assignments);
+        Assert.Null(result.Assignments);
         _assignmentRepositoryMock.Verify(repo => repo.ListAssignments(), Times.Once);
     }
 }

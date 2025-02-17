@@ -8,6 +8,6 @@ public sealed class GetAppointmentByIdQueryHandler(IAppointmentRepository appoin
 
         var operationResult = appointment is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetAppointmentByIdQueryViewModel(operationResult, appointment);
+        return new GetAppointmentByIdQueryViewModel(operationResult, appointment?.MapToDto());
     }
 }

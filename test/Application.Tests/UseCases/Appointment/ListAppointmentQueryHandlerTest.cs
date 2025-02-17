@@ -15,7 +15,7 @@ public class ListAppointmentQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAppointments_WhenAppointmentsExist()
     {
         // Arrange
-        var appointments = new List<Domain.Entities.Appointment>
+        var appointments = new List<Domain.Entities.Appointment?>
         {
             Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid()),
             Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListAppointmentQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.Appointments);
+        Assert.Null(result.Appointments);
         _appointmentRepositoryMock.Verify(repo => repo.ListAppointments(), Times.Once);
     }
 }

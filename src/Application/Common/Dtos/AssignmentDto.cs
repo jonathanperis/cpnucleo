@@ -12,44 +12,44 @@ public sealed record AssignmentDto : BaseDto
     public Guid UserId { get; set; }
     public Guid AssignmentTypeId { get; set; }
 
-    public static implicit operator AssignmentDto?(Assignment? entity)
-    {
-        if (entity is null)
-        {
-            return null;
-        }
+    // public static implicit operator AssignmentDto?(Assignment? entity)
+    // {
+    //     if (entity is null)
+    //     {
+    //         return null;
+    //     }
         
-        var dto = new AssignmentDto
-        {
-            Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Name = entity.Name,
-            Description = entity.Description,
-            StartDate = entity.StartDate,
-            EndDate = entity.EndDate,
-            AmountHours = entity.AmountHours,
-            ProjectId = entity.ProjectId,
-            WorkflowId = entity.WorkflowId,
-            UserId = entity.UserId,
-            AssignmentTypeId = entity.AssignmentTypeId
-        };
+    //     var dto = new AssignmentDto
+    //     {
+    //         Id = entity.Id,
+    //         CreatedAt = entity.CreatedAt,
+    //         Name = entity.Name,
+    //         Description = entity.Description,
+    //         StartDate = entity.StartDate,
+    //         EndDate = entity.EndDate,
+    //         AmountHours = entity.AmountHours,
+    //         ProjectId = entity.ProjectId,
+    //         WorkflowId = entity.WorkflowId,
+    //         UserId = entity.UserId,
+    //         AssignmentTypeId = entity.AssignmentTypeId
+    //     };
         
-        return dto;
-    }
+    //     return dto;
+    // }
 
-    public static implicit operator Assignment(AssignmentDto dto)
-    {
-        return Assignment.Create(
-            dto.Name,
-            dto.Description,
-            dto.StartDate,
-            dto.EndDate,
-            dto.AmountHours,
-            dto.ProjectId,
-            dto.WorkflowId,
-            dto.UserId,
-            dto.AssignmentTypeId,
-            dto.Id
-        );
-    }
+    // public static implicit operator Assignment(AssignmentDto dto)
+    // {
+    //     return Assignment.Create(
+    //         dto.Name,
+    //         dto.Description,
+    //         dto.StartDate,
+    //         dto.EndDate,
+    //         dto.AmountHours,
+    //         dto.ProjectId,
+    //         dto.WorkflowId,
+    //         dto.UserId,
+    //         dto.AssignmentTypeId,
+    //         dto.Id
+    //     );
+    // }
 }

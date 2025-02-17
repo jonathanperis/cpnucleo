@@ -15,7 +15,7 @@ public class ListUserProjectQueryHandlerTest
     public async Task Handle_ShouldReturnListOfUserProjects_WhenUserProjectsExist()
     {
         // Arrange
-        var userProjects = new List<Domain.Entities.UserProject>
+        var userProjects = new List<Domain.Entities.UserProject?>
         {
             Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
             Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListUserProjectQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.UserProjects);
+        Assert.Null(result.UserProjects);
         _userProjectRepositoryMock.Verify(repo => repo.ListUserProjects(), Times.Once);
     }
 }

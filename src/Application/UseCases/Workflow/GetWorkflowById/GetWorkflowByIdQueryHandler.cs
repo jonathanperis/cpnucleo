@@ -8,6 +8,6 @@ public sealed class GetWorkflowByIdQueryHandler(IWorkflowRepository workflowRepo
 
         var operationResult = workflow is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetWorkflowByIdQueryViewModel(operationResult, workflow);
+        return new GetWorkflowByIdQueryViewModel(operationResult, workflow?.MapToDto());
     }
 }

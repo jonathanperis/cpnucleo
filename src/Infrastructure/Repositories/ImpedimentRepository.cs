@@ -27,7 +27,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         return await connection.QueryFirstOrDefaultAsync<Impediment>(sql, new { Id = id });
     }
 
-    public async Task<List<Impediment>?> ListImpediments()
+    public async Task<List<Impediment?>?> ListImpediments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,7 +37,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<Impediment>(sql)).AsList();
+        return (await connection.QueryAsync<Impediment?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveImpediment(Guid id)

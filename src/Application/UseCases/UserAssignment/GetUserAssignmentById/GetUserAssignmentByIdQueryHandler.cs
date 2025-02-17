@@ -8,6 +8,6 @@ public sealed class GetUserAssignmentByIdQueryHandler(IUserAssignmentRepository 
 
         var operationResult = userAssignment is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetUserAssignmentByIdQueryViewModel(operationResult, userAssignment);
+        return new GetUserAssignmentByIdQueryViewModel(operationResult, userAssignment?.MapToDto());
     }
 }

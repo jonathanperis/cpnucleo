@@ -7,9 +7,10 @@ public sealed class ListAssignmentTypeQueryHandler(IAssignmentTypeRepository ass
         var assignmentTypes = await assignmentTypeRepository.ListAssignmentTypes();
 
         var operationResult = assignmentTypes is not null ? OperationResult.Success : OperationResult.NotFound;
-        var assignmentTypesList = assignmentTypes ?? [];  // Return an empty list if no assignmentTypes are found
 
-        var result = assignmentTypesList.Select(assignmentType => (AssignmentTypeDto)assignmentType).ToList();
+        var result = assignmentTypes?
+                                                .Select(x => x?.MapToDto())
+                                                .ToList();
 
         return new ListAssignmentTypeQueryViewModel(operationResult, result);
     }

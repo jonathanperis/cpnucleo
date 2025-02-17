@@ -8,6 +8,6 @@ public sealed class GetImpedimentByIdQueryHandler(IImpedimentRepository impedime
 
         var operationResult = impediment is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetImpedimentByIdQueryViewModel(operationResult, impediment);
+        return new GetImpedimentByIdQueryViewModel(operationResult, impediment?.MapToDto());
     }
 }

@@ -28,7 +28,7 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
         return await connection.QueryFirstOrDefaultAsync<Project>(sql, new { Id = id });
     }
 
-    public async Task<List<Project>?> ListProjects()
+    public async Task<List<Project?>?> ListProjects()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,7 +38,7 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<Project>(sql)).AsList();
+        return (await connection.QueryAsync<Project?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveProject(Guid id)

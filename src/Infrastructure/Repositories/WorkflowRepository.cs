@@ -27,7 +27,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
         return await connection.QueryFirstOrDefaultAsync<Workflow>(sql, new { Id = id });
     }
 
-    public async Task<List<Workflow>?> ListWorkflow()
+    public async Task<List<Workflow?>?> ListWorkflow()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,7 +37,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<Workflow>(sql)).AsList();
+        return (await connection.QueryAsync<Workflow?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveWorkflow(Guid id)

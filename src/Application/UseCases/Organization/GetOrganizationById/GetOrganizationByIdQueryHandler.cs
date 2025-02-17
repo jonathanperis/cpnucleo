@@ -8,6 +8,6 @@ public sealed class GetOrganizationByIdQueryHandler(IOrganizationRepository orga
 
         var operationResult = system is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetOrganizationByIdQueryViewModel(operationResult, system);
+        return new GetOrganizationByIdQueryViewModel(operationResult, system?.MapToDto());
     }
 }

@@ -15,7 +15,7 @@ public class ListProjectQueryHandlerTest
     public async Task Handle_ShouldReturnListOfProjects_WhenProjectsExist()
     {
         // Arrange
-        var projects = new List<Domain.Entities.Project> 
+        var projects = new List<Domain.Entities.Project?> 
         { 
             Domain.Entities.Project.Create("Test Project 1", Guid.NewGuid()), 
             Domain.Entities.Project.Create("Test Project 2", Guid.NewGuid()) 
@@ -72,7 +72,7 @@ public class ListProjectQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.Projects);
+        Assert.Null(result.Projects);
         _projectRepositoryMock.Verify(repo => repo.ListProjects(), Times.Once);
     }
 }

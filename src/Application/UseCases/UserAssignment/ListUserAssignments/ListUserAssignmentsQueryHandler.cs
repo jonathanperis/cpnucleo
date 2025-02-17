@@ -7,9 +7,10 @@ public sealed class ListUserAssignmentsQueryHandler(IUserAssignmentRepository us
         var userAssignments = await userAssignmentRepository.ListUserAssignments();
 
         var operationResult = userAssignments is not null ? OperationResult.Success : OperationResult.NotFound;
-        var userAssignmentsList = userAssignments ?? [];  // Return an empty list if no userAssignments are found
 
-        var result = userAssignmentsList.Select(userAssignment => (UserAssignmentDto)userAssignment).ToList();
+        var result = userAssignments?
+                                                .Select(x => x?.MapToDto())
+                                                .ToList();
 
         return new ListUserAssignmentsQueryViewModel(operationResult, result);
     }

@@ -8,6 +8,6 @@ public sealed class GetUserByIdQueryHandler(IUserRepository userRepository) : IR
 
         var operationResult = user is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetUserByIdQueryViewModel(operationResult, user);
+        return new GetUserByIdQueryViewModel(operationResult, user?.MapToDto());
     }
 }

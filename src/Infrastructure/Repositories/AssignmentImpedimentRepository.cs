@@ -27,7 +27,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
         return await connection.QueryFirstOrDefaultAsync<AssignmentImpediment>(sql, new { Id = id });
     }
 
-    public async Task<List<AssignmentImpediment>?> ListAssignmentImpediments()
+    public async Task<List<AssignmentImpediment?>?> ListAssignmentImpediments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,7 +37,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<AssignmentImpediment>(sql)).AsList();
+        return (await connection.QueryAsync<AssignmentImpediment?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveAssignmentImpediment(Guid id)

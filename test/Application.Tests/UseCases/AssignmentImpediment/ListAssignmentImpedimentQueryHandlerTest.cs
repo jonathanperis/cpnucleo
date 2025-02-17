@@ -15,7 +15,7 @@ public class ListAssignmentImpedimentQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAssignmentImpediments_WhenAssignmentImpedimentsExist()
     {
         // Arrange
-        var assignmentImpediments = new List<Domain.Entities.AssignmentImpediment>
+        var assignmentImpediments = new List<Domain.Entities.AssignmentImpediment?>
         {
             Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid()),
             Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListAssignmentImpedimentQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.AssignmentImpediments);
+        Assert.Null(result.AssignmentImpediments);
         _assignmentImpedimentRepositoryMock.Verify(repo => repo.ListAssignmentImpediments(), Times.Once);
     }
 }

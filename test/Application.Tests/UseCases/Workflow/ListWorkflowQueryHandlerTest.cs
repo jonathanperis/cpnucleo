@@ -15,7 +15,7 @@ public class ListWorkflowQueryHandlerTest
     public async Task Handle_ShouldReturnListOfWorkflows_WhenWorkflowsExist()
     {
         // Arrange
-        var workflows = new List<Domain.Entities.Workflow>
+        var workflows = new List<Domain.Entities.Workflow?>
         {
             Domain.Entities.Workflow.Create("Test Workflow 1", 1, Guid.NewGuid()),
             Domain.Entities.Workflow.Create("Test Workflow 2", 2, Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListWorkflowQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.Workflows);
+        Assert.Null(result.Workflows);
         _workflowRepositoryMock.Verify(repo => repo.ListWorkflow(), Times.Once);
     }
 }

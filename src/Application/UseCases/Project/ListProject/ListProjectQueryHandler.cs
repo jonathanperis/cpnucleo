@@ -7,9 +7,10 @@ public sealed class ListProjectQueryHandler(IProjectRepository projectRepository
         var projects = await projectRepository.ListProjects();
 
         var operationResult = projects is not null ? OperationResult.Success : OperationResult.NotFound;
-        var projectsList = projects ?? [];  // Return an empty list if no projects are found
 
-        var result = projectsList.Select(project => (ProjectDto)project).ToList();
+        var result = projects?
+                                        .Select(x => x?.MapToDto())
+                                        .ToList();
 
         return new ListProjectQueryViewModel(operationResult, result);
     }

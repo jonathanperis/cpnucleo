@@ -15,7 +15,7 @@ public class ListAssignmentTypeQueryHandlerTest
     public async Task Handle_ShouldReturnListOfAssignmentTypes_WhenAssignmentTypesExist()
     {
         // Arrange
-        var assignmentTypes = new List<Domain.Entities.AssignmentType>
+        var assignmentTypes = new List<Domain.Entities.AssignmentType?>
         {
             Domain.Entities.AssignmentType.Create("Test AssignmentType 1", Guid.NewGuid()),
             Domain.Entities.AssignmentType.Create("Test AssignmentType 2", Guid.NewGuid())
@@ -72,7 +72,7 @@ public class ListAssignmentTypeQueryHandlerTest
 
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Empty(result.AssignmentTypes);
+        Assert.Null(result.AssignmentTypes);
         _assignmentTypeRepositoryMock.Verify(repo => repo.ListAssignmentTypes(), Times.Once);
     }
 }

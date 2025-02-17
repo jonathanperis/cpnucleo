@@ -7,9 +7,10 @@ public sealed class ListImpedimentQueryHandler(IImpedimentRepository impedimentR
         var impediments = await impedimentRepository.ListImpediments();
 
         var operationResult = impediments is not null ? OperationResult.Success : OperationResult.NotFound;
-        var impedimentList = impediments ?? [];  // Return an empty list if no impediments are found
 
-        var result = impedimentList.Select(impediment => (ImpedimentDto)impediment).ToList();
+        var result = impediments?
+                                            .Select(x => x?.MapToDto())
+                                            .ToList();
 
         return new ListImpedimentQueryViewModel(operationResult, result);
     }

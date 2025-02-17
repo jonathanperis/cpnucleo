@@ -8,6 +8,6 @@ public sealed class GetAssignmentTypeByIdQueryHandler(IAssignmentTypeRepository 
 
         var operationResult = assignmentType is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        return new GetAssignmentTypeByIdQueryViewModel(operationResult, assignmentType);
+        return new GetAssignmentTypeByIdQueryViewModel(operationResult, assignmentType?.MapToDto());
     }
 }

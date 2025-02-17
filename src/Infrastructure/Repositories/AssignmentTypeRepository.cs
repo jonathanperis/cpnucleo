@@ -28,7 +28,7 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
         return await connection.QueryFirstOrDefaultAsync<AssignmentType>(sql, new { Id = id });
     }
 
-    public async Task<List<AssignmentType>?> ListAssignmentTypes()
+    public async Task<List<AssignmentType?>?> ListAssignmentTypes()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,7 +38,7 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<AssignmentType>(sql)).AsList();
+        return (await connection.QueryAsync<AssignmentType?>(sql)).AsList();
     }
 
     public async Task<bool> RemoveAssignmentType(Guid id)
