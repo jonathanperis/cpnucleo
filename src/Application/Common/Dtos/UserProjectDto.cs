@@ -1,19 +1,20 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record UserProjectDto : BaseDto
 {
-    public Ulid UserId { get; set; }
-    public Ulid ProjectId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid ProjectId { get; set; }
 
     public static implicit operator UserProjectDto(UserProject entity)
     {
-        return new()
+        var dto = new UserProjectDto()
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            UserId = entity.UserId,
-            ProjectId = entity.ProjectId
+            CreatedAt = entity.CreatedAt
         };
+        dto.UserId = entity.UserId;
+        dto.ProjectId = entity.ProjectId;
+        return dto;
     }
 
     public static implicit operator UserProject(UserProjectDto dto)

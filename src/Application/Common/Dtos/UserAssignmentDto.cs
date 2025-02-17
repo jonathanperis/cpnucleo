@@ -1,19 +1,20 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record UserAssignmentDto : BaseDto
 {
-    public Ulid UserId { get; set; }
-    public Ulid AssignmentId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid AssignmentId { get; set; }
 
     public static implicit operator UserAssignmentDto(UserAssignment entity)
     {
-        return new()
+        var dto = new UserAssignmentDto()
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            UserId = entity.UserId,
-            AssignmentId = entity.AssignmentId
+            CreatedAt = entity.CreatedAt
         };
+        dto.UserId = entity.UserId;
+        dto.AssignmentId = entity.AssignmentId;
+        return dto;
     }
 
     public static implicit operator UserAssignment(UserAssignmentDto dto)

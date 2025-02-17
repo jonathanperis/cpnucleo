@@ -14,7 +14,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         return await connection.ExecuteAsync(sql, new { impediment.Id, impediment.Name, impediment.CreatedAt, impediment.Active }) == 1;
     }
 
-    public async Task<ImpedimentDto?> GetImpedimentById(Ulid id)
+    public async Task<Impediment?> GetImpedimentById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -24,10 +24,10 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<ImpedimentDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Impediment>(sql, new { Id = id });
     }
 
-    public async Task<List<ImpedimentDto>?> ListImpediments()
+    public async Task<List<Impediment>?> ListImpediments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,10 +37,10 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<ImpedimentDto>(sql)).AsList();
+        return (await connection.QueryAsync<Impediment>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveImpediment(Ulid id)
+    public async Task<bool> RemoveImpediment(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -55,7 +55,7 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateImpediment(Ulid id, string name)
+    public async Task<bool> UpdateImpediment(Guid id, string name)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

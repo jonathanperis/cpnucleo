@@ -14,7 +14,7 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
         return await connection.ExecuteAsync(sql, new { userProject.Id, userProject.UserId, userProject.ProjectId, userProject.CreatedAt, userProject.Active }) == 1;
     }
 
-    public async Task<UserProjectDto?> GetUserProjectById(Ulid id)
+    public async Task<UserProject?> GetUserProjectById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -24,10 +24,10 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<UserProjectDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<UserProject>(sql, new { Id = id });
     }
 
-    public async Task<List<UserProjectDto>?> ListUserProjects()
+    public async Task<List<UserProject>?> ListUserProjects()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,10 +37,10 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<UserProjectDto>(sql)).AsList();
+        return (await connection.QueryAsync<UserProject>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveUserProject(Ulid id)
+    public async Task<bool> RemoveUserProject(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -55,7 +55,7 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateUserProject(Ulid id, Ulid userId, Ulid projectId)
+    public async Task<bool> UpdateUserProject(Guid id, Guid userId, Guid projectId)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

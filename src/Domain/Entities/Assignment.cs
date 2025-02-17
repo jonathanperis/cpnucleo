@@ -2,47 +2,48 @@ namespace Domain.Entities;
 
 public sealed class Assignment : BaseEntity
 {
-    public string? Name { get; private set; }
-    public string? Description { get; private set; }
-    public DateTime StartDate { get; private set; }
-    public DateTime EndDate { get; private set; }
-    public byte AmountHours { get; private set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public byte AmountHours { get; set; }
 
-    public Ulid ProjectId { get; private set; }
-    public Project? Project { get; private set; }
-    public Ulid WorkflowId { get; private set; }
-    public Workflow? Workflow { get; private set; }
-    public Ulid UserId { get; private set; }
-    public User? User { get; private set; }
-    public Ulid AssignmentTypeId { get; private set; }
-    public AssignmentType? AssignmentType { get; private set; }
+    public Guid ProjectId { get; set; }
+    public Project? Project { get; set; }
+    public Guid WorkflowId { get; set; }
+    public Workflow? Workflow { get; set; }
+    public Guid UserId { get; set; }
+    public User? User { get; set; }
+    public Guid AssignmentTypeId { get; set; }
+    public AssignmentType? AssignmentType { get; set; }
 
     public static Assignment Create(string? name,
                                string? description,
                                DateTime startDate,
                                DateTime endDate,
                                byte amountHours,
-                               Ulid projectId,
-                               Ulid workflowId,
-                               Ulid userId,
-                               Ulid assignmentTypeId,
-                               Ulid id = default)
+                               Guid projectId,
+                               Guid workflowId,
+                               Guid userId,
+                               Guid assignmentTypeId,
+                               Guid id = default)
     {
-        return new Assignment
+        var assignment = new Assignment
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Name = name,
-            Description = description,
-            StartDate = startDate,
-            EndDate = endDate,
-            AmountHours = amountHours,
-            ProjectId = projectId,
-            WorkflowId = workflowId,
-            UserId = userId,
-            AssignmentTypeId = assignmentTypeId,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        assignment.Name = name;
+        assignment.Description = description;
+        assignment.StartDate = startDate;
+        assignment.EndDate = endDate;
+        assignment.AmountHours = amountHours;
+        assignment.ProjectId = projectId;
+        assignment.WorkflowId = workflowId;
+        assignment.UserId = userId;
+        assignment.AssignmentTypeId = assignmentTypeId;
+        assignment.Active = true;
+        return assignment;
     }
 
     public static Assignment Update(Assignment obj,
@@ -51,10 +52,10 @@ public sealed class Assignment : BaseEntity
                                DateTime startDate,
                                DateTime endDate,
                                byte amountHours,
-                               Ulid projectId,
-                               Ulid workflowId,
-                               Ulid userId,
-                               Ulid assignmentTypeId)
+                               Guid projectId,
+                               Guid workflowId,
+                               Guid userId,
+                               Guid assignmentTypeId)
     {
         obj.Name = name;
         obj.Description = description;

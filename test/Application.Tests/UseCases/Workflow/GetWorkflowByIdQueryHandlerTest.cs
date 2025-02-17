@@ -17,15 +17,15 @@ public class GetWorkflowByIdQueryHandlerTest
         // Arrange
         var workflowDto = new WorkflowDto("Test Workflow", 1)
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _workflowRepositoryMock
-            .Setup(repo => repo.GetWorkflowById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetWorkflowById(It.IsAny<Guid>()))
             .ReturnsAsync(workflowDto);
 
-        var query = new GetWorkflowByIdQuery(Ulid.NewUlid());
+        var query = new GetWorkflowByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetWorkflowByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.Workflow);
-        _workflowRepositoryMock.Verify(repo => repo.GetWorkflowById(It.IsAny<Ulid>()), Times.Once);
+        _workflowRepositoryMock.Verify(repo => repo.GetWorkflowById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetWorkflowByIdQueryHandlerTest
     {
         // Arrange
         _workflowRepositoryMock
-            .Setup(repo => repo.GetWorkflowById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetWorkflowById(It.IsAny<Guid>()))
             .ReturnsAsync((WorkflowDto?)null);
 
-        var query = new GetWorkflowByIdQuery(Ulid.NewUlid());
+        var query = new GetWorkflowByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,6 +52,6 @@ public class GetWorkflowByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.Workflow);
-        _workflowRepositoryMock.Verify(repo => repo.GetWorkflowById(It.IsAny<Ulid>()), Times.Once);
+        _workflowRepositoryMock.Verify(repo => repo.GetWorkflowById(It.IsAny<Guid>()), Times.Once);
     }
 }

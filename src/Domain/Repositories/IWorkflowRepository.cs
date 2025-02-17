@@ -3,8 +3,8 @@ namespace Domain.Repositories;
 public interface IWorkflowRepository
 {
     Task<bool> CreateWorkflow(Workflow workflow);
-    Task<WorkflowDto?> GetWorkflowById(Ulid id);
-    Task<List<WorkflowDto>?> ListWorkflow();
-    Task<bool> RemoveWorkflow(Ulid id);
-    Task<bool> UpdateWorkflow(Ulid id, string name, byte order);
+    Task<Workflow?> GetWorkflowById(Guid id);
+    Task<List<Workflow>?> ListWorkflow();
+    Task<bool> RemoveWorkflow(Guid id);
+    Task<bool> UpdateWorkflow(Guid id, string name, byte order);
 }

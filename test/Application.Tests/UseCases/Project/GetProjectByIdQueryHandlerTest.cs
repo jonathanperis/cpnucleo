@@ -15,17 +15,17 @@ public class GetProjectByIdQueryHandlerTest
     public async Task Handle_ShouldReturnProject_WhenProjectExists()
     {
         // Arrange
-        var projectDto = new ProjectDto("Test Project", Ulid.NewUlid())
+        var projectDto = new ProjectDto("Test Project", Guid.NewGuid())
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _projectRepositoryMock
-            .Setup(repo => repo.GetProjectById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetProjectById(It.IsAny<Guid>()))
             .ReturnsAsync(projectDto);
 
-        var query = new GetProjectByIdQuery(Ulid.NewUlid());
+        var query = new GetProjectByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetProjectByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.Project);
-        _projectRepositoryMock.Verify(repo => repo.GetProjectById(It.IsAny<Ulid>()), Times.Once);
+        _projectRepositoryMock.Verify(repo => repo.GetProjectById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetProjectByIdQueryHandlerTest
     {
         // Arrange
         _projectRepositoryMock
-            .Setup(repo => repo.GetProjectById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetProjectById(It.IsAny<Guid>()))
             .ReturnsAsync((ProjectDto?)null);
 
-        var query = new GetProjectByIdQuery(Ulid.NewUlid());
+        var query = new GetProjectByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetProjectByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.Project);
-        _projectRepositoryMock.Verify(repo => repo.GetProjectById(It.IsAny<Ulid>()), Times.Once);
+        _projectRepositoryMock.Verify(repo => repo.GetProjectById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetProjectByIdQuery(Ulid.Empty);
+        var query = new GetProjectByIdQuery(Guid.Empty);
         var validator = new GetProjectByIdQueryValidator();
 
         // Act

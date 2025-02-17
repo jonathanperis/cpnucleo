@@ -17,15 +17,15 @@ public class GetOrganizationByIdQueryHandlerTest
         // Arrange
         var organizationDto = new OrganizationDto("Test Organization", "Test Description")
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _organizationRepositoryMock
-            .Setup(repo => repo.GetOrganizationById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetOrganizationById(It.IsAny<Guid>()))
             .ReturnsAsync(organizationDto);
 
-        var query = new GetOrganizationByIdQuery(Ulid.NewUlid());
+        var query = new GetOrganizationByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetOrganizationByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.Organization);
-        _organizationRepositoryMock.Verify(repo => repo.GetOrganizationById(It.IsAny<Ulid>()), Times.Once);
+        _organizationRepositoryMock.Verify(repo => repo.GetOrganizationById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetOrganizationByIdQueryHandlerTest
     {
         // Arrange
         _organizationRepositoryMock
-            .Setup(repo => repo.GetOrganizationById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetOrganizationById(It.IsAny<Guid>()))
             .ReturnsAsync((OrganizationDto?)null);
 
-        var query = new GetOrganizationByIdQuery(Ulid.NewUlid());
+        var query = new GetOrganizationByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetOrganizationByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.Organization);
-        _organizationRepositoryMock.Verify(repo => repo.GetOrganizationById(It.IsAny<Ulid>()), Times.Once);
+        _organizationRepositoryMock.Verify(repo => repo.GetOrganizationById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetOrganizationByIdQuery(Ulid.Empty);
+        var query = new GetOrganizationByIdQuery(Guid.Empty);
         var validator = new GetOrganizationByIdQueryValidator();
 
         // Act

@@ -1,21 +1,22 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record AssignmentImpedimentDto : BaseDto
 {
     public string? Description { get; set; }
-    public Ulid AssignmentId { get; set; }
-    public Ulid ImpedimentId { get; set; }
+    public Guid AssignmentId { get; set; }
+    public Guid ImpedimentId { get; set; }
 
     public static implicit operator AssignmentImpedimentDto(AssignmentImpediment entity)
     {
-        return new()
+        var dto = new AssignmentImpedimentDto()
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Description = entity.Description,
-            AssignmentId = entity.AssignmentId,
-            ImpedimentId = entity.ImpedimentId
+            CreatedAt = entity.CreatedAt
         };
+        dto.Description = entity.Description;
+        dto.AssignmentId = entity.AssignmentId;
+        dto.ImpedimentId = entity.ImpedimentId;
+        return dto;
     }
 
     public static implicit operator AssignmentImpediment(AssignmentImpedimentDto dto)

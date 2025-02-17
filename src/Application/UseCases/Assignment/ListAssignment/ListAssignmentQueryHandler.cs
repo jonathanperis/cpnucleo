@@ -9,6 +9,8 @@ public sealed class ListAssignmentQueryHandler(IAssignmentRepository assignmentR
         var operationResult = assignments is not null ? OperationResult.Success : OperationResult.NotFound;
         var assignmentsList = assignments ?? [];  // Return an empty list if no assignments are found
 
-        return new ListAssignmentQueryViewModel(operationResult, assignmentsList);
+        var result = assignmentsList.Select(assignment => (AssignmentDto)assignment).ToList();
+
+        return new ListAssignmentQueryViewModel(operationResult, result);
     }
 }

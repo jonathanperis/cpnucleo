@@ -35,16 +35,14 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            IssuerSigningKey = new SymmetricSecurityKey("ForTheLoveOfGodStoreAndLoadThisSecurely"u8.ToArray()),
-            ValidIssuer = "https://identity.peris-studio.dev",
-            ValidAudience = "https://peris-studio.dev",
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-        };
+        options.TokenValidationParameters = new TokenValidationParameters();
+        options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey("ForTheLoveOfGodStoreAndLoadThisSecurely"u8.ToArray());
+        options.TokenValidationParameters.ValidIssuer = "https://identity.peris-studio.dev";
+        options.TokenValidationParameters.ValidAudience = "https://peris-studio.dev";
+        options.TokenValidationParameters.ValidateIssuerSigningKey = true;
+        options.TokenValidationParameters.ValidateLifetime = true;
+        options.TokenValidationParameters.ValidateIssuer = true;
+        options.TokenValidationParameters.ValidateAudience = true;
     });
 
 builder.Services.AddHealthChecks();

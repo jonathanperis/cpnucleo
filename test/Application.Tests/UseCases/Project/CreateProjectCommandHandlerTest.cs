@@ -21,7 +21,7 @@ public class CreateProjectCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        var command = new CreateProjectCommand("Test Project", Ulid.NewUlid());
+        var command = new CreateProjectCommand("Test Project", Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -38,7 +38,7 @@ public class CreateProjectCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-        var command = new CreateProjectCommand("Test Project", Ulid.NewUlid());
+        var command = new CreateProjectCommand("Test Project", Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -53,7 +53,7 @@ public class CreateProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new CreateProjectCommand(string.Empty, Ulid.NewUlid());
+        var command = new CreateProjectCommand(string.Empty, Guid.NewGuid());
         var validator = new CreateProjectCommandValidator();
 
         // Act
@@ -68,7 +68,7 @@ public class CreateProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenOrganizationIdIsEmpty()
     {
         // Arrange
-        var command = new CreateProjectCommand("Test Project", Ulid.Empty);
+        var command = new CreateProjectCommand("Test Project", Guid.Empty);
         var validator = new CreateProjectCommandValidator();
 
         // Act

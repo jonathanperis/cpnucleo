@@ -21,7 +21,7 @@ public class CreateImpedimentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        var command = new CreateImpedimentCommand("Test Impediment", Ulid.NewUlid());
+        var command = new CreateImpedimentCommand("Test Impediment", Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -38,7 +38,7 @@ public class CreateImpedimentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-        var command = new CreateImpedimentCommand("Test Impediment", Ulid.NewUlid());
+        var command = new CreateImpedimentCommand("Test Impediment", Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

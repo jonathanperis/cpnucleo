@@ -13,9 +13,9 @@ public class UpdateAssignmentCommandHandlerTest
         _assignments =
         [
             Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(1), 2, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid()),
+                DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
             Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(2), 3, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+                DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.Assignments).ReturnsDbSet(_assignments);
@@ -63,7 +63,7 @@ public class UpdateAssignmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentDoesNotExist()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Ulid.NewUlid(), "Updated Assignment", "Updated Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentCommand(Guid.NewGuid(), "Updated Assignment", "Updated Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -77,7 +77,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Ulid.Empty, "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentCommand(Guid.Empty, "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act
@@ -92,7 +92,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Ulid.NewUlid(), string.Empty, "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentCommand(Guid.NewGuid(), string.Empty, "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act
@@ -107,7 +107,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Ulid.NewUlid(), "Test Assignment", string.Empty, DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentCommand(Guid.NewGuid(), "Test Assignment", string.Empty, DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act
@@ -122,7 +122,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenProjectIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Ulid.NewUlid(), "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Ulid.Empty, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentCommand(Guid.NewGuid(), "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.Empty, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act

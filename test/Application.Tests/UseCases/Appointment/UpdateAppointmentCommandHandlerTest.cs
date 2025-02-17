@@ -12,9 +12,9 @@ public class UpdateAppointmentCommandHandlerTest
 
         _appointments =
         [
-            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Ulid.NewUlid(),
-                Ulid.NewUlid()),
-            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid())
+            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(),
+                Guid.NewGuid()),
+            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.Appointments).ReturnsDbSet(_appointments);
@@ -61,7 +61,7 @@ public class UpdateAppointmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAppointmentDoesNotExist()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.NewUlid(), "Updated Appointment", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAppointmentCommand(Guid.NewGuid(), "Updated Appointment", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -75,7 +75,7 @@ public class UpdateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.Empty, "Test Appointment", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAppointmentCommand(Guid.Empty, "Test Appointment", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAppointmentCommandValidator();
 
         // Act
@@ -90,7 +90,7 @@ public class UpdateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.NewUlid(), string.Empty, DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAppointmentCommand(Guid.NewGuid(), string.Empty, DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAppointmentCommandValidator();
 
         // Act
@@ -105,7 +105,7 @@ public class UpdateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenKeepDateIsEmpty()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.NewUlid(), "Test Appointment", default, 2, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAppointmentCommand(Guid.NewGuid(), "Test Appointment", default, 2, Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAppointmentCommandValidator();
 
         // Act
@@ -120,7 +120,7 @@ public class UpdateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenAmountHoursIsZero()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.NewUlid(), "Test Appointment", DateTime.UtcNow, 0, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAppointmentCommand(Guid.NewGuid(), "Test Appointment", DateTime.UtcNow, 0, Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAppointmentCommandValidator();
 
         // Act
@@ -135,7 +135,7 @@ public class UpdateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenAssignmentIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.NewUlid(), "Test Appointment", DateTime.UtcNow, 2, Ulid.Empty, Ulid.NewUlid());
+        var command = new UpdateAppointmentCommand(Guid.NewGuid(), "Test Appointment", DateTime.UtcNow, 2, Guid.Empty, Guid.NewGuid());
         var validator = new UpdateAppointmentCommandValidator();
 
         // Act
@@ -150,7 +150,7 @@ public class UpdateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenUserIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAppointmentCommand(Ulid.NewUlid(), "Test Appointment", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.Empty);
+        var command = new UpdateAppointmentCommand(Guid.NewGuid(), "Test Appointment", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.Empty);
         var validator = new UpdateAppointmentCommandValidator();
 
         // Act

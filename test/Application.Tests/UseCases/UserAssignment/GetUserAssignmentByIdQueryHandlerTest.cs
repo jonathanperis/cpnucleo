@@ -15,17 +15,17 @@ public class GetUserAssignmentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnUserAssignment_WhenUserAssignmentExists()
     {
         // Arrange
-        var userAssignmentDto = new UserAssignmentDto(Ulid.NewUlid(), Ulid.NewUlid())
+        var userAssignmentDto = new UserAssignmentDto(Guid.NewGuid(), Guid.NewGuid())
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _userAssignmentRepositoryMock
-            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()))
             .ReturnsAsync(userAssignmentDto);
 
-        var query = new GetUserAssignmentByIdQuery(Ulid.NewUlid());
+        var query = new GetUserAssignmentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetUserAssignmentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.UserAssignment);
-        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()), Times.Once);
+        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetUserAssignmentByIdQueryHandlerTest
     {
         // Arrange
         _userAssignmentRepositoryMock
-            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()))
             .ReturnsAsync((UserAssignmentDto?)null);
 
-        var query = new GetUserAssignmentByIdQuery(Ulid.NewUlid());
+        var query = new GetUserAssignmentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetUserAssignmentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.UserAssignment);
-        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Ulid>()), Times.Once);
+        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetUserAssignmentByIdQuery(Ulid.Empty);
+        var query = new GetUserAssignmentByIdQuery(Guid.Empty);
         var validator = new GetUserAssignmentByIdQueryValidator();
 
         // Act

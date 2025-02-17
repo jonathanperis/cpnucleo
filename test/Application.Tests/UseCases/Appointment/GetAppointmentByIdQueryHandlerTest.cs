@@ -15,17 +15,17 @@ public class GetAppointmentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAppointment_WhenAppointmentExists()
     {
         // Arrange
-        var appointmentDto = new AppointmentDto("Test Appointment", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid())
+        var appointmentDto = new AppointmentDto("Test Appointment", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid())
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _appointmentRepositoryMock
-            .Setup(repo => repo.GetAppointmentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAppointmentById(It.IsAny<Guid>()))
             .ReturnsAsync(appointmentDto);
 
-        var query = new GetAppointmentByIdQuery(Ulid.NewUlid());
+        var query = new GetAppointmentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetAppointmentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.Appointment);
-        _appointmentRepositoryMock.Verify(repo => repo.GetAppointmentById(It.IsAny<Ulid>()), Times.Once);
+        _appointmentRepositoryMock.Verify(repo => repo.GetAppointmentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetAppointmentByIdQueryHandlerTest
     {
         // Arrange
         _appointmentRepositoryMock
-            .Setup(repo => repo.GetAppointmentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAppointmentById(It.IsAny<Guid>()))
             .ReturnsAsync((AppointmentDto?)null);
 
-        var query = new GetAppointmentByIdQuery(Ulid.NewUlid());
+        var query = new GetAppointmentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetAppointmentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.Appointment);
-        _appointmentRepositoryMock.Verify(repo => repo.GetAppointmentById(It.IsAny<Ulid>()), Times.Once);
+        _appointmentRepositoryMock.Verify(repo => repo.GetAppointmentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetAppointmentByIdQuery(Ulid.Empty);
+        var query = new GetAppointmentByIdQuery(Guid.Empty);
         var validator = new GetAppointmentByIdQueryValidator();
 
         // Act

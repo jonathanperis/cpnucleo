@@ -2,17 +2,18 @@ namespace Domain.Entities;
 
 public sealed class AssignmentType : BaseEntity
 {
-    public string? Name { get; private set; }
+    public string? Name { get; set; }
 
-    public static AssignmentType Create(string? name, Ulid id = default)
+    public static AssignmentType Create(string? name, Guid id = default)
     {
-        return new AssignmentType
+        var type = new AssignmentType
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Name = name,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        type.Name = name;
+        type.Active = true;
+        return type;
     }
 
     public static AssignmentType Update(AssignmentType obj, string? name)

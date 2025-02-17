@@ -12,8 +12,8 @@ public class RemoveAssignmentImpedimentCommandHandlerTest
 
         _assignmentImpediments =
         [
-            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Ulid.NewUlid(), Ulid.NewUlid()),
-            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Ulid.NewUlid(), Ulid.NewUlid())
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.AssignmentImpediments).ReturnsDbSet(_assignmentImpediments);
@@ -59,7 +59,7 @@ public class RemoveAssignmentImpedimentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentImpedimentDoesNotExist()
     {
         // Arrange
-        var assignmentImpedimentId = Ulid.NewUlid();
+        var assignmentImpedimentId = Guid.NewGuid();
         var command = new RemoveAssignmentImpedimentCommand(assignmentImpedimentId);
 
         // Act
@@ -74,7 +74,7 @@ public class RemoveAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new RemoveAssignmentImpedimentCommand(Ulid.Empty);
+        var command = new RemoveAssignmentImpedimentCommand(Guid.Empty);
         var validator = new RemoveAssignmentImpedimentCommandValidator();
 
         // Act

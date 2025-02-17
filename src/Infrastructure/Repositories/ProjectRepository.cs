@@ -15,7 +15,7 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
         return await connection.ExecuteAsync(sql, new { project.Id, project.Name, project.OrganizationId, project.CreatedAt, project.Active }) == 1;
     }
 
-    public async Task<ProjectDto?> GetProjectById(Ulid id)
+    public async Task<Project?> GetProjectById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -25,10 +25,10 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<ProjectDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Project>(sql, new { Id = id });
     }
 
-    public async Task<List<ProjectDto>?> ListProjects()
+    public async Task<List<Project>?> ListProjects()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,10 +38,10 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<ProjectDto>(sql)).AsList();
+        return (await connection.QueryAsync<Project>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveProject(Ulid id)
+    public async Task<bool> RemoveProject(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -56,7 +56,7 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateProject(Ulid id, string name, Ulid organizationId)
+    public async Task<bool> UpdateProject(Guid id, string name, Guid organizationId)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

@@ -2,24 +2,25 @@ namespace Domain.Entities;
 
 public sealed class UserAssignment : BaseEntity
 {
-    public Ulid UserId { get; private set; }
-    public Ulid AssignmentId { get; private set; }
-    public User? User { get; private set; }
-    public Assignment? Assignment { get; private set; }
+    public Guid UserId { get; set; }
+    public Guid AssignmentId { get; set; }
+    public User? User { get; set; }
+    public Assignment? Assignment { get; set; }
 
-    public static UserAssignment Create(Ulid userId, Ulid assignmentId, Ulid id = default)
+    public static UserAssignment Create(Guid userId, Guid assignmentId, Guid id = default)
     {
-        return new UserAssignment
+        var assignment = new UserAssignment
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            UserId = userId,
-            AssignmentId = assignmentId,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        assignment.UserId = userId;
+        assignment.AssignmentId = assignmentId;
+        assignment.Active = true;
+        return assignment;
     }
 
-    public static UserAssignment Update(UserAssignment obj, Ulid userId, Ulid assignmentId)
+    public static UserAssignment Update(UserAssignment obj, Guid userId, Guid assignmentId)
     {
         obj.UserId = userId;
         obj.AssignmentId = assignmentId;

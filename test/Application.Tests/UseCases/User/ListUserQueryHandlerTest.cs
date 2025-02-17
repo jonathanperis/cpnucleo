@@ -19,12 +19,12 @@ public class ListUserQueryHandlerTest
         {
             new("Test User 1", "testUser1")
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
             new("Test User 2", "testUser2")
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

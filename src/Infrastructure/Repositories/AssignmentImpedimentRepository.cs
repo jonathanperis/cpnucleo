@@ -14,7 +14,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
         return await connection.ExecuteAsync(sql, new { assignmentImpediment.Id, assignmentImpediment.Description, assignmentImpediment.AssignmentId, assignmentImpediment.ImpedimentId, assignmentImpediment.CreatedAt, assignmentImpediment.Active }) == 1;
     }
 
-    public async Task<AssignmentImpedimentDto?> GetAssignmentImpedimentById(Ulid id)
+    public async Task<AssignmentImpediment?> GetAssignmentImpedimentById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -24,10 +24,10 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<AssignmentImpedimentDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<AssignmentImpediment>(sql, new { Id = id });
     }
 
-    public async Task<List<AssignmentImpedimentDto>?> ListAssignmentImpediments()
+    public async Task<List<AssignmentImpediment>?> ListAssignmentImpediments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,10 +37,10 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<AssignmentImpedimentDto>(sql)).AsList();
+        return (await connection.QueryAsync<AssignmentImpediment>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveAssignmentImpediment(Ulid id)
+    public async Task<bool> RemoveAssignmentImpediment(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -55,7 +55,7 @@ public class AssignmentImpedimentRepository(IConfiguration configuration) : IAss
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateAssignmentImpediment(Ulid id, string description, Ulid assignmentId, Ulid impedimentId)
+    public async Task<bool> UpdateAssignmentImpediment(Guid id, string description, Guid assignmentId, Guid impedimentId)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

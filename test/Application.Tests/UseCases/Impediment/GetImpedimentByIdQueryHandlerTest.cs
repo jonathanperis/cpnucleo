@@ -17,15 +17,15 @@ public class GetImpedimentByIdQueryHandlerTest
         // Arrange
         var impedimentDto = new ImpedimentDto("Test Impediment")
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _impedimentRepositoryMock
-            .Setup(repo => repo.GetImpedimentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetImpedimentById(It.IsAny<Guid>()))
             .ReturnsAsync(impedimentDto);
 
-        var query = new GetImpedimentByIdQuery(Ulid.NewUlid());
+        var query = new GetImpedimentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetImpedimentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.Impediment);
-        _impedimentRepositoryMock.Verify(repo => repo.GetImpedimentById(It.IsAny<Ulid>()), Times.Once);
+        _impedimentRepositoryMock.Verify(repo => repo.GetImpedimentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetImpedimentByIdQueryHandlerTest
     {
         // Arrange
         _impedimentRepositoryMock
-            .Setup(repo => repo.GetImpedimentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetImpedimentById(It.IsAny<Guid>()))
             .ReturnsAsync((ImpedimentDto?)null);
 
-        var query = new GetImpedimentByIdQuery(Ulid.NewUlid());
+        var query = new GetImpedimentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetImpedimentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.Impediment);
-        _impedimentRepositoryMock.Verify(repo => repo.GetImpedimentById(It.IsAny<Ulid>()), Times.Once);
+        _impedimentRepositoryMock.Verify(repo => repo.GetImpedimentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetImpedimentByIdQuery(Ulid.Empty);
+        var query = new GetImpedimentByIdQuery(Guid.Empty);
         var validator = new GetImpedimentByIdQueryValidator();
 
         // Act

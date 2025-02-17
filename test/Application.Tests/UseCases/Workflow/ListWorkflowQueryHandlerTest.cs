@@ -19,12 +19,12 @@ public class ListWorkflowQueryHandlerTest
         {
             new("Test Workflow 1", 1)
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
             new("Test Workflow 2", 2)
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

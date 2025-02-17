@@ -2,17 +2,18 @@ namespace Domain.Entities;
 
 public sealed class Impediment : BaseEntity
 {
-    public string? Name { get; private set; }
+    public string? Name { get; set; }
 
-    public static Impediment Create(string? name, Ulid id = default)
+    public static Impediment Create(string? name, Guid id = default)
     {
-        return new Impediment
+        var impediment = new Impediment
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Name = name,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        impediment.Name = name;
+        impediment.Active = true;
+        return impediment;
     }
 
     public static Impediment Update(Impediment obj, string? name)

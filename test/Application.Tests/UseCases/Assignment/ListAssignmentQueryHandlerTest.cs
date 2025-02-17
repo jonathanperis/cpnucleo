@@ -17,14 +17,14 @@ public class ListAssignmentQueryHandlerTest
         // Arrange
         var assignments = new List<AssignmentDto>
         {
-            new("Test Assignment 1", "Description 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test Assignment 1", "Description 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new("Test Assignment 2", "Description 2", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 3, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test Assignment 2", "Description 2", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

@@ -14,7 +14,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         return await connection.ExecuteAsync(sql, new { user.Id, user.Name, user.Login, user.Password, user.Salt, user.CreatedAt, user.Active }) == 1;
     }
 
-    public async Task<UserDto?> GetUserById(Ulid id)
+    public async Task<User?> GetUserById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -24,10 +24,10 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<UserDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Id = id });
     }
 
-    public async Task<List<UserDto>?> ListUsers()
+    public async Task<List<User>?> ListUsers()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,10 +37,10 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<UserDto>(sql)).AsList();
+        return (await connection.QueryAsync<User>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveUser(Ulid id)
+    public async Task<bool> RemoveUser(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -55,7 +55,7 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateUser(Ulid id, string name, string password, string salt)
+    public async Task<bool> UpdateUser(Guid id, string name, string password, string salt)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

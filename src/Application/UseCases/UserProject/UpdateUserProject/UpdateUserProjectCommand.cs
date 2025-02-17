@@ -1,3 +1,3 @@
 namespace Application.UseCases.UserProject.UpdateUserProject;
 
-public sealed record UpdateUserProjectCommand(Ulid Id, Ulid UserId, Ulid ProjectId) : BaseCommand, IRequest<OperationResult>;
+public sealed record UpdateUserProjectCommand(Guid Id, Guid UserId, Guid ProjectId) : BaseCommand, IRequest<OperationResult>;

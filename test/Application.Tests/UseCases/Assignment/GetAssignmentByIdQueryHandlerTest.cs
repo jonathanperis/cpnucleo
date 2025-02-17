@@ -15,17 +15,17 @@ public class GetAssignmentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAssignment_WhenAssignmentExists()
     {
         // Arrange
-        var assignmentDto = new AssignmentDto("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+        var assignmentDto = new AssignmentDto("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _assignmentRepositoryMock
-            .Setup(repo => repo.GetAssignmentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAssignmentById(It.IsAny<Guid>()))
             .ReturnsAsync(assignmentDto);
 
-        var query = new GetAssignmentByIdQuery(Ulid.NewUlid());
+        var query = new GetAssignmentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetAssignmentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.Assignment);
-        _assignmentRepositoryMock.Verify(repo => repo.GetAssignmentById(It.IsAny<Ulid>()), Times.Once);
+        _assignmentRepositoryMock.Verify(repo => repo.GetAssignmentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetAssignmentByIdQueryHandlerTest
     {
         // Arrange
         _assignmentRepositoryMock
-            .Setup(repo => repo.GetAssignmentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAssignmentById(It.IsAny<Guid>()))
             .ReturnsAsync((AssignmentDto?)null);
 
-        var query = new GetAssignmentByIdQuery(Ulid.NewUlid());
+        var query = new GetAssignmentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetAssignmentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.Assignment);
-        _assignmentRepositoryMock.Verify(repo => repo.GetAssignmentById(It.IsAny<Ulid>()), Times.Once);
+        _assignmentRepositoryMock.Verify(repo => repo.GetAssignmentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetAssignmentByIdQuery(Ulid.Empty);
+        var query = new GetAssignmentByIdQuery(Guid.Empty);
         var validator = new GetAssignmentByIdQueryValidator();
 
         // Act

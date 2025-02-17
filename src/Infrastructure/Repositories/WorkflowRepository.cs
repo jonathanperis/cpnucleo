@@ -14,7 +14,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
         return await connection.ExecuteAsync(sql, new { workflow.Id, workflow.Name, workflow.Order, workflow.CreatedAt, workflow.Active }) == 1;
     }
 
-    public async Task<WorkflowDto?> GetWorkflowById(Ulid id)
+    public async Task<Workflow?> GetWorkflowById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -24,10 +24,10 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<WorkflowDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Workflow>(sql, new { Id = id });
     }
 
-    public async Task<List<WorkflowDto>?> ListWorkflow()
+    public async Task<List<Workflow>?> ListWorkflow()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -37,10 +37,10 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<WorkflowDto>(sql)).AsList();
+        return (await connection.QueryAsync<Workflow>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveWorkflow(Ulid id)
+    public async Task<bool> RemoveWorkflow(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -55,7 +55,7 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateWorkflow(Ulid id, string name, byte order)
+    public async Task<bool> UpdateWorkflow(Guid id, string name, byte order)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

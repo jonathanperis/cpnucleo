@@ -12,8 +12,8 @@ public class RemoveOrganizationCommandHandlerTest
 
         _organizations =
         [
-            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Ulid.NewUlid()),
-            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Ulid.NewUlid())
+            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Guid.NewGuid()),
+            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.Organizations).ReturnsDbSet(_organizations);
@@ -59,7 +59,7 @@ public class RemoveOrganizationCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenOrganizationDoesNotExist()
     {
         // Arrange
-        var organizationId = Ulid.NewUlid();
+        var organizationId = Guid.NewGuid();
         var command = new RemoveOrganizationCommand(organizationId);
 
         // Act
@@ -74,7 +74,7 @@ public class RemoveOrganizationCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new RemoveOrganizationCommand(Ulid.Empty);
+        var command = new RemoveOrganizationCommand(Guid.Empty);
         var validator = new RemoveOrganizationCommandValidator();
 
         // Act

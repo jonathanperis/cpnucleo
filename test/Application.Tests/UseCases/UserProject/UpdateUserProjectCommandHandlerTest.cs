@@ -12,8 +12,8 @@ public class UpdateUserProjectCommandHandlerTest
 
         _userProjects =
         [
-            Domain.Entities.UserProject.Create(Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid()),
-            Domain.Entities.UserProject.Create(Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+            Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.UserProjects).ReturnsDbSet(_userProjects);
@@ -26,7 +26,7 @@ public class UpdateUserProjectCommandHandlerTest
     {
         // Arrange
         var userProject = _userProjects.First();
-        var command = new UpdateUserProjectCommand(userProject.Id, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateUserProjectCommand(userProject.Id, Guid.NewGuid(), Guid.NewGuid());
 
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
@@ -45,7 +45,7 @@ public class UpdateUserProjectCommandHandlerTest
     {
         // Arrange
         var userProject = _userProjects.First();
-        var command = new UpdateUserProjectCommand(userProject.Id, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateUserProjectCommand(userProject.Id, Guid.NewGuid(), Guid.NewGuid());
 
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
@@ -61,7 +61,7 @@ public class UpdateUserProjectCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenUserProjectDoesNotExist()
     {
         // Arrange
-        var command = new UpdateUserProjectCommand(Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateUserProjectCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -75,7 +75,7 @@ public class UpdateUserProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserProjectCommand(Ulid.Empty, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateUserProjectCommand(Guid.Empty, Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateUserProjectCommandValidator();
 
         // Act
@@ -90,7 +90,7 @@ public class UpdateUserProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenUserIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserProjectCommand(Ulid.NewUlid(), Ulid.Empty, Ulid.NewUlid());
+        var command = new UpdateUserProjectCommand(Guid.NewGuid(), Guid.Empty, Guid.NewGuid());
         var validator = new UpdateUserProjectCommandValidator();
 
         // Act
@@ -105,7 +105,7 @@ public class UpdateUserProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenProjectIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserProjectCommand(Ulid.NewUlid(), Ulid.NewUlid(), Ulid.Empty);
+        var command = new UpdateUserProjectCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.Empty);
         var validator = new UpdateUserProjectCommandValidator();
 
         // Act

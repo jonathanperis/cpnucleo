@@ -20,7 +20,7 @@ public static class OrganizationModule
             };
         });
 
-        group.MapGet("/{id}", async (Ulid id, ISender sender) =>
+        group.MapGet("/{id}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetOrganizationByIdQuery(id));
 
@@ -44,7 +44,7 @@ public static class OrganizationModule
             };
         });
 
-        group.MapPut("/{id}", async (Ulid id, UpdateOrganizationCommand command, ISender sender) =>
+        group.MapPut("/{id}", async (Guid id, UpdateOrganizationCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -56,7 +56,7 @@ public static class OrganizationModule
             };
         });
 
-        group.MapDelete("/{id}", async (Ulid id, ISender sender) =>
+        group.MapDelete("/{id}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new RemoveOrganizationCommand(id));
 

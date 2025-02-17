@@ -2,24 +2,25 @@ namespace Domain.Entities;
 
 public sealed class UserProject : BaseEntity
 {
-    public Ulid UserId { get; private set; }
-    public Ulid ProjectId { get; private set; }
-    public User? User { get; private set; }
-    public Project? Project { get; private set; }
+    public Guid UserId { get; set; }
+    public Guid ProjectId { get; set; }
+    public User? User { get; set; }
+    public Project? Project { get; set; }
 
-    public static UserProject Create(Ulid userId, Ulid projectId, Ulid id = default)
+    public static UserProject Create(Guid userId, Guid projectId, Guid id = default)
     {
-        return new UserProject
+        var project = new UserProject
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            UserId = userId,
-            ProjectId = projectId,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        project.UserId = userId;
+        project.ProjectId = projectId;
+        project.Active = true;
+        return project;
     }
 
-    public static UserProject Update(UserProject obj, Ulid userId, Ulid projectId)
+    public static UserProject Update(UserProject obj, Guid userId, Guid projectId)
     {
         obj.UserId = userId;
         obj.ProjectId = projectId;

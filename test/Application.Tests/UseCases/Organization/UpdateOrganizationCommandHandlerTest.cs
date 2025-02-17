@@ -12,8 +12,8 @@ public class UpdateOrganizationCommandHandlerTest
 
         _organizations =
         [
-            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Ulid.NewUlid()),
-            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Ulid.NewUlid())
+            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Guid.NewGuid()),
+            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.Organizations).ReturnsDbSet(_organizations);
@@ -61,7 +61,7 @@ public class UpdateOrganizationCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenOrganizationDoesNotExist()
     {
         // Arrange
-        var command = new UpdateOrganizationCommand(Ulid.NewUlid(), "Updated Organization", "Updated Description");
+        var command = new UpdateOrganizationCommand(Guid.NewGuid(), "Updated Organization", "Updated Description");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -75,7 +75,7 @@ public class UpdateOrganizationCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateOrganizationCommand(Ulid.Empty, "Updated Organization", "Updated Description");
+        var command = new UpdateOrganizationCommand(Guid.Empty, "Updated Organization", "Updated Description");
         var validator = new UpdateOrganizationCommandValidator();
 
         // Act
@@ -90,7 +90,7 @@ public class UpdateOrganizationCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateOrganizationCommand(Ulid.NewUlid(), string.Empty, "Updated Description");
+        var command = new UpdateOrganizationCommand(Guid.NewGuid(), string.Empty, "Updated Description");
         var validator = new UpdateOrganizationCommandValidator();
 
         // Act
@@ -105,7 +105,7 @@ public class UpdateOrganizationCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new UpdateOrganizationCommand(Ulid.NewUlid(), "Updated Organization", string.Empty);
+        var command = new UpdateOrganizationCommand(Guid.NewGuid(), "Updated Organization", string.Empty);
         var validator = new UpdateOrganizationCommandValidator();
 
         // Act

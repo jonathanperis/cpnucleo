@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250216012047_InitiaDblMigration")]
+    [Migration("20250217150910_InitiaDblMigration")]
     partial class InitiaDblMigration
     {
         /// <inheritdoc />
@@ -27,8 +27,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Appointment", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -36,9 +36,8 @@ namespace Infrastructure.Migrations
                     b.Property<byte>("AmountHours")
                         .HasColumnType("smallint");
 
-                    b.Property<byte[]>("AssignmentId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("AssignmentId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -55,9 +54,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("UserId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -72,8 +70,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Assignment", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -81,9 +79,8 @@ namespace Infrastructure.Migrations
                     b.Property<byte>("AmountHours")
                         .HasColumnType("smallint");
 
-                    b.Property<byte[]>("AssignmentTypeId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("AssignmentTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -100,9 +97,8 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("ProjectId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -110,13 +106,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("UserId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.Property<byte[]>("WorkflowId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("WorkflowId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -135,15 +129,14 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.AssignmentImpediment", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
 
-                    b.Property<byte[]>("AssignmentId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("AssignmentId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -154,9 +147,8 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("ImpedimentId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("ImpedimentId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -174,8 +166,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.AssignmentType", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -201,8 +193,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Impediment", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -228,8 +220,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Organization", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -258,8 +250,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Project", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -273,9 +265,8 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("OrganizationId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -291,8 +282,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -327,15 +318,14 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.UserAssignment", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
 
-                    b.Property<byte[]>("AssignmentId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("AssignmentId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -346,9 +336,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("UserId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -363,8 +352,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.UserProject", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -375,16 +364,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("ProjectId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("UserId")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -399,8 +386,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Workflow", b =>
                 {
-                    b.Property<byte[]>("Id")
-                        .HasColumnType("bytea");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");

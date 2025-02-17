@@ -1,4 +1,4 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record OrganizationDto : BaseDto
 {
@@ -7,13 +7,14 @@ public sealed record OrganizationDto : BaseDto
 
     public static implicit operator OrganizationDto(Organization entity)
     {
-        return new()
+        var dto = new OrganizationDto()
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Name = entity.Name,
-            Description = entity.Description
+            CreatedAt = entity.CreatedAt
         };
+        dto.Name = entity.Name;
+        dto.Description = entity.Description;
+        return dto;
     }
 
     public static implicit operator Organization(OrganizationDto dto)

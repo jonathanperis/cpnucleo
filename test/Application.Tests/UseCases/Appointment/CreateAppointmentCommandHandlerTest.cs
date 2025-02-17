@@ -21,7 +21,7 @@ public class CreateAppointmentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -38,7 +38,7 @@ public class CreateAppointmentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -53,7 +53,7 @@ public class CreateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new CreateAppointmentCommand(string.Empty, DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new CreateAppointmentCommand(string.Empty, DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid());
         var validator = new CreateAppointmentCommandValidator();
 
         // Act
@@ -68,7 +68,7 @@ public class CreateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenKeepDateIsEmpty()
     {
         // Arrange
-        var command = new CreateAppointmentCommand("Test Appointment", default, 1, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new CreateAppointmentCommand("Test Appointment", default, 1, Guid.NewGuid(), Guid.NewGuid());
         var validator = new CreateAppointmentCommandValidator();
 
         // Act
@@ -83,7 +83,7 @@ public class CreateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenAmountHoursIsZero()
     {
         // Arrange
-        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 0, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 0, Guid.NewGuid(), Guid.NewGuid());
         var validator = new CreateAppointmentCommandValidator();
 
         // Act
@@ -98,7 +98,7 @@ public class CreateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenAssignmentIdIsEmpty()
     {
         // Arrange
-        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Ulid.Empty, Ulid.NewUlid());
+        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Guid.Empty, Guid.NewGuid());
         var validator = new CreateAppointmentCommandValidator();
 
         // Act
@@ -113,7 +113,7 @@ public class CreateAppointmentCommandHandlerTest
     public void Handle_ShouldFail_WhenUserIdIsEmpty()
     {
         // Arrange
-        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.Empty);
+        var command = new CreateAppointmentCommand("Test Appointment", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.Empty);
         var validator = new CreateAppointmentCommandValidator();
 
         // Act

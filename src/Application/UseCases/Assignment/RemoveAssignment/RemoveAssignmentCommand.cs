@@ -1,3 +1,3 @@
 namespace Application.UseCases.Assignment.RemoveAssignment;
 
-public sealed record RemoveAssignmentCommand(Ulid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveAssignmentCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

@@ -2,41 +2,42 @@ namespace Domain.Entities;
 
 public sealed class Appointment : BaseEntity
 {
-    public string? Description { get; private set; }
-    public DateTime KeepDate { get; private set; }
-    public byte AmountHours { get; private set; }
+    public string? Description { get; set; }
+    public DateTime KeepDate { get; set; }
+    public byte AmountHours { get; set; }
 
-    public Ulid AssignmentId { get; private set; }
-    public Assignment? Assignment { get; private set; }
-    public Ulid UserId { get; private set; }
-    public User? User { get; private set; }
+    public Guid AssignmentId { get; set; }
+    public Assignment? Assignment { get; set; }
+    public Guid UserId { get; set; }
+    public User? User { get; set; }
 
     public static Appointment Create(string? description,
                                    DateTime keepDate,
                                    byte amountHours,
-                                   Ulid assignmentId,
-                                   Ulid userId,
-                                   Ulid id = default)
+                                   Guid assignmentId,
+                                   Guid userId,
+                                   Guid id = default)
     {
-        return new Appointment
+        var appointment = new Appointment
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Description = description,
-            KeepDate = keepDate,
-            AmountHours = amountHours,
-            AssignmentId = assignmentId,
-            UserId = userId,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        appointment.Description = description;
+        appointment.KeepDate = keepDate;
+        appointment.AmountHours = amountHours;
+        appointment.AssignmentId = assignmentId;
+        appointment.UserId = userId;
+        appointment.Active = true;
+        return appointment;
     }
 
     public static Appointment Update(Appointment obj,
                                    string? description,
                                    DateTime keepDate,
                                    byte amountHours,
-                                   Ulid assignmentId,
-                                   Ulid userId)
+                                   Guid assignmentId,
+                                   Guid userId)
     {
         obj.Description = description;
         obj.KeepDate = keepDate;

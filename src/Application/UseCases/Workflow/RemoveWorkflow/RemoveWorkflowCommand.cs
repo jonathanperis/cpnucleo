@@ -1,3 +1,3 @@
 namespace Application.UseCases.Workflow.RemoveWorkflow;
 
-public sealed record RemoveWorkflowCommand(Ulid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveWorkflowCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

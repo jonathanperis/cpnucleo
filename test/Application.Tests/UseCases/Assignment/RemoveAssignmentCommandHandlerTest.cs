@@ -13,9 +13,9 @@ public class RemoveAssignmentCommandHandlerTest
         _assignments =
         [
             Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(1), 2, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid()),
+                DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
             Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(2), 3, Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid(), Ulid.NewUlid())
+                DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.Assignments).ReturnsDbSet(_assignments);
@@ -61,7 +61,7 @@ public class RemoveAssignmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentDoesNotExist()
     {
         // Arrange
-        var assignmentId = Ulid.NewUlid();
+        var assignmentId = Guid.NewGuid();
         var command = new RemoveAssignmentCommand(assignmentId);
 
         // Act
@@ -76,7 +76,7 @@ public class RemoveAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new RemoveAssignmentCommand(Ulid.Empty);
+        var command = new RemoveAssignmentCommand(Guid.Empty);
         var validator = new RemoveAssignmentCommandValidator();
 
         // Act

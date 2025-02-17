@@ -59,7 +59,7 @@ public class RemoveUserCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenUserDoesNotExist()
     {
         // Arrange
-        var userId = Ulid.NewUlid();
+        var userId = Guid.NewGuid();
         var command = new RemoveUserCommand(userId);
 
         // Act
@@ -74,7 +74,7 @@ public class RemoveUserCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new RemoveUserCommand(Ulid.Empty);
+        var command = new RemoveUserCommand(Guid.Empty);
         var validator = new RemoveUserCommandValidator();
 
         // Act

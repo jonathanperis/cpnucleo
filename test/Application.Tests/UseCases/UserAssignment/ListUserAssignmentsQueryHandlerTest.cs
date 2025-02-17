@@ -17,14 +17,14 @@ public class ListUserAssignmentsQueryHandlerTest
         // Arrange
         var userAssignments = new List<UserAssignmentDto>
             {
-                new(Ulid.NewUlid(), Ulid.NewUlid())
+                new(Guid.NewGuid(), Guid.NewGuid())
                 {
-                    Id = Ulid.NewUlid(),
+                    Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow
                 },
-                new(Ulid.NewUlid(), Ulid.NewUlid())
+                new(Guid.NewGuid(), Guid.NewGuid())
                 {
-                    Id = Ulid.NewUlid(),
+                    Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow
                 }
             };

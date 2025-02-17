@@ -12,8 +12,8 @@ public class RemoveUserAssignmentCommandHandlerTest
 
         _userAssignments =
         [
-            Domain.Entities.UserAssignment.Create(Ulid.NewUlid(), Ulid.NewUlid()),
-            Domain.Entities.UserAssignment.Create(Ulid.NewUlid(), Ulid.NewUlid())
+            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.UserAssignments).ReturnsDbSet(_userAssignments);
@@ -59,7 +59,7 @@ public class RemoveUserAssignmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenUserAssignmentDoesNotExist()
     {
         // Arrange
-        var userAssignmentId = Ulid.NewUlid();
+        var userAssignmentId = Guid.NewGuid();
         var command = new RemoveUserAssignmentCommand(userAssignmentId);
 
         // Act
@@ -74,7 +74,7 @@ public class RemoveUserAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new RemoveUserAssignmentCommand(Ulid.Empty);
+        var command = new RemoveUserAssignmentCommand(Guid.Empty);
         var validator = new RemoveUserAssignmentCommandValidator();
 
         // Act

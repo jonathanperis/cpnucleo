@@ -1,16 +1,12 @@
+global using Application.Common.Context;
 global using Dapper;
-global using Domain.Common.Dtos;
 global using Domain.Entities;
 global using Domain.Repositories;
 global using Infrastructure.Common.Context;
-global using Infrastructure.Common.Helpers;
 global using Infrastructure.Common.Mappings;
 global using Infrastructure.Repositories;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
-global using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Npgsql;
-global using System.Data;
-global using System.Data.Common;

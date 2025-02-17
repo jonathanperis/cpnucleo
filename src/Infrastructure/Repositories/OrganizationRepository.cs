@@ -15,7 +15,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
         return await connection.ExecuteAsync(sql, new { organization.Id, organization.Name, organization.Description, organization.CreatedAt, organization.Active }) == 1;
     }
 
-    public async Task<OrganizationDto?> GetOrganizationById(Ulid id)
+    public async Task<Organization?> GetOrganizationById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -25,10 +25,10 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<OrganizationDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Organization>(sql, new { Id = id });
     }
 
-    public async Task<List<OrganizationDto>?> ListOrganization()
+    public async Task<List<Organization>?> ListOrganization()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,10 +38,10 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<OrganizationDto>(sql)).AsList();
+        return (await connection.QueryAsync<Organization>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveOrganization(Ulid id)
+    public async Task<bool> RemoveOrganization(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -56,7 +56,7 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateOrganization(Ulid id, string name, string description)
+    public async Task<bool> UpdateOrganization(Guid id, string name, string description)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

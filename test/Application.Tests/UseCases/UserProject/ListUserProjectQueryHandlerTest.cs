@@ -17,14 +17,14 @@ public class ListUserProjectQueryHandlerTest
         // Arrange
         var userProjects = new List<UserProjectDto>
         {
-            new(Ulid.NewUlid(), Ulid.NewUlid())
+            new(Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new(Ulid.NewUlid(), Ulid.NewUlid())
+            new(Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

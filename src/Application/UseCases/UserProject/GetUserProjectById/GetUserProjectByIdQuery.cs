@@ -1,3 +1,3 @@
 namespace Application.UseCases.UserProject.GetUserProjectById;
 
-public sealed record GetUserProjectByIdQuery(Ulid Id) : IRequest<GetUserProjectByIdQueryViewModel>;
+public sealed record GetUserProjectByIdQuery(Guid Id) : IRequest<GetUserProjectByIdQueryViewModel>;

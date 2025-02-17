@@ -1,4 +1,4 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record ImpedimentDto : BaseDto
 {
@@ -6,12 +6,13 @@ public sealed record ImpedimentDto : BaseDto
 
     public static implicit operator ImpedimentDto(Impediment entity)
     {
-        return new ImpedimentDto
+        var dto = new ImpedimentDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Name = entity.Name
+            CreatedAt = entity.CreatedAt
         };
+        dto.Name = entity.Name;
+        return dto;
     }
 
     public static implicit operator Impediment(ImpedimentDto dto)

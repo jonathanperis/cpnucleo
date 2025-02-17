@@ -3,8 +3,8 @@ namespace Domain.Repositories;
 public interface IAssignmentImpedimentRepository
 {
     Task<bool> CreateAssignmentImpediment(AssignmentImpediment assignmentImpediment);
-    Task<AssignmentImpedimentDto?> GetAssignmentImpedimentById(Ulid id);
-    Task<List<AssignmentImpedimentDto>?> ListAssignmentImpediments();
-    Task<bool> RemoveAssignmentImpediment(Ulid id);
-    Task<bool> UpdateAssignmentImpediment(Ulid id, string description, Ulid assignmentId, Ulid impedimentId);
+    Task<AssignmentImpediment?> GetAssignmentImpedimentById(Guid id);
+    Task<List<AssignmentImpediment>?> ListAssignmentImpediments();
+    Task<bool> RemoveAssignmentImpediment(Guid id);
+    Task<bool> UpdateAssignmentImpediment(Guid id, string description, Guid assignmentId, Guid impedimentId);
 }

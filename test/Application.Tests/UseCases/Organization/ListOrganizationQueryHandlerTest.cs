@@ -19,12 +19,12 @@ public class ListOrganizationQueryHandlerTest
         {
             new("Test Organization 1", "Description 1")
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
             new("Test Organization 2", "Description 2")
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

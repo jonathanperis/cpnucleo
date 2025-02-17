@@ -69,14 +69,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         }
     }
 
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        configurationBuilder
-            .Properties<Ulid>()
-            .HaveConversion<UlidToStringConverter>()
-            .HaveConversion<UlidToBytesConverter>();
-    }
-
     public new async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
     {
         return await base.SaveChangesAsync(cancellationToken) > 0;

@@ -1,3 +1,3 @@
 namespace Application.UseCases.User.UpdateUser;
 
-public sealed record UpdateUserCommand(Ulid Id, string Name, string Password) : BaseCommand, IRequest<OperationResult>;
+public sealed record UpdateUserCommand(Guid Id, string Name, string Password) : BaseCommand, IRequest<OperationResult>;

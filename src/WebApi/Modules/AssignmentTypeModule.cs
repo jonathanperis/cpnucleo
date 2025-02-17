@@ -19,7 +19,7 @@ public static class AssignmentTypeModule
             };
         });
 
-        group.MapGet("/{id}", async (Ulid id, ISender sender) =>
+        group.MapGet("/{id}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetAssignmentTypeByIdQuery(id));
 
@@ -43,7 +43,7 @@ public static class AssignmentTypeModule
             };
         });
 
-        group.MapPut("/{id}", async (Ulid id, UpdateAssignmentTypeCommand command, ISender sender) =>
+        group.MapPut("/{id}", async (Guid id, UpdateAssignmentTypeCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -55,7 +55,7 @@ public static class AssignmentTypeModule
             };
         });
 
-        group.MapDelete("/{id}", async (Ulid id, ISender sender) =>
+        group.MapDelete("/{id}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new RemoveAssignmentTypeCommand(id));
 

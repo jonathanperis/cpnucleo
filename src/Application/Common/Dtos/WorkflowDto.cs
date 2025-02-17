@@ -1,4 +1,4 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record WorkflowDto : BaseDto
 {
@@ -7,13 +7,14 @@ public sealed record WorkflowDto : BaseDto
 
     public static implicit operator WorkflowDto(Workflow entity)
     {
-        return new()
+        var dto = new WorkflowDto()
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Name = entity.Name,
-            Order = entity.Order
+            CreatedAt = entity.CreatedAt
         };
+        dto.Name = entity.Name;
+        dto.Order = entity.Order;
+        return dto;
     }
 
     public static implicit operator Workflow(WorkflowDto dto)

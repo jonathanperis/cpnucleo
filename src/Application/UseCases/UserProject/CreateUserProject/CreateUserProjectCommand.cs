@@ -1,3 +1,3 @@
 namespace Application.UseCases.UserProject.CreateUserProject;
 
-public sealed record CreateUserProjectCommand(Ulid UserId, Ulid ProjectId, Ulid Id = default) : BaseCommand, IRequest<OperationResult>;
+public sealed record CreateUserProjectCommand(Guid UserId, Guid ProjectId, Guid Id = default) : BaseCommand, IRequest<OperationResult>;

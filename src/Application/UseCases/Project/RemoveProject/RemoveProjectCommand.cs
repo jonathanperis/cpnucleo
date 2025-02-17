@@ -1,3 +1,3 @@
 namespace Application.UseCases.Project.RemoveProject;
 
-public sealed record RemoveProjectCommand(Ulid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveProjectCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

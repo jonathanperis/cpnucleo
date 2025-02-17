@@ -15,17 +15,17 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAssignmentImpediment_WhenAssignmentImpedimentExists()
     {
         // Arrange
-        var assignmentImpedimentDto = new AssignmentImpedimentDto("Test AssignmentImpediment", Ulid.NewUlid(), Ulid.NewUlid())
+        var assignmentImpedimentDto = new AssignmentImpedimentDto("Test AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid())
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()))
             .ReturnsAsync(assignmentImpedimentDto);
 
-        var query = new GetAssignmentImpedimentByIdQuery(Ulid.NewUlid());
+        var query = new GetAssignmentImpedimentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.AssignmentImpediment);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.GetAssignmentImpedimentById(It.IsAny<Ulid>()), Times.Once);
+        _assignmentImpedimentRepositoryMock.Verify(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
     {
         // Arrange
         _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()))
             .ReturnsAsync((AssignmentImpedimentDto?)null);
 
-        var query = new GetAssignmentImpedimentByIdQuery(Ulid.NewUlid());
+        var query = new GetAssignmentImpedimentByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.AssignmentImpediment);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.GetAssignmentImpedimentById(It.IsAny<Ulid>()), Times.Once);
+        _assignmentImpedimentRepositoryMock.Verify(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetAssignmentImpedimentByIdQuery(Ulid.Empty);
+        var query = new GetAssignmentImpedimentByIdQuery(Guid.Empty);
         var validator = new GetAssignmentImpedimentByIdQueryValidator();
 
         // Act

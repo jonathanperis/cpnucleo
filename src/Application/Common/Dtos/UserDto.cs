@@ -1,4 +1,4 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record UserDto : BaseDto
 {
@@ -7,13 +7,14 @@ public sealed record UserDto : BaseDto
 
     public static implicit operator UserDto(User entity)
     {
-        return new()
+        var dto = new UserDto()
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Name = entity.Name,
-            Login = entity.Login
+            CreatedAt = entity.CreatedAt
         };
+        dto.Name = entity.Name;
+        dto.Login = entity.Login;
+        return dto;
     }
 
     public static implicit operator User(UserDto dto)

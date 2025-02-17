@@ -1,3 +1,3 @@
 namespace Application.UseCases.Impediment.RemoveImpediment;
 
-public sealed record RemoveImpedimentCommand(Ulid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveImpedimentCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

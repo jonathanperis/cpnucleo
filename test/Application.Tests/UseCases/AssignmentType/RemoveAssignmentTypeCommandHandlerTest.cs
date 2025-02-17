@@ -59,7 +59,7 @@ public class RemoveAssignmentTypeCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentTypeDoesNotExist()
     {
         // Arrange
-        var assignmentTypeId = Ulid.NewUlid();
+        var assignmentTypeId = Guid.NewGuid();
         var command = new RemoveAssignmentTypeCommand(assignmentTypeId);
 
         // Act
@@ -74,7 +74,7 @@ public class RemoveAssignmentTypeCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new RemoveAssignmentTypeCommand(Ulid.Empty);
+        var command = new RemoveAssignmentTypeCommand(Guid.Empty);
         var validator = new RemoveAssignmentTypeCommandValidator();
 
         // Act

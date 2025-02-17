@@ -1,7 +1,7 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public abstract record BaseDto
 {
-    public required Ulid Id { get; init; }
+    public required Guid Id { get; init; }
     public required DateTime CreatedAt { get; init; }
 }

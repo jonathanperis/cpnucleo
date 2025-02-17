@@ -15,7 +15,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
         return await connection.ExecuteAsync(sql, new { assignment.Id, assignment.Name, assignment.Description, assignment.StartDate, assignment.EndDate, assignment.AmountHours, assignment.ProjectId, assignment.WorkflowId, assignment.UserId, assignment.AssignmentTypeId, assignment.CreatedAt, assignment.Active }) == 1;
     }
 
-    public async Task<AssignmentDto?> GetAssignmentById(Ulid id)
+    public async Task<Assignment?> GetAssignmentById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -25,10 +25,10 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
                             WHERE ""Id"" = @Id AND ""Active"" = 1;
                             ";
 
-        return await connection.QueryFirstOrDefaultAsync<AssignmentDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Assignment>(sql, new { Id = id });
     }
 
-    public async Task<List<AssignmentDto>?> ListAssignments()
+    public async Task<List<Assignment>?> ListAssignments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,10 +38,10 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
                             WHERE ""Active"" = 1;
                             ";
 
-        return (await connection.QueryAsync<AssignmentDto>(sql)).AsList();
+        return (await connection.QueryAsync<Assignment>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveAssignment(Ulid id)
+    public async Task<bool> RemoveAssignment(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -56,7 +56,7 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateAssignment(Ulid id, string name, string description, DateTime startDate, DateTime endDate, byte amountHours, Ulid projectId, Ulid workflowId, Ulid userId, Ulid assignmentTypeId)
+    public async Task<bool> UpdateAssignment(Guid id, string name, string description, DateTime startDate, DateTime endDate, byte amountHours, Guid projectId, Guid workflowId, Guid userId, Guid assignmentTypeId)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

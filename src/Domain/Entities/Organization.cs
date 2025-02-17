@@ -2,19 +2,20 @@ namespace Domain.Entities;
 
 public sealed class Organization : BaseEntity
 {
-    public string? Name { get; private set; }
-    public string? Description { get; private set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
 
-    public static Organization Create(string? name, string? description, Ulid id = default)
+    public static Organization Create(string? name, string? description, Guid id = default)
     {
-        return new Organization
+        var organization = new Organization
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Name = name,
-            Description = description,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        organization.Name = name;
+        organization.Description = description;
+        organization.Active = true;
+        return organization;
     }
 
     public static Organization Update(Organization obj, string? name, string? description)

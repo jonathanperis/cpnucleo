@@ -19,12 +19,12 @@ public class ListImpedimentQueryHandlerTest
         {
             new("Test Impediment 1")
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
             new("Test Impediment 2")
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

@@ -4,8 +4,8 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services)
     {
-        // Dapper.SqlMapper.AddTypeHandler(typeof(Ulid), new BinaryUlidHandler());
-        // Dapper.SqlMapper.AddTypeHandler(typeof(Ulid), new StringUlidHandler());
+        // Dapper.SqlMapper.AddTypeHandler(typeof(Guid), new BinaryGuidHandler());
+        // Dapper.SqlMapper.AddTypeHandler(typeof(Guid), new StringGuidHandler());
 
         // Ef Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();

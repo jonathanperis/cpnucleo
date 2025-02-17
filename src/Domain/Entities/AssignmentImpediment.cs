@@ -2,31 +2,32 @@ namespace Domain.Entities;
 
 public sealed class AssignmentImpediment : BaseEntity
 {
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
 
-    public Ulid AssignmentId { get; private set; }
-    public Assignment? Assignment { get; private set; }
-    public Ulid ImpedimentId { get; private set; }
-    public Impediment? Impediment { get; private set; }
+    public Guid AssignmentId { get; set; }
+    public Assignment? Assignment { get; set; }
+    public Guid ImpedimentId { get; set; }
+    public Impediment? Impediment { get; set; }
 
     public static AssignmentImpediment Create(string? description, 
-                                            Ulid assignmentId, 
-                                            Ulid impedimentId, Ulid id = default)
+                                            Guid assignmentId, 
+                                            Guid impedimentId, Guid id = default)
     {
-        return new AssignmentImpediment
+        var impediment = new AssignmentImpediment
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Description = description,
-            AssignmentId = assignmentId,
-            ImpedimentId = impedimentId,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        impediment.Description = description;
+        impediment.AssignmentId = assignmentId;
+        impediment.ImpedimentId = impedimentId;
+        impediment.Active = true;
+        return impediment;
     }
 
     public static AssignmentImpediment Update(AssignmentImpediment obj, 
                                         string? description, 
-                                        Ulid assignmentId, Ulid impedimentId)
+                                        Guid assignmentId, Guid impedimentId)
     {
         obj.Description = description;
         obj.AssignmentId = assignmentId;

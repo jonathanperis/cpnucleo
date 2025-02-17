@@ -3,8 +3,8 @@ namespace Domain.Repositories;
 public interface IOrganizationRepository
 {
     Task<bool> CreateOrganization(Organization organization);
-    Task<OrganizationDto?> GetOrganizationById(Ulid id);
-    Task<List<OrganizationDto>?> ListOrganization();
-    Task<bool> RemoveOrganization(Ulid id);
-    Task<bool> UpdateOrganization(Ulid id, string name, string description);
+    Task<Organization?> GetOrganizationById(Guid id);
+    Task<List<Organization>?> ListOrganization();
+    Task<bool> RemoveOrganization(Guid id);
+    Task<bool> UpdateOrganization(Guid id, string name, string description);
 }

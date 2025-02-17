@@ -1,3 +1,3 @@
 namespace Application.UseCases.AssignmentImpediment.RemoveAssignmentImpediment;
 
-public sealed record RemoveAssignmentImpedimentCommand(Ulid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveAssignmentImpedimentCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

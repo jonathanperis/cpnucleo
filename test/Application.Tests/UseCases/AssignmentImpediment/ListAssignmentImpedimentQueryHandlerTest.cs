@@ -17,14 +17,14 @@ public class ListAssignmentImpedimentQueryHandlerTest
         // Arrange
         var assignmentImpediments = new List<AssignmentImpedimentDto>
         {
-            new("Test AssignmentImpediment 1", Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new("Test AssignmentImpediment 2", Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

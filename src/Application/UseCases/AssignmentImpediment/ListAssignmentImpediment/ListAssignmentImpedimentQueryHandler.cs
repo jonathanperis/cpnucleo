@@ -9,6 +9,8 @@ public sealed class ListAssignmentImpedimentQueryHandler(IAssignmentImpedimentRe
         var operationResult = assignmentImpediments is not null ? OperationResult.Success : OperationResult.NotFound;
         var assignmentImpedimentsList = assignmentImpediments ?? [];  // Return an empty list if no assignment impediments are found
 
-        return new ListAssignmentImpedimentQueryViewModel(operationResult, assignmentImpedimentsList);
+        var result = assignmentImpedimentsList.Select(assignmentImpediment => (AssignmentImpedimentDto)assignmentImpediment).ToList();
+
+        return new ListAssignmentImpedimentQueryViewModel(operationResult, result);
     }
 }

@@ -1,4 +1,4 @@
-namespace Infrastructure.Common.Context;
+namespace Application.Common.Context;
 
 public interface IApplicationDbContext
 {

@@ -1,4 +1,4 @@
-namespace Domain.Common.Dtos;
+namespace Application.Common.Dtos;
 
 public sealed record AssignmentTypeDto : BaseDto
 {
@@ -6,12 +6,13 @@ public sealed record AssignmentTypeDto : BaseDto
 
     public static implicit operator AssignmentTypeDto(AssignmentType entity)
     {
-        return new AssignmentTypeDto
+        var dto = new AssignmentTypeDto
         {
             Id = entity.Id,
-            CreatedAt = entity.CreatedAt,
-            Name = entity.Name
+            CreatedAt = entity.CreatedAt
         };
+        dto.Name = entity.Name;
+        return dto;
     }
 
     public static implicit operator AssignmentType(AssignmentTypeDto dto)

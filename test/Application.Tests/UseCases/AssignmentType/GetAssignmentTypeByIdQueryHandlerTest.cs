@@ -17,15 +17,15 @@ public class GetAssignmentTypeByIdQueryHandlerTest
         // Arrange
         var assignmentTypeDto = new AssignmentTypeDto("Test AssignmentType")
         {
-            Id = Ulid.NewUlid(),
+            Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
         };
 
         _assignmentTypeRepositoryMock
-            .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()))
             .ReturnsAsync(assignmentTypeDto);
 
-        var query = new GetAssignmentTypeByIdQuery(Ulid.NewUlid());
+        var query = new GetAssignmentTypeByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -33,7 +33,7 @@ public class GetAssignmentTypeByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result.OperationResult);
         Assert.NotNull(result.AssignmentType);
-        _assignmentTypeRepositoryMock.Verify(repo => repo.GetAssignmentTypeById(It.IsAny<Ulid>()), Times.Once);
+        _assignmentTypeRepositoryMock.Verify(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -41,10 +41,10 @@ public class GetAssignmentTypeByIdQueryHandlerTest
     {
         // Arrange
         _assignmentTypeRepositoryMock
-            .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Ulid>()))
+            .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()))
             .ReturnsAsync((AssignmentTypeDto?)null);
 
-        var query = new GetAssignmentTypeByIdQuery(Ulid.NewUlid());
+        var query = new GetAssignmentTypeByIdQuery(Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -52,14 +52,14 @@ public class GetAssignmentTypeByIdQueryHandlerTest
         // Assert
         Assert.Equal(OperationResult.NotFound, result.OperationResult);
         Assert.Null(result.AssignmentType);
-        _assignmentTypeRepositoryMock.Verify(repo => repo.GetAssignmentTypeById(It.IsAny<Ulid>()), Times.Once);
+        _assignmentTypeRepositoryMock.Verify(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var query = new GetAssignmentTypeByIdQuery(Ulid.Empty);
+        var query = new GetAssignmentTypeByIdQuery(Guid.Empty);
         var validator = new GetAssignmentTypeByIdQueryValidator();
 
         // Act

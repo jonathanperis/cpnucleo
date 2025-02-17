@@ -15,7 +15,7 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
         return await connection.ExecuteAsync(sql, new { appointment.Id, appointment.Description, appointment.KeepDate, appointment.AmountHours, appointment.AssignmentId, appointment.UserId, appointment.CreatedAt, appointment.Active }) == 1;
     }
 
-    public async Task<AppointmentDto?> GetAppointmentById(Ulid id)
+    public async Task<Appointment?> GetAppointmentById(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -25,10 +25,10 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
                            WHERE "Id" = @Id AND "Active" = true;
                            """;
 
-        return await connection.QueryFirstOrDefaultAsync<AppointmentDto>(sql, new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Appointment>(sql, new { Id = id });
     }
 
-    public async Task<List<AppointmentDto>?> ListAppointments()
+    public async Task<List<Appointment>?> ListAppointments()
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -38,10 +38,10 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
                            WHERE "Active" = true;
                            """;
 
-        return (await connection.QueryAsync<AppointmentDto>(sql)).AsList();
+        return (await connection.QueryAsync<Appointment>(sql)).AsList();
     }
 
-    public async Task<bool> RemoveAppointment(Ulid id)
+    public async Task<bool> RemoveAppointment(Guid id)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 
@@ -56,7 +56,7 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateAppointment(Ulid id, string description, DateTime keepDate, byte amountHours, Ulid assignmentId, Ulid userId)
+    public async Task<bool> UpdateAppointment(Guid id, string description, DateTime keepDate, byte amountHours, Guid assignmentId, Guid userId)
     {
         await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
 

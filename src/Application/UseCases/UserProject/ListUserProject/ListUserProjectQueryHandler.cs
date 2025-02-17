@@ -9,6 +9,8 @@ public sealed class ListUserProjectQueryHandler(IUserProjectRepository userProje
         var operationResult = userProjects is not null ? OperationResult.Success : OperationResult.NotFound;
         var userProjectsList = userProjects ?? [];  // Return an empty list if no user projects are found
 
-        return new ListUserProjectQueryViewModel(operationResult, userProjectsList);
+        var result = userProjectsList.Select(userProject => (UserProjectDto)userProject).ToList();
+
+        return new ListUserProjectQueryViewModel(operationResult, result);
     }
 }

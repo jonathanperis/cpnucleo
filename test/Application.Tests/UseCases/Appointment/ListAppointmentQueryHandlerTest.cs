@@ -17,14 +17,14 @@ public class ListAppointmentQueryHandlerTest
         // Arrange
         var appointments = new List<AppointmentDto>
         {
-            new("Test Appointment 1", DateTime.UtcNow, 1, Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             },
-            new("Test Appointment 2", DateTime.UtcNow, 2, Ulid.NewUlid(), Ulid.NewUlid())
+            new("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
             {
-                Id = Ulid.NewUlid(),
+                Id = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow
             }
         };

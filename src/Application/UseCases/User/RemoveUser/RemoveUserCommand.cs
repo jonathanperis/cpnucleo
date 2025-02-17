@@ -1,3 +1,3 @@
 namespace Application.UseCases.User.RemoveUser;
 
-public sealed record RemoveUserCommand(Ulid Id) : BaseCommand, IRequest<OperationResult>;
+public sealed record RemoveUserCommand(Guid Id) : BaseCommand, IRequest<OperationResult>;

@@ -2,19 +2,20 @@ namespace Domain.Entities;
 
 public sealed class Workflow : BaseEntity
 {
-    public string? Name { get; private set; }
-    public byte Order { get; private set; }
+    public string? Name { get; set; }
+    public byte Order { get; set; }
 
-    public static Workflow Create(string? name, byte order, Ulid id = default)
+    public static Workflow Create(string? name, byte order, Guid id = default)
     {
-        return new Workflow
+        var workflow = new Workflow
         {
-            Id = id == Ulid.Empty ? Ulid.NewUlid() : id,
-            Name = name,
-            Order = order,
-            CreatedAt = DateTime.UtcNow,
-            Active = true
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow
         };
+        workflow.Name = name;
+        workflow.Order = order;
+        workflow.Active = true;
+        return workflow;
     }
 
     public static Workflow Update(Workflow obj, string? name, byte order)

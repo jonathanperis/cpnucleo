@@ -12,8 +12,8 @@ public class UpdateAssignmentImpedimentCommandHandlerTest
 
         _assignmentImpediments =
         [
-            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Ulid.NewUlid(), Ulid.NewUlid()),
-            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Ulid.NewUlid(), Ulid.NewUlid())
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid()),
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
         ];
 
         _dbContextMock.Setup(db => db.AssignmentImpediments).ReturnsDbSet(_assignmentImpediments);
@@ -60,7 +60,7 @@ public class UpdateAssignmentImpedimentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentImpedimentDoesNotExist()
     {
         // Arrange
-        var command = new UpdateAssignmentImpedimentCommand(Ulid.NewUlid(), "Updated AssignmentImpediment", Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentImpedimentCommand(Guid.NewGuid(), "Updated AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -74,7 +74,7 @@ public class UpdateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentImpedimentCommand(Ulid.Empty, "Test AssignmentImpediment", Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentImpedimentCommand(Guid.Empty, "Test AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAssignmentImpedimentCommandValidator();
 
         // Act
@@ -89,7 +89,7 @@ public class UpdateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentImpedimentCommand(Ulid.NewUlid(), string.Empty, Ulid.NewUlid(), Ulid.NewUlid());
+        var command = new UpdateAssignmentImpedimentCommand(Guid.NewGuid(), string.Empty, Guid.NewGuid(), Guid.NewGuid());
         var validator = new UpdateAssignmentImpedimentCommandValidator();
 
         // Act
@@ -104,7 +104,7 @@ public class UpdateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenAssignmentIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentImpedimentCommand(Ulid.NewUlid(), "Test AssignmentImpediment", Ulid.Empty, Ulid.NewUlid());
+        var command = new UpdateAssignmentImpedimentCommand(Guid.NewGuid(), "Test AssignmentImpediment", Guid.Empty, Guid.NewGuid());
         var validator = new UpdateAssignmentImpedimentCommandValidator();
 
         // Act
@@ -119,7 +119,7 @@ public class UpdateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenImpedimentIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentImpedimentCommand(Ulid.NewUlid(), "Test AssignmentImpediment", Ulid.NewUlid(), Ulid.Empty);
+        var command = new UpdateAssignmentImpedimentCommand(Guid.NewGuid(), "Test AssignmentImpediment", Guid.NewGuid(), Guid.Empty);
         var validator = new UpdateAssignmentImpedimentCommandValidator();
 
         // Act

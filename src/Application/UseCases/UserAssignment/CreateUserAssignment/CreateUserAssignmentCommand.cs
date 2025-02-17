@@ -1,3 +1,3 @@
 namespace Application.UseCases.UserAssignment.CreateUserAssignment;
 
-public sealed record CreateUserAssignmentCommand(Ulid UserId, Ulid AssignmentId, Ulid Id = default) : BaseCommand, IRequest<OperationResult>;
+public sealed record CreateUserAssignmentCommand(Guid UserId, Guid AssignmentId, Guid Id = default) : BaseCommand, IRequest<OperationResult>;

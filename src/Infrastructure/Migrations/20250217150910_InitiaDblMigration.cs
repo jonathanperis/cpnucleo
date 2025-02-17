@@ -15,7 +15,7 @@ namespace Infrastructure.Migrations
                 name: "AssignmentTypes",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -31,7 +31,7 @@ namespace Infrastructure.Migrations
                 name: "Impediments",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -47,7 +47,7 @@ namespace Infrastructure.Migrations
                 name: "Organizations",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -64,7 +64,7 @@ namespace Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Login = table.Column<string>(type: "text", nullable: true),
                     Password = table.Column<string>(type: "text", nullable: true),
@@ -83,7 +83,7 @@ namespace Infrastructure.Migrations
                 name: "Workflows",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Order = table.Column<byte>(type: "smallint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -100,9 +100,9 @@ namespace Infrastructure.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    OrganizationId = table.Column<byte[]>(type: "bytea", nullable: false),
+                    OrganizationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -123,16 +123,16 @@ namespace Infrastructure.Migrations
                 name: "Assignments",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AmountHours = table.Column<byte>(type: "smallint", nullable: false),
-                    ProjectId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    WorkflowId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    UserId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    AssignmentTypeId = table.Column<byte[]>(type: "bytea", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    WorkflowId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignmentTypeId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -171,9 +171,9 @@ namespace Infrastructure.Migrations
                 name: "UserProjects",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
-                    UserId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    ProjectId = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -200,12 +200,12 @@ namespace Infrastructure.Migrations
                 name: "Appointments",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     KeepDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AmountHours = table.Column<byte>(type: "smallint", nullable: false),
-                    AssignmentId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    UserId = table.Column<byte[]>(type: "bytea", nullable: false),
+                    AssignmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -232,10 +232,10 @@ namespace Infrastructure.Migrations
                 name: "AssignmentImpediments",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    AssignmentId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    ImpedimentId = table.Column<byte[]>(type: "bytea", nullable: false),
+                    AssignmentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ImpedimentId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -262,9 +262,9 @@ namespace Infrastructure.Migrations
                 name: "UserAssignments",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "bytea", nullable: false),
-                    UserId = table.Column<byte[]>(type: "bytea", nullable: false),
-                    AssignmentId = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignmentId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
