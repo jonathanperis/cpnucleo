@@ -1,0 +1,55 @@
+name: Main Check Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  setup-build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build Application
+        run: dotnet build --configuration Release --no-restore
+
+  container-test:
+    needs: setup-build-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build and Run Docker Container
+        run: |
+          docker build -t cpnucleo-api:latest -f src/WebApi/Dockerfile .
+          docker run -d -p 8080:8080 --name cpnucleo-api cpnucleo-api:latest
+          sleep 10
+
+      - name: Test Healthcheck Endpoint
+        run: |
+          for i in {1..20}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/healthz)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "Healthcheck passed with status $STATUS"
+              exit 0
+            else
+              echo "Healthcheck attempt $i failed with status $STATUS. Retrying..."
+              sleep 2
+            fi
+          done
+          echo "Healthcheck failed after 20 attempts."
+          exit 1
+
+      - name: Cleanup
+        run: docker stop cpnucleo-api && docker rm cpnucleo-api
