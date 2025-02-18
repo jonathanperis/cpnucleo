@@ -33,11 +33,7 @@ COPY . .
 
 WORKDIR "/src/src/WebApi"
 
-# RUN dotnet build "Cpnucleo.API.csproj" -c Release -o /app/build
-
 RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${DB_CONNECTION_STRING}"
-
-RUN dotnet user-secrets list
 
 FROM build AS publish
 

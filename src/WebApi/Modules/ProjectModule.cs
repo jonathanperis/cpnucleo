@@ -2,10 +2,11 @@ namespace WebApi.Modules;
 
 public static class ProjectModule
 {
-    public static void MapProjectEndpoints(this IEndpointRouteBuilder endpoints)
+    public static void MapProjectEndpoints(this IVersionedEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/projects")
             .WithTags("Projects")
+            .HasApiVersion(1.0)
             .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
@@ -18,9 +19,12 @@ public static class ProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.Projects),
             };
-        });
+        })
+        .Produces<IEnumerable<ProjectDto>>()
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
-        group.MapGet("/{id}", async (Guid id, ISender sender) =>
+        group.MapGet("/{id:guid}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetProjectByIdQuery(id));
 
@@ -30,7 +34,10 @@ public static class ProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.Project),
             };
-        });
+        })
+        .Produces<ProjectDto>()
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
         group.MapPost("/", async (CreateProjectCommand command, ISender sender) =>
         {
@@ -42,9 +49,14 @@ public static class ProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Created(),
             };
-        });
+        })
+        .Accepts<CreateProjectCommand>("application/json")
+        //.Produces<ProjectDto>(201)
+        .Produces(201)
+        .Produces(400)
+        .MapToApiVersion(1.0);
 
-        group.MapPut("/{id}", async (Guid id, UpdateProjectCommand command, ISender sender) =>
+        group.MapPatch("/{id:guid}", async (Guid id, UpdateProjectCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -54,9 +66,14 @@ public static class ProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        });
+        })
+        .Accepts<UpdateProjectCommand>("application/json")
+        .Produces(204)
+        .Produces(400)
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
-        group.MapDelete("/{id}", async (Guid id, ISender sender) =>
+        group.MapDelete("/{id:guid}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new RemoveProjectCommand(id));
 
@@ -66,6 +83,8 @@ public static class ProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        });
+        })
+        .Produces(204)
+        .MapToApiVersion(1.0);
     }
 }

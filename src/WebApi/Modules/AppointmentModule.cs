@@ -2,10 +2,11 @@ namespace WebApi.Modules;
 
 public static class AppointmentModule
 {
-    public static void MapAppointmentEndpoints(this IEndpointRouteBuilder endpoints)
+    public static void MapAppointmentEndpoints(this IVersionedEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/appointments")
             .WithTags("Appointments")
+            .HasApiVersion(1.0)
             .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
@@ -18,9 +19,12 @@ public static class AppointmentModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.Appointments),
             };
-        });
+        })
+        .Produces<IEnumerable<AppointmentDto>>()
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
-        group.MapGet("/{id}", async (Guid id, ISender sender) =>
+        group.MapGet("/{id:guid}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetAppointmentByIdQuery(id));
 
@@ -30,7 +34,10 @@ public static class AppointmentModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.Appointment),
             };
-        });
+        })
+        .Produces<AppointmentDto>()
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
         group.MapPost("/", async (CreateAppointmentCommand command, ISender sender) =>
         {
@@ -42,9 +49,14 @@ public static class AppointmentModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Created(),
             };
-        });
+        })
+        .Accepts<CreateAppointmentCommand>("application/json")
+        //.Produces<AppointmentDto>(201)
+        .Produces(201)
+        .Produces(400)
+        .MapToApiVersion(1.0);
 
-        group.MapPut("/{id}", async (Guid id, UpdateAppointmentCommand command, ISender sender) =>
+        group.MapPatch("/{id:guid}", async (Guid id, UpdateAppointmentCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -54,9 +66,14 @@ public static class AppointmentModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        });
+        })
+        .Accepts<UpdateAppointmentCommand>("application/json")
+        .Produces(204)
+        .Produces(400)
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
-        group.MapDelete("/{id}", async (Guid id, ISender sender) =>
+        group.MapDelete("/{id:guid}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new RemoveAppointmentCommand(id));
 
@@ -66,6 +83,8 @@ public static class AppointmentModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        });
+        })
+        .Produces(204)
+        .MapToApiVersion(1.0);
     }
 }

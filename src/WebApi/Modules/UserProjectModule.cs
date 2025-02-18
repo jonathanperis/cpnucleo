@@ -2,10 +2,11 @@ namespace WebApi.Modules;
 
 public static class UserProjectModule
 {
-    public static void MapUserProjectEndpoints(this IEndpointRouteBuilder endpoints)
+    public static void MapUserProjectEndpoints(this IVersionedEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/api/user-projects")
             .WithTags("UserProjects")
+            .HasApiVersion(1.0)
             .RequireAuthorization();
 
         group.MapGet("/", async (ISender sender) =>
@@ -18,9 +19,12 @@ public static class UserProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.UserProjects),
             };
-        });
+        })
+        .Produces<IEnumerable<UserProjectDto>>()
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
-        group.MapGet("/{id}", async (Guid id, ISender sender) =>
+        group.MapGet("/{id:guid}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new GetUserProjectByIdQuery(id));
 
@@ -30,7 +34,10 @@ public static class UserProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Ok(result.UserProject),
             };
-        });
+        })
+        .Produces<UserProjectDto>()
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
         group.MapPost("/", async (CreateUserProjectCommand command, ISender sender) =>
         {
@@ -42,9 +49,14 @@ public static class UserProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.Created(),
             };
-        });
+        })
+        .Accepts<CreateUserProjectCommand>("application/json")
+        //.Produces<UserProjectDto>(201)
+        .Produces(201)
+        .Produces(400)
+        .MapToApiVersion(1.0);
 
-        group.MapPut("/{id}", async (Guid id, UpdateUserProjectCommand command, ISender sender) =>
+        group.MapPatch("/{id:guid}", async (Guid id, UpdateUserProjectCommand command, ISender sender) =>
         {
             var result = await sender.Send(command);
 
@@ -54,9 +66,14 @@ public static class UserProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        });
+        })
+        .Accepts<UpdateUserProjectCommand>("application/json")
+        .Produces(204)
+        .Produces(400)
+        .Produces(404)
+        .MapToApiVersion(1.0);
 
-        group.MapDelete("/{id}", async (Guid id, ISender sender) =>
+        group.MapDelete("/{id:guid}", async (Guid id, ISender sender) =>
         {
             var result = await sender.Send(new RemoveUserProjectCommand(id));
 
@@ -66,6 +83,8 @@ public static class UserProjectModule
                 OperationResult.NotFound => Results.NotFound(),
                 _ => Results.NoContent(),
             };
-        });
+        })
+        .Produces(204)
+        .MapToApiVersion(1.0);
     }
 }

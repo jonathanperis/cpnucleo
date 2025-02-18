@@ -1,10 +1,25 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services
+    .AddApiVersioning(options =>
+    {
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+    })
+    .AddApiExplorer(
+        options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        })
+    .EnableApiVersionBinding();
+    
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cpnucleo Service API", Version = "v1" });
-
+    options.OperationFilter<SwaggerDefaultValues>();
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
@@ -14,7 +29,6 @@ builder.Services.AddSwaggerGen(options =>
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme."
     });
-
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -28,7 +42,7 @@ builder.Services.AddSwaggerGen(options =>
             },
             Array.Empty<string>()
         }
-    });    
+    });
 });
 
 builder.Services.AddAuthorization();
@@ -57,7 +71,17 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+        {
+            var descriptions = app.DescribeApiVersions();
+            foreach (var description in descriptions)
+            {
+                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var name = description.GroupName.ToUpperInvariant();
+                options.SwaggerEndpoint(url, name);
+            }
+        }
+    );
 }
 
 app.UseHttpsRedirection();
@@ -65,16 +89,37 @@ app.UseHsts();
 
 app.MapHealthChecks("/healthz");
 
-app.MapAppointmentEndpoints();
-app.MapAssignmentEndpoints();
-app.MapAssignmentImpedimentEndpoints();
-app.MapAssignmentTypeEndpoints();
-app.MapImpedimentEndpoints();
-app.MapOrganizationEndpoints();
-app.MapProjectEndpoints();
-app.MapUserEndpoints();
-app.MapUserAssignmentEndpoints();
-app.MapUserProjectEndpoints();
-app.MapWorkflowEndpoints();
+app.NewVersionedApi("Appointments")
+    .MapAppointmentEndpoints();
+
+app.NewVersionedApi("Assignments")
+    .MapAssignmentEndpoints();
+
+app.NewVersionedApi("AssignmentImpediments")
+    .MapAssignmentImpedimentEndpoints();
+
+app.NewVersionedApi("AssignmentTypes")
+    .MapAssignmentTypeEndpoints();
+
+app.NewVersionedApi("Impediments")
+    .MapImpedimentEndpoints();
+
+app.NewVersionedApi("Organizations")
+    .MapOrganizationEndpoints();
+
+app.NewVersionedApi("Projects")
+    .MapProjectEndpoints();
+
+app.NewVersionedApi("Users")
+    .MapUserEndpoints();
+
+app.NewVersionedApi("UserAssignments")
+    .MapUserAssignmentEndpoints();
+
+app.NewVersionedApi("UserProjects")
+    .MapUserProjectEndpoints();
+
+app.NewVersionedApi("Workflows")
+    .MapWorkflowEndpoints();
 
 app.Run();

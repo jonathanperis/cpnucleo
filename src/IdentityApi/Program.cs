@@ -3,7 +3,14 @@ var builder = WebApplication.CreateSlimBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cpnucleo Identity API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo 
+    {
+         Title = "Cpnucleo Identity API", 
+         Version = "v1",
+         Description = "A sample project that implements the best praticles when building modern .NET projects",
+         Contact = new OpenApiContact() { Name = "Jonathan Peris", Email = "jonathan.peris@somewhere.com" },
+         License = new OpenApiLicense() { Name = "MIT", Url = new Uri( "https://opensource.org/licenses/MIT" ) }
+    });
 });
 
 builder.Services.AddHealthChecks();
