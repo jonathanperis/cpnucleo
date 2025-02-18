@@ -73,7 +73,9 @@ jobs:
             TRIM=true
             EXTRA_OPTIMIZE=true
             BUILD_ARCHITECTURE=linux-x64
-            DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}
+            BUILD_CONFIGURATION=Release
+          secret-envs	: |
+            ConnectionStrings__DefaultConnection=${{ secrets.DB_CONNECTION_STRING }}
 
   container-test:
     needs: build-push-image

@@ -12,11 +12,11 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     clang zlib1g-dev
 
-ARG AOT=false
-ARG TRIM=true
-ARG EXTRA_OPTIMIZE=false
-ARG BUILD_ARCHITECTURE=linux-arm64
-ARG BUILD_CONFIGURATION=Release
+ARG AOT
+ARG TRIM
+ARG EXTRA_OPTIMIZE
+ARG BUILD_ARCHITECTURE
+ARG BUILD_CONFIGURATION
 
 WORKDIR /src
 

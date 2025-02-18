@@ -4,7 +4,13 @@ services:
   webapi1: &webapi1
     build:
       context: .
-      dockerfile: src/WebAPI/Dockerfile    
+      dockerfile: src/WebAPI/Dockerfile
+      args:
+        AOT: false
+        TRIM: true
+        EXTRA_OPTIMIZE: false
+        BUILD_ARCHITECTURE: linux-arm64
+        BUILD_CONFIGURATION: Release
     hostname: webapi1
     container_name: webapi-1
     depends_on:
@@ -24,7 +30,13 @@ services:
   identityapi:
     build:
       context: .
-      dockerfile: src/IdentityApi/Dockerfile    
+      dockerfile: src/IdentityApi/Dockerfile
+      args:
+        AOT: false
+        TRIM: true
+        EXTRA_OPTIMIZE: false
+        BUILD_ARCHITECTURE: linux-arm64
+        BUILD_CONFIGURATION: Release      
     hostname: identityapi
     container_name: identityapi
     depends_on:
