@@ -67,7 +67,7 @@ jobs:
           context: .
           push: true
           file: ./src/src/WebApi/Dockerfile
-          tags: jonathanperis/cpnucleo-api:latest
+          tags: jonathanperis/cpnucleo-web-api:latest
           build-args: |
             AOT=false
             TRIM=true
@@ -84,7 +84,7 @@ jobs:
 
       - name: Build and Run Docker Container
         run: |
-          docker run -d -p 8080:8080 --name cpnucleo-api jonathanperis/cpnucleo-api:latest
+          docker run -d -p 8080:8080 --name cpnucleo-web-api jonathanperis/cpnucleo-web-api:latest
           sleep 10
 
       - name: Test Healthcheck Endpoint
@@ -103,7 +103,7 @@ jobs:
           exit 1
 
       - name: Cleanup
-        run: docker stop cpnucleo-api && docker rm cpnucleo-api
+        run: docker stop cpnucleo-web-api && docker rm cpnucleo-web-api
 
 #   deploy-image-azure:
 #     runs-on: ubuntu-latest
@@ -119,4 +119,4 @@ jobs:
 #         with:
 #             app-name: 'api-cpnucleo'
 #             publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
-#             images: 'index.docker.io/jonathanperis/cpnucleo-api:latest'
+#             images: 'index.docker.io/jonathanperis/cpnucleo-web-api:latest'

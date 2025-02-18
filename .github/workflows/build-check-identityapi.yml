@@ -51,8 +51,8 @@ jobs:
 
       - name: Build and Run Docker Container
         run: |
-          docker build -t cpnucleo-api:latest -f src/WebApi/Dockerfile .
-          docker run -d -p 8080:8080 --name cpnucleo-api cpnucleo-api:latest
+          docker build -t cpnucleo-identity-api:latest -f src/IdentityApi/Dockerfile .
+          docker run -d -p 8080:8080 --name cpnucleo-web-api cpnucleo-identity-api:latest
           sleep 10
 
       - name: Test Healthcheck Endpoint
@@ -71,4 +71,4 @@ jobs:
           exit 1
 
       - name: Cleanup
-        run: docker stop cpnucleo-api && docker rm cpnucleo-api
+        run: docker stop cpnucleo-identity-api && docker rm cpnucleo-identity-api
