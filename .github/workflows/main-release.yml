@@ -69,7 +69,7 @@ jobs:
           file: ./src/src/WebApi/Dockerfile
           tags: jonathanperis/cpnucleo-api:latest
           build-args: |
-            AOT=true
+            AOT=false
             TRIM=true
             EXTRA_OPTIMIZE=true
             BUILD_ARCHITECTURE=linux-x64
