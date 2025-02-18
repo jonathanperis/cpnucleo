@@ -1,11 +1,9 @@
 namespace Infrastructure.Repositories;
 
-public class UserAssignmentRepository(IConfiguration configuration) : IUserAssignmentRepository
+public class UserAssignmentRepository(NpgsqlConnection connection) : IUserAssignmentRepository
 {
     public async Task<bool> CreateUserAssignment(UserAssignment userAssignment)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "Active")
                            VALUES (@Id, @UserId, @AssignmentId, @CreatedAt, @Active);
@@ -16,8 +14,6 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
 
     public async Task<UserAssignment?> GetUserAssignmentById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "UserAssignments"
@@ -29,8 +25,6 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
 
     public async Task<List<UserAssignment?>?> ListUserAssignments()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "UserAssignments"
@@ -42,8 +36,6 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
 
     public async Task<bool> RemoveUserAssignment(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "UserAssignments"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -57,8 +49,6 @@ public class UserAssignmentRepository(IConfiguration configuration) : IUserAssig
 
     public async Task<bool> UpdateUserAssignment(Guid id, Guid userId, Guid assignmentId)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "UserAssignments"
                            SET "UserId" = @UserId, "AssignmentId" = @AssignmentId, "UpdatedAt" = @UpdatedAt

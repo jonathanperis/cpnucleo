@@ -1,11 +1,9 @@
 namespace Infrastructure.Repositories;
 
-public class WorkflowRepository(IConfiguration configuration) : IWorkflowRepository
+public class WorkflowRepository(NpgsqlConnection connection) : IWorkflowRepository
 {
     public async Task<bool> CreateWorkflow(Workflow workflow)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @Order, @CreatedAt, @Active);
@@ -16,8 +14,6 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
 
     public async Task<Workflow?> GetWorkflowById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "Order", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Workflows"
@@ -29,8 +25,6 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
 
     public async Task<List<Workflow?>?> ListWorkflow()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "Order", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Workflows"
@@ -42,8 +36,6 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
 
     public async Task<bool> RemoveWorkflow(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Workflows"
                            SET "Active" = false, "DeletedAt" = @DeletedAt
@@ -57,8 +49,6 @@ public class WorkflowRepository(IConfiguration configuration) : IWorkflowReposit
 
     public async Task<bool> UpdateWorkflow(Guid id, string name, byte order)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Workflows"
                            SET "Name" = @Name, "Order" = @Order, "UpdatedAt" = @UpdatedAt

@@ -2,15 +2,14 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    public static void AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Dapper.SqlMapper.AddTypeHandler(typeof(Guid), new BinaryGuidHandler());
-        // Dapper.SqlMapper.AddTypeHandler(typeof(Guid), new StringGuidHandler());
-
         // Ef Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
         // Dapper
+        services.AddScoped(_ => new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection")));
+
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IAssignmentRepository, AssignmentRepository>();
         services.AddScoped<IAssignmentImpedimentRepository, AssignmentImpedimentRepository>();
@@ -22,5 +21,11 @@ public static class DependencyInjection
         services.AddScoped<IUserAssignmentRepository, UserAssignmentRepository>();
         services.AddScoped<IUserProjectRepository, UserProjectRepository>();
         services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+    }
+    
+    public static void UseInfrastructure(this IApplicationBuilder app)
+    {
+        app.UseDelta(
+            getConnection: httpContext => httpContext.RequestServices.GetRequiredService<NpgsqlConnection>());
     }
 }

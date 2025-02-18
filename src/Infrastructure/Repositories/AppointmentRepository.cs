@@ -1,12 +1,10 @@
 namespace Infrastructure.Repositories;
 
 //[DapperAot]
-public class AppointmentRepository(IConfiguration configuration) : IAppointmentRepository
+public class AppointmentRepository(NpgsqlConnection connection) : IAppointmentRepository
 {
     public async Task<bool> CreateAppointment(Appointment appointment)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "Active")
                            VALUES (@Id, @Description, @KeepDate, @AmountHours, @AssignmentId, @UserId, @CreatedAt, @Active);
@@ -17,8 +15,6 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
 
     public async Task<Appointment?> GetAppointmentById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Appointments"
@@ -30,8 +26,6 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
 
     public async Task<List<Appointment?>?> ListAppointments()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Appointments"
@@ -43,8 +37,6 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
 
     public async Task<bool> RemoveAppointment(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Appointments"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -58,8 +50,6 @@ public class AppointmentRepository(IConfiguration configuration) : IAppointmentR
 
     public async Task<bool> UpdateAppointment(Guid id, string description, DateTime keepDate, byte amountHours, Guid assignmentId, Guid userId)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Appointments"
                            SET "Description" = @Description, "KeepDate" = @KeepDate, "AmountHours" = @AmountHours, "AssignmentId" = @AssignmentId, "UserId" = @UserId, "UpdatedAt" = @UpdatedAt

@@ -1,12 +1,10 @@
 namespace Infrastructure.Repositories;
 
 //[DapperAot]
-public class OrganizationRepository(IConfiguration configuration) : IOrganizationRepository
+public class OrganizationRepository(NpgsqlConnection connection) : IOrganizationRepository
 {
     public async Task<bool> CreateOrganization(Organization organization)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @Description, @CreatedAt, @Active);
@@ -17,8 +15,6 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
     public async Task<Organization?> GetOrganizationById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "Description", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Organizations"
@@ -30,8 +26,6 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
     public async Task<List<Organization?>?> ListOrganization()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "Description", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Organizations"
@@ -43,8 +37,6 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
     public async Task<bool> RemoveOrganization(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Organizations"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -58,8 +50,6 @@ public class OrganizationRepository(IConfiguration configuration) : IOrganizatio
 
     public async Task<bool> UpdateOrganization(Guid id, string name, string description)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Organizations"
                            SET "Name" = @Name, "Description" = @Description, "UpdatedAt" = @UpdatedAt

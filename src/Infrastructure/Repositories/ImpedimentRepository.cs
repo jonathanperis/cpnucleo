@@ -1,11 +1,9 @@
 namespace Infrastructure.Repositories;
 
-public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRepository
+public class ImpedimentRepository(NpgsqlConnection connection) : IImpedimentRepository
 {
     public async Task<bool> CreateImpediment(Impediment impediment)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @CreatedAt, @Active);
@@ -16,8 +14,6 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
 
     public async Task<Impediment?> GetImpedimentById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Impediments"
@@ -29,8 +25,6 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
 
     public async Task<List<Impediment?>?> ListImpediments()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Impediments"
@@ -42,8 +36,6 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
 
     public async Task<bool> RemoveImpediment(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Impediments"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -57,8 +49,6 @@ public class ImpedimentRepository(IConfiguration configuration) : IImpedimentRep
 
     public async Task<bool> UpdateImpediment(Guid id, string name)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Impediments"
                            SET "Name" = @Name, "UpdatedAt" = @UpdatedAt

@@ -1,12 +1,10 @@
 namespace Infrastructure.Repositories;
 
 //[DapperAot]
-public class AssignmentRepository(IConfiguration configuration) : IAssignmentRepository
+public class AssignmentRepository(NpgsqlConnection connection) : IAssignmentRepository
 {
     public async Task<bool> CreateAssignment(Assignment assignment)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = @"
                             INSERT INTO ""Assignments"" (""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""Active"")
                             VALUES (@Id, @Name, @Description, @StartDate, @EndDate, @AmountHours, @ProjectId, @WorkflowId, @UserId, @AssignmentTypeId, @CreatedAt, @Active);
@@ -17,8 +15,6 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
 
     public async Task<Assignment?> GetAssignmentById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = @"
                             SELECT ""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""UpdatedAt"", ""Active""
                             FROM ""Assignments""
@@ -30,8 +26,6 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
 
     public async Task<List<Assignment?>?> ListAssignments()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = @"
                             SELECT ""Id"", ""Name"", ""Description"", ""StartDate"", ""EndDate"", ""AmountHours"", ""ProjectId"", ""WorkflowId"", ""UserId"", ""AssignmentTypeId"", ""CreatedAt"", ""UpdatedAt"", ""Active""
                             FROM ""Assignments""
@@ -43,8 +37,6 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
 
     public async Task<bool> RemoveAssignment(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = @"
                             UPDATE ""Assignments""
                             SET ""Active"" = 0, ""DeletedAt"" = @DeletedAt
@@ -58,8 +50,6 @@ public class AssignmentRepository(IConfiguration configuration) : IAssignmentRep
 
     public async Task<bool> UpdateAssignment(Guid id, string name, string description, DateTime startDate, DateTime endDate, byte amountHours, Guid projectId, Guid workflowId, Guid userId, Guid assignmentTypeId)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = @"
                             UPDATE ""Assignments""
                             SET ""Name"" = @Name, ""Description"" = @Description, ""StartDate"" = @StartDate, ""EndDate"" = @EndDate, ""AmountHours"" = @AmountHours, ""ProjectId"" = @ProjectId, ""WorkflowId"" = @WorkflowId, ""UserId"" = @UserId, ""AssignmentTypeId"" = @AssignmentTypeId, ""UpdatedAt"" = @UpdatedAt

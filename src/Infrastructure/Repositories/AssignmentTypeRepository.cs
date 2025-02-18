@@ -1,12 +1,10 @@
 namespace Infrastructure.Repositories;
 
 //[DapperAot]
-public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmentTypeRepository
+public class AssignmentTypeRepository(NpgsqlConnection connection) : IAssignmentTypeRepository
 {
     public async Task<bool> CreateAssignmentType(AssignmentType assignmentType)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @CreatedAt, @Active);
@@ -17,8 +15,6 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<AssignmentType?> GetAssignmentTypeById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
                            FROM "AssignmentTypes"
@@ -30,8 +26,6 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<List<AssignmentType?>?> ListAssignmentTypes()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "CreatedAt", "UpdatedAt", "Active"
                            FROM "AssignmentTypes"
@@ -43,8 +37,6 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<bool> RemoveAssignmentType(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "AssignmentTypes"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -58,8 +50,6 @@ public class AssignmentTypeRepository(IConfiguration configuration) : IAssignmen
 
     public async Task<bool> UpdateAssignmentType(Guid id, string name)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "AssignmentTypes"
                            SET "Name" = @Name, "UpdatedAt" = @UpdatedAt

@@ -18,7 +18,7 @@ ARG EXTRA_OPTIMIZE=false
 ARG BUILD_ARCHITECTURE=linux-arm64
 ARG BUILD_CONFIGURATION=Release
 
-ARG DB_CONNECTION_STRING
+# ARG ConnectionStrings__DefaultConnection
 
 WORKDIR /src
 
@@ -33,7 +33,7 @@ COPY . .
 
 WORKDIR "/src/src/WebApi"
 
-RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${DB_CONNECTION_STRING}"
+# RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${ConnectionStrings__DefaultConnection}"
 
 FROM build AS publish
 

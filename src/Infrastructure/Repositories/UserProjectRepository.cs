@@ -1,11 +1,9 @@
 namespace Infrastructure.Repositories;
 
-public class UserProjectRepository(IConfiguration configuration) : IUserProjectRepository
+public class UserProjectRepository(NpgsqlConnection connection) : IUserProjectRepository
 {
     public async Task<bool> CreateUserProject(UserProject userProject)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "Active")
                            VALUES (@Id, @UserId, @ProjectId, @CreatedAt, @Active);
@@ -16,8 +14,6 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
 
     public async Task<UserProject?> GetUserProjectById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "UserProjects"
@@ -29,8 +25,6 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
 
     public async Task<List<UserProject?>?> ListUserProjects()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "UserProjects"
@@ -42,8 +36,6 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
 
     public async Task<bool> RemoveUserProject(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "UserProjects"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -57,8 +49,6 @@ public class UserProjectRepository(IConfiguration configuration) : IUserProjectR
 
     public async Task<bool> UpdateUserProject(Guid id, Guid userId, Guid projectId)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "UserProjects"
                            SET "UserId" = @UserId, "ProjectId" = @ProjectId, "UpdatedAt" = @UpdatedAt

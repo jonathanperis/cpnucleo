@@ -1,12 +1,10 @@
 namespace Infrastructure.Repositories;
 
 //[DapperAot]
-public class ProjectRepository(IConfiguration configuration) : IProjectRepository
+public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
 {
     public async Task<bool> CreateProject(Project project)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @OrganizationId, @CreatedAt, @Active);
@@ -17,8 +15,6 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<Project?> GetProjectById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Projects"
@@ -30,8 +26,6 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<List<Project?>?> ListProjects()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Projects"
@@ -43,8 +37,6 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<bool> RemoveProject(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Projects"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -58,8 +50,6 @@ public class ProjectRepository(IConfiguration configuration) : IProjectRepositor
 
     public async Task<bool> UpdateProject(Guid id, string name, Guid organizationId)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Projects"
                            SET "Name" = @Name, "OrganizationId" = @OrganizationId, "UpdatedAt" = @UpdatedAt

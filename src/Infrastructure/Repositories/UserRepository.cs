@@ -1,11 +1,9 @@
 namespace Infrastructure.Repositories;
 
-public class UserRepository(IConfiguration configuration) : IUserRepository
+public class UserRepository(NpgsqlConnection connection) : IUserRepository
 {
     public async Task<bool> CreateUser(User user)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
                            VALUES (@Id, @Name, @Login, @Password, @Salt, @CreatedAt, @Active);
@@ -16,8 +14,6 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 
     public async Task<User?> GetUserById(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "Login", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Users"
@@ -29,8 +25,6 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 
     public async Task<List<User?>?> ListUsers()
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            SELECT "Id", "Name", "Login", "CreatedAt", "UpdatedAt", "Active"
                            FROM "Users"
@@ -42,8 +36,6 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 
     public async Task<bool> RemoveUser(Guid id)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Users"
                            SET "Active" = 0, "DeletedAt" = @DeletedAt
@@ -57,8 +49,6 @@ public class UserRepository(IConfiguration configuration) : IUserRepository
 
     public async Task<bool> UpdateUser(Guid id, string name, string password, string salt)
     {
-        await using var connection = new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-
         const string sql = """
                            UPDATE "Users"
                            SET "Name" = @Name, "Password" = @Password, "Salt" = @Salt, "UpdatedAt" = @UpdatedAt
