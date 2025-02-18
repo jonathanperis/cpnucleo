@@ -15,13 +15,32 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          global-json-file: global.json
 
       - name: Restore Dependencies
         run: dotnet restore
 
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0
+        with:
+          versionSpec: '5.x'
+  
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0
+        with:
+          useConfigFile: true
+          updateAssemblyInfo: true
+
       - name: Build Application
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore /p:Version=${{ env.GitVersion_SemVer }}
+
+      - name: Unit Tests
+        working-directory: "./test/Application.Test"
+        run: dotnet test   
+  
+      - name: Architecture Tests
+        working-directory: "./test/Architecture.Test"
+        run: dotnet test
 
   build-push-image:
     needs: setup-build-test
@@ -40,7 +59,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -48,8 +67,14 @@ jobs:
           context: .
           push: true
           file: ./src/src/WebApi/Dockerfile
-          tags: ${{ secrets.DOCKERHUB_USERNAME }} /cpnucleo-api:latest
-
+          tags: jonathanperis/cpnucleo-api:latest
+          build-args: |
+            AOT=true
+            TRIM=true
+            EXTRA_OPTIMIZE=true
+            BUILD_ARCHITECTURE=linux-x64
+            DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING }}
+            
   container-test:
     needs: build-push-image
     runs-on: ubuntu-latest
@@ -59,7 +84,7 @@ jobs:
 
       - name: Build and Run Docker Container
         run: |
-          docker run -d -p 8080:8080 --name cpnucleo-api ${{ secrets.DOCKERHUB_USERNAME }}/cpnucleo-api:latest
+          docker run -d -p 8080:8080 --name cpnucleo-api jonathanperis/cpnucleo-api:latest
           sleep 10
 
       - name: Test Healthcheck Endpoint
@@ -79,3 +104,19 @@ jobs:
 
       - name: Cleanup
         run: docker stop cpnucleo-api && docker rm cpnucleo-api
+
+#   deploy-image-azure:
+#     runs-on: ubuntu-latest
+#     needs: build-push-image
+#     # environment:
+#     #   name: 'production'
+#     #   url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    
+#     steps:
+#       - name: Deploy Image to Azure Web App
+#         id: deploy-image-webapp
+#         uses: azure/webapps-deploy@v2
+#         with:
+#             app-name: 'api-cpnucleo'
+#             publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+#             images: 'index.docker.io/jonathanperis/cpnucleo-api:latest'

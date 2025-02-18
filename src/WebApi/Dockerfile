@@ -13,10 +13,12 @@ RUN apt-get update \
     clang zlib1g-dev
 
 ARG AOT=false
-ARG Trim=true
-ARG ExtraOptimize=false
-ARG BuildArchitecture=linux-arm64
-ARG BuildConfiguration=Release
+ARG TRIM=true
+ARG EXTRA_OPTIMIZE=false
+ARG BUILD_ARCHITECTURE=linux-arm64
+ARG BUILD_CONFIGURATION=Release
+
+ARG DB_CONNECTION_STRING
 
 WORKDIR /src
 
@@ -25,15 +27,21 @@ COPY ["src/Domain/Domain.csproj", "src/Domain/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
 
-RUN dotnet restore -r $BuildArchitecture "src/WebApi/WebApi.csproj" -p:Configuration=${BuildConfiguration} -p:AOT=${AOT} -p:Trim=${Trim}
+RUN dotnet restore -r $BUILD_ARCHITECTURE "src/WebApi/WebApi.csproj" -p:Configuration=${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM}
 
 COPY . .
 
 WORKDIR "/src/src/WebApi"
 
+# RUN dotnet build "Cpnucleo.API.csproj" -c Release -o /app/build
+
+RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${DB_CONNECTION_STRING}"
+
+RUN dotnet user-secrets list
+
 FROM build AS publish
 
-RUN dotnet publish -r $BuildArchitecture "WebApi.csproj" --no-restore -c $BuildConfiguration -p:AOT=${AOT} -p:Trim=${Trim} -p:ExtraOptimize=${ExtraOptimize} -o /app/publish
+RUN dotnet publish -r $BUILD_ARCHITECTURE "WebApi.csproj" --no-restore -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:8.0 AS final
 
