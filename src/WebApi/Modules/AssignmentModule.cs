@@ -6,8 +6,8 @@ public static class AssignmentModule
     {
         var group = endpoints.MapGroup("/api/assignments")
             .WithTags("Assignments")
-            .HasApiVersion(1.0)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .HasApiVersion(1.0);
 
         group.MapGet("/", async (ISender sender) =>
         {

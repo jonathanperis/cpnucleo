@@ -6,8 +6,8 @@ public static class UserProjectModule
     {
         var group = endpoints.MapGroup("/api/user-projects")
             .WithTags("UserProjects")
-            .HasApiVersion(1.0)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .HasApiVersion(1.0);
 
         group.MapGet("/", async (ISender sender) =>
         {

@@ -6,8 +6,8 @@ public static class ImpedimentModule
     {
         var group = endpoints.MapGroup("/api/impediments")
             .WithTags("Impediments")
-            .HasApiVersion(1.0)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .HasApiVersion(1.0);
 
         group.MapGet("/", async (ISender sender) =>
         {

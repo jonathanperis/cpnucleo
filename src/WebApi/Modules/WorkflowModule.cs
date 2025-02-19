@@ -6,8 +6,8 @@ public static class WorkflowModule
     {
         var group = endpoints.MapGroup("/api/workflows")
             .WithTags("Workflows")
-            .HasApiVersion(1.0)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .HasApiVersion(1.0);
 
         group.MapGet("/", async (ISender sender) =>
         {

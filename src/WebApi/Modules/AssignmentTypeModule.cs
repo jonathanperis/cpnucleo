@@ -6,8 +6,8 @@ public static class AssignmentTypeModule
     {
         var group = endpoints.MapGroup("/api/assignment-types")
             .WithTags("AssignmentTypes")
-            .HasApiVersion(1.0)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .HasApiVersion(1.0);
 
         group.MapGet("/", async (ISender sender) =>
         {

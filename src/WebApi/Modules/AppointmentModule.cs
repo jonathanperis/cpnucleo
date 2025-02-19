@@ -6,8 +6,8 @@ public static class AppointmentModule
     {
         var group = endpoints.MapGroup("/api/appointments")
             .WithTags("Appointments")
-            .HasApiVersion(1.0)
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .HasApiVersion(1.0);
 
         group.MapGet("/", async (ISender sender) =>
         {
