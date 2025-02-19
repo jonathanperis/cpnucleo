@@ -111,7 +111,7 @@ public static class FakeData
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool())
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
-            .RuleFor(x => x.AssignmentId, Projects[random.Next(Assignments.Count)].Id);
+            .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
             
         UserAssignments = userAssignmentFaker.Generate(63554);    
         
@@ -120,8 +120,8 @@ public static class FakeData
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.ImpedimentId, Users[random.Next(Impediments.Count)].Id)
-            .RuleFor(x => x.AssignmentId, Projects[random.Next(Assignments.Count)].Id);
+            .RuleFor(x => x.ImpedimentId, Impediments[random.Next(Impediments.Count)].Id)
+            .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
             
         AssignmentImpediments = assignmentImpedimentFaker.Generate(1369);     
         
@@ -132,7 +132,7 @@ public static class FakeData
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.AssignmentId, Projects[random.Next(Assignments.Count)].Id)
+            .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id)
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id);
 
         Appointments = appointmentFaker.Generate(89571);        
