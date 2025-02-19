@@ -8,7 +8,7 @@ services:
       args:
         AOT: false
         TRIM: true
-        EXTRA_OPTIMIZE: true
+        EXTRA_OPTIMIZE: false
         BUILD_ARCHITECTURE: linux-arm64
         BUILD_CONFIGURATION: Release
     hostname: webapi1
@@ -34,9 +34,9 @@ services:
       args:
         AOT: false
         TRIM: true
-        EXTRA_OPTIMIZE: true
+        EXTRA_OPTIMIZE: false
         BUILD_ARCHITECTURE: linux-arm64
-        BUILD_CONFIGURATION: Release      
+        BUILD_CONFIGURATION: Release
     hostname: identityapi
     container_name: identityapi
     depends_on:
@@ -55,8 +55,8 @@ services:
     hostname: db
     container_name: db-cpnucleo
     restart: always
-    # depends_on:
-    #   - postgres-exporter      
+    depends_on:
+      - postgres-exporter      
     volumes:
       - db-data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -84,29 +84,41 @@ services:
     networks:
       - network-cpnucleo
       
-  # postgres-exporter:
-  #   image: prometheuscommunity/postgres-exporter  
-  #   ports:
-  #     - 9187:9187
-  #   environment:
-  #     DATA_SOURCE_NAME: "postgresql://postgres:postgres@db:5432/rinha?sslmode=disable"
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    hostname: pgsql-exporter
+    container_name: postgres-exporter   
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@db:5432/cpnucleo?sslmode=disable"
+    networks:
+      - network-cpnucleo
 
-  # prometheus:
-  #   image: prom/prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+  prometheus:
+    image: prom/prometheus
+    hostname: prometheus
+    container_name: prometheus-service
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+    networks:
+      - network-cpnucleo
 
-  # grafana:
-  #     image: grafana/grafana-oss   
-  #     ports:
-  #       - "3000:3000"
-  #     volumes:
-  #       - "./grafana/provisioning/:/etc/grafana/provisioning/"
-  #       - "./grafana/dashboards/:/var/lib/grafana/dashboards/"
-  #     depends_on:
-  #       - prometheus
+  grafana:
+      image: grafana/grafana-oss
+      hostname: grafana
+      container_name: grafana-service        
+      ports:
+        - "3000:3000"
+      volumes:
+        - "./grafana/config/:/etc/grafana/"
+        - "./grafana/dashboards/:/var/lib/grafana/dashboards/"
+      depends_on:
+        - prometheus
+      networks:
+      - network-cpnucleo
 
 networks:
   network-cpnucleo:

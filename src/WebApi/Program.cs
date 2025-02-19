@@ -1,5 +1,6 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
+builder.ConfigureOpenTelemetry();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services
     .AddApiVersioning(options =>
@@ -82,6 +83,7 @@ if (app.Environment.IsDevelopment())
             }
         }
     );
+    app.MapPrometheusScrapingEndpoint();
 }
 
 app.UseInfrastructure();
