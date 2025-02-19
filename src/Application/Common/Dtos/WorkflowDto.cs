@@ -3,7 +3,7 @@ namespace Application.Common.Dtos;
 public sealed record WorkflowDto : BaseDto
 {
     public string? Name { get; set; }
-    public byte Order { get; set; }
+    public int Order { get; set; }
 
     // public static implicit operator WorkflowDto?(Workflow? entity)
     // {

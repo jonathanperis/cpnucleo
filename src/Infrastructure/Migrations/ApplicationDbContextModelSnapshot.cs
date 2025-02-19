@@ -30,8 +30,8 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
 
-                    b.Property<byte>("AmountHours")
-                        .HasColumnType("smallint");
+                    b.Property<int>("AmountHours")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("AssignmentId")
                         .HasColumnType("uuid");
@@ -73,8 +73,8 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
 
-                    b.Property<byte>("AmountHours")
-                        .HasColumnType("smallint");
+                    b.Property<int>("AmountHours")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("AssignmentTypeId")
                         .HasColumnType("uuid");
@@ -398,8 +398,8 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<byte>("Order")
-                        .HasColumnType("smallint");
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

@@ -6,7 +6,7 @@ public sealed record AssignmentDto : BaseDto
     public string? Description { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public byte AmountHours { get; set; }
+    public int AmountHours { get; set; }
     public Guid ProjectId { get; set; }
     public Guid WorkflowId { get; set; }
     public Guid UserId { get; set; }

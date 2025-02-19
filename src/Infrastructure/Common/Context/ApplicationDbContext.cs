@@ -54,7 +54,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<UserAssignment>().HasQueryFilter(x => x.Active);
         modelBuilder.Entity<Workflow>().HasQueryFilter(x => x.Active);
 
-        var seedDataRequested = _configuration!.GetValue<bool>("SEED_DATA");
+        var seedDataRequested = _configuration!.GetValue<bool>("SEED_RANDOM_DATA");
 
         if (!seedDataRequested) return;
         

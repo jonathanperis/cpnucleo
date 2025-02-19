@@ -9,7 +9,7 @@ START TRANSACTION;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "AssignmentTypes" (
         "Id" uuid NOT NULL,
         "Name" text,
@@ -24,7 +24,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Impediments" (
         "Id" uuid NOT NULL,
         "Name" text,
@@ -39,7 +39,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Organizations" (
         "Id" uuid NOT NULL,
         "Name" text,
@@ -55,7 +55,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Users" (
         "Id" uuid NOT NULL,
         "Name" text,
@@ -73,11 +73,11 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Workflows" (
         "Id" uuid NOT NULL,
         "Name" text,
-        "Order" smallint NOT NULL,
+        "Order" integer NOT NULL,
         "CreatedAt" timestamp with time zone NOT NULL,
         "UpdatedAt" timestamp with time zone,
         "DeletedAt" timestamp with time zone,
@@ -89,7 +89,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Projects" (
         "Id" uuid NOT NULL,
         "Name" text,
@@ -106,14 +106,14 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Assignments" (
         "Id" uuid NOT NULL,
         "Name" text,
         "Description" text,
         "StartDate" timestamp with time zone NOT NULL,
         "EndDate" timestamp with time zone NOT NULL,
-        "AmountHours" smallint NOT NULL,
+        "AmountHours" integer NOT NULL,
         "ProjectId" uuid NOT NULL,
         "WorkflowId" uuid NOT NULL,
         "UserId" uuid NOT NULL,
@@ -133,7 +133,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "UserProjects" (
         "Id" uuid NOT NULL,
         "UserId" uuid NOT NULL,
@@ -151,12 +151,12 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "Appointments" (
         "Id" uuid NOT NULL,
         "Description" text,
         "KeepDate" timestamp with time zone NOT NULL,
-        "AmountHours" smallint NOT NULL,
+        "AmountHours" integer NOT NULL,
         "AssignmentId" uuid NOT NULL,
         "UserId" uuid NOT NULL,
         "CreatedAt" timestamp with time zone NOT NULL,
@@ -172,7 +172,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "AssignmentImpediments" (
         "Id" uuid NOT NULL,
         "Description" text,
@@ -191,7 +191,7 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE TABLE "UserAssignments" (
         "Id" uuid NOT NULL,
         "UserId" uuid NOT NULL,
@@ -209,177 +209,177 @@ END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Appointments_AssignmentId" ON "Appointments" ("AssignmentId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Appointments_CreatedAt" ON "Appointments" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Appointments_UserId" ON "Appointments" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_AssignmentImpediments_AssignmentId" ON "AssignmentImpediments" ("AssignmentId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_AssignmentImpediments_CreatedAt" ON "AssignmentImpediments" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_AssignmentImpediments_ImpedimentId" ON "AssignmentImpediments" ("ImpedimentId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Assignments_AssignmentTypeId" ON "Assignments" ("AssignmentTypeId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Assignments_CreatedAt" ON "Assignments" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Assignments_ProjectId" ON "Assignments" ("ProjectId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Assignments_UserId" ON "Assignments" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Assignments_WorkflowId" ON "Assignments" ("WorkflowId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_AssignmentTypes_CreatedAt" ON "AssignmentTypes" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Impediments_CreatedAt" ON "Impediments" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Organizations_CreatedAt" ON "Organizations" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Projects_CreatedAt" ON "Projects" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Projects_OrganizationId" ON "Projects" ("OrganizationId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_UserAssignments_AssignmentId" ON "UserAssignments" ("AssignmentId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_UserAssignments_CreatedAt" ON "UserAssignments" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_UserAssignments_UserId" ON "UserAssignments" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_UserProjects_CreatedAt" ON "UserProjects" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_UserProjects_ProjectId" ON "UserProjects" ("ProjectId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_UserProjects_UserId" ON "UserProjects" ("UserId");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Users_CreatedAt" ON "Users" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     CREATE INDEX "IX_Workflows_CreatedAt" ON "Workflows" ("CreatedAt");
     END IF;
 END $EF$;
 
 DO $EF$
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250217235241_InitiaDblMigration') THEN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
     INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('20250217235241_InitiaDblMigration', '8.0.6');
+    VALUES ('20250219224724_InitiaDblMigration', '8.0.6');
     END IF;
 END $EF$;
 COMMIT;

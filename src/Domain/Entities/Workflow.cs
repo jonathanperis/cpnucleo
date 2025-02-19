@@ -3,7 +3,7 @@ namespace Domain.Entities;
 public sealed class Workflow : BaseEntity
 {
     public string? Name { get; set; }
-    public byte Order { get; set; }
+    public int Order { get; set; }
 
     public static Workflow Create(string? name, byte order, Guid id = default)
     {

@@ -4,7 +4,7 @@ public sealed class Appointment : BaseEntity
 {
     public string? Description { get; set; }
     public DateTime KeepDate { get; set; }
-    public byte AmountHours { get; set; }
+    public int AmountHours { get; set; }
 
     public Guid AssignmentId { get; set; }
     public Assignment? Assignment { get; set; }
