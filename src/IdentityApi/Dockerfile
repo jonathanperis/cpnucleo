@@ -4,7 +4,6 @@ LABEL maintainer="Jonathan Peris"
 
 USER app
 WORKDIR /app
-EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
@@ -38,7 +37,9 @@ RUN dotnet publish -r $BUILD_ARCHITECTURE "IdentityApi.csproj" --no-restore -c $
 FROM mcr.microsoft.com/dotnet/runtime-deps:8.0 AS final
 
 WORKDIR /app
-EXPOSE 8080
+
+ENV ASPNETCORE_URLS=http://+:5050
+EXPOSE 5050
 
 COPY --from=publish /app/publish .
 ENTRYPOINT ["./IdentityApi"]

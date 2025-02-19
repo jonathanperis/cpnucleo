@@ -46,7 +46,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
     ports:
-      - "9998:8080"
+      - "9998:5050"
+    expose: 
+      - 9998      
     networks:
       - network-cpnucleo
 
