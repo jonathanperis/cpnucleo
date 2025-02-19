@@ -87,7 +87,7 @@ services:
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
     hostname: pgsql-exporter
-    container_name: postgres-exporter   
+    container_name: postgres-exporter-service
     ports:
       - 9187:9187
     environment:
@@ -102,6 +102,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
+      - prometheus-data:/prometheus
       - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
     networks:
       - network-cpnucleo
@@ -126,4 +127,6 @@ networks:
 
 volumes:
   db-data:
+    driver: local
+  prometheus-data:
     driver: local

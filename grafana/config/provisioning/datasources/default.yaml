@@ -6,7 +6,7 @@ datasources:
     access: proxy
     # Access mode - proxy (server in the UI) or direct (browser in the UI).
     # url: http://host.docker.internal:9090
-    url: http://prometheus:9090
+    url: http://prometheus-service:9090
     jsonData:
       httpMethod: POST
       manageAlerts: true

@@ -3055,8 +3055,8 @@
       {
         "current": {
           "selected": false,
-          "text": "postgres-exporter:9187",
-          "value": "postgres-exporter:9187"
+          "text": "postgres-exporter-service:9187",
+          "value": "postgres-exporter-service:9187"
         },
         "datasource": {
           "type": "prometheus",
