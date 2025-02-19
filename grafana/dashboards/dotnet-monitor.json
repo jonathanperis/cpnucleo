@@ -1182,7 +1182,11 @@
     "refresh": "30s",
     "revision": 1,
     "schemaVersion": 39,
-    "tags": [],
+    "tags": [
+      "dotnet",
+      "stats",
+      "aspnetcore"
+    ],
     "templating": {
       "list": []
     },
@@ -1192,7 +1196,7 @@
     },
     "timepicker": {},
     "timezone": "",
-    "title": "dotnet-monitor dashboard",
+    "title": ".NET Monitor",
     "uid": "fdd09c1e-ae4c-4ea5-8bc3-1ea7a0689e96",
     "version": 1,
     "weekStart": ""

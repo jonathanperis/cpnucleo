@@ -23,15 +23,17 @@ public static class ConfigureOpenTelemetryOptions
         });
 
         builder.Services.AddOpenTelemetry()
+            .ConfigureResource(appResourceBuilder)
             .WithMetrics(x =>
             {
-                x.AddRuntimeInstrumentation()
-                    .AddMeter(
-                        "Microsoft.AspNetCore.Hosting",
-                        "Microsoft.AspNetCore.Server.Kestrel",
-                        "System.Net.Http");
+                // x.AddRuntimeInstrumentation()
+                //     .AddMeter(
+                //         "Microsoft.AspNetCore.Hosting",
+                //         "Microsoft.AspNetCore.Server.Kestrel",
+                //         "System.Net.Http");
 
                 x.AddAspNetCoreInstrumentation()
+                    .AddRuntimeInstrumentation()
                     .AddProcessInstrumentation();
             })
             .WithTracing(x =>
@@ -44,8 +46,7 @@ public static class ConfigureOpenTelemetryOptions
                 x.AddAspNetCoreInstrumentation()
                     .AddGrpcClientInstrumentation()
                     .AddHttpClientInstrumentation();
-            })
-            .ConfigureResource(appResourceBuilder);
+            });
 
         builder.AddOpenTelemetryExporters();
         
