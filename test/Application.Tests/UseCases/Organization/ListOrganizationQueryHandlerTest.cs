@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace Application.Tests.UseCases.Organization;
 
 public class ListOrganizationQueryHandlerTest
@@ -33,9 +31,9 @@ public class ListOrganizationQueryHandlerTest
         var result = await _handler.Handle(query, CancellationToken.None);
         var a = result.OperationResult.ToString();
         // Assert
-        Assert.Equal(Microsoft.AspNetCore.Http.Results.Ok(), result.OperationResult);
-        // Assert.NotNull(result.Organizations);
-        // Assert.Equal(organizations.Count, result.Organizations.Count);
+        Assert.Equal(OperationResult.Success, result.OperationResult);
+        Assert.NotNull(result.Organizations);
+        Assert.Equal(organizations.Count, result.Organizations.Count);
         _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
     }
 
@@ -53,9 +51,9 @@ public class ListOrganizationQueryHandlerTest
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        // Assert.Equal(OperationResult.Success, result.OperationResult);
-        // Assert.NotNull(result.Organizations);
-        // Assert.Empty(result.Organizations);
+        Assert.Equal(OperationResult.Success, result.OperationResult);
+        Assert.NotNull(result.Organizations);
+        Assert.Empty(result.Organizations);
         _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
     }
 
@@ -73,8 +71,8 @@ public class ListOrganizationQueryHandlerTest
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        // Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        // Assert.Null(result.Organizations);
+        Assert.Equal(OperationResult.NotFound, result.OperationResult);
+        Assert.Null(result.Organizations);
         _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
     }
 }
