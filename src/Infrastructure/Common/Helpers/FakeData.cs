@@ -20,7 +20,7 @@ public static class FakeData
         
         var organizationFaker = new Faker<Organization>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.Name, f => string.Concat(f.Hacker.Noun(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -30,7 +30,7 @@ public static class FakeData
 
         var projectFaker = new Faker<Project>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.Name, f => string.Concat(f.Hacker.Noun(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool())
@@ -40,7 +40,7 @@ public static class FakeData
 
         var impedimentFaker = new Faker<Impediment>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.Name, f => string.Concat(f.Hacker.Noun(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
@@ -49,7 +49,7 @@ public static class FakeData
         
         var assignmentTypeFaker = new Faker<AssignmentType>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.Name, f => string.Concat(f.Hacker.Noun(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
@@ -58,7 +58,7 @@ public static class FakeData
         
         var workflowFaker = new Faker<Workflow>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.Name, f => string.Concat(f.Hacker.Noun(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(x => x.Order, f => f.IndexGlobal + 1)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -70,7 +70,7 @@ public static class FakeData
             .RuleFor(c => c.Id, f => Guid.NewGuid())
             .RuleFor(x => x.Name, f => f.Name.FullName())
             .RuleFor(x => x.Login, f => f.Internet.UserName())
-            .RuleFor(x => x.Password, f => f.Internet.Password())
+            .RuleFor(x => x.Password, f => string.Concat(f.Internet.Password(), f.Internet.Password(), f.Internet.Password()))
             .RuleFor(x => x.Salt, f => f.Internet.Password())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -90,7 +90,7 @@ public static class FakeData
 
         var assignmentFaker = new Faker<Assignment>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
-            .RuleFor(x => x.Name, f => string.Concat(f.Hacker.Noun(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.StartDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.EndDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
