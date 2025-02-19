@@ -1,9 +1,11 @@
 global using Application.Common.Context;
+global using Bogus;
 global using Dapper;
 global using Delta;
 global using Domain.Entities;
 global using Domain.Repositories;
 global using Infrastructure.Common.Context;
+global using Infrastructure.Common.Helpers;
 global using Infrastructure.Common.Mappings;
 global using Infrastructure.Repositories;
 global using Microsoft.AspNetCore.Builder;

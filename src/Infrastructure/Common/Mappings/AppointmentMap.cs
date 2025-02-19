@@ -2,8 +2,6 @@ namespace Infrastructure.Common.Mappings;
 
 internal sealed class AppointmentMap : IEntityTypeConfiguration<Appointment>
 {
-    internal static List<Appointment>? Appointments { get; set; }
-
     public void Configure(EntityTypeBuilder<Appointment> builder)
     {
         builder
@@ -25,10 +23,5 @@ internal sealed class AppointmentMap : IEntityTypeConfiguration<Appointment>
             .HasOne(x => x.User)
             .WithMany()
             .HasForeignKey(x => x.UserId);
-
-        if (Appointments != null)
-        {
-            builder.HasData(Appointments);
-        }
     }
 }

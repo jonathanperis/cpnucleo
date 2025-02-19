@@ -2,8 +2,6 @@ namespace Infrastructure.Common.Mappings;
 
 internal sealed class ImpedimentMap : IEntityTypeConfiguration<Impediment>
 {
-    internal static List<Impediment>? Impediments { get; set; }
-
     public void Configure(EntityTypeBuilder<Impediment> builder)
     {
         builder
@@ -15,10 +13,5 @@ internal sealed class ImpedimentMap : IEntityTypeConfiguration<Impediment>
 
         builder
             .HasIndex(x => x.CreatedAt);
-
-        if (Impediments != null)
-        {
-            builder.HasData(Impediments);
-        }
     }
 }

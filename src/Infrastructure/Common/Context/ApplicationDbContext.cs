@@ -27,7 +27,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    {        
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.ApplyConfiguration(new ImpedimentMap());
         modelBuilder.ApplyConfiguration(new ProjectMap());
         modelBuilder.ApplyConfiguration(new OrganizationMap());
@@ -52,9 +54,23 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<UserAssignment>().HasQueryFilter(x => x.Active);
         modelBuilder.Entity<Workflow>().HasQueryFilter(x => x.Active);
 
-        CreateSeedData();
+        var seedDataRequested = _configuration!.GetValue<bool>("SEED_DATA");
 
-        base.OnModelCreating(modelBuilder);
+        if (!seedDataRequested) return;
+        
+        FakeData.Init();
+
+        modelBuilder.Entity<Impediment>().HasData(FakeData.Impediments!);
+        modelBuilder.Entity<Project>().HasData(FakeData.Projects!);
+        modelBuilder.Entity<Organization>().HasData(FakeData.Organizations!);
+        modelBuilder.Entity<Assignment>().HasData(FakeData.Assignments!);
+        modelBuilder.Entity<AssignmentImpediment>().HasData(FakeData.AssignmentImpediments!);
+        modelBuilder.Entity<AssignmentType>().HasData(FakeData.AssignmentTypes!);
+        modelBuilder.Entity<Appointment>().HasData(FakeData.Appointments!);
+        modelBuilder.Entity<User>().HasData(FakeData.Users!);
+        modelBuilder.Entity<UserProject>().HasData(FakeData.UserProjects!);
+        modelBuilder.Entity<UserAssignment>().HasData(FakeData.UserAssignments!);
+        modelBuilder.Entity<Workflow>().HasData(FakeData.Workflows!);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -72,10 +88,5 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public new async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)
     {
         return await base.SaveChangesAsync(cancellationToken) > 0;
-    }
-
-    private static void CreateSeedData()
-    {
-
     }
 }

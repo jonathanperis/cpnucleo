@@ -2,8 +2,6 @@ namespace Infrastructure.Common.Mappings;
 
 internal sealed class OrganizationMap : IEntityTypeConfiguration<Organization>
 {
-    internal static List<Organization>? Organizations { get; set; }
-
     public void Configure(EntityTypeBuilder<Organization> builder)
     {
         builder
@@ -15,10 +13,5 @@ internal sealed class OrganizationMap : IEntityTypeConfiguration<Organization>
 
         builder
             .HasIndex(x => x.CreatedAt);
-
-        if (Organizations != null)
-        {
-            builder.HasData(Organizations);
-        }
     }
 }

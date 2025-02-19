@@ -2,8 +2,6 @@ namespace Infrastructure.Common.Mappings;
 
 internal sealed class UserMap : IEntityTypeConfiguration<User>
 {
-    internal static List<User>? Users { get; set; }
-
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder
@@ -15,10 +13,5 @@ internal sealed class UserMap : IEntityTypeConfiguration<User>
 
         builder
             .HasIndex(x => x.CreatedAt);
-
-        if (Users != null)
-        {
-            builder.HasData(Users);
-        }
     }
 }

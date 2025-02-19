@@ -2,8 +2,6 @@ namespace Infrastructure.Common.Mappings;
 
 internal sealed class ProjectMap : IEntityTypeConfiguration<Project>
 {
-    internal static List<Project>? Projects { get; set; }
-
     public void Configure(EntityTypeBuilder<Project> builder)
     {
         builder
@@ -20,10 +18,5 @@ internal sealed class ProjectMap : IEntityTypeConfiguration<Project>
             .HasOne(x => x.Organization)
             .WithMany()
             .HasForeignKey(x => x.OrganizationId);
-
-        if (Projects != null)
-        {
-            builder.HasData(Projects);
-        }
     }
 }

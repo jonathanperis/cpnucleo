@@ -2,8 +2,6 @@ namespace Infrastructure.Common.Mappings;
 
 internal sealed class AssignmentImpedimentMap : IEntityTypeConfiguration<AssignmentImpediment>
 {
-    internal static List<AssignmentImpediment>? AssignmentImpediments { get; set; }
-
     public void Configure(EntityTypeBuilder<AssignmentImpediment> builder)
     {
         builder
@@ -25,10 +23,5 @@ internal sealed class AssignmentImpedimentMap : IEntityTypeConfiguration<Assignm
             .HasOne(x => x.Impediment)
             .WithMany()
             .HasForeignKey(x => x.ImpedimentId);
-
-        if (AssignmentImpediments != null)
-        {
-            builder.HasData(AssignmentImpediments);
-        }
     }
 }

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Dapper.AOT" Version="1.0.31" />
     <PackageReference Include="Delta" Version="6.2.0" />
