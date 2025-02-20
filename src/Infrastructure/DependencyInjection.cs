@@ -26,7 +26,14 @@ public static class DependencyInjection
 
         if (!fakeDataRequested) return;
         
-        FakeData.Init();        
+        var serviceProvider = services.BuildServiceProvider();
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+
+        var logger = loggerFactory.CreateLogger<Type>();
+        
+        logger.LogInformation("Fake data creation requested. Starting to create fake data.");
+        FakeData.Init();    
+        logger.LogInformation("Finished creating fake data.");    
     }
     
     public static void UseInfrastructure(this IApplicationBuilder app)

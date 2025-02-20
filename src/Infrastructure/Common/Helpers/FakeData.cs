@@ -28,12 +28,15 @@ internal static class FakeData
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Organizations = organizationFaker.Generate(86);
-
+        int lastIndex = Organizations.Count - 1;
+        int currentIndex = 0;
+        
         foreach (var item in Organizations)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.Description}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Name}', '{item.Description}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -46,13 +49,16 @@ internal static class FakeData
             .RuleFor(x => x.OrganizationId, Organizations[random.Next(Organizations.Count)].Id);
             
         Projects = projectFaker.Generate(258);
+        lastIndex = Projects.Count - 1;
+        currentIndex = 0;
 
         sb.AppendLine();
         foreach (var item in Projects)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.OrganizationId}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Name}', '{item.OrganizationId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -64,13 +70,16 @@ internal static class FakeData
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
         Impediments = impedimentFaker.Generate(14);
-        
+        lastIndex = Impediments.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in Impediments)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Name}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -82,13 +91,16 @@ internal static class FakeData
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
         AssignmentTypes = assignmentTypeFaker.Generate(14);
-        
+        lastIndex = AssignmentTypes.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in AssignmentTypes)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Name}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -101,13 +113,16 @@ internal static class FakeData
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
         Workflows = workflowFaker.Generate(6);        
-        
+        lastIndex = Workflows.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in Workflows)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', {item.Order}, '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Name}', {item.Order}, '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -122,13 +137,16 @@ internal static class FakeData
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
         Users = userFaker.Generate(1154);         
-        
+        lastIndex = Users.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in Users)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Name}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -141,13 +159,16 @@ internal static class FakeData
             .RuleFor(x => x.ProjectId, Projects[random.Next(Projects.Count)].Id);
             
         UserProjects = userProjectFaker.Generate(4400);
+        lastIndex = UserProjects.Count - 1;
+        currentIndex = 0;  
 
         sb.AppendLine();
         foreach (var item in UserProjects)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.UserId}', '{item.ProjectId}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.UserId}', '{item.ProjectId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -167,13 +188,16 @@ internal static class FakeData
             .RuleFor(x => x.AssignmentTypeId, AssignmentTypes[random.Next(AssignmentTypes.Count)].Id);
 
         Assignments = assignmentFaker.Generate(64587);    
-        
+        lastIndex = Assignments.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in Assignments)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                             INSERT INTO "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "Active")
-                            VALUES ('{item.Id}', '{item.Name}', '{item.Description}', '{item.StartDate}', '{item.EndDate}', {item.AmountHours}, '{item.ProjectId}', '{item.WorkflowId}', '{item.UserId}', '{item.AssignmentTypeId}', '{item.CreatedAt}', {item.Active});
+                            VALUES ('{item.Id}', '{item.Name}', '{item.Description}', '{item.StartDate}', '{item.EndDate}', {item.AmountHours}, '{item.ProjectId}', '{item.WorkflowId}', '{item.UserId}', '{item.AssignmentTypeId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                             """);
         }
 
@@ -186,13 +210,16 @@ internal static class FakeData
             .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
             
         UserAssignments = userAssignmentFaker.Generate(63554);    
-        
+        lastIndex = UserAssignments.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in UserAssignments)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.UserId}', '{item.AssignmentId}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.UserId}', '{item.AssignmentId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -205,13 +232,16 @@ internal static class FakeData
             .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
             
         AssignmentImpediments = assignmentImpedimentFaker.Generate(1369);     
-        
+        lastIndex = AssignmentImpediments.Count - 1;
+        currentIndex = 0;  
+
         sb.AppendLine();
         foreach (var item in AssignmentImpediments)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Description}', '{item.AssignmentId}', '{item.ImpedimentId}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Description}', '{item.AssignmentId}', '{item.ImpedimentId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }
 
@@ -226,19 +256,22 @@ internal static class FakeData
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id);
 
         Appointments = appointmentFaker.Generate(89571);      
+        lastIndex = Appointments.Count - 1;
+        currentIndex = 0;  
 
         sb.AppendLine();
         foreach (var item in Appointments)
         {
+            bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
                            INSERT INTO "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Description}', '{item.KeepDate}', {item.AmountHours}, '{item.AssignmentId}', '{item.UserId}', '{item.CreatedAt}', {item.Active});
+                           VALUES ('{item.Id}', '{item.Description}', '{item.KeepDate}', {item.AmountHours}, '{item.AssignmentId}', '{item.UserId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
                            """);
         }     
 
         string filePath = "002-database-dump-dml.sql";
 
-        // It will write in the bin/debug/netx.0 folder
+        // It will write in the root project folder
         File.WriteAllText(filePath, sb.ToString());             
     }
 }
