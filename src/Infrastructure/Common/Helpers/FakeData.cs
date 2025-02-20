@@ -38,7 +38,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', '{item.Description?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -63,7 +63,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', '{item.OrganizationId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.OrganizationId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -87,7 +87,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -111,7 +111,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -136,7 +136,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', {item.Order}, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', {item.Order}, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -163,7 +163,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -220,7 +220,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                            ('{item.Id}'::UUID, '{item.Name}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.ProjectId}'::UUID, '{item.WorkflowId}'::UUID, '{item.UserId}'::UUID, '{item.AssignmentTypeId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                            ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.ProjectId}'::UUID, '{item.WorkflowId}'::UUID, '{item.UserId}'::UUID, '{item.AssignmentTypeId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                             """);
             currentIndex++;
         }
