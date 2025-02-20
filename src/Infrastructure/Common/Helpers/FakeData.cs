@@ -27,17 +27,20 @@ internal static class FakeData
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
-        Organizations = organizationFaker.Generate(86);
+        Organizations = organizationFaker.Generate(686);
         int lastIndex = Organizations.Count - 1;
         int currentIndex = 0;
         
+        sb.AppendLine("""
+                        INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "UpdatedAt", "Active") VALUES 
+                        """);
         foreach (var item in Organizations)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.Description}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Name}', '{item.Description}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var projectFaker = new Faker<Project>()
@@ -48,18 +51,21 @@ internal static class FakeData
             .RuleFor(x => x.Active, f => f.Random.Bool())
             .RuleFor(x => x.OrganizationId, Organizations[random.Next(Organizations.Count)].Id);
             
-        Projects = projectFaker.Generate(258);
+        Projects = projectFaker.Generate(1258);
         lastIndex = Projects.Count - 1;
         currentIndex = 0;
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in Projects)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.OrganizationId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Name}', '{item.OrganizationId}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var impedimentFaker = new Faker<Impediment>()
@@ -69,18 +75,21 @@ internal static class FakeData
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
-        Impediments = impedimentFaker.Generate(14);
+        Impediments = impedimentFaker.Generate(114);
         lastIndex = Impediments.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in Impediments)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Name}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var assignmentTypeFaker = new Faker<AssignmentType>()
@@ -90,18 +99,21 @@ internal static class FakeData
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
-        AssignmentTypes = assignmentTypeFaker.Generate(14);
+        AssignmentTypes = assignmentTypeFaker.Generate(3);
         lastIndex = AssignmentTypes.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in AssignmentTypes)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Name}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var workflowFaker = new Faker<Workflow>()
@@ -117,13 +129,16 @@ internal static class FakeData
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in Workflows)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', {item.Order}, '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Name}', {item.Order}, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var userFaker = new Faker<User>()
@@ -136,18 +151,21 @@ internal static class FakeData
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
             
-        Users = userFaker.Generate(1154);         
+        Users = userFaker.Generate(11154);         
         lastIndex = Users.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in Users)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Name}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Name}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var userProjectFaker = new Faker<UserProject>()
@@ -158,18 +176,21 @@ internal static class FakeData
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
             .RuleFor(x => x.ProjectId, Projects[random.Next(Projects.Count)].Id);
             
-        UserProjects = userProjectFaker.Generate(4400);
+        UserProjects = userProjectFaker.Generate(24400);
         lastIndex = UserProjects.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in UserProjects)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.UserId}', '{item.ProjectId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.UserId}', '{item.ProjectId}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var assignmentFaker = new Faker<Assignment>()
@@ -187,18 +208,21 @@ internal static class FakeData
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
             .RuleFor(x => x.AssignmentTypeId, AssignmentTypes[random.Next(AssignmentTypes.Count)].Id);
 
-        Assignments = assignmentFaker.Generate(64587);    
+        Assignments = assignmentFaker.Generate(464587);    
         lastIndex = Assignments.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in Assignments)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                            INSERT INTO "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "Active")
-                            VALUES ('{item.Id}', '{item.Name}', '{item.Description}', '{item.StartDate}', '{item.EndDate}', {item.AmountHours}, '{item.ProjectId}', '{item.WorkflowId}', '{item.UserId}', '{item.AssignmentTypeId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                            ('{item.Id}', '{item.Name}', '{item.Description}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.ProjectId}', '{item.WorkflowId}', '{item.UserId}', '{item.AssignmentTypeId}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                             """);
+            currentIndex++;
         }
 
         var userAssignmentFaker = new Faker<UserAssignment>()
@@ -209,18 +233,21 @@ internal static class FakeData
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
             .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
             
-        UserAssignments = userAssignmentFaker.Generate(63554);    
+        UserAssignments = userAssignmentFaker.Generate(363554);    
         lastIndex = UserAssignments.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in UserAssignments)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.UserId}', '{item.AssignmentId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.UserId}', '{item.AssignmentId}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var assignmentImpedimentFaker = new Faker<AssignmentImpediment>()
@@ -231,18 +258,21 @@ internal static class FakeData
             .RuleFor(x => x.ImpedimentId, Impediments[random.Next(Impediments.Count)].Id)
             .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
             
-        AssignmentImpediments = assignmentImpedimentFaker.Generate(1369);     
+        AssignmentImpediments = assignmentImpedimentFaker.Generate(11369);     
         lastIndex = AssignmentImpediments.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in AssignmentImpediments)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Description}', '{item.AssignmentId}', '{item.ImpedimentId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Description}', '{item.AssignmentId}', '{item.ImpedimentId}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }
 
         var appointmentFaker = new Faker<Appointment>()
@@ -255,18 +285,21 @@ internal static class FakeData
             .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id)
             .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id);
 
-        Appointments = appointmentFaker.Generate(89571);      
+        Appointments = appointmentFaker.Generate(489571);      
         lastIndex = Appointments.Count - 1;
         currentIndex = 0;  
 
         sb.AppendLine();
+        sb.AppendLine("""
+                        INSERT INTO "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "Active") VALUES  
+                        """);        
         foreach (var item in Appointments)
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           INSERT INTO "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "Active")
-                           VALUES ('{item.Id}', '{item.Description}', '{item.KeepDate}', {item.AmountHours}, '{item.AssignmentId}', '{item.UserId}', '{item.CreatedAt}', {item.Active}){(isLast ? ";" : ",")}
+                           ('{item.Id}', '{item.Description}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.AssignmentId}', '{item.UserId}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active}){(isLast ? ";" : ",")}
                            """);
+            currentIndex++;
         }     
 
         string filePath = "002-database-dump-dml.sql";
