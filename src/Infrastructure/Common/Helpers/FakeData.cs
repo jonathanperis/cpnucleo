@@ -303,7 +303,7 @@ internal static class FakeData
             currentIndex++;
         }     
 
-        string filePath = "002-database-dump-dml.sql";
+        string filePath = "003-database-dump-dml.sql";
 
         // It will write in the root project folder
         File.WriteAllText(filePath, sb.ToString());             
