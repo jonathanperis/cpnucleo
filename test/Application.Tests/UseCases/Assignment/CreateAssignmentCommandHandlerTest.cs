@@ -21,7 +21,7 @@ public class CreateAssignmentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        var command = new CreateAssignmentCommand("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateAssignmentCommand("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -38,7 +38,7 @@ public class CreateAssignmentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-        var command = new CreateAssignmentCommand("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateAssignmentCommand("Test Assignment", "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -53,7 +53,7 @@ public class CreateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new CreateAssignmentCommand(string.Empty, "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateAssignmentCommand(string.Empty, "Assignment Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(1), 2, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new CreateAssignmentCommandValidator();
 
         // Act

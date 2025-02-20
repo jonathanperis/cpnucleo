@@ -6,5 +6,5 @@ public interface IWorkflowRepository
     Task<Workflow?> GetWorkflowById(Guid id);
     Task<List<Workflow?>?> ListWorkflow();
     Task<bool> RemoveWorkflow(Guid id);
-    Task<bool> UpdateWorkflow(Guid id, string name, byte order);
+    Task<bool> UpdateWorkflow(Guid id, string name, int order);
 }

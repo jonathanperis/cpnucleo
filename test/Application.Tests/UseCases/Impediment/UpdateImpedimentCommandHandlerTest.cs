@@ -12,8 +12,8 @@ public class UpdateImpedimentCommandHandlerTest
 
         _impediments =
         [
-            Domain.Entities.Impediment.Create("Test Impediment 1", Guid.NewGuid()),
-            Domain.Entities.Impediment.Create("Test Impediment 2", Guid.NewGuid())
+            Domain.Entities.Impediment.Create("Test Impediment 1", BaseEntity.GetNewId()),
+            Domain.Entities.Impediment.Create("Test Impediment 2", BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Impediments).ReturnsDbSet(_impediments);
@@ -60,7 +60,7 @@ public class UpdateImpedimentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenImpedimentDoesNotExist()
     {
         // Arrange
-        var command = new UpdateImpedimentCommand(Guid.NewGuid(), "Updated Impediment");
+        var command = new UpdateImpedimentCommand(BaseEntity.GetNewId(), "Updated Impediment");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -89,7 +89,7 @@ public class UpdateImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateImpedimentCommand(Guid.NewGuid(), string.Empty);
+        var command = new UpdateImpedimentCommand(BaseEntity.GetNewId(), string.Empty);
         var validator = new UpdateImpedimentCommandValidator();
 
         // Act

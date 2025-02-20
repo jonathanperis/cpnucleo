@@ -15,13 +15,13 @@ public class GetWorkflowByIdQueryHandlerTest
     public async Task Handle_ShouldReturnWorkflow_WhenWorkflowExists()
     {
         // Arrange
-        var workflow = Domain.Entities.Workflow.Create("Test Workflow", 1, Guid.NewGuid());
+        var workflow = Domain.Entities.Workflow.Create("Test Workflow", 1, BaseEntity.GetNewId());
 
         _workflowRepositoryMock
             .Setup(repo => repo.GetWorkflowById(It.IsAny<Guid>()))
             .ReturnsAsync(workflow);
 
-        var query = new GetWorkflowByIdQuery(Guid.NewGuid());
+        var query = new GetWorkflowByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -40,7 +40,7 @@ public class GetWorkflowByIdQueryHandlerTest
             .Setup(repo => repo.GetWorkflowById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetWorkflowByIdQuery(Guid.NewGuid());
+        var query = new GetWorkflowByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

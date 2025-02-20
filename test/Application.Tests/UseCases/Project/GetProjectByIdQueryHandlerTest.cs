@@ -15,13 +15,13 @@ public class GetProjectByIdQueryHandlerTest
     public async Task Handle_ShouldReturnProject_WhenProjectExists()
     {
         // Arrange
-        var projectEntity = Domain.Entities.Project.Create("Test Project", Guid.NewGuid());
+        var projectEntity = Domain.Entities.Project.Create("Test Project", BaseEntity.GetNewId());
         
         _projectRepositoryMock
             .Setup(repo => repo.GetProjectById(It.IsAny<Guid>()))
             .ReturnsAsync(projectEntity);
 
-        var query = new GetProjectByIdQuery(Guid.NewGuid());
+        var query = new GetProjectByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -40,7 +40,7 @@ public class GetProjectByIdQueryHandlerTest
             .Setup(repo => repo.GetProjectById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetProjectByIdQuery(Guid.NewGuid());
+        var query = new GetProjectByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

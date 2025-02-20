@@ -48,7 +48,7 @@ public class AssignmentRepository(NpgsqlConnection connection) : IAssignmentRepo
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateAssignment(Guid id, string name, string description, DateTime startDate, DateTime endDate, byte amountHours, Guid projectId, Guid workflowId, Guid userId, Guid assignmentTypeId)
+    public async Task<bool> UpdateAssignment(Guid id, string name, string description, DateTime startDate, DateTime endDate, int amountHours, Guid projectId, Guid workflowId, Guid userId, Guid assignmentTypeId)
     {
         const string sql = """
                             UPDATE "Assignments"

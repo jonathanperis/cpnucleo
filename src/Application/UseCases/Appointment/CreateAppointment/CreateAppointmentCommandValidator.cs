@@ -11,7 +11,7 @@ public sealed class CreateAppointmentCommandValidator : AbstractValidator<Create
             .NotEmpty().WithMessage("KeepDate is required.");
 
         RuleFor(x => x.AmountHours)
-            .GreaterThan((byte)0).WithMessage("AmountHours must be greater than 0.");
+            .GreaterThan((int)0).WithMessage("AmountHours must be greater than 0.");
 
         RuleFor(x => x.AssignmentId)
             .NotEmpty().WithMessage("AssignmentId is required.");

@@ -6,5 +6,5 @@ public interface IAppointmentRepository
     Task<Appointment?> GetAppointmentById(Guid id);
     Task<List<Appointment?>?> ListAppointments();
     Task<bool> RemoveAppointment(Guid id);
-    Task<bool> UpdateAppointment(Guid id, string description, DateTime keepDate, byte amountHours, Guid assignmentId, Guid userId);
+    Task<bool> UpdateAppointment(Guid id, string description, DateTime keepDate, int amountHours, Guid assignmentId, Guid userId);
 }

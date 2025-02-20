@@ -1,3 +1,5 @@
+using Domain.Entities;
+
 namespace Application.Tests.UseCases.UserProject;
 
 public class GetUserProjectByIdQueryHandlerTest
@@ -15,13 +17,13 @@ public class GetUserProjectByIdQueryHandlerTest
     public async Task Handle_ShouldReturnUserProject_WhenUserProjectExists()
     {
         // Arrange
-        var userProject = Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var userProject = Domain.Entities.UserProject.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         _userProjectRepositoryMock
             .Setup(repo => repo.GetUserProjectById(It.IsAny<Guid>()))
             .ReturnsAsync(userProject);
 
-        var query = new GetUserProjectByIdQuery(Guid.NewGuid());
+        var query = new GetUserProjectByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -40,7 +42,7 @@ public class GetUserProjectByIdQueryHandlerTest
             .Setup(repo => repo.GetUserProjectById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetUserProjectByIdQuery(Guid.NewGuid());
+        var query = new GetUserProjectByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

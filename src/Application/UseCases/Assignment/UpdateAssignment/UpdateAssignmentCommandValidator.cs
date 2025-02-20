@@ -20,7 +20,7 @@ public sealed class UpdateAssignmentCommandValidator : AbstractValidator<UpdateA
             .NotEmpty().WithMessage("End Date is required.");
 
         RuleFor(x => x.AmountHours)
-            .GreaterThan((byte)0).WithMessage("Amount hours is required.");
+            .GreaterThan((int)0).WithMessage("Amount hours is required.");
 
         RuleFor(x => x.ProjectId)
             .NotEmpty().WithMessage("ProjectId is required.");

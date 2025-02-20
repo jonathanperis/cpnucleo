@@ -17,8 +17,8 @@ public class ListUserProjectQueryHandlerTest
         // Arrange
         var userProjects = new List<Domain.Entities.UserProject?>
         {
-            Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.UserProject.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.UserProject.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.UserProject.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId())
         };
 
         _userProjectRepositoryMock

@@ -17,8 +17,8 @@ public class ListAssignmentTypeQueryHandlerTest
         // Arrange
         var assignmentTypes = new List<Domain.Entities.AssignmentType?>
         {
-            Domain.Entities.AssignmentType.Create("Test AssignmentType 1", Guid.NewGuid()),
-            Domain.Entities.AssignmentType.Create("Test AssignmentType 2", Guid.NewGuid())
+            Domain.Entities.AssignmentType.Create("Test AssignmentType 1", BaseEntity.GetNewId()),
+            Domain.Entities.AssignmentType.Create("Test AssignmentType 2", BaseEntity.GetNewId())
         };
 
         _assignmentTypeRepositoryMock

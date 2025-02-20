@@ -59,7 +59,7 @@ public class RemoveUserCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenUserDoesNotExist()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var userId = BaseEntity.GetNewId();
         var command = new RemoveUserCommand(userId);
 
         // Act

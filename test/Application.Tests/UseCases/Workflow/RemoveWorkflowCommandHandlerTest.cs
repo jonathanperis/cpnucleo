@@ -12,8 +12,8 @@ public class RemoveWorkflowCommandHandlerTest
 
         _workflows =
         [
-            Domain.Entities.Workflow.Create("Test Workflow 1", 1, Guid.NewGuid()),
-            Domain.Entities.Workflow.Create("Test Workflow 2", 2, Guid.NewGuid())
+            Domain.Entities.Workflow.Create("Test Workflow 1", 1, BaseEntity.GetNewId()),
+            Domain.Entities.Workflow.Create("Test Workflow 2", 2, BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Workflows).ReturnsDbSet(_workflows);
@@ -59,7 +59,7 @@ public class RemoveWorkflowCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenWorkflowDoesNotExist()
     {
         // Arrange
-        var workflowId = Guid.NewGuid();
+        var workflowId = BaseEntity.GetNewId();
         var command = new RemoveWorkflowCommand(workflowId);
 
         // Act

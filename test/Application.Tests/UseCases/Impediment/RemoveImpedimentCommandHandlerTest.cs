@@ -12,8 +12,8 @@ public class RemoveImpedimentCommandHandlerTest
 
         _impediments =
         [
-            Domain.Entities.Impediment.Create("Test Impediment 1", Guid.NewGuid()),
-            Domain.Entities.Impediment.Create("Test Impediment 2", Guid.NewGuid())
+            Domain.Entities.Impediment.Create("Test Impediment 1", BaseEntity.GetNewId()),
+            Domain.Entities.Impediment.Create("Test Impediment 2", BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Impediments).ReturnsDbSet(_impediments);
@@ -59,7 +59,7 @@ public class RemoveImpedimentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenImpedimentDoesNotExist()
     {
         // Arrange
-        var impedimentId = Guid.NewGuid();
+        var impedimentId = BaseEntity.GetNewId();
         var command = new RemoveImpedimentCommand(impedimentId);
 
         // Act

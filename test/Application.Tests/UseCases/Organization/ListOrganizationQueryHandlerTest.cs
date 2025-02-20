@@ -17,8 +17,8 @@ public class ListOrganizationQueryHandlerTest
         // Arrange
         var organizations = new List<Domain.Entities.Organization?>
         {
-            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", Guid.NewGuid()),
-            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", Guid.NewGuid())
+            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", BaseEntity.GetNewId()),
+            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", BaseEntity.GetNewId())
         };
 
         _organizationRepositoryMock

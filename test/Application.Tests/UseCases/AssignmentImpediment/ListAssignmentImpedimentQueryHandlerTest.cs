@@ -17,8 +17,8 @@ public class ListAssignmentImpedimentQueryHandlerTest
         // Arrange
         var assignmentImpediments = new List<Domain.Entities.AssignmentImpediment?>
         {
-            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", BaseEntity.GetNewId(), BaseEntity.GetNewId())
         };
 
         _assignmentImpedimentRepositoryMock

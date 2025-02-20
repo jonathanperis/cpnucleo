@@ -21,7 +21,7 @@ public class CreateAssignmentImpedimentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -38,7 +38,7 @@ public class CreateAssignmentImpedimentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -53,7 +53,7 @@ public class CreateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new CreateAssignmentImpedimentCommand(string.Empty, Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateAssignmentImpedimentCommand(string.Empty, BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new CreateAssignmentImpedimentCommandValidator();
 
         // Act
@@ -68,7 +68,7 @@ public class CreateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenAssignmentIdIsEmpty()
     {
         // Arrange
-        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", Guid.Empty, Guid.NewGuid());
+        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", Guid.Empty, BaseEntity.GetNewId());
         var validator = new CreateAssignmentImpedimentCommandValidator();
 
         // Act
@@ -83,7 +83,7 @@ public class CreateAssignmentImpedimentCommandHandlerTest
     public void Handle_ShouldFail_WhenImpedimentIdIsEmpty()
     {
         // Arrange
-        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", Guid.NewGuid(), Guid.Empty);
+        var command = new CreateAssignmentImpedimentCommand("Test AssignmentImpediment", BaseEntity.GetNewId(), Guid.Empty);
         var validator = new CreateAssignmentImpedimentCommandValidator();
 
         // Act

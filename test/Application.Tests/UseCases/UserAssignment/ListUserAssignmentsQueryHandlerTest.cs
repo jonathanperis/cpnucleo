@@ -17,8 +17,8 @@ public class ListUserAssignmentsQueryHandlerTest
         // Arrange
         var userAssignments = new List<Domain.Entities.UserAssignment?>
         {
-            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.UserAssignment.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.UserAssignment.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId())
         };
 
         _userAssignmentRepositoryMock

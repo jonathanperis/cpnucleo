@@ -12,8 +12,8 @@ public class UpdateUserAssignmentCommandHandlerTest
 
         _userAssignments =
         [
-            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.UserAssignment.Create(Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.UserAssignment.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.UserAssignment.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.UserAssignments).ReturnsDbSet(_userAssignments);
@@ -26,7 +26,7 @@ public class UpdateUserAssignmentCommandHandlerTest
     {
         // Arrange
         var userAssignment = _userAssignments.First();
-        var command = new UpdateUserAssignmentCommand(userAssignment.Id, Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateUserAssignmentCommand(userAssignment.Id, BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
@@ -43,7 +43,7 @@ public class UpdateUserAssignmentCommandHandlerTest
     {
         // Arrange
         var userAssignment = _userAssignments.First();
-        var command = new UpdateUserAssignmentCommand(userAssignment.Id, Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateUserAssignmentCommand(userAssignment.Id, BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
@@ -59,7 +59,7 @@ public class UpdateUserAssignmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenUserAssignmentDoesNotExist()
     {
         // Arrange
-        var command = new UpdateUserAssignmentCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateUserAssignmentCommand(BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -73,7 +73,7 @@ public class UpdateUserAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserAssignmentCommand(Guid.Empty, Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateUserAssignmentCommand(Guid.Empty, BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new UpdateUserAssignmentCommandValidator();
 
         // Act
@@ -88,7 +88,7 @@ public class UpdateUserAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenUserIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserAssignmentCommand(Guid.NewGuid(), Guid.Empty, Guid.NewGuid());
+        var command = new UpdateUserAssignmentCommand(BaseEntity.GetNewId(), Guid.Empty, BaseEntity.GetNewId());
         var validator = new UpdateUserAssignmentCommandValidator();
 
         // Act
@@ -103,7 +103,7 @@ public class UpdateUserAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenAssignmentIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserAssignmentCommand(Guid.NewGuid(), Guid.NewGuid(), Guid.Empty);
+        var command = new UpdateUserAssignmentCommand(BaseEntity.GetNewId(), BaseEntity.GetNewId(), Guid.Empty);
         var validator = new UpdateUserAssignmentCommandValidator();
 
         // Act

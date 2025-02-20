@@ -12,8 +12,8 @@ public class RemoveProjectCommandHandlerTest
 
         _projects =
         [
-            Domain.Entities.Project.Create("Test Project 1", Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.Project.Create("Test Project 2", Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.Project.Create("Test Project 2", BaseEntity.GetNewId(), BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Projects).ReturnsDbSet(_projects);
@@ -59,7 +59,7 @@ public class RemoveProjectCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenProjectDoesNotExist()
     {
         // Arrange
-        var projectId = Guid.NewGuid();
+        var projectId = BaseEntity.GetNewId();
         var command = new RemoveProjectCommand(projectId);
 
         // Act

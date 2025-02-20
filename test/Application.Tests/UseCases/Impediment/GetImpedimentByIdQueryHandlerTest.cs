@@ -15,13 +15,13 @@ public class GetImpedimentByIdQueryHandlerTest
     public async Task Handle_ShouldReturnImpediment_WhenImpedimentExists()
     {
         // Arrange
-        var impediment = Domain.Entities.Impediment.Create("Test Impediment", Guid.NewGuid());
+        var impediment = Domain.Entities.Impediment.Create("Test Impediment", BaseEntity.GetNewId());
 
         _impedimentRepositoryMock
             .Setup(repo => repo.GetImpedimentById(It.IsAny<Guid>()))
             .ReturnsAsync(impediment);
 
-        var query = new GetImpedimentByIdQuery(Guid.NewGuid());
+        var query = new GetImpedimentByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -40,7 +40,7 @@ public class GetImpedimentByIdQueryHandlerTest
             .Setup(repo => repo.GetImpedimentById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetImpedimentByIdQuery(Guid.NewGuid());
+        var query = new GetImpedimentByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

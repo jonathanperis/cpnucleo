@@ -15,13 +15,13 @@ public class GetAssignmentTypeByIdQueryHandlerTest
     public async Task Handle_ShouldReturnAssignmentType_WhenAssignmentTypeExists()
     {
         // Arrange
-        var assignmentType = Domain.Entities.AssignmentType.Create("Test AssignmentType", Guid.NewGuid());
+        var assignmentType = Domain.Entities.AssignmentType.Create("Test AssignmentType", BaseEntity.GetNewId());
 
         _assignmentTypeRepositoryMock
             .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()))
             .ReturnsAsync(assignmentType);
 
-        var query = new GetAssignmentTypeByIdQuery(Guid.NewGuid());
+        var query = new GetAssignmentTypeByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -40,7 +40,7 @@ public class GetAssignmentTypeByIdQueryHandlerTest
             .Setup(repo => repo.GetAssignmentTypeById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetAssignmentTypeByIdQuery(Guid.NewGuid());
+        var query = new GetAssignmentTypeByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

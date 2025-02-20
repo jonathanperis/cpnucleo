@@ -19,15 +19,15 @@ public class GetAppointmentByIdQueryHandlerTest
             "Test Appointment",
             DateTime.UtcNow,
             1,
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid());
+            BaseEntity.GetNewId(),
+            BaseEntity.GetNewId(),
+            BaseEntity.GetNewId());
 
         _appointmentRepositoryMock
             .Setup(repo => repo.GetAppointmentById(It.IsAny<Guid>()))
             .ReturnsAsync(appointment);
 
-        var query = new GetAppointmentByIdQuery(Guid.NewGuid());
+        var query = new GetAppointmentByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -46,7 +46,7 @@ public class GetAppointmentByIdQueryHandlerTest
             .Setup(repo => repo.GetAppointmentById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetAppointmentByIdQuery(Guid.NewGuid());
+        var query = new GetAppointmentByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

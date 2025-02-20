@@ -21,7 +21,7 @@ public class CreateUserAssignmentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-        var command = new CreateUserAssignmentCommand(Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateUserAssignmentCommand(BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -38,7 +38,7 @@ public class CreateUserAssignmentCommandHandlerTest
         // Arrange
         _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-        var command = new CreateUserAssignmentCommand(Guid.NewGuid(), Guid.NewGuid());
+        var command = new CreateUserAssignmentCommand(BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -53,7 +53,7 @@ public class CreateUserAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenUserIdIsEmpty()
     {
         // Arrange
-        var command = new CreateUserAssignmentCommand(Guid.Empty, Guid.NewGuid());
+        var command = new CreateUserAssignmentCommand(Guid.Empty, BaseEntity.GetNewId());
         var validator = new CreateUserAssignmentCommandValidator();
 
         // Act
@@ -68,7 +68,7 @@ public class CreateUserAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenAssignmentIdIsEmpty()
     {
         // Arrange
-        var command = new CreateUserAssignmentCommand(Guid.NewGuid(), Guid.Empty);
+        var command = new CreateUserAssignmentCommand(BaseEntity.GetNewId(), Guid.Empty);
         var validator = new CreateUserAssignmentCommandValidator();
 
         // Act

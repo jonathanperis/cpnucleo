@@ -15,13 +15,13 @@ public class GetOrganizationByIdQueryHandlerTest
     public async Task Handle_ShouldReturnOrganization_WhenOrganizationExists()
     {
         // Arrange
-        var organization = Domain.Entities.Organization.Create("Test Organization", "Test Description", Guid.NewGuid());
+        var organization = Domain.Entities.Organization.Create("Test Organization", "Test Description", BaseEntity.GetNewId());
 
         _organizationRepositoryMock
             .Setup(repo => repo.GetOrganizationById(It.IsAny<Guid>()))
             .ReturnsAsync(organization);
 
-        var query = new GetOrganizationByIdQuery(Guid.NewGuid());
+        var query = new GetOrganizationByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -40,7 +40,7 @@ public class GetOrganizationByIdQueryHandlerTest
             .Setup(repo => repo.GetOrganizationById(It.IsAny<Guid>()))
             .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
 
-        var query = new GetOrganizationByIdQuery(Guid.NewGuid());
+        var query = new GetOrganizationByIdQuery(BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);

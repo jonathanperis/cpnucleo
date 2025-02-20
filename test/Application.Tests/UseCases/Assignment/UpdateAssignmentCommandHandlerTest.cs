@@ -13,9 +13,9 @@ public class UpdateAssignmentCommandHandlerTest
         _assignments =
         [
             Domain.Entities.Assignment.Create("Test Assignment 1", "Description 1", DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(1), 2, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()),
+                DateTime.UtcNow.AddDays(1), 2, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId()),
             Domain.Entities.Assignment.Create("Test Assignment 2", "Description 2", DateTime.UtcNow,
-                DateTime.UtcNow.AddDays(2), 3, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid())
+                DateTime.UtcNow.AddDays(2), 3, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Assignments).ReturnsDbSet(_assignments);
@@ -63,7 +63,7 @@ public class UpdateAssignmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentDoesNotExist()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Guid.NewGuid(), "Updated Assignment", "Updated Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateAssignmentCommand(BaseEntity.GetNewId(), "Updated Assignment", "Updated Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -77,7 +77,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Guid.Empty, "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateAssignmentCommand(Guid.Empty, "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act
@@ -92,7 +92,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Guid.NewGuid(), string.Empty, "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateAssignmentCommand(BaseEntity.GetNewId(), string.Empty, "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act
@@ -107,7 +107,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Guid.NewGuid(), "Test Assignment", string.Empty, DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateAssignmentCommand(BaseEntity.GetNewId(), "Test Assignment", string.Empty, DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act
@@ -122,7 +122,7 @@ public class UpdateAssignmentCommandHandlerTest
     public void Handle_ShouldFail_WhenProjectIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentCommand(Guid.NewGuid(), "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.Empty, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var command = new UpdateAssignmentCommand(BaseEntity.GetNewId(), "Test Assignment", "Description", DateTime.UtcNow, DateTime.UtcNow.AddDays(2), 4, Guid.Empty, BaseEntity.GetNewId(), BaseEntity.GetNewId(), BaseEntity.GetNewId());
         var validator = new UpdateAssignmentCommandValidator();
 
         // Act

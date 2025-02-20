@@ -60,7 +60,7 @@ public class UpdateAssignmentTypeCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentTypeDoesNotExist()
     {
         // Arrange
-        var command = new UpdateAssignmentTypeCommand(Guid.NewGuid(), "Updated AssignmentType");
+        var command = new UpdateAssignmentTypeCommand(BaseEntity.GetNewId(), "Updated AssignmentType");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -89,7 +89,7 @@ public class UpdateAssignmentTypeCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateAssignmentTypeCommand(Guid.NewGuid(), string.Empty);
+        var command = new UpdateAssignmentTypeCommand(BaseEntity.GetNewId(), string.Empty);
         var validator = new UpdateAssignmentTypeCommandValidator();
 
         // Act

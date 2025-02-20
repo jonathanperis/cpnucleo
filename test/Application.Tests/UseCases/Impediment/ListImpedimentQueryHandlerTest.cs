@@ -17,8 +17,8 @@ public class ListImpedimentQueryHandlerTest
         // Arrange
         var impediments = new List<Domain.Entities.Impediment?>
         {
-            Domain.Entities.Impediment.Create("Test Impediment 1", Guid.NewGuid()),
-            Domain.Entities.Impediment.Create("Test Impediment 2", Guid.NewGuid())
+            Domain.Entities.Impediment.Create("Test Impediment 1", BaseEntity.GetNewId()),
+            Domain.Entities.Impediment.Create("Test Impediment 2", BaseEntity.GetNewId())
         };
 
         _impedimentRepositoryMock

@@ -12,9 +12,9 @@ public class RemoveAppointmentCommandHandlerTest
 
         _appointments =
         [
-            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(),
-                Guid.NewGuid()),
-            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, BaseEntity.GetNewId(),
+                BaseEntity.GetNewId()),
+            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, BaseEntity.GetNewId(), BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Appointments).ReturnsDbSet(_appointments);
@@ -60,7 +60,7 @@ public class RemoveAppointmentCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAppointmentDoesNotExist()
     {
         // Arrange
-        var appointmentId = Guid.NewGuid();
+        var appointmentId = BaseEntity.GetNewId();
         var command = new RemoveAppointmentCommand(appointmentId);
 
         // Act

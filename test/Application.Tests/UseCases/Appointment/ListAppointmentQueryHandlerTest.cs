@@ -17,8 +17,8 @@ public class ListAppointmentQueryHandlerTest
         // Arrange
         var appointments = new List<Domain.Entities.Appointment?>
         {
-            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, BaseEntity.GetNewId(), BaseEntity.GetNewId())
         };
 
         _appointmentRepositoryMock

@@ -12,8 +12,8 @@ public class UpdateWorkflowCommandHandlerTest
 
         _workflows =
         [
-            Domain.Entities.Workflow.Create("Test Workflow 1", 1, Guid.NewGuid()),
-            Domain.Entities.Workflow.Create("Test Workflow 2", 2, Guid.NewGuid())
+            Domain.Entities.Workflow.Create("Test Workflow 1", 1, BaseEntity.GetNewId()),
+            Domain.Entities.Workflow.Create("Test Workflow 2", 2, BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Workflows).ReturnsDbSet(_workflows);
@@ -60,7 +60,7 @@ public class UpdateWorkflowCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenWorkflowDoesNotExist()
     {
         // Arrange
-        var command = new UpdateWorkflowCommand(Guid.NewGuid(), "Updated Workflow", 1);
+        var command = new UpdateWorkflowCommand(BaseEntity.GetNewId(), "Updated Workflow", 1);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

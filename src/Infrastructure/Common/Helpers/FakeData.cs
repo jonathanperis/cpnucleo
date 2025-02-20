@@ -20,7 +20,7 @@ internal static class FakeDataHelper
         var sb = new StringBuilder();
         
         var organizationFaker = new Faker<Organization>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -46,7 +46,7 @@ internal static class FakeDataHelper
         }
 
         var projectFaker = new Faker<Project>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -71,7 +71,7 @@ internal static class FakeDataHelper
         }
 
         var impedimentFaker = new Faker<Impediment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -96,7 +96,7 @@ internal static class FakeDataHelper
         }
 
         var assignmentTypeFaker = new Faker<AssignmentType>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -121,7 +121,7 @@ internal static class FakeDataHelper
         }
 
         var workflowFaker = new Faker<Workflow>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(x => x.Order, f => f.IndexGlobal + 1)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -147,7 +147,7 @@ internal static class FakeDataHelper
         }
 
         var userFaker = new Faker<User>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => f.Name.FullName())
             .RuleFor(x => x.Login, f => f.Internet.UserName())
             .RuleFor(x => x.Password, f => string.Concat(f.Internet.Password(), f.Internet.Password(), f.Internet.Password()))
@@ -175,7 +175,7 @@ internal static class FakeDataHelper
         }
 
         var userProjectFaker = new Faker<UserProject>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -199,7 +199,7 @@ internal static class FakeDataHelper
         }
 
         var assignmentFaker = new Faker<Assignment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.StartDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -228,7 +228,7 @@ internal static class FakeDataHelper
         }
 
         var userAssignmentFaker = new Faker<UserAssignment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -252,7 +252,7 @@ internal static class FakeDataHelper
         }
 
         var assignmentImpedimentFaker = new Faker<AssignmentImpediment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -276,7 +276,7 @@ internal static class FakeDataHelper
         }
 
         var appointmentFaker = new Faker<Appointment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.KeepDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -9)), DateTime.UtcNow.AddMonths(f.Random.Number(-8, -6))))            
             .RuleFor(x => x.AmountHours, f => f.Random.Number(01, 06))
@@ -314,7 +314,7 @@ internal static class FakeDataHelper
         Directory.CreateDirectory("dml-data");
 
         var organizationFaker = new Faker<Organization>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -336,7 +336,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "Organizations" ("Id", "Name", "Description", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Organizations.csv' WITH (FORMAT CSV);""");
 
         var projectFaker = new Faker<Project>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(p => p.OrganizationId, f => f.PickRandom(Organizations).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -358,7 +358,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Projects.csv' WITH (FORMAT CSV);""");
 
         var impedimentFaker = new Faker<Impediment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -378,7 +378,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "Impediments" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Impediments.csv' WITH (FORMAT CSV);""");
 
         var assignmentTypeFaker = new Faker<AssignmentType>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -398,7 +398,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "AssignmentTypes" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/AssignmentTypes.csv' WITH (FORMAT CSV);""");
 
         var workflowFaker = new Faker<Workflow>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(x => x.Order, f => f.IndexGlobal + 1)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -420,7 +420,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "Workflows" ("Id", "Name", "Order", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Workflows.csv' WITH (FORMAT CSV);""");
 
         var userFaker = new Faker<User>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => f.Name.FullName())
             .RuleFor(x => x.Login, f => f.Internet.UserName())
             .RuleFor(x => x.Password, f => string.Concat(f.Internet.Password(), f.Internet.Password(), f.Internet.Password()))
@@ -446,7 +446,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Users.csv' WITH (FORMAT CSV);""");
 
         var userProjectFaker = new Faker<UserProject>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(up => up.UserId, f => f.PickRandom(Users).Id)
             .RuleFor(up => up.ProjectId, f => f.PickRandom(Projects).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -468,7 +468,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/UserProjects.csv' WITH (FORMAT CSV);""");
 
         var assignmentFaker = new Faker<Assignment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.StartDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -504,7 +504,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Assignments.csv' WITH (FORMAT CSV);""");
 
         var userAssignmentFaker = new Faker<UserAssignment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(ua => ua.UserId, f => f.PickRandom(Users).Id)
             .RuleFor(ua => ua.AssignmentId, f => f.PickRandom(Assignments).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -526,7 +526,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/UserAssignments.csv' WITH (FORMAT CSV);""");
 
         var assignmentImpedimentFaker = new Faker<AssignmentImpediment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(ai => ai.AssignmentId, f => f.PickRandom(Assignments).Id)
             .RuleFor(ai => ai.ImpedimentId, f => f.PickRandom(Impediments).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
@@ -549,7 +549,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""COPY "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/AssignmentImpediments.csv' WITH (FORMAT CSV);""");
 
         var appointmentFaker = new Faker<Appointment>()
-            .RuleFor(c => c.Id, f => Guid.NewGuid())
+            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.KeepDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -9)), DateTime.UtcNow.AddMonths(f.Random.Number(-8, -6))))
             .RuleFor(x => x.AmountHours, f => f.Random.Number(1, 6))

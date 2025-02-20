@@ -14,7 +14,7 @@ public sealed class CreateAssignmentCommandValidator : AbstractValidator<CreateA
             .LessThan(x => x.EndDate).WithMessage("StartDate must be less than EndDate.");
 
         RuleFor(x => x.AmountHours)
-            .GreaterThan((byte)0).WithMessage("AmountHours must be greater than 0.");
+            .GreaterThan((int)0).WithMessage("AmountHours must be greater than 0.");
 
         RuleFor(x => x.ProjectId)
             .NotEmpty().WithMessage("ProjectId is required.");

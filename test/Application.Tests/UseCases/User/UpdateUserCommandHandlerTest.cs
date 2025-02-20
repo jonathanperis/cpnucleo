@@ -60,7 +60,7 @@ public class UpdateUserCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenUserDoesNotExist()
     {
         // Arrange
-        var command = new UpdateUserCommand(Guid.NewGuid(), "Updated User", "newPassword");
+        var command = new UpdateUserCommand(BaseEntity.GetNewId(), "Updated User", "newPassword");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -89,7 +89,7 @@ public class UpdateUserCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserCommand(Guid.NewGuid(), string.Empty, "password");
+        var command = new UpdateUserCommand(BaseEntity.GetNewId(), string.Empty, "password");
         var validator = new UpdateUserCommandValidator();
 
         // Act
@@ -104,7 +104,7 @@ public class UpdateUserCommandHandlerTest
     public void Handle_ShouldFail_WhenPasswordIsEmpty()
     {
         // Arrange
-        var command = new UpdateUserCommand(Guid.NewGuid(), "Test User", string.Empty);
+        var command = new UpdateUserCommand(BaseEntity.GetNewId(), "Test User", string.Empty);
         var validator = new UpdateUserCommandValidator();
 
         // Act

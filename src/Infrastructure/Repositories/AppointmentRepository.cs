@@ -48,7 +48,7 @@ public class AppointmentRepository(NpgsqlConnection connection) : IAppointmentRe
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateAppointment(Guid id, string description, DateTime keepDate, byte amountHours, Guid assignmentId, Guid userId)
+    public async Task<bool> UpdateAppointment(Guid id, string description, DateTime keepDate, int amountHours, Guid assignmentId, Guid userId)
     {
         const string sql = """
                            UPDATE "Appointments"

@@ -59,7 +59,7 @@ public class RemoveAssignmentTypeCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentTypeDoesNotExist()
     {
         // Arrange
-        var assignmentTypeId = Guid.NewGuid();
+        var assignmentTypeId = BaseEntity.GetNewId();
         var command = new RemoveAssignmentTypeCommand(assignmentTypeId);
 
         // Act

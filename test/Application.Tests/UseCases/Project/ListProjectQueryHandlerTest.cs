@@ -17,8 +17,8 @@ public class ListProjectQueryHandlerTest
         // Arrange
         var projects = new List<Domain.Entities.Project?> 
         { 
-            Domain.Entities.Project.Create("Test Project 1", Guid.NewGuid()), 
-            Domain.Entities.Project.Create("Test Project 2", Guid.NewGuid()) 
+            Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId()), 
+            Domain.Entities.Project.Create("Test Project 2", BaseEntity.GetNewId()) 
         };
 
         _projectRepositoryMock

@@ -17,8 +17,8 @@ public class ListUserQueryHandlerTest
         // Arrange
         var users = new List<Domain.Entities.User?>
         {
-            Domain.Entities.User.Create("Test User 1", "testUser1", "password1", Guid.NewGuid()),
-            Domain.Entities.User.Create("Test User 2", "testUser2", "password2", Guid.NewGuid())
+            Domain.Entities.User.Create("Test User 1", "testUser1", "password1", BaseEntity.GetNewId()),
+            Domain.Entities.User.Create("Test User 2", "testUser2", "password2", BaseEntity.GetNewId())
         };
 
         _userRepositoryMock

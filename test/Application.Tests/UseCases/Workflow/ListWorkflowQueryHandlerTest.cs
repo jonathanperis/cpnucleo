@@ -17,8 +17,8 @@ public class ListWorkflowQueryHandlerTest
         // Arrange
         var workflows = new List<Domain.Entities.Workflow?>
         {
-            Domain.Entities.Workflow.Create("Test Workflow 1", 1, Guid.NewGuid()),
-            Domain.Entities.Workflow.Create("Test Workflow 2", 2, Guid.NewGuid())
+            Domain.Entities.Workflow.Create("Test Workflow 1", 1, BaseEntity.GetNewId()),
+            Domain.Entities.Workflow.Create("Test Workflow 2", 2, BaseEntity.GetNewId())
         };
 
         _workflowRepositoryMock

@@ -13,7 +13,7 @@ public sealed class Appointment : BaseEntity
 
     public static Appointment Create(string? description,
                                    DateTime keepDate,
-                                   byte amountHours,
+                                   int amountHours,
                                    Guid assignmentId,
                                    Guid userId,
                                    Guid id = default)
@@ -36,7 +36,7 @@ public sealed class Appointment : BaseEntity
     public static Appointment Update(Appointment obj,
                                    string? description,
                                    DateTime keepDate,
-                                   byte amountHours,
+                                   int amountHours,
                                    Guid assignmentId,
                                    Guid userId)
     {

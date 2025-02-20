@@ -8,6 +8,6 @@ public sealed class CreateWorkflowCommandValidator : AbstractValidator<CreateWor
             .NotEmpty().WithMessage("Name is required.");
 
         RuleFor(x => x.Order)
-            .GreaterThan((byte)0).WithMessage("Order must be greater than 0.");
+            .GreaterThan((int)0).WithMessage("Order must be greater than 0.");
     }
 }

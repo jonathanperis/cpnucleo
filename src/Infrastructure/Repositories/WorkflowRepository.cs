@@ -47,7 +47,7 @@ public class WorkflowRepository(NpgsqlConnection connection) : IWorkflowReposito
         return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
     }
 
-    public async Task<bool> UpdateWorkflow(Guid id, string name, byte order)
+    public async Task<bool> UpdateWorkflow(Guid id, string name, int order)
     {
         const string sql = """
                            UPDATE "Workflows"

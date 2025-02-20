@@ -12,8 +12,8 @@ public class UpdateProjectCommandHandlerTest
 
         _projects =
         [
-            Domain.Entities.Project.Create("Test Project 1", Guid.NewGuid(), Guid.NewGuid()),
-            Domain.Entities.Project.Create("Test Project 2", Guid.NewGuid(), Guid.NewGuid())
+            Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId(), BaseEntity.GetNewId()),
+            Domain.Entities.Project.Create("Test Project 2", BaseEntity.GetNewId(), BaseEntity.GetNewId())
         ];
 
         _dbContextMock.Setup(db => db.Projects).ReturnsDbSet(_projects);
@@ -60,7 +60,7 @@ public class UpdateProjectCommandHandlerTest
     public async Task Handle_ShouldReturnNotFound_WhenProjectDoesNotExist()
     {
         // Arrange
-        var command = new UpdateProjectCommand(Guid.NewGuid(), "Updated Project", Guid.NewGuid());
+        var command = new UpdateProjectCommand(BaseEntity.GetNewId(), "Updated Project", BaseEntity.GetNewId());
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -74,7 +74,7 @@ public class UpdateProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateProjectCommand(Guid.Empty, "Test Project", Guid.NewGuid());
+        var command = new UpdateProjectCommand(Guid.Empty, "Test Project", BaseEntity.GetNewId());
         var validator = new UpdateProjectCommandValidator();
 
         // Act
@@ -89,7 +89,7 @@ public class UpdateProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new UpdateProjectCommand(Guid.NewGuid(), string.Empty, Guid.NewGuid());
+        var command = new UpdateProjectCommand(BaseEntity.GetNewId(), string.Empty, BaseEntity.GetNewId());
         var validator = new UpdateProjectCommandValidator();
 
         // Act
@@ -104,7 +104,7 @@ public class UpdateProjectCommandHandlerTest
     public void Handle_ShouldFail_WhenOrganizationIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateProjectCommand(Guid.NewGuid(), "Test Project", Guid.Empty);
+        var command = new UpdateProjectCommand(BaseEntity.GetNewId(), "Test Project", Guid.Empty);
         var validator = new UpdateProjectCommandValidator();
 
         // Act
