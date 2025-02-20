@@ -32,8 +32,8 @@ public static class DependencyInjection
         var logger = loggerFactory.CreateLogger<Type>();
         
         logger.LogInformation("Fake data creation requested. Starting to create fake data.");
-        FakeData.Init();    
-        logger.LogInformation("Finished creating fake data. Please move the generated 003-database-dump-dml.sql file in the root WebApi project folder to the docker-entrypoint-initdb.d folder.");    
+        FakeDataHelper.CreateSqlCsvDumpFile();    
+        logger.LogInformation("Finished creating fake data. Please move the generated dump-dml.sql file and the dml-data in the root WebApi project folder to the docker-entrypoint-initdb.d folder.");    
     }
     
     public static void UseInfrastructure(this IApplicationBuilder app)
