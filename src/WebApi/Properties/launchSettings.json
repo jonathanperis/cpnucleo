@@ -8,8 +8,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__DefaultConnection": "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },    
     "https": {
@@ -19,8 +18,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5000;https://localhost:5001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__DefaultConnection": "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
