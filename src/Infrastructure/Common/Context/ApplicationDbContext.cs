@@ -53,12 +53,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<UserProject>().HasQueryFilter(x => x.Active);
         modelBuilder.Entity<UserAssignment>().HasQueryFilter(x => x.Active);
         modelBuilder.Entity<Workflow>().HasQueryFilter(x => x.Active);
-
-        var fakeDataRequested = _configuration!.GetValue<bool>("CreateFakeData");
-
-        if (!fakeDataRequested) return;
-        
-        FakeData.Init();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

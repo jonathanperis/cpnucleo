@@ -21,6 +21,12 @@ public static class DependencyInjection
         services.AddScoped<IUserAssignmentRepository, UserAssignmentRepository>();
         services.AddScoped<IUserProjectRepository, UserProjectRepository>();
         services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+
+        var fakeDataRequested = configuration.GetValue<bool>("CreateFakeData");
+
+        if (!fakeDataRequested) return;
+        
+        FakeData.Init();        
     }
     
     public static void UseInfrastructure(this IApplicationBuilder app)
