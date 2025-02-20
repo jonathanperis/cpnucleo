@@ -1,6 +1,6 @@
 namespace Infrastructure.Common.Helpers;
 
-public static class FakeData
+internal static class FakeData
 {    
     internal static List<Appointment>? Appointments { get; set; }
     internal static List<AssignmentImpediment>? AssignmentImpediments { get; set; }
@@ -14,7 +14,7 @@ public static class FakeData
     internal static List<UserProject>? UserProjects { get; set; }
     internal static List<Workflow>? Workflows { get; set; }
     
-    public static void Init()
+    internal static void Init()
     {
         var random = new Random();
         var sb = new StringBuilder();
