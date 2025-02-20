@@ -48,8 +48,7 @@ internal static class FakeData
             .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.OrganizationId, Organizations[random.Next(Organizations.Count)].Id);
+            .RuleFor(x => x.Active, f => f.Random.Bool());
             
         Projects = projectFaker.Generate(1258);
         lastIndex = Projects.Count - 1;
@@ -63,7 +62,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.OrganizationId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{Organizations[random.Next(Organizations.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -172,9 +171,7 @@ internal static class FakeData
             .RuleFor(c => c.Id, f => Guid.NewGuid())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
-            .RuleFor(x => x.ProjectId, Projects[random.Next(Projects.Count)].Id);
+            .RuleFor(x => x.Active, f => f.Random.Bool());
             
         UserProjects = userProjectFaker.Generate(24400);
         lastIndex = UserProjects.Count - 1;
@@ -188,7 +185,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.UserId}'::UUID, '{item.ProjectId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -202,11 +199,7 @@ internal static class FakeData
             .RuleFor(x => x.AmountHours, f => f.Random.Number(12, 60))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.ProjectId, Projects[random.Next(Projects.Count)].Id)
-            .RuleFor(x => x.WorkflowId, Workflows[random.Next(Workflows.Count)].Id)
-            .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
-            .RuleFor(x => x.AssignmentTypeId, AssignmentTypes[random.Next(AssignmentTypes.Count)].Id);
+            .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Assignments = assignmentFaker.Generate(464587);    
         lastIndex = Assignments.Count - 1;
@@ -220,7 +213,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                            ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.ProjectId}'::UUID, '{item.WorkflowId}'::UUID, '{item.UserId}'::UUID, '{item.AssignmentTypeId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                            ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{Workflows[random.Next(Workflows.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{AssignmentTypes[random.Next(AssignmentTypes.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                             """);
             currentIndex++;
         }
@@ -229,9 +222,7 @@ internal static class FakeData
             .RuleFor(c => c.Id, f => Guid.NewGuid())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id)
-            .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
+            .RuleFor(x => x.Active, f => f.Random.Bool());
             
         UserAssignments = userAssignmentFaker.Generate(363554);    
         lastIndex = UserAssignments.Count - 1;
@@ -245,7 +236,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.UserId}'::UUID, '{item.AssignmentId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -254,9 +245,7 @@ internal static class FakeData
             .RuleFor(c => c.Id, f => Guid.NewGuid())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.ImpedimentId, Impediments[random.Next(Impediments.Count)].Id)
-            .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id);
+            .RuleFor(x => x.Active, f => f.Random.Bool());
             
         AssignmentImpediments = assignmentImpedimentFaker.Generate(11369);     
         lastIndex = AssignmentImpediments.Count - 1;
@@ -270,7 +259,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.AssignmentId}'::UUID, '{item.ImpedimentId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Impediments[random.Next(Impediments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -282,9 +271,7 @@ internal static class FakeData
             .RuleFor(x => x.AmountHours, f => f.Random.Number(01, 06))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.Active, f => f.Random.Bool())
-            .RuleFor(x => x.AssignmentId, Assignments[random.Next(Assignments.Count)].Id)
-            .RuleFor(x => x.UserId, Users[random.Next(Users.Count)].Id);
+            .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Appointments = appointmentFaker.Generate(489571);      
         lastIndex = Appointments.Count - 1;
@@ -298,7 +285,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.AssignmentId}'::UUID, '{item.UserId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }     
