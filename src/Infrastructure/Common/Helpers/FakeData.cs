@@ -38,7 +38,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name}', '{item.Description}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Name}', '{item.Description?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -220,7 +220,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                            ('{item.Id}'::UUID, '{item.Name}', '{item.Description}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.ProjectId}'::UUID, '{item.WorkflowId}'::UUID, '{item.UserId}'::UUID, '{item.AssignmentTypeId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                            ('{item.Id}'::UUID, '{item.Name}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.ProjectId}'::UUID, '{item.WorkflowId}'::UUID, '{item.UserId}'::UUID, '{item.AssignmentTypeId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                             """);
             currentIndex++;
         }
@@ -270,7 +270,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Description}', '{item.AssignmentId}'::UUID, '{item.ImpedimentId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.AssignmentId}'::UUID, '{item.ImpedimentId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }
@@ -278,6 +278,7 @@ internal static class FakeData
         var appointmentFaker = new Faker<Appointment>()
             .RuleFor(c => c.Id, f => Guid.NewGuid())
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
+            .RuleFor(o => o.KeepDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -9)), DateTime.UtcNow.AddMonths(f.Random.Number(-8, -6))))            
             .RuleFor(x => x.AmountHours, f => f.Random.Number(01, 06))
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -297,7 +298,7 @@ internal static class FakeData
         {
             bool isLast = currentIndex == lastIndex;
             sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Description}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.AssignmentId}'::UUID, '{item.UserId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
+                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{item.AssignmentId}'::UUID, '{item.UserId}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
                            """);
             currentIndex++;
         }     
