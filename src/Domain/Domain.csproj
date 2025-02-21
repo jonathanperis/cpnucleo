@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Repositories\OrganizationRepository2.cs" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 namespace Application.UseCases.User.CreateUser;
 
+// EF Core
 public sealed class CreateUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)

@@ -2,13 +2,19 @@ namespace Application.Tests.UseCases.Organization;
 
 public class GetOrganizationByIdQueryHandlerTest
 {
-    private readonly Mock<IOrganizationRepository> _organizationRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepo;
     private readonly GetOrganizationByIdQueryHandler _handler;
-
+    
     public GetOrganizationByIdQueryHandlerTest()
     {
-        _organizationRepositoryMock = new Mock<IOrganizationRepository>();
-        _handler = new GetOrganizationByIdQueryHandler(_organizationRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockOrganizationRepo = new Mock<IRepository<Domain.Entities.Organization>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Organization>())
+            .Returns(_mockOrganizationRepo.Object);
+        
+        _handler = new GetOrganizationByIdQueryHandler(_mockUnitOfWork.Object);        
     }
 
     [Fact]
@@ -16,39 +22,39 @@ public class GetOrganizationByIdQueryHandlerTest
     {
         // Arrange
         var organization = Domain.Entities.Organization.Create("Test Organization", "Test Description", BaseEntity.GetNewId());
-
-        _organizationRepositoryMock
-            .Setup(repo => repo.GetOrganizationById(It.IsAny<Guid>()))
-            .ReturnsAsync(organization);
+        
+        _mockOrganizationRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(organization)
+            .Verifiable();
 
         var query = new GetOrganizationByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.Organization);
-        _organizationRepositoryMock.Verify(repo => repo.GetOrganizationById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Organization);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenOrganizationDoesNotExist()
     {
         // Arrange
-        _organizationRepositoryMock
-            .Setup(repo => repo.GetOrganizationById(It.IsAny<Guid>()))
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        _mockOrganizationRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1))
+            .Verifiable();
 
         var query = new GetOrganizationByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.Organization);
-        _organizationRepositoryMock.Verify(repo => repo.GetOrganizationById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.NotNull(response.Organization);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]

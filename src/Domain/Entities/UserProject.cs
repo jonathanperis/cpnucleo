@@ -1,5 +1,6 @@
 namespace Domain.Entities;
 
+[Table("UserProjects")]
 public sealed class UserProject : BaseEntity
 {
     public Guid UserId { get; set; }

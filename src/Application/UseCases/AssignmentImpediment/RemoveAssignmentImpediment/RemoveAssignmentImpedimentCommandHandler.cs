@@ -1,5 +1,6 @@
 namespace Application.UseCases.AssignmentImpediment.RemoveAssignmentImpediment;
 
+// EF Core
 public sealed class RemoveAssignmentImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveAssignmentImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveAssignmentImpedimentCommand request, CancellationToken cancellationToken)

@@ -1,13 +1,15 @@
 namespace Application.UseCases.Assignment.GetAssignmentById;
 
-public sealed class GetAssignmentByIdQueryHandler(IAssignmentRepository assignmentRepository) : IRequestHandler<GetAssignmentByIdQuery, GetAssignmentByIdQueryViewModel>
+// Dapper Repository Advanced
+public sealed class GetAssignmentByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAssignmentByIdQuery, GetAssignmentByIdQueryViewModel>
 {
     public async ValueTask<GetAssignmentByIdQueryViewModel> Handle(GetAssignmentByIdQuery request, CancellationToken cancellationToken)
     {
-        var assignment = await assignmentRepository.GetAssignmentById(request.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.Assignment>();
+        var response = await repository.GetByIdAsync(request.Id);        
+        
+        var operationResult = response is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        var operationResult = assignment is not null ? OperationResult.Success : OperationResult.NotFound;
-
-        return new GetAssignmentByIdQueryViewModel(operationResult, assignment?.MapToDto());
+        return new GetAssignmentByIdQueryViewModel(operationResult, response?.MapToDto());
     }
 }

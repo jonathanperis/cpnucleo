@@ -30,4 +30,8 @@
 		<ProjectReference Include="..\Domain\Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Repositories\OrganizationRepository2.cs" />
+	</ItemGroup>
+
 </Project>

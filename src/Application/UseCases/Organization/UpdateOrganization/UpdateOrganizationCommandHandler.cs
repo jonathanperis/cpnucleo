@@ -1,24 +1,33 @@
 namespace Application.UseCases.Organization.UpdateOrganization;
 
-public sealed class UpdateOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateOrganizationCommand, OperationResult>
+// Dapper Repository Advanced
+public sealed class UpdateOrganizationCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<UpdateOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
     {
-        if (dbContext.Organizations is not null)
+        try
         {
-            var system = await dbContext.Organizations
-                .FirstOrDefaultAsync(s => s.Id == request.Id && s.Active, cancellationToken);
+            await unitOfWork.BeginTransactionAsync();
+            
+            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+            var organization = await repository.GetByIdAsync(request.Id);
 
-            if (system is null)
+            if (organization is null)
             {
                 return OperationResult.NotFound;
             }
+            
+            Domain.Entities.Organization.Update(organization, request.Name, request.Description);
+            var success = await repository.UpdateAsync(organization);    
+        
+            await unitOfWork.CommitAsync(cancellationToken);
 
-            Domain.Entities.Organization.Update(system, request.Name, request.Description);
+            return success ? OperationResult.Success : OperationResult.Failed;
         }
-
-        var result = await dbContext.SaveChangesAsync(cancellationToken);
-
-        return result ? OperationResult.Success : OperationResult.Failed;
+        catch
+        {
+            await unitOfWork.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }

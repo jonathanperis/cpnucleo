@@ -1,15 +1,13 @@
 namespace Application.UseCases.Project.CreateProject;
 
-public sealed class CreateProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateProjectCommand, OperationResult>
+// Dapper Repository Basic
+public sealed class CreateProjectCommandHandler(IProjectRepository projectRepository) : IRequestHandler<CreateProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
         var project = Domain.Entities.Project.Create(request.Name, request.Id);
 
-        if (dbContext.Projects is not null)
-            await dbContext.Projects.AddAsync(project, cancellationToken);
-
-        var result = await dbContext.SaveChangesAsync(cancellationToken);
+        var result = await projectRepository.CreateProject(project);
 
         return result ? OperationResult.Success : OperationResult.Failed;
     }

@@ -1,24 +1,33 @@
 namespace Application.UseCases.Organization.RemoveOrganization;
 
-public sealed class RemoveOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveOrganizationCommand, OperationResult>
+// Dapper Repository Advanced
+public sealed class RemoveOrganizationCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<RemoveOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveOrganizationCommand request, CancellationToken cancellationToken)
     {
-        if (dbContext.Organizations is not null)
+        try
         {
-            var system = await dbContext.Organizations
-                .FirstOrDefaultAsync(s => s.Id == request.Id && s.Active, cancellationToken);
+            await unitOfWork.BeginTransactionAsync();
+            
+            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+            var organization = await repository.GetByIdAsync(request.Id);
 
-            if (system is null)
+            if (organization is null)
             {
                 return OperationResult.NotFound;
             }
+            
+            Domain.Entities.Organization.Remove(organization);
+            var success = await repository.UpdateAsync(organization);    
+        
+            await unitOfWork.CommitAsync(cancellationToken);
 
-            Domain.Entities.Organization.Remove(system);
+            return success ? OperationResult.Success : OperationResult.Failed;
         }
-
-        var result = await dbContext.SaveChangesAsync(cancellationToken);
-
-        return result ? OperationResult.Success : OperationResult.Failed;
+        catch
+        {
+            await unitOfWork.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }

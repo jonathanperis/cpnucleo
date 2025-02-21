@@ -1,13 +1,15 @@
 namespace Application.UseCases.Organization.GetOrganizationById;
 
-public sealed class GetOrganizationByIdQueryHandler(IOrganizationRepository organizationRepository) : IRequestHandler<GetOrganizationByIdQuery, GetOrganizationByIdQueryViewModel>
+// Dapper Repository Advanced
+public sealed class GetOrganizationByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetOrganizationByIdQuery, GetOrganizationByIdQueryViewModel>
 {
     public async ValueTask<GetOrganizationByIdQueryViewModel> Handle(GetOrganizationByIdQuery request, CancellationToken cancellationToken)
     {
-        var system = await organizationRepository.GetOrganizationById(request.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+        var response = await repository.GetByIdAsync(request.Id);        
+        
+        var operationResult = response is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        var operationResult = system is not null ? OperationResult.Success : OperationResult.NotFound;
-
-        return new GetOrganizationByIdQueryViewModel(operationResult, system?.MapToDto());
+        return new GetOrganizationByIdQueryViewModel(operationResult, response?.MapToDto());
     }
 }

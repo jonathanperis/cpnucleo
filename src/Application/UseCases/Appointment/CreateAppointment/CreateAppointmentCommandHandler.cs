@@ -1,5 +1,6 @@
 namespace Application.UseCases.Appointment.CreateAppointment;
 
+// EF Core
 public sealed class CreateAppointmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateAppointmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)

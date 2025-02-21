@@ -1,5 +1,6 @@
 namespace Application.UseCases.Workflow.CreateWorkflow;
 
+// EF Core
 public sealed class CreateWorkflowCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateWorkflowCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)

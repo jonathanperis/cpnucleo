@@ -1,5 +1,6 @@
 namespace Domain.Entities;
 
+[Table("Organizations")]
 public sealed class Organization : BaseEntity
 {
     public string? Name { get; set; }

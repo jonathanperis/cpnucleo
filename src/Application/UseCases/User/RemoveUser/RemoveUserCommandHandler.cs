@@ -1,5 +1,6 @@
 namespace Application.UseCases.User.RemoveUser;
 
+// EF Core
 public sealed class RemoveUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveUserCommand request, CancellationToken cancellationToken)

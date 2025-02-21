@@ -1,5 +1,6 @@
 namespace Application.UseCases.AssignmentImpediment.UpdateAssignmentImpediment;
 
+// EF Core
 public sealed class UpdateAssignmentImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAssignmentImpedimentCommand request, CancellationToken cancellationToken)

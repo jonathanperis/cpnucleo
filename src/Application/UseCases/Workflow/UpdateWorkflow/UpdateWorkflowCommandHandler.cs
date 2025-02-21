@@ -1,5 +1,6 @@
 namespace Application.UseCases.Workflow.UpdateWorkflow;
 
+// EF Core
 public sealed class UpdateWorkflowCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateWorkflowCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)

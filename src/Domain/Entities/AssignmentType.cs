@@ -1,5 +1,6 @@
 namespace Domain.Entities;
 
+[Table("AssignmentTypes")]
 public sealed class AssignmentType : BaseEntity
 {
     public string? Name { get; set; }

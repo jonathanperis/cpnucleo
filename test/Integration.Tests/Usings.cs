@@ -45,7 +45,7 @@ global using Application.UseCases.User.RemoveUser;
 global using Application.UseCases.User.UpdateUser;
 global using Application.UseCases.UserAssignment.CreateUserAssignment;
 global using Application.UseCases.UserAssignment.GetUserAssignmentById;
-global using Application.UseCases.UserAssignment.ListUserAssignments;
+global using Application.UseCases.UserAssignment.ListUserAssignment;
 global using Application.UseCases.UserAssignment.RemoveUserAssignment;
 global using Application.UseCases.UserAssignment.UpdateUserAssignment;
 global using Application.UseCases.UserProject.CreateUserProject;

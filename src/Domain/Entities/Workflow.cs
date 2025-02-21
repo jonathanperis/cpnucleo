@@ -1,5 +1,6 @@
 namespace Domain.Entities;
 
+[Table("Workflows")]
 public sealed class Workflow : BaseEntity
 {
     public string? Name { get; set; }

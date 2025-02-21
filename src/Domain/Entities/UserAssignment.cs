@@ -1,5 +1,6 @@
 namespace Domain.Entities;
 
+[Table("UserAssignments")]
 public sealed class UserAssignment : BaseEntity
 {
     public Guid UserId { get; set; }

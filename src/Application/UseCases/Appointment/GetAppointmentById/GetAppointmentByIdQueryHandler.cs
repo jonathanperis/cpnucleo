@@ -1,13 +1,15 @@
 namespace Application.UseCases.Appointment.GetAppointmentById;
 
-public sealed class GetAppointmentByIdQueryHandler(IAppointmentRepository appointmentRepository) : IRequestHandler<GetAppointmentByIdQuery, GetAppointmentByIdQueryViewModel>
+// Dapper Repository Advanced
+public sealed class GetAppointmentByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAppointmentByIdQuery, GetAppointmentByIdQueryViewModel>
 {
     public async ValueTask<GetAppointmentByIdQueryViewModel> Handle(GetAppointmentByIdQuery request, CancellationToken cancellationToken)
     {
-        var appointment = await appointmentRepository.GetAppointmentById(request.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
+        var response = await repository.GetByIdAsync(request.Id);        
+        
+        var operationResult = response is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        var operationResult = appointment is not null ? OperationResult.Success : OperationResult.NotFound;
-
-        return new GetAppointmentByIdQueryViewModel(operationResult, appointment?.MapToDto());
+        return new GetAppointmentByIdQueryViewModel(operationResult, response?.MapToDto());
     }
 }

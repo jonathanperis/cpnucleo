@@ -1,5 +1,6 @@
 namespace Application.UseCases.Assignment.CreateAssignment;
 
+// EF Core
 public sealed class CreateAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateAssignmentCommand request, CancellationToken cancellationToken)

@@ -1,5 +1,6 @@
 namespace Application.UseCases.AssignmentType.UpdateAssignmentType;
 
+// EF Core
 public sealed class UpdateAssignmentTypeCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAssignmentTypeCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAssignmentTypeCommand request, CancellationToken cancellationToken)

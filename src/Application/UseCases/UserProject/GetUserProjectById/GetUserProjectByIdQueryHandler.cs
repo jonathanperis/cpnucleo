@@ -1,13 +1,15 @@
 namespace Application.UseCases.UserProject.GetUserProjectById;
 
-public sealed class GetUserProjectByIdQueryHandler(IUserProjectRepository userProjectRepository) : IRequestHandler<GetUserProjectByIdQuery, GetUserProjectByIdQueryViewModel>
+// Dapper Repository Advanced
+public sealed class GetUserProjectByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserProjectByIdQuery, GetUserProjectByIdQueryViewModel>
 {
     public async ValueTask<GetUserProjectByIdQueryViewModel> Handle(GetUserProjectByIdQuery request, CancellationToken cancellationToken)
     {
-        var userProject = await userProjectRepository.GetUserProjectById(request.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
+        var response = await repository.GetByIdAsync(request.Id);        
+        
+        var operationResult = response is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        var operationResult = userProject is not null ? OperationResult.Success : OperationResult.NotFound;
-
-        return new GetUserProjectByIdQueryViewModel(operationResult, userProject?.MapToDto());
+        return new GetUserProjectByIdQueryViewModel(operationResult, response?.MapToDto());
     }
 }

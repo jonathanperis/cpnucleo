@@ -1,5 +1,6 @@
 namespace Domain.Entities;
 
+[Table("Impediments")]
 public sealed class Impediment : BaseEntity
 {
     public string? Name { get; set; }

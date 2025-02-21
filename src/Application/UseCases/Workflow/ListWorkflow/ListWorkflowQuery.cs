@@ -1,3 +1,3 @@
 namespace Application.UseCases.Workflow.ListWorkflow;
 
-public sealed record ListWorkflowQuery() : BaseQuery, IRequest<ListWorkflowQueryViewModel>;
+public sealed record ListWorkflowQuery(PaginationParams Pagination) : BaseQuery, IRequest<ListWorkflowQueryViewModel>;

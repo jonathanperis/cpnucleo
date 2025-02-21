@@ -1,5 +1,6 @@
 namespace Application.UseCases.Impediment.UpdateImpediment;
 
+// EF Core
 public sealed class UpdateImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateImpedimentCommand request, CancellationToken cancellationToken)

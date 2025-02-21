@@ -1,5 +1,6 @@
 namespace Application.UseCases.Impediment.RemoveImpediment;
 
+// EF Core
 public sealed class RemoveImpedimentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveImpedimentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveImpedimentCommand request, CancellationToken cancellationToken)

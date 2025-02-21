@@ -1,5 +1,6 @@
 namespace Application.UseCases.UserAssignment.UpdateUserAssignment;
 
+// EF Core
 public sealed class UpdateUserAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateUserAssignmentCommand request, CancellationToken cancellationToken)

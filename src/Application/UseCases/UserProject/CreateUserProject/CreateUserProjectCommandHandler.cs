@@ -1,5 +1,6 @@
 namespace Application.UseCases.UserProject.CreateUserProject;
 
+// EF Core
 public sealed class CreateUserProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateUserProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateUserProjectCommand request, CancellationToken cancellationToken)

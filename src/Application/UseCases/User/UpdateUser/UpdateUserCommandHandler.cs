@@ -1,5 +1,6 @@
 namespace Application.UseCases.User.UpdateUser;
 
+// EF Core
 public sealed class UpdateUserCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateUserCommand request, CancellationToken cancellationToken)

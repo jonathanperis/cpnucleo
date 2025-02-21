@@ -1,5 +1,6 @@
 namespace Application.UseCases.Workflow.RemoveWorkflow;
 
+// EF Core
 public sealed class RemoveWorkflowCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveWorkflowCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveWorkflowCommand request, CancellationToken cancellationToken)

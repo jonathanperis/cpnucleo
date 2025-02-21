@@ -1,5 +1,6 @@
 namespace Application.UseCases.UserProject.RemoveUserProject;
 
+// EF Core
 public sealed class RemoveUserProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveUserProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveUserProjectCommand request, CancellationToken cancellationToken)

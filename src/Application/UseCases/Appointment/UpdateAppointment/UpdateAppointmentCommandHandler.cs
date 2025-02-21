@@ -1,5 +1,6 @@
 namespace Application.UseCases.Appointment.UpdateAppointment;
 
+// EF Core
 public sealed class UpdateAppointmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateAppointmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateAppointmentCommand request, CancellationToken cancellationToken)

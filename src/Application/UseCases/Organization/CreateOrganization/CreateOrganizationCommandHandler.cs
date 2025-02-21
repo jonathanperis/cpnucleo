@@ -1,16 +1,27 @@
 namespace Application.UseCases.Organization.CreateOrganization;
 
-public sealed class CreateOrganizationCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<CreateOrganizationCommand, OperationResult>
+// Dapper Repository Advanced
+public sealed class CreateOrganizationCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<CreateOrganizationCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
-        var system = Domain.Entities.Organization.Create(request.Name, request.Description, request.Id);
+        try
+        {
+            var system = Domain.Entities.Organization.Create(request.Name, request.Description, request.Id);
 
-        if (dbContext.Organizations is not null)
-            await dbContext.Organizations.AddAsync(system, cancellationToken);
+            await unitOfWork.BeginTransactionAsync();
+        
+            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+            var response = await repository.AddAsync(system);    
+        
+            await unitOfWork.CommitAsync(cancellationToken);
 
-        var result = await dbContext.SaveChangesAsync(cancellationToken);
-
-        return result ? OperationResult.Success : OperationResult.Failed;
+            return response != Guid.Empty ? OperationResult.Success : OperationResult.Failed;
+        }
+        catch
+        {
+            await unitOfWork.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }

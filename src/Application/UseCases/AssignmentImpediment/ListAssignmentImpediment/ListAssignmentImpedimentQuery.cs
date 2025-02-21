@@ -1,3 +1,3 @@
 namespace Application.UseCases.AssignmentImpediment.ListAssignmentImpediment;
 
-public sealed record ListAssignmentImpedimentQuery() : IRequest<ListAssignmentImpedimentQueryViewModel>;
+public sealed record ListAssignmentImpedimentQuery(PaginationParams Pagination) : BaseQuery, IRequest<ListAssignmentImpedimentQueryViewModel>;

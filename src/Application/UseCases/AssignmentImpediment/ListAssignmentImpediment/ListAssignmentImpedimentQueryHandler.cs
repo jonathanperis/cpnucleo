@@ -1,17 +1,26 @@
 namespace Application.UseCases.AssignmentImpediment.ListAssignmentImpediment;
 
-public sealed class ListAssignmentImpedimentQueryHandler(IAssignmentImpedimentRepository assignmentImpedimentRepository) : IRequestHandler<ListAssignmentImpedimentQuery, ListAssignmentImpedimentQueryViewModel>
+// Dapper Repository Advanced
+public sealed class ListAssignmentImpedimentQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<ListAssignmentImpedimentQuery, ListAssignmentImpedimentQueryViewModel>
 {
     public async ValueTask<ListAssignmentImpedimentQueryViewModel> Handle(ListAssignmentImpedimentQuery request, CancellationToken cancellationToken)
     {
-        var assignmentImpediments = await assignmentImpedimentRepository.ListAssignmentImpediments();
+        var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
+        var response = await repository.GetAllAsync(request.Pagination);        
+        
+        var operationResult = response.Data != null && response.Data.Any() ? OperationResult.Success : OperationResult.NotFound;
 
-        var operationResult = assignmentImpediments is not null ? OperationResult.Success : OperationResult.NotFound;
-
-        var result = assignmentImpediments?
-                                                    .Select(x => x?.MapToDto())
-                                                    .ToList();
-
-        return new ListAssignmentImpedimentQueryViewModel(operationResult, result);
+        return new ListAssignmentImpedimentQueryViewModel(operationResult, MapToPaginatedDto(response));
+    }
+    
+    private static PaginatedResult<AssignmentImpedimentDto?> MapToPaginatedDto(PaginatedResult<Domain.Entities.AssignmentImpediment?> result)
+    {
+        return new PaginatedResult<AssignmentImpedimentDto?>
+        {
+            Data = result.Data?.Select(x => x?.MapToDto()).ToList(),
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize
+        };
     }
 }

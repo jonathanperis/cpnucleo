@@ -2,57 +2,88 @@ namespace Application.Tests.UseCases.Organization;
 
 public class RemoveOrganizationCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepo;
     private readonly RemoveOrganizationCommandHandler _handler;
-    private readonly List<Domain.Entities.Organization> _organizations;
 
     public RemoveOrganizationCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
-
-        _organizations =
-        [
-            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", BaseEntity.GetNewId()),
-            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", BaseEntity.GetNewId())
-        ];
-
-        _dbContextMock.Setup(db => db.Organizations).ReturnsDbSet(_organizations);
-
-        _handler = new RemoveOrganizationCommandHandler(_dbContextMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockOrganizationRepo = new Mock<IRepository<Domain.Entities.Organization>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Organization>())
+            .Returns(_mockOrganizationRepo.Object);
+        
+        _handler = new RemoveOrganizationCommandHandler(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnSuccess_WhenOrganizationIsRemovedSuccessfully()
     {
         // Arrange
-        var organizationId = _organizations.First().Id;
-        var command = new RemoveOrganizationCommand(organizationId);
+        var organization = Domain.Entities.Organization.Create("Test Organization", "Description", BaseEntity.GetNewId());
+        var command = new RemoveOrganizationCommand(organization.Id);
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        var sequence = new MockSequence();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organization.Id))
+            .ReturnsAsync(organization)
+            .Verifiable();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.DeleteAsync(organization.Id))
+            .ReturnsAsync(true)
+            .Verifiable();
+
+        _mockUnitOfWork.InSequence(sequence)
+            .Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationResult.Success, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organization.Id), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.DeleteAsync(organization.Id), Times.Once);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
     {
         // Arrange
-        var organizationId = _organizations.First().Id;
+        var organization = Domain.Entities.Organization.Create("Test Organization", "Description", BaseEntity.GetNewId());
+        var organizationId = organization.Id;
         var command = new RemoveOrganizationCommand(organizationId);
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        var sequence = new MockSequence();
 
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organizationId))
+            .ReturnsAsync(organization)
+            .Verifiable();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.DeleteAsync(organizationId))
+            .ReturnsAsync(false)
+            .Verifiable();
+
+        _mockUnitOfWork.InSequence(sequence)
+            .Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Database error"))
+            .Verifiable();
+        
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
+        var response = await _handler.Handle(command, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Failed, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(OperationResult.Failed, response);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organizationId), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.DeleteAsync(organizationId), Times.Once);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -62,12 +93,18 @@ public class RemoveOrganizationCommandHandlerTest
         var organizationId = BaseEntity.GetNewId();
         var command = new RemoveOrganizationCommand(organizationId);
 
+        _mockOrganizationRepo.Setup(r => r.GetByIdAsync(organizationId))
+            .ReturnsAsync((Domain.Entities.Organization?)null)
+            .Verifiable();
+
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(OperationResult.NotFound, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(OperationResult.NotFound, response);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organizationId), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.DeleteAsync(It.IsAny<Guid>()), Times.Never);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]

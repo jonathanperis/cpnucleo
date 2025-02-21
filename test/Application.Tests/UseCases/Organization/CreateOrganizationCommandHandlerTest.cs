@@ -2,51 +2,65 @@ namespace Application.Tests.UseCases.Organization;
 
 public class CreateOrganizationCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepo;
     private readonly CreateOrganizationCommandHandler _handler;
-
+    
     public CreateOrganizationCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
-
-        Mock<DbSet<Domain.Entities.Organization>> mockOrganizationsDbSet = new();
-        _dbContextMock.Setup(db => db.Organizations).Returns(mockOrganizationsDbSet.Object);
-
-        _handler = new CreateOrganizationCommandHandler(_dbContextMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockOrganizationRepo = new Mock<IRepository<Domain.Entities.Organization>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Organization>())
+            .Returns(_mockOrganizationRepo.Object);
+        
+        _handler = new CreateOrganizationCommandHandler(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnSuccess_WhenOrganizationIsCreatedSuccessfully()
     {
         // Arrange
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _mockOrganizationRepo.Setup(r => r.AddAsync(It.IsAny<Domain.Entities.Organization>()))
+            .ReturnsAsync(Guid.NewGuid())
+            .Verifiable();
 
-        var command = new CreateOrganizationCommand("Test Organization", "Test Description");
+        _mockUnitOfWork.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+        
+        var query = new CreateOrganizationCommand("Test Organization", "Test Description");
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result);
-        _dbContextMock.Verify(db => db.Organizations!.AddAsync(It.IsAny<Domain.Entities.Organization>(), It.IsAny<CancellationToken>()), Times.Once);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);        
+        _mockOrganizationRepo.Verify(repo => repo.AddAsync(It.IsAny<Domain.Entities.Organization>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
     {
         // Arrange
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _mockOrganizationRepo.Setup(r => r.AddAsync(It.IsAny<Domain.Entities.Organization>()))
+            .ReturnsAsync(Guid.NewGuid())
+            .Verifiable();
 
-        var command = new CreateOrganizationCommand("Test Organization", "Test Description");
+        _mockUnitOfWork.Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Database error"))
+            .Verifiable();
+        
+        var query = new CreateOrganizationCommand("Test Organization", "Test Description");
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Failed, result);
-        _dbContextMock.Verify(db => db.Organizations!.AddAsync(It.IsAny<Domain.Entities.Organization>(), It.IsAny<CancellationToken>()), Times.Once);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(OperationResult.Failed, response);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);        
+        _mockOrganizationRepo.Verify(repo => repo.AddAsync(It.IsAny<Domain.Entities.Organization>()), Times.Once);
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 namespace Application.UseCases.UserAssignment.RemoveUserAssignment;
 
+// EF Core
 public sealed class RemoveUserAssignmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveUserAssignmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveUserAssignmentCommand request, CancellationToken cancellationToken)

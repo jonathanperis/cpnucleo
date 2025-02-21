@@ -1,5 +1,6 @@
 namespace Application.UseCases.UserProject.UpdateUserProject;
 
+// EF Core
 public sealed class UpdateUserProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<UpdateUserProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(UpdateUserProjectCommand request, CancellationToken cancellationToken)

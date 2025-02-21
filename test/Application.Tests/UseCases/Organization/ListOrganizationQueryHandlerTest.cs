@@ -1,78 +1,120 @@
 namespace Application.Tests.UseCases.Organization;
 
-public class ListOrganizationQueryHandlerTest
+public class ListOrganizationQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IOrganizationRepository> _organizationRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepo;
     private readonly ListOrganizationQueryHandler _handler;
 
     public ListOrganizationQueryHandlerTest()
     {
-        _organizationRepositoryMock = new Mock<IOrganizationRepository>();
-        _handler = new ListOrganizationQueryHandler(_organizationRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockOrganizationRepo = new Mock<IRepository<Domain.Entities.Organization>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Organization>())
+            .Returns(_mockOrganizationRepo.Object);
+        
+        _handler = new ListOrganizationQueryHandler(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnListOfOrganizations_WhenOrganizationsExist()
     {
         // Arrange
-        var organizations = new List<Domain.Entities.Organization?>
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
+        var organizations = new List<Domain.Entities.Organization>
         {
             Domain.Entities.Organization.Create("Test Organization 1", "Description 1", BaseEntity.GetNewId()),
             Domain.Entities.Organization.Create("Test Organization 2", "Description 2", BaseEntity.GetNewId())
         };
 
-        _organizationRepositoryMock
-            .Setup(repo => repo.ListOrganization())
-            .ReturnsAsync(organizations);
+        var paginatedResult = new PaginatedResult<Domain.Entities.Organization?>
+        {
+            Data = organizations,
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockOrganizationRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
 
-        var query = new ListOrganizationQuery();
+        var query = new ListOrganizationQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-        var a = result.OperationResult.ToString();
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.Organizations);
-        Assert.Equal(organizations.Count, result.Organizations.Count);
-        _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Result);
+        Assert.Equal(organizations.Count, response.Result.Data?.Count());
+        _mockOrganizationRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnEmptyList_WhenNoOrganizationsExist()
     {
         // Arrange
-        _organizationRepositoryMock
-            .Setup(repo => repo.ListOrganization())
-            .ReturnsAsync([]);
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
 
-        var query = new ListOrganizationQuery();
+        var paginatedResult = new PaginatedResult<Domain.Entities.Organization?>
+        {
+            Data = [],
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockOrganizationRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
+
+        var query = new ListOrganizationQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.Organizations);
-        Assert.Empty(result.Organizations);
-        _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.NotNull(response.Result.Data);
+        Assert.Empty(response.Result.Data);
+        _mockOrganizationRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
-
+    
+    
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenListOrganizationReturnsNull()
     {
         // Arrange
-        _organizationRepositoryMock
-            .Setup(repo => repo.ListOrganization())
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
 
-        var query = new ListOrganizationQuery();
+        var paginatedResult = new PaginatedResult<Domain.Entities.Organization?>
+        {
+            Data = null,
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockOrganizationRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
+
+        var query = new ListOrganizationQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.Organizations);
-        _organizationRepositoryMock.Verify(repo => repo.ListOrganization(), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.Result.Data);
+        _mockOrganizationRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
+    
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockOrganizationRepo.Verify();
+    }    
 }

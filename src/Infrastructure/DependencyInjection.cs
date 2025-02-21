@@ -4,24 +4,17 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Ef Core
+        // EF Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-        // Dapper
+        // Dapper Repository Basic
         services.AddScoped(_ => new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection")));
-
-        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
-        services.AddScoped<IAssignmentRepository, AssignmentRepository>();
-        services.AddScoped<IAssignmentImpedimentRepository, AssignmentImpedimentRepository>();
-        services.AddScoped<IAssignmentTypeRepository, AssignmentTypeRepository>();
-        services.AddScoped<IImpedimentRepository, ImpedimentRepository>();
-        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUserAssignmentRepository, UserAssignmentRepository>();
-        services.AddScoped<IUserProjectRepository, UserProjectRepository>();
-        services.AddScoped<IWorkflowRepository, WorkflowRepository>();
 
+        // Dapper Repository Advanced        
+        services.AddScoped<IUnitOfWork>(_ => 
+            new UnitOfWork(new NpgsqlConnection(configuration.GetConnectionString("DefaultConnection"))));
+        
         var fakeDataRequested = configuration.GetValue<bool>("CreateFakeData");
 
         if (!fakeDataRequested) return;

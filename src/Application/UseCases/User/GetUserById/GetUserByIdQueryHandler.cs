@@ -1,13 +1,15 @@
 namespace Application.UseCases.User.GetUserById;
 
-public sealed class GetUserByIdQueryHandler(IUserRepository userRepository) : IRequestHandler<GetUserByIdQuery, GetUserByIdQueryViewModel>
+// Dapper Repository Advanced
+public sealed class GetUserByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetUserByIdQuery, GetUserByIdQueryViewModel>
 {
     public async ValueTask<GetUserByIdQueryViewModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetUserById(request.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.User>();
+        var response = await repository.GetByIdAsync(request.Id);        
+        
+        var operationResult = response is not null ? OperationResult.Success : OperationResult.NotFound;
 
-        var operationResult = user is not null ? OperationResult.Success : OperationResult.NotFound;
-
-        return new GetUserByIdQueryViewModel(operationResult, user?.MapToDto());
+        return new GetUserByIdQueryViewModel(operationResult, response?.MapToDto());
     }
 }

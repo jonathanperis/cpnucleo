@@ -1,24 +1,19 @@
 namespace Application.UseCases.Project.RemoveProject;
 
-public sealed class RemoveProjectCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveProjectCommand, OperationResult>
+// Dapper Repository Basic
+public sealed class RemoveProjectCommandHandler(IProjectRepository projectRepository) : IRequestHandler<RemoveProjectCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveProjectCommand request, CancellationToken cancellationToken)
     {
-        if (dbContext.Projects is not null)
+        var project = await projectRepository.GetProjectById(request.Id);
+        
+        if (project is null)
         {
-            var project = await dbContext.Projects
-                .FirstOrDefaultAsync(p => p.Id == request.Id && p.Active, cancellationToken);
-
-            if (project is null)
-            {
-                return OperationResult.NotFound;
-            }
-
-            Domain.Entities.Project.Remove(project);
+            return OperationResult.NotFound;
         }
-
-        var result = await dbContext.SaveChangesAsync(cancellationToken);
-
-        return result ? OperationResult.Success : OperationResult.Failed;
+        
+        var success = await projectRepository.RemoveProject(project.Id);
+        
+        return success ? OperationResult.Success : OperationResult.Failed;
     }
 }

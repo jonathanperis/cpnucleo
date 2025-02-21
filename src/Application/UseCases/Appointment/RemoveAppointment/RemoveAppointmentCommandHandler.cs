@@ -1,5 +1,6 @@
 namespace Application.UseCases.Appointment.RemoveAppointment;
 
+// EF Core
 public sealed class RemoveAppointmentCommandHandler(IApplicationDbContext dbContext) : IRequestHandler<RemoveAppointmentCommand, OperationResult>
 {
     public async ValueTask<OperationResult> Handle(RemoveAppointmentCommand request, CancellationToken cancellationToken)

@@ -2,73 +2,106 @@ namespace Application.Tests.UseCases.Organization;
 
 public class UpdateOrganizationCommandHandlerTest
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepo;
     private readonly UpdateOrganizationCommandHandler _handler;
-    private readonly List<Domain.Entities.Organization> _organizations;
-
+    
     public UpdateOrganizationCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
-
-        _organizations =
-        [
-            Domain.Entities.Organization.Create("Test Organization 1", "Description 1", BaseEntity.GetNewId()),
-            Domain.Entities.Organization.Create("Test Organization 2", "Description 2", BaseEntity.GetNewId())
-        ];
-
-        _dbContextMock.Setup(db => db.Organizations).ReturnsDbSet(_organizations);
-
-        _handler = new UpdateOrganizationCommandHandler(_dbContextMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockOrganizationRepo = new Mock<IRepository<Domain.Entities.Organization>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Organization>())
+            .Returns(_mockOrganizationRepo.Object);
+        
+        _handler = new UpdateOrganizationCommandHandler(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnSuccess_WhenOrganizationIsUpdatedSuccessfully()
     {
         // Arrange
-        var organization = _organizations.First();
-        var command = new UpdateOrganizationCommand(organization.Id, "Updated Organization", "Updated Description");
+        var organization = Domain.Entities.Organization.Create("Test Organization 1", "Description 1", BaseEntity.GetNewId());
+        var command = new UpdateOrganizationCommand(organization.Id, "Updated Test Organization 1", "Updated Description 1");
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        var sequence = new MockSequence();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organization.Id))
+            .ReturnsAsync(organization)
+            .Verifiable();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.UpdateAsync(organization))
+            .ReturnsAsync(true)
+            .Verifiable();
+
+        _mockUnitOfWork.InSequence(sequence)
+            .Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(OperationResult.Success, result);
-        Assert.Equal("Updated Organization", organization.Name);
-        Assert.Equal("Updated Description", organization.Description);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organization.Id), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.UpdateAsync(organization), Times.Once);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
     {
         // Arrange
-        var organization = _organizations.First();
-        var command = new UpdateOrganizationCommand(organization.Id, "Updated Organization", "Updated Description");
+        var organization = Domain.Entities.Organization.Create("Test Organization 1", "Description 1", BaseEntity.GetNewId());
+        var command = new UpdateOrganizationCommand(organization.Id, "Updated Test Organization 1", "Updated Description 1");
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        var sequence = new MockSequence();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organization.Id))
+            .ReturnsAsync(organization)
+            .Verifiable();
+
+        _mockOrganizationRepo.InSequence(sequence)
+            .Setup(r => r.UpdateAsync(organization))
+            .ReturnsAsync(false)
+            .Verifiable();
+
+        _mockUnitOfWork.InSequence(sequence)
+            .Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Database error"))
+            .Verifiable();
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationResult.Failed, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organization.Id), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.UpdateAsync(organization), Times.Once);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenOrganizationDoesNotExist()
     {
         // Arrange
-        var command = new UpdateOrganizationCommand(BaseEntity.GetNewId(), "Updated Organization", "Updated Description");
+        var command = new UpdateOrganizationCommand(BaseEntity.GetNewId(), "Updated Test Organization 1", "Updated Description 1");
+
+        _mockOrganizationRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync((Domain.Entities.Organization?)null)
+            .Verifiable();
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(OperationResult.NotFound, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(OperationResult.NotFound, response);
+        _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+        _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]

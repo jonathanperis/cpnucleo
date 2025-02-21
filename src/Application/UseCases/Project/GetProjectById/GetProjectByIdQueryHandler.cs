@@ -1,5 +1,6 @@
 namespace Application.UseCases.Project.GetProjectById;
 
+// Dapper Repository Basic
 public sealed class GetProjectByIdQueryHandler(IProjectRepository projectRepository) : IRequestHandler<GetProjectByIdQuery, GetProjectByIdQueryViewModel>
 {
     public async ValueTask<GetProjectByIdQueryViewModel> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
