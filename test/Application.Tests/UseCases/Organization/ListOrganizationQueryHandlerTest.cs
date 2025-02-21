@@ -116,5 +116,6 @@ public class ListOrganizationQueryHandlerTest : IDisposable
     {
         _mockUnitOfWork.Verify();
         _mockOrganizationRepo.Verify();
+        GC.SuppressFinalize(this);
     }    
 }

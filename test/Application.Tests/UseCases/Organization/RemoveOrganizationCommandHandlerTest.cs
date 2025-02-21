@@ -1,6 +1,6 @@
 namespace Application.Tests.UseCases.Organization;
 
-public class RemoveOrganizationCommandHandlerTest
+public class RemoveOrganizationCommandHandlerTest : IDisposable
 {
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepo;
@@ -121,4 +121,11 @@ public class RemoveOrganizationCommandHandlerTest
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
+
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockOrganizationRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }
