@@ -21,7 +21,7 @@ public sealed class CreateOrganizationCommandHandler(IUnitOfWork unitOfWork) : I
         catch
         {
             await unitOfWork.RollbackAsync(cancellationToken);
-            throw;
+            return OperationResult.Failed;
         }
     }
 }

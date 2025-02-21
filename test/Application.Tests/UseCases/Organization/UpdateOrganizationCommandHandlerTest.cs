@@ -67,14 +67,14 @@ public class UpdateOrganizationCommandHandlerTest
 
         _mockOrganizationRepo.InSequence(sequence)
             .Setup(r => r.UpdateAsync(organization))
-            .ReturnsAsync(false)
+            .ReturnsAsync(true)
             .Verifiable();
 
         _mockUnitOfWork.InSequence(sequence)
             .Setup(r => r.CommitAsync(It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Database error"))
             .Verifiable();
-
+        
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 

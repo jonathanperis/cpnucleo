@@ -32,7 +32,7 @@ public class RemoveOrganizationCommandHandlerTest
             .Verifiable();
 
         _mockOrganizationRepo.InSequence(sequence)
-            .Setup(r => r.DeleteAsync(organization.Id))
+            .Setup(r => r.UpdateAsync(organization))
             .ReturnsAsync(true)
             .Verifiable();
 
@@ -47,7 +47,7 @@ public class RemoveOrganizationCommandHandlerTest
         // Assert
         Assert.Equal(OperationResult.Success, result);
         _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organization.Id), Times.Once);
-        _mockOrganizationRepo.Verify(repo => repo.DeleteAsync(organization.Id), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.UpdateAsync(organization), Times.Once);
         _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -67,7 +67,7 @@ public class RemoveOrganizationCommandHandlerTest
             .Verifiable();
 
         _mockOrganizationRepo.InSequence(sequence)
-            .Setup(r => r.DeleteAsync(organizationId))
+            .Setup(r => r.UpdateAsync(organization))
             .ReturnsAsync(false)
             .Verifiable();
 
@@ -82,7 +82,7 @@ public class RemoveOrganizationCommandHandlerTest
         // Assert
         Assert.Equal(OperationResult.Failed, response);
         _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(organizationId), Times.Once);
-        _mockOrganizationRepo.Verify(repo => repo.DeleteAsync(organizationId), Times.Once);
+        _mockOrganizationRepo.Verify(repo => repo.UpdateAsync(organization), Times.Once);
         _mockUnitOfWork.Verify(repo => repo.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 

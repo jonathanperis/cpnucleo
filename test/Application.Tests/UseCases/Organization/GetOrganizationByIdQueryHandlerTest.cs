@@ -53,7 +53,7 @@ public class GetOrganizationByIdQueryHandlerTest
         
         // Assert
         Assert.Equal(OperationResult.NotFound, response.OperationResult);
-        Assert.NotNull(response.Organization);
+        Assert.Null(response.Organization);
         _mockOrganizationRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
