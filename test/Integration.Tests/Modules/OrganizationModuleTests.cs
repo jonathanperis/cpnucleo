@@ -1,8 +1,5 @@
-using Domain.Models;
-
 namespace Integration.Tests.Modules;
 
-// public class OrganizationTests(WebAppFixture fixture) : ScenarioContext(fixture)
 public class OrganizationModuleTests(WebAppFixture fixture) : IClassFixture<WebAppFixture>
 {
     private readonly IAlbaHost _host = fixture.AlbaHost;
@@ -28,21 +25,14 @@ public class OrganizationModuleTests(WebAppFixture fixture) : IClassFixture<WebA
             s.StatusCodeShouldBeOk();
         });
         
-        var organizations = await response1.ReadAsJsonAsync<ListOrganizationQueryViewModel>();
-        var organization = organizations?.Result?.Data?.First();
+        var result1 = await response1.ReadAsJsonAsync<PaginatedResult<OrganizationDto>>();
+        var organization = result1?.Data?.First();
         
         // Act
-        var response2 = await _host.Scenario(s =>
-        {
-            s.Get.Json(new GetOrganizationByIdQuery(organization!.Id)).ToUrl("/api/organizations");
-            s.StatusCodeShouldBeOk();
-        });        
-     
-        var result = await response2.ReadAsJsonAsync<GetOrganizationByIdQueryViewModel>();
+        var response2 = await _host.GetAsJson<OrganizationDto>("/api/organizations/" + organization!.Id);
         
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.Equal(result?.Organization?.Id, organization?.Id);        
+        Assert.NotNull(response2);
+        Assert.Equal(response2?.Id, organization?.Id);        
     }
 }

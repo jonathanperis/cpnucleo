@@ -58,5 +58,6 @@ global using Application.UseCases.Workflow.GetWorkflowById;
 global using Application.UseCases.Workflow.ListWorkflow;
 global using Application.UseCases.Workflow.RemoveWorkflow;
 global using Application.UseCases.Workflow.UpdateWorkflow;
+global using Domain.Models;
 global using Integration.Tests.Hosts;
 global using Xunit;

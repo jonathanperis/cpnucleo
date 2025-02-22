@@ -7,8 +7,12 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction 
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await connection.QueryFirstOrDefaultAsync<T>(
-            $"SELECT * FROM {tableName} WHERE {PrimaryKey} = @Id AND \"Active\" = true", 
+        var sql = $"""
+                   SELECT * FROM "{tableName}" 
+                   WHERE "{PrimaryKey}" = @Id AND "Active" = true
+                   """;       
+        
+        return await connection.QueryFirstOrDefaultAsync<T>(sql,
             new { Id = id }, transaction);
     }
 
