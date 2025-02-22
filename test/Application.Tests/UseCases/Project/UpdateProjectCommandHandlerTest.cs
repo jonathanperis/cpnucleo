@@ -56,7 +56,7 @@ public class UpdateProjectCommandHandlerTest : IDisposable
 
         _mockProjectRepo.InSequence(sequence)
             .Setup(r => r.UpdateAsync(organization))
-            .ReturnsAsync(true)
+            .ReturnsAsync(false)
             .Verifiable();
         
         // Act

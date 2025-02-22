@@ -56,6 +56,21 @@ public class RemoveWorkflowCommandHandlerTest
     }
 
     [Fact]
+    public void Handle_ShouldFail_WhenIdIsEmpty()
+    {
+        // Arrange
+        var command = new RemoveWorkflowCommand(Guid.Empty);
+        var validator = new RemoveWorkflowCommandValidator();
+
+        // Act
+        var result = validator.Validate(command);
+
+        // Assert
+        Assert.False(result.IsValid);
+        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
+    }
+    
+    [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenWorkflowDoesNotExist()
     {
         // Arrange

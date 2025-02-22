@@ -5,13 +5,13 @@ public sealed class ListImpedimentQueryHandler(IApplicationDbContext dbContext) 
 {
     public async ValueTask<ListImpedimentQueryViewModel> Handle(ListImpedimentQuery request, CancellationToken cancellationToken)
     {
-        var query = dbContext.Impediments!.AsQueryable();
+        var query = dbContext.Impediments?.AsQueryable();
         
         var validSortColumn = ValidateSortColumn(request.Pagination.SortColumn);
         var validSortOrder = request.Pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
         
         query = ApplySorting(query, validSortColumn, validSortOrder);
-
+        
         var totalCount = await query!.CountAsync(cancellationToken);
 
         var impediments = await query!

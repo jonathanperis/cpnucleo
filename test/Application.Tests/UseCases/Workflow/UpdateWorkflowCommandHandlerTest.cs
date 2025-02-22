@@ -55,6 +55,21 @@ public class UpdateWorkflowCommandHandlerTest
         Assert.Equal(OperationResult.Failed, result);
         _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
+    
+    [Fact]
+    public void Handle_ShouldFail_WhenIdIsEmpty()
+    {
+        // Arrange
+        var command = new UpdateWorkflowCommand(Guid.Empty, "Workflow Test 1", 1);
+        var validator = new UpdateWorkflowCommandValidator();
+
+        // Act
+        var result = validator.Validate(command);
+
+        // Assert
+        Assert.False(result.IsValid);
+        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
+    }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenWorkflowDoesNotExist()

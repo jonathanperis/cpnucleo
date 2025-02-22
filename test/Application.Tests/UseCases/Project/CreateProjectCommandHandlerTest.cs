@@ -35,7 +35,7 @@ public class CreateProjectCommandHandlerTest : IDisposable
     {
         // Arrange
         _mockProjectRepo.Setup(r => r.AddAsync(It.IsAny<Domain.Entities.Project>()))
-            .ReturnsAsync(Guid.NewGuid())
+            .ReturnsAsync(Guid.Empty)
             .Verifiable();
         
         var command = new CreateProjectCommand("Test Project", BaseEntity.GetNewId());
@@ -52,7 +52,7 @@ public class CreateProjectCommandHandlerTest : IDisposable
     public void Handle_ShouldFail_WhenNameIsEmpty()
     {
         // Arrange
-        var command = new CreateProjectCommand("Test Project", BaseEntity.GetNewId());
+        var command = new CreateProjectCommand(string.Empty, BaseEntity.GetNewId());
         var validator = new CreateProjectCommandValidator();
 
         // Act
