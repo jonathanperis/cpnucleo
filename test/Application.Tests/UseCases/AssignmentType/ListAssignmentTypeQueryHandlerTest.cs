@@ -1,78 +1,121 @@
 namespace Application.Tests.UseCases.AssignmentType;
 
-public class ListAssignmentTypeQueryHandlerTest
+public class ListAssignmentTypeQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IAssignmentTypeRepository> _assignmentTypeRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.AssignmentType>> _mockAssignmentTypeRepo;
     private readonly ListAssignmentTypeQueryHandler _handler;
 
     public ListAssignmentTypeQueryHandlerTest()
     {
-        _assignmentTypeRepositoryMock = new Mock<IAssignmentTypeRepository>();
-        _handler = new ListAssignmentTypeQueryHandler(_assignmentTypeRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockAssignmentTypeRepo = new Mock<IRepository<Domain.Entities.AssignmentType>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.AssignmentType>())
+            .Returns(_mockAssignmentTypeRepo.Object);
+        
+        _handler = new ListAssignmentTypeQueryHandler(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnListOfAssignmentTypes_WhenAssignmentTypesExist()
     {
         // Arrange
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
         var assignmentTypes = new List<Domain.Entities.AssignmentType?>
         {
             Domain.Entities.AssignmentType.Create("Test AssignmentType 1", BaseEntity.GetNewId()),
             Domain.Entities.AssignmentType.Create("Test AssignmentType 2", BaseEntity.GetNewId())
         };
 
-        _assignmentTypeRepositoryMock
-            .Setup(repo => repo.ListAssignmentTypes())
-            .ReturnsAsync(assignmentTypes);
+        var paginatedResult = new PaginatedResult<Domain.Entities.AssignmentType?>
+        {
+            Data = assignmentTypes,
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockAssignmentTypeRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
 
-        var query = new ListAssignmentTypeQuery();
+        var query = new ListAssignmentTypeQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.AssignmentTypes);
-        Assert.Equal(assignmentTypes.Count, result.AssignmentTypes.Count);
-        _assignmentTypeRepositoryMock.Verify(repo => repo.ListAssignmentTypes(), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Result);
+        Assert.Equal(assignmentTypes.Count, response.Result.Data?.Count());
+        _mockAssignmentTypeRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnEmptyList_WhenNoAssignmentTypesExist()
     {
         // Arrange
-        _assignmentTypeRepositoryMock
-            .Setup(repo => repo.ListAssignmentTypes())
-            .ReturnsAsync([]);
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
 
-        var query = new ListAssignmentTypeQuery();
+        var paginatedResult = new PaginatedResult<Domain.Entities.AssignmentType?>
+        {
+            Data = [],
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockAssignmentTypeRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
+
+        var query = new ListAssignmentTypeQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.AssignmentTypes);
-        Assert.Empty(result.AssignmentTypes);
-        _assignmentTypeRepositoryMock.Verify(repo => repo.ListAssignmentTypes(), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.NotNull(response.Result.Data);
+        Assert.Empty(response.Result.Data);
+        _mockAssignmentTypeRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
-
+    
+    
     [Fact]
-    public async Task Handle_ShouldReturnNotFound_WhenListAssignmentTypesReturnsNull()
+    public async Task Handle_ShouldReturnNotFound_WhenListAssignmentTypeReturnsNull()
     {
         // Arrange
-        _assignmentTypeRepositoryMock
-            .Setup(repo => repo.ListAssignmentTypes())
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
 
-        var query = new ListAssignmentTypeQuery();
+        var paginatedResult = new PaginatedResult<Domain.Entities.AssignmentType?>
+        {
+            Data = null,
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockAssignmentTypeRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
+
+        var query = new ListAssignmentTypeQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.AssignmentTypes);
-        _assignmentTypeRepositoryMock.Verify(repo => repo.ListAssignmentTypes(), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.Result.Data);
+        _mockAssignmentTypeRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
+    
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockAssignmentTypeRepo.Verify();
+        GC.SuppressFinalize(this);
+    }    
 }

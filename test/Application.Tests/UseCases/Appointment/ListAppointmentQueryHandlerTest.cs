@@ -10,8 +10,10 @@ public class ListAppointmentQueryHandlerTest : IDisposable
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
         _mockAppointmentRepo = new Mock<IRepository<Domain.Entities.Appointment>>();
+        
         _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Appointment>())
             .Returns(_mockAppointmentRepo.Object);
+        
         _handler = new ListAppointmentQueryHandler(_mockUnitOfWork.Object);
     }
 
@@ -25,6 +27,8 @@ public class ListAppointmentQueryHandlerTest : IDisposable
             Domain.Entities.Appointment.Create("Test Appointment 1", DateTime.UtcNow, 1, BaseEntity.GetNewId(), BaseEntity.GetNewId()),
             Domain.Entities.Appointment.Create("Test Appointment 2", DateTime.UtcNow, 2, BaseEntity.GetNewId(), BaseEntity.GetNewId())
         };
+
+
         var paginatedResult = new PaginatedResult<Domain.Entities.Appointment?>
         {
             Data = appointments,
@@ -32,7 +36,7 @@ public class ListAppointmentQueryHandlerTest : IDisposable
             PageNumber = 1,
             PageSize = 10
         };
-
+        
         _mockAppointmentRepo.Setup(r => r.GetAllAsync(pagination))
             .ReturnsAsync(paginatedResult)
             .Verifiable();
@@ -40,12 +44,12 @@ public class ListAppointmentQueryHandlerTest : IDisposable
         var query = new ListAppointmentQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.Result.Data);
-        Assert.Equal(appointments.Count, result.Result.Data.Count());
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Result);
+        Assert.Equal(appointments.Count, response.Result.Data?.Count());
         _mockAppointmentRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
 
@@ -54,6 +58,7 @@ public class ListAppointmentQueryHandlerTest : IDisposable
     {
         // Arrange
         var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
+
         var paginatedResult = new PaginatedResult<Domain.Entities.Appointment?>
         {
             Data = [],
@@ -61,7 +66,7 @@ public class ListAppointmentQueryHandlerTest : IDisposable
             PageNumber = 1,
             PageSize = 10
         };
-
+        
         _mockAppointmentRepo.Setup(r => r.GetAllAsync(pagination))
             .ReturnsAsync(paginatedResult)
             .Verifiable();
@@ -69,20 +74,22 @@ public class ListAppointmentQueryHandlerTest : IDisposable
         var query = new ListAppointmentQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.NotNull(result.Result.Data);
-        Assert.Empty(result.Result.Data);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.NotNull(response.Result.Data);
+        Assert.Empty(response.Result.Data);
         _mockAppointmentRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
-
+    
+    
     [Fact]
-    public async Task Handle_ShouldReturnNotFound_WhenListAppointmentsReturnsNull()
+    public async Task Handle_ShouldReturnNotFound_WhenListAppointmentReturnsNull()
     {
         // Arrange
         var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
+
         var paginatedResult = new PaginatedResult<Domain.Entities.Appointment?>
         {
             Data = null,
@@ -90,7 +97,7 @@ public class ListAppointmentQueryHandlerTest : IDisposable
             PageNumber = 1,
             PageSize = 10
         };
-
+        
         _mockAppointmentRepo.Setup(r => r.GetAllAsync(pagination))
             .ReturnsAsync(paginatedResult)
             .Verifiable();
@@ -98,18 +105,18 @@ public class ListAppointmentQueryHandlerTest : IDisposable
         var query = new ListAppointmentQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.Result.Data);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.Result.Data);
         _mockAppointmentRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
-
+    
     public void Dispose()
     {
         _mockUnitOfWork.Verify();
         _mockAppointmentRepo.Verify();
         GC.SuppressFinalize(this);
-    }
+    }    
 }

@@ -1,73 +1,92 @@
 namespace Application.Tests.UseCases.Project;
 
-public class RemoveProjectCommandHandlerTest
+public class RemoveProjectCommandHandlerTest : IDisposable
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<IProjectRepository> _mockProjectRepo;
     private readonly RemoveProjectCommandHandler _handler;
-    private readonly List<Domain.Entities.Project> _projects;
 
     public RemoveProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
-
-        _projects =
-        [
-            Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId(), BaseEntity.GetNewId()),
-            Domain.Entities.Project.Create("Test Project 2", BaseEntity.GetNewId(), BaseEntity.GetNewId())
-        ];
-
-        _dbContextMock.Setup(db => db.Projects).ReturnsDbSet(_projects);
-
-        _handler = new RemoveProjectCommandHandler(_dbContextMock.Object);
+        _mockProjectRepo = new Mock<IProjectRepository>();
+        
+        _handler = new RemoveProjectCommandHandler(_mockProjectRepo.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnSuccess_WhenProjectIsRemovedSuccessfully()
     {
         // Arrange
-        var projectId = _projects.First().Id;
-        var command = new RemoveProjectCommand(projectId);
+        var project = Domain.Entities.Project.Create("Test Project", BaseEntity.GetNewId(), BaseEntity.GetNewId());
+        var command = new RemoveProjectCommand(project.Id);
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        var sequence = new MockSequence();
+
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(project.Id))
+            .ReturnsAsync(project)
+            .Verifiable();
+
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.UpdateAsync(project))
+            .ReturnsAsync(true)
+            .Verifiable();
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationResult.Success, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.GetByIdAsync(project.Id), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.UpdateAsync(project), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
     {
         // Arrange
-        var projectId = _projects.First().Id;
-        var command = new RemoveProjectCommand(projectId);
+        var project = Domain.Entities.Project.Create("Test Project", BaseEntity.GetNewId(), BaseEntity.GetNewId());
+        var organizationId = project.Id;
+        var command = new RemoveProjectCommand(organizationId);
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        var sequence = new MockSequence();
 
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organizationId))
+            .ReturnsAsync(project)
+            .Verifiable();
+
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.UpdateAsync(project))
+            .ReturnsAsync(false)
+            .Verifiable();
+        
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
+        var response = await _handler.Handle(command, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Failed, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(OperationResult.Failed, response);
+        _mockProjectRepo.Verify(repo => repo.GetByIdAsync(organizationId), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.UpdateAsync(project), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenProjectDoesNotExist()
     {
         // Arrange
-        var projectId = BaseEntity.GetNewId();
-        var command = new RemoveProjectCommand(projectId);
+        var organizationId = BaseEntity.GetNewId();
+        var command = new RemoveProjectCommand(organizationId);
+
+        _mockProjectRepo.Setup(r => r.GetByIdAsync(organizationId))
+            .ReturnsAsync((Domain.Entities.Project?)null)
+            .Verifiable();
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(OperationResult.NotFound, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(OperationResult.NotFound, response);
+        _mockProjectRepo.Verify(repo => repo.GetByIdAsync(organizationId), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.DeleteAsync(It.IsAny<Guid>()), Times.Never);
     }
 
     [Fact]
@@ -84,4 +103,10 @@ public class RemoveProjectCommandHandlerTest
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
+
+    public void Dispose()
+    {
+        _mockProjectRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }

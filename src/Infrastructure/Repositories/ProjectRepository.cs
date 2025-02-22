@@ -3,42 +3,27 @@ namespace Infrastructure.Repositories;
 //[DapperAot]
 public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
 {    
-    private const string PrimaryKey = "Id";
-
-    public async Task<bool> CreateProject(Project project)
+    public async Task<Project?> GetByIdAsync(Guid id)
     {
-        const string sql = """
-                           INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
-                           VALUES (@Id, @Name, @OrganizationId, @CreatedAt, @Active);
-                           """;
-
-        return await connection.ExecuteAsync(sql, new { project.Id, project.Name, project.OrganizationId, project.CreatedAt, project.Active }) == 1;
+        return await connection.QueryFirstOrDefaultAsync<Project>(
+            $"""
+                SELECT * FROM "Projects" WHERE "Id" = @Id AND "Active" = true
+                """,
+            new { Id = id });
     }
 
-    public async Task<Project?> GetProjectById(Guid id)
-    {
-        const string sql = """
-                           SELECT "Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active"
-                           FROM "Projects"
-                           WHERE "Id" = @Id AND "Active" = true;
-                           """;
-
-        return await connection.QueryFirstOrDefaultAsync<Project>(sql, new { Id = id });
-    }
-
-    public async Task<PaginatedResult<Project?>> ListProjects(PaginationParams pagination)
+    public async Task<PaginatedResult<Project?>> GetAllAsync(PaginationParams pagination)
     {
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
 
         var sql = $"""
-                   SELECT "Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "Active"
-                   FROM "Projects" 
+                   SELECT * FROM ""Projects"" 
                    WHERE "Active" = true
                    ORDER BY "{validSortColumn}" {validSortOrder}
                    OFFSET @Offset LIMIT @PageSize;
-
-                   SELECT COUNT(*) FROM "Projects";
+                   
+                   SELECT COUNT(*) FROM ""Projects"";
                    """;
 
         await using var multi = await connection.QueryMultipleAsync(sql, new
@@ -56,30 +41,36 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         };
     }
 
-    public async Task<bool> RemoveProject(Guid id)
+    public async Task<Guid> AddAsync(Project? entity)
     {
-        const string sql = """
-                           UPDATE "Projects"
-                           SET "Active" = 0, "DeletedAt" = @DeletedAt
-                           WHERE "Id" = @Id;
-                           """;
+        const string query = """
+                             INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
+                             VALUES (@Id, @Name, @OrganizationId, @CreatedAt, @Active) RETURNING Id;
+                             """;
 
-        var deletedAt = DateTime.UtcNow;
-
-        return await connection.ExecuteAsync(sql, new { DeletedAt = deletedAt, Id = id }) == 1;
+        return await connection.ExecuteScalarAsync<Guid>(query, entity);
     }
 
-    public async Task<bool> UpdateProject(Guid id, string name, Guid organizationId)
+    public async Task<bool> UpdateAsync(Project? entity)
     {
-        const string sql = """
-                           UPDATE "Projects"
-                           SET "Name" = @Name, "OrganizationId" = @OrganizationId, "UpdatedAt" = @UpdatedAt
-                           WHERE "Id" = @Id;
-                           """;
+        const string query = """
+                             UPDATE "Projects"
+                             SET "Name" = @Name, "OrganizationId" = @OrganizationId, "UpdatedAt" = @UpdatedAt
+                             WHERE "Id" = @Id;
+                             """;
 
-        var updatedAt = DateTime.UtcNow;
+        var affectedRows = await connection.ExecuteAsync(query, entity);
+        return affectedRows > 0;
+    }
 
-        return await connection.ExecuteAsync(sql, new { Name = name, OrganizationId = organizationId, UpdatedAt = updatedAt, Id = id }) == 1;
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        const string query = """
+                             DELETE FROM "Projects" WHERE "Id" = @Id";
+                             """;
+        
+        var affectedRows = await connection.ExecuteAsync(query, new { Id = id });
+        return affectedRows > 0;
     }
     
     private static string ValidateSortColumn(string? column)
@@ -87,6 +78,6 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         var properties = typeof(Project).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         return properties.Any(p => p.Name.Equals(column, StringComparison.OrdinalIgnoreCase)) 
             ? column!
-            : PrimaryKey;
+            : "Id";
     }
 }

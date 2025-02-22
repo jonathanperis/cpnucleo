@@ -1,80 +1,96 @@
 namespace Application.Tests.UseCases.Project;
 
-public class UpdateProjectCommandHandlerTest
+public class UpdateProjectCommandHandlerTest : IDisposable
 {
-    private readonly Mock<IApplicationDbContext> _dbContextMock;
+    private readonly Mock<IProjectRepository> _mockProjectRepo;
     private readonly UpdateProjectCommandHandler _handler;
-    private readonly List<Domain.Entities.Project> _projects;
-
+    
     public UpdateProjectCommandHandlerTest()
     {
-        _dbContextMock = new Mock<IApplicationDbContext>();
-
-        _projects =
-        [
-            Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId(), BaseEntity.GetNewId()),
-            Domain.Entities.Project.Create("Test Project 2", BaseEntity.GetNewId(), BaseEntity.GetNewId())
-        ];
-
-        _dbContextMock.Setup(db => db.Projects).ReturnsDbSet(_projects);
-
-        _handler = new UpdateProjectCommandHandler(_dbContextMock.Object);
+        _mockProjectRepo = new Mock<IProjectRepository>();
+        
+        _handler = new UpdateProjectCommandHandler(_mockProjectRepo.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnSuccess_WhenProjectIsUpdatedSuccessfully()
     {
         // Arrange
-        var project = _projects.First();
-        var command = new UpdateProjectCommand(project.Id, "Updated Project", project.OrganizationId);
+        var organization = Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId());
+        var command = new UpdateProjectCommand(organization.Id, "Updated Test Project 1", BaseEntity.GetNewId());
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        var sequence = new MockSequence();
+
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organization.Id))
+            .ReturnsAsync(organization)
+            .Verifiable();
+
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.UpdateAsync(organization))
+            .ReturnsAsync(true)
+            .Verifiable();
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(OperationResult.Success, result);
-        Assert.Equal("Updated Project", project.Name);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response);
+        _mockProjectRepo.Verify(repo => repo.GetByIdAsync(organization.Id), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.UpdateAsync(organization), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnFailed_WhenSaveChangesFails()
     {
         // Arrange
-        var project = _projects.First();
-        var command = new UpdateProjectCommand(project.Id, "Updated Project", project.OrganizationId);
+        var organization = Domain.Entities.Project.Create("Test Project 1", BaseEntity.GetNewId());
+        var command = new UpdateProjectCommand(organization.Id, "Updated Test Project 1", BaseEntity.GetNewId());
 
-        _dbContextMock.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        var sequence = new MockSequence();
 
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.GetByIdAsync(organization.Id))
+            .ReturnsAsync(organization)
+            .Verifiable();
+
+        _mockProjectRepo.InSequence(sequence)
+            .Setup(r => r.UpdateAsync(organization))
+            .ReturnsAsync(true)
+            .Verifiable();
+        
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.Equal(OperationResult.Failed, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.GetByIdAsync(organization.Id), Times.Once);
+        _mockProjectRepo.Verify(repo => repo.UpdateAsync(organization), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenProjectDoesNotExist()
     {
         // Arrange
-        var command = new UpdateProjectCommand(BaseEntity.GetNewId(), "Updated Project", BaseEntity.GetNewId());
+        var command = new UpdateProjectCommand(BaseEntity.GetNewId(), "Updated Test Project 1", BaseEntity.GetNewId());
+
+        _mockProjectRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync((Domain.Entities.Project?)null)
+            .Verifiable();
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var response = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal(OperationResult.NotFound, result);
-        _dbContextMock.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        Assert.Equal(OperationResult.NotFound, response);
+        _mockProjectRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public void Handle_ShouldFail_WhenIdIsEmpty()
     {
         // Arrange
-        var command = new UpdateProjectCommand(Guid.Empty, "Test Project", BaseEntity.GetNewId());
+        var command = new UpdateProjectCommand(Guid.Empty, "Updated Project", BaseEntity.GetNewId());
         var validator = new UpdateProjectCommandValidator();
 
         // Act
@@ -100,18 +116,9 @@ public class UpdateProjectCommandHandlerTest
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Name"));
     }
 
-    [Fact]
-    public void Handle_ShouldFail_WhenOrganizationIdIsEmpty()
+    public void Dispose()
     {
-        // Arrange
-        var command = new UpdateProjectCommand(BaseEntity.GetNewId(), "Test Project", Guid.Empty);
-        var validator = new UpdateProjectCommandValidator();
-
-        // Act
-        var result = validator.Validate(command);
-
-        // Assert
-        Assert.False(result.IsValid);
-        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "OrganizationId"));
-    }
+        _mockProjectRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }

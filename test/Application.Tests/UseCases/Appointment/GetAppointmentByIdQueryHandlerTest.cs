@@ -10,9 +10,11 @@ public class GetAppointmentByIdQueryHandlerTest : IDisposable
     {
         _mockUnitOfWork = new Mock<IUnitOfWork>();
         _mockAppointmentRepo = new Mock<IRepository<Domain.Entities.Appointment>>();
+        
         _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Appointment>())
             .Returns(_mockAppointmentRepo.Object);
-        _handler = new GetAppointmentByIdQueryHandler(_mockUnitOfWork.Object);
+        
+        _handler = new GetAppointmentByIdQueryHandler(_mockUnitOfWork.Object);        
     }
 
     [Fact]
@@ -26,7 +28,7 @@ public class GetAppointmentByIdQueryHandlerTest : IDisposable
             BaseEntity.GetNewId(),
             BaseEntity.GetNewId(),
             BaseEntity.GetNewId());
-
+        
         _mockAppointmentRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(appointment)
             .Verifiable();
@@ -34,11 +36,11 @@ public class GetAppointmentByIdQueryHandlerTest : IDisposable
         var query = new GetAppointmentByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.Appointment);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Appointment);
         _mockAppointmentRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
@@ -53,11 +55,11 @@ public class GetAppointmentByIdQueryHandlerTest : IDisposable
         var query = new GetAppointmentByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.Appointment);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.Appointment);
         _mockAppointmentRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
@@ -75,11 +77,11 @@ public class GetAppointmentByIdQueryHandlerTest : IDisposable
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
-    
+
     public void Dispose()
     {
         _mockUnitOfWork.Verify();
         _mockAppointmentRepo.Verify();
         GC.SuppressFinalize(this);
-    }
+    }        
 }

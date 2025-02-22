@@ -1,13 +1,13 @@
 namespace Application.UseCases.Project.ListProject;
 
 // Dapper Repository Basic
-public sealed class ListProjectQueryHandler(IProjectRepository projectRepository) : IRequestHandler<ListProjectQuery, ListProjectQueryViewModel>
+public sealed class ListProjectQueryHandler(IProjectRepository repository) : IRequestHandler<ListProjectQuery, ListProjectQueryViewModel>
 {
     public async ValueTask<ListProjectQueryViewModel> Handle(ListProjectQuery request, CancellationToken cancellationToken)
     {
-        var response = await projectRepository.ListProjects(request.Pagination);
-
-        var operationResult = response.TotalCount > 0 ? OperationResult.Success : OperationResult.NotFound;
+        var response = await repository.GetAllAsync(request.Pagination);        
+        
+        var operationResult = response.Data != null && response.Data.Any() ? OperationResult.Success : OperationResult.NotFound;
 
         return new ListProjectQueryViewModel(operationResult, MapToPaginatedDto(response));
     }
@@ -21,5 +21,5 @@ public sealed class ListProjectQueryHandler(IProjectRepository projectRepository
             PageNumber = result.PageNumber,
             PageSize = result.PageSize
         };
-    }    
+    }
 }

@@ -1,14 +1,20 @@
 namespace Application.Tests.UseCases.UserAssignment;
 
-public class GetUserAssignmentByIdQueryHandlerTest
+public class GetUserAssignmentByIdQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IUserAssignmentRepository> _userAssignmentRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.UserAssignment>> _mockUserAssignmentRepo;
     private readonly GetUserAssignmentByIdQueryHandler _handler;
-
+    
     public GetUserAssignmentByIdQueryHandlerTest()
     {
-        _userAssignmentRepositoryMock = new Mock<IUserAssignmentRepository>();
-        _handler = new GetUserAssignmentByIdQueryHandler(_userAssignmentRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockUserAssignmentRepo = new Mock<IRepository<Domain.Entities.UserAssignment>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.UserAssignment>())
+            .Returns(_mockUserAssignmentRepo.Object);
+        
+        _handler = new GetUserAssignmentByIdQueryHandler(_mockUnitOfWork.Object);        
     }
 
     [Fact]
@@ -16,39 +22,39 @@ public class GetUserAssignmentByIdQueryHandlerTest
     {
         // Arrange
         var userAssignment = Domain.Entities.UserAssignment.Create(BaseEntity.GetNewId(), BaseEntity.GetNewId());
-
-        _userAssignmentRepositoryMock
-            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()))
-            .ReturnsAsync(userAssignment);
+        
+        _mockUserAssignmentRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(userAssignment)
+            .Verifiable();
 
         var query = new GetUserAssignmentByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.UserAssignment);
-        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.UserAssignment);
+        _mockUserAssignmentRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenUserAssignmentDoesNotExist()
     {
         // Arrange
-        _userAssignmentRepositoryMock
-            .Setup(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()))
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        _mockUserAssignmentRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1))
+            .Verifiable();
 
         var query = new GetUserAssignmentByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.UserAssignment);
-        _userAssignmentRepositoryMock.Verify(repo => repo.GetUserAssignmentById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.UserAssignment);
+        _mockUserAssignmentRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -65,4 +71,11 @@ public class GetUserAssignmentByIdQueryHandlerTest
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
+
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockUserAssignmentRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }

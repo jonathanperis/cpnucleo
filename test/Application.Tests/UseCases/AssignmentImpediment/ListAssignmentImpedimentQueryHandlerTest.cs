@@ -1,78 +1,121 @@
 namespace Application.Tests.UseCases.AssignmentImpediment;
 
-public class ListAssignmentImpedimentQueryHandlerTest
+public class ListAssignmentImpedimentQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IAssignmentImpedimentRepository> _assignmentImpedimentRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.AssignmentImpediment>> _mockAssignmentImpedimentRepo;
     private readonly ListAssignmentImpedimentQueryHandler _handler;
 
     public ListAssignmentImpedimentQueryHandlerTest()
     {
-        _assignmentImpedimentRepositoryMock = new Mock<IAssignmentImpedimentRepository>();
-        _handler = new ListAssignmentImpedimentQueryHandler(_assignmentImpedimentRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockAssignmentImpedimentRepo = new Mock<IRepository<Domain.Entities.AssignmentImpediment>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.AssignmentImpediment>())
+            .Returns(_mockAssignmentImpedimentRepo.Object);
+        
+        _handler = new ListAssignmentImpedimentQueryHandler(_mockUnitOfWork.Object);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnListOfAssignmentImpediments_WhenAssignmentImpedimentsExist()
     {
         // Arrange
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
         var assignmentImpediments = new List<Domain.Entities.AssignmentImpediment?>
         {
             Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 1", BaseEntity.GetNewId(), BaseEntity.GetNewId()),
             Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment 2", BaseEntity.GetNewId(), BaseEntity.GetNewId())
         };
 
-        _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.ListAssignmentImpediments())
-            .ReturnsAsync(assignmentImpediments);
+        var paginatedResult = new PaginatedResult<Domain.Entities.AssignmentImpediment?>
+        {
+            Data = assignmentImpediments,
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockAssignmentImpedimentRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
 
-        var query = new ListAssignmentImpedimentQuery();
+        var query = new ListAssignmentImpedimentQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.AssignmentImpediments);
-        Assert.Equal(assignmentImpediments.Count, result.AssignmentImpediments.Count);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.ListAssignmentImpediments(), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Result);
+        Assert.Equal(assignmentImpediments.Count, response.Result.Data?.Count());
+        _mockAssignmentImpedimentRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnEmptyList_WhenNoAssignmentImpedimentsExist()
     {
         // Arrange
-        _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.ListAssignmentImpediments())
-            .ReturnsAsync([]);
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
 
-        var query = new ListAssignmentImpedimentQuery();
+        var paginatedResult = new PaginatedResult<Domain.Entities.AssignmentImpediment?>
+        {
+            Data = [],
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockAssignmentImpedimentRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
+
+        var query = new ListAssignmentImpedimentQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.AssignmentImpediments);
-        Assert.Empty(result.AssignmentImpediments);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.ListAssignmentImpediments(), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.NotNull(response.Result.Data);
+        Assert.Empty(response.Result.Data);
+        _mockAssignmentImpedimentRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
-
+    
+    
     [Fact]
-    public async Task Handle_ShouldReturnNotFound_WhenListAssignmentImpedimentsReturnsNull()
+    public async Task Handle_ShouldReturnNotFound_WhenListAssignmentImpedimentReturnsNull()
     {
         // Arrange
-        _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.ListAssignmentImpediments())
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        var pagination = new PaginationParams { PageNumber = 1, PageSize = 10 };
 
-        var query = new ListAssignmentImpedimentQuery();
+        var paginatedResult = new PaginatedResult<Domain.Entities.AssignmentImpediment?>
+        {
+            Data = null,
+            TotalCount = 2,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockAssignmentImpedimentRepo.Setup(r => r.GetAllAsync(pagination))
+            .ReturnsAsync(paginatedResult)
+            .Verifiable();
+
+        var query = new ListAssignmentImpedimentQuery(pagination);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.AssignmentImpediments);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.ListAssignmentImpediments(), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.Result.Data);
+        _mockAssignmentImpedimentRepo.Verify(repo => repo.GetAllAsync(pagination), Times.Once);
     }
+    
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockAssignmentImpedimentRepo.Verify();
+        GC.SuppressFinalize(this);
+    }    
 }

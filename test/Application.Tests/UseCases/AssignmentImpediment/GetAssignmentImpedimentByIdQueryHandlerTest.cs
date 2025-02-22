@@ -1,14 +1,20 @@
 namespace Application.Tests.UseCases.AssignmentImpediment;
 
-public class GetAssignmentImpedimentByIdQueryHandlerTest
+public class GetAssignmentImpedimentByIdQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IAssignmentImpedimentRepository> _assignmentImpedimentRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.AssignmentImpediment>> _mockAssignmentImpedimentRepo;
     private readonly GetAssignmentImpedimentByIdQueryHandler _handler;
-
+    
     public GetAssignmentImpedimentByIdQueryHandlerTest()
     {
-        _assignmentImpedimentRepositoryMock = new Mock<IAssignmentImpedimentRepository>();
-        _handler = new GetAssignmentImpedimentByIdQueryHandler(_assignmentImpedimentRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockAssignmentImpedimentRepo = new Mock<IRepository<Domain.Entities.AssignmentImpediment>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.AssignmentImpediment>())
+            .Returns(_mockAssignmentImpedimentRepo.Object);
+        
+        _handler = new GetAssignmentImpedimentByIdQueryHandler(_mockUnitOfWork.Object);        
     }
 
     [Fact]
@@ -16,39 +22,39 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
     {
         // Arrange
         var assignmentImpediment = Domain.Entities.AssignmentImpediment.Create("Test AssignmentImpediment", BaseEntity.GetNewId(), BaseEntity.GetNewId());
-
-        _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()))
-            .ReturnsAsync(assignmentImpediment);
+        
+        _mockAssignmentImpedimentRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(assignmentImpediment)
+            .Verifiable();
 
         var query = new GetAssignmentImpedimentByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.AssignmentImpediment);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.AssignmentImpediment);
+        _mockAssignmentImpedimentRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenAssignmentImpedimentDoesNotExist()
     {
         // Arrange
-        _assignmentImpedimentRepositoryMock
-            .Setup(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()))
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        _mockAssignmentImpedimentRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1))
+            .Verifiable();
 
         var query = new GetAssignmentImpedimentByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.AssignmentImpediment);
-        _assignmentImpedimentRepositoryMock.Verify(repo => repo.GetAssignmentImpedimentById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.AssignmentImpediment);
+        _mockAssignmentImpedimentRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -65,4 +71,11 @@ public class GetAssignmentImpedimentByIdQueryHandlerTest
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
+
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockAssignmentImpedimentRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }

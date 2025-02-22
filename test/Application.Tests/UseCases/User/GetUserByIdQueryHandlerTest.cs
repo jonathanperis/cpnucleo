@@ -1,14 +1,20 @@
 namespace Application.Tests.UseCases.User;
 
-public class GetUserByIdQueryHandlerTest
+public class GetUserByIdQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.User>> _mockUserRepo;
     private readonly GetUserByIdQueryHandler _handler;
-
+    
     public GetUserByIdQueryHandlerTest()
     {
-        _userRepositoryMock = new Mock<IUserRepository>();
-        _handler = new GetUserByIdQueryHandler(_userRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockUserRepo = new Mock<IRepository<Domain.Entities.User>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.User>())
+            .Returns(_mockUserRepo.Object);
+        
+        _handler = new GetUserByIdQueryHandler(_mockUnitOfWork.Object);        
     }
 
     [Fact]
@@ -16,39 +22,39 @@ public class GetUserByIdQueryHandlerTest
     {
         // Arrange
         var user = Domain.Entities.User.Create("Test User", "testUser", "password123", BaseEntity.GetNewId());
-
-        _userRepositoryMock
-            .Setup(repo => repo.GetUserById(It.IsAny<Guid>()))
-            .ReturnsAsync(user);
+        
+        _mockUserRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(user)
+            .Verifiable();
 
         var query = new GetUserByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.User);
-        _userRepositoryMock.Verify(repo => repo.GetUserById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.User);
+        _mockUserRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenUserDoesNotExist()
     {
         // Arrange
-        _userRepositoryMock
-            .Setup(repo => repo.GetUserById(It.IsAny<Guid>()))
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        _mockUserRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1))
+            .Verifiable();
 
         var query = new GetUserByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.User);
-        _userRepositoryMock.Verify(repo => repo.GetUserById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.User);
+        _mockUserRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
@@ -65,4 +71,11 @@ public class GetUserByIdQueryHandlerTest
         Assert.False(result.IsValid);
         Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
+
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockUserRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }

@@ -1,14 +1,20 @@
 namespace Application.Tests.UseCases.Workflow;
 
-public class GetWorkflowByIdQueryHandlerTest
+public class GetWorkflowByIdQueryHandlerTest : IDisposable
 {
-    private readonly Mock<IWorkflowRepository> _workflowRepositoryMock;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IRepository<Domain.Entities.Workflow>> _mockWorkflowRepo;
     private readonly GetWorkflowByIdQueryHandler _handler;
-
+    
     public GetWorkflowByIdQueryHandlerTest()
     {
-        _workflowRepositoryMock = new Mock<IWorkflowRepository>();
-        _handler = new GetWorkflowByIdQueryHandler(_workflowRepositoryMock.Object);
+        _mockUnitOfWork = new Mock<IUnitOfWork>();
+        _mockWorkflowRepo = new Mock<IRepository<Domain.Entities.Workflow>>();
+        
+        _mockUnitOfWork.Setup(u => u.GetRepository<Domain.Entities.Workflow>())
+            .Returns(_mockWorkflowRepo.Object);
+        
+        _handler = new GetWorkflowByIdQueryHandler(_mockUnitOfWork.Object);        
     }
 
     [Fact]
@@ -16,38 +22,60 @@ public class GetWorkflowByIdQueryHandlerTest
     {
         // Arrange
         var workflow = Domain.Entities.Workflow.Create("Test Workflow", 1, BaseEntity.GetNewId());
-
-        _workflowRepositoryMock
-            .Setup(repo => repo.GetWorkflowById(It.IsAny<Guid>()))
-            .ReturnsAsync(workflow);
+        
+        _mockWorkflowRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(workflow)
+            .Verifiable();
 
         var query = new GetWorkflowByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
         // Assert
-        Assert.Equal(OperationResult.Success, result.OperationResult);
-        Assert.NotNull(result.Workflow);
-        _workflowRepositoryMock.Verify(repo => repo.GetWorkflowById(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal(OperationResult.Success, response.OperationResult);
+        Assert.NotNull(response.Workflow);
+        _mockWorkflowRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
     public async Task Handle_ShouldReturnNotFound_WhenWorkflowDoesNotExist()
     {
         // Arrange
-        _workflowRepositoryMock
-            .Setup(repo => repo.GetWorkflowById(It.IsAny<Guid>()))
-            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1));
+        _mockWorkflowRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(null, TimeSpan.FromMilliseconds(1))
+            .Verifiable();
 
         var query = new GetWorkflowByIdQuery(BaseEntity.GetNewId());
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var response = await _handler.Handle(query, CancellationToken.None);
+        
+        // Assert
+        Assert.Equal(OperationResult.NotFound, response.OperationResult);
+        Assert.Null(response.Workflow);
+        _mockWorkflowRepo.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+    }
+
+    [Fact]
+    public void Handle_ShouldFail_WhenIdIsEmpty()
+    {
+        // Arrange
+        var query = new GetWorkflowByIdQuery(Guid.Empty);
+        var validator = new GetWorkflowByIdQueryValidator();
+
+        // Act
+        var result = validator.Validate(query);
 
         // Assert
-        Assert.Equal(OperationResult.NotFound, result.OperationResult);
-        Assert.Null(result.Workflow);
-        _workflowRepositoryMock.Verify(repo => repo.GetWorkflowById(It.IsAny<Guid>()), Times.Once);
+        Assert.False(result.IsValid);
+        Assert.NotNull(result.Errors.Find(e => e.PropertyName == "Id"));
     }
+
+    public void Dispose()
+    {
+        _mockUnitOfWork.Verify();
+        _mockWorkflowRepo.Verify();
+        GC.SuppressFinalize(this);
+    }        
 }
