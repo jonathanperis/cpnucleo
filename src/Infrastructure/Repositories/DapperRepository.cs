@@ -47,33 +47,60 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction 
 
     public async Task<Guid> AddAsync(T? entity)
     {
-        var columns = GetColumns(excludeKey: true);
-        var properties = GetPropertyNames(excludeKey: true);
-        var query = $"INSERT INTO {tableName} ({columns}) VALUES ({properties}) RETURNING Id";
+        try
+        {
+            var columns = GetColumns(excludeKey: false);
+            var properties = GetPropertyNames(excludeKey: false);
+            
+            var sql = $"""
+                       INSERT INTO "{tableName}" ({columns})
+                       VALUES ({properties}) RETURNING "Id"
+                       """;              
+        
+            return await connection.ExecuteScalarAsync<Guid>(sql, entity, transaction);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
 
-        return await connection.ExecuteScalarAsync<Guid>(query, entity, transaction);
     }
 
     public async Task<bool> UpdateAsync(T? entity)
     {
-        var columns = GetUpdateColumns();
-        var query = $"UPDATE {tableName} SET {columns} WHERE {PrimaryKey} = @Id";
+        var properties = GetUpdatePropertyNames();
 
-        var affectedRows = await connection.ExecuteAsync(query, entity, transaction);
+        var sql = $"""
+                   UPDATE "{tableName}"
+                   SET {properties}
+                   WHERE "{PrimaryKey}" = @Id
+                   """;
+
+        var affectedRows = await connection.ExecuteAsync(sql, entity, transaction);
         return affectedRows > 0;
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        var query = $"DELETE FROM {tableName} WHERE {PrimaryKey} = @Id";
-        var affectedRows = await connection.ExecuteAsync(query, new { Id = id }, transaction);
+        var sql = $"""
+                   DELETE FROM "{tableName}"
+                   WHERE "{PrimaryKey}" = @Id
+                   """;        
+        
+        var affectedRows = await connection.ExecuteAsync(sql, new { Id = id }, transaction);
         return affectedRows > 0;
     }
 
     public async Task<bool> ExistsAsync(Guid id)
     {
-        var query = $"SELECT EXISTS(SELECT 1 FROM {tableName} WHERE {PrimaryKey} = @Id AND \"Active\" = true)";
-        return await connection.ExecuteScalarAsync<bool>(query, new { Id = id }, transaction);
+        var sql = $"""
+                   SELECT EXISTS(SELECT 1 FROM "{tableName}"
+                   WHERE "{PrimaryKey}" = @Id "Active" = true
+                   """;   
+        
+        return await connection.ExecuteScalarAsync<bool>(sql, new { Id = id }, transaction);
     }
 
     private static string ValidateSortColumn(string? column)
@@ -93,13 +120,13 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction 
     private static string GetColumns(bool excludeKey = false)
     {
         return string.Join(", ", GetProperties(excludeKey)
-            .Select(p => p.Name));
+            .Select(p => $"\"{p.Name}\""));
     }
 
-    private static string GetUpdateColumns()
+    private static string GetUpdatePropertyNames()
     {
         return string.Join(", ", GetProperties(excludeKey: true)
-            .Select(p => $"{p.Name} = @{p.Name}"));
+            .Select(p => $"\"{p.Name}\" = @{p.Name}"));
     }
 
     private static string GetPropertyNames(bool excludeKey = false)

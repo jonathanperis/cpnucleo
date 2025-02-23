@@ -11,13 +11,13 @@ public static class OrganizationModule
         
         group.MapGet("/{id:guid}", GetIOrganizationById)
             .Produces<OrganizationDto>()
-            .Produces(404)
+            .Produces(204)
             .WithName(nameof(GetIOrganizationById))
             .MapToApiVersion(1.0);
         
         group.MapGet("/", GetAllOrganizations)
             .Produces<PaginatedResult<OrganizationDto>>()
-            .Produces(404)
+            .Produces(204)
             .WithName(nameof(GetAllOrganizations))
             .WithOpenApi(operation => 
             {

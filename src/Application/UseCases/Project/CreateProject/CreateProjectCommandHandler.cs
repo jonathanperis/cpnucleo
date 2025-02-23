@@ -5,7 +5,7 @@ public sealed class CreateProjectCommandHandler(IProjectRepository repository) :
 {
     public async ValueTask<OperationResult> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = Domain.Entities.Project.Create(request.Name, request.Id);
+        var project = Domain.Entities.Project.Create(request.Name, request.OrganizationId, request.Id);
             
         var response = await repository.AddAsync(project);    
             
