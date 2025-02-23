@@ -13,11 +13,12 @@
     <PackageReference Include="NBench" Version="2.0.1" />
   </ItemGroup>
 
-  <!-- <ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Application\Application.csproj" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup> -->
+    <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Modules\002_ProjectModuleTests.cs" />

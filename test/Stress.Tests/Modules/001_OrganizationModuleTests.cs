@@ -4,11 +4,14 @@ public class OrganizationModuleTests()
 {
     Counter _testCounter;
 
-    // private IAlbaHost Host { get; set; }
+    private IAlbaHost Host { get; set; }
 
     [PerfSetup]
     public void Setup(BenchmarkContext context)
-    {        
+    {
+        var securityStub = new JwtSecurityStub();
+        Host = AlbaHost.For<WebApi.Program2>(securityStub).GetAwaiter().GetResult();
+        
         _testCounter = context.GetCounter("Test");
     }
 
@@ -16,15 +19,12 @@ public class OrganizationModuleTests()
     [PerfBenchmark(NumberOfIterations = 5, RunMode = RunMode.Throughput, RunTimeMilliseconds = 1000, TestMode = TestMode.Test)]
     public void Organizations_ShouldCreateAnOrganization()
     {        
-        // var securityStub = new JwtSecurityStub();
-        // Host = AlbaHost.For<WebApi.Program>(securityStub).GetAwaiter().GetResult();
-        //
-        // // Arrange //Act // Assert
-        // Host.Scenario(s =>
-        // {
-        //     s.Get.Json(new PaginationParams { PageNumber = 1, PageSize = 10, SortColumn = "Id", SortOrder = "ASC"}).ToUrl("/api/organizations");
-        //     s.StatusCodeShouldBeOk();
-        // });
+        // Arrange //Act // Assert
+        Host.Scenario(s =>
+        {
+            s.Get.Json(new PaginationParams { PageNumber = 1, PageSize = 10, SortColumn = "Id", SortOrder = "ASC"}).ToUrl("/api/organizations");
+            s.StatusCodeShouldBeOk();
+        });
     }
     
     // private readonly IAlbaHost _host = fixture.AlbaHost;
