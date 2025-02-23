@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+		<PackageReference Include="Alba" Version="7.4.1" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="NBench" Version="2.0.1" />
+  </ItemGroup>
+
+  <!-- <ItemGroup>
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup> -->
+
+  <ItemGroup>
+    <Compile Remove="Modules\002_ProjectModuleTests.cs" />
+    <Compile Remove="Modules\003_WorkflowModuleTests.cs" />
+    <Compile Remove="Modules\004_ImpedimentModuleTests.cs" />
+    <Compile Remove="Modules\005_UserModuleTests.cs" />
+    <Compile Remove="Modules\006_UserProjectModuleTests.cs" />
+    <Compile Remove="Modules\007_AssignmentTypeModuleTests.cs" />
+    <Compile Remove="Modules\008_AssignmentModuleTests.cs" />
+    <Compile Remove="Modules\009_AssignmentImpedimentModuleTests.cs" />
+    <Compile Remove="Modules\010_UserAssignmentModuleTests.cs" />
+    <Compile Remove="Modules\011_AppointmentModuleTests.cs" />
+  </ItemGroup>
+
+</Project>

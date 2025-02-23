@@ -19,7 +19,7 @@ public class WebAppFixture : IAsyncLifetime
     {
         var securityStub = new JwtSecurityStub();
         
-        AlbaHost = await Alba.AlbaHost.For<Program>(securityStub);
+        AlbaHost = await Alba.AlbaHost.For<WebApi.Program2>(securityStub);
     }
 
     public async Task DisposeAsync()
