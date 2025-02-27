@@ -1,1 +1,0 @@
-return NBenchRunner.Run<Program>();
