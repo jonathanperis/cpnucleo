@@ -3,8 +3,8 @@ name: "cpnucleo"
 services:
   webapi1: &webapi1
     build:
-      context: .
-      dockerfile: src/WebApi/Dockerfile
+      context: ./src/
+      dockerfile: ./WebApi/Dockerfile
       args:
         AOT: false
         TRIM: true
@@ -29,8 +29,8 @@ services:
 
   identityapi:
     build:
-      context: .
-      dockerfile: src/IdentityApi/Dockerfile
+      context: ./src/
+      dockerfile: ./IdentityApi/Dockerfile
       args:
         AOT: false
         TRIM: true

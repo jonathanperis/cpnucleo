@@ -21,24 +21,24 @@ ARG BUILD_CONFIGURATION
 
 WORKDIR /src
 
-COPY ["src/WebApi/WebApi.csproj", "src/WebApi/"]
-COPY ["src/Domain/Domain.csproj", "src/Domain/"]
-COPY ["src/Application/Application.csproj", "src/Application/"]
-COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
-
-RUN dotnet restore -r $BUILD_ARCHITECTURE "src/WebApi/WebApi.csproj" -p:Configuration=${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM}
+COPY ["WebApi/WebApi.csproj", "WebApi/"]
+COPY ["Domain/Domain.csproj", "Domain/"]
+COPY ["Application/Application.csproj", "Application/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 
 COPY . .
 
-WORKDIR "/src/src/WebApi"
+WORKDIR "/src/WebApi"
 
 # RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${DB_CONNECTION_STRING}"
+
+RUN dotnet build -r $BUILD_ARCHITECTURE "WebApi.csproj" -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/build
 
 FROM build AS publish
 
 RUN dotnet publish -r $BUILD_ARCHITECTURE "WebApi.csproj" --no-restore -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0 AS final
+FROM base AS final
 
 WORKDIR /app
 EXPOSE 8080
