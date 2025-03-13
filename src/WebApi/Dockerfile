@@ -26,6 +26,8 @@ COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 
+RUN dotnet restore -r $BUILD_ARCHITECTURE "./WebApi/WebApi.csproj" -p:Configuration=${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM}
+
 COPY . .
 
 WORKDIR "/src/WebApi"
