@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityApi", "src\Identity
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tests", "test\Integration.Tests\Integration.Tests.csproj", "{9BEAC076-D98F-4890-81E4-DA815A8FFBBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stress.Tests", "test\Stress.Tests\Stress.Tests.csproj", "{BD0226F7-755D-4AB2-9F59-31EEF22811D4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
