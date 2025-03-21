@@ -1248,8 +1248,8 @@
         {
           "current": {
             "selected": false,
-            "text": "webapi-2",
-            "value": "webapi-2"
+            "text": "webapi2-cpnucleo",
+            "value": "webapi2-cpnucleo"
           },
           "datasource": {
             "type": "prometheus",
