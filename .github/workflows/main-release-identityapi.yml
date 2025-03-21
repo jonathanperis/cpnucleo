@@ -1,16 +1,24 @@
-name: Main Release Pipeline
+name: Main Release IdentityApi Pipeline
 
 on:
   push:
     branches:
       - main
 
+env:
+  AOT: true
+  TRIM: false
+  EXTRA_OPTIMIZE: true
+  BUILD_CONFIGURATION: Release  
+      
 jobs:
   setup-build-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
@@ -18,21 +26,10 @@ jobs:
           global-json-file: global.json
 
       - name: Restore Dependencies
-        run: dotnet restore
-
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0
-        with:
-          versionSpec: '5.x'
-  
-      - name: Determine Version
-        uses: gittools/actions/gitversion/execute@v0
-        with:
-          useConfigFile: true
-          updateAssemblyInfo: true
+        run: dotnet restore "IdentityApi.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
 
       - name: Build Application
-        run: dotnet build --configuration Release --no-restore /p:Version=${{ env.GitVersion_SemVer }}
+        run: dotnet build "IdentityApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
 
       - name: Unit Tests
         working-directory: "./test/Application.Test"
@@ -48,6 +45,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -64,16 +63,16 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./src/
+          file: ./src/IdentityApi/Dockerfile
           push: true
-          file: ./src/src/IdentityApi/Dockerfile
           tags: jonathanperis/cpnucleo-identity-api:latest
+          platforms: linux/amd64,linux/arm64/v8          
           build-args: |
-            AOT=false
-            TRIM=true
-            EXTRA_OPTIMIZE=true
-            BUILD_ARCHITECTURE=linux-x64
-            BUILD_CONFIGURATION=Release
+            AOT=${{ env.AOT }}
+            TRIM=${{ env.TRIM }}
+            EXTRA_OPTIMIZE=${{ env.EXTRA_OPTIMIZE }}
+            BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
           secret-envs	: |
             ConnectionStrings__DefaultConnection=${{ secrets.DB_CONNECTION_STRING }}
 
@@ -83,8 +82,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
-      - name: Build and Run Docker Container
+      - name: Build and Run Docker Container for Healthcheck Test
         run: |
           docker run -d -p 8080:8080 --name cpnucleo-identity-api jonathanperis/cpnucleo-identity-api:latest
           sleep 10
@@ -103,9 +104,6 @@ jobs:
           done
           echo "Healthcheck failed after 20 attempts."
           exit 1
-
-      - name: Cleanup
-        run: docker stop cpnucleo-identity-api && docker rm cpnucleo-identity-api
 
 #   deploy-image-azure:
 #     runs-on: ubuntu-latest

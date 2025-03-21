@@ -1,9 +1,15 @@
-name: Main Check Build
+name: Main Check WebApi Build
 
 on:
   pull_request:
     branches:
       - main
+
+env:
+  AOT: false
+  TRIM: false
+  EXTRA_OPTIMIZE: false
+  BUILD_CONFIGURATION: Debug   
 
 jobs:
   setup-build-test:
@@ -11,6 +17,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
@@ -18,21 +26,10 @@ jobs:
           global-json-file: global.json
 
       - name: Restore Dependencies
-        run: dotnet restore
-
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0
-        with:
-          versionSpec: '5.x'
-  
-      - name: Determine Version
-        uses: gittools/actions/gitversion/execute@v0
-        with:
-          useConfigFile: true
-          updateAssemblyInfo: true
+        run: dotnet restore "WebApi.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
 
       - name: Build Application
-        run: dotnet build --configuration Release --no-restore /p:Version=${{ env.GitVersion_SemVer }}
+        run: dotnet build "WebApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
 
       - name: Unit Tests
         working-directory: "./test/Application.Test"
@@ -48,17 +45,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
-      - name: Build and Run Docker Container
+      - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker build -t cpnucleo-web-api:latest -f src/WebApi/Dockerfile .
-          docker run -d -p 8080:8080 --name cpnucleo-web-api cpnucleo-web-api:latest
+          docker compose up nginx -d
           sleep 10
 
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
               exit 0
@@ -69,6 +67,3 @@ jobs:
           done
           echo "Healthcheck failed after 20 attempts."
           exit 1
-
-      - name: Cleanup
-        run: docker stop cpnucleo-web-api && docker rm cpnucleo-web-api
