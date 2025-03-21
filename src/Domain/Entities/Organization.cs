@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("Organizations")]
+[Table("Organizations")] // Used for Dapper Repository Advanced
 public sealed class Organization : BaseEntity
 {
     public string? Name { get; set; }
@@ -20,20 +20,16 @@ public sealed class Organization : BaseEntity
         return organization;
     }
 
-    public static Organization Update(Organization obj, string? name, string? description)
+    public static void Update(Organization obj, string? name, string? description)
     {
         obj.Name = name;
         obj.Description = description;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static Organization Remove(Organization obj)
+    public static void Remove(Organization obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

@@ -1,18 +1,18 @@
 namespace Infrastructure.Common.Helpers;
 
 internal static class FakeDataHelper
-{    
-    internal static List<Appointment>? Appointments { get; set; }
-    internal static List<AssignmentImpediment>? AssignmentImpediments { get; set; }
-    internal static List<Assignment>? Assignments { get; set; }
-    internal static List<AssignmentType>? AssignmentTypes { get; set; }
-    internal static List<Impediment>? Impediments { get; set; }
-    internal static List<Organization>? Organizations { get; set; }
-    internal static List<Project>? Projects { get; set; }
-    internal static List<UserAssignment>? UserAssignments { get; set; }
-    internal static List<User>? Users { get; set; }
-    internal static List<UserProject>? UserProjects { get; set; }
-    internal static List<Workflow>? Workflows { get; set; }
+{
+    private static List<Appointment>? Appointments { get; set; }
+    private static List<AssignmentImpediment>? AssignmentImpediments { get; set; }
+    private static List<Assignment>? Assignments { get; set; }
+    private static List<AssignmentType>? AssignmentTypes { get; set; }
+    private static List<Impediment>? Impediments { get; set; }
+    private static List<Organization>? Organizations { get; set; }
+    private static List<Project>? Projects { get; set; }
+    private static List<UserAssignment>? UserAssignments { get; set; }
+    private static List<User>? Users { get; set; }
+    private static List<UserProject>? UserProjects { get; set; }
+    private static List<Workflow>? Workflows { get; set; }
     
     internal static void CreateSqlDumpFile()
     {
@@ -21,7 +21,7 @@ internal static class FakeDataHelper
         
         var organizationFaker = new Faker<Organization>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -30,24 +30,22 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Organizations = organizationFaker.Generate(686);
-        int lastIndex = Organizations.Count - 1;
-        int currentIndex = 0;
+        var lastIndex = Organizations.Count - 1;
+        var currentIndex = 0;
         
         sb.AppendLine("""
                         INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES 
                         """);
         foreach (var item in Organizations)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
         var projectFaker = new Faker<Project>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -63,16 +61,14 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in Projects)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{Organizations[random.Next(Organizations.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{Organizations[random.Next(Organizations.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
         var impedimentFaker = new Faker<Impediment>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -88,16 +84,14 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in Impediments)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
         var assignmentTypeFaker = new Faker<AssignmentType>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -113,16 +107,14 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in AssignmentTypes)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
         var workflowFaker = new Faker<Workflow>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(x => x.Order, f => f.IndexGlobal + 1)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -139,10 +131,8 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in Workflows)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', {item.Order}, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', {item.Order}, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
@@ -167,10 +157,8 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in Users)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
@@ -191,16 +179,14 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in UserProjects)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
         var assignmentFaker = new Faker<Assignment>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => string.Format("{0} {1} {2}", f.Hacker.Noun(), f.Hacker.IngVerb(), f.Hacker.Adjective()))
+            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.StartDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.EndDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -220,10 +206,8 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in Assignments)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                            ('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{Workflows[random.Next(Workflows.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{AssignmentTypes[random.Next(AssignmentTypes.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                            """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{Workflows[random.Next(Workflows.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{AssignmentTypes[random.Next(AssignmentTypes.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
@@ -244,10 +228,8 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in UserAssignments)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
@@ -268,10 +250,8 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in AssignmentImpediments)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Impediments[random.Next(Impediments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Impediments[random.Next(Impediments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }
 
@@ -295,20 +275,17 @@ internal static class FakeDataHelper
                         """);        
         foreach (var item in Appointments)
         {
-            bool isLast = currentIndex == lastIndex;
-            sb.AppendLine($"""
-                           ('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}
-                           """);
+            var isLast = currentIndex == lastIndex;
+            sb.AppendLine($"('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
             currentIndex++;
         }     
 
-        string filePath = "003-database-dump-dml.sql";
+        const string filePath = "003-database-dump-dml.sql";
         File.WriteAllText(filePath, sb.ToString());             
     }
 
     internal static void CreateSqlCsvDumpFile()
     {
-        var random = new Random();
         var sb = new StringBuilder();
 
         Directory.CreateDirectory("dml-data");
@@ -576,7 +553,7 @@ internal static class FakeDataHelper
         ]);
         sb.AppendLine("""COPY "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Appointments.csv' WITH (FORMAT CSV);""");
 
-        string filePath = "003-database-dump-csv-dml.sql";
+        const string filePath = "003-database-dump-csv-dml.sql";
         File.WriteAllText(filePath, sb.ToString());
     }
 
@@ -585,7 +562,7 @@ internal static class FakeDataHelper
         if (string.IsNullOrEmpty(value))
             return string.Empty;
 
-        if (value.Contains(",") || value.Contains("\"") || value.Contains("\n") || value.Contains("\r"))
+        if (value.Contains(',') || value.Contains('"') || value.Contains('\n') || value.Contains('\r'))
         {
             return $"\"{value.Replace("\"", "\"\"")}\"";
         }
@@ -594,11 +571,11 @@ internal static class FakeDataHelper
 
     private static void WriteCsv<T>(string fileName, IEnumerable<T> items, Func<T, string[]> getFields)
     {
-        string path = Path.Combine("dml-data", fileName);
+        var path = Path.Combine("dml-data", fileName);
         using var writer = new StreamWriter(path);
         foreach (var item in items)
         {
-            var fields = getFields(item).Select(f => EscapeCsvField(f)).ToArray();
+            var fields = getFields(item).Select(EscapeCsvField).ToArray();
             writer.WriteLine(string.Join(",", fields));
         }
     }

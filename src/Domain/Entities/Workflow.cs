@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("Workflows")]
+[Table("Workflows")] // Used for Dapper Repository Advanced
 public sealed class Workflow : BaseEntity
 {
     public string? Name { get; set; }
@@ -20,21 +20,17 @@ public sealed class Workflow : BaseEntity
         return workflow;
     }
 
-    public static Workflow Update(Workflow obj, string? name, int order)
+    public static void Update(Workflow obj, string? name, int order)
     {
         obj.Name = name;
         obj.Order = order;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static Workflow Remove(Workflow obj)
+    public static void Remove(Workflow obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
     public static string GetColumnSize(int columns)

@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("AssignmentTypes")]
+[Table("AssignmentTypes")] // Used for Dapper Repository Advanced
 public sealed class AssignmentType : BaseEntity
 {
     public string? Name { get; set; }
@@ -18,19 +18,15 @@ public sealed class AssignmentType : BaseEntity
         return type;
     }
 
-    public static AssignmentType Update(AssignmentType obj, string? name)
+    public static void Update(AssignmentType obj, string? name)
     {
         obj.Name = name;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static AssignmentType Remove(AssignmentType obj)
+    public static void Remove(AssignmentType obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

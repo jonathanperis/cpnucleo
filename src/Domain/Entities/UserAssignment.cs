@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("UserAssignments")]
+[Table("UserAssignments")] // Used for Dapper Repository Advanced
 public sealed class UserAssignment : BaseEntity
 {
     public Guid UserId { get; set; }
@@ -22,20 +22,16 @@ public sealed class UserAssignment : BaseEntity
         return assignment;
     }
 
-    public static UserAssignment Update(UserAssignment obj, Guid userId, Guid assignmentId)
+    public static void Update(UserAssignment obj, Guid userId, Guid assignmentId)
     {
         obj.UserId = userId;
         obj.AssignmentId = assignmentId;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static UserAssignment Remove(UserAssignment obj)
+    public static void Remove(UserAssignment obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

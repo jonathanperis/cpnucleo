@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("Impediments")]
+[Table("Impediments")] // Used for Dapper Repository Advanced
 public sealed class Impediment : BaseEntity
 {
     public string? Name { get; set; }
@@ -18,19 +18,15 @@ public sealed class Impediment : BaseEntity
         return impediment;
     }
 
-    public static Impediment Update(Impediment obj, string? name)
+    public static void Update(Impediment obj, string? name)
     {
         obj.Name = name;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static Impediment Remove(Impediment obj)
+    public static void Remove(Impediment obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

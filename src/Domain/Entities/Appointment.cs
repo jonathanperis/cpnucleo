@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("Appointments")]
+[Table("Appointments")] // Used for Dapper Repository Advanced
 public sealed class Appointment : BaseEntity
 {
     public string? Description { get; set; }
@@ -34,12 +34,12 @@ public sealed class Appointment : BaseEntity
         return appointment;
     }
 
-    public static Appointment Update(Appointment obj,
-                                   string? description,
-                                   DateTime keepDate,
-                                   int amountHours,
-                                   Guid assignmentId,
-                                   Guid userId)
+    public static void Update(Appointment obj,
+        string? description,
+        DateTime keepDate,
+        int amountHours,
+        Guid assignmentId,
+        Guid userId)
     {
         obj.Description = description;
         obj.KeepDate = keepDate;
@@ -47,15 +47,11 @@ public sealed class Appointment : BaseEntity
         obj.AssignmentId = assignmentId;
         obj.UserId = userId;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static Appointment Remove(Appointment obj)
+    public static void Remove(Appointment obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

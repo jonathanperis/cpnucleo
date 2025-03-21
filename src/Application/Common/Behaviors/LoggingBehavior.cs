@@ -7,6 +7,8 @@ internal sealed class LoggingBehavior<TMessage, TResponse>(ILogger<LoggingBehavi
     {
         try
         {
+            logger.LogInformation("Starting {messageType}", message.GetType().Name);
+            
             return await next(message, cancellationToken);
         }
         catch (Exception ex)

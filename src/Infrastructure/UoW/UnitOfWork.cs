@@ -43,18 +43,16 @@ public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork
 
     private async ValueTask DisposeAsync()
     {
-        if (_transaction != null)
-        {
-            await _transaction.DisposeAsync();
-            _transaction = null;
-        }
-        
-        if (_connection != null)
-        {
-            await _connection.DisposeAsync();
-            _connection = null;
-        }
+        await _transaction.DisposeAsync();
+        _transaction = null;
+
+        await _connection.DisposeAsync();
+        _connection = null;
     }
 
-    public void Dispose() => DisposeAsync().GetAwaiter().GetResult();
+    public void Dispose()
+    {
+        DisposeAsync().GetAwaiter().GetResult();
+        GC.SuppressFinalize(this);
+    }
 }

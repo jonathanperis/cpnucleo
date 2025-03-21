@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("Users")]
+[Table("Users")] // Used for Dapper Repository Advanced
 public sealed class User : BaseEntity
 {
     public string? Name { get; set; }
@@ -26,7 +26,7 @@ public sealed class User : BaseEntity
         return user;
     }
 
-    public static User Update(User obj, string? name, string? password)
+    public static void Update(User obj, string? name, string? password)
     {
         CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
 
@@ -34,15 +34,11 @@ public sealed class User : BaseEntity
         obj.Password = encryptedPassword;
         obj.Salt = salt;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static User Remove(User obj)
+    public static void Remove(User obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

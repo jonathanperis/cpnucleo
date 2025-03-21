@@ -1,3 +1,3 @@
 namespace Application.UseCases.Impediment.GetImpedimentById;
 
-public sealed record GetImpedimentByIdQuery(Guid Id) : IRequest<GetImpedimentByIdQueryViewModel>;
+public sealed record GetImpedimentByIdQuery(Guid Id) : BaseQuery, IRequest<GetImpedimentByIdQueryViewModel>;

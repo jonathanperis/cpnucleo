@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("Assignments")]
+[Table("Assignments")] // Used for Dapper Repository Advanced
 public sealed class Assignment : BaseEntity
 {
     public string? Name { get; set; }
@@ -48,16 +48,16 @@ public sealed class Assignment : BaseEntity
         return assignment;
     }
 
-    public static Assignment Update(Assignment obj,
-                               string? name,
-                               string? description,
-                               DateTime startDate,
-                               DateTime endDate,
-                               int amountHours,
-                               Guid projectId,
-                               Guid workflowId,
-                               Guid userId,
-                               Guid assignmentTypeId)
+    public static void Update(Assignment obj,
+        string? name,
+        string? description,
+        DateTime startDate,
+        DateTime endDate,
+        int amountHours,
+        Guid projectId,
+        Guid workflowId,
+        Guid userId,
+        Guid assignmentTypeId)
     {
         obj.Name = name;
         obj.Description = description;
@@ -70,15 +70,11 @@ public sealed class Assignment : BaseEntity
         obj.AssignmentTypeId = assignmentTypeId;
         obj.UpdatedAt = DateTime.UtcNow;
         obj.Active = true;
-
-        return obj;
     }
 
-    public static Assignment Remove(Assignment obj)
+    public static void Remove(Assignment obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

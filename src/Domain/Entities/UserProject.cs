@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-[Table("UserProjects")]
+[Table("UserProjects")] // Used for Dapper Repository Advanced
 public sealed class UserProject : BaseEntity
 {
     public Guid UserId { get; set; }
@@ -22,20 +22,16 @@ public sealed class UserProject : BaseEntity
         return project;
     }
 
-    public static UserProject Update(UserProject obj, Guid userId, Guid projectId)
+    public static void Update(UserProject obj, Guid userId, Guid projectId)
     {
         obj.UserId = userId;
         obj.ProjectId = projectId;
         obj.UpdatedAt = DateTime.UtcNow;
-
-        return obj;
     }
 
-    public static UserProject Remove(UserProject obj)
+    public static void Remove(UserProject obj)
     {
         obj.Active = false;
         obj.DeletedAt = DateTime.UtcNow;
-
-        return obj;
     }
 }

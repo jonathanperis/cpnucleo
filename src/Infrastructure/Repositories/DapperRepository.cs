@@ -47,25 +47,15 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction 
 
     public async Task<Guid> AddAsync(T? entity)
     {
-        try
-        {
-            var columns = GetColumns(excludeKey: false);
-            var properties = GetPropertyNames(excludeKey: false);
+        var columns = GetColumns(excludeKey: false);
+        var properties = GetPropertyNames(excludeKey: false);
             
-            var sql = $"""
-                       INSERT INTO "{tableName}" ({columns})
-                       VALUES ({properties}) RETURNING "Id"
-                       """;              
+        var sql = $"""
+                   INSERT INTO "{tableName}" ({columns})
+                   VALUES ({properties}) RETURNING "Id"
+                   """;              
         
-            return await connection.ExecuteScalarAsync<Guid>(sql, entity, transaction);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-
+        return await connection.ExecuteScalarAsync<Guid>(sql, entity, transaction);
     }
 
     public async Task<bool> UpdateAsync(T? entity)
