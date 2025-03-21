@@ -1,7 +1,6 @@
+using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.ResourceDetectors.Container;
-using OpenTelemetry.ResourceDetectors.Host;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -11,61 +10,72 @@ public static class ConfigureOpenTelemetryOptions
 {
     public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
     {
-        Action<ResourceBuilder> appResourceBuilder =
-            resource => resource
-                .AddDetector(new ContainerResourceDetector())
-                .AddDetector(new HostDetector());
-                
-        builder.Logging.AddOpenTelemetry(x =>
-        {
-            x.IncludeScopes = true;
-            x.IncludeFormattedMessage = true;
-        });
-
+        // Configure OpenTelemetry tracing & metrics with auto-start using the
+        // AddOpenTelemetry extension from OpenTelemetry.Extensions.Hosting.
         builder.Services.AddOpenTelemetry()
-            .ConfigureResource(appResourceBuilder)
-            .WithMetrics(x =>
+            .ConfigureResource(ConfigureResource)
+            .WithTracing(tpb =>
             {
-                // x.AddRuntimeInstrumentation()
-                //     .AddMeter(
-                //         "Microsoft.AspNetCore.Hosting",
-                //         "Microsoft.AspNetCore.Server.Kestrel",
-                //         "System.Net.Http");
+                tpb
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation();
 
-                x.AddAspNetCoreInstrumentation()
-                    .AddRuntimeInstrumentation()
-                    .AddProcessInstrumentation();
-            })
-            .WithTracing(x =>
-            {
-                if (builder.Environment.IsDevelopment())
+                // Use IConfiguration binding for AspNetCore instrumentation options.
+                builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(builder.Configuration.GetSection("AspNetCoreInstrumentation"));
+
+                tpb.AddOtlpExporter(otlpOptions =>
                 {
-                    x.SetSampler<AlwaysOnSampler>();
-                }
-                
-                x.AddAspNetCoreInstrumentation()
-                    .AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
+                    // Use IConfiguration binding for AspNetCore instrumentation options.
+                    otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
+                });
+            })
+            .WithMetrics(mpb =>
+            {
+                mpb
+                    .AddProcessInstrumentation()
+                    .AddRuntimeInstrumentation()      
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation();
+
+                mpb.AddOtlpExporter(otlpOptions =>
+                {
+                    // Use IConfiguration binding for AspNetCore instrumentation options.
+                    otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
+                });
             });
 
-        builder.AddOpenTelemetryExporters();
-        
-        return builder;
-    }
+        // Clear default logging providers used by WebApplication host.
+        builder.Logging.ClearProviders();
 
-    private static IHostApplicationBuilder AddOpenTelemetryExporters(this IHostApplicationBuilder builder)
-    {
-        var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-        
-        if (useOtlpExporter)
+        // Configure OpenTelemetry Logging.
+        builder.Logging.AddOpenTelemetry(options =>
         {
-            builder.Services.Configure<OpenTelemetryLoggerOptions>(logging => logging.AddOtlpExporter());
-            builder.Services.ConfigureOpenTelemetryMeterProvider(metrics => metrics.AddOtlpExporter());
-            builder.Services.ConfigureOpenTelemetryTracerProvider(tracing => tracing.AddOtlpExporter());
-        }
+            // Note: See appsettings.json Logging:OpenTelemetry section for configuration.
 
-        builder.Services.AddOpenTelemetry().WithMetrics(x => x.AddPrometheusExporter());
+            var resourceBuilder = ResourceBuilder.CreateDefault();
+            ConfigureResource(resourceBuilder);
+            options.SetResourceBuilder(resourceBuilder);
+
+            options.IncludeFormattedMessage = true;
+            options.IncludeScopes = true;
+            options.ParseStateValues = true;
+
+            options.AddOtlpExporter(otlpOptions =>
+            {
+                // Use IConfiguration binding for AspNetCore instrumentation options.
+                otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
+            });
+
+            // Add the Console exporter for local debugging.
+            // options.AddConsoleExporter();    
+        });
         
         return builder;
+
+        // Build a resource configuration action to set service information.
+        void ConfigureResource(ResourceBuilder r) => 
+                r.AddService(serviceName: builder.Configuration.GetValue("ServiceName", defaultValue: "otel-test")!, 
+                             serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown", 
+                             serviceInstanceId: Environment.MachineName);
     }
 }

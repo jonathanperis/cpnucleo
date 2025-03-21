@@ -83,7 +83,6 @@ if (app.Environment.IsDevelopment())
             }
         }
     );
-    app.MapPrometheusScrapingEndpoint();
 }
 
 app.UseInfrastructure();
