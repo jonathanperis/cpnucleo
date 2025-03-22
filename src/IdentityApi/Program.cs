@@ -1,19 +1,55 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
+builder.ConfigureOpenTelemetry();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services
+    .AddApiVersioning(options =>
+    {
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+    })
+    .AddApiExplorer(
+        options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        })
+    .EnableApiVersionBinding();
+    
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo 
+    options.OperationFilter<SwaggerDefaultValues>();
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
-         Title = "Cpnucleo Identity API", 
-         Version = "v1",
-         Description = "A sample project that implements the best praticles when building modern .NET projects",
-         Contact = new OpenApiContact() { Name = "Jonathan Peris", Email = "jonathan.peris@somewhere.com" },
-         License = new OpenApiLicense() { Name = "MIT", Url = new Uri( "https://opensource.org/licenses/MIT" ) }
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
 builder.Services.AddHealthChecks();
+
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 builder.Services.AddSingleton<TokenGenerator>();
 
@@ -22,17 +58,32 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+        {
+            var descriptions = app.DescribeApiVersions();
+            foreach (var description in descriptions)
+            {
+                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var name = description.GroupName.ToUpperInvariant();
+                options.SwaggerEndpoint(url, name);
+            }
+        }
+    );
 }
+
+app.UseInfrastructure();
 
 app.UseHttpsRedirection();
 app.UseHsts();
 
 app.MapHealthChecks("/healthz");
 
-app.MapPost("/login", ([FromBody] LoginRequest request, [FromServices] TokenGenerator tokenGenerator) => new
+app.NewVersionedApi()
+.MapPost("/login", ([FromBody] LoginRequest request, [FromServices] TokenGenerator tokenGenerator) => new
 {
     access_token = tokenGenerator.GenerateToken(request.Email)
-});
+})
+.WithTags("Projects")
+.HasApiVersion(1.0);
 
 app.Run();

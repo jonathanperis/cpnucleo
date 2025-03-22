@@ -12,6 +12,8 @@ services:
         BUILD_CONFIGURATION: Debug
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      Otlp__Endpoint: http://otel-lgtm:4317
+      OTEL_METRIC_EXPORT_INTERVAL: 5000
 
   webapi2-cpnucleo:
     <<: *webapi1
@@ -29,39 +31,19 @@ services:
     container_name: identityapi-cpnucleo  
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-
-  db:
-    depends_on:
-      - postgres-exporter
-
-  postgres-exporter:
-    image: prometheuscommunity/postgres-exporter
-    container_name: postgres-exporter-service
-    ports:
-      - 9187:9187
-    environment:
-      DATA_SOURCE_NAME: "postgresql://postgres:postgres@db:5432/cpnucleo?sslmode=disable"
-
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus-service
-    ports:
-      - "9090:9090"
+      Otlp__Endpoint: http://otel-lgtm:4317
+      OTEL_METRIC_EXPORT_INTERVAL: 5000      
+      
+  otel-lgtm:
+    image: grafana/otel-lgtm
+    container_name: otel-lgtm-rinha
     volumes:
-      - prometheus-data:/prometheus
-      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
-
-  grafana:
-      image: grafana/grafana-oss
-      container_name: grafana-service        
-      ports:
-        - "3000:3000"
-      volumes:
-        - "./grafana/config/:/etc/grafana/"
-        - "./grafana/dashboards/:/var/lib/grafana/dashboards/"
-      depends_on:
-        - prometheus
+      - otel-lgtm-data:/data
+    ports:
+      - 3000:3000
+      - 4317:4317
+      - 4318:4318
 
 volumes:
-  prometheus-data:
+  otel-lgtm-data:
     driver: local
