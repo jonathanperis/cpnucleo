@@ -1,0 +1,69 @@
+name: Main Check WebApi Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  AOT: false
+  TRIM: false
+  EXTRA_OPTIMIZE: false
+  BUILD_CONFIGURATION: Debug   
+
+jobs:
+  setup-build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore Dependencies
+        run: dotnet restore "WebApi.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
+
+      - name: Build Application
+        run: dotnet build "WebApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
+
+      - name: Unit Tests
+        working-directory: "./test/Application.Test"
+        run: dotnet test   
+  
+      - name: Architecture Tests
+        working-directory: "./test/Architecture.Test"
+        run: dotnet test
+
+  container-test:
+    needs: setup-build-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+
+      - name: Build and Run Docker Compose for Healthcheck Test
+        run: |
+          docker compose up nginx -d
+          sleep 10
+
+      - name: Test Healthcheck Endpoint
+        run: |
+          for i in {1..20}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "Healthcheck passed with status $STATUS"
+              exit 0
+            else
+              echo "Healthcheck attempt $i failed with status $STATUS. Retrying..."
+              sleep 2
+            fi
+          done
+          echo "Healthcheck failed after 20 attempts."
+          exit 1
