@@ -14,9 +14,6 @@ env:
 jobs:
   setup-build-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "./src/IdentityApi"
 
     steps:
       - name: Checkout Repository
@@ -30,9 +27,11 @@ jobs:
           global-json-file: global.json
 
       - name: Restore Dependencies
+        working-directory: "./src/IdentityApi"      
         run: dotnet restore "IdentityApi.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
 
       - name: Build Application
+        working-directory: "./src/IdentityApi"      
         run: dotnet build "IdentityApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
 
       - name: Unit Tests
