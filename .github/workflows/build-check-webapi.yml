@@ -35,11 +35,11 @@ jobs:
         run: dotnet build "WebApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
 
       - name: Unit Tests
-        working-directory: "./test/Application.Test"
+        working-directory: "./test/Application.Tests"
         run: dotnet test   
   
       - name: Architecture Tests
-        working-directory: "./test/Architecture.Test"
+        working-directory: "./test/Architecture.Tests"
         run: dotnet test
 
   container-test:
