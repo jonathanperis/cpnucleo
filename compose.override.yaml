@@ -1,4 +1,4 @@
-name: "cpnucleo - dev"
+name: "cpnucleo-dev"
 
 services:
   webapi1-cpnucleo: &webapi1
