@@ -5,19 +5,21 @@ services:
     image: jonathanperis/cpnucleo-web-api
     container_name: webapi1-cpnucleo
     depends_on:
-      - db
+      db:
+          condition: service_healthy
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
 
   webapi2-cpnucleo:
     <<: *webapi1
     container_name: webapi2-cpnucleo
-
+      
   identityapi-cpnucleo:
     image: jonathanperis/cpnucleo-identity-api
     container_name: identityapi-cpnucleo
     depends_on:
-      - db
+      db:
+          condition: service_healthy    
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
     ports:
@@ -33,6 +35,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: cpnucleo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5        
     ports:
       - "5432:5432"      
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0

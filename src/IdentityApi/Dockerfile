@@ -38,6 +38,7 @@ RUN dotnet publish "IdentityApi.csproj" --no-restore -c $BUILD_CONFIGURATION -p:
 FROM base AS final
 
 WORKDIR /app
+ENV ASPNETCORE_URLS=http://+:5050
 EXPOSE 5050
 
 COPY --from=publish /app/publish .

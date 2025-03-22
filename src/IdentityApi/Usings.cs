@@ -1,7 +1,13 @@
+global using Application;
+global using Asp.Versioning;
 global using IdentityApi;
+global using IdentityApi.Configurations;
+global using Infrastructure;
 global using Microsoft.AspNetCore.Identity.Data;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
+global using Swashbuckle.AspNetCore.SwaggerGen;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
