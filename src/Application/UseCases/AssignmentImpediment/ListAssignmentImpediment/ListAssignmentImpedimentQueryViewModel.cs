@@ -1,0 +1,3 @@
+namespace Application.UseCases.AssignmentImpediment.ListAssignmentImpediment;
+
+public sealed record ListAssignmentImpedimentQueryViewModel(OperationResult OperationResult, PaginatedResult<AssignmentImpedimentDto?> Result);
