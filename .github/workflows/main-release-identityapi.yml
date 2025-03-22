@@ -79,7 +79,7 @@ jobs:
           file: ./src/IdentityApi/Dockerfile
           push: true
           tags: jonathanperis/cpnucleo-identity-api:latest
-          # platforms: linux/amd64,linux/arm64/v8          
+          platforms: linux/amd64,linux/arm64/v8          
           build-args: |
             AOT=${{ env.AOT }}
             TRIM=${{ env.TRIM }}
