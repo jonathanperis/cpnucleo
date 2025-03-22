@@ -14,6 +14,10 @@ env:
 jobs:
   setup-build-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "./src/WebApi"
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
