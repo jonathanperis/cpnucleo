@@ -8,7 +8,7 @@ on:
 env:
   AOT: true
   TRIM: false
-  EXTRA_OPTIMIZE: true
+  EXTRA_OPTIMIZE: false
   BUILD_CONFIGURATION: Release  
       
 jobs:
