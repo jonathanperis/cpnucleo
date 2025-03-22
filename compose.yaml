@@ -1,4 +1,4 @@
-name: "cpnucleo - default"
+name: "cpnucleo-default"
 
 services:
   webapi1-cpnucleo: &webapi1
