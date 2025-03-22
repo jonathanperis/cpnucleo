@@ -10,7 +10,7 @@ services:
         TRIM: true
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Release
-    container_name: webapi-1-cpnucleo
+    container_name: webapi1-cpnucleo
     depends_on:
       - db
     restart: always
@@ -22,7 +22,7 @@ services:
 
   webapi2-cpnucleo:
     <<: *webapi1
-    container_name: webapi-2-cpnucleo
+    container_name: webapi2-cpnucleo
     ports:
       - "5111:8080"  
 
