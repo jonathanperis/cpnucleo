@@ -42,6 +42,15 @@ jobs:
         working-directory: "./test/Architecture.Tests"
         run: dotnet test
 
+      - name: Build and Run Docker Compose for Integration Tests
+        run: |
+          docker compose up db -d
+          sleep 10        
+
+      - name: Integration Tests
+        working-directory: "./test/Integration.Tests"
+        run: dotnet test
+
   build-push-image:
     needs: setup-build-test
     runs-on: ubuntu-latest
@@ -88,20 +97,15 @@ jobs:
         with:
             fetch-depth: 0
 
-      - name: Build and Run Docker Compose Db for Healthcheck Test
+      - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose up db -d
-          sleep 10
-
-      - name: Build and Run Docker Container for Healthcheck Test
-        run: |
-          docker run -d -p 8080:8080 --name cpnucleo-identity-api jonathanperis/cpnucleo-identity-api:latest
+          docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up nginx -d
           sleep 10
 
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5200/healthz)
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
               exit 0

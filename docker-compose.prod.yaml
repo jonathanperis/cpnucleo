@@ -1,0 +1,22 @@
+name: "cpnucleo - prod"
+
+services:
+  webapi1-cpnucleo: &webapi1
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+  webapi2-cpnucleo:
+    <<: *webapi1
+    container_name: webapi2-cpnucleo
+
+  identityapi-cpnucleo:
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+  db:
+    restart: always
+
+  nginx:
+    restart: always

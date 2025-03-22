@@ -1,0 +1,67 @@
+name: "cpnucleo - dev"
+
+services:
+  webapi1-cpnucleo: &webapi1
+    build:
+      context: ./src/
+      dockerfile: ./WebApi/Dockerfile
+      args:
+        AOT: false
+        TRIM: false
+        EXTRA_OPTIMIZE: false
+        BUILD_CONFIGURATION: Debug
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  webapi2-cpnucleo:
+    <<: *webapi1
+    container_name: webapi2-cpnucleo
+
+  identityapi-cpnucleo:
+    build:
+      context: ./src/
+      dockerfile: ./IdentityApi/Dockerfile
+      args:
+        AOT: false
+        TRIM: false
+        EXTRA_OPTIMIZE: false
+        BUILD_CONFIGURATION: Debug
+    container_name: identityapi-cpnucleo  
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  db:
+    depends_on:
+      - postgres-exporter
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter-service
+    ports:
+      - 9187:9187
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@db:5432/cpnucleo?sslmode=disable"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-service
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  grafana:
+      image: grafana/grafana-oss
+      container_name: grafana-service        
+      ports:
+        - "3000:3000"
+      volumes:
+        - "./grafana/config/:/etc/grafana/"
+        - "./grafana/dashboards/:/var/lib/grafana/dashboards/"
+      depends_on:
+        - prometheus
+
+volumes:
+  prometheus-data:
+    driver: local

@@ -42,6 +42,15 @@ jobs:
         working-directory: "./test/Architecture.Tests"
         run: dotnet test
 
+      - name: Build and Run Docker Compose for Integration Tests
+        run: |
+          docker compose up db -d
+          sleep 10        
+
+      - name: Integration Tests
+        working-directory: "./test/Integration.Tests"
+        run: dotnet test
+
   container-test:
     needs: setup-build-test
     runs-on: ubuntu-latest
