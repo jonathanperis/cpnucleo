@@ -88,6 +88,11 @@ jobs:
         with:
             fetch-depth: 0
 
+      - name: Build and Run Docker Compose Db for Healthcheck Test
+        run: |
+          docker compose up db -d
+          sleep 10
+
       - name: Build and Run Docker Container for Healthcheck Test
         run: |
           docker run -d -p 8080:8080 --name cpnucleo-identity-api jonathanperis/cpnucleo-identity-api:latest
