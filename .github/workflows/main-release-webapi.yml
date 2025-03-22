@@ -70,7 +70,7 @@ jobs:
           file: ./src/WebApi/Dockerfile
           push: true
           tags: jonathanperis/cpnucleo-web-api:latest
-          platforms: linux/amd64,linux/arm64/v8          
+          # platforms: linux/amd64,linux/arm64/v8          
           build-args: |
             AOT=${{ env.AOT }}
             TRIM=${{ env.TRIM }}
