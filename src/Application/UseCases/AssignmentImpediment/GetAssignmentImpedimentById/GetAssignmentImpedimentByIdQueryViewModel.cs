@@ -1,0 +1,3 @@
+namespace Application.UseCases.AssignmentImpediment.GetAssignmentImpedimentById;
+
+public sealed record GetAssignmentImpedimentByIdQueryViewModel(OperationResult OperationResult, AssignmentImpedimentDto? AssignmentImpediment);
