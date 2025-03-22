@@ -16,7 +16,7 @@ ARG TRIM
 ARG EXTRA_OPTIMIZE
 ARG BUILD_CONFIGURATION
 
-# ARG DB_CONNECTION_STRING
+ARG DB_CONNECTION_STRING
 
 WORKDIR /src
 
@@ -31,7 +31,7 @@ COPY . .
 
 WORKDIR "/src/WebApi"
 
-# RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${DB_CONNECTION_STRING}"
+RUN dotnet user-secrets set "ConnectionStrings__DefaultConnection" "${DB_CONNECTION_STRING}"
 
 RUN dotnet build "WebApi.csproj" -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/build
 
