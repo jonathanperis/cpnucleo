@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  AOT: false
+  AOT: true
   TRIM: false
-  EXTRA_OPTIMIZE: false
+  EXTRA_OPTIMIZE: true
   BUILD_CONFIGURATION: Release  
       
 jobs:
