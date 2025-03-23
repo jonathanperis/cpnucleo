@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  AOT: true
-  TRIM: false
+  AOT: false
+  TRIM: true
   EXTRA_OPTIMIZE: true
   BUILD_CONFIGURATION: Release  
       
