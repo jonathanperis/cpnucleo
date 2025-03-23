@@ -9,11 +9,15 @@ services:
           condition: service_healthy
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
-
+    ports:
+      - "5100:8080"
+      
   webapi2-cpnucleo:
     <<: *webapi1
     container_name: webapi2-cpnucleo
-      
+    ports:
+      - "5111:8080"
+
   identityapi-cpnucleo:
     image: jonathanperis/cpnucleo-identity-api
     container_name: identityapi-cpnucleo

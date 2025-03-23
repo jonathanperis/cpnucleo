@@ -79,7 +79,7 @@ jobs:
           file: ./src/IdentityApi/Dockerfile
           push: true
           tags: jonathanperis/cpnucleo-identity-api:latest
-          platforms: linux/amd64,linux/arm64/v8          
+          # platforms: linux/amd64,linux/arm64/v8          
           build-args: |
             AOT=${{ env.AOT }}
             TRIM=${{ env.TRIM }}
@@ -105,7 +105,7 @@ jobs:
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5200/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5050/healthz)
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
               exit 0
