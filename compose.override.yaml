@@ -4,6 +4,8 @@ name: "cpnucleo-dev"
 x-common-api-dev: &common-api-dev
   build:
     context: ./src/
+  env_file:
+    - .env    
   environment:
     ASPNETCORE_ENVIRONMENT: Development
     Otlp__Endpoint: http://otel-lgtm:4317

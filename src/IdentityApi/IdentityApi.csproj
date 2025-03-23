@@ -15,7 +15,7 @@
 	<PropertyGroup Condition="'$(Trim)' == 'true'">
 		<PublishReadyToRun>true</PublishReadyToRun>
 		<PublishReadyToRunComposite>true</PublishReadyToRunComposite>
-		<PublishSingleFile>true</PublishSingleFile>
+		<PublishSingleFile>false</PublishSingleFile>
 		<SelfContained>true</SelfContained>
 	</PropertyGroup>
 

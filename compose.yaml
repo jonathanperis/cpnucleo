@@ -5,8 +5,10 @@ x-common-api: &common-api
   depends_on:
     db:
       condition: service_healthy
+  env_file:
+    - .env      
   environment:
-    ConnectionStrings__DefaultConnection: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
+    ConnectionStrings__DefaultConnection: ${API_CONNECTION_STRING}
 
 services:
   webapi1-cpnucleo:
@@ -37,14 +39,14 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cpnucleo
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
-      retries: 5        
+      retries: 5      
     ports:
       - "5432:5432"      
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
