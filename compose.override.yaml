@@ -4,6 +4,8 @@ name: "cpnucleo-dev"
 x-common-api-dev: &common-api-dev
   build:
     context: ./src/
+    args:
+      CACHE: "true"    
   env_file:
     - .env    
   environment:
@@ -12,7 +14,7 @@ x-common-api-dev: &common-api-dev
     OTEL_METRIC_EXPORT_INTERVAL: 5000
 
 services:
-  webapi1-cpnucleo:
+  webapi1-cpnucleo: &webapi1
     <<: *common-api-dev
     build:
       dockerfile: ./WebApi/Dockerfile
@@ -21,14 +23,22 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
-    networks:
-      - cpnucleo_network
+    ports:
+      # Development mapping similar to default: host port 5100 => container port (as defined in Dockerfile)
+      - "5100:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./src/WebApi:/app
 
   webapi2-cpnucleo:
-    <<: *common-api-dev
-    image: jonathanperis/cpnucleo-web-api:latest
-    networks:
-      - cpnucleo_network
+    <<: [*webapi1, *common-api-prod, *common-logging]
+    ports:
+      # Development mapping: host port 5111 => container port 8080
+      - "5111:8080"
 
   identityapi-cpnucleo:
     <<: *common-api-dev
@@ -39,24 +49,41 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
-    networks:
-      - cpnucleo_network
+    ports:
+      # Development mapping: host port 5200 => container port 5050
+      - "5200:5050"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./src/IdentityApi:/app
 
   otel-lgtm:
     image: grafana/otel-lgtm
     volumes:
-      - otel-lgtm-data:/data
+      - otel_lgtm_data:/data
     ports:
+      # Exposing ports for OpenTelemetry collector in development
       - "3000:3000"
       - "4317:4317"
       - "4318:4318"
-    networks:
-      - cpnucleo_network
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:3000"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
 
 volumes:
-  otel-lgtm-data:
+  otel_lgtm_data:
     driver: local
+    labels:
+      - "com.example.service=otel-lgtm"
 
 networks:
-  cpnucleo_network:
-    driver: bridge    
+  default:
+    name: cpnucleo_network
+    driver: bridge
+    driver_opts:
+      com.example.description: "Default network for cpnucleo services"

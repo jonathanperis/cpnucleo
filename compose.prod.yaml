@@ -1,3 +1,5 @@
+version: "3.8"
+
 name: "cpnucleo-prod"
 
 # Extension defining common API configuration for production.
@@ -12,15 +14,22 @@ x-common-api-prod: &common-api-prod
     ASPNETCORE_ENVIRONMENT: Production
   restart: always
 
+# Common logging options for production services.
+x-common-logging: &common-logging
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
 services:
-  webapi1-cpnucleo:
-    <<: *common-api-prod
+  webapi1-cpnucleo: &webapi1
+    <<: [*common-api-prod, *common-logging]
     image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
     ports:
+      # Production port mapping: host port 5100 is forwarded to container port 8080
       - "5100:8080"
-    networks:
-      - cpnucleo_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
       interval: 30s
@@ -34,47 +43,21 @@ services:
         reservations:
           cpus: "0.25"
           memory: "256M"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   webapi2-cpnucleo:
-    <<: *common-api-prod
-    image: jonathanperis/cpnucleo-web-api:latest
+    <<: [*webapi1, *common-api-prod, *common-logging]
     container_name: webapi2-cpnucleo
     ports:
+      # Production port mapping: host port 5111 is forwarded to container port 8080
       - "5111:8080"
-    networks:
-      - cpnucleo_network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: "0.50"
-          memory: "512M"
-        reservations:
-          cpus: "0.25"
-          memory: "256M"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   identityapi-cpnucleo:
-    <<: *common-api-prod
+    <<: [*common-api-prod, *common-logging]
     image: jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
     ports:
+      # Production port mapping: host port 5200 is forwarded to container port 5050
       - "5200:5050"
-    networks:
-      - cpnucleo_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
       interval: 30s
@@ -88,17 +71,12 @@ services:
         reservations:
           cpus: "0.25"
           memory: "256M"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   db:
     image: postgres:16.7
     container_name: db-cpnucleo
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -110,11 +88,10 @@ services:
       timeout: 5s
       retries: 5 
     ports:
+      # Exposing PostgreSQL port consistently on host and container
       - "5432:5432"
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
     restart: always
-    networks:
-      - cpnucleo_network
     deploy:
       resources:
         limits:
@@ -123,11 +100,7 @@ services:
         reservations:
           cpus: "0.50"
           memory: "512M"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    <<: *common-logging
 
   nginx:
     image: nginx
@@ -139,10 +112,9 @@ services:
       - webapi2-cpnucleo
       - identityapi-cpnucleo
     ports:
+      # Production mapping: host port 9999 is forwarded to container port 9999 for NGINX
       - "9999:9999"
     restart: always
-    networks:
-      - cpnucleo_network
     deploy:
       resources:
         limits:
@@ -151,16 +123,17 @@ services:
         reservations:
           cpus: "0.10"
           memory: "128M"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-        
+    <<: *common-logging
+
 volumes:
-  db-data:
+  db_data:
     driver: local
+    labels:
+      - "com.example.service=cpnucleo-db"
 
 networks:
-  cpnucleo_network:
+  default:
+    name: cpnucleo_network
     driver: bridge
+    driver_opts:
+      com.example.description: "Default network for cpnucleo services"

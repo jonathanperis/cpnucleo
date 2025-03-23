@@ -11,38 +11,44 @@ x-common-api: &common-api
     ConnectionStrings__DefaultConnection: ${API_CONNECTION_STRING}
 
 services:
-  webapi1-cpnucleo:
+  webapi1-cpnucleo: &webapi1
     <<: *common-api
     image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
     ports:
+      # Mapping internal port 8080 to external host port 5100 for webapi1 service
       - "5100:8080"
-    networks:
-      - cpnucleo_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   webapi2-cpnucleo:
-    <<: *common-api
-    image: jonathanperis/cpnucleo-web-api:latest
+    <<: [*webapi1, *common-api]
     container_name: webapi2-cpnucleo
     ports:
+      # Mapping internal port 8080 to external host port 5111 for webapi2 service
       - "5111:8080"
-    networks:
-      - cpnucleo_network
-
+      
   identityapi-cpnucleo:
     <<: *common-api
     image: jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
     ports:
+      # Mapping internal port 5050 to external host port 5200 for identity API service
       - "5200:5050"
-    networks:
-      - cpnucleo_network
-      
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   db:
     image: postgres:16.7
     container_name: db-cpnucleo
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -54,10 +60,9 @@ services:
       timeout: 5s
       retries: 5      
     ports:
+      # Exposing default PostgreSQL port on both host and container
       - "5432:5432"      
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
-    networks:
-      - cpnucleo_network
 
   nginx:
     image: nginx
@@ -69,14 +74,18 @@ services:
       - webapi2-cpnucleo
       - identityapi-cpnucleo
     ports:
+      # Mapping external port 9999 to internal port 9999 for NGINX reverse-proxy
       - "9999:9999"
-    networks:
-      - cpnucleo_network
 
 volumes:
-  db-data:
+  db_data:
     driver: local
+    labels:
+      - "com.example.service=cpnucleo-db"
 
 networks:
-  cpnucleo_network:
+  default:
+    name: cpnucleo_network
     driver: bridge
+    driver_opts:
+      com.example.description: "Default network for cpnucleo services"
