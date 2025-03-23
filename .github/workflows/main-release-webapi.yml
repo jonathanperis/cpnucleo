@@ -45,7 +45,7 @@ jobs:
       - name: Build and Run Docker Compose for Integration Tests
         run: |
           docker compose up db -d
-          sleep 25        
+          sleep 30        
 
       - name: Integration Tests
         working-directory: "./test/Integration.Tests"
@@ -100,18 +100,19 @@ jobs:
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
           docker compose -f compose.prod.yaml up nginx -d
-          sleep 25
+          sleep 30
 
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
+            echo "Attempt $i: Status $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
               exit 0
             else
-              echo "Healthcheck attempt $i failed with status $STATUS. Retrying..."
-              sleep 2
+              echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
+              sleep 5
             fi
           done
           echo "Healthcheck failed after 20 attempts."
