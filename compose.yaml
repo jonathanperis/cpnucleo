@@ -1,5 +1,18 @@
 name: "cpnucleo-default"
 
+# Consolidated common healthcheck configurations.
+x-common-healthcheck:
+  x-healthcheck-api: &healthcheck-api
+    test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+  x-healthcheck-identity: &healthcheck-identity
+    test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+
 # Extension defining common configuration for API services in the default configuration.
 x-common-api: &common-api
   depends_on:
@@ -18,11 +31,7 @@ services:
     ports:
       # Mapping internal port 8080 to external host port 5100 for webapi1 service
       - "5100:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    healthcheck: *healthcheck-api
 
   webapi2-cpnucleo:
     <<: [*webapi1, *common-api]
@@ -38,11 +47,7 @@ services:
     ports:
       # Mapping internal port 5050 to external host port 5200 for identity API service
       - "5200:5050"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    healthcheck: *healthcheck-identity
 
   db:
     image: postgres:16.7

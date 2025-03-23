@@ -1,5 +1,18 @@
 name: "cpnucleo-dev"
 
+# Consolidated common healthcheck configurations.
+x-common-healthcheck:
+  x-healthcheck-api: &healthcheck-api
+    test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+  x-healthcheck-identity: &healthcheck-identity
+    test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+
 # Extension defining common API configuration for development builds.
 x-common-api-dev: &common-api-dev
   env_file:
@@ -24,11 +37,7 @@ services:
     ports:
       # Development mapping similar to default: host port 5100 => container port (as defined in Dockerfile)
       - "5100:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    healthcheck: *healthcheck-api
 
   webapi2-cpnucleo:
     <<: [*webapi1, *common-api-dev]
@@ -50,11 +59,7 @@ services:
     ports:
       # Development mapping: host port 5200 => container port 5050
       - "5200:5050"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    healthcheck: *healthcheck-identity
 
   otel-lgtm:
     image: grafana/otel-lgtm
