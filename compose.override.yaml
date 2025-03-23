@@ -14,7 +14,6 @@ x-common-api-dev: &common-api-dev
 services:
   webapi1-cpnucleo:
     <<: *common-api-dev
-    container_name: webapi1-cpnucleo
     build:
       dockerfile: ./WebApi/Dockerfile
       args:
@@ -22,15 +21,17 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
+    networks:
+      - cpnucleo_network
 
   webapi2-cpnucleo:
     <<: *common-api-dev
     image: jonathanperis/cpnucleo-web-api:latest
-    container_name: webapi2-cpnucleo
+    networks:
+      - cpnucleo_network
 
   identityapi-cpnucleo:
     <<: *common-api-dev
-    container_name: identityapi-cpnucleo  
     build:
       dockerfile: ./IdentityApi/Dockerfile
       args:
@@ -38,17 +39,24 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
+    networks:
+      - cpnucleo_network
 
   otel-lgtm:
     image: grafana/otel-lgtm
-    container_name: otel-lgtm-rinha
     volumes:
       - otel-lgtm-data:/data
     ports:
       - "3000:3000"
       - "4317:4317"
       - "4318:4318"
+    networks:
+      - cpnucleo_network
 
 volumes:
   otel-lgtm-data:
     driver: local
+
+networks:
+  cpnucleo_network:
+    driver: bridge    

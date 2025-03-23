@@ -19,6 +19,26 @@ services:
     container_name: webapi1-cpnucleo
     ports:
       - "5100:8080"
+    networks:
+      - cpnucleo_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+        reservations:
+          cpus: "0.25"
+          memory: "256M"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   webapi2-cpnucleo:
     <<: *common-api-prod
@@ -26,6 +46,26 @@ services:
     container_name: webapi2-cpnucleo
     ports:
       - "5111:8080"
+    networks:
+      - cpnucleo_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+        reservations:
+          cpus: "0.25"
+          memory: "256M"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   identityapi-cpnucleo:
     <<: *common-api-prod
@@ -33,6 +73,26 @@ services:
     container_name: identityapi-cpnucleo
     ports:
       - "5200:5050"
+    networks:
+      - cpnucleo_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+        reservations:
+          cpus: "0.25"
+          memory: "256M"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   db:
     image: postgres:16.7
@@ -53,6 +113,21 @@ services:
       - "5432:5432"
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
     restart: always
+    networks:
+      - cpnucleo_network
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: "1G"
+        reservations:
+          cpus: "0.50"
+          memory: "512M"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   nginx:
     image: nginx
@@ -66,7 +141,26 @@ services:
     ports:
       - "9999:9999"
     restart: always
-
+    networks:
+      - cpnucleo_network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "256M"
+        reservations:
+          cpus: "0.10"
+          memory: "128M"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        
 volumes:
   db-data:
     driver: local
+
+networks:
+  cpnucleo_network:
+    driver: bridge
