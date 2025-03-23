@@ -1,48 +1,51 @@
 name: "cpnucleo-dev"
 
+# Extension defining common API configuration for development builds.
+x-common-api-dev: &common-api-dev
+  build:
+    context: ./src/
+  environment:
+    ASPNETCORE_ENVIRONMENT: Development
+    Otlp__Endpoint: http://otel-lgtm:4317
+    OTEL_METRIC_EXPORT_INTERVAL: 5000
+
 services:
-  webapi1-cpnucleo: &webapi1
+  webapi1-cpnucleo:
+    <<: *common-api-dev
+    container_name: webapi1-cpnucleo
     build:
-      context: ./src/
       dockerfile: ./WebApi/Dockerfile
       args:
         AOT: false
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Otlp__Endpoint: http://otel-lgtm:4317
-      OTEL_METRIC_EXPORT_INTERVAL: 5000
 
   webapi2-cpnucleo:
-    <<: *webapi1
+    <<: *common-api-dev
+    image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi2-cpnucleo
 
   identityapi-cpnucleo:
+    <<: *common-api-dev
+    container_name: identityapi-cpnucleo  
     build:
-      context: ./src/
       dockerfile: ./IdentityApi/Dockerfile
       args:
         AOT: false
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
-    container_name: identityapi-cpnucleo  
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Otlp__Endpoint: http://otel-lgtm:4317
-      OTEL_METRIC_EXPORT_INTERVAL: 5000      
-      
+
   otel-lgtm:
     image: grafana/otel-lgtm
     container_name: otel-lgtm-rinha
     volumes:
       - otel-lgtm-data:/data
     ports:
-      - 3000:3000
-      - 4317:4317
-      - 4318:4318
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
 
 volumes:
   otel-lgtm-data:

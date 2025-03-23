@@ -1,31 +1,32 @@
 name: "cpnucleo-default"
 
+# Extension defining common configuration for API services in the default configuration.
+x-common-api: &common-api
+  depends_on:
+    db:
+      condition: service_healthy
+  environment:
+    ConnectionStrings__DefaultConnection: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
+
 services:
-  webapi1-cpnucleo: &webapi1
+  webapi1-cpnucleo:
+    <<: *common-api
     image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
-    depends_on:
-      db:
-          condition: service_healthy
-    environment:
-      ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
     ports:
       - "5100:8080"
       
   webapi2-cpnucleo:
-    <<: *webapi1
+    <<: *common-api
+    image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi2-cpnucleo
     ports:
       - "5111:8080"
 
   identityapi-cpnucleo:
+    <<: *common-api
     image: jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
-    depends_on:
-      db:
-          condition: service_healthy    
-    environment:
-      ConnectionStrings__DefaultConnection: Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;
     ports:
       - "5200:5050"
 
