@@ -2,10 +2,6 @@ name: "cpnucleo-dev"
 
 # Extension defining common API configuration for development builds.
 x-common-api-dev: &common-api-dev
-  build:
-    context: ./src/
-    args:
-      CACHE: "true"    
   env_file:
     - .env    
   environment:
@@ -17,8 +13,10 @@ services:
   webapi1-cpnucleo: &webapi1
     <<: *common-api-dev
     build:
+      context: ./src/
       dockerfile: ./WebApi/Dockerfile
       args:
+        CACHE: "true"      
         AOT: false
         TRIM: false
         EXTRA_OPTIMIZE: false
@@ -31,11 +29,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    volumes:
-      - ./src/WebApi:/app
 
   webapi2-cpnucleo:
-    <<: [*webapi1, *common-api-prod, *common-logging]
+    <<: [*webapi1, *common-api-dev]
     ports:
       # Development mapping: host port 5111 => container port 8080
       - "5111:8080"
@@ -43,8 +39,10 @@ services:
   identityapi-cpnucleo:
     <<: *common-api-dev
     build:
+      context: ./src/
       dockerfile: ./IdentityApi/Dockerfile
       args:
+        CACHE: "true"
         AOT: false
         TRIM: false
         EXTRA_OPTIMIZE: false
@@ -57,8 +55,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    volumes:
-      - ./src/IdentityApi:/app
 
   otel-lgtm:
     image: grafana/otel-lgtm
