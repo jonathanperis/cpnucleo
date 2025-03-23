@@ -9,7 +9,7 @@ env:
   AOT: false
   TRIM: false
   EXTRA_OPTIMIZE: false
-  BUILD_CONFIGURATION: Debug  
+  BUILD_CONFIGURATION: Release  
       
 jobs:
   setup-build-test:
