@@ -87,8 +87,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseInfrastructure();
 
-// app.UseHttpsRedirection();
-// app.UseHsts();
+app.UseHttpsRedirection();
+app.UseHsts();
 
 app.MapHealthChecks("/healthz");
 
