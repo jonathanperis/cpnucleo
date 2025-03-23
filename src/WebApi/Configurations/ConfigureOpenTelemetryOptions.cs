@@ -56,10 +56,6 @@ public static class ConfigureOpenTelemetryOptions
             ConfigureResource(resourceBuilder);
             options.SetResourceBuilder(resourceBuilder);
 
-            options.IncludeFormattedMessage = true;
-            options.IncludeScopes = true;
-            options.ParseStateValues = true;
-
             options.AddOtlpExporter(otlpOptions =>
             {
                 // Use IConfiguration binding for AspNetCore instrumentation options.
@@ -67,7 +63,7 @@ public static class ConfigureOpenTelemetryOptions
             });
 
             // Add the Console exporter for local debugging.
-            // options.AddConsoleExporter();    
+            options.AddConsoleExporter();    
         });
         
         return builder;
