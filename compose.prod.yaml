@@ -1,6 +1,17 @@
-version: "3.8"
-
 name: "cpnucleo-prod"
+
+# Consolidated common healthcheck configurations.
+x-common-healthcheck:
+  x-healthcheck-api: &healthcheck-api
+    test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+  x-healthcheck-identity: &healthcheck-identity
+    test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
 # Extension defining common API configuration for production.
 x-common-api-prod: &common-api-prod
@@ -30,11 +41,7 @@ services:
     ports:
       # Production port mapping: host port 5100 is forwarded to container port 8080
       - "5100:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    healthcheck: *healthcheck-api
     deploy:
       resources:
         limits:
@@ -58,11 +65,7 @@ services:
     ports:
       # Production port mapping: host port 5200 is forwarded to container port 5050
       - "5200:5050"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    healthcheck: *healthcheck-identity
     deploy:
       resources:
         limits:
