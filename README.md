@@ -1,6 +1,6 @@
 # Cpnucleo
 
-Welcome to **Cpnucleo** – a cutting-edge sample solution that embodies the best practices for building robust and scalable .NET 6 projects. This project is your blueprint for modern application development using C# and Docker, designed to help developers kickstart their journey with high-quality code, organized structure, and industry-standard patterns.
+Welcome to **Cpnucleo** – a cutting-edge sample solution that embodies the best practices for building robust and scalable .NET projects. This project is your blueprint for modern application development using C# and Docker, designed to help developers kickstart their journey with high-quality code, organized structure, and industry-standard patterns.
 
 ---
 
@@ -28,7 +28,7 @@ Welcome to **Cpnucleo** – a cutting-edge sample solution that embodies the bes
 
 ## Introduction
 
-Cpnucleo is a sample solution that demonstrates how to implement industry best practices when developing .NET 6 projects. The purpose of this repository is to serve as a learning tool and a reference implementation that covers everything from clean architecture principles and dependency injection to unit testing and containerization.
+Cpnucleo is a sample solution that demonstrates how to implement industry best practices when developing .NET projects. The purpose of this repository is to serve as a learning tool and a reference implementation that covers everything from clean architecture principles and dependency injection to unit testing and containerization.
 
 ---
 
@@ -96,7 +96,7 @@ A high-level diagram of the architecture is provided below:
 
 ## Technologies Used
 
-- **C# & .NET 6:** Primary language and framework.
+- **C# & .NET:** Primary language and framework.
 - **Docker:** Containerization via provided Dockerfile.
 - **Entity Framework Core:** ORM for database interactions.
 - **xUnit:** For unit testing.
@@ -109,7 +109,7 @@ A high-level diagram of the architecture is provided below:
 
 Before getting started, ensure you have the following installed:
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET SDK](https://dotnet.microsoft.com/download/dotnet)
 - [Docker](https://www.docker.com/get-started) (if you plan to run in a container)
 - A code editor or IDE (e.g., [Visual Studio Code](https://code.visualstudio.com/))
 
@@ -144,7 +144,7 @@ All configuration settings are located in the `appsettings.json` file. Adjust co
 To run the application locally, use the following command:
 
 ```bash
-dotnet run --project YourProjectName
+dotnet run --project WebApi
 ```
 
 Alternatively, to build and run using Docker, execute:
@@ -203,13 +203,11 @@ A: Please review the error logs and ensure that all dependencies are correctly i
 **Q: How do I run tests?**  
 A: Run `dotnet test` in the root directory; detailed test results will be displayed in the terminal.
 
-For more detailed troubleshooting, refer to the [FAQ section](FAQ.md) in the documentation.
-
 ---
 
 ## Contact & Support
 
-If you have any questions, issues, or would like to contribute, please open an issue on GitHub or reach out by email at [support@example.com](mailto:support@example.com).
+If you have any questions, issues, or would like to contribute, please open an issue on GitHub.
 
 Stay connected:
 
