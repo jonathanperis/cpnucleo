@@ -2,7 +2,7 @@ name: "cpnucleo-default"
 
 services:
   webapi1-cpnucleo: &webapi1
-    image: jonathanperis/cpnucleo-web-api
+    image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
     depends_on:
       db:
@@ -19,7 +19,7 @@ services:
       - "5111:8080"
 
   identityapi-cpnucleo:
-    image: jonathanperis/cpnucleo-identity-api
+    image: jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
     depends_on:
       db:
