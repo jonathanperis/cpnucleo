@@ -6,10 +6,10 @@ on:
       - main
 
 env:
-  AOT: true
+  AOT: false
   TRIM: false
   EXTRA_OPTIMIZE: false
-  BUILD_CONFIGURATION: Release  
+  BUILD_CONFIGURATION: Debug  
       
 jobs:
   setup-build-test:
