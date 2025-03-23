@@ -1,37 +1,36 @@
 name: "cpnucleo-prod"
 
+# Extension defining common API configuration for production.
+x-common-api-prod: &common-api-prod
+  depends_on:
+    db:
+      condition: service_healthy
+  environment:
+    ConnectionStrings__DefaultConnection: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
+    ASPNETCORE_ENVIRONMENT: Production
+  restart: always
+
 services:
-  webapi1-cpnucleo: &webapi1
+  webapi1-cpnucleo:
+    <<: *common-api-prod
     image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      ConnectionStrings__DefaultConnection: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
-      ASPNETCORE_ENVIRONMENT: Production
     ports:
       - "5100:8080"
-    restart: always
 
   webapi2-cpnucleo:
-    <<: *webapi1
+    <<: *common-api-prod
+    image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi2-cpnucleo
     ports:
       - "5111:8080"
 
   identityapi-cpnucleo:
+    <<: *common-api-prod
     image: jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      ConnectionStrings__DefaultConnection: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
-      ASPNETCORE_ENVIRONMENT: Production
     ports:
       - "5200:5050"
-    restart: always
 
   db:
     image: postgres:16.7
