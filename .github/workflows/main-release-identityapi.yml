@@ -105,7 +105,7 @@ jobs:
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://localhost:5200/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5200/healthz)
             echo "Attempt $i: Status $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
