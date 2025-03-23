@@ -73,8 +73,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseInfrastructure();
 
-// app.UseHttpsRedirection();
-// app.UseHsts();
+app.UseHttpsRedirection();
+app.UseHsts();
 
 app.MapHealthChecks("/healthz");
 
@@ -84,6 +84,7 @@ app.NewVersionedApi()
     access_token = tokenGenerator.GenerateToken(request.Email)
 })
 .WithTags("Projects")
-.HasApiVersion(1.0);
+.HasApiVersion(1.0)
+.MapToApiVersion(1.0);
 
 app.Run();
