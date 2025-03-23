@@ -99,7 +99,7 @@ jobs:
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose -f compose.yaml -f compose.prod.yaml up nginx -d
+          docker compose -f compose.yaml -f compose.prod.yaml up nginx
           sleep 10
 
       - name: Test Healthcheck Endpoint
