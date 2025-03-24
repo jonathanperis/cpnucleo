@@ -111,7 +111,7 @@ jobs:
               echo "Healthcheck passed with status $STATUS"
               exit 0
             else
-              echo "Healthcheck attempt $i failed with status $STATUS. Retrying..."
+              echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
               sleep 5
             fi
           done
