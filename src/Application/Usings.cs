@@ -10,6 +10,7 @@ global using Domain.UoW;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using Mediator;
+global using MessagePack;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;

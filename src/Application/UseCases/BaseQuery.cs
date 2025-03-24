@@ -1,4 +1,4 @@
 namespace Application.UseCases;
 
-//[MessagePackObject(true)]
+[MessagePackObject(true)]
 public abstract record BaseQuery();
