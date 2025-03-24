@@ -38,7 +38,8 @@ RUN dotnet publish "GrpcServer.csproj" --no-restore -c $BUILD_CONFIGURATION -p:A
 FROM base AS final
 
 WORKDIR /app
-EXPOSE 5010
+ENV ASPNETCORE_URLS=http://+:5020
+EXPOSE 5020
 
 COPY --from=publish /app/publish .
 ENTRYPOINT ["./GrpcServer"]
