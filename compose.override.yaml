@@ -8,7 +8,7 @@ x-common-healthcheck:
     timeout: 10s
     retries: 3
   x-healthcheck-identity: &healthcheck-identity
-    test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+    test: ["CMD", "curl", "-f", "http://localhost:5010/healthz"]
     interval: 30s
     timeout: 10s
     retries: 3
@@ -57,8 +57,8 @@ services:
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
     ports:
-      # Development mapping: host port 5200 => container port 5050
-      - "5200:5050"
+      # Development mapping: host port 5200 => container port 5010
+      - "5200:5010"
     healthcheck: *healthcheck-identity
 
   otel-lgtm:
