@@ -79,12 +79,12 @@ app.UseInfrastructure();
 app.MapHealthChecks("/healthz");
 
 app.NewVersionedApi()
-.MapPost("/login", ([FromBody] LoginRequest request, [FromServices] TokenGenerator tokenGenerator) => new
-{
-    access_token = tokenGenerator.GenerateToken(request.Email)
-})
-.WithTags("Projects")
-.HasApiVersion(1.0)
-.MapToApiVersion(1.0);
+    .MapPost("/login", ([FromBody] LoginRequest request, [FromServices] TokenGenerator tokenGenerator) => new
+    {
+        access_token = tokenGenerator.GenerateToken(request.Email)
+    })
+    .WithTags("Projects")
+    .HasApiVersion(1.0)
+    .MapToApiVersion(1.0);
 
 app.Run();
