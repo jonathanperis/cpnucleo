@@ -63,15 +63,6 @@ services:
       # Production port mapping: host port 5111 is forwarded to container port 8080
       - "5111:8080"
 
-  grpcserver-cpnucleo:
-    <<: [*common-api-prod, *common-logging]
-    image: jonathanperis/cpnucleo-grpc-server:latest
-    container_name: grpcserver-cpnucleo
-    ports:
-      # Production port mapping: host port 5300 is forwarded to container port 5020
-      - "5300:5020"
-    healthcheck: *healthcheck-grpcserver
-
   identityapi-cpnucleo:
     <<: [*common-api-prod, *common-logging]
     image: jonathanperis/cpnucleo-identity-api:latest
@@ -81,6 +72,15 @@ services:
       - "5200:5010"
     healthcheck: *healthcheck-identity
 
+  grpcserver-cpnucleo:
+    <<: [*common-api-prod, *common-logging]
+    image: jonathanperis/cpnucleo-grpc-server:latest
+    container_name: grpcserver-cpnucleo
+    ports:
+      # Production port mapping: host port 5300 is forwarded to container port 5020
+      - "5300:5020"
+    healthcheck: *healthcheck-grpcserver
+    
   db:
     image: postgres:16.7
     container_name: db-cpnucleo
