@@ -49,15 +49,6 @@ services:
     ports:
       # Mapping internal port 8080 to external host port 5111 for webapi2 service
       - "5111:8080"
-      
-  grpcserver-cpnucleo:
-    <<: *common-api
-    image: jonathanperis/cpnucleo-grpc-server:latest
-    container_name: grpcserver-cpnucleo
-    ports:
-      # Mapping internal port 5020 to external host port 5300 for grpc server service
-      - "5300:5020"
-    healthcheck: *healthcheck-grpcserver
 
   identityapi-cpnucleo:
     <<: *common-api
@@ -67,6 +58,15 @@ services:
       # Mapping internal port 5010 to external host port 5200 for identity API service
       - "5200:5010"
     healthcheck: *healthcheck-identity
+
+  grpcserver-cpnucleo:
+    <<: *common-api
+    image: jonathanperis/cpnucleo-grpc-server:latest
+    container_name: grpcserver-cpnucleo
+    ports:
+      # Mapping internal port 5020 to external host port 5300 for grpc server service
+      - "5300:5020"
+    healthcheck: *healthcheck-grpcserver
 
   db:
     image: postgres:16.7
