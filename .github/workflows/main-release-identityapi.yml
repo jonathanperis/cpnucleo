@@ -1,7 +1,7 @@
 name: Main Release IdentityApi Pipeline
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
