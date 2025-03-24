@@ -44,7 +44,7 @@ jobs:
 
       - name: Build and Run Docker Compose for Integration Tests
         run: |
-          docker compose up db -d
+          docker compose up db -d --build --force-recreate
           sleep 30        
 
       - name: Integration Tests
@@ -62,7 +62,7 @@ jobs:
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose up nginx -d
+          docker compose up nginx -d --build --force-recreate
           sleep 30
 
       - name: Test Healthcheck Endpoint
