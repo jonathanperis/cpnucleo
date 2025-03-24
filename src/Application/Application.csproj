@@ -13,6 +13,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="MessagePack.Annotations" Version="2.2.85" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Riok.Mapperly" Version="4.1.1" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />

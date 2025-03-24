@@ -8,7 +8,7 @@ x-common-healthcheck:
     timeout: 10s
     retries: 3
   x-healthcheck-identity: &healthcheck-identity
-    test: ["CMD", "curl", "-f", "http://localhost:5050/healthz"]
+    test: ["CMD", "curl", "-f", "http://localhost:5010/healthz"]
     interval: 30s
     timeout: 10s
     retries: 3
@@ -63,8 +63,8 @@ services:
     image: jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
     ports:
-      # Production port mapping: host port 5200 is forwarded to container port 5050
-      - "5200:5050"
+      # Production port mapping: host port 5200 is forwarded to container port 5010
+      - "5200:5010"
     healthcheck: *healthcheck-identity
     deploy:
       resources:
