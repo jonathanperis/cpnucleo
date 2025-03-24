@@ -12,6 +12,11 @@ x-common-healthcheck:
     interval: 30s
     timeout: 10s
     retries: 3
+  x-healthcheck-grpcserver: &healthcheck-grpcserver
+    test: ["CMD", "curl", "-f", "http://localhost:5020/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
 # Extension defining common configuration for API services in the default configuration.
 x-common-api: &common-api
@@ -22,6 +27,11 @@ x-common-api: &common-api
     - .env      
   environment:
     ConnectionStrings__DefaultConnection: ${API_CONNECTION_STRING}
+  deploy:
+    resources:
+      limits:
+        cpus: "0.4"
+        memory: "100MB"
 
 services:
   webapi1-cpnucleo: &webapi1
@@ -40,6 +50,15 @@ services:
       # Mapping internal port 8080 to external host port 5111 for webapi2 service
       - "5111:8080"
       
+  grpcserver-cpnucleo:
+    <<: *common-api
+    image: jonathanperis/cpnucleo-grpc-server:latest
+    container_name: grpcserver-cpnucleo
+    ports:
+      # Mapping internal port 5020 to external host port 5300 for grpc server service
+      - "5300:5020"
+    healthcheck: *healthcheck-grpcserver
+
   identityapi-cpnucleo:
     <<: *common-api
     image: jonathanperis/cpnucleo-identity-api:latest
@@ -66,7 +85,12 @@ services:
       retries: 5      
     ports:
       # Exposing default PostgreSQL port on both host and container
-      - "5432:5432"      
+      - "5432:5432"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "330MB"      
     command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
 
   nginx:
@@ -81,6 +105,11 @@ services:
     ports:
       # Mapping external port 9999 to internal port 9999 for NGINX reverse-proxy
       - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "20MB"
 
 volumes:
   db_data:

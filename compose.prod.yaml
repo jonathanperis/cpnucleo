@@ -12,6 +12,11 @@ x-common-healthcheck:
     interval: 30s
     timeout: 10s
     retries: 3
+  x-healthcheck-grpcserver: &healthcheck-grpcserver
+    test: ["CMD", "curl", "-f", "http://localhost:5020/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
 # Extension defining common API configuration for production.
 x-common-api-prod: &common-api-prod
@@ -24,6 +29,14 @@ x-common-api-prod: &common-api-prod
     ConnectionStrings__DefaultConnection: ${API_CONNECTION_STRING}
     ASPNETCORE_ENVIRONMENT: Production
   restart: always
+  deploy:
+    resources:
+      limits:
+        cpus: "0.50"
+        memory: "512M"
+      reservations:
+        cpus: "0.25"
+        memory: "256M"    
 
 # Common logging options for production services.
 x-common-logging: &common-logging
@@ -42,14 +55,6 @@ services:
       # Production port mapping: host port 5100 is forwarded to container port 8080
       - "5100:8080"
     healthcheck: *healthcheck-api
-    deploy:
-      resources:
-        limits:
-          cpus: "0.50"
-          memory: "512M"
-        reservations:
-          cpus: "0.25"
-          memory: "256M"
 
   webapi2-cpnucleo:
     <<: [*webapi1, *common-api-prod, *common-logging]
@@ -57,6 +62,15 @@ services:
     ports:
       # Production port mapping: host port 5111 is forwarded to container port 8080
       - "5111:8080"
+
+  grpcserver-cpnucleo:
+    <<: [*common-api-prod, *common-logging]
+    image: jonathanperis/cpnucleo-grpc-server:latest
+    container_name: grpcserver-cpnucleo
+    ports:
+      # Production port mapping: host port 5300 is forwarded to container port 5020
+      - "5300:5020"
+    healthcheck: *healthcheck-grpcserver
 
   identityapi-cpnucleo:
     <<: [*common-api-prod, *common-logging]
@@ -66,14 +80,6 @@ services:
       # Production port mapping: host port 5200 is forwarded to container port 5010
       - "5200:5010"
     healthcheck: *healthcheck-identity
-    deploy:
-      resources:
-        limits:
-          cpus: "0.50"
-          memory: "512M"
-        reservations:
-          cpus: "0.25"
-          memory: "256M"
 
   db:
     image: postgres:16.7
