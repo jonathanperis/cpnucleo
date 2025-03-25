@@ -1,0 +1,119 @@
+﻿@page "/weather"
+@rendermode InteractiveServer
+
+<PageTitle>Weather</PageTitle>
+
+<RadzenBreadCrumb>
+    <RadzenBreadCrumbItem Path="/" Icon="home"/>
+    <RadzenBreadCrumbItem Path="/weather" Text="Weather"/>
+</RadzenBreadCrumb>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (forecasts == null)
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Info" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
+}
+else
+{
+    @* <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" *@
+    @*                 FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" *@
+    @*                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" *@
+    @*                 Data="@forecasts2" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" *@
+    @*                 SelectionMode="DataGridSelectionMode.Single" @bind-Value=@selectedForecasts2> *@
+    @*     <Columns> *@
+    @*         <RadzenDataGridColumn Property="@nameof(WeatherForecast.Id)" Title="#" /> *@
+    @*         <RadzenDataGridColumn Property="@nameof(WeatherForecast.Date)" Title="Date" /> *@
+    @*         <RadzenDataGridColumn Property="@nameof(WeatherForecast.TemperatureC)" Title="Temp. (C)" /> *@
+    @*         <RadzenDataGridColumn Property="@nameof(WeatherForecast.TemperatureF)" Title="Temp. (F)" /> *@
+    @*         <RadzenDataGridColumn Property="@nameof(WeatherForecast.Summary)" Title="Summary" /> *@
+    @*     </Columns> *@
+    @* </RadzenDataGrid> *@
+
+    <RadzenDataGrid @ref="grid" IsLoading=@isLoading
+                    Count="@count" Data="@forecasts2"
+                    AllowSorting="true" AllowPaging="true"
+                    PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center">
+        <Columns>
+            <RadzenDataGridColumn Property="@nameof(WeatherForecast.Id)" Title="#" />            
+            <RadzenDataGridColumn Property="@nameof(WeatherForecast.Date)" Title="Date"/>
+            <RadzenDataGridColumn Property="@nameof(WeatherForecast.TemperatureC)" Title="Temp. (C)"/>
+            <RadzenDataGridColumn Property="@nameof(WeatherForecast.TemperatureF)" Title="Temp. (F)"/>
+            <RadzenDataGridColumn Property="@nameof(WeatherForecast.Summary)" Title="Summary"/>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    RadzenDataGrid<WeatherForecast> grid;
+    int count;
+    bool isLoading = false;
+    IQueryable<WeatherForecast> forecasts2;
+    IList<WeatherForecast> selectedForecasts2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+
+        var startDate = DateOnly.FromDateTime(DateTime.Now);
+        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        {
+            Id = Guid.NewGuid(),
+            Date = startDate.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = summaries[Random.Shared.Next(summaries.Length)]
+        }).ToArray();
+
+        forecasts2 = Enumerable.Range(1, 500).Select(index => new WeatherForecast
+        {
+            Id = Guid.NewGuid(),
+            Date = startDate.AddDays(index),
+            TemperatureC = Random.Shared.Next(-20, 55),
+            Summary = summaries[Random.Shared.Next(summaries.Length)]
+        }).AsQueryable();
+        
+        // selectedForecasts2 = new List<WeatherForecast>(){ forecasts2.FirstOrDefault() };
+    }
+
+    // async Task LoadData(LoadDataArgs args)
+    // {
+    //     isLoading = true;
+    //
+    //     await Task.Yield();
+    //
+    //     // if (!string.IsNullOrEmpty(args.Filter))
+    //     // {
+    //     //     // Filter via the Where method
+    //     //     forecasts2 = forecasts2.Where(grid.ColumnsCollection);
+    //     // }
+    //     //
+    //     // if (!string.IsNullOrEmpty(args.OrderBy))
+    //     // {
+    //     //     // Sort via the OrderBy method
+    //     //     forecasts2 = forecasts2.OrderBy(args.OrderBy);
+    //     // }
+    //
+    //     // Important!!! Make sure the Count property of RadzenDataGrid is set.
+    //     count = forecasts2.Count();
+    //
+    //     // Perform paging via Skip and Take.
+    //     forecasts2 = forecasts2.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
+    //
+    //     isLoading = false;
+    // }
+
+    private class WeatherForecast
+    {
+        public Guid Id { get; set; }
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public string? Summary { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
