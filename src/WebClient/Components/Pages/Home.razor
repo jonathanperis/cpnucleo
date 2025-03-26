@@ -23,14 +23,7 @@
 </MudCard>
 
 @code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-
-    private List<BreadcrumbItem> _items =
+    private readonly List<BreadcrumbItem> _items =
     [
         new("Home", href: "#", icon: Icons.Material.Filled.Home, disabled: true),
     ];    

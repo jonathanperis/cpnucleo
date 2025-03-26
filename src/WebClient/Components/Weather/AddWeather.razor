@@ -1,6 +1,6 @@
 @inject ISnackbar Snackbar
 
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>    
     <MudDialog>
         <TitleContent>
@@ -10,14 +10,10 @@
             </MudText>
         </TitleContent>
         <DialogContent>
-            <MudTextField Label="Weather ID" HelperText="Valid Guid"
-                          @bind-Value="model.Id" For="@(() => model.Id)"/>
-            <MudTextField Label="Date" Required="true" RequiredError="Date is required!"
-                          @bind-Value="model.Date" For="@(() => model.Date)" />
-            <MudTextField Label="Temp. (C)" Required="true" RequiredError="Temp. (C) is required!"
-                          @bind-Value="model.TemperatureC" For="@(() => model.TemperatureC)" />
-            <MudTextField Label="Summary" Required="true" RequiredError="Summary is required!"
-                          @bind-Value="model.Summary" For="@(() => model.Summary)" />
+            <MudTextField Label="Weather ID" HelperText="Valid Guid" @bind-Value="_model.Id"/>
+            <MudTextField Label="Date" Required="true" RequiredError="Date is required!" @bind-Value="_model.Date" />
+            <MudTextField Label="Temp. (C)" Required="true" RequiredError="Temp. (C) is required!" @bind-Value="_model.TemperatureC" />
+            <MudTextField Label="Summary" Required="true" RequiredError="Summary is required!" @bind-Value="_model.Summary" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -28,21 +24,19 @@
 
 @code {
     [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
-    
-    Weather.WeatherForecast model = new();
+    private IMudDialogInstance? MudDialog { get; set; }
 
-    private void Cancel() => MudDialog.Cancel();
+    readonly Weather.WeatherForecast _model = new();
+
+    private void Cancel() => MudDialog?.Cancel();
     
     private void OnValidSubmit(EditContext context)
     {
         // TODO: Send value to Api.
-        
+       
         Snackbar.Clear();
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
         Snackbar.Add("Weather Added Added", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
-        MudDialog.Close(DialogResult.Ok(model));
-        
-        StateHasChanged();
+        MudDialog?.Close(DialogResult.Ok(_model));
     }
 }
