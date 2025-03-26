@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime Js
+@implements IBrowserViewportObserver
+@implements IAsyncDisposable
 
 <MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="_theme"/>
 <MudPopoverProvider/>
@@ -17,12 +19,18 @@ else
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
             <MudText Typo="Typo.h6" Class="ml-3">BlazorApp</MudText>
             <MudSpacer/>
-            <MudSwitch @bind-Value="IsDarkMode" Color="Color.Secondary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode"/>
-            @* <MudToggleIconButton @bind-Toggled="_isDarkMode" *@
-            @*                      Icon="@Icons.Material.Filled.LightMode" *@
-            @*                      Color="@Color.Default" *@
-            @*                      ToggledIcon="@Icons.Material.Filled.DarkMode" *@
-            @*                      ToggledColor="@Color.Default" /> *@
+            @if (IsSmallScreen)
+            {
+                <MudToggleIconButton @bind-Toggled="IsDarkMode"
+                                     Icon="@Icons.Material.Filled.LightMode"
+                                     Color="@Color.Default"
+                                     ToggledIcon="@Icons.Material.Filled.DarkMode"
+                                     ToggledColor="@Color.Default" />               
+            }
+            else
+            {
+                <MudSwitch @bind-Value="IsDarkMode" Color="Color.Secondary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode" />
+            }
             <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu">
                 <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility"/>
                 <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share"/>
@@ -30,18 +38,6 @@ else
                 <MudDivider/>
                 <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete"/>
             </MudMenu>
-            @* <MudMenu AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu"> *@
-            @*     <ActivatorContent> *@
-            @*         <MudFab Color="Color.Info" Label="J" Size="Size.Small" /> *@
-            @*     </ActivatorContent> *@
-            @*     <ChildContent> *@
-            @*         <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility" /> *@
-            @*         <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share" /> *@
-            @*         <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link" /> *@
-            @*         <MudDivider /> *@
-            @*         <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete" /> *@
-            @*     </ChildContent> *@
-            @* </MudMenu> *@
         </MudAppBar>
         <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
             <MudPaper Class="py-3" Elevation="0" Style="background-color: transparent">
@@ -62,11 +58,16 @@ else
 }
 
 @code {
+    [Inject]
+    private IBrowserViewportService? BrowserViewportService { get; set; }
+    
     private readonly MudTheme _theme = new();
+    Guid IBrowserViewportObserver.Id { get; } = Guid.NewGuid();
 
     // Backing fields for persisted properties.
     private bool _isDarkMode;
     private bool _drawerOpen;
+    private bool _isSmallScreen;
     private bool _initialized;
 
     // Public property with getter and setter to persist the theme state.
@@ -95,6 +96,19 @@ else
         }
     }
 
+    // Public property with getter and setter to persist the rendered state.
+    private bool IsSmallScreen 
+    { 
+        get => _isSmallScreen; 
+        set
+        {
+            if (_isSmallScreen == value) return;
+            
+            _isSmallScreen = value;
+            _ = SaveSettingAsync("isSmallScreen", value);
+        } 
+    }    
+    
     // Called when the drawer toggle button is clicked.
     void DrawerToggle()
     {
@@ -113,19 +127,44 @@ else
         if (firstRender)
         {
             var darkModeStr = await Js.InvokeAsync<string>("localStorage.getItem", "isDarkMode");
-            if (!string.IsNullOrEmpty(darkModeStr) && bool.TryParse(darkModeStr, out bool darkMode))
+            if (!string.IsNullOrEmpty(darkModeStr) && bool.TryParse(darkModeStr, out var darkMode))
             {
                 _isDarkMode = darkMode;
             }
 
             var drawerStateStr = await Js.InvokeAsync<string>("localStorage.getItem", "drawerOpen");
-            if (!string.IsNullOrEmpty(drawerStateStr) && bool.TryParse(drawerStateStr, out bool drawerState))
+            if (!string.IsNullOrEmpty(drawerStateStr) && bool.TryParse(drawerStateStr, out var drawerState))
             {
                 _drawerOpen = drawerState;
             }
+            
+            var smallScreenModeStr = await Js.InvokeAsync<string>("localStorage.getItem", "isSmallScreen");
+            if (!string.IsNullOrEmpty(smallScreenModeStr) && bool.TryParse(smallScreenModeStr, out var smallScreenMode))
+            {
+                _isSmallScreen = smallScreenMode;
+            }            
 
             _initialized = true;
             StateHasChanged();
+            
+            await BrowserViewportService?.SubscribeAsync(this, fireImmediately: true)!;
         }
+        
+        await base.OnAfterRenderAsync(firstRender);
     }
+    
+    public async ValueTask DisposeAsync() => await BrowserViewportService?.UnsubscribeAsync(this)!;
+    
+    ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
+    {
+        ReportRate = 250,
+        NotifyOnBreakpointOnly = true
+    };   
+    
+    Task IBrowserViewportObserver.NotifyBrowserViewportChangeAsync(BrowserViewportEventArgs browserViewportEventArgs)
+    {
+        IsSmallScreen = browserViewportEventArgs.Breakpoint is Breakpoint.Sm or Breakpoint.Xs;
+
+        return InvokeAsync(StateHasChanged);
+    }    
 }

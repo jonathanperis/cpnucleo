@@ -1,18 +1,11 @@
 ﻿@page "/weather"
-@using System.Globalization
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IJSRuntime Js
 
 <PageTitle>Weather</PageTitle>
 
-<MudCard Class="pa-0 ma-4" Elevation="1">
-    <MudBreadcrumbs Items="_items">
-        <SeparatorTemplate>
-            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small"/>
-        </SeparatorTemplate>
-    </MudBreadcrumbs>
-</MudCard>
+<Breadcrumb Items="_items" />
 
 <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" Class="add-item-btn pa-2 ma-0 ml-4" OnClick="@AddItem">Add Item</MudButton>
 <MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" Class="remove-item-btn pa-2 ma-0 ml-4" OnClick="@RemoveItem">Remove Item</MudButton>
@@ -47,9 +40,9 @@
     </PagerContent>
 </MudDataGrid>
 <MudMenu PositionAtCursor="true" @ref="_contextMenu" id="_contextMenu">
-    <MudMenuItem Icon="@Icons.Material.Filled.FileCopy" OnClick="@CopyCell">
-        Copy cell to Clipboard
-    </MudMenuItem>
+    @* <MudMenuItem Icon="@Icons.Material.Filled.FileCopy" OnClick="@CopyCell"> *@
+    @*     Copy cell to Clipboard *@
+    @* </MudMenuItem> *@
     <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" OnClick="@CopyLine">
         Copy line to Clipboard
     </MudMenuItem>
@@ -132,18 +125,18 @@
         _selectedItems = items;
     }
     
-    private async Task CopyCell()
-    {
-        if (_contextRow is null) return;
-        
-        // For the demo, we copy the 'Summary' property of the selected cell.
-        var cellContent = _contextRow.Summary ?? string.Empty;
-        await Js.InvokeVoidAsync("navigator.clipboard.writeText", cellContent);
-        
-        Snackbar.Clear();
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
-        Snackbar.Add("Cell copied to Clipboard.", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
-    }    
+    // private async Task CopyCell()
+    // {
+    //     if (_contextRow is null) return;
+    //     
+    //     // For the demo, we copy the 'Summary' property of the selected cell.
+    //     var cellContent = _contextRow.Summary ?? string.Empty;
+    //     await Js.InvokeVoidAsync("navigator.clipboard.writeText", cellContent);
+    //     
+    //     Snackbar.Clear();
+    //     Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+    //     Snackbar.Add("Cell copied to Clipboard.", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+    // }    
     
     private async Task CopyLine()
     {
@@ -160,7 +153,14 @@
     
     private async Task CopySelected()
     {
-        if (_contextRow is null || !_selectedItems.Any()) return;
+        if (_contextRow is null || !_selectedItems.Any())
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add("No Selected lines to copy to Clipboard.", Severity.Info, c => c.SnackbarVariant = Variant.Outlined);
+
+            return;
+        }
         
         // Copy each selected row as a line with semicolon separated values
         var selectedLines = _selectedItems.Select(row => 
