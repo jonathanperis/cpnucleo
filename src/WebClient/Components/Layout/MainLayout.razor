@@ -1,65 +1,131 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime Js
 
-<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider @bind-IsDarkMode="@IsDarkMode" Theme="_theme"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
-<MudLayout>
-    <MudAppBar Dense="true" Elevation="3">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.h6" Class="ml-3">BlazorApp</MudText>
-        <MudSpacer/>
-        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Secondary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode"/>
-        @* <MudToggleIconButton @bind-Toggled="_isDarkMode" *@
-        @*                      Icon="@Icons.Material.Filled.LightMode" *@
-        @*                      Color="@Color.Default" *@
-        @*                      ToggledIcon="@Icons.Material.Filled.DarkMode" *@
-        @*                      ToggledColor="@Color.Default" /> *@
-        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu">
-            <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility" />
-            <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share" />
-            <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link" />
-            <MudDivider />
-            <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete" />
-        </MudMenu>
-        @* <MudMenu AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu"> *@
-        @*     <ActivatorContent> *@
-        @*         <MudFab Color="Color.Info" Label="J" Size="Size.Small" /> *@
-        @*     </ActivatorContent> *@
-        @*     <ChildContent> *@
-        @*         <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility" /> *@
-        @*         <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share" /> *@
-        @*         <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link" /> *@
-        @*         <MudDivider /> *@
-        @*         <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete" /> *@
-        @*     </ChildContent> *@
-        @* </MudMenu>         *@
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
-        <MudPaper Width="250px" Class="py-3" Elevation="0">
-            <MudNavMenu>
-                <MudNavLink Href="/#" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-                <MudDivider />
-                <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.WatchLater">Counter</MudNavLink>
-                <MudDivider />
-                <MudNavLink Href="/weather" Icon="@Icons.Material.Filled.Cloud">Weather</MudNavLink>
-            </MudNavMenu>
-        </MudPaper>
-    </MudDrawer>
-    <MudMainContent>
-        @Body
-    </MudMainContent>
-</MudLayout>
+@if (!_initialized)
+{
+    <div style="display:none"></div>
+}
+else
+{
+    <MudLayout>
+        <MudAppBar Dense="true" Elevation="3">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
+            <MudText Typo="Typo.h6" Class="ml-3">BlazorApp</MudText>
+            <MudSpacer/>
+            <MudSwitch @bind-Value="IsDarkMode" Color="Color.Secondary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode"/>
+            @* <MudToggleIconButton @bind-Toggled="_isDarkMode" *@
+            @*                      Icon="@Icons.Material.Filled.LightMode" *@
+            @*                      Color="@Color.Default" *@
+            @*                      ToggledIcon="@Icons.Material.Filled.DarkMode" *@
+            @*                      ToggledColor="@Color.Default" /> *@
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu">
+                <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility"/>
+                <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share"/>
+                <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link"/>
+                <MudDivider/>
+                <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete"/>
+            </MudMenu>
+            @* <MudMenu AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu"> *@
+            @*     <ActivatorContent> *@
+            @*         <MudFab Color="Color.Info" Label="J" Size="Size.Small" /> *@
+            @*     </ActivatorContent> *@
+            @*     <ChildContent> *@
+            @*         <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility" /> *@
+            @*         <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share" /> *@
+            @*         <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link" /> *@
+            @*         <MudDivider /> *@
+            @*         <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete" /> *@
+            @*     </ChildContent> *@
+            @* </MudMenu> *@
+        </MudAppBar>
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
+            <MudPaper Class="py-3" Elevation="0" Style="background-color: transparent">
+                <MudNavMenu>
+                    <MudNavLink Href="/#" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+                    <MudDivider/>
+                    <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.WatchLater">Counter</MudNavLink>
+                    <MudDivider/>
+                    <MudNavLink Href="/weather" Icon="@Icons.Material.Filled.Cloud">Weather</MudNavLink>
+                    <MudDivider/>                    
+                </MudNavMenu>
+            </MudPaper>
+        </MudDrawer>
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+    </MudLayout>
+}
 
 @code {
-    private MudTheme _theme = new();
-    private bool _isDarkMode;
-    
-    bool _drawerOpen;
+    private readonly MudTheme _theme = new();
 
+    // Backing fields for persisted properties.
+    private bool _isDarkMode;
+    private bool _drawerOpen;
+    private bool _initialized;
+
+    // Public property with getter and setter to persist the theme state.
+    private bool IsDarkMode 
+    { 
+        get => _isDarkMode; 
+        set
+        {
+            if (_isDarkMode == value) return;
+            
+            _isDarkMode = value;
+            _ = SaveSettingAsync("isDarkMode", value);
+        } 
+    }
+
+    // Public property for the drawer state.
+    private bool DrawerOpen 
+    { 
+        get => _drawerOpen; 
+        set
+        {
+            if (_drawerOpen == value) return;
+            
+            _drawerOpen = value;
+            _ = SaveSettingAsync("drawerOpen", value);
+        }
+    }
+
+    // Called when the drawer toggle button is clicked.
     void DrawerToggle()
     {
-        _drawerOpen = !_drawerOpen;
+        DrawerOpen = !DrawerOpen;
+    }
+
+    // Save the given setting in localStorage.
+    private async Task SaveSettingAsync(string key, bool value)
+    {
+        await Js.InvokeVoidAsync("localStorage.setItem", key, value.ToString());
+    }
+
+    // On first render, load the values from localStorage.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var darkModeStr = await Js.InvokeAsync<string>("localStorage.getItem", "isDarkMode");
+            if (!string.IsNullOrEmpty(darkModeStr) && bool.TryParse(darkModeStr, out bool darkMode))
+            {
+                _isDarkMode = darkMode;
+            }
+
+            var drawerStateStr = await Js.InvokeAsync<string>("localStorage.getItem", "drawerOpen");
+            if (!string.IsNullOrEmpty(drawerStateStr) && bool.TryParse(drawerStateStr, out bool drawerState))
+            {
+                _drawerOpen = drawerState;
+            }
+
+            _initialized = true;
+            StateHasChanged();
+        }
     }
 }

@@ -17,7 +17,7 @@
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
-        <MudText>Current count: @currentCount</MudText>
+        <MudText>Current count: @_currentCount</MudText>
     </MudCardContent>
     <MudCardActions>
         <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
@@ -25,14 +25,14 @@
 </MudCard>
 
 @code {
-    private int currentCount = 0;
+    private int _currentCount;
 
     private void IncrementCount()
     {
-        currentCount++;
+        _currentCount++;
     }
 
-    private List<BreadcrumbItem> _items =
+    private readonly List<BreadcrumbItem> _items =
     [
         new("Home", href: "#", icon: Icons.Material.Filled.Home),
         new("Counter", href: null, disabled: true)
