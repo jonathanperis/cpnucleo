@@ -1,32 +1,65 @@
 ﻿@inherits LayoutComponentBase
 
-<RadzenLayout style="position: relative">
-    <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenSidebarToggle  Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-            <RadzenLabel Text="Header" />
-        </RadzenStack>
-    </RadzenHeader>
-    <RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="position: absolute">
-        <RadzenPanelMenu>
-            <NavLink href="" Match="NavLinkMatch.All">
-                <RadzenPanelMenuItem Text="Home" Icon="home" />
-            </NavLink>
-            <NavLink href="counter">
-                <RadzenPanelMenuItem Text="Counter" Icon="account_box" href="counter" />
-            </NavLink>
-            <NavLink href="weather">
-                <RadzenPanelMenuItem Text="Weather" Icon="account_box" href="weather" />
-            </NavLink>
-        </RadzenPanelMenu>
-    </RadzenSidebar>
-    <RadzenBody>
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme"/>
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Dense="true" Elevation="3">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudText Typo="Typo.h6" Class="ml-3">BlazorApp</MudText>
+        <MudSpacer/>
+        <MudSwitch @bind-Value="_isDarkMode" Color="Color.Secondary" Class="ma-4" T="bool" Label="Toggle Light/Dark Mode"/>
+        @* <MudToggleIconButton @bind-Toggled="_isDarkMode" *@
+        @*                      Icon="@Icons.Material.Filled.LightMode" *@
+        @*                      Color="@Color.Default" *@
+        @*                      ToggledIcon="@Icons.Material.Filled.DarkMode" *@
+        @*                      ToggledColor="@Color.Default" /> *@
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu">
+            <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility" />
+            <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share" />
+            <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link" />
+            <MudDivider />
+            <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete" />
+        </MudMenu>
+        @* <MudMenu AnchorOrigin="@Origin.BottomRight" AriaLabel="Open user menu"> *@
+        @*     <ActivatorContent> *@
+        @*         <MudFab Color="Color.Info" Label="J" Size="Size.Small" /> *@
+        @*     </ActivatorContent> *@
+        @*     <ChildContent> *@
+        @*         <MudMenuItem Label="Preview" Icon="@Icons.Material.Filled.Visibility" /> *@
+        @*         <MudMenuItem Label="Share" Icon="@Icons.Material.Filled.Share" /> *@
+        @*         <MudMenuItem Label="Get Link" Icon="@Icons.Material.Filled.Link" /> *@
+        @*         <MudDivider /> *@
+        @*         <MudMenuItem Label="Remove" Icon="@Icons.Material.Filled.Delete" /> *@
+        @*     </ChildContent> *@
+        @* </MudMenu>         *@
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
+        <MudPaper Width="250px" Class="py-3" Elevation="0">
+            <MudNavMenu>
+                <MudNavLink Href="/#" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+                <MudDivider />
+                <MudNavLink Href="/counter" Icon="@Icons.Material.Filled.WatchLater">Counter</MudNavLink>
+                <MudDivider />
+                <MudNavLink Href="/weather" Icon="@Icons.Material.Filled.Cloud">Weather</MudNavLink>
+            </MudNavMenu>
+        </MudPaper>
+    </MudDrawer>
+    <MudMainContent>
         @Body
-    </RadzenBody>
-</RadzenLayout>
+    </MudMainContent>
+</MudLayout>
 
 @code {
-    bool sidebarExpanded;
-}
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+    
+    bool _drawerOpen;
 
-<RadzenComponents @rendermode="InteractiveAuto" />
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

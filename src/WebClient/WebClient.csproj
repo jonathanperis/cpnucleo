@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.14" />
-    <PackageReference Include="Radzen.Blazor" Version="6.3.2" />
+    <PackageReference Include="MudBlazor" Version="8.3.0" />
+    <PackageReference Include="MudBlazor.Translations" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
