@@ -1,0 +1,11 @@
+<MudCard Class="pa-0 ma-4" Elevation="1">
+    <MudBreadcrumbs Items="@Items">
+        <SeparatorTemplate>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+        </SeparatorTemplate>
+    </MudBreadcrumbs>
+</MudCard>
+
+@code {
+    [Parameter] public List<BreadcrumbItem> Items { get; set; } = [];
+}
