@@ -1,0 +1,40 @@
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1"/>
+            Edit Weather
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@Item.Id.ToString()" Label="Weather ID" ReadOnly="true"/>
+        <MudTextField Value="@Item.Date" Label="Date" />
+        <MudTextField Value="@Item.TemperatureC" Label="Temp. (C)" />
+        <MudTextField Value="@Item.Summary" Label="Summary" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Confirm">Confirm</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Weather.WeatherForecast Item { get; set; } = new();
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private void Confirm()
+    {
+        // TODO: Send value to Api.
+        
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+        Snackbar.Add("Weather Edited Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+        MudDialog.Close(DialogResult.Ok(Item));
+    }
+}

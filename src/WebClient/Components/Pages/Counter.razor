@@ -1,18 +1,28 @@
 ﻿@page "/counter"
-@rendermode InteractiveServer
 
 <PageTitle>Counter</PageTitle>
 
-<RadzenBreadCrumb>
-    <RadzenBreadCrumbItem Path="/" Icon="home"/>
-    <RadzenBreadCrumbItem Path="/counter" Text="Counter"/>
-</RadzenBreadCrumb>
+<MudCard Class="pa-0 ma-4" Elevation="1">
+    <MudBreadcrumbs Items="_items">
+        <SeparatorTemplate>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+        </SeparatorTemplate>
+    </MudBreadcrumbs>  
+</MudCard>
 
-<h1>Counter</h1>
-
-<p role="status">Current count: @currentCount</p>
-
-<RadzenButton Click="@IncrementCount" Text="Click me"></RadzenButton>
+<MudCard Class="pa-4 ma-4" Elevation="1">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Counter</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText>Current count: @currentCount</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
+    </MudCardActions>    
+</MudCard>
 
 @code {
     private int currentCount = 0;
@@ -21,4 +31,10 @@
     {
         currentCount++;
     }
+
+    private List<BreadcrumbItem> _items =
+    [
+        new("Home", href: "#", icon: Icons.Material.Filled.Home),
+        new("Counter", href: null, disabled: true)
+    ];    
 }
