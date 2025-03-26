@@ -1,0 +1,3 @@
+.blurry-dialog {
+    backdrop-filter: blur(10px);
+}

@@ -1,0 +1,34 @@
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Remove" Class="mr-3 mb-n1"/>
+            Remove Weather
+        </MudText>
+    </TitleContent>    
+    <DialogContent>
+        Do you really want to delete the selected records? This process cannot be undone.
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="Confirm">Confirm</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private void Confirm()
+    {
+        // TODO: Send value to Api.
+        
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+        Snackbar.Add("Weather Removed Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

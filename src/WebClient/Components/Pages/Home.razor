@@ -1,12 +1,37 @@
 ﻿@page "/"
-@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<RadzenBreadCrumb>
-    <RadzenBreadCrumbItem Path="/" Icon="home"/>
-</RadzenBreadCrumb>
+<MudCard Class="pa-0 ma-4" Elevation="1">
+    <MudBreadcrumbs Items="_items">
+        <SeparatorTemplate>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small"/>
+        </SeparatorTemplate>
+    </MudBreadcrumbs>
+</MudCard>
 
-<h1>Hello, world!</h1>
+<MudCard Class="pa-4 ma-4" Elevation="1">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Hello, world!</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText>Welcome to your new app.</MudText>
+        <MudText Typo="Typo.body2">This template have been written using <MudLink Typo="Typo.body2" Href="https://mudblazor.com/" Target="_blank">MudBlazor!</MudLink></MudText>
+    </MudCardContent>
+</MudCard>
 
-Welcome to your new app.
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    private List<BreadcrumbItem> _items =
+    [
+        new("Home", href: "#", icon: Icons.Material.Filled.Home, disabled: true),
+    ];    
+}
