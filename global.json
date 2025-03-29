@@ -1,7 +1,7 @@
 {
   "projects": [ "src" ],
   "sdk": {
-    "version": "9.0.202",
-    "rollForward": "minor"
+    "version": "8.0.200",
+    "rollForward": "major"
   }
 }
