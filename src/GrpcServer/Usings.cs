@@ -55,7 +55,6 @@ global using Application.UseCases.Workflow.GetWorkflowById;
 global using Application.UseCases.Workflow.ListWorkflow;
 global using Application.UseCases.Workflow.RemoveWorkflow;
 global using Application.UseCases.Workflow.UpdateWorkflow;
-global using Asp.Versioning;
 global using GrpcServer.Common.Interfaces;
 global using GrpcServer.Configurations;
 global using Infrastructure;
