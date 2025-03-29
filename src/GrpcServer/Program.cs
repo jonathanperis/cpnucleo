@@ -46,6 +46,6 @@ app.UseHsts();
 app.MapMagicOnionService();
 
 app.MapHealthChecks("/healthz");
-app.MapGet("/", () => "Cpnucleo GRPC it's up and ready to receive requests.");
+app.MapGet("/", () => "Hello World!");
 
 app.Run();

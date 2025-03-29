@@ -77,6 +77,7 @@ app.UseInfrastructure();
 // app.UseHsts();
 
 app.MapHealthChecks("/healthz");
+app.MapGet("/", () => "Hello World!");
 
 app.NewVersionedApi()
     .MapPost("/login", ([FromBody] LoginRequest request, [FromServices] TokenGenerator tokenGenerator) => new

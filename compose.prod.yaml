@@ -17,6 +17,11 @@ x-common-healthcheck:
     interval: 30s
     timeout: 10s
     retries: 3
+  x-healthcheck-webclient: &healthcheck-webclient
+    test: ["CMD", "curl", "-f", "http://localhost:5030/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
 # Extension defining common API configuration for production.
 x-common-api-prod: &common-api-prod
@@ -81,6 +86,28 @@ services:
       - "5300:5020"
     healthcheck: *healthcheck-grpcserver
     
+  webclient-cpnucleo:
+    <<: [*common-logging]
+    image: jonathanperis/cpnucleo-web-client:latest
+    container_name: weblient-cpnucleo
+    ports:
+      # Production port mapping: host port 5400 is forwarded to container port 5030
+      - "5400:5030"
+    healthcheck: *healthcheck-webclient    
+    env_file:
+      - .env      
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "512M"
+        reservations:
+          cpus: "0.25"
+          memory: "256M"
+          
   db:
     image: postgres:16.7
     container_name: db-cpnucleo

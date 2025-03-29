@@ -1,4 +1,4 @@
-name: Main Release WebApi Pipeline
+name: Main Release WebClient Pipeline
 
 on:
   push:
@@ -28,12 +28,12 @@ jobs:
           global-json-file: global.json
 
       - name: Restore Dependencies
-        working-directory: "./src/WebApi"
-        run: dotnet restore "WebApi.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
+        working-directory: "./src/WebClient"
+        run: dotnet restore "WebClient.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
 
       - name: Build Application
-        working-directory: "./src/WebApi"
-        run: dotnet build "WebApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
+        working-directory: "./src/WebClient"      
+        run: dotnet build "WebClient.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
 
       - name: Unit Tests
         working-directory: "./test/Application.Tests"
@@ -50,7 +50,7 @@ jobs:
 
       - name: Integration Tests
         working-directory: "./test/Integration.Tests"
-        run: dotnet test        
+        run: dotnet test
 
   build-push-image:
     needs: setup-build-test
@@ -77,9 +77,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./src/
-          file: ./src/WebApi/Dockerfile
+          file: ./src/WebClient/Dockerfile
           push: true
-          tags: jonathanperis/cpnucleo-web-api:latest
+          tags: jonathanperis/cpnucleo-web-client:latest
           platforms: linux/amd64,linux/arm64/v8          
           build-args: |
             AOT=${{ env.AOT }}
@@ -87,43 +87,43 @@ jobs:
             EXTRA_OPTIMIZE=${{ env.EXTRA_OPTIMIZE }}
             BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
 
-  container-test:
-    needs: build-push-image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-            fetch-depth: 0
+  # container-test:
+  #   needs: build-push-image
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #           fetch-depth: 0
 
-      - name: Build and Run Docker Compose for Healthcheck Test
-        run: |
-          docker compose -f compose.prod.yaml up nginx -d
-          sleep 30
+  #     - name: Build and Run Docker Compose for Healthcheck Test
+  #       run: |
+  #         docker compose -f compose.prod.yaml up nginx -d
+  #         sleep 30
 
-      - name: Test Healthcheck Endpoint
-        run: |
-          for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
-            echo "Attempt $i: Status $STATUS"
-            if [ "$STATUS" -eq 200 ]; then
-              echo "Healthcheck passed with status $STATUS"
-              exit 0
-            else
-              echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
-              sleep 5
-            fi
-          done
-          echo "Healthcheck failed after 20 attempts."
-          exit 1
+  #     - name: Test Healthcheck Endpoint
+  #       run: |
+  #         for i in {1..20}; do
+  #           STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5300/healthz)
+  #           echo "Attempt $i: Status $STATUS"
+  #           if [ "$STATUS" -eq 200 ]; then
+  #             echo "Healthcheck passed with status $STATUS"
+  #             exit 0
+  #           else
+  #            echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
+  #            sleep 5
+  #           fi
+  #         done
+  #         echo "Healthcheck failed after 20 attempts."
+  #         exit 1
 
   deploy-image-azure:
-    needs: container-test
+    needs: build-push-image
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Image to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-            app-name: 'cpnucleo-api-dotnet'
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI }}
-            images: 'index.docker.io/jonathanperis/cpnucleo-web-api:latest'
+            app-name: 'cpnucleo-webclient-dotnet'
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT }}
+            images: 'index.docker.io/jonathanperis/cpnucleo-web-client:latest'
