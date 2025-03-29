@@ -17,6 +17,11 @@ x-common-healthcheck:
     interval: 30s
     timeout: 10s
     retries: 3
+  x-healthcheck-webclient: &healthcheck-webclient
+    test: ["CMD", "curl", "-f", "http://localhost:5030/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
 # Extension defining common API configuration for development builds.
 x-common-api-dev: &common-api-dev
@@ -87,6 +92,32 @@ services:
       - "5300:5020"
     healthcheck: *healthcheck-grpcserver
 
+  webclient-cpnucleo:
+    build:
+      context: ./src/
+      dockerfile: ./WebClient/Dockerfile
+      args:
+        CACHE: "true"
+        AOT: false
+        TRIM: false
+        EXTRA_OPTIMIZE: false
+        BUILD_CONFIGURATION: Debug
+    ports:
+      # Development mapping: host port 5400 => container port 5030
+      - "5400:5030"
+    healthcheck: *healthcheck-webclient
+    env_file:
+      - .env    
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Otlp__Endpoint: http://otel-lgtm:4317
+      OTEL_METRIC_EXPORT_INTERVAL: 5000
+    deploy:
+      resources:
+        limits:
+          cpus: "0.4"
+          memory: "100MB"
+          
   otel-lgtm:
     image: grafana/otel-lgtm
     volumes:

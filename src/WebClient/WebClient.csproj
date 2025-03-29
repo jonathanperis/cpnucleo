@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(AOT)' == 'true'">
 		<PublishAot>true</PublishAot>
@@ -32,15 +32,22 @@
 		<DefineConstants>$(DefineConstants);EXTRAOPTIMIZE</DefineConstants>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
-    <PackageReference Include="MudBlazor" Version="8.3.0" />
-    <PackageReference Include="MudBlazor.Translations" Version="2.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
+		<PackageReference Include="MudBlazor" Version="8.3.0" />
+		<PackageReference Include="MudBlazor.Translations" Version="2.3.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
-    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.2" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="1.11.0-beta.2" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
+		<!-- <PackageReference Include="OpenTelemetry.Resources.Container" Version="1.11.0-beta.2" />
+		<PackageReference Include="OpenTelemetry.Resources.Host" Version="1.11.0-beta.2" /> -->
+	</ItemGroup>
 
 </Project>

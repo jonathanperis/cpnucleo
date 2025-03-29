@@ -17,6 +17,11 @@ x-common-healthcheck:
     interval: 30s
     timeout: 10s
     retries: 3
+  x-healthcheck-webclient: &healthcheck-webclient
+    test: ["CMD", "curl", "-f", "http://localhost:5030/healthz"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
 
 # Extension defining common configuration for API services in the default configuration.
 x-common-api: &common-api
@@ -68,6 +73,22 @@ services:
       - "5300:5020"
     healthcheck: *healthcheck-grpcserver
 
+  webclient-cpnucleo:
+    <<: *common-api
+    image: jonathanperis/cpnucleo-web-client:latest
+    container_name: webclient-cpnucleo
+    ports:
+      # Mapping internal port 5030 to external host port 5400 for web client service
+      - "5400:5030"
+    healthcheck: *healthcheck-webclient
+    env_file:
+      - .env      
+    deploy:
+      resources:
+        limits:
+          cpus: "0.4"
+          memory: "100MB"
+          
   db:
     image: postgres:16.7
     container_name: db-cpnucleo

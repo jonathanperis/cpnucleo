@@ -91,6 +91,7 @@ app.UseInfrastructure();
 // app.UseHsts();
 
 app.MapHealthChecks("/healthz");
+app.MapGet("/", () => "Hello World!");
 
 app.NewVersionedApi("Appointments")
     .MapAppointmentEndpoints();
