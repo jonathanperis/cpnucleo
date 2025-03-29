@@ -12,7 +12,7 @@
 
 <MudDataGrid T="WeatherForecast" MultiSelection Items="@_forecasts" SortMode="SortMode.Multiple" Filterable QuickFilter="@QuickFilter"
              EditMode="DataGridEditMode.Form" Hideable RowClick="@RowClicked" RowContextMenuClick="RowRightClicked" 
-             SelectedItemsChanged="@SelectedItemsChanged" Class="pa-4 ma-4" Virtualize
+             SelectedItemsChanged="@SelectedItemsChanged" Class="pa-4 ma-4" Virtualize HorizontalScrollbar
              EditTrigger="DataGridEditTrigger.Manual" Loading="_loading" FixedHeader Height="30rem" Elevation="1">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Weather</MudText>
@@ -22,13 +22,19 @@
         </MudTextField>
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="WeatherForecast"/>
-        <PropertyColumn Property="x => x.Id" Title="Id" Sortable="false" Filterable="false"/>
+        <SelectColumn T="WeatherForecast" />
+        <PropertyColumn Property="x => x.Id" Title="Id" Sortable="false" Filterable="false" />
         <PropertyColumn Property="x => x.Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture)" 
                         Title="Date" SortBy="@SortBy"/>
         <PropertyColumn Property="x => x.TemperatureC" Title="Temp. (C)"/>
         <PropertyColumn Property="x => x.TemperatureF" Title="Temp. (F)"/>
         <PropertyColumn Property="x => x.Summary" Title="Summary"/>
+        <PropertyColumn Property="x => x.TemperatureC" Title="Temp. (C) 2" />
+        <PropertyColumn Property="x => x.TemperatureF" Title="Temp. (F) 2" />
+        <PropertyColumn Property="x => x.Summary" Title="Summary 2"/>    
+        <PropertyColumn Property="x => x.TemperatureC" Title="Temp. (C) 3" />
+        <PropertyColumn Property="x => x.TemperatureF" Title="Temp. (F) 3" />
+        <PropertyColumn Property="x => x.Summary" Title="Summary 3"/>        
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context.Item)" />
