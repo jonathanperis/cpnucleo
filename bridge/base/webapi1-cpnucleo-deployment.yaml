@@ -1,0 +1,55 @@
+#! webapi1-cpnucleo-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: webapi1-cpnucleo
+    namespace: cpnucleo-dev
+    labels:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: webapi1-cpnucleo
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: cpnucleo-dev
+            com.docker.compose.service: webapi1-cpnucleo
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: cpnucleo-dev
+                com.docker.compose.service: webapi1-cpnucleo
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: webapi1-cpnucleo
+                  image: jonathanperis/cpnucleo-web-api:latest
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: API_CONNECTION_STRING
+                      value: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
+                    - name: ASPNETCORE_ENVIRONMENT
+                      value: "Development"
+                    - name: ConnectionStrings__DefaultConnection
+                      value: "Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true"
+                    - name: OTEL_METRIC_EXPORT_INTERVAL
+                      value: "5000"
+                    - name: Otlp__Endpoint
+                      value: "http://otel-lgtm:4317"
+                    - name: POSTGRES_DB
+                      value: "cpnucleo"
+                    - name: POSTGRES_PASSWORD
+                      value: "postgres"
+                    - name: POSTGRES_USER
+                      value: "postgres"
+                  livenessProbe:
+                    exec:
+                        command: ['curl -f http://localhost:8080/healthz']
+                    periodSeconds: 30
+                    timeoutSeconds: 10
+                    failureThreshold: 3
+                  ports:
+                    - name: webapi1-cp-8080
+                      containerPort: 8080

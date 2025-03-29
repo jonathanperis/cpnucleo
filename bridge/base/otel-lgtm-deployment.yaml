@@ -1,0 +1,43 @@
+#! otel-lgtm-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: otel-lgtm
+    namespace: cpnucleo-dev
+    labels:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: otel-lgtm
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: cpnucleo-dev
+            com.docker.compose.service: otel-lgtm
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: cpnucleo-dev
+                com.docker.compose.service: otel-lgtm
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: otel-lgtm
+                  image: grafana/otel-lgtm
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                    - name: otel-lgtm-4318
+                      containerPort: 4318
+                    - name: otel-lgtm-3000
+                      containerPort: 3000
+                    - name: otel-lgtm-4317
+                      containerPort: 4317
+                  volumeMounts:
+                    - name: data
+                      mountPath: /data
+            volumes:
+                - name: data
+                  persistentVolumeClaim:
+                    claimName: otel-lgtm-otel-lgtm-data
