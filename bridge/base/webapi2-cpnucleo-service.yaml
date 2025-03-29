@@ -1,0 +1,21 @@
+#! webapi2-cpnucleo-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: webapi2-cpnucleo-published
+    namespace: cpnucleo-dev
+    labels:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: webapi2-cpnucleo
+spec:
+    selector:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: webapi2-cpnucleo
+    ports:
+        - name: webapi2-cp-5111
+          port: 5111
+          protocol: TCP
+          targetPort: webapi2-cp-8080
+
+# check if there is at least one published port

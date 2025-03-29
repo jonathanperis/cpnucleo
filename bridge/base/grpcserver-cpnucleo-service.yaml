@@ -1,0 +1,21 @@
+#! grpcserver-cpnucleo-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: grpcserver-cpnucleo-published
+    namespace: cpnucleo-dev
+    labels:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: grpcserver-cpnucleo
+spec:
+    selector:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: grpcserver-cpnucleo
+    ports:
+        - name: grpcserver-5300
+          port: 5300
+          protocol: TCP
+          targetPort: grpcserver-5020
+
+# check if there is at least one published port

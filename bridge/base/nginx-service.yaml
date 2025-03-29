@@ -1,0 +1,21 @@
+#! nginx-service.yaml
+# Generated code, do not edit
+apiVersion: v1
+kind: Service
+metadata:
+    name: nginx-published
+    namespace: cpnucleo-dev
+    labels:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: nginx
+spec:
+    selector:
+        com.docker.compose.project: cpnucleo-dev
+        com.docker.compose.service: nginx
+    ports:
+        - name: nginx-9999
+          port: 9999
+          protocol: TCP
+          targetPort: nginx-9999
+
+# check if there is at least one published port
