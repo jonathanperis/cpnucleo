@@ -26,7 +26,7 @@ public static class ConfigureOpenTelemetryOptions
                 tpb.AddOtlpExporter(otlpOptions =>
                 {
                     // Use IConfiguration binding for AspNetCore instrumentation options.
-                    otlpOptions.Endpoint = new Uri(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT") ?? "http://localhost:4317");
+                    otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT")!);
                 });
             })
             .WithMetrics(mpb =>
@@ -40,7 +40,7 @@ public static class ConfigureOpenTelemetryOptions
                 mpb.AddOtlpExporter(otlpOptions =>
                 {
                     // Use IConfiguration binding for AspNetCore instrumentation options.
-                    otlpOptions.Endpoint = new Uri(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT") ?? "http://localhost:4317");
+                    otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT")!);
                 });
             });
 
@@ -59,7 +59,7 @@ public static class ConfigureOpenTelemetryOptions
             options.AddOtlpExporter(otlpOptions =>
             {
                 // Use IConfiguration binding for AspNetCore instrumentation options.
-                otlpOptions.Endpoint = new Uri(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT") ?? "http://localhost:4317");
+                otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue<string>("OTEL_EXPORTER_OTLP_ENDPOINT")!);
             });
 
             // Add the Console exporter for local debugging.
