@@ -1,8 +1,20 @@
 namespace Infrastructure.Common.Context;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-    : DbContext(options), IApplicationDbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    private readonly IConfiguration _configuration;
+
+    public ApplicationDbContext(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+        
+    }
+
     public DbSet<Impediment>? Impediments { get; set; }
     public DbSet<Project>? Projects { get; set; }
     public DbSet<Organization>? Organizations { get; set; }
@@ -49,7 +61,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder
-                .UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
+                .UseNpgsql(_configuration.GetValue<string>("DB_CONNECTION_STRING"));
         }
     }
 

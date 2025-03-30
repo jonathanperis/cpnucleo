@@ -8,12 +8,12 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
         // Dapper Repository Basic
-        services.AddScoped(_ => new NpgsqlConnection(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")));
+        services.AddScoped(_ => new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING")));
         services.AddScoped<IProjectRepository, ProjectRepository>();
 
         // Dapper Repository Advanced        
         services.AddScoped<IUnitOfWork>(_ => 
-            new UnitOfWork(new NpgsqlConnection(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"))));
+            new UnitOfWork(new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING"))));
         
         var fakeDataRequested = configuration.GetValue<bool>("CreateFakeData");
 
