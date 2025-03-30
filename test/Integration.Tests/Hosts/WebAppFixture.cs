@@ -19,7 +19,15 @@ public class WebAppFixture : IAsyncLifetime
     {
         var securityStub = new JwtSecurityStub();
         
-        AlbaHost = await Alba.AlbaHost.For<Program>(securityStub);
+        const string dbConnectionString = 
+            "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true";
+        
+        AlbaHost = await Alba.AlbaHost.For<Program>(builder =>
+        {
+            builder.UseSetting("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4317");
+            builder.UseSetting("OTEL_METRIC_EXPORT_INTERVAL", "100");
+            builder.UseSetting("DB_CONNECTION_STRING", dbConnectionString);
+        }, securityStub);
     }
 
     public async Task DisposeAsync()
