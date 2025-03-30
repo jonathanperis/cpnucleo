@@ -27,9 +27,6 @@ x-common-healthcheck:
 x-common-api-dev: &common-api-dev
   env_file:
     - .env    
-  environment:
-    Otlp__Endpoint: http://otel-lgtm:4317
-    OTEL_METRIC_EXPORT_INTERVAL: 5000
   deploy:
     resources:
       limits:
@@ -111,9 +108,6 @@ services:
     healthcheck: *healthcheck-webclient
     env_file:
       - .env    
-    environment:
-      Otlp__Endpoint: http://otel-lgtm:4317
-      OTEL_METRIC_EXPORT_INTERVAL: 5000
     deploy:
       resources:
         limits:

@@ -8,8 +8,8 @@
       "applicationUrl": "http://localhost:5020",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__DefaultConnection": "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;",
-        "Otlp__Endpoint": "http://localhost:4317",
+        "DB_CONNECTION_STRING": "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;",
+        "OTEL_ENDPOINT": "http://localhost:4317",
         "OTEL_METRIC_EXPORT_INTERVAL": "5000"        
       }
     },    
@@ -20,8 +20,8 @@
       "applicationUrl": "http://localhost:5020;https://localhost:5021",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConnectionStrings__DefaultConnection": "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;",
-        "Otlp__Endpoint": "http://localhost:4317",
+        "DB_CONNECTION_STRING": "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true;",
+        "OTEL_ENDPOINT": "http://localhost:4317",
         "OTEL_METRIC_EXPORT_INTERVAL": "5000"        
       }
     }

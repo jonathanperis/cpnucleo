@@ -17,7 +17,6 @@ ARG AOT
 ARG TRIM
 ARG EXTRA_OPTIMIZE
 ARG BUILD_CONFIGURATION
-ARG ASPNETCORE_ENVIRONMENT
 
 WORKDIR /src
 
@@ -36,6 +35,8 @@ FROM build AS publish
 RUN dotnet publish "WebClient.csproj" --no-restore -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/publish
 
 FROM base AS final
+
+ARG ASPNETCORE_ENVIRONMENT
 
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:5030
