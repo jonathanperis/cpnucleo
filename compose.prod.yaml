@@ -3,7 +3,7 @@ name: "cpnucleo-prod"
 # Consolidated common healthcheck configurations.
 x-common-healthcheck:
   x-healthcheck-api: &healthcheck-api
-    test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+    test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
     interval: 30s
     timeout: 10s
     retries: 3
@@ -54,16 +54,16 @@ services:
     image: jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
     ports:
-      # Production port mapping: host port 5100 is forwarded to container port 8080
-      - "5100:8080"
+      # Production port mapping: host port 5100 is forwarded to container port 5000
+      - "5100:5000"
     healthcheck: *healthcheck-api
 
   webapi2-cpnucleo:
     <<: [*webapi1, *common-api-prod, *common-logging]
     container_name: webapi2-cpnucleo
     ports:
-      # Production port mapping: host port 5111 is forwarded to container port 8080
-      - "5111:8080"
+      # Production port mapping: host port 5111 is forwarded to container port 5000
+      - "5111:5000"
 
   identityapi-cpnucleo:
     <<: [*common-api-prod, *common-logging]
