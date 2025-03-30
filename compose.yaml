@@ -29,9 +29,7 @@ x-common-api: &common-api
     db:
       condition: service_healthy
   env_file:
-    - .env      
-  environment:
-    ConnectionStrings__DefaultConnection: ${API_CONNECTION_STRING}
+    - .env
   deploy:
     resources:
       limits:

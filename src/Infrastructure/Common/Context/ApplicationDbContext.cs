@@ -1,9 +1,8 @@
 namespace Infrastructure.Common.Context;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+    : DbContext(options), IApplicationDbContext
 {
-    private readonly IConfiguration? _configuration;
-
     public DbSet<Impediment>? Impediments { get; set; }
     public DbSet<Project>? Projects { get; set; }
     public DbSet<Organization>? Organizations { get; set; }
@@ -15,16 +14,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<UserProject>? UserProjects { get; set; }
     public DbSet<UserAssignment>? UserAssignments { get; set; }
     public DbSet<Workflow>? Workflows { get; set; }
-
-    public ApplicationDbContext(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {        
@@ -60,7 +49,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder
-                .UseNpgsql(_configuration?.GetConnectionString("DefaultConnection"));
+                .UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
         }
     }
 
