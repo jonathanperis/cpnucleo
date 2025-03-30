@@ -32,6 +32,7 @@ x-common-api-prod: &common-api-prod
     - .env      
   environment:
     ConnectionStrings__DefaultConnection: ${API_CONNECTION_STRING}
+    ASPNETCORE_ENVIRONMENT: Production
   restart: always
   deploy:
     resources:
@@ -95,6 +96,8 @@ services:
     healthcheck: *healthcheck-webclient    
     env_file:
       - .env      
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
     restart: always
     deploy:
       resources:
