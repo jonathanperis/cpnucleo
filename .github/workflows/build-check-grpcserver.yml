@@ -10,6 +10,7 @@ env:
   TRIM: false
   EXTRA_OPTIMIZE: false
   BUILD_CONFIGURATION: Debug   
+  ASPNETCORE_ENVIRONMENT: Development
 
 jobs:
   setup-build-test:

@@ -11,7 +11,8 @@ env:
   TRIM: true
   EXTRA_OPTIMIZE: true
   BUILD_CONFIGURATION: Release  
-      
+  ASPNETCORE_ENVIRONMENT: Production
+
 jobs:
   setup-build-test:
     runs-on: ubuntu-latest
@@ -86,6 +87,7 @@ jobs:
             TRIM=${{ env.TRIM }}
             EXTRA_OPTIMIZE=${{ env.EXTRA_OPTIMIZE }}
             BUILD_CONFIGURATION=${{ env.BUILD_CONFIGURATION }}
+            ASPNETCORE_ENVIRONMENT=${{ env.ASPNETCORE_ENVIRONMENT }}
 
   # container-test:
   #   needs: build-push-image

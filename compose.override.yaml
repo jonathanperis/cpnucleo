@@ -28,7 +28,6 @@ x-common-api-dev: &common-api-dev
   env_file:
     - .env    
   environment:
-    ASPNETCORE_ENVIRONMENT: Development
     Otlp__Endpoint: http://otel-lgtm:4317
     OTEL_METRIC_EXPORT_INTERVAL: 5000
   deploy:
@@ -49,6 +48,7 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
+        ASPNETCORE_ENVIRONMENT: Development
     ports:
       # Development mapping similar to default: host port 5100 => container port (as defined in Dockerfile)
       - "5100:8080"
@@ -71,6 +71,7 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
+        ASPNETCORE_ENVIRONMENT: Development
     ports:
       # Development mapping: host port 5200 => container port 5010
       - "5200:5010"
@@ -87,6 +88,7 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
+        ASPNETCORE_ENVIRONMENT: Development
     ports:
       # Development mapping: host port 5300 => container port 5020
       - "5300:5020"
@@ -102,6 +104,7 @@ services:
         TRIM: false
         EXTRA_OPTIMIZE: false
         BUILD_CONFIGURATION: Debug
+        ASPNETCORE_ENVIRONMENT: Development
     ports:
       # Development mapping: host port 5400 => container port 5030
       - "5400:5030"
@@ -109,7 +112,6 @@ services:
     env_file:
       - .env    
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
       Otlp__Endpoint: http://otel-lgtm:4317
       OTEL_METRIC_EXPORT_INTERVAL: 5000
     deploy:
