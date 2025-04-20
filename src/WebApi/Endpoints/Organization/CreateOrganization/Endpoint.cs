@@ -17,7 +17,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {        
-        Logger.LogInformation("Service started processing request.");
+        Logger.LogInformation("Service started processing request with payload Name: {Name}, Description: {Description}, Id: {OrganizationId}", request.Name, request.Description, request.Id);
         
         try
         {
@@ -26,10 +26,14 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
             var itemExists = await repository.ExistsAsync(request.Id);            
             
             if (itemExists)
+            {
+                Logger.LogWarning("Organization Id conflict for Id: {OrganizationId}", request.Id);
                 AddError(r => r.Id, "this Id is already in use!");
+            }
             
             ThrowIfAnyErrors();
 
+            Logger.LogInformation("Validation passed, proceeding to create new organization entity.");
             var newItem = Domain.Entities.Organization.Create(request.Name, request.Description, request.Id);
             Logger.LogInformation("Created new organization entity with Id: {OrganizationId}", newItem.Id);
 
