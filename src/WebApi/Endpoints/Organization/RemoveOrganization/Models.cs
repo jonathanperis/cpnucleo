@@ -6,17 +6,18 @@ namespace WebApi.Endpoints.Organization.RemoveOrganization;
 public class Request
 {
     /// <summary>
-    /// Gets or sets the unique identifier for the organization.
+    /// Gets or sets the unique identifiers for the organizations.
     /// </summary>
-    [DefaultValue("006abcc9-3e72-47e7-a2cd-b4cd755393b2")]
-    public Guid Id { get; set; }
+    public List<Guid>? Ids { get; set; }
 
     public class Validator : Validator<Request>
     {
         public Validator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Id is required.");
+            RuleFor(x => x.Ids)
+                .NotEmpty().WithMessage("Ids are required.");
+            RuleForEach(x => x.Ids)
+                .NotEmpty().WithMessage("Each Id is required.");
         }
     }    
 }

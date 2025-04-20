@@ -10,8 +10,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         AllowAnonymous();
 
         Summary(s => {
-            s.Summary = "Delete an organization by Id";
-            s.Description = "Deletes the organization specified by the provided Id. Validates existence, removes the record, updates repository, and commits the transaction.";
+            s.Summary = "Delete organizations by Ids";
+            s.Description = "Deletes the organizations specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.";
         });   
     }
 
@@ -21,19 +21,40 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         
         try
         {
-            Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
+            await unitOfWork.BeginTransactionAsync();
+
+            Logger.LogInformation("Checking if organization entities exist for Ids: {OrganizationIds}", string.Join(",", request.Ids));
             var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-            var item = await repository.GetByIdAsync(request.Id);            
-            
-            if (item is null)
-                await SendNotFoundAsync(cancellation: cancellationToken);
+            var allSuccess = true;
 
-            Logger.LogInformation("Removing organization entity with Id: {OrganizationId}", request.Id);
-            Domain.Entities.Organization.Remove(item);
+            foreach (var id in request.Ids)
+            {
+                var item = await repository.GetByIdAsync(id);
+                if (item is null)
+                {
+                    await SendNotFoundAsync(cancellation: cancellationToken);
+                    return;
+                }
 
-            Logger.LogInformation("Updating repository for removed entity.");
-            Response.Success = await repository.UpdateAsync(item);
+                Logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
+                Domain.Entities.Organization.Remove(item);
+
+                Logger.LogInformation("Updating repository for removed entity {OrganizationId}.", id);
+                var result = await repository.UpdateAsync(item);
+
+                if (!result) allSuccess = false;
+            }
             
+            Response.Success = allSuccess;
+            
+            if (!allSuccess)
+            {
+                Logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                await unitOfWork.RollbackAsync(cancellationToken);
+                await SendErrorsAsync(cancellation: cancellationToken);
+                return;
+            }
+
             Logger.LogInformation("Remove result: {Success}", Response.Success);
             Logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
