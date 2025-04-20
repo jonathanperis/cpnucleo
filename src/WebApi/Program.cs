@@ -1,50 +1,11 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.ConfigureOpenTelemetry();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services
-    .AddApiVersioning(options =>
-    {
-        options.ReportApiVersions = true;
-        options.AssumeDefaultVersionWhenUnspecified = true;
-        options.DefaultApiVersion = new ApiVersion(1, 0);
-    })
-    .AddApiExplorer(
-        options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        })
-    .EnableApiVersionBinding();
-    
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.AddSwaggerGen(options =>
+var logger = LoggerFactory.Create(builder =>
 {
-    options.OperationFilter<SwaggerDefaultValues>();
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme."
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+    // _ = builder.AddApplicationInsights();
+}).CreateLogger<Program>();
+
+builder.ConfigureOpenTelemetry();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -62,7 +23,53 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 50, // Allow 50 requests
+                Window = TimeSpan.FromMinutes(1), // Per 1-minute window
+                QueueLimit = 10, // Queue up to 10 additional requests
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst, // Process oldest requests first
+                AutoReplenishment = true, // Default: automatically replenish permits
+            }));
+    
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        // Custom rejection handling logic
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.Headers.RetryAfter = "60";
+
+        await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken);
+
+        // Optional logging
+        logger.LogWarning("Rate limit exceeded for IP: {IpAddress}",
+            context.HttpContext.Connection.RemoteIpAddress);
+    };    
+});
+
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromSeconds(10)));
+    options.AddBasePolicy(builder => builder.Cache());
+});
+
 builder.Services.AddHealthChecks();
+
+builder.Services
+    .AddFastEndpoints()
+    .SwaggerDocument(o =>
+    {
+        o.DocumentSettings = s =>
+        {
+            s.Title = "Cpnucleo Web API";
+            s.Description = "A sample project that implements the best praticles when building modern .NET projects";
+            s.Version = "v1";
+        };
+    });
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
@@ -71,59 +78,49 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-        {
-            var descriptions = app.DescribeApiVersions();
-            foreach (var description in descriptions)
-            {
-                var url = $"/swagger/{description.GroupName}/swagger.json";
-                var name = description.GroupName.ToUpperInvariant();
-                options.SwaggerEndpoint(url, name);
-            }
-        }
-    );
+
 }
+
+app.UseOutputCache();
 
 app.UseInfrastructure();
 
-// app.UseHttpsRedirection();
-// app.UseHsts();
+app.
+    UseFastEndpoints()
+    .UseMiddleware<ElapsedTimeMiddleware>()
+    .UseMiddleware<ErrorHandlingMiddleware>()
+    .UseSwaggerGen();
 
-app.MapHealthChecks("/healthz");
-app.MapGet("/", () => "Hello World!");
+app.MapApiClientEndpoint("/cs-client", c =>
+    {
+        c.SwaggerDocumentName = "v1";
+        c.Language = GenerationLanguage.CSharp;
+        c.ClientNamespaceName = "MyCompanyName";
+        c.ClientClassName = "MyCsClient";
+    },
+    o =>
+    {
+        o.CacheOutput(p => p.Expire(TimeSpan.FromDays(365))); //cache the zip
+        o.ExcludeFromDescription();
+    });
 
-app.NewVersionedApi("Appointments")
-    .MapAppointmentEndpoints();
-
-app.NewVersionedApi("Assignments")
-    .MapAssignmentEndpoints();
-
-app.NewVersionedApi("AssignmentImpediments")
-    .MapAssignmentImpedimentEndpoints();
-
-app.NewVersionedApi("AssignmentTypes")
-    .MapAssignmentTypeEndpoints();
-
-app.NewVersionedApi("Impediments")
-    .MapImpedimentEndpoints();
-
-app.NewVersionedApi("Organizations")
-    .MapOrganizationEndpoints();
-
-app.NewVersionedApi("Projects")
-    .MapProjectEndpoints();
-
-app.NewVersionedApi("Users")
-    .MapUserEndpoints();
-
-app.NewVersionedApi("UserAssignments")
-    .MapUserAssignmentEndpoints();
-
-app.NewVersionedApi("UserProjects")
-    .MapUserProjectEndpoints();
-
-app.NewVersionedApi("Workflows")
-    .MapWorkflowEndpoints();
+await app.GenerateApiClientsAndExitAsync(
+    c =>
+    {
+        c.SwaggerDocumentName = "v1"; //must match doc name above
+        c.Language = GenerationLanguage.CSharp;
+        c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
+        c.ClientNamespaceName = "MyCompanyName";
+        c.ClientClassName = "MyCsClient";
+        c.CreateZipArchive = true; //if you'd like a zip file as well
+    },
+    c =>
+    {
+        c.SwaggerDocumentName = "v1";
+        c.Language = GenerationLanguage.TypeScript;
+        c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
+        c.ClientNamespaceName = "MyCompanyName";
+        c.ClientClassName = "MyTsClient";
+    });
 
 app.Run();
