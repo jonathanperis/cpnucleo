@@ -10,8 +10,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         AllowAnonymous();
 
         Summary(s => {
-            s.Summary = "short summary goes here";
-            s.Description = "long description goes here";
+            s.Summary = "Delete an organization by Id";
+            s.Description = "Deletes the organization specified by the provided Id. Validates existence, removes the record, updates repository, and commits the transaction.";
         });   
     }
 
