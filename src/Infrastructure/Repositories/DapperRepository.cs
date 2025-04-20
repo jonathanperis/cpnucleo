@@ -1,6 +1,6 @@
 namespace Infrastructure.Repositories;
 
-public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction transaction, string tableName) : IRepository<T>
+public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction? transaction, string tableName) : IRepository<T>
     where T : BaseEntity
 {
     private const string PrimaryKey = "Id";

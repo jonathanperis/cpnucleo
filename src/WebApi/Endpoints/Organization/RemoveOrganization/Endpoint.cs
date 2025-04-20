@@ -1,0 +1,47 @@
+namespace WebApi.Endpoints.Organization.RemoveOrganization;
+
+// Dapper Repository Advanced
+public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
+{
+    public override void Configure()
+    {
+        Delete("/api/organization");
+        Tags("Organizations");
+        AllowAnonymous();
+
+        Summary(s => {
+            s.Summary = "short summary goes here";
+            s.Description = "long description goes here";
+        });   
+    }
+
+    public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
+    {        
+        Logger.LogInformation("Service started processing request.");
+        
+        try
+        {
+            Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+            var item = await repository.GetByIdAsync(request.Id);            
+            
+            if (item is null)
+                await SendNotFoundAsync(cancellation: cancellationToken);
+
+            Domain.Entities.Organization.Remove(item);
+            Response.Success = await repository.UpdateAsync(item);    
+        
+            await unitOfWork.CommitAsync(cancellationToken);
+            
+            Logger.LogInformation("Service completed successfully.");
+            
+            await SendOkAsync(Response, cancellation: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while processing the request. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
+            ThrowError("An error has occurred.");
+        }
+    }
+}
