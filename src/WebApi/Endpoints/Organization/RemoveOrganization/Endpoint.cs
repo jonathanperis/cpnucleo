@@ -28,9 +28,14 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
             if (item is null)
                 await SendNotFoundAsync(cancellation: cancellationToken);
 
+            Logger.LogInformation("Removing organization entity with Id: {OrganizationId}", request.Id);
             Domain.Entities.Organization.Remove(item);
-            Response.Success = await repository.UpdateAsync(item);    
-        
+
+            Logger.LogInformation("Updating repository for removed entity.");
+            Response.Success = await repository.UpdateAsync(item);
+            
+            Logger.LogInformation("Remove result: {Success}", Response.Success);
+            Logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
             
             Logger.LogInformation("Service completed successfully.");

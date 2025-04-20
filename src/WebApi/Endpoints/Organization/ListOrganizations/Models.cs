@@ -12,7 +12,7 @@ public class Request
 }
 
 /// <summary>
-/// Response model containing the list of organizations.
+/// Response model for the list of organizations.
 /// </summary>
 public class Response
 {   
