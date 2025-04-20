@@ -51,11 +51,11 @@ builder.Services.AddRateLimiter(options =>
     };    
 });
 
-builder.Services.AddOutputCache(options =>
-{
-    options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromSeconds(10)));
-    options.AddBasePolicy(builder => builder.Cache());
-});
+// builder.Services.AddOutputCache(options =>
+// {
+//     options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromSeconds(10)));
+//     options.AddBasePolicy(builder => builder.Cache());
+// });
 
 builder.Services.AddHealthChecks();
 
@@ -81,7 +81,7 @@ if (app.Environment.IsDevelopment())
 
 }
 
-app.UseOutputCache();
+// app.UseOutputCache();
 
 app.UseInfrastructure();
 
