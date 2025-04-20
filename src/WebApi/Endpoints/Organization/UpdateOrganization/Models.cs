@@ -8,7 +8,7 @@ public class Request
     /// <summary>
     /// Gets or sets the unique identifier for the organization.
     /// </summary>
-    [DefaultValue("Guid.NewGuid()")]
+    [DefaultValue("006abcc9-3e72-47e7-a2cd-b4cd755393b2")]
     public Guid Id { get; set; }
     
     /// <summary>
@@ -40,7 +40,7 @@ public class Request
 }
 
 /// <summary>
-/// Response model for the result of updating an organization.
+/// Response model for the updated organization.
 /// </summary>
 public class Response
 {   
