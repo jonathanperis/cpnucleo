@@ -10,8 +10,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         AllowAnonymous();
 
         Summary(s => {
-            s.Summary = "short summary goes here";
-            s.Description = "long description goes here";
+            s.Summary = "Retrieve a paginated list of organizations";
+            s.Description = "Fetches organizations based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).";
         });   
     }
 

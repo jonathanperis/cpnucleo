@@ -10,8 +10,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         AllowAnonymous();
 
         Summary(s => {
-            s.Summary = "short summary goes here";
-            s.Description = "long description goes here";
+            s.Summary = "Create a new organization";
+            s.Description = "Creates a new organization record with the given name, description, and custom Id. Validates uniqueness and returns the created organization's data.";
         });    
     }
 

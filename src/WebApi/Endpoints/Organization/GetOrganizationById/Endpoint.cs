@@ -10,8 +10,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         AllowAnonymous();
 
         Summary(s => {
-            s.Summary = "short summary goes here";
-            s.Description = "long description goes here";
+            s.Summary = "Retrieve an organization by Id";
+            s.Description = "Fetches the organization matching the provided Id. Returns 404 if not found, otherwise returns the organization data mapped to a DTO.";
         });           
     }
 
