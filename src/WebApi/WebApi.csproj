@@ -35,15 +35,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
-		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+		<PackageReference Include="FastEndpoints" Version="5.35.0" />
+		<PackageReference Include="FastEndpoints.ClientGen.Kiota" Version="5.35.0" />
+		<PackageReference Include="FastEndpoints.Swagger" Version="5.35.0" />
 		<PackageReference Include="Microsoft.AspnetCore.Authentication.JwtBearer" Version="9.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,6 +63,11 @@
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>CS1591</NoWarn>
+	</PropertyGroup>	
+	
 	<ItemGroup>
 		<InternalsVisibleTo Include="Integration.Tests" />
 	</ItemGroup>

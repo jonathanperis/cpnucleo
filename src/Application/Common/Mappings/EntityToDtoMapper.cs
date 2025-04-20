@@ -1,7 +1,7 @@
 namespace Application.Common.Mappings;
 
 [Mapper]
-internal static partial class EntityToDtoMapper
+public static partial class EntityToDtoMapper
 {
     public static partial AppointmentDto MapToDto(this Appointment entity);
     public static partial AssignmentDto MapToDto(this Assignment entity);
