@@ -27,6 +27,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         {
             Logger.LogWarning("Organization not found with Id: {OrganizationId}", request.Id);
             await SendNotFoundAsync(cancellation: cancellationToken);
+            return;
         }
 
         Logger.LogInformation("Mapping entity to DTO and setting response for Id: {OrganizationId}", request.Id);

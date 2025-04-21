@@ -26,7 +26,10 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
             var item = await repository.GetByIdAsync(request.Id);            
             
             if (item is null)
+            {
                 await SendNotFoundAsync(cancellation: cancellationToken);
+                return;
+            }
 
             Logger.LogInformation("Updating organization entity with Id: {OrganizationId}", request.Id);
             Domain.Entities.Organization.Update(item, request.Name, request.Description);

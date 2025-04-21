@@ -21,6 +21,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         
         try
         {
+            Logger.LogInformation("Beginning transaction.");
             await unitOfWork.BeginTransactionAsync();
 
             Logger.LogInformation("Checking if organization entities exist for Ids: {OrganizationIds}", string.Join(",", request.Ids));
