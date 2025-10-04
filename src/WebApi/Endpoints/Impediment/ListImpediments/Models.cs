@@ -1,7 +1,7 @@
-namespace WebApi.Endpoints.Organization.ListOrganizations;
+namespace WebApi.Endpoints.Impediment.ListImpediments;
 
 /// <summary>
-/// Request model for listing organizations.
+/// Request model for listing impediments.
 /// </summary>
 public class Request
 {
@@ -12,12 +12,12 @@ public class Request
 }
 
 /// <summary>
-/// Response model for the list of organizations.
+/// Response model for the list of impediments.
 /// </summary>
 public class Response
 {
     /// <summary>
-    /// Gets or sets the paginated result of organizations.
+    /// Gets or sets the paginated result of impediments.
     /// </summary>
-    public required PaginatedResult<OrganizationDto?> Result { get; set; }
+    public required PaginatedResult<ImpedimentDto?> Result { get; set; }
 }

@@ -1,7 +1,7 @@
-namespace WebApi.Endpoints.Organization.ListOrganizations;
+namespace WebApi.Endpoints.Project.ListProjects;
 
 /// <summary>
-/// Request model for listing organizations.
+/// Request model for listing projects.
 /// </summary>
 public class Request
 {
@@ -12,12 +12,12 @@ public class Request
 }
 
 /// <summary>
-/// Response model for the list of organizations.
+/// Response model for the list of projects.
 /// </summary>
 public class Response
 {
     /// <summary>
-    /// Gets or sets the paginated result of organizations.
+    /// Gets or sets the paginated result of projects.
     /// </summary>
-    public required PaginatedResult<OrganizationDto?> Result { get; set; }
+    public required PaginatedResult<ProjectDto?> Result { get; set; }
 }
