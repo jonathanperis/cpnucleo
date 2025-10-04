@@ -1,0 +1,23 @@
+namespace WebApi.Endpoints.Impediment.ListImpediments;
+
+/// <summary>
+/// Request model for listing impediments.
+/// </summary>
+public class Request
+{
+    /// <summary>
+    /// Gets or sets the pagination parameters for the request.
+    /// </summary>
+    public required PaginationParams Pagination { get; set; }
+}
+
+/// <summary>
+/// Response model for the list of impediments.
+/// </summary>
+public class Response
+{
+    /// <summary>
+    /// Gets or sets the paginated result of impediments.
+    /// </summary>
+    public required PaginatedResult<ImpedimentDto?> Result { get; set; }
+}

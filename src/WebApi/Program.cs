@@ -36,7 +36,7 @@ builder.Services.AddRateLimiter(options =>
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst, // Process oldest requests first
                 AutoReplenishment = true, // Default: automatically replenish permits
             }));
-    
+
     options.OnRejected = async (context, cancellationToken) =>
     {
         // Custom rejection handling logic
@@ -48,7 +48,7 @@ builder.Services.AddRateLimiter(options =>
         // Optional logging
         logger.LogWarning("Rate limit exceeded for IP: {IpAddress}",
             context.HttpContext.Connection.RemoteIpAddress);
-    };    
+    };
 });
 
 // builder.Services.AddOutputCache(options =>
@@ -66,9 +66,10 @@ builder.Services
         o.DocumentSettings = s =>
         {
             s.Title = "Cpnucleo Web API";
-            s.Description = "A sample project that implements the best praticles when building modern .NET projects";
+            s.Description = "A sample project that implements best praticles when building modern .NET projects";
             s.Version = "v1";
         };
+        o.AutoTagPathSegmentIndex = 0; // Disable the auto-tagging by setting the AutoTagPathSegmentIndex property to 0
     });
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -78,7 +79,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-
+    app.UseSwaggerGen();
 }
 
 // app.UseOutputCache();
@@ -88,8 +89,7 @@ app.UseInfrastructure();
 app.
     UseFastEndpoints()
     .UseMiddleware<ElapsedTimeMiddleware>()
-    .UseMiddleware<ErrorHandlingMiddleware>()
-    .UseSwaggerGen();
+    .UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapApiClientEndpoint("/cs-client", c =>
     {
