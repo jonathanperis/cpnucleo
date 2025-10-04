@@ -6,7 +6,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     public override void Configure()
     {
         Patch("/api/organization");
-        Tags("Organizations");
+        Description(x => x.WithTags("Organizations"));
         AllowAnonymous();
 
         Summary(s => {

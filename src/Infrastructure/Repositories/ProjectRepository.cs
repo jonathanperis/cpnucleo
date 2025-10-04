@@ -73,6 +73,16 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         return affectedRows > 0;
     }
     
+    public async Task<bool> ExistsAsync(Guid id)
+    {
+        var sql = $"""
+                   SELECT EXISTS(SELECT 1 FROM "Projects"
+                   WHERE "Id" = @Id AND "Active" = true)
+                   """;
+        
+        return await connection.ExecuteScalarAsync<bool>(sql, new { Id = id });
+    }
+
     private static string ValidateSortColumn(string? column)
     {
         var properties = typeof(Project).GetProperties(BindingFlags.Public | BindingFlags.Instance);

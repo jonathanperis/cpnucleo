@@ -43,6 +43,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,8 +67,8 @@
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>CS1591</NoWarn>
-	</PropertyGroup>	
-	
+	</PropertyGroup>
+
 	<ItemGroup>
 		<InternalsVisibleTo Include="Integration.Tests" />
 	</ItemGroup>
