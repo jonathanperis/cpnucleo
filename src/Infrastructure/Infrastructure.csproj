@@ -26,12 +26,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Application\Application.csproj" />
 		<ProjectReference Include="..\Domain\Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Repositories\OrganizationRepository2.cs" />
 	</ItemGroup>
 
 </Project>

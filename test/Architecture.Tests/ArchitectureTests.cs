@@ -99,7 +99,7 @@ public class ArchitectureTests
     public void Services_Should_HaveDependencyOnMediator()
     {
         // Arrange
-        var assembly = typeof(WebApi.Modules.OrganizationModule).Assembly;
+        var assembly = typeof(WebApi.Endpoints.Organization.CreateOrganization.Endpoint).Assembly;
 
         // Act
         var testResult = Types

@@ -12,7 +12,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Summary(s =>
         {
             s.Summary = "Create a new impediment";
-            s.Description = "Creates a new impediment record with the given name, and custom Id. Validates uniqueness and returns the created impediment's data.";
+            s.Description = "Creates a new impediment record with the given data and custom Id. Validates uniqueness and returns the created impediment's data.";
         });
     }
 
