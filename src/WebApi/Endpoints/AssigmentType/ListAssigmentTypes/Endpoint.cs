@@ -32,7 +32,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Mapping complete, setting response result.");
         Logger.LogInformation("Service completed successfully.");
 
-        await SendOkAsync(Response, cancellation: cancellationToken);
+        await Send.OkAsync(Response, cancellationToken);
     }
 
     private static PaginatedResult<AssignmentTypeDto?> MapToPaginatedDto(PaginatedResult<Domain.Entities.AssignmentType?> result)

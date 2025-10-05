@@ -33,7 +33,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
                 var item = await repository.GetByIdAsync(id);
                 if (item is null)
                 {
-                    await SendNotFoundAsync(cancellation: cancellationToken);
+                    await Send.NotFoundAsync(cancellation: cancellationToken);
                     return;
                 }
 
@@ -52,7 +52,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
             {
                 Logger.LogWarning("One or more deletions failed, rolling back transaction.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                await SendErrorsAsync(cancellation: cancellationToken);
+                await Send.ErrorsAsync(cancellation: cancellationToken);
                 return;
             }
 
@@ -62,7 +62,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
             
             Logger.LogInformation("Service completed successfully.");
             
-            await SendOkAsync(Response, cancellation: cancellationToken);
+            await Send.OkAsync(Response, cancellationToken);
         }
         catch (Exception ex)
         {

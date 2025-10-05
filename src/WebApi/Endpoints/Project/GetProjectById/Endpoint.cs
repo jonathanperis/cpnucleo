@@ -25,7 +25,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         if (item is null)
         {
             Logger.LogWarning("Project not found with Id: {ProjectId}", request.Id);
-            await SendNotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundAsync(cancellation: cancellationToken);
             return;
         }
 
@@ -34,6 +34,6 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
 
         Logger.LogInformation("Service completed successfully.");
         
-        await SendOkAsync(Response, cancellation: cancellationToken);
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

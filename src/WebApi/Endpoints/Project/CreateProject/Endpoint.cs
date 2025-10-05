@@ -47,7 +47,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
 
             Logger.LogInformation("Service completed successfully.");
 
-            await SendOkAsync(Response, cancellation: cancellationToken);
+            await Send.OkAsync(Response, cancellationToken);
         }
         catch (Exception ex)
         {

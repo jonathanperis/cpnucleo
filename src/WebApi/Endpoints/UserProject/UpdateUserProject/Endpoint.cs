@@ -27,7 +27,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
             if (item is null)
             {
-                await SendNotFoundAsync(cancellation: cancellationToken);
+                await Send.NotFoundAsync(cancellation: cancellationToken);
                 return;
             }
 
@@ -40,7 +40,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
             Logger.LogInformation("Update result: {Success}", Response.Success);
             Logger.LogInformation("Service completed successfully.");
 
-            await SendOkAsync(Response, cancellation: cancellationToken);
+            await Send.OkAsync(Response, cancellationToken);
         }
         catch (Exception ex)
         {
