@@ -2,10 +2,11 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(builder =>
 {
-    // _ = builder.AddApplicationInsights();
+    _ = builder.AddApplicationInsights();
 }).CreateLogger<Program>();
 
 builder.ConfigureOpenTelemetry();
+builder.Logging.AddApplicationInsights();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -73,7 +74,6 @@ builder.Services
     });
 
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
 
 var app = builder.Build();
 

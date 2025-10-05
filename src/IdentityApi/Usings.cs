@@ -1,4 +1,3 @@
-global using Application;
 global using Asp.Versioning;
 global using IdentityApi;
 global using IdentityApi.Configurations;

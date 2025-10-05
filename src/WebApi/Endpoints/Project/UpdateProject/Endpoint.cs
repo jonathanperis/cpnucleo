@@ -9,21 +9,22 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Description(x => x.WithTags("Projects"));
         AllowAnonymous();
 
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Update an existing project";
-            s.Description = "Updates the project identified by the provided Id with new name and description. Validates existence and returns whether the update was successful.";
-        });   
+            s.Description = "Updates the project identified by the provided Id with given data. Validates existence and returns whether the update was successful.";
+        });
     }
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
-    {        
+    {
         Logger.LogInformation("Service started processing request.");
-        
+
         try
         {
             Logger.LogInformation("Checking if an project entity exists with Id: {ProjectId}", request.Id);
-            var item = await repository.GetByIdAsync(request.Id);            
-            
+            var item = await repository.GetByIdAsync(request.Id);
+
             if (item is null)
             {
                 await SendNotFoundAsync(cancellation: cancellationToken);
@@ -35,10 +36,10 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
 
             Logger.LogInformation("Updating entity in repository.");
             Response.Success = await repository.UpdateAsync(item);
-            
-            Logger.LogInformation("Update result: {Success}", Response.Success);           
+
+            Logger.LogInformation("Update result: {Success}", Response.Success);
             Logger.LogInformation("Service completed successfully.");
-            
+
             await SendOkAsync(Response, cancellation: cancellationToken);
         }
         catch (Exception ex)

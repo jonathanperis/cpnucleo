@@ -1,3 +1,0 @@
-namespace Application.UseCases.AssignmentType.GetAssignmentTypeById;
-
-public sealed record GetAssignmentTypeByIdQueryViewModel(OperationResult OperationResult, AssignmentTypeDto? AssignmentType);

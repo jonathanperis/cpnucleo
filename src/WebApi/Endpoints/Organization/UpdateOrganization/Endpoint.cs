@@ -9,22 +9,23 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Description(x => x.WithTags("Organizations"));
         AllowAnonymous();
 
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Update an existing organization";
-            s.Description = "Updates the organization identified by the provided Id with new name and description. Validates existence and returns whether the update was successful.";
-        });   
+            s.Description = "Updates the organization identified by the provided Id with given data. Validates existence and returns whether the update was successful.";
+        });
     }
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
-    {        
+    {
         Logger.LogInformation("Service started processing request.");
-        
+
         try
         {
             Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-            var item = await repository.GetByIdAsync(request.Id);            
-            
+            var item = await repository.GetByIdAsync(request.Id);
+
             if (item is null)
             {
                 await SendNotFoundAsync(cancellation: cancellationToken);
@@ -36,13 +37,13 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
             Logger.LogInformation("Updating entity in repository.");
             Response.Success = await repository.UpdateAsync(item);
-            
+
             Logger.LogInformation("Update result: {Success}", Response.Success);
             Logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-            
+
             Logger.LogInformation("Service completed successfully.");
-            
+
             await SendOkAsync(Response, cancellation: cancellationToken);
         }
         catch (Exception ex)
