@@ -59,7 +59,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
             Logger.LogInformation("Service completed successfully.");
 
-            await SendOkAsync(Response, cancellation: cancellationToken);
+            await Send.OkAsync(Response, cancellationToken);
         }
         catch (Exception ex)
         {

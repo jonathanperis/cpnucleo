@@ -29,7 +29,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
                 var item = await repository.GetByIdAsync(id);
                 if (item is null)
                 {
-                    await SendNotFoundAsync(cancellation: cancellationToken);
+                    await Send.NotFoundAsync(cancellation: cancellationToken);
                     return;
                 }
 
@@ -47,14 +47,14 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
             if (!allSuccess)
             {
                 Logger.LogWarning("One or more deletions failed.");
-                await SendErrorsAsync(cancellation: cancellationToken);
+                await Send.ErrorsAsync(cancellation: cancellationToken);
                 return;
             }
 
             Logger.LogInformation("Remove result: {Success}", Response.Success);          
             Logger.LogInformation("Service completed successfully.");
             
-            await SendOkAsync(Response, cancellation: cancellationToken);
+            await Send.OkAsync(Response, cancellationToken);
         }
         catch (Exception ex)
         {

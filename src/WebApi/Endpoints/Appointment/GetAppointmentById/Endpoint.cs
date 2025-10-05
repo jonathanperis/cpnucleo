@@ -27,7 +27,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         if (item is null)
         {
             Logger.LogWarning("Appointment not found with Id: {AppointmentId}", request.Id);
-            await SendNotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundAsync(cancellation: cancellationToken);
             return;
         }
 
@@ -36,6 +36,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Service completed successfully.");
 
-        await SendOkAsync(Response, cancellation: cancellationToken);
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

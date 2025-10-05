@@ -54,7 +54,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
             Logger.LogInformation("Service completed successfully.");
 
-            await SendOkAsync(Response, cancellation: cancellationToken);
+            await Send.OkAsync(Response, cancellationToken);
         }
         catch (Exception ex)
         {

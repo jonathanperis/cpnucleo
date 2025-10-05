@@ -26,7 +26,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (item is null)
         {
             Logger.LogWarning("Impediment not found with Id: {ImpedimentId}", request.Id);
-            await SendNotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundAsync(cancellation: cancellationToken);
             return;
         }
 
@@ -35,6 +35,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Service completed successfully.");
 
-        await SendOkAsync(Response, cancellation: cancellationToken);
+        await Send.OkAsync(Response, cancellationToken);
     }
 }
