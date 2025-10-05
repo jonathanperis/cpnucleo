@@ -31,7 +31,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Logger.LogInformation("Mapping complete, setting response result.");
         Logger.LogInformation("Service completed successfully.");
 
-        await SendOkAsync(Response, cancellation: cancellationToken);
+        await Send.OkAsync(Response, cancellationToken);
     }
 
     private static PaginatedResult<ProjectDto?> MapToPaginatedDto(PaginatedResult<Domain.Entities.Project?> result)

@@ -61,6 +61,7 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddHealthChecks();
 
 builder.Services
+    // .AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = WebApi.DiscoveredTypes.All)
     .AddFastEndpoints()
     .SwaggerDocument(o =>
     {
@@ -77,11 +78,6 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerGen();
-}
-
 // app.UseOutputCache();
 
 app.UseInfrastructure();
@@ -90,6 +86,11 @@ app.
     UseFastEndpoints()
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerGen();
+}
 
 app.MapApiClientEndpoint("/cs-client", c =>
     {
