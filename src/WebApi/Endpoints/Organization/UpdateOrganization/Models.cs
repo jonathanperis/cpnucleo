@@ -10,18 +10,18 @@ public class Request
     /// </summary>
     [DefaultValue("006abcc9-3e72-47e7-a2cd-b4cd755393b2")]
     public Guid Id { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the name of the organization.
     /// </summary>
     [DefaultValue("Updated Organization")]
-    public string? Name { get; set; }
-    
+    public required string Name { get; set; }
+
     /// <summary>
     /// Gets or sets the description of the organization.
     /// </summary>
     [DefaultValue("Updated organization description goes here")]
-    public string? Description { get; set; }
+    public required string Description { get; set; }
 
     public class Validator : Validator<Request>
     {
@@ -29,21 +29,21 @@ public class Request
         {
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id is required.");
-                        
+
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.");
 
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Description is required.");
         }
-    }    
+    }
 }
 
 /// <summary>
 /// Response model for the updated organization.
 /// </summary>
 public class Response
-{   
+{
     /// <summary>
     /// Gets or sets a value indicating whether the update was successful.
     /// </summary>

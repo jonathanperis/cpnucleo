@@ -2,7 +2,7 @@ namespace Infrastructure.Common.Context;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration? _configuration;
 
     public ApplicationDbContext(IConfiguration configuration)
     {
@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
-        
+
     }
 
     public DbSet<Impediment>? Impediments { get; set; }
@@ -28,7 +28,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Workflow>? Workflows { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {        
+    {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new ImpedimentMap());
@@ -61,7 +61,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder
-                .UseNpgsql(_configuration.GetValue<string>("DB_CONNECTION_STRING"));
+                .UseNpgsql(_configuration?.GetValue<string>("DB_CONNECTION_STRING"));
         }
     }
 

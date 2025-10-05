@@ -16,7 +16,7 @@ builder.Services
             options.SubstituteApiVersionInUrl = true;
         })
     .EnableApiVersionBinding();
-    
+
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -49,7 +49,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHealthChecks();
 
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
 
 builder.Services.AddSingleton<TokenGenerator>();
 

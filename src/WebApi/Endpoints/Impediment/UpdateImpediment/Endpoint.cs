@@ -12,7 +12,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Summary(s =>
         {
             s.Summary = "Update an existing impediment";
-            s.Description = "Updates the impediment identified by the provided Id with new name. Validates existence and returns whether the update was successful.";
+            s.Description = "Updates the impediment identified by the provided Id with given data. Validates existence and returns whether the update was successful.";
         });
     }
 

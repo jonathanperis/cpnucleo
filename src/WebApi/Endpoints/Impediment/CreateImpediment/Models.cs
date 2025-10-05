@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the name of the impediment.
     /// </summary>
     [DefaultValue("New Impediment")]
-    public string? Name { get; set; }
+    public required string Name { get; set; }
 
     public class Validator : Validator<Request>
     {
