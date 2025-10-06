@@ -1,6 +1,6 @@
 namespace Infrastructure.UoW;
 
-public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork
+public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork, IDisposable, IAsyncDisposable
 {
     private NpgsqlTransaction? _transaction;
 
@@ -21,14 +21,7 @@ public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork
         if (_transaction == null)
             throw new InvalidOperationException("No active transaction. Call BeginTransactionAsync before committing.");
 
-        try
-        {
-            await _transaction.CommitAsync(cancellationToken);
-        }
-        finally
-        {
-            await EndTransactionAsync();
-        }
+        await _transaction.CommitAsync(cancellationToken);
     }
 
     public async Task RollbackAsync(CancellationToken cancellationToken = default)
@@ -36,24 +29,20 @@ public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork
         if (_transaction == null)
             throw new InvalidOperationException("No active transaction. Call BeginTransactionAsync before rolling back.");
 
-        try
-        {
-            await _transaction.RollbackAsync(cancellationToken);
-        }
-        finally
-        {
-            await EndTransactionAsync();
-        }
+        await _transaction.RollbackAsync(cancellationToken);
     }
 
-    private async ValueTask EndTransactionAsync()
+    public void Dispose()
     {
-        if (_transaction != null)
-        {
-            await _transaction.DisposeAsync();
-            _transaction = null;
-        }
-    
+        _transaction?.Dispose();
+        connection.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_transaction != null) await _transaction.DisposeAsync();
         await connection.DisposeAsync();
+        GC.SuppressFinalize(this);
     }
 }

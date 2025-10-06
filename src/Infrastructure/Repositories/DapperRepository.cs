@@ -68,7 +68,7 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
                    WHERE "{PrimaryKey}" = @Id
                    """;
 
-        var affectedRows = await connection.ExecuteAsync(sql, entity, transaction);
+        var affectedRows = await connection.ExecuteAsync(sql, new { entity?.Id }, transaction);
         return affectedRows > 0;
     }
 
@@ -87,7 +87,7 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
     {
         var sql = $"""
                    SELECT EXISTS(SELECT 1 FROM "{tableName}"
-                   WHERE "{PrimaryKey}" = @Id "Active" = true
+                   WHERE "{PrimaryKey}" = @Id AND "Active" = true)
                    """;   
         
         return await connection.ExecuteScalarAsync<bool>(sql, new { Id = id }, transaction);
