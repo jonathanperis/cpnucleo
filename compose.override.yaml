@@ -74,45 +74,45 @@ services:
       - "5200:5010"
     healthcheck: *healthcheck-identity
 
-  grpcserver-cpnucleo:
-    <<: *common-api-dev
-    build:
-      context: ./src/
-      dockerfile: ./GrpcServer/Dockerfile
-      args:
-        CACHE: "true"
-        AOT: false
-        TRIM: false
-        EXTRA_OPTIMIZE: false
-        BUILD_CONFIGURATION: Debug
-        ASPNETCORE_ENVIRONMENT: Development
-    ports:
-      # Development mapping: host port 5300 => container port 5020
-      - "5300:5020"
-    healthcheck: *healthcheck-grpcserver
+  # grpcserver-cpnucleo:
+  #   <<: *common-api-dev
+  #   build:
+  #     context: ./src/
+  #     dockerfile: ./GrpcServer/Dockerfile
+  #     args:
+  #       CACHE: "true"
+  #       AOT: false
+  #       TRIM: false
+  #       EXTRA_OPTIMIZE: false
+  #       BUILD_CONFIGURATION: Debug
+  #       ASPNETCORE_ENVIRONMENT: Development
+  #   ports:
+  #     # Development mapping: host port 5300 => container port 5020
+  #     - "5300:5020"
+  #   healthcheck: *healthcheck-grpcserver
 
-  webclient-cpnucleo:
-    build:
-      context: ./src/
-      dockerfile: ./WebClient/Dockerfile
-      args:
-        CACHE: "true"
-        AOT: false
-        TRIM: false
-        EXTRA_OPTIMIZE: false
-        BUILD_CONFIGURATION: Debug
-        ASPNETCORE_ENVIRONMENT: Development
-    ports:
-      # Development mapping: host port 5400 => container port 5030
-      - "5400:5030"
-    healthcheck: *healthcheck-webclient
-    env_file:
-      - .env    
-    deploy:
-      resources:
-        limits:
-          cpus: "0.4"
-          memory: "100MB"
+  # webclient-cpnucleo:
+  #   build:
+  #     context: ./src/
+  #     dockerfile: ./WebClient/Dockerfile
+  #     args:
+  #       CACHE: "true"
+  #       AOT: false
+  #       TRIM: false
+  #       EXTRA_OPTIMIZE: false
+  #       BUILD_CONFIGURATION: Debug
+  #       ASPNETCORE_ENVIRONMENT: Development
+  #   ports:
+  #     # Development mapping: host port 5400 => container port 5030
+  #     - "5400:5030"
+  #   healthcheck: *healthcheck-webclient
+  #   env_file:
+  #     - .env    
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "0.4"
+  #         memory: "100MB"
           
   otel-lgtm:
     image: grafana/otel-lgtm

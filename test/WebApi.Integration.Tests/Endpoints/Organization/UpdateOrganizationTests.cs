@@ -2,8 +2,9 @@ using WebApi.Endpoints.Organization.UpdateOrganization;
 
 namespace WebApi.Integration.Tests.Endpoints.Organization;
 
-[Collection<OrganizationCollection>, Priority(4)]
-public class UpdateOrganizationTests(WebAppFixture app) : TestBase<WebAppFixture>
+[Collection<OrganizationCollection>]
+[Priority(4)]
+public class UpdateOrganizationTests(WebAppFixture app) : TestBase
 {
     private readonly Guid _organizationId = app.OrganizationId;
 
@@ -18,6 +19,6 @@ public class UpdateOrganizationTests(WebAppFixture app) : TestBase<WebAppFixture
         });
 
         rsp.StatusCode.ShouldBe(HttpStatusCode.OK);
-        err.ShouldBeNull();
+        err.Errors.ShouldBeEmpty();
     }
 }
