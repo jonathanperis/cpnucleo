@@ -68,7 +68,7 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
                    WHERE "{PrimaryKey}" = @Id
                    """;
 
-        var affectedRows = await connection.ExecuteAsync(sql, new { entity?.Id }, transaction);
+        var affectedRows = await connection.ExecuteAsync(sql, entity, transaction);
         return affectedRows > 0;
     }
 
