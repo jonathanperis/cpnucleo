@@ -5,7 +5,6 @@ builder.ConfigureOpenTelemetry();
 builder.Services.AddHealthChecks();
 
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
 
 builder.Services.AddGrpc();
 builder.Services.AddMagicOnion();
