@@ -2,8 +2,9 @@ using WebApi.Endpoints.Organization.ListOrganizations;
 
 namespace WebApi.Integration.Tests.Endpoints.Organization;
 
-[Collection<OrganizationCollection>, Priority(2)]
-public class ListOrganizationsTests(WebAppFixture app) : TestBase<WebAppFixture>
+[Collection<OrganizationCollection>]
+[Priority(2)]
+public class ListOrganizationsTests(WebAppFixture app) : TestBase
 {
     [Fact, Priority(1)]
     public async Task Organizations_ShouldReturnAllOrganizations()
@@ -20,6 +21,6 @@ public class ListOrganizationsTests(WebAppFixture app) : TestBase<WebAppFixture>
         });
 
         rsp.StatusCode.ShouldBe(HttpStatusCode.OK);
-        err.ShouldBeNull();
+        err.Errors.ShouldBeEmpty();
     }
 }
