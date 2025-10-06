@@ -2,8 +2,9 @@ using WebApi.Endpoints.Organization.RemoveOrganization;
 
 namespace WebApi.Integration.Tests.Endpoints.Organization;
 
-[Collection<OrganizationCollection>, Priority(5)]
-public class RemoveOrganizationTests(WebAppFixture app) : TestBase<WebAppFixture>
+[Collection<OrganizationCollection>]
+[Priority(5)]
+public class RemoveOrganizationTests(WebAppFixture app) : TestBase
 {
     private readonly Guid _organizationId = app.OrganizationId;
 
@@ -16,6 +17,6 @@ public class RemoveOrganizationTests(WebAppFixture app) : TestBase<WebAppFixture
         });
 
         rsp.StatusCode.ShouldBe(HttpStatusCode.OK);
-        err.ShouldBeNull();
+        err.Errors.ShouldBeEmpty();
     }
 }

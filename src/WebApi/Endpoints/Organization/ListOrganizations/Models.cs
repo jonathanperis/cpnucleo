@@ -19,5 +19,5 @@ public class Response
     /// <summary>
     /// Gets or sets the paginated result of organizations.
     /// </summary>
-    public required PaginatedResult<OrganizationDto?> Result { get; set; }
+    public PaginatedResult<OrganizationDto?> Result { get; set; }
 }

@@ -22,7 +22,6 @@ WORKDIR /src
 
 COPY ["IdentityApi/IdentityApi.csproj", "IdentityApi/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
-COPY ["Application/Application.csproj", "Application/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 
 RUN dotnet restore "./IdentityApi/IdentityApi.csproj" -p:Configuration=${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM}
