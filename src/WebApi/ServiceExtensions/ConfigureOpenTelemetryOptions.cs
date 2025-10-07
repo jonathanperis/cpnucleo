@@ -64,7 +64,7 @@ public static class ConfigureOpenTelemetryOptions
 
         // Build a resource configuration action to set service information.
         void ConfigureResource(ResourceBuilder r) =>
-                r.AddService(serviceName: builder.Configuration.GetValue("ServiceName", defaultValue: "otel-test")!,
+                r.AddService(serviceName: builder.Configuration.GetValue("ServiceName", defaultValue: "otel-test"),
                              serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown",
                              serviceInstanceId: Environment.MachineName);
     }

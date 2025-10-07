@@ -32,7 +32,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         }
 
         Logger.LogInformation("Mapping entity to DTO and setting response for Id: {AssignmentImpedimentId}", request.Id);
-        Response.AssignmentImpediment = item!.MapToDto();
+        Response.AssignmentImpediment = item.MapToDto();
 
         Logger.LogInformation("Service completed successfully.");
 

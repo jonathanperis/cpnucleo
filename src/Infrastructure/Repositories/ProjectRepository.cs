@@ -18,7 +18,7 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
 
         var sql = $"""
-                   SELECT * FROM "Projects" 
+                   SELECT * FROM "Project" 
                    WHERE "Active" = true
                    ORDER BY "{validSortColumn}" {validSortOrder}
                    OFFSET @Offset LIMIT @PageSize;
@@ -37,7 +37,7 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
             Data = await multi.ReadAsync<Project>(),
             TotalCount = await multi.ReadSingleAsync<int>(),
             PageNumber = pagination.PageNumber.GetValueOrDefault(),
-            PageSize = pagination.PageSize.GetValueOrDefault(),
+            PageSize = pagination.PageSize.GetValueOrDefault()
         };
     }
 

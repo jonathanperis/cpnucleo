@@ -41,7 +41,7 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
             Data = await multi.ReadAsync<T>(),
             TotalCount = await multi.ReadSingleAsync<int>(),
             PageNumber = pagination.PageNumber.GetValueOrDefault(),
-            PageSize = pagination.PageSize.GetValueOrDefault(),
+            PageSize = pagination.PageSize.GetValueOrDefault()
         };
     }
 

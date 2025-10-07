@@ -19,7 +19,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Service started processing request.");
-        Logger.LogInformation("Fetching all projects with pagination page {PageNumber}, size {PageSize}", request.Pagination?.PageNumber, request.Pagination?.PageSize);
+        Logger.LogInformation("Fetching all projects with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var response = await repository.GetAllAsync(request.Pagination);
 
