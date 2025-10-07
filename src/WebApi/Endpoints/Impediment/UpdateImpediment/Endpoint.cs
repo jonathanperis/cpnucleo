@@ -23,7 +23,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         try
         {
             Logger.LogInformation("Checking if an impediment entity exists with Id: {ImpedimentId}", request.Id);
-            var item = await dbContext.Impediments!.FindAsync(request.Id, cancellationToken);
+            var item = await dbContext.Impediments!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
 
             if (item is null)
             {

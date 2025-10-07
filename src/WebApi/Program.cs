@@ -35,7 +35,7 @@ builder.Services.AddRateLimiter(options =>
                 Window = TimeSpan.FromMinutes(1), // Per 1-minute window
                 QueueLimit = 10, // Queue up to 10 additional requests
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst, // Process oldest requests first
-                AutoReplenishment = true, // Default: automatically replenish permits
+                AutoReplenishment = true // Default: automatically replenish permits
             }));
 
     options.OnRejected = async (context, cancellationToken) =>
@@ -111,8 +111,8 @@ await app.GenerateApiClientsAndExitAsync(
         c.SwaggerDocumentName = "v1"; //must match doc name above
         c.Language = GenerationLanguage.CSharp;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
-        c.ClientNamespaceName = "MyCompanyName";
-        c.ClientClassName = "MyCsClient";
+        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
+        c.ClientClassName = "Cpnucleo.WebApi.Client";
         c.CreateZipArchive = true; //if you'd like a zip file as well
     },
     c =>
@@ -120,8 +120,8 @@ await app.GenerateApiClientsAndExitAsync(
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.TypeScript;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
-        c.ClientNamespaceName = "MyCompanyName";
-        c.ClientClassName = "MyTsClient";
+        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
+        c.ClientClassName = "cpnucleo-webapi-client";
     });
 
 app.Run();

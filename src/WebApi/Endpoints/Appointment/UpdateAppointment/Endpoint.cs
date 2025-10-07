@@ -23,7 +23,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         try
         {
             Logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", request.Id);
-            var item = await dbContext.Appointments!.FindAsync(request.Id, cancellationToken);
+            var item = await dbContext.Appointments!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
 
             if (item is null)
             {

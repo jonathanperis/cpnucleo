@@ -42,7 +42,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
             await unitOfWork.BeginTransactionAsync();
 
             Logger.LogInformation("Adding organization to repository.");
-            var response = await repository.AddAsync(newItem);
+            await repository.AddAsync(newItem);
 
             Logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);

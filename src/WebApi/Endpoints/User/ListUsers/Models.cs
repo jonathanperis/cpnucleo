@@ -9,6 +9,15 @@ public class Request
     /// Gets or sets the pagination parameters for the request.
     /// </summary>
     public required PaginationParams Pagination { get; set; }
+    
+    public class Validator : Validator<Request>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.Pagination)
+                .NotNull().WithMessage("Pagination is required.");;
+        }
+    }    
 }
 
 /// <summary>

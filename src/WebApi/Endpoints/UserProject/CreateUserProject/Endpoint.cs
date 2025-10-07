@@ -44,7 +44,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
             await dbContext.SaveChangesAsync(cancellationToken);
 
             Logger.LogInformation("Fetching userProject by Id: {UserProjectId}", newItem.Id);
-            var createdItem = await dbContext.UserProjects!.FindAsync(newItem.Id, cancellationToken);
+            var createdItem = await dbContext.UserProjects!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
 
             Response.UserProject = createdItem!.MapToDto();
 

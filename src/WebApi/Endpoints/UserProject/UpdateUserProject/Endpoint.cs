@@ -23,7 +23,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         try
         {
             Logger.LogInformation("Checking if an userProject entity exists with Id: {UserProjectId}", request.Id);
-            var item = await dbContext.UserProjects!.FindAsync(request.Id, cancellationToken);
+            var item = await dbContext.UserProjects!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
 
             if (item is null)
             {

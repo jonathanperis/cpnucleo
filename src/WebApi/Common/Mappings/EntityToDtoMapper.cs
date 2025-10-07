@@ -1,6 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace WebApi.Common.Mappings;
 
 [Mapper]
+[SuppressMessage("Mapper", "RMG020:Source member is not mapped to any target member")]
 public static partial class EntityToDtoMapper
 {
     public static partial AppointmentDto MapToDto(this Appointment entity);

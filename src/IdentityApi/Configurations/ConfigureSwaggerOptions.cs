@@ -19,8 +19,6 @@ using System.Text;
 /// <param name="provider">The <see cref="IApiVersionDescriptionProvider">provider</see> used to generate Swagger documents.</param>
 public class ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) : IConfigureOptions<SwaggerGenOptions>
 {
-    private readonly IApiVersionDescriptionProvider provider = provider;
-
     /// <inheritdoc />
     public void Configure( SwaggerGenOptions options )
     {
