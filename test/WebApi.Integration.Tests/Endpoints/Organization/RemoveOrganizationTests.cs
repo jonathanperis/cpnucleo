@@ -4,9 +4,9 @@ namespace WebApi.Integration.Tests.Endpoints.Organization;
 
 [Collection<OrganizationCollection>]
 [Priority(5)]
-public class RemoveOrganizationTests(WebAppFixture app) : TestBase
+public class RemoveOrganizationTests(WebAppFixture app, WebAppState state) : TestBase<WebAppFixture, WebAppState>
 {
-    private readonly Guid _organizationId = app.OrganizationId;
+    private readonly Guid _organizationId = state.OrganizationId;
 
     [Fact, Priority(1)]
     public async Task Organizations_ShouldDeleteAnOrganization()

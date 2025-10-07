@@ -1,8 +1,6 @@
 global using Domain.Models;
 global using FastEndpoints;
 global using FastEndpoints.Testing;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.Extensions.DependencyInjection;
 global using Shouldly;
 global using System.Net;
 global using Xunit;

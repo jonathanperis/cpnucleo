@@ -27,7 +27,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
             foreach (var id in request.Ids)
             {
-                var item = await dbContext.Impediments!.FindAsync(id, cancellationToken);
+                var item = await dbContext.Impediments!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
                 if (item is null)
                 {
                     await Send.NotFoundAsync(cancellation: cancellationToken);

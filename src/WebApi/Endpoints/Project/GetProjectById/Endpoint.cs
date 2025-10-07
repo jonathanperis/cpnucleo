@@ -30,7 +30,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         }
 
         Logger.LogInformation("Mapping entity to DTO and setting response for Id: {ProjectId}", request.Id);
-        Response.Project = item!.MapToDto();
+        Response.Project = item.MapToDto();
 
         Logger.LogInformation("Service completed successfully.");
         

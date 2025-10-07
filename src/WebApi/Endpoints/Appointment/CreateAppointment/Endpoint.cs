@@ -49,7 +49,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
             await dbContext.SaveChangesAsync(cancellationToken);
 
             Logger.LogInformation("Fetching appointment by Id: {AppointmentId}", newItem.Id);
-            var createdItem = await dbContext.Appointments!.FindAsync(newItem.Id, cancellationToken);
+            var createdItem = await dbContext.Appointments!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
 
             Response.Appointment = createdItem!.MapToDto();
 

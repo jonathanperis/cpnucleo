@@ -23,7 +23,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         try
         {
             Logger.LogInformation("Checking if an assignment entity exists with Id: {AssignmentId}", request.Id);
-            var item = await dbContext.Assignments!.FindAsync(request.Id, cancellationToken);
+            var item = await dbContext.Assignments!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
 
             if (item is null)
             {

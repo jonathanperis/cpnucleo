@@ -8,7 +8,7 @@ public class Request
     /// <summary>
     /// Gets or sets the unique identifiers for the impediments.
     /// </summary>
-    public List<Guid>? Ids { get; set; }
+    public required List<Guid> Ids { get; set; }
 
     public class Validator : Validator<Request>
     {

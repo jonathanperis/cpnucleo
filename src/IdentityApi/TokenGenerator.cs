@@ -12,7 +12,7 @@ public class TokenGenerator
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Email, email),
+            new(JwtRegisteredClaimNames.Email, email)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

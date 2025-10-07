@@ -4,7 +4,7 @@ namespace WebApi.Integration.Tests.Endpoints.Organization;
 
 [Collection<OrganizationCollection>]
 [Priority(2)]
-public class ListOrganizationsTests(WebAppFixture app) : TestBase
+public class ListOrganizationsTests(WebAppFixture app, WebAppState state) : TestBase<WebAppFixture, WebAppState>
 {
     [Fact, Priority(1)]
     public async Task Organizations_ShouldReturnAllOrganizations()

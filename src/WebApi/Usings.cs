@@ -29,6 +29,3 @@ global using WebApi.Common.Mappings;
 global using WebApi.Middlewares;
 global using WebApi.ServiceExtensions;
 global using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("WebApi.Integration.Tests")]
-public partial class Program;

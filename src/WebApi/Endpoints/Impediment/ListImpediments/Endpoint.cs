@@ -19,12 +19,12 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Service started processing request.");
-        Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination?.PageNumber, request.Pagination?.PageSize);
+        Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var query = dbContext.Impediments?.AsQueryable();
 
-        var validSortColumn = ValidateSortColumn(request.Pagination?.SortColumn);
-        var validSortOrder = request.Pagination?.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
+        var validSortColumn = ValidateSortColumn(request.Pagination.SortColumn);
+        var validSortOrder = request.Pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
 
         query = ApplySorting(query, validSortColumn, validSortOrder);
 
@@ -40,7 +40,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Response.Result = new PaginatedResult<ImpedimentDto?>
         {
-            Data = response.Select(x => x?.MapToDto()).ToList(),
+            Data = response.Select(x => x.MapToDto()).ToList(),
             TotalCount = totalCount,
             PageNumber = request.Pagination.PageNumber.GetValueOrDefault(),
             PageSize = request.Pagination.PageSize.GetValueOrDefault()
