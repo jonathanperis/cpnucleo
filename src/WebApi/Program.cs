@@ -29,7 +29,7 @@ builder.Services.AddRateLimiter(options =>
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-            factory: partition => new FixedWindowRateLimiterOptions
+            factory: _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 50, // Allow 50 requests
                 Window = TimeSpan.FromMinutes(1), // Per 1-minute window
@@ -52,12 +52,6 @@ builder.Services.AddRateLimiter(options =>
     };
 });
 
-// builder.Services.AddOutputCache(options =>
-// {
-//     options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromSeconds(10)));
-//     options.AddBasePolicy(builder => builder.Cache());
-// });
-
 builder.Services.AddHealthChecks();
 
 builder.Services
@@ -77,8 +71,6 @@ builder.Services
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
-
-// app.UseOutputCache();
 
 app.UseInfrastructure();
 
