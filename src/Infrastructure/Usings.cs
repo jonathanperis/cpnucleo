@@ -1,3 +1,6 @@
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.Reflection;
+global using System.Text;
 global using Bogus;
 global using Dapper;
 global using Delta;
@@ -17,6 +20,3 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Npgsql;
-global using System.ComponentModel.DataAnnotations.Schema;
-global using System.Reflection;
-global using System.Text;
