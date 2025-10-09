@@ -8,7 +8,7 @@ internal static class FakeDataHelper
     private static List<AssignmentType>? AssignmentTypes { get; set; }
     private static List<Impediment>? Impediments { get; set; }
     private static List<Organization>? Organizations { get; set; }
-    private static List<Project>? Projects { get; set; }
+    private static List<Project> Projects { get; set; }
     private static List<UserAssignment>? UserAssignments { get; set; }
     private static List<User>? Users { get; set; }
     private static List<UserProject>? UserProjects { get; set; }

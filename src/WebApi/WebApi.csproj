@@ -75,8 +75,4 @@
 		<NoWarn>CS1591</NoWarn>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<InternalsVisibleTo Include="Integration.Tests" />
-	</ItemGroup>
-
 </Project>
