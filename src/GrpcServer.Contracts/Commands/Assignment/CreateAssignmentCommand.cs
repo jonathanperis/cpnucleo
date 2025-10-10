@@ -1,0 +1,68 @@
+namespace GrpcServer.Contracts.Commands.Assignment;
+
+/// <summary>
+/// Command model for creating a new assignment.
+/// </summary>
+public class CreateAssignmentCommand
+{
+    /// <summary>
+    /// Gets or sets the unique identifier for the assignment.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the assignment.
+    /// </summary>
+    public required string Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the description of the assignment.
+    /// </summary>
+    public required string Description { get; set; }
+
+    /// <summary>
+    /// Gets or sets the start date of the assignment.
+    /// </summary>
+    public DateTime StartDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the end date of the assignment.
+    /// </summary>
+    public DateTime EndDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the amount of hours for the assignment.
+    /// </summary>
+    public int AmountHours { get; set; }
+
+    /// <summary>
+    /// Gets or sets the project identifier for the assignment.
+    /// </summary>
+    public Guid ProjectId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the workflow identifier for the assignment.
+    /// </summary>
+    public Guid WorkflowId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user identifier for the assignment.
+    /// </summary>
+    public Guid UserId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the assignment type identifier for the assignment.
+    /// </summary>
+    public Guid AssignmentTypeId { get; set; }
+}
+
+/// <summary>
+/// Result model for the created assignment.
+/// </summary>
+public class CreateAssignmentResult
+{
+    /// <summary>
+    /// Gets or sets the created assignment.
+    /// </summary>
+    public AssignmentDto? Assignment { get; set; }
+}
