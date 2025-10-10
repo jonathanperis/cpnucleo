@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.UserProject;
 /// <summary>
 /// Command model for listing userProjects.
 /// </summary>
-public class ListUserProjectsCommand
+public class ListUserProjectsCommand : ICommand<ListUserProjectsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

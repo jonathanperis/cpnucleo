@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.User;
 /// <summary>
 /// Command model for removing a user.
 /// </summary>
-public class RemoveUserCommand
+public class RemoveUserCommand : ICommand<RemoveUserResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the users.

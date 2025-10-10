@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.User;
 /// <summary>
 /// Command model for fetching a user by its unique identifier.
 /// </summary>
-public class GetUserByIdCommand
+public class GetUserByIdCommand : ICommand<GetUserByIdResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the user.

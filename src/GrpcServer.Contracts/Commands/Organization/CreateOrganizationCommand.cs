@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Organization;
 /// <summary>
 /// Command model for creating a new organization.
 /// </summary>
-public class CreateOrganizationCommand
+public class CreateOrganizationCommand : ICommand<CreateOrganizationResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the organization.

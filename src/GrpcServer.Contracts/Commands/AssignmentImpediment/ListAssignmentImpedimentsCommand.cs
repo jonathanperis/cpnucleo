@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.AssignmentImpediment;
 /// <summary>
 /// Command model for listing assignmentImpediments.
 /// </summary>
-public class ListAssignmentImpedimentsCommand
+public class ListAssignmentImpedimentsCommand : ICommand<ListAssignmentImpedimentsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

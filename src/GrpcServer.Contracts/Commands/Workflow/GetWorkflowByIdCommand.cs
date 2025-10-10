@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Workflow;
 /// <summary>
 /// Command model for fetching a workflow by its unique identifier.
 /// </summary>
-public class GetWorkflowByIdCommand
+public class GetWorkflowByIdCommand : ICommand<GetWorkflowByIdResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the workflow.

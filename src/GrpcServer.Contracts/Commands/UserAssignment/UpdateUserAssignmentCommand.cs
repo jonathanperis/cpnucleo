@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.UserAssignment;
 /// <summary>
 /// Command model for updating an userAssignment.
 /// </summary>
-public class UpdateUserAssignmentCommand
+public class UpdateUserAssignmentCommand : ICommand<UpdateUserAssignmentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the userAssignment.

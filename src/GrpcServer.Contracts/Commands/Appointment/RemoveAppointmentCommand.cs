@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Appointment;
 /// <summary>
 /// Command model for removing an appointment.
 /// </summary>
-public class RemoveAppointmentCommand
+public class RemoveAppointmentCommand : ICommand<RemoveAppointmentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the appointments.

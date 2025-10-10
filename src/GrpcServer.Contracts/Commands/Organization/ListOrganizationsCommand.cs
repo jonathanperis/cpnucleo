@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Organization;
 /// <summary>
 /// Command model for listing organizations.
 /// </summary>
-public class ListOrganizationsCommand
+public class ListOrganizationsCommand : ICommand<ListOrganizationsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

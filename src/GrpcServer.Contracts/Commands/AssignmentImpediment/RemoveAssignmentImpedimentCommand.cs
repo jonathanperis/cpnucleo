@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.AssignmentImpediment;
 /// <summary>
 /// Command model for removing an assignmentImpediment.
 /// </summary>
-public class RemoveAssignmentImpedimentCommand
+public class RemoveAssignmentImpedimentCommand : ICommand<RemoveAssignmentImpedimentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the assignmentImpediments.

@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Project;
 /// <summary>
 /// Command model for creating a new project.
 /// </summary>
-public class CreateProjectCommand
+public class CreateProjectCommand : ICommand<CreateProjectResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the project.

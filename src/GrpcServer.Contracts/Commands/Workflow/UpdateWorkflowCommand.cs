@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Workflow;
 /// <summary>
 /// Command model for updating a workflow.
 /// </summary>
-public class UpdateWorkflowCommand
+public class UpdateWorkflowCommand : ICommand<UpdateWorkflowResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the workflow.

@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Impediment;
 /// <summary>
 /// Command model for listing impediments.
 /// </summary>
-public class ListImpedimentsCommand
+public class ListImpedimentsCommand : ICommand<ListImpedimentsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

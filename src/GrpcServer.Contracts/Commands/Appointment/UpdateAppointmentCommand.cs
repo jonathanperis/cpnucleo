@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Appointment;
 /// <summary>
 /// Command model for updating an appointment.
 /// </summary>
-public class UpdateAppointmentCommand
+public class UpdateAppointmentCommand : ICommand<UpdateAppointmentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the appointment.

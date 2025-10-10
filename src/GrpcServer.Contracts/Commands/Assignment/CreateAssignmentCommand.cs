@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Assignment;
 /// <summary>
 /// Command model for creating a new assignment.
 /// </summary>
-public class CreateAssignmentCommand
+public class CreateAssignmentCommand : ICommand<CreateAssignmentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the assignment.

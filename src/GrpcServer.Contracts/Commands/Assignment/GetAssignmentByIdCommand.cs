@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Assignment;
 /// <summary>
 /// Command model for fetching an assignment by its unique identifier.
 /// </summary>
-public class GetAssignmentByIdCommand
+public class GetAssignmentByIdCommand : ICommand<GetAssignmentByIdResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the assignment.

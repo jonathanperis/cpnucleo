@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.AssignmentType;
 /// <summary>
 /// Command model for removing an assignmentType.
 /// </summary>
-public class RemoveAssignmentTypeCommand
+public class RemoveAssignmentTypeCommand : ICommand<RemoveAssignmentTypeResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the assignmentTypes.

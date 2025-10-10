@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.AssignmentImpediment;
 /// <summary>
 /// Command model for fetching an assignmentImpediment by its unique identifier.
 /// </summary>
-public class GetAssignmentImpedimentByIdCommand
+public class GetAssignmentImpedimentByIdCommand : ICommand<GetAssignmentImpedimentByIdResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the assignmentImpediment.

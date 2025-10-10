@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Project;
 /// <summary>
 /// Command model for removing a project.
 /// </summary>
-public class RemoveProjectCommand
+public class RemoveProjectCommand : ICommand<RemoveProjectResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the projects.
