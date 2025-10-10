@@ -7,47 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Class1.cs" />
-      <Compile Remove="Commands\Appointment\CreateAppointment\**" />
-      <Compile Remove="Commands\Appointment\GetAppointmentById\**" />
-      <Compile Remove="Commands\Appointment\ListAppointments\**" />
-      <Compile Remove="Commands\Appointment\RemoveAppointment\**" />
-      <Compile Remove="Commands\Appointment\UpdateAppointment\**" />
-      <Compile Remove="Commands\Assignment\CreateAssignment\**" />
-      <Compile Remove="Commands\Assignment\GetAssignmentById\**" />
-      <Compile Remove="Commands\Assignment\ListAssignments\**" />
-      <Compile Remove="Commands\Assignment\RemoveAssignment\**" />
-      <Compile Remove="Commands\Assignment\UpdateAssignment\**" />
+      <PackageReference Include="FastEndpoints.Messaging.Core" Version="7.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="Commands\Appointment\CreateAppointment\**" />
-      <EmbeddedResource Remove="Commands\Appointment\GetAppointmentById\**" />
-      <EmbeddedResource Remove="Commands\Appointment\ListAppointments\**" />
-      <EmbeddedResource Remove="Commands\Appointment\RemoveAppointment\**" />
-      <EmbeddedResource Remove="Commands\Appointment\UpdateAppointment\**" />
-      <EmbeddedResource Remove="Commands\Assignment\CreateAssignment\**" />
-      <EmbeddedResource Remove="Commands\Assignment\GetAssignmentById\**" />
-      <EmbeddedResource Remove="Commands\Assignment\ListAssignments\**" />
-      <EmbeddedResource Remove="Commands\Assignment\RemoveAssignment\**" />
-      <EmbeddedResource Remove="Commands\Assignment\UpdateAssignment\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Commands\Appointment\CreateAppointment\**" />
-      <None Remove="Commands\Appointment\GetAppointmentById\**" />
-      <None Remove="Commands\Appointment\ListAppointments\**" />
-      <None Remove="Commands\Appointment\RemoveAppointment\**" />
-      <None Remove="Commands\Appointment\UpdateAppointment\**" />
-      <None Remove="Commands\Assignment\CreateAssignment\**" />
-      <None Remove="Commands\Assignment\GetAssignmentById\**" />
-      <None Remove="Commands\Assignment\ListAssignments\**" />
-      <None Remove="Commands\Assignment\RemoveAssignment\**" />
-      <None Remove="Commands\Assignment\UpdateAssignment\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Domain\Domain.csproj" />
-    </ItemGroup>
-
+        <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>    
+    
 </Project>

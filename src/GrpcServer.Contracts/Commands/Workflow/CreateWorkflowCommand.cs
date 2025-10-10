@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Workflow;
 /// <summary>
 /// Command model for creating a new workflow.
 /// </summary>
-public class CreateWorkflowCommand
+public class CreateWorkflowCommand : ICommand<CreateWorkflowResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the workflow.

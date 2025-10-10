@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Appointment;
 /// <summary>
 /// Command model for listing appointments.
 /// </summary>
-public class ListAppointmentsCommand
+public class ListAppointmentsCommand : ICommand<ListAppointmentsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

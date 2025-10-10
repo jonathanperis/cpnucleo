@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.UserProject;
 /// <summary>
 /// Command model for fetching an userProject by its unique identifier.
 /// </summary>
-public class GetUserProjectByIdCommand
+public class GetUserProjectByIdCommand : ICommand<GetUserProjectByIdResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the userProject.

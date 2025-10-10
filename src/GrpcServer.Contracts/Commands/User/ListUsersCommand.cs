@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.User;
 /// <summary>
 /// Command model for listing users.
 /// </summary>
-public class ListUsersCommand
+public class ListUsersCommand : ICommand<ListUsersResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

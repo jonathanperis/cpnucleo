@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.UserAssignment;
 /// <summary>
 /// Command model for listing userAssignments.
 /// </summary>
-public class ListUserAssignmentsCommand
+public class ListUserAssignmentsCommand : ICommand<ListUserAssignmentsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.AssignmentType;
 /// <summary>
 /// Command model for updating an assignmentType.
 /// </summary>
-public class UpdateAssignmentTypeCommand
+public class UpdateAssignmentTypeCommand : ICommand<UpdateAssignmentTypeResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the assignmentType.
