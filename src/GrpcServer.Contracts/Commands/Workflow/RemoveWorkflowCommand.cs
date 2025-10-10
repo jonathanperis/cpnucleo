@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Workflow;
 /// <summary>
 /// Command model for removing a workflow.
 /// </summary>
-public class RemoveWorkflowCommand
+public class RemoveWorkflowCommand : ICommand<RemoveWorkflowResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the workflows.

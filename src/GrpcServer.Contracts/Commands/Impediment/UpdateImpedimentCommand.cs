@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Impediment;
 /// <summary>
 /// Command model for updating an impediment.
 /// </summary>
-public class UpdateImpedimentCommand
+public class UpdateImpedimentCommand : ICommand<UpdateImpedimentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the impediment.

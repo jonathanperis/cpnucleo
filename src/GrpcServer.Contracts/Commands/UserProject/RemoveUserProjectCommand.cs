@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.UserProject;
 /// <summary>
 /// Command model for removing an userProject.
 /// </summary>
-public class RemoveUserProjectCommand
+public class RemoveUserProjectCommand : ICommand<RemoveUserProjectResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the userProjects.

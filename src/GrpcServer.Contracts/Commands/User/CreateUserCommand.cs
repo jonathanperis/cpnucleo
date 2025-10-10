@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.User;
 /// <summary>
 /// Command model for creating a new user.
 /// </summary>
-public class CreateUserCommand
+public class CreateUserCommand : ICommand<CreateUserResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the user.

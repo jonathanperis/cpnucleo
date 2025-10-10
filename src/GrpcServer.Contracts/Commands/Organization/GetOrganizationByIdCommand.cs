@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Organization;
 /// <summary>
 /// Command model for fetching an organization by its unique identifier.
 /// </summary>
-public class GetOrganizationByIdCommand
+public class GetOrganizationByIdCommand : ICommand<GetOrganizationByIdResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the organization.

@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.User;
 /// <summary>
 /// Command model for updating a user.
 /// </summary>
-public class UpdateUserCommand
+public class UpdateUserCommand : ICommand<UpdateUserResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the user.

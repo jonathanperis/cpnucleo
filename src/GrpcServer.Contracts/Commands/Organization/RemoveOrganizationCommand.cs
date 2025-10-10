@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Organization;
 /// <summary>
 /// Command model for removing an organization.
 /// </summary>
-public class RemoveOrganizationCommand
+public class RemoveOrganizationCommand : ICommand<RemoveOrganizationResult>
 {
     /// <summary>
     /// Gets or sets the unique identifiers for the organizations.

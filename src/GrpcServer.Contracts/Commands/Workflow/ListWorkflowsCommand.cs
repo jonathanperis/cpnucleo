@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Workflow;
 /// <summary>
 /// Command model for listing workflows.
 /// </summary>
-public class ListWorkflowsCommand
+public class ListWorkflowsCommand : ICommand<ListWorkflowsResult>
 {
     /// <summary>
     /// Gets or sets the pagination parameters for the request.

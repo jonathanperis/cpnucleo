@@ -3,7 +3,7 @@ namespace GrpcServer.Contracts.Commands.Impediment;
 /// <summary>
 /// Command model for creating a new impediment.
 /// </summary>
-public class CreateImpedimentCommand
+public class CreateImpedimentCommand : ICommand<CreateImpedimentResult>
 {
     /// <summary>
     /// Gets or sets the unique identifier for the impediment.
