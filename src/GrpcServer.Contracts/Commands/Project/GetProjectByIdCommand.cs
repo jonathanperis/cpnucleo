@@ -1,0 +1,23 @@
+namespace GrpcServer.Contracts.Commands.Project;
+
+/// <summary>
+/// Command model for fetching a project by its unique identifier.
+/// </summary>
+public class GetProjectByIdCommand
+{
+    /// <summary>
+    /// Gets or sets the unique identifier for the project.
+    /// </summary>
+    public Guid Id { get; set; }
+}
+
+/// <summary>
+/// Result model for the project fetched by its unique identifier.
+/// </summary>
+public class GetProjectByIdResult
+{   
+    /// <summary>
+    /// Gets or sets the project details.
+    /// </summary>
+    public ProjectDto? Project { get; set; }
+}
