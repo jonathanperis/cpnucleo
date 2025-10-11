@@ -11,5 +11,6 @@
   <Folder Name="/test/">
     <Project Path="test\Architecture.Tests\Architecture.Tests.csproj" />
     <Project Path="test\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" />
+    <Project Path="test\WebApi.Unit.Tests\WebApi.Unit.Tests.csproj" />
   </Folder>
 </Solution>
