@@ -16,10 +16,10 @@ public sealed class UpdateUserAssignmentHandler(IApplicationDbContext dbContext,
             {
                 logger.LogWarning("UserAssignment not found with Id: {UserAssignmentId}", command.Id);
                 return new UpdateUserAssignmentResult 
-            { 
-                Success = false,
-                Message = "UserAssignment not found."
-            };
+                { 
+                    Success = false,
+                    Message = "UserAssignment not found."
+                };
             }
 
             logger.LogInformation("Updating userAssignment entity with Id: {UserAssignmentId}", command.Id);

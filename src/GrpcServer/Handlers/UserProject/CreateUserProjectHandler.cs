@@ -16,10 +16,10 @@ public sealed class CreateUserProjectHandler(IApplicationDbContext dbContext, IL
             {
                 logger.LogWarning("UserProject Id conflict for Id: {UserProjectId}", command.Id);
                 return new CreateUserProjectResult
-            {
-                Success = false,
-                Message = "this Id is already in use!"
-            };
+                {
+                    Success = false,
+                    Message = "this Id is already in use!"
+                };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new userProject entity.");

@@ -16,10 +16,10 @@ public sealed class UpdateAssignmentHandler(IApplicationDbContext dbContext, ILo
             {
                 logger.LogWarning("Assignment not found with Id: {AssignmentId}", command.Id);
                 return new UpdateAssignmentResult 
-            { 
-                Success = false,
-                Message = "Assignment not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Assignment not found."
+                };
             }
 
             logger.LogInformation("Updating assignment entity with Id: {AssignmentId}", command.Id);

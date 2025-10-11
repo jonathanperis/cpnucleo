@@ -19,10 +19,10 @@ public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<R
                 {
                     logger.LogWarning("User not found with Id: {UserId}", id);
                     return new RemoveUserResult 
-            { 
-                Success = false,
-                Message = "User not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "User not found."
+                    };
                 }
 
                 logger.LogInformation("Removing user entity with Id: {UserId}", id);

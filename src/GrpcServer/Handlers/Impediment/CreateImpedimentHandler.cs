@@ -16,10 +16,10 @@ public sealed class CreateImpedimentHandler(IApplicationDbContext dbContext, ILo
             {
                 logger.LogWarning("Impediment Id conflict for Id: {ImpedimentId}", command.Id);
                 return new CreateImpedimentResult
-            {
-                Success = false,
-                Message = "this Id is already in use!"
-            };
+                {
+                    Success = false,
+                    Message = "this Id is already in use!"
+                };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new impediment entity.");

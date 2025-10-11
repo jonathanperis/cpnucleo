@@ -19,10 +19,10 @@ public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, IL
                 {
                     logger.LogWarning("Appointment not found with Id: {AppointmentId}", id);
                     return new RemoveAppointmentResult 
-            { 
-                Success = false,
-                Message = "Appointment not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "Appointment not found."
+                    };
                 }
 
                 logger.LogInformation("Removing appointment entity with Id: {AppointmentId}", id);

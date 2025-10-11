@@ -16,10 +16,10 @@ public sealed class UpdateWorkflowHandler(IApplicationDbContext dbContext, ILogg
             {
                 logger.LogWarning("Workflow not found with Id: {WorkflowId}", command.Id);
                 return new UpdateWorkflowResult 
-            { 
-                Success = false,
-                Message = "Workflow not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Workflow not found."
+                };
             }
 
             logger.LogInformation("Updating workflow entity with Id: {WorkflowId}", command.Id);

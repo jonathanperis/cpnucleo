@@ -16,10 +16,10 @@ public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<
             {
                 logger.LogWarning("Project Id conflict for Id: {ProjectId}", command.Id);
                 return new CreateProjectResult
-            {
-                Success = false,
-                Message = "this Id is already in use!"
-            };
+                {
+                    Success = false,
+                    Message = "this Id is already in use!"
+                };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new project entity.");

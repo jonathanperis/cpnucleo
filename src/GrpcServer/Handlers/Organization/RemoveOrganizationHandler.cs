@@ -24,10 +24,10 @@ public sealed class RemoveOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Re
                     logger.LogWarning("Organization not found with Id: {OrganizationId}", id);
                     await unitOfWork.RollbackAsync(cancellationToken);
                     return new RemoveOrganizationResult 
-            { 
-                Success = false,
-                Message = "Organization not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "Organization not found."
+                    };
                 }
 
                 logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
@@ -44,10 +44,10 @@ public sealed class RemoveOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Re
                 logger.LogWarning("One or more deletions failed, rolling back transaction.");
                 await unitOfWork.RollbackAsync(cancellationToken);
                 return new RemoveOrganizationResult 
-            { 
-                Success = false,
-                Message = "Organization not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Organization not found."
+                };
             }
 
             logger.LogInformation("Remove result: {Success}", allSuccess);

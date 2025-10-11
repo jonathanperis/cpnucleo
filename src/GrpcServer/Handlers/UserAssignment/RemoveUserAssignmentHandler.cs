@@ -19,10 +19,10 @@ public sealed class RemoveUserAssignmentHandler(IApplicationDbContext dbContext,
                 {
                     logger.LogWarning("UserAssignment not found with Id: {UserAssignmentId}", id);
                     return new RemoveUserAssignmentResult 
-            { 
-                Success = false,
-                Message = "UserAssignment not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "UserAssignment not found."
+                    };
                 }
 
                 logger.LogInformation("Removing userAssignment entity with Id: {UserAssignmentId}", id);

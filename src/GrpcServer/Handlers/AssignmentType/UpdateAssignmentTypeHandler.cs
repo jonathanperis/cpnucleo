@@ -16,10 +16,10 @@ public sealed class UpdateAssignmentTypeHandler(IApplicationDbContext dbContext,
             {
                 logger.LogWarning("AssignmentType not found with Id: {AssignmentTypeId}", command.Id);
                 return new UpdateAssignmentTypeResult 
-            { 
-                Success = false,
-                Message = "AssignmentType not found."
-            };
+                { 
+                    Success = false,
+                    Message = "AssignmentType not found."
+                };
             }
 
             logger.LogInformation("Updating assignmentType entity with Id: {AssignmentTypeId}", command.Id);

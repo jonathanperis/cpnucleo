@@ -17,10 +17,10 @@ public sealed class CreateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Cr
             {
                 logger.LogWarning("Organization Id conflict for Id: {OrganizationId}", command.Id);
                 return new CreateOrganizationResult
-            {
-                Success = false,
-                Message = "this Id is already in use!"
-            };
+                {
+                    Success = false,
+                    Message = "this Id is already in use!"
+                };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new organization entity.");

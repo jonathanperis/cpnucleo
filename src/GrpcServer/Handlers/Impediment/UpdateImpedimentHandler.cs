@@ -16,10 +16,10 @@ public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILo
             {
                 logger.LogWarning("Impediment not found with Id: {ImpedimentId}", command.Id);
                 return new UpdateImpedimentResult 
-            { 
-                Success = false,
-                Message = "Impediment not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Impediment not found."
+                };
             }
 
             logger.LogInformation("Updating impediment entity with Id: {ImpedimentId}", command.Id);

@@ -16,10 +16,10 @@ public sealed class UpdateUserHandler(IApplicationDbContext dbContext, ILogger<U
             {
                 logger.LogWarning("User not found with Id: {UserId}", command.Id);
                 return new UpdateUserResult 
-            { 
-                Success = false,
-                Message = "User not found."
-            };
+                { 
+                    Success = false,
+                    Message = "User not found."
+                };
             }
 
             logger.LogInformation("Updating user entity with Id: {UserId}", command.Id);

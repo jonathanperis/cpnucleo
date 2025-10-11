@@ -16,10 +16,10 @@ public sealed class UpdateUserProjectHandler(IApplicationDbContext dbContext, IL
             {
                 logger.LogWarning("UserProject not found with Id: {UserProjectId}", command.Id);
                 return new UpdateUserProjectResult 
-            { 
-                Success = false,
-                Message = "UserProject not found."
-            };
+                { 
+                    Success = false,
+                    Message = "UserProject not found."
+                };
             }
 
             logger.LogInformation("Updating userProject entity with Id: {UserProjectId}", command.Id);

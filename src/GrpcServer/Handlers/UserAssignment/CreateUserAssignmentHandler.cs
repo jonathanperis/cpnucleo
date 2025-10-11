@@ -16,10 +16,10 @@ public sealed class CreateUserAssignmentHandler(IApplicationDbContext dbContext,
             {
                 logger.LogWarning("UserAssignment Id conflict for Id: {UserAssignmentId}", command.Id);
                 return new CreateUserAssignmentResult
-            {
-                Success = false,
-                Message = "this Id is already in use!"
-            };
+                {
+                    Success = false,
+                    Message = "this Id is already in use!"
+                };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new userAssignment entity.");
