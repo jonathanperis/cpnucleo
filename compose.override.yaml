@@ -89,6 +89,8 @@ services:
     ports:
       # Development mapping: host port 5300 => container port 5020
       - "5300:5020"
+      # Development mapping: host port 5301 => container port 5021
+      - "5301:5021"
     healthcheck: *healthcheck-grpcserver
 
   webclient-cpnucleo:

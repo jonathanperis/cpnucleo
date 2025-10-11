@@ -69,6 +69,8 @@ services:
     ports:
       # Mapping internal port 5020 to external host port 5300 for grpc server service
       - "5300:5020"
+      # Mapping internal port 5021 to external host port 5301 for grpc server service
+      - "5301:5021"
     healthcheck: *healthcheck-grpcserver
 
   webclient-cpnucleo:
