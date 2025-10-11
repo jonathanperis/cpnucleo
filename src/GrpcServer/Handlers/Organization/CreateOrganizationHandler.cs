@@ -27,13 +27,13 @@ public sealed class CreateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Cr
             await unitOfWork.BeginTransactionAsync();
 
             logger.LogInformation("Adding organization to repository.");
-            await repository.AddAsync(newItem);
+            var createdId = await repository.AddAsync(newItem);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Fetching organization by Id: {OrganizationId}", newItem.Id);
-            var createdItem = await repository.GetByIdAsync(newItem.Id);
+            logger.LogInformation("Fetching organization by Id: {OrganizationId}", createdId);
+            var createdItem = await repository.GetByIdAsync(createdId);
 
             var result = new CreateOrganizationResult
             {
