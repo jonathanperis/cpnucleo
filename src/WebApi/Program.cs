@@ -79,6 +79,9 @@ app.
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();
 
+app.MapHealthChecks("/healthz");
+app.MapGet("/", () => "Hello World!");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerGen();
