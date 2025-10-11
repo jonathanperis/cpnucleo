@@ -46,7 +46,7 @@ public sealed class RemoveAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Rem
                 return new RemoveAppointmentResult 
                 { 
                     Success = false,
-                    Message = "Appointment not found."
+                    Message = "One or more appointments could not be deleted."
                 };
             }
 
