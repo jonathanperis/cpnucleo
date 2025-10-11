@@ -22,6 +22,16 @@ public class CreateImpedimentCommand : ICommand<CreateImpedimentResult>
 public class CreateImpedimentResult
 {
     /// <summary>
+    /// Gets or sets a value indicating whether the creation was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
+    /// <summary>
     /// Gets or sets the created impediment.
     /// </summary>
     public ImpedimentDto? Impediment { get; set; }
