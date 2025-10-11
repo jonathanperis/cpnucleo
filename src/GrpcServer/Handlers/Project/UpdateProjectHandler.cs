@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Project;
 
-// Dapper Repository Basic
-public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<UpdateProjectHandler> logger) : ICommandHandler<UpdateProjectCommand, UpdateProjectResult>
+// Dapper Repository Advanced
+public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateProjectHandler> logger) : ICommandHandler<UpdateProjectCommand, UpdateProjectResult>
 {
     public async Task<UpdateProjectResult> ExecuteAsync(UpdateProjectCommand command, CancellationToken cancellationToken)
     {
@@ -10,6 +10,7 @@ public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<
         try
         {
             logger.LogInformation("Checking if an project entity exists with Id: {ProjectId}", command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Project>();
             var item = await repository.GetByIdAsync(command.Id);
 
             if (item is null)
@@ -29,6 +30,9 @@ public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<
             var success = await repository.UpdateAsync(item);
 
             logger.LogInformation("Update result: {Success}", success);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
             logger.LogInformation("Service completed successfully.");
 
             return new UpdateProjectResult 
@@ -39,7 +43,8 @@ public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

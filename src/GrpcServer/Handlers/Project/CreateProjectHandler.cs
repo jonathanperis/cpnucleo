@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Project;
 
-// Dapper Repository Basic
-public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<CreateProjectHandler> logger) : ICommandHandler<CreateProjectCommand, CreateProjectResult>
+// Dapper Repository Advanced
+public sealed class CreateProjectHandler(IUnitOfWork unitOfWork, ILogger<CreateProjectHandler> logger) : ICommandHandler<CreateProjectCommand, CreateProjectResult>
 {
     public async Task<CreateProjectResult> ExecuteAsync(CreateProjectCommand command, CancellationToken cancellationToken)
     {
@@ -10,6 +10,7 @@ public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<
         try
         {
             logger.LogInformation("Checking if an project entity exists with Id: {ProjectId}", command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Project>();
             var itemExists = await repository.ExistsAsync(command.Id);
 
             if (itemExists)
@@ -26,11 +27,17 @@ public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<
             var newItem = Domain.Entities.Project.Create(command.Name, command.OrganizationId, command.Id);
             logger.LogInformation("Created new project entity with Id: {ProjectId}", newItem.Id);
 
-            logger.LogInformation("Adding project to repository.");
-            var newItemId = await repository.AddAsync(newItem);
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
 
-            logger.LogInformation("Fetching project by Id: {ProjectId}", newItemId);
-            var createdItem = await repository.GetByIdAsync(newItemId);
+            logger.LogInformation("Adding project to repository.");
+            var createdId = await repository.AddAsync(newItem);
+
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
+            logger.LogInformation("Fetching project by Id: {ProjectId}", createdId);
+            var createdItem = await repository.GetByIdAsync(createdId);
 
             var result = new CreateProjectResult
             {
@@ -45,7 +52,8 @@ public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

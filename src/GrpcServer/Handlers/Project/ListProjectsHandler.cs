@@ -1,13 +1,14 @@
 namespace GrpcServer.Handlers.Project;
 
-// Dapper Repository Basic
-public sealed class ListProjectsHandler(IProjectRepository repository, ILogger<ListProjectsHandler> logger) : ICommandHandler<ListProjectsCommand, ListProjectsResult>
+// Dapper Repository Advanced
+public sealed class ListProjectsHandler(IUnitOfWork unitOfWork, ILogger<ListProjectsHandler> logger) : ICommandHandler<ListProjectsCommand, ListProjectsResult>
 {
     public async Task<ListProjectsResult> ExecuteAsync(ListProjectsCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
         logger.LogInformation("Fetching all projects with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
+        var repository = unitOfWork.GetRepository<Domain.Entities.Project>();
         var response = await repository.GetAllAsync(command.Pagination);
 
         logger.LogInformation("Fetched {Count} project records", response.Data?.Count() ?? 0);
