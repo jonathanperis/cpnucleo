@@ -15,7 +15,11 @@ public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbCo
             if (item is null)
             {
                 logger.LogWarning("AssignmentImpediment not found with Id: {AssignmentImpedimentId}", command.Id);
-                return new UpdateAssignmentImpedimentResult { Success = false };
+                return new UpdateAssignmentImpedimentResult 
+            { 
+                Success = false,
+                Message = "AssignmentImpediment not found."
+            };
             }
 
             logger.LogInformation("Updating assignmentImpediment entity with Id: {AssignmentImpedimentId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbCo
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateAssignmentImpedimentResult { Success = success };
+            return new UpdateAssignmentImpedimentResult 
+            { 
+                Success = success,
+                Message = success ? "AssignmentImpediment updated successfully." : "Failed to update AssignmentImpediment."
+            };
         }
         catch (Exception ex)
         {

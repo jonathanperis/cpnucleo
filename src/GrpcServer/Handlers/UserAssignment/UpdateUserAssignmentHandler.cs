@@ -15,7 +15,11 @@ public sealed class UpdateUserAssignmentHandler(IApplicationDbContext dbContext,
             if (item is null)
             {
                 logger.LogWarning("UserAssignment not found with Id: {UserAssignmentId}", command.Id);
-                return new UpdateUserAssignmentResult { Success = false };
+                return new UpdateUserAssignmentResult 
+            { 
+                Success = false,
+                Message = "UserAssignment not found."
+            };
             }
 
             logger.LogInformation("Updating userAssignment entity with Id: {UserAssignmentId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateUserAssignmentHandler(IApplicationDbContext dbContext,
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateUserAssignmentResult { Success = success };
+            return new UpdateUserAssignmentResult 
+            { 
+                Success = success,
+                Message = success ? "UserAssignment updated successfully." : "Failed to update UserAssignment."
+            };
         }
         catch (Exception ex)
         {

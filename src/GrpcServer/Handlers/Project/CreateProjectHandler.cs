@@ -15,7 +15,11 @@ public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<
             if (itemExists)
             {
                 logger.LogWarning("Project Id conflict for Id: {ProjectId}", command.Id);
-                return new CreateProjectResult();
+                return new CreateProjectResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new project entity.");
@@ -30,6 +34,8 @@ public sealed class CreateProjectHandler(IProjectRepository repository, ILogger<
 
             var result = new CreateProjectResult
             {
+                Success = true,
+                Message = "Project created successfully.",
                 Project = createdItem!.MapToDto()
             };
 

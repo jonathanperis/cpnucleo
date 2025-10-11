@@ -18,7 +18,11 @@ public sealed class RemoveWorkflowHandler(IApplicationDbContext dbContext, ILogg
                 if (item is null)
                 {
                     logger.LogWarning("Workflow not found with Id: {WorkflowId}", id);
-                    return new RemoveWorkflowResult { Success = false };
+                    return new RemoveWorkflowResult 
+            { 
+                Success = false,
+                Message = "Workflow not found."
+            };
                 }
 
                 logger.LogInformation("Removing workflow entity with Id: {WorkflowId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveWorkflowHandler(IApplicationDbContext dbContext, ILogg
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveWorkflowResult { Success = allSuccess };
+            return new RemoveWorkflowResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "Workflow removed successfully." : "Failed to remove Workflow."
+            };
         }
         catch (Exception ex)
         {

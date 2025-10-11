@@ -18,7 +18,11 @@ public sealed class RemoveUserProjectHandler(IApplicationDbContext dbContext, IL
                 if (item is null)
                 {
                     logger.LogWarning("UserProject not found with Id: {UserProjectId}", id);
-                    return new RemoveUserProjectResult { Success = false };
+                    return new RemoveUserProjectResult 
+            { 
+                Success = false,
+                Message = "UserProject not found."
+            };
                 }
 
                 logger.LogInformation("Removing userProject entity with Id: {UserProjectId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveUserProjectHandler(IApplicationDbContext dbContext, IL
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveUserProjectResult { Success = allSuccess };
+            return new RemoveUserProjectResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "UserProject removed successfully." : "Failed to remove UserProject."
+            };
         }
         catch (Exception ex)
         {
