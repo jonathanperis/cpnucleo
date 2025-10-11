@@ -16,6 +16,8 @@ public sealed class ListUserAssignmentsHandler(IUnitOfWork unitOfWork, ILogger<L
 
         var result = new ListUserAssignmentsResult
         {
+            Success = true,
+            Message = "UserAssignments listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

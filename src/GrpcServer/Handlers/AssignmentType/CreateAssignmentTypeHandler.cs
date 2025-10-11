@@ -15,7 +15,11 @@ public sealed class CreateAssignmentTypeHandler(IApplicationDbContext dbContext,
             if (itemExists)
             {
                 logger.LogWarning("AssignmentType Id conflict for Id: {AssignmentTypeId}", command.Id);
-                return new CreateAssignmentTypeResult();
+                return new CreateAssignmentTypeResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new assignmentType entity.");
@@ -33,6 +37,8 @@ public sealed class CreateAssignmentTypeHandler(IApplicationDbContext dbContext,
 
             var result = new CreateAssignmentTypeResult
             {
+                Success = true,
+                Message = "AssignmentType created successfully.",
                 AssignmentType = createdItem!.MapToDto()
             };
 

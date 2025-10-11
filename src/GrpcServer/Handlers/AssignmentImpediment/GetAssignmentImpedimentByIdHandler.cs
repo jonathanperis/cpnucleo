@@ -14,12 +14,18 @@ public sealed class GetAssignmentImpedimentByIdHandler(IUnitOfWork unitOfWork, I
         if (item is null)
         {
             logger.LogWarning("AssignmentImpediment not found with Id: {AssignmentImpedimentId}", command.Id);
-            return new GetAssignmentImpedimentByIdResult();
+            return new GetAssignmentImpedimentByIdResult
+            {
+                Success = false,
+                Message = "AssignmentImpediment not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {AssignmentImpedimentId}", command.Id);
         var result = new GetAssignmentImpedimentByIdResult
         {
+            Success = true,
+            Message = "AssignmentImpediment fetched successfully.",
             AssignmentImpediment = item.MapToDto()
         };
 

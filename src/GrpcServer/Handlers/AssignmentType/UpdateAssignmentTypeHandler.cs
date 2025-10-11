@@ -15,7 +15,11 @@ public sealed class UpdateAssignmentTypeHandler(IApplicationDbContext dbContext,
             if (item is null)
             {
                 logger.LogWarning("AssignmentType not found with Id: {AssignmentTypeId}", command.Id);
-                return new UpdateAssignmentTypeResult { Success = false };
+                return new UpdateAssignmentTypeResult 
+            { 
+                Success = false,
+                Message = "AssignmentType not found."
+            };
             }
 
             logger.LogInformation("Updating assignmentType entity with Id: {AssignmentTypeId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateAssignmentTypeHandler(IApplicationDbContext dbContext,
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateAssignmentTypeResult { Success = success };
+            return new UpdateAssignmentTypeResult 
+            { 
+                Success = success,
+                Message = success ? "AssignmentType updated successfully." : "Failed to update AssignmentType."
+            };
         }
         catch (Exception ex)
         {

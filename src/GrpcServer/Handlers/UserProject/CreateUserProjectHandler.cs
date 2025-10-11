@@ -15,7 +15,11 @@ public sealed class CreateUserProjectHandler(IApplicationDbContext dbContext, IL
             if (itemExists)
             {
                 logger.LogWarning("UserProject Id conflict for Id: {UserProjectId}", command.Id);
-                return new CreateUserProjectResult();
+                return new CreateUserProjectResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new userProject entity.");
@@ -33,6 +37,8 @@ public sealed class CreateUserProjectHandler(IApplicationDbContext dbContext, IL
 
             var result = new CreateUserProjectResult
             {
+                Success = true,
+                Message = "UserProject created successfully.",
                 UserProject = createdItem!.MapToDto()
             };
 

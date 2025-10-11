@@ -14,12 +14,18 @@ public sealed class GetUserProjectByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
         if (item is null)
         {
             logger.LogWarning("UserProject not found with Id: {UserProjectId}", command.Id);
-            return new GetUserProjectByIdResult();
+            return new GetUserProjectByIdResult
+            {
+                Success = false,
+                Message = "UserProject not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {UserProjectId}", command.Id);
         var result = new GetUserProjectByIdResult
         {
+            Success = true,
+            Message = "UserProject fetched successfully.",
             UserProject = item.MapToDto()
         };
 

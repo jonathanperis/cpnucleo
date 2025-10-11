@@ -15,7 +15,11 @@ public sealed class CreateUserHandler(IApplicationDbContext dbContext, ILogger<C
             if (itemExists)
             {
                 logger.LogWarning("User Id conflict for Id: {UserId}", command.Id);
-                return new CreateUserResult();
+                return new CreateUserResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new user entity.");
@@ -33,6 +37,8 @@ public sealed class CreateUserHandler(IApplicationDbContext dbContext, ILogger<C
 
             var result = new CreateUserResult
             {
+                Success = true,
+                Message = "User created successfully.",
                 User = createdItem!.MapToDto()
             };
 

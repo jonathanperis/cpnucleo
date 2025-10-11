@@ -16,6 +16,8 @@ public sealed class ListOrganizationsHandler(IUnitOfWork unitOfWork, ILogger<Lis
 
         var result = new ListOrganizationsResult
         {
+            Success = true,
+            Message = "Organizations listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

@@ -16,6 +16,8 @@ public sealed class ListImpedimentsHandler(IUnitOfWork unitOfWork, ILogger<ListI
 
         var result = new ListImpedimentsResult
         {
+            Success = true,
+            Message = "Impediments listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 
