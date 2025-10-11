@@ -29,5 +29,5 @@ public class ListOrganizationsResult
     /// <summary>
     /// Gets or sets the paginated result of organizations.
     /// </summary>
-    public PaginatedResult<OrganizationDto?> Result { get; set; }
+    public required PaginatedResult<OrganizationDto?> Result { get; set; }
 }
