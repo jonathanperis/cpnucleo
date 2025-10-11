@@ -29,8 +29,8 @@ public sealed class RemoveOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Re
                 logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
                 Domain.Entities.Organization.Remove(item);
 
-                logger.LogInformation("Updating repository for removed entity {OrganizationId}.", id);
-                var result = await repository.UpdateAsync(item);
+                logger.LogInformation("Deleting organization entity from repository with Id: {OrganizationId}.", id);
+                var result = await repository.DeleteAsync(item);
 
                 if (!result) allSuccess = false;
             }
