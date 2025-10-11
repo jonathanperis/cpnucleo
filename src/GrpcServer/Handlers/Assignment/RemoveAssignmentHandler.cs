@@ -46,7 +46,7 @@ public sealed class RemoveAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Remo
                 return new RemoveAssignmentResult 
                 { 
                     Success = false,
-                    Message = "Assignment not found."
+                    Message = "One or more assignments could not be deleted."
                 };
             }
 
