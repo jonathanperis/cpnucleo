@@ -166,6 +166,9 @@ app.MapHandlers(h =>
     h.Register<UpdateWorkflowCommand, UpdateWorkflowHandler, UpdateWorkflowResult>();
 });
 
+app.MapHealthChecks("/healthz");
+app.MapGet("/", () => "Hello World!");
+
 if (app.Environment.IsDevelopment())
 {
     // app.UseSwaggerGen();
