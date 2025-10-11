@@ -62,30 +62,30 @@ services:
       - "5200:5010"
     healthcheck: *healthcheck-identity
 
-  # grpcserver-cpnucleo:
-  #   <<: *common-api
-  #   image: jonathanperis/cpnucleo-grpc-server:latest
-  #   container_name: grpcserver-cpnucleo
-  #   ports:
-  #     # Mapping internal port 5020 to external host port 5300 for grpc server service
-  #     - "5300:5020"
-  #   healthcheck: *healthcheck-grpcserver
+  grpcserver-cpnucleo:
+    <<: *common-api
+    image: jonathanperis/cpnucleo-grpc-server:latest
+    container_name: grpcserver-cpnucleo
+    ports:
+      # Mapping internal port 5020 to external host port 5300 for grpc server service
+      - "5300:5020"
+    healthcheck: *healthcheck-grpcserver
 
-  # webclient-cpnucleo:
-  #   <<: *common-api
-  #   image: jonathanperis/cpnucleo-web-client:latest
-  #   container_name: webclient-cpnucleo
-  #   ports:
-  #     # Mapping internal port 5030 to external host port 5400 for web client service
-  #     - "5400:5030"
-  #   healthcheck: *healthcheck-webclient
-  #   env_file:
-  #     - .env      
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "0.4"
-  #         memory: "100MB"
+  webclient-cpnucleo:
+    <<: *common-api
+    image: jonathanperis/cpnucleo-web-client:latest
+    container_name: webclient-cpnucleo
+    ports:
+      # Mapping internal port 5030 to external host port 5400 for web client service
+      - "5400:5030"
+    healthcheck: *healthcheck-webclient
+    env_file:
+      - .env      
+    deploy:
+      resources:
+        limits:
+          cpus: "0.4"
+          memory: "100MB"
           
   db:
     image: postgres:16.7
