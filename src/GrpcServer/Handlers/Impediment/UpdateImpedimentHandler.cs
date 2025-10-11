@@ -26,6 +26,9 @@ public sealed class UpdateImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Upda
             logger.LogInformation("Updating impediment entity with Id: {ImpedimentId}", command.Id);
             Domain.Entities.Impediment.Update(item, command.Name);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 

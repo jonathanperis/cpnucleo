@@ -26,6 +26,9 @@ public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Up
             logger.LogInformation("Updating organization entity with Id: {OrganizationId}", command.Id);
             Domain.Entities.Organization.Update(item, command.Name, command.Description);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 

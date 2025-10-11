@@ -35,6 +35,9 @@ public sealed class UpdateAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Upda
                                              command.UserId,
                                              command.AssignmentTypeId);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 

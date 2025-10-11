@@ -26,6 +26,9 @@ public sealed class UpdateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Update
             logger.LogInformation("Updating workflow entity with Id: {WorkflowId}", command.Id);
             Domain.Entities.Workflow.Update(item, command.Name, command.Order);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 
