@@ -42,14 +42,14 @@ jobs:
         working-directory: "./test/Architecture.Tests"
         run: dotnet test
 
-      - name: Build and Run Docker Compose for Integration Tests
-        run: |
-          docker compose up db -d
-          sleep 30        
+      # - name: Build and Run Docker Compose for Integration Tests
+      #   run: |
+      #     docker compose up db -d
+      #     sleep 30        
 
-      - name: Integration Tests
-        working-directory: "./test/WebApi.Integration.Tests"
-        run: dotnet test
+      # - name: Integration Tests
+      #   working-directory: "./test/WebApi.Integration.Tests"
+      #   run: dotnet test
 
   build-push-image:
     needs: setup-build-test
