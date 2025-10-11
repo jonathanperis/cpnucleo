@@ -14,12 +14,18 @@ public sealed class GetAssignmentTypeByIdHandler(IUnitOfWork unitOfWork, ILogger
         if (item is null)
         {
             logger.LogWarning("AssignmentType not found with Id: {AssignmentTypeId}", command.Id);
-            return new GetAssignmentTypeByIdResult();
+            return new GetAssignmentTypeByIdResult
+            {
+                Success = false,
+                Message = "AssignmentType not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {AssignmentTypeId}", command.Id);
         var result = new GetAssignmentTypeByIdResult
         {
+            Success = true,
+            Message = "AssignmentType fetched successfully.",
             AssignmentType = item.MapToDto()
         };
 

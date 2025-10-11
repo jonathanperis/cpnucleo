@@ -15,7 +15,11 @@ public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, IL
             if (item is null)
             {
                 logger.LogWarning("Appointment not found with Id: {AppointmentId}", command.Id);
-                return new UpdateAppointmentResult { Success = false };
+                return new UpdateAppointmentResult 
+            { 
+                Success = false,
+                Message = "Appointment not found."
+            };
             }
 
             logger.LogInformation("Updating appointment entity with Id: {AppointmentId}", command.Id);
@@ -32,7 +36,11 @@ public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, IL
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateAppointmentResult { Success = success };
+            return new UpdateAppointmentResult 
+            { 
+                Success = success,
+                Message = success ? "Appointment updated successfully." : "Failed to update Appointment."
+            };
         }
         catch (Exception ex)
         {

@@ -16,6 +16,8 @@ public sealed class ListAssignmentsHandler(IUnitOfWork unitOfWork, ILogger<ListA
 
         var result = new ListAssignmentsResult
         {
+            Success = true,
+            Message = "Assignments listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

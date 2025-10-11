@@ -15,7 +15,11 @@ public sealed class UpdateUserHandler(IApplicationDbContext dbContext, ILogger<U
             if (item is null)
             {
                 logger.LogWarning("User not found with Id: {UserId}", command.Id);
-                return new UpdateUserResult { Success = false };
+                return new UpdateUserResult 
+            { 
+                Success = false,
+                Message = "User not found."
+            };
             }
 
             logger.LogInformation("Updating user entity with Id: {UserId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateUserHandler(IApplicationDbContext dbContext, ILogger<U
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateUserResult { Success = success };
+            return new UpdateUserResult 
+            { 
+                Success = success,
+                Message = success ? "User updated successfully." : "Failed to update User."
+            };
         }
         catch (Exception ex)
         {

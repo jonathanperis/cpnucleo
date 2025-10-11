@@ -18,7 +18,11 @@ public sealed class RemoveProjectHandler(IProjectRepository repository, ILogger<
                 if (item is null)
                 {
                     logger.LogWarning("Project not found with Id: {ProjectId}", id);
-                    return new RemoveProjectResult { Success = false };
+                    return new RemoveProjectResult 
+            { 
+                Success = false,
+                Message = "Project not found."
+            };
                 }
 
                 logger.LogInformation("Removing project entity with Id: {ProjectId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveProjectHandler(IProjectRepository repository, ILogger<
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveProjectResult { Success = allSuccess };
+            return new RemoveProjectResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "Project removed successfully." : "Failed to remove Project."
+            };
         }
         catch (Exception ex)
         {

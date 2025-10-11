@@ -18,7 +18,11 @@ public sealed class RemoveImpedimentHandler(IApplicationDbContext dbContext, ILo
                 if (item is null)
                 {
                     logger.LogWarning("Impediment not found with Id: {ImpedimentId}", id);
-                    return new RemoveImpedimentResult { Success = false };
+                    return new RemoveImpedimentResult 
+            { 
+                Success = false,
+                Message = "Impediment not found."
+            };
                 }
 
                 logger.LogInformation("Removing impediment entity with Id: {ImpedimentId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveImpedimentHandler(IApplicationDbContext dbContext, ILo
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveImpedimentResult { Success = allSuccess };
+            return new RemoveImpedimentResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "Impediment removed successfully." : "Failed to remove Impediment."
+            };
         }
         catch (Exception ex)
         {
