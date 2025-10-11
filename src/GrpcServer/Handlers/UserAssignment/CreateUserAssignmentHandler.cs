@@ -15,7 +15,11 @@ public sealed class CreateUserAssignmentHandler(IApplicationDbContext dbContext,
             if (itemExists)
             {
                 logger.LogWarning("UserAssignment Id conflict for Id: {UserAssignmentId}", command.Id);
-                return new CreateUserAssignmentResult();
+                return new CreateUserAssignmentResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new userAssignment entity.");
@@ -33,6 +37,8 @@ public sealed class CreateUserAssignmentHandler(IApplicationDbContext dbContext,
 
             var result = new CreateUserAssignmentResult
             {
+                Success = true,
+                Message = "UserAssignment created successfully.",
                 UserAssignment = createdItem!.MapToDto()
             };
 

@@ -16,6 +16,8 @@ public sealed class ListAssignmentImpedimentsHandler(IUnitOfWork unitOfWork, ILo
 
         var result = new ListAssignmentImpedimentsResult
         {
+            Success = true,
+            Message = "AssignmentImpediments listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

@@ -15,7 +15,11 @@ public sealed class CreateWorkflowHandler(IApplicationDbContext dbContext, ILogg
             if (itemExists)
             {
                 logger.LogWarning("Workflow Id conflict for Id: {WorkflowId}", command.Id);
-                return new CreateWorkflowResult();
+                return new CreateWorkflowResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new workflow entity.");
@@ -33,6 +37,8 @@ public sealed class CreateWorkflowHandler(IApplicationDbContext dbContext, ILogg
 
             var result = new CreateWorkflowResult
             {
+                Success = true,
+                Message = "Workflow created successfully.",
                 Workflow = createdItem!.MapToDto()
             };
 

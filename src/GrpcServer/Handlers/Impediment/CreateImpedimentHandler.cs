@@ -15,7 +15,11 @@ public sealed class CreateImpedimentHandler(IApplicationDbContext dbContext, ILo
             if (itemExists)
             {
                 logger.LogWarning("Impediment Id conflict for Id: {ImpedimentId}", command.Id);
-                return new CreateImpedimentResult();
+                return new CreateImpedimentResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new impediment entity.");
@@ -33,6 +37,8 @@ public sealed class CreateImpedimentHandler(IApplicationDbContext dbContext, ILo
 
             var result = new CreateImpedimentResult
             {
+                Success = true,
+                Message = "Impediment created successfully.",
                 Impediment = createdItem!.MapToDto()
             };
 

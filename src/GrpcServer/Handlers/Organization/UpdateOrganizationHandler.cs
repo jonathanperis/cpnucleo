@@ -16,7 +16,11 @@ public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Up
             if (item is null)
             {
                 logger.LogWarning("Organization not found with Id: {OrganizationId}", command.Id);
-                return new UpdateOrganizationResult { Success = false };
+                return new UpdateOrganizationResult 
+            { 
+                Success = false,
+                Message = "Organization not found."
+            };
             }
 
             logger.LogInformation("Updating organization entity with Id: {OrganizationId}", command.Id);
@@ -31,7 +35,11 @@ public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Up
 
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateOrganizationResult { Success = success };
+            return new UpdateOrganizationResult 
+            { 
+                Success = success,
+                Message = success ? "Organization updated successfully." : "Failed to update Organization."
+            };
         }
         catch (Exception ex)
         {

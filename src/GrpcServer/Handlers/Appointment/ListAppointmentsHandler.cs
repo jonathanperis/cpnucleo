@@ -16,6 +16,8 @@ public sealed class ListAppointmentsHandler(IUnitOfWork unitOfWork, ILogger<List
 
         var result = new ListAppointmentsResult
         {
+            Success = true,
+            Message = "Appointments listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

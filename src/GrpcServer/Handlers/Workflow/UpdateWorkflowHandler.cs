@@ -15,7 +15,11 @@ public sealed class UpdateWorkflowHandler(IApplicationDbContext dbContext, ILogg
             if (item is null)
             {
                 logger.LogWarning("Workflow not found with Id: {WorkflowId}", command.Id);
-                return new UpdateWorkflowResult { Success = false };
+                return new UpdateWorkflowResult 
+            { 
+                Success = false,
+                Message = "Workflow not found."
+            };
             }
 
             logger.LogInformation("Updating workflow entity with Id: {WorkflowId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateWorkflowHandler(IApplicationDbContext dbContext, ILogg
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateWorkflowResult { Success = success };
+            return new UpdateWorkflowResult 
+            { 
+                Success = success,
+                Message = success ? "Workflow updated successfully." : "Failed to update Workflow."
+            };
         }
         catch (Exception ex)
         {

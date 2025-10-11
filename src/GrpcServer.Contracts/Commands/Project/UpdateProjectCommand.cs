@@ -30,4 +30,8 @@ public class UpdateProjectResult
     /// Gets or sets a value indicating whether the update was successful.
     /// </summary>
     public bool Success { get; set; }
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
 }

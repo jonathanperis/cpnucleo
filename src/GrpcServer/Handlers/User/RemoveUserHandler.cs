@@ -18,7 +18,11 @@ public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<R
                 if (item is null)
                 {
                     logger.LogWarning("User not found with Id: {UserId}", id);
-                    return new RemoveUserResult { Success = false };
+                    return new RemoveUserResult 
+            { 
+                Success = false,
+                Message = "User not found."
+            };
                 }
 
                 logger.LogInformation("Removing user entity with Id: {UserId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<R
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveUserResult { Success = allSuccess };
+            return new RemoveUserResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "User removed successfully." : "Failed to remove User."
+            };
         }
         catch (Exception ex)
         {

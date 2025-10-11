@@ -16,6 +16,8 @@ public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHa
 
         var result = new ListUsersResult
         {
+            Success = true,
+            Message = "Users listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

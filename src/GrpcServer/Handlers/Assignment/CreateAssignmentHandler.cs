@@ -15,7 +15,11 @@ public sealed class CreateAssignmentHandler(IApplicationDbContext dbContext, ILo
             if (itemExists)
             {
                 logger.LogWarning("Assignment Id conflict for Id: {AssignmentId}", command.Id);
-                return new CreateAssignmentResult();
+                return new CreateAssignmentResult
+            {
+                Success = false,
+                Message = "this Id is already in use!"
+            };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new assignment entity.");
@@ -42,6 +46,8 @@ public sealed class CreateAssignmentHandler(IApplicationDbContext dbContext, ILo
 
             var result = new CreateAssignmentResult
             {
+                Success = true,
+                Message = "Assignment created successfully.",
                 Assignment = createdItem!.MapToDto()
             };
 

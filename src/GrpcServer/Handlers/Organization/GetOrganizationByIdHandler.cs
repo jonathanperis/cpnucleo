@@ -14,12 +14,18 @@ public sealed class GetOrganizationByIdHandler(IUnitOfWork unitOfWork, ILogger<G
         if (item is null)
         {
             logger.LogWarning("Organization not found with Id: {OrganizationId}", command.Id);
-            return new GetOrganizationByIdResult();
+            return new GetOrganizationByIdResult
+            {
+                Success = false,
+                Message = "Organization not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {OrganizationId}", command.Id);
         var result = new GetOrganizationByIdResult
         {
+            Success = true,
+            Message = "Organization fetched successfully.",
             Organization = item.MapToDto()
         };
 

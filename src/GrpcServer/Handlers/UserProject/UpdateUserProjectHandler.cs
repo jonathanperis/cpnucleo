@@ -15,7 +15,11 @@ public sealed class UpdateUserProjectHandler(IApplicationDbContext dbContext, IL
             if (item is null)
             {
                 logger.LogWarning("UserProject not found with Id: {UserProjectId}", command.Id);
-                return new UpdateUserProjectResult { Success = false };
+                return new UpdateUserProjectResult 
+            { 
+                Success = false,
+                Message = "UserProject not found."
+            };
             }
 
             logger.LogInformation("Updating userProject entity with Id: {UserProjectId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateUserProjectHandler(IApplicationDbContext dbContext, IL
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateUserProjectResult { Success = success };
+            return new UpdateUserProjectResult 
+            { 
+                Success = success,
+                Message = success ? "UserProject updated successfully." : "Failed to update UserProject."
+            };
         }
         catch (Exception ex)
         {

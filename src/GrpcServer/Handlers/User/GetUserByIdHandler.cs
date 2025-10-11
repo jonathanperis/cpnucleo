@@ -14,12 +14,18 @@ public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserBy
         if (item is null)
         {
             logger.LogWarning("User not found with Id: {UserId}", command.Id);
-            return new GetUserByIdResult();
+            return new GetUserByIdResult
+            {
+                Success = false,
+                Message = "User not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {UserId}", command.Id);
         var result = new GetUserByIdResult
         {
+            Success = true,
+            Message = "User fetched successfully.",
             User = item.MapToDto()
         };
 

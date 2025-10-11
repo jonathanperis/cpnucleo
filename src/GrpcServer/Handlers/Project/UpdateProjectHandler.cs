@@ -15,7 +15,11 @@ public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<
             if (item is null)
             {
                 logger.LogWarning("Project not found with Id: {ProjectId}", command.Id);
-                return new UpdateProjectResult { Success = false };
+                return new UpdateProjectResult 
+            { 
+                Success = false,
+                Message = "Project not found."
+            };
             }
 
             logger.LogInformation("Updating project entity with Id: {ProjectId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateProjectResult { Success = success };
+            return new UpdateProjectResult 
+            { 
+                Success = success,
+                Message = success ? "Project updated successfully." : "Failed to update Project."
+            };
         }
         catch (Exception ex)
         {

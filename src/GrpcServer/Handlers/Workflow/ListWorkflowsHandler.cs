@@ -16,6 +16,8 @@ public sealed class ListWorkflowsHandler(IUnitOfWork unitOfWork, ILogger<ListWor
 
         var result = new ListWorkflowsResult
         {
+            Success = true,
+            Message = "Workflows listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

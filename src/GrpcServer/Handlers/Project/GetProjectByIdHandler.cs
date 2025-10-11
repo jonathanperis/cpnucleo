@@ -13,12 +13,18 @@ public sealed class GetProjectByIdHandler(IProjectRepository repository, ILogger
         if (item is null)
         {
             logger.LogWarning("Project not found with Id: {ProjectId}", command.Id);
-            return new GetProjectByIdResult();
+            return new GetProjectByIdResult
+            {
+                Success = false,
+                Message = "Project not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {ProjectId}", command.Id);
         var result = new GetProjectByIdResult
         {
+            Success = true,
+            Message = "Project fetched successfully.",
             Project = item.MapToDto()
         };
 

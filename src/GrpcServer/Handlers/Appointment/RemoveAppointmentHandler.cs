@@ -18,7 +18,11 @@ public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, IL
                 if (item is null)
                 {
                     logger.LogWarning("Appointment not found with Id: {AppointmentId}", id);
-                    return new RemoveAppointmentResult { Success = false };
+                    return new RemoveAppointmentResult 
+            { 
+                Success = false,
+                Message = "Appointment not found."
+            };
                 }
 
                 logger.LogInformation("Removing appointment entity with Id: {AppointmentId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, IL
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveAppointmentResult { Success = allSuccess };
+            return new RemoveAppointmentResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "Appointment removed successfully." : "Failed to remove Appointment."
+            };
         }
         catch (Exception ex)
         {

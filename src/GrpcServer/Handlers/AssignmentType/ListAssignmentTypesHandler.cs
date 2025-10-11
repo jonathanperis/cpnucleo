@@ -16,6 +16,8 @@ public sealed class ListAssignmentTypesHandler(IUnitOfWork unitOfWork, ILogger<L
 
         var result = new ListAssignmentTypesResult
         {
+            Success = true,
+            Message = "AssignmentTypes listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 

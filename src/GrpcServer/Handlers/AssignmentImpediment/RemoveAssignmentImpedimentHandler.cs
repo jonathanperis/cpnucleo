@@ -18,7 +18,11 @@ public sealed class RemoveAssignmentImpedimentHandler(IApplicationDbContext dbCo
                 if (item is null)
                 {
                     logger.LogWarning("AssignmentImpediment not found with Id: {AssignmentImpedimentId}", id);
-                    return new RemoveAssignmentImpedimentResult { Success = false };
+                    return new RemoveAssignmentImpedimentResult 
+            { 
+                Success = false,
+                Message = "AssignmentImpediment not found."
+            };
                 }
 
                 logger.LogInformation("Removing assignmentImpediment entity with Id: {AssignmentImpedimentId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveAssignmentImpedimentHandler(IApplicationDbContext dbCo
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveAssignmentImpedimentResult { Success = allSuccess };
+            return new RemoveAssignmentImpedimentResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "AssignmentImpediment removed successfully." : "Failed to remove AssignmentImpediment."
+            };
         }
         catch (Exception ex)
         {

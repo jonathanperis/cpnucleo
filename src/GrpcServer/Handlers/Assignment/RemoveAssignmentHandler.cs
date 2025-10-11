@@ -18,7 +18,11 @@ public sealed class RemoveAssignmentHandler(IApplicationDbContext dbContext, ILo
                 if (item is null)
                 {
                     logger.LogWarning("Assignment not found with Id: {AssignmentId}", id);
-                    return new RemoveAssignmentResult { Success = false };
+                    return new RemoveAssignmentResult 
+            { 
+                Success = false,
+                Message = "Assignment not found."
+            };
                 }
 
                 logger.LogInformation("Removing assignment entity with Id: {AssignmentId}", id);
@@ -38,7 +42,11 @@ public sealed class RemoveAssignmentHandler(IApplicationDbContext dbContext, ILo
             logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Service completed successfully.");
 
-            return new RemoveAssignmentResult { Success = allSuccess };
+            return new RemoveAssignmentResult 
+            { 
+                Success = allSuccess,
+                Message = allSuccess ? "Assignment removed successfully." : "Failed to remove Assignment."
+            };
         }
         catch (Exception ex)
         {

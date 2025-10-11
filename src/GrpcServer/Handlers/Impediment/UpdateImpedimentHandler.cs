@@ -15,7 +15,11 @@ public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILo
             if (item is null)
             {
                 logger.LogWarning("Impediment not found with Id: {ImpedimentId}", command.Id);
-                return new UpdateImpedimentResult { Success = false };
+                return new UpdateImpedimentResult 
+            { 
+                Success = false,
+                Message = "Impediment not found."
+            };
             }
 
             logger.LogInformation("Updating impediment entity with Id: {ImpedimentId}", command.Id);
@@ -27,7 +31,11 @@ public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILo
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Service completed successfully.");
 
-            return new UpdateImpedimentResult { Success = success };
+            return new UpdateImpedimentResult 
+            { 
+                Success = success,
+                Message = success ? "Impediment updated successfully." : "Failed to update Impediment."
+            };
         }
         catch (Exception ex)
         {

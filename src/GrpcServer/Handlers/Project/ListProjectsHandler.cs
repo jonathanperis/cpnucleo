@@ -15,6 +15,8 @@ public sealed class ListProjectsHandler(IProjectRepository repository, ILogger<L
 
         var result = new ListProjectsResult
         {
+            Success = true,
+            Message = "Projects listed successfully.",
             Result = MapToPaginatedDto(response)
         };
 
