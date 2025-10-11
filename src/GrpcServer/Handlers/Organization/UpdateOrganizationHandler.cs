@@ -1,9 +1,43 @@
 namespace GrpcServer.Handlers.Organization;
 
-public sealed class UpdateOrganizationHandler : ICommandHandler<UpdateOrganizationCommand, UpdateOrganizationResult>
+// Dapper Repository Advanced
+public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<UpdateOrganizationHandler> logger) : ICommandHandler<UpdateOrganizationCommand, UpdateOrganizationResult>
 {
     public async Task<UpdateOrganizationResult> ExecuteAsync(UpdateOrganizationCommand command, CancellationToken cancellationToken)
     {
-        return null;
+        logger.LogInformation("Service started processing request.");
+
+        try
+        {
+            logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+            var item = await repository.GetByIdAsync(command.Id);
+
+            if (item is null)
+            {
+                logger.LogWarning("Organization not found with Id: {OrganizationId}", command.Id);
+                return new UpdateOrganizationResult { Success = false };
+            }
+
+            logger.LogInformation("Updating organization entity with Id: {OrganizationId}", command.Id);
+            Domain.Entities.Organization.Update(item, command.Name, command.Description);
+
+            logger.LogInformation("Updating entity in repository.");
+            var success = await repository.UpdateAsync(item);
+
+            logger.LogInformation("Update result: {Success}", success);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
+            logger.LogInformation("Service completed successfully.");
+
+            return new UpdateOrganizationResult { Success = success };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }
