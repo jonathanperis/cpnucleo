@@ -32,6 +32,9 @@ public sealed class CreateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Cre
                                                              command.Id);
             logger.LogInformation("Created new appointment entity with Id: {AppointmentId}", newItem.Id);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Adding appointment to repository.");
             var createdId = await repository.AddAsync(newItem);
 
