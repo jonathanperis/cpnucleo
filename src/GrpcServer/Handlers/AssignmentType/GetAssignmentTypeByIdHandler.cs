@@ -1,9 +1,30 @@
 namespace GrpcServer.Handlers.AssignmentType;
 
-public sealed class GetAssignmentTypeByIdHandler : ICommandHandler<GetAssignmentTypeByIdCommand, GetAssignmentTypeByIdResult>
+// Dapper Repository Advanced
+public sealed class GetAssignmentTypeByIdHandler(IUnitOfWork unitOfWork, ILogger<GetAssignmentTypeByIdHandler> logger) : ICommandHandler<GetAssignmentTypeByIdCommand, GetAssignmentTypeByIdResult>
 {
     public async Task<GetAssignmentTypeByIdResult> ExecuteAsync(GetAssignmentTypeByIdCommand command, CancellationToken cancellationToken)
     {
-        return null;
+        logger.LogInformation("Service started processing request.");
+
+        logger.LogInformation("Fetching assignmentType entity with Id: {AssignmentTypeId}", command.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentType>();
+        var item = await repository.GetByIdAsync(command.Id);
+
+        if (item is null)
+        {
+            logger.LogWarning("AssignmentType not found with Id: {AssignmentTypeId}", command.Id);
+            return new GetAssignmentTypeByIdResult();
+        }
+
+        logger.LogInformation("Mapping entity to DTO and setting response for Id: {AssignmentTypeId}", command.Id);
+        var result = new GetAssignmentTypeByIdResult
+        {
+            AssignmentType = item.MapToDto()
+        };
+
+        logger.LogInformation("Service completed successfully.");
+
+        return result;
     }
 }
