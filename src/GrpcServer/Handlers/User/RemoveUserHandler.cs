@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.User;
 
-// EF Core
-public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<RemoveUserHandler> logger) : ICommandHandler<RemoveUserCommand, RemoveUserResult>
+// Dapper Repository Advanced
+public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUserHandler> logger) : ICommandHandler<RemoveUserCommand, RemoveUserResult>
 {
     public async Task<RemoveUserResult> ExecuteAsync(RemoveUserCommand command, CancellationToken cancellationToken)
     {
@@ -9,15 +9,20 @@ public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<R
 
         try
         {
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Checking if user entities exist for Ids: {UserIds}", string.Join(",", command.Ids));
+            var repository = unitOfWork.GetRepository<Domain.Entities.User>();
             var allSuccess = true;
 
             foreach (var id in command.Ids)
             {
-                var item = await dbContext.Users!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+                var item = await repository.GetByIdAsync(id);
                 if (item is null)
                 {
                     logger.LogWarning("User not found with Id: {UserId}", id);
+                    await unitOfWork.RollbackAsync(cancellationToken);
                     return new RemoveUserResult 
                     { 
                         Success = false,
@@ -28,18 +33,27 @@ public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<R
                 logger.LogInformation("Removing user entity with Id: {UserId}", id);
                 Domain.Entities.User.Remove(item);
 
-                logger.LogInformation("Updating repository for removed entity {UserId}.", id);
-                var result = await dbContext.SaveChangesAsync(cancellationToken);
+                logger.LogInformation("Deleting user entity from repository with Id: {UserId}.", id);
+                var result = await repository.DeleteAsync(id);
 
                 if (!result) allSuccess = false;
             }
 
             if (!allSuccess)
             {
-                logger.LogWarning("One or more deletions failed.");
+                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                await unitOfWork.RollbackAsync(cancellationToken);
+                return new RemoveUserResult 
+                { 
+                    Success = false,
+                    Message = "User not found."
+                };
             }
 
             logger.LogInformation("Remove result: {Success}", allSuccess);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
             logger.LogInformation("Service completed successfully.");
 
             return new RemoveUserResult 
@@ -50,7 +64,8 @@ public sealed class RemoveUserHandler(IApplicationDbContext dbContext, ILogger<R
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }
