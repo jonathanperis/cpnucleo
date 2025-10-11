@@ -19,10 +19,10 @@ public sealed class RemoveUserProjectHandler(IApplicationDbContext dbContext, IL
                 {
                     logger.LogWarning("UserProject not found with Id: {UserProjectId}", id);
                     return new RemoveUserProjectResult 
-            { 
-                Success = false,
-                Message = "UserProject not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "UserProject not found."
+                    };
                 }
 
                 logger.LogInformation("Removing userProject entity with Id: {UserProjectId}", id);

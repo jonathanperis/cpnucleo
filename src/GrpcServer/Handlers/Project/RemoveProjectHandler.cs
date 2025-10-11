@@ -19,10 +19,10 @@ public sealed class RemoveProjectHandler(IProjectRepository repository, ILogger<
                 {
                     logger.LogWarning("Project not found with Id: {ProjectId}", id);
                     return new RemoveProjectResult 
-            { 
-                Success = false,
-                Message = "Project not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "Project not found."
+                    };
                 }
 
                 logger.LogInformation("Removing project entity with Id: {ProjectId}", id);

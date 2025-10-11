@@ -17,10 +17,10 @@ public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Up
             {
                 logger.LogWarning("Organization not found with Id: {OrganizationId}", command.Id);
                 return new UpdateOrganizationResult 
-            { 
-                Success = false,
-                Message = "Organization not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Organization not found."
+                };
             }
 
             logger.LogInformation("Updating organization entity with Id: {OrganizationId}", command.Id);

@@ -16,10 +16,10 @@ public sealed class CreateUserHandler(IApplicationDbContext dbContext, ILogger<C
             {
                 logger.LogWarning("User Id conflict for Id: {UserId}", command.Id);
                 return new CreateUserResult
-            {
-                Success = false,
-                Message = "this Id is already in use!"
-            };
+                {
+                    Success = false,
+                    Message = "this Id is already in use!"
+                };
             }
 
             logger.LogInformation("Validation passed, proceeding to create new user entity.");

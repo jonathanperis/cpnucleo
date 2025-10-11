@@ -19,10 +19,10 @@ public sealed class RemoveWorkflowHandler(IApplicationDbContext dbContext, ILogg
                 {
                     logger.LogWarning("Workflow not found with Id: {WorkflowId}", id);
                     return new RemoveWorkflowResult 
-            { 
-                Success = false,
-                Message = "Workflow not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "Workflow not found."
+                    };
                 }
 
                 logger.LogInformation("Removing workflow entity with Id: {WorkflowId}", id);
