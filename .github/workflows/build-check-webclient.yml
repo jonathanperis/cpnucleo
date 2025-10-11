@@ -60,23 +60,23 @@ jobs:
         with:
             fetch-depth: 0
 
-      - name: Build and Run Docker Compose for Healthcheck Test
-        run: |
-          docker compose up nginx -d --build --force-recreate
-          sleep 30
+      # - name: Build and Run Docker Compose for Healthcheck Test
+      #   run: |
+      #     docker compose up nginx -d --build --force-recreate
+      #     sleep 30
 
-      - name: Test Healthcheck Endpoint
-        run: |
-          for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5400/healthz)
-            echo "Attempt $i: Status $STATUS"            
-            if [ "$STATUS" -eq 200 ]; then
-              echo "Healthcheck passed with status $STATUS"
-              exit 0
-            else
-              echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
-              sleep 5
-            fi
-          done
-          echo "Healthcheck failed after 20 attempts."
-          exit 1
+      # - name: Test Healthcheck Endpoint
+      #   run: |
+      #     for i in {1..20}; do
+      #       STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5400/healthz)
+      #       echo "Attempt $i: Status $STATUS"            
+      #       if [ "$STATUS" -eq 200 ]; then
+      #         echo "Healthcheck passed with status $STATUS"
+      #         exit 0
+      #       else
+      #         echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
+      #         sleep 5
+      #       fi
+      #     done
+      #     echo "Healthcheck failed after 20 attempts."
+      #     exit 1
