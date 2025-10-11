@@ -19,10 +19,10 @@ public sealed class RemoveAssignmentTypeHandler(IApplicationDbContext dbContext,
                 {
                     logger.LogWarning("AssignmentType not found with Id: {AssignmentTypeId}", id);
                     return new RemoveAssignmentTypeResult 
-            { 
-                Success = false,
-                Message = "AssignmentType not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "AssignmentType not found."
+                    };
                 }
 
                 logger.LogInformation("Removing assignmentType entity with Id: {AssignmentTypeId}", id);

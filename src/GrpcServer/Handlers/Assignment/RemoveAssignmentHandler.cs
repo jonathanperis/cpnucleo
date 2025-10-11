@@ -19,10 +19,10 @@ public sealed class RemoveAssignmentHandler(IApplicationDbContext dbContext, ILo
                 {
                     logger.LogWarning("Assignment not found with Id: {AssignmentId}", id);
                     return new RemoveAssignmentResult 
-            { 
-                Success = false,
-                Message = "Assignment not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "Assignment not found."
+                    };
                 }
 
                 logger.LogInformation("Removing assignment entity with Id: {AssignmentId}", id);

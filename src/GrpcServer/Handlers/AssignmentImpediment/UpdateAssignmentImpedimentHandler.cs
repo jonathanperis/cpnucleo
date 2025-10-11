@@ -16,10 +16,10 @@ public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbCo
             {
                 logger.LogWarning("AssignmentImpediment not found with Id: {AssignmentImpedimentId}", command.Id);
                 return new UpdateAssignmentImpedimentResult 
-            { 
-                Success = false,
-                Message = "AssignmentImpediment not found."
-            };
+                { 
+                    Success = false,
+                    Message = "AssignmentImpediment not found."
+                };
             }
 
             logger.LogInformation("Updating assignmentImpediment entity with Id: {AssignmentImpedimentId}", command.Id);

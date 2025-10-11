@@ -19,10 +19,10 @@ public sealed class RemoveAssignmentImpedimentHandler(IApplicationDbContext dbCo
                 {
                     logger.LogWarning("AssignmentImpediment not found with Id: {AssignmentImpedimentId}", id);
                     return new RemoveAssignmentImpedimentResult 
-            { 
-                Success = false,
-                Message = "AssignmentImpediment not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "AssignmentImpediment not found."
+                    };
                 }
 
                 logger.LogInformation("Removing assignmentImpediment entity with Id: {AssignmentImpedimentId}", id);

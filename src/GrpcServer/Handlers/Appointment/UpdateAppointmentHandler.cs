@@ -16,10 +16,10 @@ public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, IL
             {
                 logger.LogWarning("Appointment not found with Id: {AppointmentId}", command.Id);
                 return new UpdateAppointmentResult 
-            { 
-                Success = false,
-                Message = "Appointment not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Appointment not found."
+                };
             }
 
             logger.LogInformation("Updating appointment entity with Id: {AppointmentId}", command.Id);

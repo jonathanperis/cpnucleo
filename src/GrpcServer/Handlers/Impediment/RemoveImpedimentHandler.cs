@@ -19,10 +19,10 @@ public sealed class RemoveImpedimentHandler(IApplicationDbContext dbContext, ILo
                 {
                     logger.LogWarning("Impediment not found with Id: {ImpedimentId}", id);
                     return new RemoveImpedimentResult 
-            { 
-                Success = false,
-                Message = "Impediment not found."
-            };
+                    { 
+                        Success = false,
+                        Message = "Impediment not found."
+                    };
                 }
 
                 logger.LogInformation("Removing impediment entity with Id: {ImpedimentId}", id);

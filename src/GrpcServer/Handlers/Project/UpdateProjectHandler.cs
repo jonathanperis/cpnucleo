@@ -16,10 +16,10 @@ public sealed class UpdateProjectHandler(IProjectRepository repository, ILogger<
             {
                 logger.LogWarning("Project not found with Id: {ProjectId}", command.Id);
                 return new UpdateProjectResult 
-            { 
-                Success = false,
-                Message = "Project not found."
-            };
+                { 
+                    Success = false,
+                    Message = "Project not found."
+                };
             }
 
             logger.LogInformation("Updating project entity with Id: {ProjectId}", command.Id);
