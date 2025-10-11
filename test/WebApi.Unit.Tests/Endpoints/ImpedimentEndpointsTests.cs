@@ -1,8 +1,3 @@
-using FakeItEasy;
-using FastEndpoints;
-using Shouldly;
-using Domain.Entities;
-using Domain.Models;
 using Infrastructure.Common.Context;
 using Microsoft.EntityFrameworkCore;
 
