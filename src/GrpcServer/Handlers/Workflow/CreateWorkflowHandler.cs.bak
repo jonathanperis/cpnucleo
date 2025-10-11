@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Workflow;
 
-// Dapper Repository Advanced
-public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<CreateWorkflowHandler> logger) : ICommandHandler<CreateWorkflowCommand, CreateWorkflowResult>
+// EF Core
+public sealed class CreateWorkflowHandler(IApplicationDbContext dbContext, ILogger<CreateWorkflowHandler> logger) : ICommandHandler<CreateWorkflowCommand, CreateWorkflowResult>
 {
     public async Task<CreateWorkflowResult> ExecuteAsync(CreateWorkflowCommand command, CancellationToken cancellationToken)
     {
@@ -10,8 +10,7 @@ public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Create
             logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {WorkflowId}", command.Name, command.Id);
 
             logger.LogInformation("Checking if an workflow entity exists with Id: {WorkflowId}", command.Id);
-            var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
-            var itemExists = await repository.ExistsAsync(command.Id);
+            var itemExists = dbContext.Workflows!.Any(x => x.Id == command.Id);
 
             if (itemExists)
             {
@@ -28,13 +27,13 @@ public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Create
             logger.LogInformation("Created new workflow entity with Id: {WorkflowId}", newItem.Id);
 
             logger.LogInformation("Adding workflow to repository.");
-            var createdId = await repository.AddAsync(newItem);
+            await dbContext.Workflows!.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
-            await unitOfWork.CommitAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Fetching workflow by Id: {WorkflowId}", newItem.Id);
-            var createdItem = await repository.GetByIdAsync(newItem.Id);
+            var createdItem = await dbContext.Workflows!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
 
             var result = new CreateWorkflowResult
             {
@@ -49,8 +48,7 @@ public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Create
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
-            await unitOfWork.RollbackAsync(cancellationToken);
+            logger.LogError(ex, "An error occurred while processing the command.");
             throw;
         }
     }

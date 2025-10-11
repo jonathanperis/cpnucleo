@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.UserProject;
 
-// Dapper Repository Advanced
-public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<CreateUserProjectHandler> logger) : ICommandHandler<CreateUserProjectCommand, CreateUserProjectResult>
+// EF Core
+public sealed class CreateUserProjectHandler(IApplicationDbContext dbContext, ILogger<CreateUserProjectHandler> logger) : ICommandHandler<CreateUserProjectCommand, CreateUserProjectResult>
 {
     public async Task<CreateUserProjectResult> ExecuteAsync(CreateUserProjectCommand command, CancellationToken cancellationToken)
     {
@@ -10,8 +10,7 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
             logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserProjectId: {UserProjectId}, Id: {Id}", command.UserId, command.ProjectId, command.Id);
 
             logger.LogInformation("Checking if an userProject entity exists with Id: {UserProjectId}", command.Id);
-            var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
-            var itemExists = await repository.ExistsAsync(command.Id);
+            var itemExists = dbContext.UserProjects!.Any(x => x.Id == command.Id);
 
             if (itemExists)
             {
@@ -28,13 +27,13 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
             logger.LogInformation("Created new userProject entity with Id: {UserProjectId}", newItem.Id);
 
             logger.LogInformation("Adding userProject to repository.");
-            var createdId = await repository.AddAsync(newItem);
+            await dbContext.UserProjects!.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
-            await unitOfWork.CommitAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Fetching userProject by Id: {UserProjectId}", newItem.Id);
-            var createdItem = await repository.GetByIdAsync(newItem.Id);
+            var createdItem = await dbContext.UserProjects!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
 
             var result = new CreateUserProjectResult
             {
@@ -49,8 +48,7 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
-            await unitOfWork.RollbackAsync(cancellationToken);
+            logger.LogError(ex, "An error occurred while processing the command.");
             throw;
         }
     }
