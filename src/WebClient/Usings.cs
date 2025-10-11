@@ -1,0 +1,10 @@
+global using MudBlazor;
+global using MudBlazor.Services;
+global using MudBlazor.Translations;
+global using OpenTelemetry.Instrumentation.AspNetCore;
+global using OpenTelemetry.Logs;
+global using OpenTelemetry.Metrics;
+global using OpenTelemetry.Resources;
+global using OpenTelemetry.Trace;
+global using WebClient.Components;
+global using WebClient.ServiceExtensions;

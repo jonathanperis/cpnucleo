@@ -1,10 +1,4 @@
-using OpenTelemetry.Instrumentation.AspNetCore;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-
-namespace WebClient.Configurations;
+namespace WebClient.ServiceExtensions;
 
 public static class ConfigureOpenTelemetryOptions
 {
@@ -33,7 +27,7 @@ public static class ConfigureOpenTelemetryOptions
             {
                 mpb
                     .AddProcessInstrumentation()
-                    .AddRuntimeInstrumentation()      
+                    .AddRuntimeInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddAspNetCoreInstrumentation();
 
@@ -63,15 +57,15 @@ public static class ConfigureOpenTelemetryOptions
             });
 
             // Add the Console exporter for local debugging.
-            options.AddConsoleExporter();    
+            options.AddConsoleExporter();
         });
-        
+
         return builder;
 
         // Build a resource configuration action to set service information.
-        void ConfigureResource(ResourceBuilder r) => 
-                r.AddService(serviceName: builder.Configuration.GetValue("ServiceName", defaultValue: "otel-test")!, 
-                             serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown", 
+        void ConfigureResource(ResourceBuilder r) =>
+                r.AddService(serviceName: builder.Configuration.GetValue("ServiceName", defaultValue: "otel-test"),
+                             serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown",
                              serviceInstanceId: Environment.MachineName);
     }
 }
