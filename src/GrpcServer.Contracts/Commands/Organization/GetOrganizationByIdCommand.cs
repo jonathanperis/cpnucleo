@@ -15,7 +15,17 @@ public class GetOrganizationByIdCommand : ICommand<GetOrganizationByIdResult>
 /// Result model for the organization fetched by its unique identifier.
 /// </summary>
 public class GetOrganizationByIdResult
-{   
+{
+    /// <summary>
+    /// Gets or sets a value indicating whether the fetch was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
     /// <summary>
     /// Gets or sets the organization details.
     /// </summary>
