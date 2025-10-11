@@ -1,16 +1,17 @@
 namespace GrpcServer.Handlers.AssignmentType;
 
-// EF Core
-public sealed class CreateAssignmentTypeHandler(IApplicationDbContext dbContext, ILogger<CreateAssignmentTypeHandler> logger) : ICommandHandler<CreateAssignmentTypeCommand, CreateAssignmentTypeResult>
+// Dapper Repository Advanced
+public sealed class CreateAssignmentTypeHandler(IUnitOfWork unitOfWork, ILogger<CreateAssignmentTypeHandler> logger) : ICommandHandler<CreateAssignmentTypeCommand, CreateAssignmentTypeResult>
 {
     public async Task<CreateAssignmentTypeResult> ExecuteAsync(CreateAssignmentTypeCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AssignmentTypeId}", command.Name, command.Id);
+
         try
         {
-            logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AssignmentTypeId}", command.Name, command.Id);
-
             logger.LogInformation("Checking if an assignmentType entity exists with Id: {AssignmentTypeId}", command.Id);
-            var itemExists = dbContext.AssignmentTypes!.Any(x => x.Id == command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentType>();
+            var itemExists = await repository.ExistsAsync(command.Id);
 
             if (itemExists)
             {
@@ -26,14 +27,17 @@ public sealed class CreateAssignmentTypeHandler(IApplicationDbContext dbContext,
             var newItem = Domain.Entities.AssignmentType.Create(command.Name, command.Id);
             logger.LogInformation("Created new assignmentType entity with Id: {AssignmentTypeId}", newItem.Id);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Adding assignmentType to repository.");
-            await dbContext.AssignmentTypes!.AddAsync(newItem, cancellationToken);
+            var createdId = await repository.AddAsync(newItem);
 
             logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Fetching assignmentType by Id: {AssignmentTypeId}", newItem.Id);
-            var createdItem = await dbContext.AssignmentTypes!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+            logger.LogInformation("Fetching assignmentType by Id: {AssignmentTypeId}", createdId);
+            var createdItem = await repository.GetByIdAsync(createdId);
 
             var result = new CreateAssignmentTypeResult
             {
@@ -48,7 +52,8 @@ public sealed class CreateAssignmentTypeHandler(IApplicationDbContext dbContext,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

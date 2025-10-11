@@ -1,16 +1,17 @@
 namespace GrpcServer.Handlers.AssignmentImpediment;
 
-// EF Core
-public sealed class CreateAssignmentImpedimentHandler(IApplicationDbContext dbContext, ILogger<CreateAssignmentImpedimentHandler> logger) : ICommandHandler<CreateAssignmentImpedimentCommand, CreateAssignmentImpedimentResult>
+// Dapper Repository Advanced
+public sealed class CreateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, ILogger<CreateAssignmentImpedimentHandler> logger) : ICommandHandler<CreateAssignmentImpedimentCommand, CreateAssignmentImpedimentResult>
 {
     public async Task<CreateAssignmentImpedimentResult> ExecuteAsync(CreateAssignmentImpedimentCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Service started processing request with payload Description: {Description}, Id: {AssignmentImpedimentId}", command.Description, command.Id);
+
         try
         {
-            logger.LogInformation("Service started processing request with payload Description: {Description}, Id: {AssignmentImpedimentId}", command.Description, command.Id);
-
             logger.LogInformation("Checking if an assignmentImpediment entity exists with Id: {AssignmentImpedimentId}", command.Id);
-            var itemExists = dbContext.AssignmentImpediments!.Any(x => x.Id == command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
+            var itemExists = await repository.ExistsAsync(command.Id);
 
             if (itemExists)
             {
@@ -26,14 +27,17 @@ public sealed class CreateAssignmentImpedimentHandler(IApplicationDbContext dbCo
             var newItem = Domain.Entities.AssignmentImpediment.Create(command.Description, command.AssignmentId, command.ImpedimentId, command.Id);
             logger.LogInformation("Created new assignmentImpediment entity with Id: {AssignmentImpedimentId}", newItem.Id);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Adding assignmentImpediment to repository.");
-            await dbContext.AssignmentImpediments!.AddAsync(newItem, cancellationToken);
+            var createdId = await repository.AddAsync(newItem);
 
             logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Fetching assignmentImpediment by Id: {AssignmentImpedimentId}", newItem.Id);
-            var createdItem = await dbContext.AssignmentImpediments!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+            logger.LogInformation("Fetching assignmentImpediment by Id: {AssignmentImpedimentId}", createdId);
+            var createdItem = await repository.GetByIdAsync(createdId);
 
             var result = new CreateAssignmentImpedimentResult
             {
@@ -48,7 +52,8 @@ public sealed class CreateAssignmentImpedimentHandler(IApplicationDbContext dbCo
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

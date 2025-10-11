@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.AssignmentImpediment;
 
-// EF Core
-public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbContext, ILogger<UpdateAssignmentImpedimentHandler> logger) : ICommandHandler<UpdateAssignmentImpedimentCommand, UpdateAssignmentImpedimentResult>
+// Dapper Repository Advanced
+public sealed class UpdateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, ILogger<UpdateAssignmentImpedimentHandler> logger) : ICommandHandler<UpdateAssignmentImpedimentCommand, UpdateAssignmentImpedimentResult>
 {
     public async Task<UpdateAssignmentImpedimentResult> ExecuteAsync(UpdateAssignmentImpedimentCommand command, CancellationToken cancellationToken)
     {
@@ -10,7 +10,8 @@ public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbCo
         try
         {
             logger.LogInformation("Checking if an assignmentImpediment entity exists with Id: {AssignmentImpedimentId}", command.Id);
-            var item = await dbContext.AssignmentImpediments!.FindAsync([command.Id, cancellationToken], cancellationToken: cancellationToken);
+            var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
+            var item = await repository.GetByIdAsync(command.Id);
 
             if (item is null)
             {
@@ -26,9 +27,12 @@ public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbCo
             Domain.Entities.AssignmentImpediment.Update(item, command.Description, command.AssignmentId, command.ImpedimentId);
 
             logger.LogInformation("Updating entity in repository.");
-            var success = await dbContext.SaveChangesAsync(cancellationToken);
+            var success = await repository.UpdateAsync(item);
 
             logger.LogInformation("Update result: {Success}", success);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
             logger.LogInformation("Service completed successfully.");
 
             return new UpdateAssignmentImpedimentResult 
@@ -39,7 +43,8 @@ public sealed class UpdateAssignmentImpedimentHandler(IApplicationDbContext dbCo
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

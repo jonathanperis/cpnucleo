@@ -1,16 +1,17 @@
 namespace GrpcServer.Handlers.User;
 
-// EF Core
-public sealed class CreateUserHandler(IApplicationDbContext dbContext, ILogger<CreateUserHandler> logger) : ICommandHandler<CreateUserCommand, CreateUserResult>
+// Dapper Repository Advanced
+public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger) : ICommandHandler<CreateUserCommand, CreateUserResult>
 {
     public async Task<CreateUserResult> ExecuteAsync(CreateUserCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", command.Name, command.Id);
+
         try
         {
-            logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", command.Name, command.Id);
-
             logger.LogInformation("Checking if an user entity exists with Id: {UserId}", command.Id);
-            var itemExists = dbContext.Users!.Any(x => x.Id == command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.User>();
+            var itemExists = await repository.ExistsAsync(command.Id);
 
             if (itemExists)
             {
@@ -26,14 +27,17 @@ public sealed class CreateUserHandler(IApplicationDbContext dbContext, ILogger<C
             var newItem = Domain.Entities.User.Create(command.Name, command.Login, command.Password, command.Id);
             logger.LogInformation("Created new user entity with Id: {UserId}", newItem.Id);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Adding user to repository.");
-            await dbContext.Users!.AddAsync(newItem, cancellationToken);
+            var createdId = await repository.AddAsync(newItem);
 
             logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Fetching user by Id: {UserId}", newItem.Id);
-            var createdItem = await dbContext.Users!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+            logger.LogInformation("Fetching user by Id: {UserId}", createdId);
+            var createdItem = await repository.GetByIdAsync(createdId);
 
             var result = new CreateUserResult
             {
@@ -48,7 +52,8 @@ public sealed class CreateUserHandler(IApplicationDbContext dbContext, ILogger<C
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }
