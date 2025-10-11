@@ -1,15 +1,3 @@
-using GrpcServer.Handlers.Appointment;
-using GrpcServer.Handlers.Assignment;
-using GrpcServer.Handlers.AssignmentImpediment;
-using GrpcServer.Handlers.AssignmentType;
-using GrpcServer.Handlers.Impediment;
-using GrpcServer.Handlers.Organization;
-using GrpcServer.Handlers.Project;
-using GrpcServer.Handlers.User;
-using GrpcServer.Handlers.UserAssignment;
-using GrpcServer.Handlers.UserProject;
-using GrpcServer.Handlers.Workflow;
-
 var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(logging =>
