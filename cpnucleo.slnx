@@ -1,15 +1,15 @@
 ﻿<Solution>
   <Folder Name="/src/">
     <Project Path="src\Domain\Domain.csproj" />
-    <Project Path="src\GrpcServer.Contracts\GrpcServer.Contracts.csproj" Type="Classic C#" />
-    <Project Path="src\GrpcServer\GrpcServer.csproj" Type="Classic C#" />
-    <Project Path="src\IdentityApi\IdentityApi.csproj" Type="Classic C#" />
+    <Project Path="src\GrpcServer.Contracts\GrpcServer.Contracts.csproj" />
+    <Project Path="src\GrpcServer\GrpcServer.csproj" />
+    <Project Path="src\IdentityApi\IdentityApi.csproj" />
     <Project Path="src\Infrastructure\Infrastructure.csproj" />
     <Project Path="src\WebApi\WebApi.csproj" />
-    <Project Path="src\WebClient\WebClient.csproj" Type="Classic C#" />
+    <Project Path="src\WebClient\WebClient.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test\Architecture.Tests\Architecture.Tests.csproj" />
-    <Project Path="test\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" Type="Classic C#" />
+    <Project Path="test\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" />
   </Folder>
 </Solution>
