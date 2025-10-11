@@ -1,5 +1,8 @@
 global using System.Diagnostics.CodeAnalysis;
 global using Domain.Entities;
+global using Domain.Models;
+global using Domain.Repositories;
+global using Domain.UoW;
 global using FastEndpoints;
 global using GrpcServer.Common.Mappings;
 global using GrpcServer.Contracts.Commands.Appointment;
