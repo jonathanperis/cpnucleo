@@ -1,9 +1,3 @@
-using MudBlazor;
-using MudBlazor.Services;
-using MudBlazor.Translations;
-using WebClient.Components;
-using WebClient.Configurations;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureOpenTelemetry();
