@@ -29,6 +29,9 @@ public sealed class UpdateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Upd
                                                command.AmountHours,
                                                command.AssignmentId,
                                                command.UserId);
+            
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
 
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);

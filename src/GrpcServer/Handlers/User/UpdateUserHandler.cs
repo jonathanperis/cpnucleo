@@ -26,6 +26,9 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
             logger.LogInformation("Updating user entity with Id: {UserId}", command.Id);
             Domain.Entities.User.Update(item, command.Name, command.Password);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 
