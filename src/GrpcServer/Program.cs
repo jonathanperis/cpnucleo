@@ -68,7 +68,7 @@ builder.Services.AddHealthChecks();
 
 // Accept only HTTP/2 to allow insecure connections for development.
 builder.WebHost
-    .ConfigureKestrel(o => o.ListenLocalhost(6000, o => o.Protocols = HttpProtocols.Http2));
+    .ConfigureKestrel(o => o.ListenLocalhost(5020, o => o.Protocols = HttpProtocols.Http2));
 
 builder.AddHandlerServer();
 
