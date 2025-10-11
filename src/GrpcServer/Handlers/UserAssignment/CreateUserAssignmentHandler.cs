@@ -1,16 +1,17 @@
 namespace GrpcServer.Handlers.UserAssignment;
 
-// EF Core
-public sealed class CreateUserAssignmentHandler(IApplicationDbContext dbContext, ILogger<CreateUserAssignmentHandler> logger) : ICommandHandler<CreateUserAssignmentCommand, CreateUserAssignmentResult>
+// Dapper Repository Advanced
+public sealed class CreateUserAssignmentHandler(IUnitOfWork unitOfWork, ILogger<CreateUserAssignmentHandler> logger) : ICommandHandler<CreateUserAssignmentCommand, CreateUserAssignmentResult>
 {
     public async Task<CreateUserAssignmentResult> ExecuteAsync(CreateUserAssignmentCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", command.UserId, command.AssignmentId, command.Id);
+
         try
         {
-            logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", command.UserId, command.AssignmentId, command.Id);
-
             logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", command.Id);
-            var itemExists = dbContext.UserAssignments!.Any(x => x.Id == command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.UserAssignment>();
+            var itemExists = await repository.ExistsAsync(command.Id);
 
             if (itemExists)
             {
@@ -26,14 +27,17 @@ public sealed class CreateUserAssignmentHandler(IApplicationDbContext dbContext,
             var newItem = Domain.Entities.UserAssignment.Create(command.UserId, command.AssignmentId, command.Id);
             logger.LogInformation("Created new userAssignment entity with Id: {UserAssignmentId}", newItem.Id);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Adding userAssignment to repository.");
-            await dbContext.UserAssignments!.AddAsync(newItem, cancellationToken);
+            var createdId = await repository.AddAsync(newItem);
 
             logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Fetching userAssignment by Id: {UserAssignmentId}", newItem.Id);
-            var createdItem = await dbContext.UserAssignments!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+            logger.LogInformation("Fetching userAssignment by Id: {UserAssignmentId}", createdId);
+            var createdItem = await repository.GetByIdAsync(createdId);
 
             var result = new CreateUserAssignmentResult
             {
@@ -48,7 +52,8 @@ public sealed class CreateUserAssignmentHandler(IApplicationDbContext dbContext,
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

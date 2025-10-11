@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Appointment;
 
-// EF Core
-public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, ILogger<RemoveAppointmentHandler> logger) : ICommandHandler<RemoveAppointmentCommand, RemoveAppointmentResult>
+// Dapper Repository Advanced
+public sealed class RemoveAppointmentHandler(IUnitOfWork unitOfWork, ILogger<RemoveAppointmentHandler> logger) : ICommandHandler<RemoveAppointmentCommand, RemoveAppointmentResult>
 {
     public async Task<RemoveAppointmentResult> ExecuteAsync(RemoveAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -9,15 +9,20 @@ public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, IL
 
         try
         {
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+
             logger.LogInformation("Checking if appointment entities exist for Ids: {AppointmentIds}", string.Join(",", command.Ids));
+            var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
             var allSuccess = true;
 
             foreach (var id in command.Ids)
             {
-                var item = await dbContext.Appointments!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+                var item = await repository.GetByIdAsync(id);
                 if (item is null)
                 {
                     logger.LogWarning("Appointment not found with Id: {AppointmentId}", id);
+                    await unitOfWork.RollbackAsync(cancellationToken);
                     return new RemoveAppointmentResult 
                     { 
                         Success = false,
@@ -28,18 +33,27 @@ public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, IL
                 logger.LogInformation("Removing appointment entity with Id: {AppointmentId}", id);
                 Domain.Entities.Appointment.Remove(item);
 
-                logger.LogInformation("Updating repository for removed entity {AppointmentId}.", id);
-                var result = await dbContext.SaveChangesAsync(cancellationToken);
+                logger.LogInformation("Deleting appointment entity from repository with Id: {AppointmentId}.", id);
+                var result = await repository.DeleteAsync(id);
 
                 if (!result) allSuccess = false;
             }
 
             if (!allSuccess)
             {
-                logger.LogWarning("One or more deletions failed.");
+                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                await unitOfWork.RollbackAsync(cancellationToken);
+                return new RemoveAppointmentResult 
+                { 
+                    Success = false,
+                    Message = "Appointment not found."
+                };
             }
 
             logger.LogInformation("Remove result: {Success}", allSuccess);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
             logger.LogInformation("Service completed successfully.");
 
             return new RemoveAppointmentResult 
@@ -50,7 +64,8 @@ public sealed class RemoveAppointmentHandler(IApplicationDbContext dbContext, IL
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

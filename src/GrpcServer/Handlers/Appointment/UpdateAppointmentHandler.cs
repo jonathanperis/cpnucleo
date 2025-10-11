@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Appointment;
 
-// EF Core
-public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, ILogger<UpdateAppointmentHandler> logger) : ICommandHandler<UpdateAppointmentCommand, UpdateAppointmentResult>
+// Dapper Repository Advanced
+public sealed class UpdateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<UpdateAppointmentHandler> logger) : ICommandHandler<UpdateAppointmentCommand, UpdateAppointmentResult>
 {
     public async Task<UpdateAppointmentResult> ExecuteAsync(UpdateAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -10,7 +10,8 @@ public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, IL
         try
         {
             logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", command.Id);
-            var item = await dbContext.Appointments!.FindAsync([command.Id, cancellationToken], cancellationToken: cancellationToken);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
+            var item = await repository.GetByIdAsync(command.Id);
 
             if (item is null)
             {
@@ -23,17 +24,19 @@ public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, IL
             }
 
             logger.LogInformation("Updating appointment entity with Id: {AppointmentId}", command.Id);
-            Domain.Entities.Appointment.Update(item,
-                                               command.Description,
+            Domain.Entities.Appointment.Update(item, command.Description,
                                                command.KeepDate,
                                                command.AmountHours,
                                                command.AssignmentId,
                                                command.UserId);
 
             logger.LogInformation("Updating entity in repository.");
-            var success = await dbContext.SaveChangesAsync(cancellationToken);
+            var success = await repository.UpdateAsync(item);
 
             logger.LogInformation("Update result: {Success}", success);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
             logger.LogInformation("Service completed successfully.");
 
             return new UpdateAppointmentResult 
@@ -44,7 +47,8 @@ public sealed class UpdateAppointmentHandler(IApplicationDbContext dbContext, IL
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }

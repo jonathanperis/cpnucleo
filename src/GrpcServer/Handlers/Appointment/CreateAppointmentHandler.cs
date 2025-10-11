@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Appointment;
 
-// EF Core
-public sealed class CreateAppointmentHandler(IApplicationDbContext dbContext, ILogger<CreateAppointmentHandler> logger) : ICommandHandler<CreateAppointmentCommand, CreateAppointmentResult>
+// Dapper Repository Advanced
+public sealed class CreateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<CreateAppointmentHandler> logger) : ICommandHandler<CreateAppointmentCommand, CreateAppointmentResult>
 {
     public async Task<CreateAppointmentResult> ExecuteAsync(CreateAppointmentCommand command, CancellationToken cancellationToken)
     {
@@ -10,7 +10,8 @@ public sealed class CreateAppointmentHandler(IApplicationDbContext dbContext, IL
             logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AppointmentId}", command.Name, command.Id);
 
             logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", command.Id);
-            var itemExists = dbContext.Appointments!.Any(x => x.Id == command.Id);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
+            var itemExists = await repository.ExistsAsync(command.Id);
 
             if (itemExists)
             {
@@ -32,13 +33,13 @@ public sealed class CreateAppointmentHandler(IApplicationDbContext dbContext, IL
             logger.LogInformation("Created new appointment entity with Id: {AppointmentId}", newItem.Id);
 
             logger.LogInformation("Adding appointment to repository.");
-            await dbContext.Appointments!.AddAsync(newItem, cancellationToken);
+            var createdId = await repository.AddAsync(newItem);
 
             logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Fetching appointment by Id: {AppointmentId}", newItem.Id);
-            var createdItem = await dbContext.Appointments!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
+            var createdItem = await repository.GetByIdAsync(newItem.Id);
 
             var result = new CreateAppointmentResult
             {
@@ -53,7 +54,8 @@ public sealed class CreateAppointmentHandler(IApplicationDbContext dbContext, IL
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }
