@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.Impediment;
 
-// EF Core
-public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILogger<UpdateImpedimentHandler> logger) : ICommandHandler<UpdateImpedimentCommand, UpdateImpedimentResult>
+// Dapper Repository Advanced
+public sealed class UpdateImpedimentHandler(IUnitOfWork unitOfWork, ILogger<UpdateImpedimentHandler> logger) : ICommandHandler<UpdateImpedimentCommand, UpdateImpedimentResult>
 {
     public async Task<UpdateImpedimentResult> ExecuteAsync(UpdateImpedimentCommand command, CancellationToken cancellationToken)
     {
@@ -10,7 +10,8 @@ public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILo
         try
         {
             logger.LogInformation("Checking if an impediment entity exists with Id: {ImpedimentId}", command.Id);
-            var item = await dbContext.Impediments!.FindAsync([command.Id, cancellationToken], cancellationToken: cancellationToken);
+            var repository = unitOfWork.GetRepository<Domain.Entities.Impediment>();
+            var item = await repository.GetByIdAsync(command.Id);
 
             if (item is null)
             {
@@ -26,9 +27,12 @@ public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILo
             Domain.Entities.Impediment.Update(item, command.Name);
 
             logger.LogInformation("Updating entity in repository.");
-            var success = await dbContext.SaveChangesAsync(cancellationToken);
+            var success = await repository.UpdateAsync(item);
 
             logger.LogInformation("Update result: {Success}", success);
+            logger.LogInformation("Committing transaction.");
+            await unitOfWork.CommitAsync(cancellationToken);
+
             logger.LogInformation("Service completed successfully.");
 
             return new UpdateImpedimentResult 
@@ -39,7 +43,8 @@ public sealed class UpdateImpedimentHandler(IApplicationDbContext dbContext, ILo
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing the command.");
+            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
     }
