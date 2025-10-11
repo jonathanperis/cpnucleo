@@ -26,6 +26,9 @@ public sealed class UpdateAssignmentTypeHandler(IUnitOfWork unitOfWork, ILogger<
             logger.LogInformation("Updating assignmentType entity with Id: {AssignmentTypeId}", command.Id);
             Domain.Entities.AssignmentType.Update(item, command.Name);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 

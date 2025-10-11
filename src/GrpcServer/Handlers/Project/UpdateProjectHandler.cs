@@ -26,6 +26,9 @@ public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateP
             logger.LogInformation("Updating project entity with Id: {ProjectId}", command.Id);
             Domain.Entities.Project.Update(item, command.Name, command.OrganizationId);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync();
+            
             logger.LogInformation("Updating entity in repository.");
             var success = await repository.UpdateAsync(item);
 
