@@ -17,6 +17,16 @@ public class GetUserAssignmentByIdCommand : ICommand<GetUserAssignmentByIdResult
 public class GetUserAssignmentByIdResult
 {
     /// <summary>
+    /// Gets or sets a value indicating whether the fetch was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
+    /// <summary>
     /// Gets or sets the userAssignment details.
     /// </summary>
     public UserAssignmentDto? UserAssignment { get; set; }

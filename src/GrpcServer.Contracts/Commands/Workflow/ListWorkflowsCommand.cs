@@ -17,6 +17,16 @@ public class ListWorkflowsCommand : ICommand<ListWorkflowsResult>
 public class ListWorkflowsResult
 {
     /// <summary>
+    /// Gets or sets a value indicating whether the list was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
+    /// <summary>
     /// Gets or sets the paginated result of workflows.
     /// </summary>
     public required PaginatedResult<WorkflowDto?> Result { get; set; }

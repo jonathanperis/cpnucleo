@@ -14,12 +14,18 @@ public sealed class GetAppointmentByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
         if (item is null)
         {
             logger.LogWarning("Appointment not found with Id: {AppointmentId}", command.Id);
-            return new GetAppointmentByIdResult();
+            return new GetAppointmentByIdResult
+            {
+                Success = false,
+                Message = "Appointment not found."
+            };
         }
 
         logger.LogInformation("Mapping entity to DTO and setting response for Id: {AppointmentId}", command.Id);
         var result = new GetAppointmentByIdResult
         {
+            Success = true,
+            Message = "Appointment fetched successfully.",
             Appointment = item.MapToDto()
         };
 

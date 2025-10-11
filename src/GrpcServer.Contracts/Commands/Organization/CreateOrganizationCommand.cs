@@ -27,6 +27,16 @@ public class CreateOrganizationCommand : ICommand<CreateOrganizationResult>
 public class CreateOrganizationResult
 {
     /// <summary>
+    /// Gets or sets a value indicating whether the creation was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
+    /// <summary>
     /// Gets or sets the created organization.
     /// </summary>
     public OrganizationDto? Organization { get; set; }

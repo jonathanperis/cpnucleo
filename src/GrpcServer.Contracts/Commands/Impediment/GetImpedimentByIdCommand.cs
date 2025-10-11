@@ -17,6 +17,16 @@ public class GetImpedimentByIdCommand : ICommand<GetImpedimentByIdResult>
 public class GetImpedimentByIdResult
 {
     /// <summary>
+    /// Gets or sets a value indicating whether the fetch was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
+    /// <summary>
     /// Gets or sets the impediment details.
     /// </summary>
     public ImpedimentDto? Impediment { get; set; }

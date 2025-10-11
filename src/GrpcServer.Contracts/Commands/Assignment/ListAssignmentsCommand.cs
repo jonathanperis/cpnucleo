@@ -17,6 +17,16 @@ public class ListAssignmentsCommand : ICommand<ListAssignmentsResult>
 public class ListAssignmentsResult
 {
     /// <summary>
+    /// Gets or sets a value indicating whether the list was successful.
+    /// </summary>
+    public bool Success { get; set; }
+
+    /// <summary>
+    /// Gets or sets a message providing additional information about the result.
+    /// </summary>
+    public string Message { get; set; }
+    
+    /// <summary>
     /// Gets or sets the paginated result of assignments.
     /// </summary>
     public required PaginatedResult<AssignmentDto?> Result { get; set; }

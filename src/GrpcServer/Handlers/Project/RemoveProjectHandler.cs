@@ -25,7 +25,7 @@ public sealed class RemoveProjectHandler(IProjectRepository repository, ILogger<
                 Domain.Entities.Project.Remove(item);
 
                 logger.LogInformation("Deleting entity from repository {ProjectId}.", id);
-                var result = await repository.DeleteAsync(item);
+                var result = await repository.DeleteAsync(id);
 
                 if (!result) allSuccess = false;
             }
