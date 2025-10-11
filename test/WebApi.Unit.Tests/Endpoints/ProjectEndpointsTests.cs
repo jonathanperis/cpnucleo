@@ -1,15 +1,3 @@
-using FakeItEasy;
-using FastEndpoints;
-using Shouldly;
-using WebApi.Endpoints.Project.CreateProject;
-using WebApi.Endpoints.Project.GetProjectById;
-using WebApi.Endpoints.Project.ListProjects;
-using WebApi.Endpoints.Project.RemoveProject;
-using WebApi.Endpoints.Project.UpdateProject;
-using Domain.Repositories;
-using Domain.Models;
-using Domain.Entities;
-
 namespace WebApi.Unit.Tests.Endpoints;
 
 [TestFixture]

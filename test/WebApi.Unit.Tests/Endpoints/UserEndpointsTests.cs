@@ -1,10 +1,3 @@
-using FakeItEasy;
-using FastEndpoints;
-using Shouldly;
-using Domain.UoW;
-using Domain.Repositories;
-using Domain.Models;
-using Domain.Entities;
 using Infrastructure.Common.Context;
 using Microsoft.EntityFrameworkCore;
 
