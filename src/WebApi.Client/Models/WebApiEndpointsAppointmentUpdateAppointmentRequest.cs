@@ -65,7 +65,7 @@ namespace Cpnucleo.WebApi.Client.Models
             AssignmentId = "35f1a233-e070-4205-909d-0eaabf89aec4";
             Description = "Updated Appointment description goes here";
             Id = "80aee820-ce09-4023-b62c-3a42ff4535b0";
-            KeepDate = "2069-04-20";
+            KeepDate = DateTimeOffset.Parse("2069-04-20");
             Name = "Updated Appointment";
             UserId = "35b9c5c1-6abf-4d50-aee8-00abe2f09560";
         }
