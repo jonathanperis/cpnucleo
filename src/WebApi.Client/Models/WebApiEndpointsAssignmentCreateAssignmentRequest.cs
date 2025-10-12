@@ -82,11 +82,11 @@ namespace Cpnucleo.WebApi.Client.Models
         {
             AssignmentTypeId = "6364cf0d-e617-494b-b489-36487a8427f2";
             Description = "Assignment Description goes here";
-            EndDate = "2064-06-09";
+            EndDate = DateTimeOffset.Parse("2064-06-09");
             Id = "35f1a233-e070-4205-909d-0eaabf89aec4";
             Name = "New Assignment";
             ProjectId = "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9";
-            StartDate = "2064-06-09";
+            StartDate = DateTimeOffset.Parse("2064-06-09");
             UserId = "35b9c5c1-6abf-4d50-aee8-00abe2f09560";
             WorkflowId = "873eea4b-55c9-46a6-9512-4d59a77ad28b";
         }
