@@ -20,9 +20,14 @@ builder.Services.AddHttpClient<Cpnucleo.WebApi.Client.WebApiClient>((serviceProv
     var baseUrl = configuration.GetValue<string>("WebApiBaseUrl") ?? "http://localhost:5020";
     client.BaseAddress = new Uri(baseUrl);
 })
-.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+.ConfigurePrimaryHttpMessageHandler(() =>
 {
-    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    var handler = new HttpClientHandler();
+    if (builder.Environment.IsDevelopment())
+    {
+        handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+    }
+    return handler;
 });
 
 builder.Services.AddScoped<Cpnucleo.WebApi.Client.WebApiClient>(sp =>
