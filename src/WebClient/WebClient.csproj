@@ -34,6 +34,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.20.1" />
+		<PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.20.1" />
 		<PackageReference Include="MudBlazor" Version="8.13.0" />
 		<PackageReference Include="MudBlazor.Translations" Version="2.6.0" />
 	</ItemGroup>
