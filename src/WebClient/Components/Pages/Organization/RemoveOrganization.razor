@@ -1,10 +1,13 @@
+@using Cpnucleo.WebApi.Client
+@using Cpnucleo.WebApi.Client.Models
 @inject ISnackbar Snackbar
+@inject WebApiClient ApiClient
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Remove" Class="mr-3 mb-n1"/>
-            Remove Weather
+            Remove Organization
         </MudText>
     </TitleContent>    
     <DialogContent>
@@ -12,7 +15,17 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Error" OnClick="Confirm">Confirm</MudButton>
+        <MudButton Color="Color.Error" OnClick="Confirm" Disabled="@_isDeleting">
+            @if (_isDeleting)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Deleting...</MudText>
+            }
+            else
+            {
+                <MudText>Confirm</MudText>
+            }
+        </MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -20,15 +33,49 @@
     [CascadingParameter]
     private IMudDialogInstance? MudDialog { get; set; }
 
+    [Parameter]
+    public List<string> OrganizationIds { get; set; } = new();
+
+    private bool _isDeleting;
+
     private void Cancel() => MudDialog?.Cancel();
 
-    private void Confirm()
+    private async Task Confirm()
     {
-        // TODO: Send value to Api.
-        
-        Snackbar.Clear();
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
-        Snackbar.Add("Weather Removed Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
-        MudDialog?.Close(DialogResult.Ok(true));
+        _isDeleting = true;
+        try
+        {
+            // Send value to Api
+            var request = new WebApiEndpointsOrganizationRemoveOrganizationRequest
+            {
+                Ids = OrganizationIds
+            };
+
+            var response = await ApiClient.Api.Organization.DeleteAsync(request);
+            
+            if (response != null)
+            {
+                Snackbar.Clear();
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+                Snackbar.Add("Organization(s) Removed Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+                MudDialog?.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                Snackbar.Clear();
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+                Snackbar.Add("Failed to remove organization(s)", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add($"Error removing organization(s): {ex.Message}", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+        }
+        finally
+        {
+            _isDeleting = false;
+        }
     }
 }

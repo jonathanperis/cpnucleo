@@ -1,23 +1,35 @@
+@using Cpnucleo.WebApi.Client
+@using Cpnucleo.WebApi.Client.Models
 @inject ISnackbar Snackbar
+@inject WebApiClient ApiClient
 
-<EditForm Model="@Item" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>
     <MudDialog>
         <TitleContent>
             <MudText Typo="Typo.h6">
                 <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1"/>
-                Edit Weather
+                Edit Organization
             </MudText>
         </TitleContent>
         <DialogContent>
-            <MudTextField Label="Weather ID" HelperText="Valid Guid" Value="@Item.Id.ToString()" ReadOnly="true"/>
-            <MudTextField Label="Date" Required="true" RequiredError="Date is required!" @bind-Value="Item.Date" />
-            <MudTextField Label="Temp. (C)" Required="true" RequiredError="Temp. (C) is required!" @bind-Value="Item.TemperatureC" />
-            <MudTextField Label="Summary" Required="true" RequiredError="Summary is required!" @bind-Value="Item.Summary" />
+            <MudTextField Label="Organization ID" HelperText="Valid Guid" Value="@_model.Id" ReadOnly="true"/>
+            <MudTextField Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="_model.Name" />
+            <MudTextField Label="Description" Required="true" RequiredError="Description is required!" @bind-Value="_model.Description" Lines="3" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Confirm</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Disabled="@_isSaving">
+                @if (_isSaving)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">Saving...</MudText>
+                }
+                else
+                {
+                    <MudText>Confirm</MudText>
+                }
+            </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -27,17 +39,58 @@
     private IMudDialogInstance? MudDialog { get; set; }
 
     [Parameter]
-    public Weather.WeatherForecast Item { get; set; } = new();
+    public WebApiCommonDtosOrganizationDto Item { get; set; } = new();
+
+    private WebApiEndpointsOrganizationUpdateOrganizationRequest _model = new();
+    private bool _isSaving;
+
+    protected override void OnInitialized()
+    {
+        _model = new WebApiEndpointsOrganizationUpdateOrganizationRequest
+        {
+            Id = Item.Id,
+            Name = Item.Name,
+            Description = Item.Description
+        };
+    }
 
     private void Cancel() => MudDialog?.Cancel();
 
-    private void OnValidSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
-        // TODO: Send value to Api.
-        
-        Snackbar.Clear();
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
-        Snackbar.Add("Weather Edited Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
-        MudDialog?.Close(DialogResult.Ok(Item));
+        _isSaving = true;
+        try
+        {
+            // Send value to Api
+            var response = await ApiClient.Api.Organization.PatchAsync(_model);
+            
+            if (response?.Success == true)
+            {
+                // Update the original item with the new values
+                Item.Name = _model.Name;
+                Item.Description = _model.Description;
+                
+                Snackbar.Clear();
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+                Snackbar.Add("Organization Edited Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+                MudDialog?.Close(DialogResult.Ok(Item));
+            }
+            else
+            {
+                Snackbar.Clear();
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+                Snackbar.Add("Failed to update organization", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add($"Error updating organization: {ex.Message}", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+        }
+        finally
+        {
+            _isSaving = false;
+        }
     }
 }
