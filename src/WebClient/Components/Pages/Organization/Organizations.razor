@@ -86,7 +86,7 @@
             // Fetch organizations from the API
             var response = await ApiClient.Api.Organizations.GetAsync(config =>
             {
-                config.QueryParameters.Pagination = "{\"PageNumber\":1,\"PageSize\":1000,\"SortColumn\":\"Name\",\"SortOrder\":\"ASC\"}";
+                config.QueryParameters.Pagination = "{\"PageNumber\":1,\"PageSize\":25,\"SortColumn\":\"Name\",\"SortOrder\":\"ASC\"}";
             });
 
             if (response?.Result?.Data != null)

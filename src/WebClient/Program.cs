@@ -17,7 +17,7 @@ MudGlobal.UnhandledExceptionHandler = Console.WriteLine;
 builder.Services.AddHttpClient<Cpnucleo.WebApi.Client.WebApiClient>((serviceProvider, client) =>
 {
     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    var baseUrl = configuration.GetValue<string>("WebApiBaseUrl") ?? "http://localhost:5020";
+    var baseUrl = configuration.GetValue<string>("WebApiBaseUrl") ?? "http://localhost:5100";
     client.BaseAddress = new Uri(baseUrl);
 })
 .ConfigurePrimaryHttpMessageHandler(() =>
@@ -30,7 +30,7 @@ builder.Services.AddHttpClient<Cpnucleo.WebApi.Client.WebApiClient>((serviceProv
     return handler;
 });
 
-builder.Services.AddScoped<Cpnucleo.WebApi.Client.WebApiClient>(sp =>
+builder.Services.AddScoped(sp =>
 {
     var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(Cpnucleo.WebApi.Client.WebApiClient));
     var requestAdapter = new Microsoft.Kiota.Http.HttpClientLibrary.HttpClientRequestAdapter(
