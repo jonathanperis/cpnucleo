@@ -91,8 +91,8 @@ app.MapApiClientEndpoint("/cs-client", c =>
     {
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.CSharp;
-        c.ClientNamespaceName = "MyCompanyName";
-        c.ClientClassName = "MyCsClient";
+        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
+        c.ClientClassName = "WebApiClient";
     },
     o =>
     {
@@ -107,7 +107,7 @@ await app.GenerateApiClientsAndExitAsync(
         c.Language = GenerationLanguage.CSharp;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
         c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-        c.ClientClassName = "Cpnucleo.WebApi.Client";
+        c.ClientClassName = "WebApiClient";
         c.CreateZipArchive = true; //if you'd like a zip file as well
     },
     c =>
