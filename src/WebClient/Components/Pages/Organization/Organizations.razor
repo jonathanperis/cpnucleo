@@ -1,40 +1,35 @@
 @page "/organizations"
+@using Cpnucleo.WebApi.Client
+@using Cpnucleo.WebApi.Client.Models
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IJSRuntime Js
+@inject WebApiClient ApiClient
 
-<PageTitle>Weather</PageTitle>
+<PageTitle>Organizations</PageTitle>
 
 <Breadcrumb Items="_items" />
 
 <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" Class="add-item-btn pa-2 ma-0 ml-4" OnClick="@AddItem">Add Item</MudButton>
 <MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" Class="remove-item-btn pa-2 ma-0 ml-4" OnClick="@RemoveItem">Remove Item</MudButton>
 
-<MudDataGrid T="WeatherForecast" MultiSelection Items="@_forecasts" SortMode="SortMode.Multiple" Filterable QuickFilter="@QuickFilter"
+<MudDataGrid T="WebApiCommonDtosOrganizationDto" MultiSelection Items="@_organizations" SortMode="SortMode.Multiple" Filterable QuickFilter="@QuickFilter"
              EditMode="DataGridEditMode.Form" Hideable RowClick="@RowClicked" RowContextMenuClick="RowRightClicked" 
              SelectedItemsChanged="@SelectedItemsChanged" Class="pa-4 ma-4" Virtualize HorizontalScrollbar
              EditTrigger="DataGridEditTrigger.Manual" Loading="_loading" FixedHeader Height="30rem" Elevation="1">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Weather</MudText>
+        <MudText Typo="Typo.h6">Organizations</MudText>
         <MudSpacer/>
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
         </MudTextField>
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="WeatherForecast" />
+        <SelectColumn T="WebApiCommonDtosOrganizationDto" />
         <PropertyColumn Property="x => x.Id" Title="Id" Sortable="false" Filterable="false" />
-        <PropertyColumn Property="x => x.Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture)" 
-                        Title="Date" SortBy="@SortBy"/>
-        <PropertyColumn Property="x => x.TemperatureC" Title="Temp. (C)"/>
-        <PropertyColumn Property="x => x.TemperatureF" Title="Temp. (F)"/>
-        <PropertyColumn Property="x => x.Summary" Title="Summary"/>
-        <PropertyColumn Property="x => x.TemperatureC" Title="Temp. (C) 2" />
-        <PropertyColumn Property="x => x.TemperatureF" Title="Temp. (F) 2" />
-        <PropertyColumn Property="x => x.Summary" Title="Summary 2"/>    
-        <PropertyColumn Property="x => x.TemperatureC" Title="Temp. (C) 3" />
-        <PropertyColumn Property="x => x.TemperatureF" Title="Temp. (F) 3" />
-        <PropertyColumn Property="x => x.Summary" Title="Summary 3"/>        
+        <PropertyColumn Property="x => x.Name" Title="Name" />
+        <PropertyColumn Property="x => x.Description" Title="Description" />
+        <PropertyColumn Property="x => x.CreatedAt" Title="Created At" Format="yyyy-MM-dd HH:mm:ss" />
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context.Item)" />
@@ -42,7 +37,7 @@
         </TemplateColumn>   
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="WeatherForecast" PageSizeOptions="new[] {10, 25, 50, 100, 500, 1000, 5000}" />
+        <MudDataGridPager T="WebApiCommonDtosOrganizationDto" PageSizeOptions="new[] {10, 25, 50, 100}" />
     </PagerContent>
 </MudDataGrid>
 <MudMenu PositionAtCursor="true" @ref="_contextMenu" id="_contextMenu">
@@ -58,75 +53,78 @@
 </MudMenu>
 
 @code {
-    private readonly ObservableCollection<WeatherForecast> _forecasts = [];
-    private HashSet<WeatherForecast> _selectedItems = [];
+    private readonly ObservableCollection<WebApiCommonDtosOrganizationDto> _organizations = [];
+    private HashSet<WebApiCommonDtosOrganizationDto> _selectedItems = [];
     
     private string? _searchString;
     private bool _loading;
 
-    private WeatherForecast? _contextRow;
+    private WebApiCommonDtosOrganizationDto? _contextRow;
     private MudMenu _contextMenu = null!;    
     
-    // custom sort by name
-    private static Func<WeatherForecast, object> SortBy => x => x.Date;
-
     // quick filter - filter globally across multiple columns with the same input
-    private Func<WeatherForecast, bool> QuickFilter => x =>
+    private Func<WebApiCommonDtosOrganizationDto, bool> QuickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
 
-        if (x.Date.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture).Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        if (x.Name != null && x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (x.TemperatureC.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        if (x.Description != null && x.Description.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (x.TemperatureF.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return x.Summary != null && x.Summary.Contains(_searchString, StringComparison.OrdinalIgnoreCase);
+        return x.Id != null && x.Id.Contains(_searchString, StringComparison.OrdinalIgnoreCase);
     };
 
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
 
-        await Task.Yield();
-        
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(2000);
-
-        var startDate = DateTime.Now;
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-
-        for (var i = 1; i <= 69420; i++)
+        try
         {
-            _forecasts.Add(new WeatherForecast
+            // Fetch organizations from the API
+            var response = await ApiClient.Api.Organizations.GetAsync(config =>
             {
-                Id = Guid.NewGuid(),
-                Date = startDate.AddDays(i),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = summaries[Random.Shared.Next(summaries.Length)]
+                config.QueryParameters.Pagination = "{\"PageNumber\":1,\"PageSize\":1000,\"SortColumn\":\"Name\",\"SortOrder\":\"ASC\"}";
             });
+
+            if (response?.Result?.Data != null)
+            {
+                foreach (var org in response.Result.Data)
+                {
+                    if (org != null)
+                    {
+                        _organizations.Add(org);
+                    }
+                }
+            }
         }
-        
-        _loading = false;
+        catch (Exception ex)
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add($"Error loading organizations: {ex.Message}", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
 
     // events
-    void RowClicked(DataGridRowClickEventArgs<WeatherForecast> args)
+    void RowClicked(DataGridRowClickEventArgs<WebApiCommonDtosOrganizationDto> args)
     {
         // you can handle single row click events here if needed
     }
 
-    async Task RowRightClicked(DataGridRowClickEventArgs<WeatherForecast> args)
+    async Task RowRightClicked(DataGridRowClickEventArgs<WebApiCommonDtosOrganizationDto> args)
     {
         _contextRow = args.Item;
         await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
     }
 
-    void SelectedItemsChanged(HashSet<WeatherForecast> items)
+    void SelectedItemsChanged(HashSet<WebApiCommonDtosOrganizationDto> items)
     {
         _selectedItems = items;
     }
@@ -149,7 +147,7 @@
         if (_contextRow is null) return;
         
         // Create a string with all properties of the current row separated by semicolons.
-        var lineContent = $"{_contextRow.Id};{_contextRow.Date.ToShortDateString()};{_contextRow.TemperatureC};{_contextRow.TemperatureF};{_contextRow.Summary}";
+        var lineContent = $"{_contextRow.Id};{_contextRow.Name};{_contextRow.Description};{_contextRow.CreatedAt}";
         await Js.InvokeVoidAsync("navigator.clipboard.writeText", lineContent);
         
         Snackbar.Clear();
@@ -170,7 +168,7 @@
         
         // Copy each selected row as a line with semicolon separated values
         var selectedLines = _selectedItems.Select(row => 
-            $"{row.Id};{row.Date.ToShortDateString()};{row.TemperatureC};{row.TemperatureF};{row.Summary}");
+            $"{row.Id};{row.Name};{row.Description};{row.CreatedAt}");
         var allLines = string.Join(Environment.NewLine, selectedLines);
         await Js.InvokeVoidAsync("navigator.clipboard.writeText", allLines);
         
@@ -181,30 +179,30 @@
     
     async Task AddItem()
     {
-        var dialog = await DialogService.ShowAsync<AddWeather>("Add Weather", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var dialog = await DialogService.ShowAsync<AddOrganization>("Add Organization", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
-            var item = result.Data.As<WeatherForecast>()!;
-            _forecasts.Add(item);
+            var item = result.Data.As<WebApiCommonDtosOrganizationDto>()!;
+            _organizations.Add(item);
         }        
     }
     
-    async Task EditItem(WeatherForecast item)
+    async Task EditItem(WebApiCommonDtosOrganizationDto item)
     {
-        var parameters = new DialogParameters<EditWeather> { { x => x.Item, item } };
+        var parameters = new DialogParameters<EditOrganization> { { x => x.Item, item } };
 
-        var dialog = await DialogService.ShowAsync<EditWeather>("Edit Weather", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var dialog = await DialogService.ShowAsync<EditOrganization>("Edit Organization", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
-            var editedItem = result.Data.As<WeatherForecast>()!;
-            var index = _forecasts.IndexOf(item);
+            var editedItem = result.Data.As<WebApiCommonDtosOrganizationDto>()!;
+            var index = _organizations.IndexOf(item);
             if (index != -1)
             {
-                _forecasts[index] = editedItem;
+                _organizations[index] = editedItem;
             }
         }
     }
@@ -213,15 +211,19 @@
     {
         if (_selectedItems.Any())
         {
-            var dialog = await DialogService.ShowAsync<RemoveWeather>("Remove Weather", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, BackgroundClass = "blurry-dialog" });
+            var organizationIds = _selectedItems.Where(x => x.Id != null).Select(x => x.Id!).ToList();
+            var parameters = new DialogParameters<RemoveOrganization> { { x => x.OrganizationIds, organizationIds } };
+            
+            var dialog = await DialogService.ShowAsync<RemoveOrganization>("Remove Organization", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, BackgroundClass = "blurry-dialog" });
             var result = await dialog.Result;
 
             if (result is { Canceled: false })
             {
-                foreach (var item in _selectedItems)
+                foreach (var item in _selectedItems.ToList())
                 {
-                    _forecasts.Remove(item);
+                    _organizations.Remove(item);
                 }
+                _selectedItems.Clear();
             }
         }
         else
@@ -235,15 +237,6 @@
     private readonly List<BreadcrumbItem> _items =
     [
         new("Home", href: "#", icon: Icons.Material.Filled.Home),
-        new("Weather", href: null, disabled: true)
+        new("Organizations", href: null, disabled: true)
     ];
-
-    public class WeatherForecast
-    {
-        public Guid Id { get; set; }
-        public DateTime Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
 }

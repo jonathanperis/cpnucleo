@@ -1,4 +1,7 @@
+@using Cpnucleo.WebApi.Client
+@using Cpnucleo.WebApi.Client.Models
 @inject ISnackbar Snackbar
+@inject WebApiClient ApiClient
 
 <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>    
@@ -6,18 +9,26 @@
         <TitleContent>
             <MudText Typo="Typo.h6">
                 <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1"/>
-                Add Weather
+                Add Organization
             </MudText>
         </TitleContent>
         <DialogContent>
-            <MudTextField Label="Weather ID" HelperText="Valid Guid" @bind-Value="_model.Id"/>
-            <MudTextField Label="Date" Required="true" RequiredError="Date is required!" @bind-Value="_model.Date" />
-            <MudTextField Label="Temp. (C)" Required="true" RequiredError="Temp. (C) is required!" @bind-Value="_model.TemperatureC" />
-            <MudTextField Label="Summary" Required="true" RequiredError="Summary is required!" @bind-Value="_model.Summary" />
+            <MudTextField Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="_model.Name" />
+            <MudTextField Label="Description" Required="true" RequiredError="Description is required!" @bind-Value="_model.Description" Lines="3" />
         </DialogContent>
         <DialogActions>
             <MudButton OnClick="Cancel">Cancel</MudButton>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Confirm</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Disabled="@_isSaving">
+                @if (_isSaving)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                    <MudText Class="ms-2">Saving...</MudText>
+                }
+                else
+                {
+                    <MudText>Confirm</MudText>
+                }
+            </MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -26,17 +37,48 @@
     [CascadingParameter]
     private IMudDialogInstance? MudDialog { get; set; }
 
-    readonly Weather.WeatherForecast _model = new();
+    private readonly WebApiEndpointsOrganizationCreateOrganizationRequest _model = new()
+    {
+        Id = Guid.NewGuid().ToString(),
+        Name = "",
+        Description = ""
+    };
+
+    private bool _isSaving;
 
     private void Cancel() => MudDialog?.Cancel();
     
-    private void OnValidSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
-        // TODO: Send value to Api.
-       
-        Snackbar.Clear();
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
-        Snackbar.Add("Weather Added Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
-        MudDialog?.Close(DialogResult.Ok(_model));
+        _isSaving = true;
+        try
+        {
+            // Send value to Api
+            var response = await ApiClient.Api.Organization.PostAsync(_model);
+            
+            if (response?.Organization != null)
+            {
+                Snackbar.Clear();
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+                Snackbar.Add("Organization Added Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+                MudDialog?.Close(DialogResult.Ok(response.Organization));
+            }
+            else
+            {
+                Snackbar.Clear();
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+                Snackbar.Add("Failed to add organization", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add($"Error adding organization: {ex.Message}", Severity.Error, c => c.SnackbarVariant = Variant.Outlined);
+        }
+        finally
+        {
+            _isSaving = false;
+        }
     }
 }
