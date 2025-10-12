@@ -50,4 +50,8 @@
 		<PackageReference Include="OpenTelemetry.Resources.Host" Version="1.11.0-beta.2" /> -->
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\WebApi.Client\WebApi.Client.csproj" />
+	</ItemGroup>
+
 </Project>
