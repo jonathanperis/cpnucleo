@@ -1,0 +1,5278 @@
+{
+  "x-generator": "NSwag v14.4.0.0 (NJsonSchema v11.3.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cpnucleo Web API",
+    "description": "A sample project that implements best practices when building modern .NET projects",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/workflow": {
+      "patch": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Update an existing workflow",
+        "description": "Updates the workflow identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsWorkflowUpdateWorkflowEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsWorkflowUpdateWorkflowRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsWorkflowUpdateWorkflowResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Delete workflows by Ids",
+        "description": "Deletes the workflows specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsWorkflowRemoveWorkflowEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsWorkflowRemoveWorkflowRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsWorkflowRemoveWorkflowRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsWorkflowRemoveWorkflowResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Retrieve an workflow by Id",
+        "description": "Fetches the workflow matching the provided Id. Returns 404 if not found, otherwise returns the workflow data mapped to a DTO.",
+        "operationId": "WebApiEndpointsWorkflowGetWorkflowByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the workflow.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsWorkflowGetWorkflowByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Create a new workflow",
+        "description": "Creates a new workflow record with the given data and custom Id. Validates uniqueness and returns the created workflow's data.",
+        "operationId": "WebApiEndpointsWorkflowCreateWorkflowEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsWorkflowCreateWorkflowRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsWorkflowCreateWorkflowResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workflows": {
+      "get": {
+        "tags": [
+          "Workflows"
+        ],
+        "summary": "Retrieve a paginated list of workflows",
+        "description": "Fetches workflows based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsWorkflowListWorkflowsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsWorkflowListWorkflowsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/userProject": {
+      "patch": {
+        "tags": [
+          "UserProjects"
+        ],
+        "summary": "Update an existing userProject",
+        "description": "Updates the userProject identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsUserProjectUpdateUserProjectEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserProjectUpdateUserProjectRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserProjectUpdateUserProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "UserProjects"
+        ],
+        "summary": "Delete userProjects by Ids",
+        "description": "Deletes the userProjects specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsUserProjectRemoveUserProjectEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserProjectRemoveUserProjectRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserProjectRemoveUserProjectRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserProjectRemoveUserProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "UserProjects"
+        ],
+        "summary": "Retrieve an userProject by Id",
+        "description": "Fetches the userProject matching the provided Id. Returns 404 if not found, otherwise returns the userProject data mapped to a DTO.",
+        "operationId": "WebApiEndpointsUserProjectGetUserProjectByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the userProject.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "ad45c2fd-0320-4cfc-b516-64da8f3cda11"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserProjectGetUserProjectByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UserProjects"
+        ],
+        "summary": "Create a new userProject",
+        "description": "Creates a new userProject record with the given data and custom Id. Validates uniqueness and returns the created userProject's data.",
+        "operationId": "WebApiEndpointsUserProjectCreateUserProjectEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserProjectCreateUserProjectRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserProjectCreateUserProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/userProjects": {
+      "get": {
+        "tags": [
+          "UserProjects"
+        ],
+        "summary": "Retrieve a paginated list of userProjects",
+        "description": "Fetches userProjects based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsUserProjectListUserProjectsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserProjectListUserProjectsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/userAssignment": {
+      "patch": {
+        "tags": [
+          "UserAssignments"
+        ],
+        "summary": "Update an existing userAssignment",
+        "description": "Updates the userAssignment identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsUserAssignmentUpdateUserAssignmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentUpdateUserAssignmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentUpdateUserAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "UserAssignments"
+        ],
+        "summary": "Delete userAssignments by Ids",
+        "description": "Deletes the userAssignments specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsUserAssignmentRemoveUserAssignmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentRemoveUserAssignmentRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentRemoveUserAssignmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentRemoveUserAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "UserAssignments"
+        ],
+        "summary": "Retrieve an userAssignment by Id",
+        "description": "Fetches the userAssignment matching the provided Id. Returns 404 if not found, otherwise returns the userAssignment data mapped to a DTO.",
+        "operationId": "WebApiEndpointsUserAssignmentGetUserAssignmentByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the userAssignment.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "ad45c2fd-0320-4cfc-b516-64da8f3cda11"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentGetUserAssignmentByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UserAssignments"
+        ],
+        "summary": "Create a new userAssignment",
+        "description": "Creates a new userAssignment record with the given data and custom Id. Validates uniqueness and returns the created userAssignment's data.",
+        "operationId": "WebApiEndpointsUserAssignmentCreateUserAssignmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentCreateUserAssignmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentCreateUserAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/userAssignments": {
+      "get": {
+        "tags": [
+          "UserAssignments"
+        ],
+        "summary": "Retrieve a paginated list of userAssignments",
+        "description": "Fetches userAssignments based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsUserAssignmentListUserAssignmentsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserAssignmentListUserAssignmentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update an existing user",
+        "description": "Updates the user identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsUserUpdateUserEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserUpdateUserRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserUpdateUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete users by Ids",
+        "description": "Deletes the users specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsUserRemoveUserEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserRemoveUserRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserRemoveUserRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserRemoveUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Retrieve an user by Id",
+        "description": "Fetches the user matching the provided Id. Returns 404 if not found, otherwise returns the user data mapped to a DTO.",
+        "operationId": "WebApiEndpointsUserGetUserByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the user.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserGetUserByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "description": "Creates a new user record with the given data and custom Id. Validates uniqueness and returns the created user's data.",
+        "operationId": "WebApiEndpointsUserCreateUserEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsUserCreateUserRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserCreateUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Retrieve a paginated list of users",
+        "description": "Fetches users based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsUserListUsersEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsUserListUsersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/project": {
+      "patch": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Update an existing project",
+        "description": "Updates the project identified by the provided Id with given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsProjectUpdateProjectEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsProjectUpdateProjectRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsProjectUpdateProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Delete projects by Ids",
+        "description": "Deletes the projects specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsProjectRemoveProjectEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsProjectRemoveProjectRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsProjectRemoveProjectRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsProjectRemoveProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Retrieve an project by Id",
+        "description": "Fetches the project matching the provided Id. Returns 404 if not found, otherwise returns the project data mapped to a DTO.",
+        "operationId": "WebApiEndpointsProjectGetProjectByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the project.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsProjectGetProjectByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Create a new project",
+        "description": "Creates a new project record with the given data and custom Id. Validates uniqueness and returns the created project's data.",
+        "operationId": "WebApiEndpointsProjectCreateProjectEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsProjectCreateProjectRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsProjectCreateProjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Retrieve a paginated list of projects",
+        "description": "Fetches projects based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsProjectListProjectsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsProjectListProjectsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organization": {
+      "patch": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Update an existing organization",
+        "description": "Updates the organization identified by the provided Id with given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsOrganizationUpdateOrganizationEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsOrganizationUpdateOrganizationRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsOrganizationUpdateOrganizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Delete organizations by Ids",
+        "description": "Deletes the organizations specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsOrganizationRemoveOrganizationEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsOrganizationRemoveOrganizationRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsOrganizationRemoveOrganizationRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsOrganizationRemoveOrganizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Retrieve an organization by Id",
+        "description": "Fetches the organization matching the provided Id. Returns 404 if not found, otherwise returns the organization data mapped to a DTO.",
+        "operationId": "WebApiEndpointsOrganizationGetOrganizationByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the organization.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "006abcc9-3e72-47e7-a2cd-b4cd755393b2"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsOrganizationGetOrganizationByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Create a new organization",
+        "description": "Creates a new organization record with the given data and custom Id. Validates uniqueness and returns the created organization's data.",
+        "operationId": "WebApiEndpointsOrganizationCreateOrganizationEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsOrganizationCreateOrganizationRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsOrganizationCreateOrganizationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Retrieve a paginated list of organizations",
+        "description": "Fetches organizations based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsOrganizationListOrganizationsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsOrganizationListOrganizationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/impediment": {
+      "patch": {
+        "tags": [
+          "Impediments"
+        ],
+        "summary": "Update an existing impediment",
+        "description": "Updates the impediment identified by the provided Id with given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsImpedimentUpdateImpedimentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsImpedimentUpdateImpedimentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsImpedimentUpdateImpedimentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Impediments"
+        ],
+        "summary": "Delete impediments by Ids",
+        "description": "Deletes the impediments specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsImpedimentRemoveImpedimentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsImpedimentRemoveImpedimentRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsImpedimentRemoveImpedimentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsImpedimentRemoveImpedimentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Impediments"
+        ],
+        "summary": "Retrieve an impediment by Id",
+        "description": "Fetches the impediment matching the provided Id. Returns 404 if not found, otherwise returns the impediment data mapped to a DTO.",
+        "operationId": "WebApiEndpointsImpedimentGetImpedimentByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the impediment.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsImpedimentGetImpedimentByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Impediments"
+        ],
+        "summary": "Create a new impediment",
+        "description": "Creates a new impediment record with the given data and custom Id. Validates uniqueness and returns the created impediment's data.",
+        "operationId": "WebApiEndpointsImpedimentCreateImpedimentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsImpedimentCreateImpedimentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsImpedimentCreateImpedimentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/impediments": {
+      "get": {
+        "tags": [
+          "Impediments"
+        ],
+        "summary": "Retrieve a paginated list of impediments",
+        "description": "Fetches impediments based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsImpedimentListImpedimentsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsImpedimentListImpedimentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assignmentType": {
+      "patch": {
+        "tags": [
+          "AssignmentTypes"
+        ],
+        "summary": "Update an existing assignmentType",
+        "description": "Updates the assignmentType identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsAssignmentTypeUpdateAssignmentTypeEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeUpdateAssignmentTypeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeUpdateAssignmentTypeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AssignmentTypes"
+        ],
+        "summary": "Delete assignmentTypes by Ids",
+        "description": "Deletes the assignmentTypes specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsAssignmentTypeRemoveAssignmentTypeEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeRemoveAssignmentTypeRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeRemoveAssignmentTypeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeRemoveAssignmentTypeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "AssignmentTypes"
+        ],
+        "summary": "Retrieve an assignmentType by Id",
+        "description": "Fetches the assignmentType matching the provided Id. Returns 404 if not found, otherwise returns the assignmentType data mapped to a DTO.",
+        "operationId": "WebApiEndpointsAssignmentTypeGetAssignmentTypeByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the assignmentType.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "6364cf0d-e617-494b-b489-36487a8427f2"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeGetAssignmentTypeByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AssignmentTypes"
+        ],
+        "summary": "Create a new assignmentType",
+        "description": "Creates a new assignmentType record with the given data and custom Id. Validates uniqueness and returns the created assignmentType's data.",
+        "operationId": "WebApiEndpointsAssignmentTypeCreateAssignmentTypeEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeCreateAssignmentTypeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeCreateAssignmentTypeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assignmentTypes": {
+      "get": {
+        "tags": [
+          "AssignmentTypes"
+        ],
+        "summary": "Retrieve a paginated list of assignmentTypes",
+        "description": "Fetches assignmentTypes based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsAssignmentTypeListAssignmentTypesEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentTypeListAssignmentTypesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assignmentImpediment": {
+      "patch": {
+        "tags": [
+          "AssignmentImpediments"
+        ],
+        "summary": "Update an existing assignmentImpediment",
+        "description": "Updates the assignmentImpediment identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsAssignmentImpedimentUpdateAssignmentImpedimentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentUpdateAssignmentImpedimentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentUpdateAssignmentImpedimentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AssignmentImpediments"
+        ],
+        "summary": "Delete assignmentImpediments by Ids",
+        "description": "Deletes the assignmentImpediments specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsAssignmentImpedimentRemoveAssignmentImpedimentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentRemoveAssignmentImpedimentRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentRemoveAssignmentImpedimentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentRemoveAssignmentImpedimentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "AssignmentImpediments"
+        ],
+        "summary": "Retrieve an assignmentImpediment by Id",
+        "description": "Fetches the assignmentImpediment matching the provided Id. Returns 404 if not found, otherwise returns the assignmentImpediment data mapped to a DTO.",
+        "operationId": "WebApiEndpointsAssignmentImpedimentGetAssignmentImpedimentByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the assignmentImpediment.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "7d1ce93c-54be-4826-a947-a972c10db2ad"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentGetAssignmentImpedimentByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AssignmentImpediments"
+        ],
+        "summary": "Create a new assignmentImpediment",
+        "description": "Creates a new assignmentImpediment record with the given data and custom Id. Validates uniqueness and returns the created assignmentImpediment's data.",
+        "operationId": "WebApiEndpointsAssignmentImpedimentCreateAssignmentImpedimentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentCreateAssignmentImpedimentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentCreateAssignmentImpedimentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assignmentImpediments": {
+      "get": {
+        "tags": [
+          "AssignmentImpediments"
+        ],
+        "summary": "Retrieve a paginated list of assignmentImpediments",
+        "description": "Fetches assignmentImpediments based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsAssignmentImpedimentListAssignmentImpedimentsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentImpedimentListAssignmentImpedimentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assignment": {
+      "patch": {
+        "tags": [
+          "Assignments"
+        ],
+        "summary": "Update an existing assignment",
+        "description": "Updates the assignment identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsAssignmentUpdateAssignmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentUpdateAssignmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentUpdateAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Assignments"
+        ],
+        "summary": "Delete assignments by Ids",
+        "description": "Deletes the assignments specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsAssignmentRemoveAssignmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentRemoveAssignmentRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentRemoveAssignmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentRemoveAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Assignments"
+        ],
+        "summary": "Retrieve an assignment by Id",
+        "description": "Fetches the assignment matching the provided Id. Returns 404 if not found, otherwise returns the assignment data mapped to a DTO.",
+        "operationId": "WebApiEndpointsAssignmentGetAssignmentByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "35f1a233-e070-4205-909d-0eaabf89aec4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentGetAssignmentByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Assignments"
+        ],
+        "summary": "Create a new assignment",
+        "description": "Creates a new assignment record with the given data and custom Id. Validates uniqueness and returns the created assignment's data.",
+        "operationId": "WebApiEndpointsAssignmentCreateAssignmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAssignmentCreateAssignmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentCreateAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assignments": {
+      "get": {
+        "tags": [
+          "Assignments"
+        ],
+        "summary": "Retrieve a paginated list of assignments",
+        "description": "Fetches assignments based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsAssignmentListAssignmentsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAssignmentListAssignmentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/appointment": {
+      "patch": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Update an existing appointment",
+        "description": "Updates the appointment identified by the provided Id with new given data. Validates existence and returns whether the update was successful.",
+        "operationId": "WebApiEndpointsAppointmentUpdateAppointmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAppointmentUpdateAppointmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAppointmentUpdateAppointmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Delete appointments by Ids",
+        "description": "Deletes the appointments specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.",
+        "operationId": "WebApiEndpointsAppointmentRemoveAppointmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAppointmentRemoveAppointmentRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAppointmentRemoveAppointmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAppointmentRemoveAppointmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Retrieve an appointment by Id",
+        "description": "Fetches the appointment matching the provided Id. Returns 404 if not found, otherwise returns the appointment data mapped to a DTO.",
+        "operationId": "WebApiEndpointsAppointmentGetAppointmentByIdEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the unique identifier for the appointment.",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAppointmentGetAppointmentByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Create a new appointment",
+        "description": "Creates a new appointment record with the given data and custom Id. Validates uniqueness and returns the created appointment's data.",
+        "operationId": "WebApiEndpointsAppointmentCreateAppointmentEndpoint",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebApiEndpointsAppointmentCreateAppointmentRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAppointmentCreateAppointmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/appointments": {
+      "get": {
+        "tags": [
+          "Appointments"
+        ],
+        "summary": "Retrieve a paginated list of appointments",
+        "description": "Fetches appointments based on pagination parameters, maps entities to DTOs, and returns paginated results with metadata (total count, page number, and page size).",
+        "operationId": "WebApiEndpointsAppointmentListAppointmentsEndpoint",
+        "parameters": [
+          {
+            "name": "pagination",
+            "in": "query",
+            "required": true,
+            "description": "Gets or sets the pagination parameters for the request.",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/DomainModelsPaginationParams"
+                }
+              ]
+            },
+            "example": {
+              "pageNumber": 1,
+              "pageSize": 1,
+              "sortColumn": "sortColumn",
+              "sortOrder": "sortOrder",
+              "offset": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebApiEndpointsAppointmentListAppointmentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FastEndpointsErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WebApiEndpointsWorkflowUpdateWorkflowResponse": {
+        "type": "object",
+        "description": "Response model for the updated workflow.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowUpdateWorkflowRequest": {
+        "type": "object",
+        "description": "Request model for updating an workflow.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "order"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the workflow.",
+            "format": "guid",
+            "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the workflow.",
+            "default": "Updated Workflow",
+            "minLength": 1,
+            "nullable": false
+          },
+          "order": {
+            "type": "integer",
+            "description": "Gets or sets the order of the workflow.",
+            "format": "int32",
+            "default": 3,
+            "minimum": 0.0,
+            "minLength": 1,
+            "nullable": false,
+            "exclusiveMinimum": true
+          }
+        }
+      },
+      "FastEndpointsErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "format": "int32",
+            "default": 400
+          },
+          "message": {
+            "type": "string",
+            "default": "One or more errors occurred!"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowRemoveWorkflowResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an workflow.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowRemoveWorkflowRequest": {
+        "type": "object",
+        "description": "Request model for removing an workflow.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the workflows.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowListWorkflowsResponse": {
+        "type": "object",
+        "description": "Response model for the list of workflows.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of workflows.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfWorkflowDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfWorkflowDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosWorkflowDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosWorkflowDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "order": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiCommonDtosBaseDto": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowListWorkflowsRequest": {
+        "type": "object",
+        "description": "Request model for listing workflows.",
+        "additionalProperties": false
+      },
+      "DomainModelsPaginationParams": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 2147483647.0,
+            "minimum": 1.0,
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "nullable": true
+          },
+          "sortColumn": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "string",
+            "nullable": true
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowGetWorkflowByIdResponse": {
+        "type": "object",
+        "description": "Response model for the workflow fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "workflow": {
+            "description": "Gets or sets the workflow details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosWorkflowDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowGetWorkflowByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an workflow by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsWorkflowCreateWorkflowResponse": {
+        "type": "object",
+        "description": "Response model for the created workflow.",
+        "additionalProperties": false,
+        "properties": {
+          "workflow": {
+            "description": "Gets or sets the created workflow.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosWorkflowDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsWorkflowCreateWorkflowRequest": {
+        "type": "object",
+        "description": "Request model for creating a new workflow.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "order"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the workflow.",
+            "format": "guid",
+            "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the workflow.",
+            "default": "New Workflow",
+            "minLength": 1,
+            "nullable": false
+          },
+          "order": {
+            "type": "integer",
+            "description": "Gets or sets the order of the workflow.",
+            "format": "int32",
+            "default": 3,
+            "minimum": 0.0,
+            "minLength": 1,
+            "nullable": false,
+            "exclusiveMinimum": true
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectUpdateUserProjectResponse": {
+        "type": "object",
+        "description": "Response model for the updated userProject.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectUpdateUserProjectRequest": {
+        "type": "object",
+        "description": "Request model for updating an userProject.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "userId",
+          "projectId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the userProject.",
+            "format": "guid",
+            "default": "ad45c2fd-0320-4cfc-b516-64da8f3cda11",
+            "minLength": 1,
+            "nullable": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the project.",
+            "format": "guid",
+            "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectRemoveUserProjectResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an userProject.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectRemoveUserProjectRequest": {
+        "type": "object",
+        "description": "Request model for removing an userProject.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the userProjects.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectListUserProjectsResponse": {
+        "type": "object",
+        "description": "Response model for the list of userProjects.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of userProjects.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfUserProjectDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfUserProjectDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosUserProjectDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosUserProjectDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "userId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "projectId": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsUserProjectListUserProjectsRequest": {
+        "type": "object",
+        "description": "Request model for listing userProjects.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsUserProjectGetUserProjectByIdResponse": {
+        "type": "object",
+        "description": "Response model for the userProject fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "userProject": {
+            "description": "Gets or sets the userProject details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosUserProjectDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectGetUserProjectByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an userProject by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsUserProjectCreateUserProjectResponse": {
+        "type": "object",
+        "description": "Response model for the created userProject.",
+        "additionalProperties": false,
+        "properties": {
+          "userProject": {
+            "description": "Gets or sets the created userProject.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosUserProjectDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsUserProjectCreateUserProjectRequest": {
+        "type": "object",
+        "description": "Request model for creating a new userProject.",
+        "additionalProperties": false,
+        "required": [
+          "userId",
+          "projectId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the userProject.",
+            "format": "guid",
+            "default": "ad45c2fd-0320-4cfc-b516-64da8f3cda11"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the project.",
+            "format": "guid",
+            "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentUpdateUserAssignmentResponse": {
+        "type": "object",
+        "description": "Response model for the updated userAssignment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentUpdateUserAssignmentRequest": {
+        "type": "object",
+        "description": "Request model for updating an userAssignment.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "userId",
+          "assignmentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the userAssignment.",
+            "format": "guid",
+            "default": "1ac62127-bc1b-484b-85be-e5c9b0ea8d25",
+            "minLength": 1,
+            "nullable": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          },
+          "assignmentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "format": "guid",
+            "default": "35f1a233-e070-4205-909d-0eaabf89aec4",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentRemoveUserAssignmentResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an userAssignment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentRemoveUserAssignmentRequest": {
+        "type": "object",
+        "description": "Request model for removing an userAssignment.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the userAssignments.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentListUserAssignmentsResponse": {
+        "type": "object",
+        "description": "Response model for the list of userAssignments.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of userAssignments.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfUserAssignmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfUserAssignmentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosUserAssignmentDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosUserAssignmentDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "userId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "assignmentId": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsUserAssignmentListUserAssignmentsRequest": {
+        "type": "object",
+        "description": "Request model for listing userAssignments.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsUserAssignmentGetUserAssignmentByIdResponse": {
+        "type": "object",
+        "description": "Response model for the userAssignment fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "userAssignment": {
+            "description": "Gets or sets the userAssignment details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosUserAssignmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentGetUserAssignmentByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an userAssignment by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsUserAssignmentCreateUserAssignmentResponse": {
+        "type": "object",
+        "description": "Response model for the created userAssignment.",
+        "additionalProperties": false,
+        "properties": {
+          "userAssignment": {
+            "description": "Gets or sets the created userAssignment.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosUserAssignmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsUserAssignmentCreateUserAssignmentRequest": {
+        "type": "object",
+        "description": "Request model for creating a new userAssignment.",
+        "additionalProperties": false,
+        "required": [
+          "userId",
+          "assignmentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the userAssignment.",
+            "format": "guid",
+            "default": "1ac62127-bc1b-484b-85be-e5c9b0ea8d25"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          },
+          "assignmentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "format": "guid",
+            "default": "35f1a233-e070-4205-909d-0eaabf89aec4",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsUserUpdateUserResponse": {
+        "type": "object",
+        "description": "Response model for the updated user.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsUserUpdateUserRequest": {
+        "type": "object",
+        "description": "Request model for updating an user.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "password"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user.",
+            "format": "guid",
+            "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the user.",
+            "default": "Updated User",
+            "minLength": 1,
+            "nullable": false
+          },
+          "password": {
+            "type": "string",
+            "description": "Gets or sets the password of the user.",
+            "default": "veryverysecretpassword",
+            "minLength": 8,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsUserRemoveUserResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an user.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsUserRemoveUserRequest": {
+        "type": "object",
+        "description": "Request model for removing an user.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the users.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsUserListUsersResponse": {
+        "type": "object",
+        "description": "Response model for the list of users.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of users.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfUserDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosUserDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosUserDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "login": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsUserListUsersRequest": {
+        "type": "object",
+        "description": "Request model for listing users.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsUserGetUserByIdResponse": {
+        "type": "object",
+        "description": "Response model for the user fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "user": {
+            "description": "Gets or sets the user details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosUserDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsUserGetUserByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an user by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsUserCreateUserResponse": {
+        "type": "object",
+        "description": "Response model for the created user.",
+        "additionalProperties": false,
+        "properties": {
+          "user": {
+            "description": "Gets or sets the created user.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosUserDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsUserCreateUserRequest": {
+        "type": "object",
+        "description": "Request model for creating a new user.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "login",
+          "password"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the user.",
+            "default": "New User",
+            "minLength": 1,
+            "nullable": false
+          },
+          "login": {
+            "type": "string",
+            "description": "Gets or sets the login of the user.",
+            "default": "verysecretusername",
+            "minLength": 1,
+            "nullable": false
+          },
+          "password": {
+            "type": "string",
+            "description": "Gets or sets the password of the user.",
+            "default": "veryverysecretpassword",
+            "minLength": 8,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsProjectUpdateProjectResponse": {
+        "type": "object",
+        "description": "Response model for the updated project.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsProjectUpdateProjectRequest": {
+        "type": "object",
+        "description": "Request model for updating an project.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "organizationId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the project.",
+            "format": "guid",
+            "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the project.",
+            "default": "Updated Project",
+            "minLength": 1,
+            "nullable": false
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the organization.",
+            "format": "guid",
+            "default": "006abcc9-3e72-47e7-a2cd-b4cd755393b2",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsProjectRemoveProjectResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an project.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsProjectRemoveProjectRequest": {
+        "type": "object",
+        "description": "Request model for removing an project.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the projects.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsProjectListProjectsResponse": {
+        "type": "object",
+        "description": "Response model for the list of projects.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of projects.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfProjectDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfProjectDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosProjectDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosProjectDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "organizationId": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsProjectListProjectsRequest": {
+        "type": "object",
+        "description": "Request model for listing projects.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsProjectGetProjectByIdResponse": {
+        "type": "object",
+        "description": "Response model for the project fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "project": {
+            "description": "Gets or sets the project details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosProjectDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsProjectGetProjectByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an project by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsProjectCreateProjectResponse": {
+        "type": "object",
+        "description": "Response model for the created project.",
+        "additionalProperties": false,
+        "properties": {
+          "project": {
+            "description": "Gets or sets the created project.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosProjectDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsProjectCreateProjectRequest": {
+        "type": "object",
+        "description": "Request model for creating a new project.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "organizationId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the project.",
+            "format": "guid",
+            "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the project.",
+            "default": "New Project",
+            "minLength": 1,
+            "nullable": false
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the organization.",
+            "format": "guid",
+            "default": "006abcc9-3e72-47e7-a2cd-b4cd755393b2",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationUpdateOrganizationResponse": {
+        "type": "object",
+        "description": "Response model for the updated organization.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationUpdateOrganizationRequest": {
+        "type": "object",
+        "description": "Request model for updating an organization.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the organization.",
+            "format": "guid",
+            "default": "006abcc9-3e72-47e7-a2cd-b4cd755393b2",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the organization.",
+            "default": "Updated Organization",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the organization.",
+            "default": "Updated organization description goes here",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationRemoveOrganizationResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an organization.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationRemoveOrganizationRequest": {
+        "type": "object",
+        "description": "Request model for removing an organization.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the organizations.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationListOrganizationsResponse": {
+        "type": "object",
+        "description": "Response model for the list of organizations.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of organizations.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfOrganizationDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfOrganizationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosOrganizationDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosOrganizationDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsOrganizationListOrganizationsRequest": {
+        "type": "object",
+        "description": "Request model for listing organizations.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsOrganizationGetOrganizationByIdResponse": {
+        "type": "object",
+        "description": "Response model for the organization fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "organization": {
+            "description": "Gets or sets the organization details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosOrganizationDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationGetOrganizationByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an organization by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsOrganizationCreateOrganizationResponse": {
+        "type": "object",
+        "description": "Response model for the created organization.",
+        "additionalProperties": false,
+        "properties": {
+          "organization": {
+            "description": "Gets or sets the created organization.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosOrganizationDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsOrganizationCreateOrganizationRequest": {
+        "type": "object",
+        "description": "Request model for creating a new organization.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the organization.",
+            "format": "guid",
+            "default": "006abcc9-3e72-47e7-a2cd-b4cd755393b2"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the organization.",
+            "default": "New Organization",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the organization.",
+            "default": "Organization description goes here",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentUpdateImpedimentResponse": {
+        "type": "object",
+        "description": "Response model for the updated impediment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentUpdateImpedimentRequest": {
+        "type": "object",
+        "description": "Request model for updating an impediment.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the impediment.",
+            "format": "guid",
+            "default": "6da4950a-fac3-4578-8ee0-b05aa15eae35",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the impediment.",
+            "default": "Updated Impediment",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentRemoveImpedimentResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an impediment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentRemoveImpedimentRequest": {
+        "type": "object",
+        "description": "Request model for removing an impediment.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the impediments.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentListImpedimentsResponse": {
+        "type": "object",
+        "description": "Response model for the list of impediments.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of impediments.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfImpedimentDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfImpedimentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosImpedimentDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosImpedimentDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsImpedimentListImpedimentsRequest": {
+        "type": "object",
+        "description": "Request model for listing impediments.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsImpedimentGetImpedimentByIdResponse": {
+        "type": "object",
+        "description": "Response model for the impediment fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "impediment": {
+            "description": "Gets or sets the impediment details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosImpedimentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentGetImpedimentByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an impediment by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsImpedimentCreateImpedimentResponse": {
+        "type": "object",
+        "description": "Response model for the created impediment.",
+        "additionalProperties": false,
+        "properties": {
+          "impediment": {
+            "description": "Gets or sets the created impediment.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosImpedimentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsImpedimentCreateImpedimentRequest": {
+        "type": "object",
+        "description": "Request model for creating a new impediment.",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the impediment.",
+            "format": "guid",
+            "default": "6da4950a-fac3-4578-8ee0-b05aa15eae35"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the impediment.",
+            "default": "New Impediment",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeUpdateAssignmentTypeResponse": {
+        "type": "object",
+        "description": "Response model for the updated assignmentType.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeUpdateAssignmentTypeRequest": {
+        "type": "object",
+        "description": "Request model for updating an assignmentType.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignmentType.",
+            "format": "guid",
+            "default": "6364cf0d-e617-494b-b489-36487a8427f2",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the assignmentType.",
+            "default": "Updated AssignmentType",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeRemoveAssignmentTypeResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an assignmentType.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeRemoveAssignmentTypeRequest": {
+        "type": "object",
+        "description": "Request model for removing an assignmentType.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the assignmentTypes.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeListAssignmentTypesResponse": {
+        "type": "object",
+        "description": "Response model for the list of assignmentTypes.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of assignmentTypes.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfAssignmentTypeDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfAssignmentTypeDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosAssignmentTypeDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosAssignmentTypeDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsAssignmentTypeListAssignmentTypesRequest": {
+        "type": "object",
+        "description": "Request model for listing assignmentTypes.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAssignmentTypeGetAssignmentTypeByIdResponse": {
+        "type": "object",
+        "description": "Response model for the assignmentType fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "assignmentType": {
+            "description": "Gets or sets the assignmentType details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAssignmentTypeDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeGetAssignmentTypeByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an assignmentType by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAssignmentTypeCreateAssignmentTypeResponse": {
+        "type": "object",
+        "description": "Response model for the created assignmentType.",
+        "additionalProperties": false,
+        "properties": {
+          "assignmentType": {
+            "description": "Gets or sets the created assignmentType.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAssignmentTypeDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentTypeCreateAssignmentTypeRequest": {
+        "type": "object",
+        "description": "Request model for creating a new assignmentType.",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignmentType.",
+            "format": "guid",
+            "default": "6364cf0d-e617-494b-b489-36487a8427f2"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the assignmentType.",
+            "default": "New AssignmentType",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentUpdateAssignmentImpedimentResponse": {
+        "type": "object",
+        "description": "Response model for the updated assignmentImpediment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentUpdateAssignmentImpedimentRequest": {
+        "type": "object",
+        "description": "Request model for updating an assignmentImpediment.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "assignmentId",
+          "impedimentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignmentImpediment.",
+            "format": "guid",
+            "default": "7d1ce93c-54be-4826-a947-a972c10db2ad",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the assignmentImpediment.",
+            "default": "AssignmentImpediment updated description goes here",
+            "minLength": 1,
+            "nullable": false
+          },
+          "assignmentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "format": "guid",
+            "default": "edab4f0b-a8eb-4d01-ae7a-a11fc3f56d3a",
+            "minLength": 1,
+            "nullable": false
+          },
+          "impedimentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the impediment.",
+            "format": "guid",
+            "default": "6da4950a-fac3-4578-8ee0-b05aa15eae35",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentRemoveAssignmentImpedimentResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an assignmentImpediment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentRemoveAssignmentImpedimentRequest": {
+        "type": "object",
+        "description": "Request model for removing an assignmentImpediment.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the assignmentImpediments.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentListAssignmentImpedimentsResponse": {
+        "type": "object",
+        "description": "Response model for the list of assignmentImpediments.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of assignmentImpediments.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfAssignmentImpedimentDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfAssignmentImpedimentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosAssignmentImpedimentDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosAssignmentImpedimentDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "assignmentId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "impedimentId": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsAssignmentImpedimentListAssignmentImpedimentsRequest": {
+        "type": "object",
+        "description": "Request model for listing assignmentImpediments.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAssignmentImpedimentGetAssignmentImpedimentByIdResponse": {
+        "type": "object",
+        "description": "Response model for the assignmentImpediment fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "assignmentImpediment": {
+            "description": "Gets or sets the assignmentImpediment details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAssignmentImpedimentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentGetAssignmentImpedimentByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an assignmentImpediment by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAssignmentImpedimentCreateAssignmentImpedimentResponse": {
+        "type": "object",
+        "description": "Response model for the created assignmentImpediment.",
+        "additionalProperties": false,
+        "properties": {
+          "assignmentImpediment": {
+            "description": "Gets or sets the created assignmentImpediment.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAssignmentImpedimentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentImpedimentCreateAssignmentImpedimentRequest": {
+        "type": "object",
+        "description": "Request model for creating a new assignmentImpediment.",
+        "additionalProperties": false,
+        "required": [
+          "description",
+          "assignmentId",
+          "impedimentId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignmentImpediment.",
+            "format": "guid",
+            "default": "7d1ce93c-54be-4826-a947-a972c10db2ad"
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the assignmentImpediment.",
+            "default": "AssignmentImpediment description goes here",
+            "minLength": 1,
+            "nullable": false
+          },
+          "assignmentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "format": "guid",
+            "default": "edab4f0b-a8eb-4d01-ae7a-a11fc3f56d3a",
+            "minLength": 1,
+            "nullable": false
+          },
+          "impedimentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the impediment.",
+            "format": "guid",
+            "default": "6da4950a-fac3-4578-8ee0-b05aa15eae35",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentUpdateAssignmentResponse": {
+        "type": "object",
+        "description": "Response model for the updated assignment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentUpdateAssignmentRequest": {
+        "type": "object",
+        "description": "Request model for updating an assignment.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "description",
+          "startDate",
+          "endDate",
+          "amountHours",
+          "projectId",
+          "workflowId",
+          "userId",
+          "assignmentTypeId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "format": "guid",
+            "default": "35f1a233-e070-4205-909d-0eaabf89aec4",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the assignment.",
+            "default": "Updated Assignment",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the assignment.",
+            "default": "Updated Assignment Description goes here",
+            "minLength": 1,
+            "nullable": false
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Gets or sets the start date of the assignment.",
+            "format": "date-time",
+            "default": "2069-04-20",
+            "minLength": 1,
+            "nullable": false
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Gets or sets the end date of the assignment.",
+            "format": "date-time",
+            "default": "2069-04-20",
+            "minLength": 1,
+            "nullable": false
+          },
+          "amountHours": {
+            "type": "integer",
+            "description": "Gets or sets the amount of hours for the assignment.",
+            "format": "int32",
+            "default": 6,
+            "minimum": 0.0,
+            "minLength": 1,
+            "nullable": false,
+            "exclusiveMinimum": true
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Gets or sets the project identifier for the assignment.",
+            "format": "guid",
+            "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9",
+            "minLength": 1,
+            "nullable": false
+          },
+          "workflowId": {
+            "type": "string",
+            "description": "Gets or sets the workflow identifier for the assignment.",
+            "format": "guid",
+            "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b",
+            "minLength": 1,
+            "nullable": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the user identifier for the assignment.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          },
+          "assignmentTypeId": {
+            "type": "string",
+            "description": "Gets or sets the assignment type identifier for the assignment.",
+            "format": "guid",
+            "default": "6364cf0d-e617-494b-b489-36487a8427f2",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentRemoveAssignmentResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an assignment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentRemoveAssignmentRequest": {
+        "type": "object",
+        "description": "Request model for removing an assignment.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the assignments.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentListAssignmentsResponse": {
+        "type": "object",
+        "description": "Response model for the list of assignments.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of assignments.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfAssignmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfAssignmentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosAssignmentDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosAssignmentDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "startDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "endDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "amountHours": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "projectId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "workflowId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "userId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "assignmentTypeId": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsAssignmentListAssignmentsRequest": {
+        "type": "object",
+        "description": "Request model for listing assignments.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAssignmentGetAssignmentByIdResponse": {
+        "type": "object",
+        "description": "Response model for the assignment fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "assignment": {
+            "description": "Gets or sets the assignment details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAssignmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentGetAssignmentByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an assignment by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAssignmentCreateAssignmentResponse": {
+        "type": "object",
+        "description": "Response model for the created assignment.",
+        "additionalProperties": false,
+        "properties": {
+          "assignment": {
+            "description": "Gets or sets the created assignment.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAssignmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAssignmentCreateAssignmentRequest": {
+        "type": "object",
+        "description": "Request model for creating a new assignment.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "startDate",
+          "endDate",
+          "amountHours",
+          "projectId",
+          "workflowId",
+          "userId",
+          "assignmentTypeId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment.",
+            "format": "guid",
+            "default": "35f1a233-e070-4205-909d-0eaabf89aec4"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the assignment.",
+            "default": "New Assignment",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the assignment.",
+            "default": "Assignment Description goes here",
+            "minLength": 1,
+            "nullable": false
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Gets or sets the start date of the assignment.",
+            "format": "date-time",
+            "default": "2064-06-09",
+            "minLength": 1,
+            "nullable": false
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Gets or sets the end date of the assignment.",
+            "format": "date-time",
+            "default": "2064-06-09",
+            "minLength": 1,
+            "nullable": false
+          },
+          "amountHours": {
+            "type": "integer",
+            "description": "Gets or sets the amount of hours for the assignment.",
+            "format": "int32",
+            "default": 8,
+            "minimum": 0.0,
+            "minLength": 1,
+            "nullable": false,
+            "exclusiveMinimum": true
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Gets or sets the project identifier for the assignment.",
+            "format": "guid",
+            "default": "8de21ef6-19a3-41ee-b4cd-ea3fae2e91c9",
+            "minLength": 1,
+            "nullable": false
+          },
+          "workflowId": {
+            "type": "string",
+            "description": "Gets or sets the workflow identifier for the assignment.",
+            "format": "guid",
+            "default": "873eea4b-55c9-46a6-9512-4d59a77ad28b",
+            "minLength": 1,
+            "nullable": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the user identifier for the assignment.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          },
+          "assignmentTypeId": {
+            "type": "string",
+            "description": "Gets or sets the assignment type identifier for the assignment.",
+            "format": "guid",
+            "default": "6364cf0d-e617-494b-b489-36487a8427f2",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentUpdateAppointmentResponse": {
+        "type": "object",
+        "description": "Response model for the updated appointment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the update was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentUpdateAppointmentRequest": {
+        "type": "object",
+        "description": "Request model for updating an appointment.",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "description",
+          "amountHours",
+          "assignmentId",
+          "userId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the appointment.",
+            "format": "guid",
+            "default": "80aee820-ce09-4023-b62c-3a42ff4535b0",
+            "minLength": 1,
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the appointment.",
+            "default": "Updated Appointment",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the appointment.",
+            "default": "Updated Appointment description goes here",
+            "minLength": 1,
+            "nullable": false
+          },
+          "keepDate": {
+            "type": "string",
+            "description": "Gets or sets the date and time when the appointment should be kept.",
+            "format": "date-time",
+            "default": "2069-04-20"
+          },
+          "amountHours": {
+            "type": "integer",
+            "description": "Gets or sets the amount of hours for the appointment.",
+            "format": "int32",
+            "default": 4,
+            "minimum": 0.0,
+            "minLength": 1,
+            "nullable": false,
+            "exclusiveMinimum": true
+          },
+          "assignmentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment associated with the appointment.",
+            "format": "guid",
+            "default": "35f1a233-e070-4205-909d-0eaabf89aec4",
+            "minLength": 1,
+            "nullable": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user associated with the appointment.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentRemoveAppointmentResponse": {
+        "type": "object",
+        "description": "Response model for the removal of an appointment.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Gets or sets a value indicating whether the removal was successful."
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentRemoveAppointmentRequest": {
+        "type": "object",
+        "description": "Request model for removing an appointment.",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "description": "Gets or sets the unique identifiers for the appointments.",
+            "minLength": 1,
+            "nullable": false,
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentListAppointmentsResponse": {
+        "type": "object",
+        "description": "Response model for the list of appointments.",
+        "additionalProperties": false,
+        "properties": {
+          "result": {
+            "description": "Gets or sets the paginated result of appointments.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DomainModelsPaginatedResultOfAppointmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "DomainModelsPaginatedResultOfAppointmentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/WebApiCommonDtosAppointmentDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WebApiCommonDtosAppointmentDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/WebApiCommonDtosBaseDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "keepDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "amountHours": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "assignmentId": {
+                "type": "string",
+                "format": "guid"
+              },
+              "userId": {
+                "type": "string",
+                "format": "guid"
+              }
+            }
+          }
+        ]
+      },
+      "WebApiEndpointsAppointmentListAppointmentsRequest": {
+        "type": "object",
+        "description": "Request model for listing appointments.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAppointmentGetAppointmentByIdResponse": {
+        "type": "object",
+        "description": "Response model for the appointment fetched by its unique identifier.",
+        "additionalProperties": false,
+        "properties": {
+          "appointment": {
+            "description": "Gets or sets the appointment details.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAppointmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentGetAppointmentByIdRequest": {
+        "type": "object",
+        "description": "Request model for fetching an appointment by its unique identifier.",
+        "additionalProperties": false
+      },
+      "WebApiEndpointsAppointmentCreateAppointmentResponse": {
+        "type": "object",
+        "description": "Response model for the created appointment.",
+        "additionalProperties": false,
+        "properties": {
+          "appointment": {
+            "description": "Gets or sets the created appointment.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WebApiCommonDtosAppointmentDto"
+              }
+            ]
+          }
+        }
+      },
+      "WebApiEndpointsAppointmentCreateAppointmentRequest": {
+        "type": "object",
+        "description": "Request model for creating a new appointment.",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "amountHours",
+          "assignmentId",
+          "userId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the appointment.",
+            "format": "guid",
+            "default": "80aee820-ce09-4023-b62c-3a42ff4535b0"
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the appointment.",
+            "default": "New Appointment",
+            "minLength": 1,
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "description": "Gets or sets the description of the appointment.",
+            "default": "Appointment description goes here",
+            "minLength": 1,
+            "nullable": false
+          },
+          "keepDate": {
+            "type": "string",
+            "description": "Gets or sets the date and time when the appointment should be kept.",
+            "format": "date-time",
+            "default": "2064-06-09"
+          },
+          "amountHours": {
+            "type": "integer",
+            "description": "Gets or sets the amount of hours for the appointment.",
+            "format": "int32",
+            "default": 2,
+            "minimum": 0.0,
+            "minLength": 1,
+            "nullable": false,
+            "exclusiveMinimum": true
+          },
+          "assignmentId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the assignment associated with the appointment.",
+            "format": "guid",
+            "default": "35f1a233-e070-4205-909d-0eaabf89aec4",
+            "minLength": 1,
+            "nullable": false
+          },
+          "userId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier for the user associated with the appointment.",
+            "format": "guid",
+            "default": "35b9c5c1-6abf-4d50-aee8-00abe2f09560",
+            "minLength": 1,
+            "nullable": false
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWTBearerAuth": {
+        "type": "http",
+        "description": "Enter a JWT token to authorize the requests...",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
