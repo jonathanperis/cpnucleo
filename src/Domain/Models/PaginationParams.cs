@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Domain.Models;
 
 public class PaginationParams
@@ -35,5 +33,6 @@ public class PaginationParams
         set => _sortOrder = value;
     }
 
+    [NotMapped]
     public int Offset => (PageNumber.GetValueOrDefault(1) - 1) * PageSize.GetValueOrDefault(10);
 }
