@@ -37,15 +37,15 @@ src/
 │   ├── Migrations/          # EF Core migrations (managed from WebApi project)
 │   └── DependencyInjection.cs
 │
-├── GrpcServer.Contracts/    # Command DTOs (CQRS commands)
+├── GrpcServer.Contracts/    # Command DTOs (CQRS commands) shared with gRPC clients
 │   └── Commands/            # CreateAssignmentCommand, UpdateProjectCommand, etc.
 │
-├── GrpcServer/              # ⚡ Command handlers (WRITE path via gRPC)
-│   ├── Handlers/            # CQRS command handlers using Dapper
+├── GrpcServer/              # ⚡ Alternative gRPC-based API implementation (independent from WebApi)
+│   ├── Handlers/            # Command handlers using Dapper
 │   ├── ServiceExtensions/   # OpenTelemetry configuration
 │   └── Program.cs           # Ports: 5300 (HTTP2/gRPC), 5301
 │
-├── WebApi/                  # 📖 Query endpoints (READ path via REST)
+├── WebApi/                  # 📖 RESTful API endpoints
 │   ├── Endpoints/           # FastEndpoints REPR pattern (Request-Endpoint-Response)
 │   ├── Middlewares/         # ErrorHandlingMiddleware, ElapsedTimeMiddleware
 │   ├── ServiceExtensions/   # Rate limiting, CORS, OpenTelemetry
@@ -81,15 +81,21 @@ test/
 
 ### CQRS Pattern Implementation
 
-**Commands (Writes):** Client → WebApi → GrpcServer → Handler (Dapper) → PostgreSQL
-- Use gRPC/HTTP2 for inter-service communication
-- Commands handled by GrpcServer with Dapper for performance
-- Example: `CreateAssignmentCommand` → `CreateAssignmentHandler`
+The architecture demonstrates CQRS (Command Query Responsibility Segregation) with two independent implementation approaches:
 
-**Queries (Reads):** Client → WebApi → EF Core DbContext → PostgreSQL
-- Direct EF Core queries from WebApi endpoints
-- Leverage LINQ, change tracking, and projections
-- Example: `GET /api/assignment/{id}` → EF Core query
+**WebApi Pattern (RESTful):** Client → WebApi → Infrastructure (EF Core/Dapper) → PostgreSQL
+- Direct access to Infrastructure layer
+- Uses FastEndpoints for REST API
+- Queries use EF Core, Commands may use Dapper via Unit of Work
+- Example: `GET /api/assignment/{id}` → EF Core query, `POST /api/assignment` → Dapper insert
+
+**GrpcServer Pattern (gRPC - Independent Sample):** gRPC Client → GrpcServer → Infrastructure (Dapper) → PostgreSQL
+- Alternative implementation demonstrating gRPC
+- Uses FastEndpoints.Messaging for gRPC/HTTP2
+- Commands handled via GrpcServer.Contracts shared with gRPC clients
+- Example: `CreateAssignmentCommand` → `CreateAssignmentHandler` (Dapper)
+
+**Key Point**: GrpcServer is NOT a dependency of WebApi. It's an alternative implementation pattern showing the same functionality with gRPC instead of REST. Both services independently access Infrastructure → Domain.
 
 ## 🔨 Build, Test & Validation Commands
 
