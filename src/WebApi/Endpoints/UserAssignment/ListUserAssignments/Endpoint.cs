@@ -1,5 +1,3 @@
-using WebApi.Common.Extensions;
-
 namespace WebApi.Endpoints.UserAssignment.ListUserAssignments;
 
 // Dapper Repository Advanced
