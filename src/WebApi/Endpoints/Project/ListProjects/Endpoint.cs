@@ -1,3 +1,5 @@
+using WebApi.Common.Extensions;
+
 namespace WebApi.Endpoints.Project.ListProjects;
 
 // Dapper Repository Basic
@@ -26,22 +28,11 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Logger.LogInformation("Fetched {Count} project records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");
 
-        Response.Result = MapToPaginatedDto(response);
+        Response.Result = response.MapToDto(x => x?.MapToDto());
 
         Logger.LogInformation("Mapping complete, setting response result.");
         Logger.LogInformation("Service completed successfully.");
 
         await Send.OkAsync(Response, cancellationToken);
-    }
-
-    private static PaginatedResult<ProjectDto?> MapToPaginatedDto(PaginatedResult<Domain.Entities.Project?> result)
-    {
-        return new PaginatedResult<ProjectDto?>
-        {
-            Data = result.Data?.Select(x => x?.MapToDto()).ToList(),
-            TotalCount = result.TotalCount,
-            PageNumber = result.PageNumber,
-            PageSize = result.PageSize
-        };
     }
 }
