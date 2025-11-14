@@ -4,6 +4,13 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
     where T : BaseEntity
 {
     private const string PrimaryKey = "Id";
+    
+    // Cache reflection results to avoid repeated GetProperties calls
+    private static readonly Lazy<PropertyInfo[]> CachedProperties = new(() => 
+        typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
+    
+    private static readonly Lazy<HashSet<string>> CachedPropertyNames = new(() =>
+        new HashSet<string>(CachedProperties.Value.Select(p => p.Name), StringComparer.OrdinalIgnoreCase));
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
@@ -27,7 +34,7 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
                    ORDER BY "{validSortColumn}" {validSortOrder}
                    OFFSET @Offset LIMIT @PageSize;
                    
-                   SELECT COUNT(*) FROM "{tableName}";
+                   SELECT COUNT(*) FROM "{tableName}" WHERE "Active" = true;
                    """;
 
         await using var multi = await connection.QueryMultipleAsync(sql, new
@@ -95,16 +102,16 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
 
     private static string ValidateSortColumn(string? column)
     {
-        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        return properties.Any(p => p.Name.Equals(column, StringComparison.OrdinalIgnoreCase)) 
-            ? column!
+        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.Contains(column)
+            ? column
             : PrimaryKey;
     }
 
     private static IEnumerable<PropertyInfo> GetProperties(bool excludeKey = false)
     {
-        return typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => !excludeKey || !p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase));
+        return excludeKey 
+            ? CachedProperties.Value.Where(p => !p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase))
+            : CachedProperties.Value;
     }
 
     private static string GetColumns(bool excludeKey = false)
