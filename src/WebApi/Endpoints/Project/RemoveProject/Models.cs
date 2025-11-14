@@ -8,7 +8,7 @@ public class Request : RemoveRequest
 }
 
 /// <summary>
-/// Response model for the removal of an project.
+/// Response model for the removal of a project.
 /// </summary>
 public class Response : RemoveResponse
 {
