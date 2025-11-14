@@ -21,7 +21,9 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request.");
 
         Logger.LogInformation("Fetching impediment entity with Id: {ImpedimentId}", request.Id);
-        var item = await dbContext.Impediments!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
+        var item = await dbContext.Impediments!
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
         if (item is null)
         {
