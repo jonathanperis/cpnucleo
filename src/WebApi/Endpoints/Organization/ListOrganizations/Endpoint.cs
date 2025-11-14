@@ -1,5 +1,3 @@
-using WebApi.Common.Extensions;
-
 namespace WebApi.Endpoints.Organization.ListOrganizations;
 
 // Dapper Repository Advanced

@@ -1,5 +1,3 @@
-using Domain.Models;
-
 namespace WebApi.Common.Extensions;
 
 /// <summary>
