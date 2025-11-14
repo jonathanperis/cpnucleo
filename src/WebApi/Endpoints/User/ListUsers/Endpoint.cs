@@ -1,3 +1,5 @@
+using WebApi.Common.Extensions;
+
 namespace WebApi.Endpoints.User.ListUsers;
 
 // Dapper Repository Advanced
@@ -27,22 +29,11 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Fetched {Count} user records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");
 
-        Response.Result = MapToPaginatedDto(response);
+        Response.Result = response.MapToDto(x => x?.MapToDto());
 
         Logger.LogInformation("Mapping complete, setting response result.");
         Logger.LogInformation("Service completed successfully.");
 
         await Send.OkAsync(Response, cancellationToken);
-    }
-
-    private static PaginatedResult<UserDto?> MapToPaginatedDto(PaginatedResult<Domain.Entities.User?> result)
-    {
-        return new PaginatedResult<UserDto?>
-        {
-            Data = result.Data?.Select(x => x?.MapToDto()).ToList(),
-            TotalCount = result.TotalCount,
-            PageNumber = result.PageNumber,
-            PageSize = result.PageSize
-        };
     }
 }
