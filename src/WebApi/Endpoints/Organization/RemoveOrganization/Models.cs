@@ -5,6 +5,9 @@ namespace WebApi.Endpoints.Organization.RemoveOrganization;
 /// </summary>
 public class Request : RemoveRequest
 {
+    public new class Validator : RemoveRequest.Validator
+    {
+    }
 }
 
 /// <summary>
