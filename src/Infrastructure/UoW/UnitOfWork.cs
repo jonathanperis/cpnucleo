@@ -3,6 +3,9 @@ namespace Infrastructure.UoW;
 public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork, IDisposable, IAsyncDisposable
 {
     private NpgsqlTransaction? _transaction;
+    
+    // Cache table names to avoid repeated reflection calls
+    private static readonly ConcurrentDictionary<Type, string> TableNameCache = new();
 
     public async Task BeginTransactionAsync()
     {
@@ -12,7 +15,8 @@ public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork, IDisposable,
 
     public IRepository<T> GetRepository<T>() where T : BaseEntity
     {
-        var tableName = typeof(T).GetCustomAttribute<TableAttribute>()?.Name ?? typeof(T).Name + "s";
+        var tableName = TableNameCache.GetOrAdd(typeof(T), type =>
+            type.GetCustomAttribute<TableAttribute>()?.Name ?? type.Name + "s");
         return new DapperRepository<T>(connection, _transaction, tableName);
     }
 
