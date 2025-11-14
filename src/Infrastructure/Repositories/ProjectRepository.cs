@@ -25,12 +25,12 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
 
         var sql = $"""
-                   SELECT * FROM "Project" 
+                   SELECT * FROM "Projects" 
                    WHERE "Active" = true
                    ORDER BY "{validSortColumn}" {validSortOrder}
                    OFFSET @Offset LIMIT @PageSize;
                    
-                   SELECT COUNT(*) FROM "Projects";
+                   SELECT COUNT(*) FROM "Projects" WHERE "Active" = true;
                    """;
 
         await using var multi = await connection.QueryMultipleAsync(sql, new
