@@ -1,5 +1,3 @@
-using WebApi.Common.Extensions;
-
 namespace WebApi.Endpoints.AssignmentImpediment.ListAssignmentImpediments;
 
 // Dapper Repository Advanced

@@ -1,5 +1,3 @@
-using WebApi.Common.Models;
-
 namespace WebApi.Endpoints.Impediment.RemoveImpediment;
 
 /// <summary>

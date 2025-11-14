@@ -1,5 +1,3 @@
-using WebApi.Common.Extensions;
-
 namespace WebApi.Endpoints.UserProject.ListUserProjects;
 
 // Dapper Repository Advanced
