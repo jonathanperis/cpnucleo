@@ -2,7 +2,14 @@ namespace Infrastructure.Repositories;
 
 //[DapperAot]
 public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
-{    
+{
+    // Cache reflection results to avoid repeated GetProperties calls
+    private static readonly Lazy<HashSet<string>> CachedPropertyNames = new(() =>
+    {
+        var properties = typeof(Project).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        return new HashSet<string>(properties.Select(p => p.Name), StringComparer.OrdinalIgnoreCase);
+    });
+    
     public async Task<Project?> GetByIdAsync(Guid id)
     {
         return await connection.QueryFirstOrDefaultAsync<Project>(
@@ -85,9 +92,8 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
 
     private static string ValidateSortColumn(string? column)
     {
-        var properties = typeof(Project).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        return properties.Any(p => p.Name.Equals(column, StringComparison.OrdinalIgnoreCase)) 
-            ? column!
+        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.Contains(column)
+            ? column
             : "Id";
     }
 }
