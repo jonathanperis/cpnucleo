@@ -2,11 +2,10 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(logging =>
 {
-    _ = logging.AddApplicationInsights();
+
 }).CreateLogger<Program>();
 
 builder.ConfigureOpenTelemetry();
-builder.Logging.AddApplicationInsights();
 
 builder.Services
     .AddAuthenticationJwtBearer(s => s.SigningKey = "ForTheLoveOfGodStoreAndLoadThisSecurely")
