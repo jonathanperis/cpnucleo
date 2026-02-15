@@ -1,34 +1,18 @@
 namespace WebApi.Endpoints.UserAssignment.RemoveUserAssignment;
 
 /// <summary>
-/// Request model for removing an userAssignment.
+/// Request model for removing a user assignment.
 /// </summary>
-public class Request
+public class Request : RemoveRequest
 {
-    /// <summary>
-    /// Gets or sets the unique identifiers for the userAssignments.
-    /// </summary>
-    public required List<Guid> Ids { get; set; }
-
-    public class Validator : Validator<Request>
+    public new class Validator : RemoveRequest.Validator
     {
-        public Validator()
-        {
-            RuleFor(x => x.Ids)
-                .NotEmpty().WithMessage("Ids are required.");
-            RuleForEach(x => x.Ids)
-                .NotEmpty().WithMessage("Each Id is required.");
-        }
     }
 }
 
 /// <summary>
-/// Response model for the removal of an userAssignment.
+/// Response model for the removal of a user assignment.
 /// </summary>
-public class Response
+public class Response : RemoveResponse
 {
-    /// <summary>
-    /// Gets or sets a value indicating whether the removal was successful.
-    /// </summary>
-    public bool Success { get; set; }
 }

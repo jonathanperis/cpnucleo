@@ -27,22 +27,11 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Fetched {Count} userAssignment records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");
 
-        Response.Result = MapToPaginatedDto(response);
+        Response.Result = response.MapToDto(x => x?.MapToDto());
 
         Logger.LogInformation("Mapping complete, setting response result.");
         Logger.LogInformation("Service completed successfully.");
 
         await Send.OkAsync(Response, cancellationToken);
-    }
-
-    private static PaginatedResult<UserAssignmentDto?> MapToPaginatedDto(PaginatedResult<Domain.Entities.UserAssignment?> result)
-    {
-        return new PaginatedResult<UserAssignmentDto?>
-        {
-            Data = result.Data?.Select(x => x?.MapToDto()).ToList(),
-            TotalCount = result.TotalCount,
-            PageNumber = result.PageNumber,
-            PageSize = result.PageSize
-        };
     }
 }

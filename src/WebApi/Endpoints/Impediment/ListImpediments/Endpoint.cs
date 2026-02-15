@@ -3,6 +3,13 @@ namespace WebApi.Endpoints.Impediment.ListImpediments;
 // EF Core
 public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
 {
+    // Cache reflection results to avoid repeated GetProperties calls
+    private static readonly Lazy<HashSet<string>> CachedPropertyNames = new(() =>
+    {
+        var properties = typeof(Domain.Entities.Impediment).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        return new HashSet<string>(properties.Select(p => p.Name), StringComparer.OrdinalIgnoreCase);
+    });
+    
     public override void Configure()
     {
         Get("/api/impediments");
@@ -21,14 +28,14 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
-        var query = dbContext.Impediments?.AsQueryable();
+        var query = dbContext.Impediments?.AsNoTracking().AsQueryable();
 
         var validSortColumn = ValidateSortColumn(request.Pagination.SortColumn);
         var validSortOrder = request.Pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
 
         query = ApplySorting(query, validSortColumn, validSortOrder);
 
-        var totalCount = query!.Count();
+        var totalCount = await query!.CountAsync(cancellationToken);
 
         var response = await query!
             .Skip(request.Pagination.Offset)
@@ -53,11 +60,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     private static string ValidateSortColumn(string? column)
     {
-        if (string.IsNullOrWhiteSpace(column))
-            return "Id";
-
-        var properties = typeof(Domain.Entities.Impediment).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        return properties.Any(p => p.Name.Equals(column, StringComparison.OrdinalIgnoreCase))
+        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.Contains(column)
             ? column
             : "Id";
     }
