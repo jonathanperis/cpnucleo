@@ -147,17 +147,18 @@ Cpnucleo implements Clean Architecture (also known as Onion Architecture or Hexa
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                        │
-│   WebApi (REST) | IdentityApi | GrpcServer | WebClient      │
-│   • FastEndpoints     • JWT Auth    • gRPC Handlers         │
-│   • Swagger/OpenAPI   • Rate Limit  • HTTP/2                │
+│        WebApi (REST) | IdentityApi | WebClient               │
+│   • FastEndpoints     • JWT Auth    • Blazor WASM           │
+│   • Swagger/OpenAPI   • Rate Limit  • MudBlazor              │
 └─────────────────┬───────────────────────────────────────────┘
                   │ References
 ┌─────────────────▼───────────────────────────────────────────┐
-│              Application/Contracts Layer                     │
-│                  GrpcServer.Contracts                        │
-│   • Commands & Queries   • DTOs   • Command Handlers        │
+│           Alternative gRPC Implementation (Independent)      │
+│           GrpcServer | GrpcServer.Contracts                  │
+│   • gRPC/HTTP2       • Command DTOs (shared with clients)   │
+│   • FastEndpoints.Messaging  • CQRS Commands                │
 └─────────────────┬───────────────────────────────────────────┘
-                  │ References
+                  │ Both Reference
 ┌─────────────────▼───────────────────────────────────────────┐
 │                  Infrastructure Layer                        │
 │                    Infrastructure                            │
@@ -179,8 +180,9 @@ Cpnucleo implements Clean Architecture (also known as Onion Architecture or Hexa
 **Dependency Rules**:
 - Domain has no dependencies (pure business logic)
 - Infrastructure depends on Domain (implements interfaces)
-- Application/Contracts depend on Domain (orchestrates use cases)
-- Presentation depends on Infrastructure and Application (entry points)
+- WebApi, IdentityApi, and WebClient depend on Infrastructure and Domain
+- GrpcServer (independent) depends on GrpcServer.Contracts, Infrastructure, and Domain
+- **Important**: WebApi does NOT depend on GrpcServer - they are independent services
 
 **Architecture Tests**: The `Architecture.Tests` project enforces these rules using NetArchTest, with 25+ tests validating:
 - Layer dependencies
@@ -198,7 +200,7 @@ The solution is decomposed into independently deployable services:
 |---------|------|---------|------------|
 | **WebApi** | 5100, 5111 | RESTful API with CRUD operations | FastEndpoints + EF Core |
 | **IdentityApi** | 5200 | Authentication & JWT token issuance | FastEndpoints.Security |
-| **GrpcServer** | 5300, 5301 | Command handlers via gRPC/HTTP2 | FastEndpoints.Messaging + Dapper |
+| **GrpcServer** | 5300, 5301 | Alternative gRPC-based API implementation sample | FastEndpoints.Messaging + Dapper |
 | **WebClient** | 5400 | Blazor WebAssembly SPA | Blazor WASM + MudBlazor |
 | **Database** | 5432 | PostgreSQL data store | PostgreSQL 16.7 |
 | **NGINX** | 9999 | Load balancer & reverse proxy | NGINX |
@@ -218,25 +220,39 @@ The solution is decomposed into independently deployable services:
               │(Port 5100)    │(Port 5111)   │ (Port 5200) │
               └────┬─────┘    └────┬─────┘   └──────┬──────┘
                    │               │                 │
-                   │    gRPC/HTTP2 (Commands)        │
-                   └───────────────┼─────────────────┘
-                                   ▼
-                          ┌─────────────────┐
-                          │   GrpcServer    │
-                          │  (Port 5300)    │
-                          └────────┬────────┘
-                                   │ Dapper
-                    ┌──────────────┼──────────────┐
-                    ▼              ▼              ▼
+                   │               │                 │
+                   ▼               ▼                 ▼
+              ┌──────────────────────────────────────┐
+              │    Infrastructure + Domain Layers    │
+              └────────┬─────────────────────────────┘
+                       │
+                       ▼
+              ┌──────────────────────────────────────┐
+              │         PostgreSQL (Port 5432)       │
+              └──────────────────────────────────────┘
+
+Alternative gRPC-based implementation (independent):
+┌──────────┐    gRPC/HTTP2   ┌─────────────────┐
+│ gRPC     │ ──────────────► │   GrpcServer    │
+│ Client   │                 │  (Port 5300)    │
+└──────────┘                 └────────┬────────┘
+                                      │
+                                      ▼
+              ┌──────────────────────────────────────┐
+              │    Infrastructure + Domain Layers    │
+              └────────┬─────────────────────────────┘
+                       │ Dapper
+                       ▼
               ┌──────────────────────────────────────┐
               │         PostgreSQL (Port 5432)       │
               └──────────────────────────────────────┘
 ```
 
 **Key Design Decisions**:
-- **WebApi**: Uses EF Core for query-heavy read operations
-- **GrpcServer**: Uses Dapper for write-heavy command operations (better performance)
-- **Separation**: Commands (writes) go through gRPC, queries (reads) use REST
+- **WebApi**: RESTful implementation using FastEndpoints + EF Core for read operations
+- **GrpcServer**: Independent gRPC-based implementation sample using FastEndpoints.Messaging + Dapper for write operations
+- **Independence**: GrpcServer is NOT called by WebApi - it's an alternative implementation pattern demonstrating gRPC
+- **Shared Layers**: Both services share Infrastructure and Domain layers
 - **Scalability**: WebApi instances can scale horizontally behind NGINX
 
 ### Domain-Driven Design
@@ -304,36 +320,38 @@ public interface IUnitOfWork
 
 ### CQRS Pattern
 
-Commands (writes) and Queries (reads) are separated:
+The architecture demonstrates CQRS (Command Query Responsibility Segregation) with two independent implementation approaches:
 
-#### Command Path (via gRPC)
+#### WebApi Approach (RESTful)
 ```
-Client → WebApi → GrpcServer → Handler → Dapper → Database
-                   (Command)    (Use Case)  (Fast Writes)
-```
-
-**Example Command Flow**:
-1. Client sends POST to WebApi endpoint
-2. WebApi forwards command to GrpcServer via gRPC
-3. GrpcServer's handler processes with Dapper (transactional)
-4. Returns result back through the chain
-
-#### Query Path (via EF Core)
-```
-Client → WebApi → EF Core DbContext → Database
-         (Query)   (Read-Optimized)
+Client → WebApi → Infrastructure (EF Core/Dapper) → Database
+         (Queries & Commands)
 ```
 
-**Example Query Flow**:
-1. Client sends GET to WebApi endpoint
-2. WebApi queries directly using EF Core
-3. Returns data with projections and filtering
+**Example Flow**:
+1. Client sends HTTP request to WebApi endpoint (GET, POST, PUT, DELETE)
+2. WebApi processes directly using Infrastructure layer
+3. Queries use EF Core, Commands may use Dapper via Unit of Work
+4. Returns data with projections and filtering
 
-**Benefits**:
+#### GrpcServer Approach (gRPC - Independent Sample)
+```
+gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
+              (Commands via gRPC Contracts)
+```
+
+**Example Flow**:
+1. gRPC client sends command to GrpcServer via gRPC/HTTP2
+2. GrpcServer's handler processes using Dapper (transactional)
+3. Returns result back to the gRPC client
+
+**Important**: GrpcServer is an **alternative implementation pattern**, not a dependency of WebApi. It demonstrates how to build the same functionality using gRPC instead of REST.
+
+**Benefits of Both Patterns**:
 - **Performance**: Optimized data access for each operation type
-- **Scalability**: Read and write sides can scale independently
-- **Simplicity**: Each side uses the most appropriate tool
-- **Flexibility**: Different consistency models for reads vs writes
+- **Flexibility**: Choose REST (WebApi) or gRPC (GrpcServer) based on client needs
+- **Independence**: Services can scale and evolve separately
+- **Learning**: Side-by-side comparison of REST vs gRPC implementation patterns
 
 ---
 

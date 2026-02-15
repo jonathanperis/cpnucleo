@@ -26,6 +26,8 @@ global using OpenTelemetry.Resources;
 global using OpenTelemetry.Trace;
 global using Riok.Mapperly.Abstractions;
 global using WebApi.Common.Dtos;
+global using WebApi.Common.Extensions;
 global using WebApi.Common.Mappings;
+global using WebApi.Common.Models;
 global using WebApi.Middlewares;
 global using WebApi.ServiceExtensions;
