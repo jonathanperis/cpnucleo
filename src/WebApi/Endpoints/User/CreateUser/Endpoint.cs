@@ -18,44 +18,36 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        try
+        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", request.Name, request.Id);
+
+        Logger.LogInformation("Checking if an user entity exists with Id: {UserId}", request.Id);
+        var itemExists = dbContext.Users!.Any(x => x.Id == request.Id);
+
+        if (itemExists)
         {
-            Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", request.Name, request.Id);
-
-            Logger.LogInformation("Checking if an user entity exists with Id: {UserId}", request.Id);
-            var itemExists = dbContext.Users!.Any(x => x.Id == request.Id);
-
-            if (itemExists)
-            {
-                Logger.LogWarning("User Id conflict for Id: {UserId}", request.Id);
-                AddError(r => r.Id, "this Id is already in use!");
-            }
-
-            ThrowIfAnyErrors();
-
-            Logger.LogInformation("Validation passed, proceeding to create new user entity.");
-            var newItem = Domain.Entities.User.Create(request.Name, request.Login, request.Password, request.Id);
-            Logger.LogInformation("Created new user entity with Id: {UserId}", newItem.Id);
-
-            Logger.LogInformation("Adding user to repository.");
-            await dbContext.Users!.AddAsync(newItem, cancellationToken);
-
-            Logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            Logger.LogInformation("Fetching user by Id: {UserId}", newItem.Id);
-            var createdItem = await dbContext.Users!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
-
-            Response.User = createdItem!.MapToDto();
-
-            Logger.LogInformation("Service completed successfully.");
-
-            await Send.OkAsync(Response, cancellationToken);
+            Logger.LogWarning("User Id conflict for Id: {UserId}", request.Id);
+            AddError(r => r.Id, "this Id is already in use!");
         }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "An error occurred while processing the request.");
-            ThrowError("An error has occurred.");
-        }
+
+        ThrowIfAnyErrors();
+
+        Logger.LogInformation("Validation passed, proceeding to create new user entity.");
+        var newItem = Domain.Entities.User.Create(request.Name, request.Login, request.Password, request.Id);
+        Logger.LogInformation("Created new user entity with Id: {UserId}", newItem.Id);
+
+        Logger.LogInformation("Adding user to repository.");
+        await dbContext.Users!.AddAsync(newItem, cancellationToken);
+
+        Logger.LogInformation("Committing transaction.");
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        Logger.LogInformation("Fetching user by Id: {UserId}", newItem.Id);
+        var createdItem = await dbContext.Users!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+
+        Response.User = createdItem!.MapToDto();
+
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -18,57 +18,48 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {        
         Logger.LogInformation("Service started processing request.");
-        
-        try
+
+        Logger.LogInformation("Beginning transaction.");
+        await unitOfWork.BeginTransactionAsync();
+
+        Logger.LogInformation("Checking if organization entities exist for Ids: {OrganizationIds}", string.Join(",", request.Ids));
+        var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+        var allSuccess = true;
+
+        foreach (var id in request.Ids)
         {
-            Logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
-
-            Logger.LogInformation("Checking if organization entities exist for Ids: {OrganizationIds}", string.Join(",", request.Ids));
-            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-            var allSuccess = true;
-
-            foreach (var id in request.Ids)
+            var item = await repository.GetByIdAsync(id);
+            if (item is null)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    await Send.NotFoundAsync(cancellation: cancellationToken);
-                    return;
-                }
-
-                Logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
-                Domain.Entities.Organization.Remove(item);
-
-                Logger.LogInformation("Updating repository for removed entity {OrganizationId}.", id);
-                var result = await repository.UpdateAsync(item);
-
-                if (!result) allSuccess = false;
-            }
-            
-            Response.Success = allSuccess;
-            
-            if (!allSuccess)
-            {
-                Logger.LogWarning("One or more deletions failed, rolling back transaction.");
-                await unitOfWork.RollbackAsync(cancellationToken);
-                await Send.ErrorsAsync(cancellation: cancellationToken);
+                await Send.NotFoundAsync(cancellation: cancellationToken);
                 return;
             }
 
-            Logger.LogInformation("Remove result: {Success}", Response.Success);
-            Logger.LogInformation("Committing transaction.");
-            await unitOfWork.CommitAsync(cancellationToken);
-            
-            Logger.LogInformation("Service completed successfully.");
-            
-            await Send.OkAsync(Response, cancellationToken);
+            Logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
+            Domain.Entities.Organization.Remove(item);
+
+            Logger.LogInformation("Updating repository for removed entity {OrganizationId}.", id);
+            var result = await repository.UpdateAsync(item);
+
+            if (!result) allSuccess = false;
         }
-        catch (Exception ex)
+
+        Response.Success = allSuccess;
+
+        if (!allSuccess)
         {
-            Logger.LogError(ex, "An error occurred while processing the request. Rolling back transaction.");
+            Logger.LogWarning("One or more deletions failed, rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
-            ThrowError("An error has occurred.");
+            await Send.ErrorsAsync(cancellation: cancellationToken);
+            return;
         }
+
+        Logger.LogInformation("Remove result: {Success}", Response.Success);
+        Logger.LogInformation("Committing transaction.");
+        await unitOfWork.CommitAsync(cancellationToken);
+
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -18,44 +18,36 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        try
+        Logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", request.UserId, request.AssignmentId, request.Id);
+
+        Logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", request.Id);
+        var itemExists = dbContext.UserAssignments!.Any(x => x.Id == request.Id);
+
+        if (itemExists)
         {
-            Logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", request.UserId, request.AssignmentId, request.Id);
-
-            Logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", request.Id);
-            var itemExists = dbContext.UserAssignments!.Any(x => x.Id == request.Id);
-
-            if (itemExists)
-            {
-                Logger.LogWarning("UserAssignment Id conflict for Id: {UserAssignmentId}", request.Id);
-                AddError(r => r.Id, "this Id is already in use!");
-            }
-
-            ThrowIfAnyErrors();
-
-            Logger.LogInformation("Validation passed, proceeding to create new userAssignment entity.");
-            var newItem = Domain.Entities.UserAssignment.Create(request.UserId, request.AssignmentId, request.Id);
-            Logger.LogInformation("Created new userAssignment entity with Id: {UserAssignmentId}", newItem.Id);
-
-            Logger.LogInformation("Adding userAssignment to repository.");
-            await dbContext.UserAssignments!.AddAsync(newItem, cancellationToken);
-
-            Logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            Logger.LogInformation("Fetching userAssignment by Id: {UserAssignmentId}", newItem.Id);
-            var createdItem = await dbContext.UserAssignments!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
-
-            Response.UserAssignment = createdItem!.MapToDto();
-
-            Logger.LogInformation("Service completed successfully.");
-
-            await Send.OkAsync(Response, cancellationToken);
+            Logger.LogWarning("UserAssignment Id conflict for Id: {UserAssignmentId}", request.Id);
+            AddError(r => r.Id, "this Id is already in use!");
         }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "An error occurred while processing the request.");
-            ThrowError("An error has occurred.");
-        }
+
+        ThrowIfAnyErrors();
+
+        Logger.LogInformation("Validation passed, proceeding to create new userAssignment entity.");
+        var newItem = Domain.Entities.UserAssignment.Create(request.UserId, request.AssignmentId, request.Id);
+        Logger.LogInformation("Created new userAssignment entity with Id: {UserAssignmentId}", newItem.Id);
+
+        Logger.LogInformation("Adding userAssignment to repository.");
+        await dbContext.UserAssignments!.AddAsync(newItem, cancellationToken);
+
+        Logger.LogInformation("Committing transaction.");
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        Logger.LogInformation("Fetching userAssignment by Id: {UserAssignmentId}", newItem.Id);
+        var createdItem = await dbContext.UserAssignments!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+
+        Response.UserAssignment = createdItem!.MapToDto();
+
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }
