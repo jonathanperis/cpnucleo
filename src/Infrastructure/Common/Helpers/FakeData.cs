@@ -8,7 +8,7 @@ internal static class FakeDataHelper
     private static List<AssignmentType>? AssignmentTypes { get; set; }
     private static List<Impediment>? Impediments { get; set; }
     private static List<Organization>? Organizations { get; set; }
-    private static List<Project> Projects { get; set; }
+    private static List<Project>? Projects { get; set; }
     private static List<UserAssignment>? UserAssignments { get; set; }
     private static List<User>? Users { get; set; }
     private static List<UserProject>? UserProjects { get; set; }
@@ -36,6 +36,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""
                         INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES 
                         """);
+
         foreach (var item in Organizations)
         {
             var isLast = currentIndex == lastIndex;
@@ -58,7 +59,8 @@ internal static class FakeDataHelper
         sb.AppendLine();
         sb.AppendLine("""
                         INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
+                        """);   
+        
         foreach (var item in Projects)
         {
             var isLast = currentIndex == lastIndex;
@@ -81,7 +83,8 @@ internal static class FakeDataHelper
         sb.AppendLine();
         sb.AppendLine("""
                         INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
+                        """);   
+        
         foreach (var item in Impediments)
         {
             var isLast = currentIndex == lastIndex;
@@ -104,7 +107,8 @@ internal static class FakeDataHelper
         sb.AppendLine();
         sb.AppendLine("""
                         INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
+                        """);   
+        
         foreach (var item in AssignmentTypes)
         {
             var isLast = currentIndex == lastIndex;
@@ -129,6 +133,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""
                         INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
                         """);        
+
         foreach (var item in Workflows)
         {
             var isLast = currentIndex == lastIndex;
@@ -155,6 +160,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""
                         INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
                         """);        
+
         foreach (var item in Users)
         {
             var isLast = currentIndex == lastIndex;
@@ -176,7 +182,8 @@ internal static class FakeDataHelper
         sb.AppendLine();
         sb.AppendLine("""
                         INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
+                        """);       
+        
         foreach (var item in UserProjects)
         {
             var isLast = currentIndex == lastIndex;
@@ -204,6 +211,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""
                         INSERT INTO "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
                         """);        
+
         foreach (var item in Assignments)
         {
             var isLast = currentIndex == lastIndex;
@@ -226,6 +234,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""
                         INSERT INTO "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
                         """);        
+
         foreach (var item in UserAssignments)
         {
             var isLast = currentIndex == lastIndex;
@@ -247,7 +256,8 @@ internal static class FakeDataHelper
         sb.AppendLine();
         sb.AppendLine("""
                         INSERT INTO "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
+                        """);     
+        
         foreach (var item in AssignmentImpediments)
         {
             var isLast = currentIndex == lastIndex;
@@ -273,6 +283,7 @@ internal static class FakeDataHelper
         sb.AppendLine("""
                         INSERT INTO "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
                         """);        
+
         foreach (var item in Appointments)
         {
             var isLast = currentIndex == lastIndex;
@@ -300,16 +311,17 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Organizations = organizationFaker.Generate(686);
-        WriteCsv("Organizations.csv", Organizations, org =>
+        WriteCsv("Organizations.csv", Organizations, x =>
         [
-            org.Id.ToString(),
-            org.Name!,
-            org.Description!,
-            org.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            org.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !org.Active ? org.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            org.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.Description!,
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Organizations" ("Id", "Name", "Description", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Organizations.csv' WITH (FORMAT CSV);""");
 
         var projectFaker = new Faker<Project>()
@@ -322,16 +334,17 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Projects = projectFaker.Generate(1258);
-        WriteCsv("Projects.csv", Projects, p =>
+        WriteCsv("Projects.csv", Projects, x =>
         [
-            p.Id.ToString(),
-            p.Name!,
-            p.OrganizationId.ToString(),
-            p.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            p.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !p.Active ? p.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            p.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.OrganizationId.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Projects.csv' WITH (FORMAT CSV);""");
 
         var impedimentFaker = new Faker<Impediment>()
@@ -343,15 +356,16 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Impediments = impedimentFaker.Generate(114);
-        WriteCsv("Impediments.csv", Impediments, i =>
+        WriteCsv("Impediments.csv", Impediments, x =>
         [
-            i.Id.ToString(),
-            i.Name!,
-            i.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            i.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !i.Active ? i.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            i.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Impediments" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Impediments.csv' WITH (FORMAT CSV);""");
 
         var assignmentTypeFaker = new Faker<AssignmentType>()
@@ -361,17 +375,18 @@ internal static class FakeDataHelper
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
-
+            
         AssignmentTypes = assignmentTypeFaker.Generate(3);
-        WriteCsv("AssignmentTypes.csv", AssignmentTypes, at =>
+        WriteCsv("AssignmentTypes.csv", AssignmentTypes, x =>
         [
-            at.Id.ToString(),
-            at.Name!,
-            at.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            at.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !at.Active ? at.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            at.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "AssignmentTypes" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/AssignmentTypes.csv' WITH (FORMAT CSV);""");
 
         var workflowFaker = new Faker<Workflow>()
@@ -382,18 +397,19 @@ internal static class FakeDataHelper
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
-
+            
         Workflows = workflowFaker.Generate(6);
-        WriteCsv("Workflows.csv", Workflows, w =>
+        WriteCsv("Workflows.csv", Workflows, x =>
         [
-            w.Id.ToString(),
-            w.Name!,
-            w.Order.ToString(),
-            w.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            w.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !w.Active ? w.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            w.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.Order.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Workflows" ("Id", "Name", "Order", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Workflows.csv' WITH (FORMAT CSV);""");
 
         var userFaker = new Faker<User>()
@@ -408,18 +424,19 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Users = userFaker.Generate(11154);
-        WriteCsv("Users.csv", Users, u =>
+        WriteCsv("Users.csv", Users, x =>
         [
-            u.Id.ToString(),
-            u.Name!,
-            u.Login!,
-            u.Password!,
-            u.Salt!,
-            u.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            u.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !u.Active ? u.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            u.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.Login!,
+            x.Password!,
+            x.Salt!,
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Users.csv' WITH (FORMAT CSV);""");
 
         var userProjectFaker = new Faker<UserProject>()
@@ -432,16 +449,17 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         UserProjects = userProjectFaker.Generate(24400);
-        WriteCsv("UserProjects.csv", UserProjects, up =>
+        WriteCsv("UserProjects.csv", UserProjects, x =>
         [
-            up.Id.ToString(),
-            up.UserId.ToString(),
-            up.ProjectId.ToString(),
-            up.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            up.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !up.Active ? up.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            up.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.UserId.ToString(),
+            x.ProjectId.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/UserProjects.csv' WITH (FORMAT CSV);""");
 
         var assignmentFaker = new Faker<Assignment>()
@@ -461,23 +479,24 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Assignments = assignmentFaker.Generate(464587);
-        WriteCsv("Assignments.csv", Assignments, a =>
+        WriteCsv("Assignments.csv", Assignments, x =>
         [
-            a.Id.ToString(),
-            a.Name!,
-            a.Description!,
-            a.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
-            a.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
-            a.AmountHours.ToString(),
-            a.ProjectId.ToString(),
-            a.WorkflowId.ToString(),
-            a.UserId.ToString(),
-            a.AssignmentTypeId.ToString(),
-            a.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            a.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !a.Active ? a.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            a.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Name!,
+            x.Description!,
+            x.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.AmountHours.ToString(),
+            x.ProjectId.ToString(),
+            x.WorkflowId.ToString(),
+            x.UserId.ToString(),
+            x.AssignmentTypeId.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Assignments.csv' WITH (FORMAT CSV);""");
 
         var userAssignmentFaker = new Faker<UserAssignment>()
@@ -490,16 +509,17 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         UserAssignments = userAssignmentFaker.Generate(363554);
-        WriteCsv("UserAssignments.csv", UserAssignments, ua =>
+        WriteCsv("UserAssignments.csv", UserAssignments, x =>
         [
-            ua.Id.ToString(),
-            ua.UserId.ToString(),
-            ua.AssignmentId.ToString(),
-            ua.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            ua.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !ua.Active ? ua.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            ua.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.UserId.ToString(),
+            x.AssignmentId.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/UserAssignments.csv' WITH (FORMAT CSV);""");
 
         var assignmentImpedimentFaker = new Faker<AssignmentImpediment>()
@@ -512,17 +532,18 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         AssignmentImpediments = assignmentImpedimentFaker.Generate(11369);
-        WriteCsv("AssignmentImpediments.csv", AssignmentImpediments, ai =>
+        WriteCsv("AssignmentImpediments.csv", AssignmentImpediments, x =>
         [
-            ai.Id.ToString(),
-            ai.Description!,
-            ai.AssignmentId.ToString(), 
-            ai.ImpedimentId.ToString(),
-            ai.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            ai.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !ai.Active ? ai.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            ai.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Description!,
+            x.AssignmentId.ToString(), 
+            x.ImpedimentId.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/AssignmentImpediments.csv' WITH (FORMAT CSV);""");
 
         var appointmentFaker = new Faker<Appointment>()
@@ -538,19 +559,20 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Appointments = appointmentFaker.Generate(489571);
-        WriteCsv("Appointments.csv", Appointments, a =>
+        WriteCsv("Appointments.csv", Appointments, x =>
         [
-            a.Id.ToString(),
-            a.Description!,
-            a.KeepDate.ToString("yyyy-MM-dd HH:mm:ss"),
-            a.AmountHours.ToString(),
-            a.AssignmentId.ToString(),
-            a.UserId.ToString(),
-            a.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
-            a.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")!,
-            !a.Active ? a.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null,
-            a.Active.ToString().ToLower()
+            x.Id.ToString(),
+            x.Description!,
+            x.KeepDate.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.AmountHours.ToString(),
+            x.AssignmentId.ToString(),
+            x.UserId.ToString(),
+            x.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            x.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
+            !x.Active ? x.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "" : "",
+            x.Active.ToString().ToLower()
         ]);
+
         sb.AppendLine("""COPY "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Appointments.csv' WITH (FORMAT CSV);""");
 
         const string filePath = "003-database-dump-csv-dml.sql";
