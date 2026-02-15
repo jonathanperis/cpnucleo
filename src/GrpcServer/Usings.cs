@@ -1,7 +1,6 @@
 global using System.Diagnostics.CodeAnalysis;
 global using Domain.Entities;
 global using Domain.Models;
-global using Domain.Repositories;
 global using Domain.UoW;
 global using FastEndpoints;
 global using GrpcServer.Common.Mappings;
@@ -30,7 +29,6 @@ global using GrpcServer.Handlers.UserProject;
 global using GrpcServer.Handlers.Workflow;
 global using GrpcServer.ServiceExtensions;
 global using Infrastructure;
-global using Infrastructure.Common.Context;
 global using Microsoft.AspNetCore.Server.Kestrel.Core;
 global using OpenTelemetry.Instrumentation.AspNetCore;
 global using OpenTelemetry.Logs;
