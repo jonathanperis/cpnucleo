@@ -9,7 +9,7 @@
     <File Path=".github/workflows/main-release-webapi.yml" />
     <File Path=".github/workflows/main-release-webclient.yml" />
   </Folder>
-  <Folder Name="/sln/">
+  <Folder Name="/root/">
     <File Path=".env" />
     <File Path="compose.override.yaml" />
     <File Path="compose.prod.yaml" />
