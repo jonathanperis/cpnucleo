@@ -97,8 +97,8 @@ app.MapApiClientEndpoint("/cs-client", c =>
     {
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.CSharp;
-        c.ClientNamespaceName = "MyCompanyName";
-        c.ClientClassName = "MyCsClient";
+        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
+        c.ClientClassName = "IdentityApiClient";
     },
     o =>
     {
@@ -112,8 +112,8 @@ await app.GenerateApiClientsAndExitAsync(
         c.SwaggerDocumentName = "v1"; //must match doc name above
         c.Language = GenerationLanguage.CSharp;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
-        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-        c.ClientClassName = "Cpnucleo.WebApi.Client";
+        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
+        c.ClientClassName = "IdentityApiClient";
         c.CreateZipArchive = true; //if you'd like a zip file as well
     },
     c =>
@@ -121,8 +121,8 @@ await app.GenerateApiClientsAndExitAsync(
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.TypeScript;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
-        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-        c.ClientClassName = "cpnucleo-webapi-client";
+        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
+        c.ClientClassName = "cpnucleo-identityapi-client";
     });
 
 app.Run();
