@@ -122,7 +122,6 @@ services:
     depends_on: 
       - webapi1-cpnucleo
       - webapi2-cpnucleo
-      - identityapi-cpnucleo
     ports:
       # Mapping external port 9999 to internal port 9999 for NGINX reverse-proxy
       - "9999:9999"
