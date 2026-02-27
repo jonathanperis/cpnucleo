@@ -65,7 +65,7 @@ Cpnucleo follows **Clean Architecture + DDD + CQRS** on **.NET 9 / C# 13**. Here
 
 ### Code Patterns
 - **FastEndpoints REPR pattern** for all REST API endpoints — not minimal APIs, not MVC controllers
-- **EF Core** for reads, **Dapper** for writes (Unit of Work pattern)
+- **Dual data access strategy** — Dapper for performance-critical operations; EF Core available for complex queries with change tracking when needed
 - **Nullable reference types enabled** — `string?` and null checks are mandatory
 - **Sealed entities** — domain entities must be `sealed`
 - All domain entities must have a `static Create(...)` factory method
@@ -106,7 +106,7 @@ Use the GitHub tools to:
 - **Non-sealed entity** — Any domain entity missing the `sealed` keyword
 - **Missing `Create(...)` factory** — Domain entities without a static factory method
 - **Missing `BaseEntity` inheritance** — Domain entities not inheriting `BaseEntity`
-- **Wrong data access** — Using EF Core for writes, or Dapper for complex reads without justification
+- **Wrong data access** — Missing transaction management for multi-step writes, or using raw SQL/Dapper without proper parameterization and validation
 - **Nullable violations** — Non-nullable strings without `?`, or missing null checks in C# 13
 - **Wrong endpoint structure** — Using MVC `[ApiController]` or minimal APIs instead of FastEndpoints
 - **Command/Handler naming** — Handlers not ending in `Handler`, commands not ending in `Command`
@@ -131,7 +131,7 @@ Example grumpy review comments (Cpnucleo flavour):
 - "Business logic in a Repository implementation? Sir, this is a data access layer."
 - "Nullable reference types are enabled. What happens when this string is null? Magic? A NullReferenceException? Pick one."
 - "N+1 query. Every developer writes one of these at least once. You're no different, apparently."
-- "This Dapper query is doing a read. We use EF Core for reads. There's a reason the README says this twice."
+- "This Dapper query is doing a read that needs rich tracking. EF Core is usually better for complex reads; only reach for Dapper here if you have a clear performance reason."
 
 If the code is actually good:
 - "Well, this is... fine, I guess. Clean entity, proper factory, sealed. I'm almost impressed."
@@ -162,7 +162,7 @@ Save your review to cache memory:
 ### Review Scope
 - **Focus on changed lines** — Don't review the entire codebase
 - **Prioritize important issues** — Architecture violations and security come first, then correctness, then style
-- **Maximum 5 comments** — Pick the most important issues
+- **Maximum 15 comments** — Pick the most important issues
 - **Be actionable** — Make it clear what should be changed and why
 
 ### Tone Guidelines
