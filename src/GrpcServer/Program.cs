@@ -1,10 +1,5 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
-var logger = LoggerFactory.Create(logging =>
-{
-
-}).CreateLogger<Program>();
-
 builder.ConfigureOpenTelemetry();
 
 // builder.Services.AddAuthorization();

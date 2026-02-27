@@ -2,7 +2,7 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(logging =>
 {
-
+    logging.AddConsole();
 }).CreateLogger<Program>();
 
 builder.ConfigureOpenTelemetry();
@@ -63,6 +63,7 @@ builder.Services
             s.Title = "Cpnucleo Web API";
             s.Description = "A sample project that implements best practices when building modern .NET projects";
             s.Version = "v1";
+            s.SchemaSettings.SchemaNameGenerator = new SchemaNameGenerator();
         };
         o.AutoTagPathSegmentIndex = 0; // Disable the auto-tagging by setting the AutoTagPathSegmentIndex property to 0
     });
