@@ -2,13 +2,13 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(logging =>
 {
-
+    logging.AddConsole();
 }).CreateLogger<Program>();
 
 builder.ConfigureOpenTelemetry();
 
 builder.Services
-    .AddAuthenticationJwtBearer(s => s.SigningKey = "ForTheLoveOfGodStoreAndLoadThisSecurely")
+    .AddAuthenticationJwtBearer(s => s.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))
     .AddAuthorization() 
     .AddFastEndpoints();
 
@@ -16,7 +16,7 @@ builder.Services
     .Configure<JwtCreationOptions>(o =>
     {
         o.ExpireAt = DateTime.UtcNow.AddDays(1);
-        o.SigningKey = "ForTheLoveOfGodStoreAndLoadThisSecurely";
+        o.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing.");
         o.Issuer = "https://identity.peris-studio.dev";
         o.Audience = "https://peris-studio.dev";
     });

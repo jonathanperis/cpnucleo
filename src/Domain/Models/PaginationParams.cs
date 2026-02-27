@@ -7,14 +7,12 @@ public class PaginationParams
     private string? _sortColumn;
     private string? _sortOrder;
 
-    [Range(1, int.MaxValue, ErrorMessage = "PageNumber must be at least 1")]
     public int? PageNumber
     {
         get => _pageNumber ?? 1;
         set => _pageNumber = value;
     }
 
-    [Range(1, 100, ErrorMessage = "PageSize must be between 1 and 100")]
     public int? PageSize
     {
         get => _pageSize ?? 10;
@@ -33,6 +31,5 @@ public class PaginationParams
         set => _sortOrder = value;
     }
 
-    [NotMapped]
     public int Offset => (PageNumber.GetValueOrDefault(1) - 1) * PageSize.GetValueOrDefault(10);
 }
