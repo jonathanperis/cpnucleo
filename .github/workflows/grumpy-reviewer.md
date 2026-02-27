@@ -14,7 +14,7 @@ tools:
     toolsets: [pull_requests, repos]
 safe-outputs:
   create-pull-request-review-comment:
-    max: 5
+    max: 15
     side: "RIGHT"
   submit-pull-request-review:
     max: 1
