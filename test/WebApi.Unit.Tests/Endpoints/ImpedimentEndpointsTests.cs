@@ -1,6 +1,3 @@
-using Infrastructure.Common.Context;
-using Microsoft.EntityFrameworkCore;
-
 namespace WebApi.Unit.Tests.Endpoints;
 
 [TestFixture]
@@ -13,13 +10,14 @@ public class ImpedimentEndpointsTests
         var impedimentId = Guid.NewGuid();
         var impediment = Impediment.Create("Test Impediment", impedimentId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>(impediment));
+        var fakeRepository = A.Fake<IRepository<Impediment>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(impedimentId))
+            .Returns(Task.FromResult<Impediment?>(impediment));
 
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Impediment>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Impediment.GetImpedimentById.Request { Id = impedimentId };
 
         // Act
@@ -38,13 +36,14 @@ public class ImpedimentEndpointsTests
         // Arrange
         var impedimentId = Guid.NewGuid();
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>((Impediment?)null));
+        var fakeRepository = A.Fake<IRepository<Impediment>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(impedimentId))
+            .Returns(Task.FromResult<Impediment?>(null));
 
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Impediment>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Impediment.GetImpedimentById.Request { Id = impedimentId };
 
         // Act
@@ -61,14 +60,14 @@ public class ImpedimentEndpointsTests
         var impedimentId = Guid.NewGuid();
         var impediment = Impediment.Create("Original Impediment", impedimentId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>(impediment));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+        var fakeRepository = A.Fake<IRepository<Impediment>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(impedimentId)).Returns(Task.FromResult<Impediment?>(impediment));
+        A.CallTo(() => fakeRepository.UpdateAsync(A<Impediment>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.UpdateImpediment.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Impediment>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.UpdateImpediment.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Impediment.UpdateImpediment.Request
         {
             Id = impedimentId,
@@ -90,14 +89,14 @@ public class ImpedimentEndpointsTests
         var impedimentId = Guid.NewGuid();
         var impediment = Impediment.Create("Impediment to Delete", impedimentId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>(impediment));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+        var fakeRepository = A.Fake<IRepository<Impediment>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(impedimentId)).Returns(Task.FromResult<Impediment?>(impediment));
+        A.CallTo(() => fakeRepository.UpdateAsync(A<Impediment>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.RemoveImpediment.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Impediment>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.RemoveImpediment.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Impediment.RemoveImpediment.Request { Ids = new List<Guid> { impedimentId } };
 
         // Act

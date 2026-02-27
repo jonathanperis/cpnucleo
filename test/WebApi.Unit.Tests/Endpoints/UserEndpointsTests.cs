@@ -1,6 +1,3 @@
-using Infrastructure.Common.Context;
-using Microsoft.EntityFrameworkCore;
-
 namespace WebApi.Unit.Tests.Endpoints;
 
 [TestFixture]
@@ -57,22 +54,21 @@ public class UserEndpointsTests
     }
 
     [Test]
-    [Ignore("EF Core DbSet.Any() extension method cannot be mocked with FakeItEasy. Use integration tests for EF Core-based endpoints.")]
     public async Task CreateUser_WithValidData_ShouldCreateUser()
     {
         // Arrange
         var userId = Guid.NewGuid();
         var user = User.Create("New User", "newuser", "Password@123", userId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<User>>();
-        
-        A.CallTo(() => fakeDbContext.Users).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.Any(A<System.Linq.Expressions.Expression<Func<User, bool>>>._)).Returns(false);
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
+        var fakeRepository = A.Fake<IRepository<User>>();
+        A.CallTo(() => fakeRepository.ExistsAsync(userId)).Returns(Task.FromResult(false));
+        A.CallTo(() => fakeRepository.AddAsync(A<User>._)).Returns(Task.FromResult(userId));
+        A.CallTo(() => fakeRepository.GetByIdAsync(userId)).Returns(Task.FromResult<User?>(user));
 
-        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<User>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.User.CreateUser.Request
         {
             Id = userId,
@@ -98,14 +94,14 @@ public class UserEndpointsTests
         var userId = Guid.NewGuid();
         var user = User.Create("Original User", "originaluser", "password123", userId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<User>>();
-        
-        A.CallTo(() => fakeDbContext.Users).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+        var fakeRepository = A.Fake<IRepository<User>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(userId)).Returns(Task.FromResult<User?>(user));
+        A.CallTo(() => fakeRepository.UpdateAsync(A<User>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<User>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.User.UpdateUser.Request
         {
             Id = userId,
@@ -128,14 +124,14 @@ public class UserEndpointsTests
         var userId = Guid.NewGuid();
         var user = User.Create("User to Delete", "deleteuser", "password123", userId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<User>>();
-        
-        A.CallTo(() => fakeDbContext.Users).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+        var fakeRepository = A.Fake<IRepository<User>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(userId)).Returns(Task.FromResult<User?>(user));
+        A.CallTo(() => fakeRepository.UpdateAsync(A<User>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<User>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.User.RemoveUser.Request { Ids = new List<Guid> { userId } };
 
         // Act

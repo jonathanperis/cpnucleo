@@ -1,6 +1,3 @@
-using Infrastructure.Common.Context;
-using Microsoft.EntityFrameworkCore;
-
 namespace WebApi.Unit.Tests.Endpoints;
 
 [TestFixture]
@@ -57,22 +54,21 @@ public class WorkflowEndpointsTests
     }
 
     [Test]
-    [Ignore("EF Core DbSet.Any() extension method cannot be mocked with FakeItEasy. Use integration tests for EF Core-based endpoints.")]
     public async Task CreateWorkflow_WithValidData_ShouldCreateWorkflow()
     {
         // Arrange
         var workflowId = Guid.NewGuid();
         var workflow = Workflow.Create("New Workflow", 1, workflowId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Workflow>>();
-        
-        A.CallTo(() => fakeDbContext.Workflows).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.Any(A<System.Linq.Expressions.Expression<Func<Workflow, bool>>>._)).Returns(false);
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Workflow?>(workflow));
+        var fakeRepository = A.Fake<IRepository<Workflow>>();
+        A.CallTo(() => fakeRepository.ExistsAsync(workflowId)).Returns(Task.FromResult(false));
+        A.CallTo(() => fakeRepository.AddAsync(A<Workflow>._)).Returns(Task.FromResult(workflowId));
+        A.CallTo(() => fakeRepository.GetByIdAsync(workflowId)).Returns(Task.FromResult<Workflow?>(workflow));
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.CreateWorkflow.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Workflow>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Workflow.CreateWorkflow.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Workflow.CreateWorkflow.Request
         {
             Id = workflowId,
@@ -97,14 +93,14 @@ public class WorkflowEndpointsTests
         var workflowId = Guid.NewGuid();
         var workflow = Workflow.Create("Original Workflow", 1, workflowId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Workflow>>();
-        
-        A.CallTo(() => fakeDbContext.Workflows).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Workflow?>(workflow));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+        var fakeRepository = A.Fake<IRepository<Workflow>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(workflowId)).Returns(Task.FromResult<Workflow?>(workflow));
+        A.CallTo(() => fakeRepository.UpdateAsync(A<Workflow>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.UpdateWorkflow.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Workflow>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Workflow.UpdateWorkflow.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Workflow.UpdateWorkflow.Request
         {
             Id = workflowId,
@@ -127,14 +123,14 @@ public class WorkflowEndpointsTests
         var workflowId = Guid.NewGuid();
         var workflow = Workflow.Create("Workflow to Delete", 1, workflowId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Workflow>>();
-        
-        A.CallTo(() => fakeDbContext.Workflows).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Workflow?>(workflow));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+        var fakeRepository = A.Fake<IRepository<Workflow>>();
+        A.CallTo(() => fakeRepository.GetByIdAsync(workflowId)).Returns(Task.FromResult<Workflow?>(workflow));
+        A.CallTo(() => fakeRepository.UpdateAsync(A<Workflow>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.RemoveWorkflow.Endpoint>(fakeDbContext);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Workflow>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Workflow.RemoveWorkflow.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Workflow.RemoveWorkflow.Request { Ids = new List<Guid> { workflowId } };
 
         // Act
