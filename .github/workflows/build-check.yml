@@ -13,6 +13,7 @@ env:
 
 jobs:
   setup-build-test:
+    name: Setup, Build & Test (${{ matrix.service }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -59,6 +60,7 @@ jobs:
       #   run: dotnet test
 
   container-test:
+    name: Container Healthcheck Test
     needs: setup-build-test
     runs-on: ubuntu-latest
     steps:
