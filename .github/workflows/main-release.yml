@@ -14,6 +14,7 @@ env:
 
 jobs:
   setup-build-test:
+    name: Setup, Build & Test (${{ matrix.service }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -60,6 +61,7 @@ jobs:
       #   run: dotnet test
 
   build-push-image:
+    name: Build & Push Docker Image (${{ matrix.service }})
     needs: setup-build-test
     runs-on: ubuntu-latest
     env:
@@ -116,6 +118,7 @@ jobs:
             DB_CONNECTION_STRING=${{ env.DB_CONNECTION_STRING }}
 
   container-test:
+    name: Container Healthcheck Test
     needs: build-push-image
     runs-on: ubuntu-latest
     steps:
@@ -146,8 +149,10 @@ jobs:
           exit 1
 
   deploy:
+    name: Deploy to Azure (${{ matrix.service }})
     needs: container-test
     runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
     strategy:
       matrix:
         include:
@@ -171,7 +176,6 @@ jobs:
             app-name: cpnucleo-webclient-dotnet
             image: index.docker.io/jonathanperis/cpnucleo-web-client:latest
             publish-profile-secret: AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT
-    environment: ${{ matrix.environment }}
 
     steps:
       - name: Deploy Image to Azure Web App
