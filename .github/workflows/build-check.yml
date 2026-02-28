@@ -1,4 +1,4 @@
-name: Main Check IdentityApi Build
+name: Build Check
 
 on:
   pull_request:
@@ -9,11 +9,18 @@ env:
   AOT: false
   TRIM: false
   EXTRA_OPTIMIZE: false
-  BUILD_CONFIGURATION: Debug   
+  BUILD_CONFIGURATION: Debug
 
 jobs:
-  setup-build-test:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: WebApi
+          - service: GrpcServer
+          - service: IdentityApi
+          - service: WebClient
 
     steps:
       - name: Checkout Repository
@@ -27,17 +34,17 @@ jobs:
           global-json-file: global.json
 
       - name: Restore Dependencies
-        working-directory: "./src/IdentityApi"      
-        run: dotnet restore "IdentityApi.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
+        working-directory: "./src/${{ matrix.service }}"
+        run: dotnet restore "${{ matrix.service }}.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
 
       - name: Build Application
-        working-directory: "./src/IdentityApi"      
-        run: dotnet build "IdentityApi.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
+        working-directory: "./src/${{ matrix.service }}"
+        run: dotnet build "${{ matrix.service }}.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
 
       # - name: Unit Tests
       #   working-directory: "./test/Application.Tests"
-      #   run: dotnet test   
-  
+      #   run: dotnet test
+
       - name: Architecture Tests
         working-directory: "./test/Architecture.Tests"
         run: dotnet test
@@ -45,14 +52,14 @@ jobs:
       # - name: Build and Run Docker Compose for Integration Tests
       #   run: |
       #     docker compose up db -d --build --force-recreate
-      #     sleep 30        
+      #     sleep 30
 
       # - name: Integration Tests
       #   working-directory: "./test/WebApi.Integration.Tests"
       #   run: dotnet test
 
   container-test:
-    needs: setup-build-test
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -68,7 +75,7 @@ jobs:
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5200/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
             echo "Attempt $i: Status $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
