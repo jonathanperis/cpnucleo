@@ -60,9 +60,25 @@ jobs:
       #   run: dotnet test
 
   container-test:
-    name: Container Healthcheck Test
+    name: Container Healthcheck Test (${{ matrix.service }})
     needs: setup-build-test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: WebApi
+            compose_service: webapi1-cpnucleo
+            port: 5100
+          - service: IdentityApi
+            compose_service: identityapi-cpnucleo
+            port: 5200
+          - service: GrpcServer
+            compose_service: grpcserver-cpnucleo
+            port: 5300
+          - service: WebClient
+            compose_service: webclient-cpnucleo
+            port: 5400
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -71,13 +87,13 @@ jobs:
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose up nginx -d --build --force-recreate
+          docker compose up ${{ matrix.compose_service }} -d --build --force-recreate --no-deps
           sleep 30
 
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${{ matrix.port }}/healthz)
             echo "Attempt $i: Status $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
