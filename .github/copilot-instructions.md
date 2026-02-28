@@ -16,7 +16,7 @@ Cpnucleo is a comprehensive project management system demonstrating enterprise-g
 - **Data Access:** Dual strategy - EF Core 10 (reads) + Dapper 2.1 (writes)
 - **Database:** PostgreSQL 16.7
 - **API Framework:** FastEndpoints 7.2 (not ASP.NET Core MVC/Minimal APIs)
-- **Frontend:** Blazor WebAssembly with MudBlazor
+- **Frontend:** Blazor Web App with MudBlazor (Interactive Server rendering)
 
 ## 🏗️ Architecture & Project Structure
 
@@ -55,13 +55,13 @@ src/
 │   ├── Endpoints/           # Login, register, token refresh
 │   └── Program.cs           # Port: 5200, JWT signing
 │
-└── WebClient/               # 🎨 Blazor WebAssembly frontend
+└── WebClient/               # 🎨 Blazor Web App frontend
     ├── Components/Pages/    # Page components
     └── Program.cs           # Port: 5400
 
 test/
 ├── Architecture.Tests/      # ⚠️ 25+ NetArchTest rules enforcing Clean Architecture
-├── WebApi.Unit.Tests/      # Unit tests with Moq
+├── WebApi.Unit.Tests/      # Unit tests with FakeItEasy
 └── WebApi.Integration.Tests/ # API integration tests with Alba
 ```
 
@@ -395,7 +395,7 @@ taskkill /PID <PID> /F
 docker compose up nginx -d --build --force-recreate
 sleep 30
 
-# Retry logic (see .github/workflows/build-check-webapi.yml)
+# Retry logic (see .github/workflows/build-check.yml)
 for i in {1..20}; do
   STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
   if [ "$STATUS" -eq 200 ]; then exit 0; fi
@@ -463,8 +463,8 @@ exit 1
 ## 🔄 CI/CD Pipeline
 
 GitHub Actions workflows in `.github/workflows/`:
-- `build-check-*.yml`: PR validation (build + architecture tests + healthcheck)
-- `main-release-*.yml`: Main branch releases (Docker image push)
+- `build-check.yml`: PR validation (build + architecture tests + healthcheck)
+- `main-release.yml`: Main branch releases (Docker image push)
 
 **Workflow Pattern:**
 1. Setup .NET 10 SDK (uses `global.json`)
