@@ -51,10 +51,10 @@ A.CallTo(() => fakeDbContext.Entities).Returns(fakeDbSet);
 
 ## Dependencies
 
-- FastEndpoints 7.0.1
-- FakeItEasy 8.3.0
-- Shouldly 4.2.1
-- NUnit 4.2.2
+- FastEndpoints 7.2.0
+- FakeItEasy 9.0.1
+- Shouldly 4.3.0
+- NUnit 4.4.0
 
 ## Running Tests
 
