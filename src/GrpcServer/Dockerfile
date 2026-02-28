@@ -21,6 +21,7 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src
 
 COPY ["GrpcServer/GrpcServer.csproj", "GrpcServer/"]
+COPY ["GrpcServer.Contracts/GrpcServer.Contracts.csproj", "GrpcServer.Contracts/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 
