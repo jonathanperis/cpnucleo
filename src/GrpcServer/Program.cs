@@ -75,6 +75,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseHealthChecks("/healthz");
+
 app.UseInfrastructure();
 
 // app.
@@ -151,7 +153,6 @@ app.MapHandlers(h =>
     h.Register<UpdateWorkflowCommand, UpdateWorkflowHandler, UpdateWorkflowResult>();
 });
 
-app.MapHealthChecks("/healthz");
 app.MapGet("/", () => "Hello World!");
 
 if (app.Environment.IsDevelopment())

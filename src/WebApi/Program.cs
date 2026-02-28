@@ -72,6 +72,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseHealthChecks("/healthz");
+
 app.UseInfrastructure();
 
 app.
@@ -79,7 +81,6 @@ app.
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();
 
-app.MapHealthChecks("/healthz");
 app.MapGet("/", () => "Hello World!");
 
 if (app.Environment.IsDevelopment())
