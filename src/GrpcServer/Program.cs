@@ -48,9 +48,12 @@ builder.ConfigureOpenTelemetry();
 
 builder.Services.AddHealthChecks();
 
-// Accept only HTTP/2 to allow insecure connections for development.
-builder.WebHost
-    .ConfigureKestrel(o => o.ListenLocalhost(5021, o => o.Protocols = HttpProtocols.Http2));
+// HTTP/2 for gRPC traffic, HTTP/1.1 for healthchecks + diagnostics.
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.ListenAnyIP(5020, lo => lo.Protocols = HttpProtocols.Http2);
+    o.ListenAnyIP(5021, lo => lo.Protocols = HttpProtocols.Http1);
+});
 
 builder.AddHandlerServer();
 
