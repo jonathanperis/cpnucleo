@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**A Production-Grade .NET 9 Microservices Reference Architecture**
+**A Production-Grade .NET 10 Microservices Reference Architecture**
 
-[![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-blue)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://www.docker.com/)
@@ -50,7 +50,7 @@
 
 ## 🎯 Overview
 
-**Cpnucleo** is a comprehensive reference implementation that showcases how to build production-ready microservices using .NET 9. This project serves as both a learning resource and a template for developing enterprise-grade applications following industry best practices.
+**Cpnucleo** is a comprehensive reference implementation that showcases how to build production-ready microservices using .NET 10. This project serves as both a learning resource and a template for developing enterprise-grade applications following industry best practices.
 
 ### Who Is This For?
 
@@ -82,11 +82,11 @@ The project implements a project management system with the following core entit
 - ✅ **Unit of Work** - Transaction management with Dapper
 
 ### Modern .NET Features
-- ✅ **.NET 9** - Latest framework with minimal APIs and improved performance
+- ✅ **.NET 10** - Latest framework with minimal APIs and improved performance
 - ✅ **Native AOT Compilation** - Ahead-of-time compilation for faster startup
 - ✅ **Trimming & Single File Publish** - Optimized deployment sizes
 - ✅ **Source Generators** - Compile-time code generation (Mapperly, FastEndpoints)
-- ✅ **C# 13** - Modern language features with nullable reference types
+- ✅ **C# 14** - Modern language features with nullable reference types
 
 ### API Development
 - ✅ **FastEndpoints** - High-performance, convention-based endpoint routing
@@ -97,7 +97,7 @@ The project implements a project management system with the following core entit
 - ✅ **JWT Authentication** - Secure token-based authentication
 
 ### Data Access
-- ✅ **Entity Framework Core 9** - Modern ORM with advanced features
+- ✅ **Entity Framework Core 10** - Modern ORM with advanced features
 - ✅ **Dapper** - High-performance micro-ORM for critical paths
 - ✅ **Dapper AOT** - Ahead-of-time compiled queries for maximum performance
 - ✅ **PostgreSQL** - Production-ready relational database
@@ -358,12 +358,12 @@ gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
 ## 🛠️ Technology Stack
 
 ### Core Framework
-- **.NET 9.0** - Latest LTS framework
-- **C# 13** - Modern language features
-- **ASP.NET Core 9** - Web framework
+- **.NET 10.0** - Latest framework
+- **C# 14** - Modern language features
+- **ASP.NET Core 10** - Web framework
 
 ### Web & API
-- **FastEndpoints 7.0** - High-performance endpoint routing
+- **FastEndpoints 7.2** - High-performance endpoint routing
   - Convention-based routing
   - Built-in validation
   - OpenAPI generation
@@ -372,18 +372,18 @@ gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
 - **FastEndpoints.Security** - JWT authentication
 
 ### Data Access
-- **Entity Framework Core 9.0** - Primary ORM
+- **Entity Framework Core 10.0** - Primary ORM
   - Code-first migrations
   - LINQ queries
   - Change tracking
 - **Dapper 2.1** - Micro-ORM for performance-critical operations
 - **Dapper.AOT 1.0** - Ahead-of-time compiled SQL
-- **Npgsql 9.0** - PostgreSQL driver
-- **Delta 6.4** - Real-time data sync library
+- **Npgsql 10.0** - PostgreSQL driver
+- **Delta 8.0** - Real-time data sync library
 
 ### Frontend
 - **Blazor WebAssembly** - .NET SPA framework
-- **MudBlazor 8.13** - Material Design UI components
+- **MudBlazor 8.15** - Material Design UI components
 - **MudBlazor.Translations** - Internationalization support
 
 ### Database
@@ -393,13 +393,13 @@ gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
   - Full-text search capabilities
 
 ### Mapping & Code Generation
-- **Riok.Mapperly 4.2** - Source generator for object mapping
+- **Riok.Mapperly 4.3** - Source generator for object mapping
   - Zero-reflection mapping
   - Compile-time type safety
   - AOT-compatible
 
 ### Observability
-- **OpenTelemetry 1.13** - Distributed tracing & metrics
+- **OpenTelemetry 1.15** - Distributed tracing & metrics
   - OTLP exporter
   - Console exporter (development)
   - ASP.NET Core instrumentation
@@ -408,13 +408,13 @@ gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
 - **Application Insights 2.23** - Azure monitoring integration
 
 ### Testing
-- **xUnit 2.9** - Test framework
-- **Moq 4.20** - Mocking framework
-- **Moq.EntityFrameworkCore** - EF Core mocking
-- **FluentAssertions 8.7** - Assertion library
-- **NetArchTest.Rules 1.3** - Architecture testing
-- **Alba 8.x** - API integration testing
-- **Bogus 35.6** - Fake data generation
+- **xUnit v3 3.2.2** - Test framework (integration tests)
+- **NUnit 4.4.0** - Test framework (unit tests)
+- **FakeItEasy 9.0.1** - Mocking framework
+- **Shouldly 4.3.0** - Assertion library
+- **FluentAssertions 8.8.0** - Assertion library (architecture tests)
+- **NetArchTest.Rules 1.3.2** - Architecture testing
+- **FastEndpoints.Testing 7.2.0** - API integration testing
 
 ### DevOps & Infrastructure
 - **Docker** - Containerization
@@ -493,6 +493,8 @@ cpnucleo/
 │   │   ├── Program.cs                 # Application entry point
 │   │   └── Dockerfile                 # Container definition
 │   │
+│   ├── WebApi.Client/                   # Auto-generated Kiota API client (C#)
+│   │
 │   └── WebClient/                      # Blazor WebAssembly frontend
 │       ├── Components/                 # Blazor components
 │       │   ├── Pages/                 # Page components
@@ -516,12 +518,8 @@ cpnucleo/
 │
 ├── .github/
 │   └── workflows/                      # CI/CD pipelines
-│       ├── build-check-webapi.yml     # WebApi build validation
-│       ├── build-check-grpcserver.yml
-│       ├── build-check-identityapi.yml
-│       ├── build-check-webclient.yml
-│       ├── main-release-webapi.yml    # Production releases
-│       └── ... (release workflows)
+│       ├── build-check.yml            # Build & architecture validation (all services)
+│       └── main-release.yml           # Production releases
 │
 ├── compose.yaml                        # Development docker-compose
 ├── compose.prod.yaml                   # Production docker-compose
@@ -785,7 +783,7 @@ Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true
 ### Prerequisites
 
 #### Required
-- **.NET 9.0 SDK** ([Download](https://dotnet.microsoft.com/download/dotnet/9.0))
+- **.NET 10.0 SDK** ([Download](https://dotnet.microsoft.com/download/dotnet/10.0))
 - **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop))
 - **Git** ([Download](https://git-scm.com/downloads))
 
@@ -807,7 +805,7 @@ cd cpnucleo
 
 ```bash
 dotnet --version
-# Should be 9.0.202 or higher
+# Should be 10.0.102 or higher
 ```
 
 #### 3. Restore Dependencies
@@ -1424,7 +1422,7 @@ Special thanks to all contributors and the open-source community for their conti
 
 <div align="center">
 
-**Built with ❤️ using .NET 9**
+**Built with ❤️ using .NET 10**
 
 [⬆ Back to Top](#cpnucleo)
 

@@ -4,7 +4,7 @@ This project contains comprehensive architecture tests to ensure the Clean Archi
 
 ## Test Categories
 
-### 1. Layer Dependency Tests (7 tests)
+### 1. Layer Dependency Tests (6 tests)
 These tests ensure that layers only depend on appropriate other layers according to Clean Architecture principles:
 
 - **Domain_Should_Not_HaveDependencyOnOtherProjects**: Domain layer is the core and should have no dependencies on other projects
@@ -43,7 +43,7 @@ These tests validate interface naming and usage:
 - **Domain_Repositories_Should_StartWithI**: Repository interfaces must start with "I"
 - **Infrastructure_Should_NotContainInterfaces**: Infrastructure should implement interfaces from Domain, not define new public ones (except IApplicationDbContext)
 
-### 6. Clean Architecture Pattern Tests (5 tests)
+### 6. Clean Architecture Pattern Tests (6 tests)
 These tests enforce Clean Architecture principles:
 
 - **Domain_Should_NotDependOnEntityFramework**: Domain must not depend on EF Core
