@@ -65,9 +65,12 @@ The project implements a project management system with the following core entit
 - **Organizations**: Top-level entities managing multiple projects
 - **Projects**: Work containers with assignments and workflows
 - **Assignments**: Tasks with time tracking, workflows, and impediments
+- **Assignment Types**: Categories for classifying assignments
 - **Users**: Team members with role-based access
 - **Workflows**: Configurable status flows for assignments
 - **Impediments**: Issues blocking assignment progress
+- **Appointments**: Scheduled events and meetings
+- **Junction Entities**: UserAssignment, UserProject, AssignmentImpediment (many-to-many relationships)
 
 ---
 
@@ -105,9 +108,9 @@ The project implements a project management system with the following core entit
 - ✅ **Code-First Migrations** - Version-controlled database schema
 
 ### Frontend
-- ✅ **Blazor WebAssembly** - Modern .NET web UI framework
+- ✅ **Blazor Web App** - .NET 10 interactive rendering with server and WASM support
 - ✅ **MudBlazor** - Material Design component library
-- ✅ **Server-Side Rendering** - Optimized initial page load
+- ✅ **Interactive Server Rendering** - SignalR-based UI with fast initial load
 
 ### Infrastructure & DevOps
 - ✅ **Docker & Docker Compose** - Containerized deployment
@@ -118,15 +121,15 @@ The project implements a project management system with the following core entit
 
 ### Testing
 - ✅ **Architecture Tests** - NetArchTest rules enforcing architectural boundaries
-- ✅ **Unit Tests** - Comprehensive test coverage with xUnit
-- ✅ **Integration Tests** - API testing with Alba
-- ✅ **Test Isolation** - Mocked dependencies with Moq
+- ✅ **Unit Tests** - Business logic testing with NUnit
+- ✅ **Integration Tests** - API testing with Alba and xUnit v3
+- ✅ **Test Isolation** - Mocked dependencies with FakeItEasy
 
 ### Observability
-- ✅ **OpenTelemetry** - Distributed tracing and metrics
-- ✅ **Application Insights** - Production monitoring and diagnostics
+- ✅ **OpenTelemetry** - Distributed tracing, metrics, and logging via OTLP
 - ✅ **Structured Logging** - Contextual logging with Microsoft.Extensions.Logging
 - ✅ **Performance Counters** - Runtime and process metrics
+- ✅ **Health Checks** - Service monitoring and readiness probes
 
 ---
 
@@ -148,7 +151,7 @@ Cpnucleo implements Clean Architecture (also known as Onion Architecture or Hexa
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                        │
 │        WebApi (REST) | IdentityApi | WebClient               │
-│   • FastEndpoints     • JWT Auth    • Blazor WASM           │
+│   • FastEndpoints     • JWT Auth    • Blazor Web App        │
 │   • Swagger/OpenAPI   • Rate Limit  • MudBlazor              │
 └─────────────────┬───────────────────────────────────────────┘
                   │ References
@@ -201,7 +204,7 @@ The solution is decomposed into independently deployable services:
 | **WebApi** | 5100, 5111 | RESTful API with CRUD operations | FastEndpoints + EF Core |
 | **IdentityApi** | 5200 | Authentication & JWT token issuance | FastEndpoints.Security |
 | **GrpcServer** | 5300, 5301 | Alternative gRPC-based API implementation sample | FastEndpoints.Messaging + Dapper |
-| **WebClient** | 5400 | Blazor WebAssembly SPA | Blazor WASM + MudBlazor |
+| **WebClient** | 5400 | Blazor Web App with interactive server rendering | Blazor + MudBlazor |
 | **Database** | 5432 | PostgreSQL data store | PostgreSQL 16.7 |
 | **NGINX** | 9999 | Load balancer & reverse proxy | NGINX |
 
@@ -266,22 +269,31 @@ The Domain layer implements DDD tactical patterns:
 public sealed class Assignment : BaseEntity
 {
     public string? Name { get; set; }
+    public string? Description { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    
+    public int AmountHours { get; set; }
+
     // Factory method enforces business rules
     public static Assignment Create(
         string? name,
+        string? description,
         DateTime startDate,
         DateTime endDate,
+        int amountHours,
         Guid projectId,
         Guid workflowId,
         Guid userId,
         Guid assignmentTypeId,
         Guid id = default)
     {
-        // Business validation logic here
-        return new Assignment { /* ... */ };
+        return new Assignment
+        {
+            Id = GetNewId(id),
+            CreatedAt = DateTime.UtcNow,
+            Active = true,
+            // ... property assignments
+        };
     }
 }
 ```
@@ -382,7 +394,7 @@ gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
 - **Delta 8.0** - Real-time data sync library
 
 ### Frontend
-- **Blazor WebAssembly** - .NET SPA framework
+- **Blazor Web App** - .NET 10 interactive rendering framework
 - **MudBlazor 8.15** - Material Design UI components
 - **MudBlazor.Translations** - Internationalization support
 
@@ -405,7 +417,6 @@ gRPC Client → GrpcServer → Infrastructure (Dapper) → Database
   - ASP.NET Core instrumentation
   - HTTP client instrumentation
   - Process & runtime metrics
-- **Application Insights 2.23** - Azure monitoring integration
 
 ### Testing
 - **xUnit v3 3.2.2** - Test framework (integration tests)
@@ -495,13 +506,13 @@ cpnucleo/
 │   │
 │   ├── WebApi.Client/                   # Auto-generated Kiota API client (C#)
 │   │
-│   └── WebClient/                      # Blazor WebAssembly frontend
+│   └── WebClient/                      # Blazor Web App frontend
 │       ├── Components/                 # Blazor components
 │       │   ├── Pages/                 # Page components
-│       └── Layout/                # Layout components
+│       │   └── Layout/               # Layout components
 │       ├── ServiceExtensions/         # Client service registration
 │       ├── wwwroot/                   # Static assets
-│       ├── Program.cs                 # WASM entry point
+│       ├── Program.cs                 # Application entry point
 │       └── Dockerfile                 # Container definition
 │
 ├── test/
@@ -518,7 +529,7 @@ cpnucleo/
 │
 ├── .github/
 │   └── workflows/                      # CI/CD pipelines
-│       ├── build-check.yml            # Build & architecture validation (all services)
+│       ├── build-check.yml            # Build & architecture validation
 │       └── main-release.yml           # Production releases
 │
 ├── compose.yaml                        # Development docker-compose
@@ -1187,19 +1198,20 @@ builder.ConfigureOpenTelemetry();
 OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-lgtm:4317
 ```
 
-### Application Insights
+### Application Monitoring
 
-Azure monitoring integration:
+For production monitoring, integrate with your preferred APM solution:
 
 ```csharp
-builder.Logging.AddApplicationInsights();
+// OpenTelemetry supports multiple exporters
+// Configure via OTEL_EXPORTER_OTLP_ENDPOINT environment variable
+builder.ConfigureOpenTelemetry();
 ```
 
-**Tracked Automatically**:
-- Request telemetry
-- Dependency telemetry
-- Exception telemetry
-- Custom events & metrics
+OpenTelemetry data can be exported to:
+- **Grafana/Loki/Tempo** (development stack included in compose.override.yaml)
+- **Azure Monitor / Application Insights** (via OTLP exporter)
+- **Datadog, New Relic, Jaeger** (via OTLP protocol)
 
 ### Structured Logging
 
@@ -1218,7 +1230,7 @@ All services expose `/healthz` endpoint:
 
 ```csharp
 builder.Services.AddHealthChecks();
-app.MapHealthChecks("/healthz");
+app.UseHealthChecks("/healthz");
 ```
 
 ---
