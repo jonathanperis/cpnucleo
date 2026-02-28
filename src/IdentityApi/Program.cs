@@ -77,6 +77,8 @@ var app = builder.Build();
 
 app.UseOutputCache();
 
+app.UseHealthChecks("/healthz");
+
 app.UseInfrastructure();
 
 app.UseAuthentication()
@@ -85,7 +87,6 @@ app.UseAuthentication()
         .UseMiddleware<ElapsedTimeMiddleware>()
         .UseMiddleware<ErrorHandlingMiddleware>();
 
-app.MapHealthChecks("/healthz");
 app.MapGet("/", () => "Hello World!");
 
 if (app.Environment.IsDevelopment())
