@@ -118,9 +118,25 @@ jobs:
             DB_CONNECTION_STRING=${{ env.DB_CONNECTION_STRING }}
 
   container-test:
-    name: Container Healthcheck Test
+    name: Container Healthcheck Test (${{ matrix.service }})
     needs: build-push-image
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: WebApi
+            compose_service: webapi1-cpnucleo
+            port: 5100
+          - service: IdentityApi
+            compose_service: identityapi-cpnucleo
+            port: 5200
+          - service: GrpcServer
+            compose_service: grpcserver-cpnucleo
+            port: 5300
+          - service: WebClient
+            compose_service: webclient-cpnucleo
+            port: 5400
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -129,13 +145,13 @@ jobs:
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose -f compose.prod.yaml up nginx -d
+          docker compose -f compose.prod.yaml up ${{ matrix.compose_service }} -d --no-deps
           sleep 30
 
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${{ matrix.port }}/healthz)
             echo "Attempt $i: Status $STATUS"
             if [ "$STATUS" -eq 200 ]; then
               echo "Healthcheck passed with status $STATUS"
