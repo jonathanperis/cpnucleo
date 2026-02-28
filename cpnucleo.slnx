@@ -1,13 +1,7 @@
 <Solution>
   <Folder Name="/actions/">
-    <File Path=".github/workflows/build-check-grpcserver.yml" />
-    <File Path=".github/workflows/build-check-identityapi.yml" />
-    <File Path=".github/workflows/build-check-webapi.yml" />
-    <File Path=".github/workflows/build-check-webclient.yml" />
-    <File Path=".github/workflows/main-release-grpcserver.yml" />
-    <File Path=".github/workflows/main-release-identityapi.yml" />
-    <File Path=".github/workflows/main-release-webapi.yml" />
-    <File Path=".github/workflows/main-release-webclient.yml" />
+    <File Path=".github/workflows/build-check.yml" />
+    <File Path=".github/workflows/main-release.yml" />
   </Folder>
   <Folder Name="/root/">
     <File Path=".env" />
