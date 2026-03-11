@@ -2,11 +2,10 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(logging =>
 {
-    _ = logging.AddApplicationInsights();
+    logging.AddConsole();
 }).CreateLogger<Program>();
 
 builder.ConfigureOpenTelemetry();
-builder.Logging.AddApplicationInsights();
 
 // builder.Services.AddAuthorization();
 // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -64,6 +63,7 @@ builder.Services
             s.Title = "Cpnucleo Web API";
             s.Description = "A sample project that implements best practices when building modern .NET projects";
             s.Version = "v1";
+            s.SchemaSettings.SchemaNameGenerator = new SchemaNameGenerator();
         };
         o.AutoTagPathSegmentIndex = 0; // Disable the auto-tagging by setting the AutoTagPathSegmentIndex property to 0
     });
@@ -72,6 +72,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseHealthChecks("/healthz");
+
 app.UseInfrastructure();
 
 app.
@@ -79,7 +81,6 @@ app.
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();
 
-app.MapHealthChecks("/healthz");
 app.MapGet("/", () => "Hello World!");
 
 if (app.Environment.IsDevelopment())
@@ -91,8 +92,8 @@ app.MapApiClientEndpoint("/cs-client", c =>
     {
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.CSharp;
-        c.ClientNamespaceName = "MyCompanyName";
-        c.ClientClassName = "MyCsClient";
+        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
+        c.ClientClassName = "WebApiClient";
     },
     o =>
     {
@@ -107,7 +108,7 @@ await app.GenerateApiClientsAndExitAsync(
         c.Language = GenerationLanguage.CSharp;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
         c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-        c.ClientClassName = "Cpnucleo.WebApi.Client";
+        c.ClientClassName = "WebApiClient";
         c.CreateZipArchive = true; //if you'd like a zip file as well
     },
     c =>

@@ -11,10 +11,11 @@ internal abstract class CryptographyManager
             return;
         }
 
-        using Rfc2898DeriveBytes deriveBytes = new(item, 48, 1000, HashAlgorithmName.SHA1);
-
-        var saltBytes = deriveBytes.Salt;
-        var itemBytes = deriveBytes.GetBytes(48);
+        // Generate a random salt
+        byte[] saltBytes = RandomNumberGenerator.GetBytes(48);
+        
+        // Derive the key using PBKDF2
+        byte[] itemBytes = Rfc2898DeriveBytes.Pbkdf2(item, saltBytes, 600_000, HashAlgorithmName.SHA256, 48);
 
         salt = Convert.ToBase64String(saltBytes);
         itemCrypt = Convert.ToBase64String(itemBytes);
@@ -30,8 +31,9 @@ internal abstract class CryptographyManager
         var saltBytes = Convert.FromBase64String(salt);
         var itemBytes = Convert.FromBase64String(itemCrypt);
 
-        using Rfc2898DeriveBytes deriveBytes = new(item, saltBytes, 1000, HashAlgorithmName.SHA1);
+        // Derive the key using PBKDF2 with the stored salt
+        byte[] derivedBytes = Rfc2898DeriveBytes.Pbkdf2(item, saltBytes, 600_000, HashAlgorithmName.SHA256, 48);
 
-        return deriveBytes.GetBytes(48).SequenceEqual(itemBytes);
+        return derivedBytes.SequenceEqual(itemBytes);
     }
 }

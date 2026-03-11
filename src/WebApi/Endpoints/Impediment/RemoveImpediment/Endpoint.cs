@@ -20,47 +20,39 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Logger.LogInformation("Service started processing request.");
 
-        try
+        Logger.LogInformation("Checking if impediment entities exist for Ids: {ImpedimentIds}", string.Join(",", request.Ids));
+        var allSuccess = true;
+
+        foreach (var id in request.Ids)
         {
-            Logger.LogInformation("Checking if impediment entities exist for Ids: {ImpedimentIds}", string.Join(",", request.Ids));
-            var allSuccess = true;
-
-            foreach (var id in request.Ids)
+            var item = await dbContext.Impediments!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+            if (item is null)
             {
-                var item = await dbContext.Impediments!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
-                if (item is null)
-                {
-                    await Send.NotFoundAsync(cancellation: cancellationToken);
-                    return;
-                }
-
-                Logger.LogInformation("Removing impediment entity with Id: {ImpedimentId}", id);
-                Domain.Entities.Impediment.Remove(item);
-
-                Logger.LogInformation("Updating repository for removed entity {ImpedimentId}.", id);
-                var result = await dbContext.SaveChangesAsync(cancellationToken);
-
-                if (!result) allSuccess = false;
-            }
-
-            Response.Success = allSuccess;
-
-            if (!allSuccess)
-            {
-                Logger.LogWarning("One or more deletions failed.");
-                await Send.ErrorsAsync(cancellation: cancellationToken);
+                await Send.NotFoundAsync(cancellation: cancellationToken);
                 return;
             }
 
-            Logger.LogInformation("Remove result: {Success}", Response.Success);
-            Logger.LogInformation("Service completed successfully.");
+            Logger.LogInformation("Removing impediment entity with Id: {ImpedimentId}", id);
+            Domain.Entities.Impediment.Remove(item);
 
-            await Send.OkAsync(Response, cancellationToken);
+            Logger.LogInformation("Updating repository for removed entity {ImpedimentId}.", id);
+            var result = await dbContext.SaveChangesAsync(cancellationToken);
+
+            if (!result) allSuccess = false;
         }
-        catch (Exception ex)
+
+        Response.Success = allSuccess;
+
+        if (!allSuccess)
         {
-            Logger.LogError(ex, "An error occurred while processing the request.");
-            ThrowError("An error has occurred.");
+            Logger.LogWarning("One or more deletions failed.");
+            await Send.ErrorsAsync(cancellation: cancellationToken);
+            return;
         }
+
+        Logger.LogInformation("Remove result: {Success}", Response.Success);
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

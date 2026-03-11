@@ -1,12 +1,6 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
-var logger = LoggerFactory.Create(logging =>
-{
-    _ = logging.AddApplicationInsights();
-}).CreateLogger<Program>();
-
 builder.ConfigureOpenTelemetry();
-builder.Logging.AddApplicationInsights();
 
 // builder.Services.AddAuthorization();
 // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -54,9 +48,12 @@ builder.Logging.AddApplicationInsights();
 
 builder.Services.AddHealthChecks();
 
-// Accept only HTTP/2 to allow insecure connections for development.
-builder.WebHost
-    .ConfigureKestrel(o => o.ListenLocalhost(5021, o => o.Protocols = HttpProtocols.Http2));
+// HTTP/2 for gRPC traffic, HTTP/1.1 for healthchecks + diagnostics.
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.ListenAnyIP(5020, lo => lo.Protocols = HttpProtocols.Http2);
+    o.ListenAnyIP(5021, lo => lo.Protocols = HttpProtocols.Http1);
+});
 
 builder.AddHandlerServer();
 
@@ -77,6 +74,8 @@ builder.AddHandlerServer();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
 
@@ -154,44 +153,11 @@ app.MapHandlers(h =>
     h.Register<UpdateWorkflowCommand, UpdateWorkflowHandler, UpdateWorkflowResult>();
 });
 
-app.MapHealthChecks("/healthz");
 app.MapGet("/", () => "Hello World!");
 
 if (app.Environment.IsDevelopment())
 {
     // app.UseSwaggerGen();
 }
-
-// app.MapApiClientEndpoint("/cs-client", c =>
-//     {
-//         c.SwaggerDocumentName = "v1";
-//         c.Language = GenerationLanguage.CSharp;
-//         c.ClientNamespaceName = "MyCompanyName";
-//         c.ClientClassName = "MyCsClient";
-//     },
-//     o =>
-//     {
-//         o.CacheOutput(p => p.Expire(TimeSpan.FromDays(365))); //cache the zip
-//         o.ExcludeFromDescription();
-//     });
-//
-// await app.GenerateApiClientsAndExitAsync(
-//     c =>
-//     {
-//         c.SwaggerDocumentName = "v1"; //must match doc name above
-//         c.Language = GenerationLanguage.CSharp;
-//         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
-//         c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-//         c.ClientClassName = "Cpnucleo.WebApi.Client";
-//         c.CreateZipArchive = true; //if you'd like a zip file as well
-//     },
-//     c =>
-//     {
-//         c.SwaggerDocumentName = "v1";
-//         c.Language = GenerationLanguage.TypeScript;
-//         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
-//         c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-//         c.ClientClassName = "cpnucleo-webapi-client";
-//     });
 
 app.Run();
