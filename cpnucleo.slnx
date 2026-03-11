@@ -10,8 +10,7 @@
     <File Path="compose.yaml" />
     <File Path="global.json" />
     <File Path="nginx.conf" />
-    <File Path="README.md" />
-    <File Path="CLAUDE.md" />    
+    <File Path="README.md" />    
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/WebApi.Client/WebApi.Client.csproj" />
