@@ -1,0 +1,40 @@
+@inject ISnackbar Snackbar
+
+<EditForm Model="@Item" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1"/>
+                Edit Organization
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudTextField Label="Organization ID" HelperText="Valid Guid" Value="@Item.Id.ToString()" ReadOnly="true"/>
+            <MudTextField Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="Item.Name" />
+            <MudTextField Label="Description" Required="true" RequiredError="Description is required!" @bind-Value="Item.Description" Lines="3" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Confirm</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance? MudDialog { get; set; }
+
+    [Parameter]
+    public OrganizationViewModel Item { get; set; } = new();
+
+    private void Cancel() => MudDialog?.Cancel();
+
+    private void OnValidSubmit(EditContext context)
+    {
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+        Snackbar.Add("Organization Edited Successfully", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+        MudDialog?.Close(DialogResult.Ok(Item));
+    }
+}
