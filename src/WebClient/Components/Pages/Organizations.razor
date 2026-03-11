@@ -1,0 +1,214 @@
+@page "/organizations"
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject IJSRuntime Js
+
+<PageTitle>Organizations</PageTitle>
+
+<Breadcrumb Items="_items" />
+
+<MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Success" Class="add-item-btn pa-2 ma-0 ml-4" OnClick="@AddItem">Add Item</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" Class="remove-item-btn pa-2 ma-0 ml-4" OnClick="@RemoveItem">Remove Item</MudButton>
+
+<MudDataGrid T="OrganizationViewModel" MultiSelection Items="@_organizations" SortMode="SortMode.Multiple" Filterable QuickFilter="@QuickFilter"
+             EditMode="DataGridEditMode.Form" Hideable RowClick="@RowClicked" RowContextMenuClick="RowRightClicked"
+             SelectedItemsChanged="@SelectedItemsChanged" Class="pa-4 ma-4" Virtualize HorizontalScrollbar
+             EditTrigger="DataGridEditTrigger.Manual" Loading="_loading" FixedHeader Height="30rem" Elevation="1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Organizations</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="OrganizationViewModel" />
+        <PropertyColumn Property="x => x.Id" Title="Id" Sortable="false" Filterable="false" />
+        <PropertyColumn Property="x => x.Name" Title="Name"/>
+        <PropertyColumn Property="x => x.Description" Title="Description"/>
+        <PropertyColumn Property="x => x.CreatedAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture)" 
+                        Title="Created At" SortBy="@SortBy"/>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => EditItem(context.Item)" />
+            </CellTemplate>
+        </TemplateColumn>   
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="OrganizationViewModel" PageSizeOptions="new[] {10, 25, 50, 100}" />
+    </PagerContent>
+</MudDataGrid>
+<MudMenu PositionAtCursor="true" @ref="_contextMenu" id="_contextMenu">
+    <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" OnClick="@CopyLine">
+        Copy line to Clipboard
+    </MudMenuItem>
+    <MudMenuItem Icon="@Icons.Material.Filled.CopyAll" OnClick="@CopySelected">
+        Copy selected lines to Clipboard
+    </MudMenuItem>
+</MudMenu>
+
+@code {
+    private readonly ObservableCollection<OrganizationViewModel> _organizations = [];
+    private HashSet<OrganizationViewModel> _selectedItems = [];
+    
+    private string? _searchString;
+    private bool _loading;
+
+    private OrganizationViewModel? _contextRow;
+    private MudMenu _contextMenu = null!;    
+    
+    private static Func<OrganizationViewModel, object> SortBy => x => x.CreatedAt;
+
+    private Func<OrganizationViewModel, bool> QuickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Name != null && x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Description != null && x.Description.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return x.Id.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase);
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+
+        await Task.Yield();
+        
+        // TODO: Replace with actual API call to GET /api/organizations
+        await Task.Delay(500);
+
+        for (var i = 1; i <= 10; i++)
+        {
+            _organizations.Add(new OrganizationViewModel
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Organization {i}",
+                Description = $"Description for organization {i}",
+                CreatedAt = DateTime.UtcNow.AddDays(-Random.Shared.Next(1, 365))
+            });
+        }
+        
+        _loading = false;
+    }
+
+    void RowClicked(DataGridRowClickEventArgs<OrganizationViewModel> args)
+    {
+    }
+
+    async Task RowRightClicked(DataGridRowClickEventArgs<OrganizationViewModel> args)
+    {
+        _contextRow = args.Item;
+        await _contextMenu.OpenMenuAsync(args.MouseEventArgs);
+    }
+
+    void SelectedItemsChanged(HashSet<OrganizationViewModel> items)
+    {
+        _selectedItems = items;
+    }
+    
+    private async Task CopyLine()
+    {
+        if (_contextRow is null) return;
+        
+        var lineContent = $"{_contextRow.Id};{_contextRow.Name};{_contextRow.Description};{_contextRow.CreatedAt.ToShortDateString()}";
+        await Js.InvokeVoidAsync("navigator.clipboard.writeText", lineContent);
+        
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+        Snackbar.Add("Line copied to Clipboard.", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+    }        
+    
+    private async Task CopySelected()
+    {
+        if (_contextRow is null || !_selectedItems.Any())
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add("No Selected lines to copy to Clipboard.", Severity.Info, c => c.SnackbarVariant = Variant.Outlined);
+
+            return;
+        }
+        
+        var selectedLines = _selectedItems.Select(row => 
+            $"{row.Id};{row.Name};{row.Description};{row.CreatedAt.ToShortDateString()}");
+        var allLines = string.Join(Environment.NewLine, selectedLines);
+        await Js.InvokeVoidAsync("navigator.clipboard.writeText", allLines);
+        
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+        Snackbar.Add("Selected lines copied to Clipboard.", Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+    }        
+    
+    async Task AddItem()
+    {
+        var dialog = await DialogService.ShowAsync<AddOrganization>("Add Organization", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            var item = result.Data.As<OrganizationViewModel>()!;
+            item.Id = Guid.NewGuid();
+            item.CreatedAt = DateTime.UtcNow;
+
+            // TODO: Call POST /api/organization with item data
+
+            _organizations.Add(item);
+        }        
+    }
+    
+    async Task EditItem(OrganizationViewModel item)
+    {
+        var parameters = new DialogParameters<EditOrganization> { { x => x.Item, item } };
+
+        var dialog = await DialogService.ShowAsync<EditOrganization>("Edit Organization", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var result = await dialog.Result;
+
+        if (result is { Canceled: false })
+        {
+            var editedItem = result.Data.As<OrganizationViewModel>()!;
+            var index = _organizations.IndexOf(item);
+            if (index != -1)
+            {
+                // TODO: Call PATCH /api/organization with editedItem data
+
+                _organizations[index] = editedItem;
+            }
+        }
+    }
+
+    async Task RemoveItem()
+    {
+        if (_selectedItems.Any())
+        {
+            var dialog = await DialogService.ShowAsync<RemoveOrganization>("Remove Organization", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true, BackgroundClass = "blurry-dialog" });
+            var result = await dialog.Result;
+
+            if (result is { Canceled: false })
+            {
+                // TODO: Call DELETE /api/organization with selected Ids
+
+                foreach (var item in _selectedItems)
+                {
+                    _organizations.Remove(item);
+                }
+            }
+        }
+        else
+        {
+            Snackbar.Clear();
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+            Snackbar.Add("No Items selected to be removed.", Severity.Info, c => c.SnackbarVariant = Variant.Outlined);
+        }
+    }
+    
+    private readonly List<BreadcrumbItem> _items =
+    [
+        new("Home", href: "#", icon: Icons.Material.Filled.Home),
+        new("Organizations", href: null, disabled: true)
+    ];
+}
