@@ -1001,7 +1001,7 @@ spec:
     spec:
       containers:
       - name: webapi
-        image: jonathanperis/cpnucleo-web-api:latest
+        image: ghcr.io/jonathanperis/cpnucleo-web-api:latest
         ports:
         - containerPort: 5000
         env:
@@ -1042,7 +1042,7 @@ az containerapp create \
   --name cpnucleo-webapi \
   --resource-group cpnucleo-rg \
   --environment cpnucleo-env \
-  --image jonathanperis/cpnucleo-web-api:latest \
+  --image ghcr.io/jonathanperis/cpnucleo-web-api:latest \
   --target-port 5000 \
   --ingress external \
   --min-replicas 2 \
