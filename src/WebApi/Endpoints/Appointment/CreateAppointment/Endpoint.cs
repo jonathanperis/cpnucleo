@@ -18,49 +18,41 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        try
+        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AppointmentId}", request.Name, request.Id);
+
+        Logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", request.Id);
+        var itemExists = dbContext.Appointments!.Any(x => x.Id == request.Id);
+
+        if (itemExists)
         {
-            Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AppointmentId}", request.Name, request.Id);
-
-            Logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", request.Id);
-            var itemExists = dbContext.Appointments!.Any(x => x.Id == request.Id);
-
-            if (itemExists)
-            {
-                Logger.LogWarning("Appointment Id conflict for Id: {AppointmentId}", request.Id);
-                AddError(r => r.Id, "this Id is already in use!");
-            }
-
-            ThrowIfAnyErrors();
-
-            Logger.LogInformation("Validation passed, proceeding to create new appointment entity.");
-            var newItem = Domain.Entities.Appointment.Create(request.Description,
-                                                             request.KeepDate,
-                                                             request.AmountHours,
-                                                             request.AssignmentId,
-                                                             request.UserId,
-                                                             request.Id);
-            Logger.LogInformation("Created new appointment entity with Id: {AppointmentId}", newItem.Id);
-
-            Logger.LogInformation("Adding appointment to repository.");
-            await dbContext.Appointments!.AddAsync(newItem, cancellationToken);
-
-            Logger.LogInformation("Committing transaction.");
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            Logger.LogInformation("Fetching appointment by Id: {AppointmentId}", newItem.Id);
-            var createdItem = await dbContext.Appointments!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
-
-            Response.Appointment = createdItem!.MapToDto();
-
-            Logger.LogInformation("Service completed successfully.");
-
-            await Send.OkAsync(Response, cancellationToken);
+            Logger.LogWarning("Appointment Id conflict for Id: {AppointmentId}", request.Id);
+            AddError(r => r.Id, "this Id is already in use!");
         }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "An error occurred while processing the request.");
-            ThrowError("An error has occurred.");
-        }
+
+        ThrowIfAnyErrors();
+
+        Logger.LogInformation("Validation passed, proceeding to create new appointment entity.");
+        var newItem = Domain.Entities.Appointment.Create(request.Description,
+                                                         request.KeepDate,
+                                                         request.AmountHours,
+                                                         request.AssignmentId,
+                                                         request.UserId,
+                                                         request.Id);
+        Logger.LogInformation("Created new appointment entity with Id: {AppointmentId}", newItem.Id);
+
+        Logger.LogInformation("Adding appointment to repository.");
+        await dbContext.Appointments!.AddAsync(newItem, cancellationToken);
+
+        Logger.LogInformation("Committing transaction.");
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        Logger.LogInformation("Fetching appointment by Id: {AppointmentId}", newItem.Id);
+        var createdItem = await dbContext.Appointments!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
+
+        Response.Appointment = createdItem!.MapToDto();
+
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

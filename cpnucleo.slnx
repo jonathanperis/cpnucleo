@@ -1,5 +1,19 @@
-﻿<Solution>
+<Solution>
+  <Folder Name="/actions/">
+    <File Path=".github/workflows/build-check.yml" />
+    <File Path=".github/workflows/main-release.yml" />
+  </Folder>
+  <Folder Name="/root/">
+    <File Path=".env" />
+    <File Path="compose.override.yaml" />
+    <File Path="compose.prod.yaml" />
+    <File Path="compose.yaml" />
+    <File Path="global.json" />
+    <File Path="nginx.conf" />
+    <File Path="README.md" />    
+  </Folder>
   <Folder Name="/src/">
+    <Project Path="src/WebApi.Client/WebApi.Client.csproj" />
     <Project Path="src\Domain\Domain.csproj" />
     <Project Path="src\GrpcServer.Contracts\GrpcServer.Contracts.csproj" />
     <Project Path="src\GrpcServer\GrpcServer.csproj" />

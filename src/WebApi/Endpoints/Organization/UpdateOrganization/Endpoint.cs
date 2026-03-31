@@ -20,37 +20,28 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     {
         Logger.LogInformation("Service started processing request.");
 
-        try
+        Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
+        var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
+        var item = await repository.GetByIdAsync(request.Id);
+
+        if (item is null)
         {
-            Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
-            var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-            var item = await repository.GetByIdAsync(request.Id);
-
-            if (item is null)
-            {
-                await Send.NotFoundAsync(cancellation: cancellationToken);
-                return;
-            }
-
-            Logger.LogInformation("Updating organization entity with Id: {OrganizationId}", request.Id);
-            Domain.Entities.Organization.Update(item, request.Name, request.Description);
-
-            Logger.LogInformation("Updating entity in repository.");
-            Response.Success = await repository.UpdateAsync(item);
-
-            Logger.LogInformation("Update result: {Success}", Response.Success);
-            Logger.LogInformation("Committing transaction.");
-            await unitOfWork.CommitAsync(cancellationToken);
-
-            Logger.LogInformation("Service completed successfully.");
-
-            await Send.OkAsync(Response, cancellationToken);
+            await Send.NotFoundAsync(cancellation: cancellationToken);
+            return;
         }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "An error occurred while processing the request. Rolling back transaction.");
-            await unitOfWork.RollbackAsync(cancellationToken);
-            ThrowError("An error has occurred.");
-        }
+
+        Logger.LogInformation("Updating organization entity with Id: {OrganizationId}", request.Id);
+        Domain.Entities.Organization.Update(item, request.Name, request.Description);
+
+        Logger.LogInformation("Updating entity in repository.");
+        Response.Success = await repository.UpdateAsync(item);
+
+        Logger.LogInformation("Update result: {Success}", Response.Success);
+        Logger.LogInformation("Committing transaction.");
+        await unitOfWork.CommitAsync(cancellationToken);
+
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -13,7 +13,7 @@ x-common-healthcheck:
     timeout: 10s
     retries: 3
   x-healthcheck-grpcserver: &healthcheck-grpcserver
-    test: ["CMD", "curl", "-f", "http://localhost:5020/healthz"]
+    test: ["CMD", "curl", "-f", "http://localhost:5021/healthz"]
     interval: 30s
     timeout: 10s
     retries: 3

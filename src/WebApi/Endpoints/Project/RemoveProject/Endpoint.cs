@@ -18,48 +18,40 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {        
         Logger.LogInformation("Service started processing request.");
-        
-        try
+
+        Logger.LogInformation("Checking if project entities exist for Ids: {ProjectIds}", string.Join(",", request.Ids));
+        var allSuccess = true;
+
+        foreach (var id in request.Ids)
         {
-            Logger.LogInformation("Checking if project entities exist for Ids: {ProjectIds}", string.Join(",", request.Ids));
-            var allSuccess = true;
-
-            foreach (var id in request.Ids)
+            var item = await repository.GetByIdAsync(id);
+            if (item is null)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    await Send.NotFoundAsync(cancellation: cancellationToken);
-                    return;
-                }
-
-                Logger.LogInformation("Removing project entity with Id: {ProjectId}", id);
-                Domain.Entities.Project.Remove(item);
-
-                Logger.LogInformation("Updating repository for removed entity {ProjectId}.", id);
-                var result = await repository.UpdateAsync(item);
-
-                if (!result) allSuccess = false;
-            }
-            
-            Response.Success = allSuccess;
-            
-            if (!allSuccess)
-            {
-                Logger.LogWarning("One or more deletions failed.");
-                await Send.ErrorsAsync(cancellation: cancellationToken);
+                await Send.NotFoundAsync(cancellation: cancellationToken);
                 return;
             }
 
-            Logger.LogInformation("Remove result: {Success}", Response.Success);          
-            Logger.LogInformation("Service completed successfully.");
-            
-            await Send.OkAsync(Response, cancellationToken);
+            Logger.LogInformation("Removing project entity with Id: {ProjectId}", id);
+            Domain.Entities.Project.Remove(item);
+
+            Logger.LogInformation("Updating repository for removed entity {ProjectId}.", id);
+            var result = await repository.UpdateAsync(item);
+
+            if (!result) allSuccess = false;
         }
-        catch (Exception ex)
+
+        Response.Success = allSuccess;
+
+        if (!allSuccess)
         {
-            Logger.LogError(ex, "An error occurred while processing the request.");
-            ThrowError("An error has occurred.");
+            Logger.LogWarning("One or more deletions failed.");
+            await Send.ErrorsAsync(cancellation: cancellationToken);
+            return;
         }
+
+        Logger.LogInformation("Remove result: {Success}", Response.Success);
+        Logger.LogInformation("Service completed successfully.");
+
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -2,14 +2,13 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 var logger = LoggerFactory.Create(logging =>
 {
-    _ = logging.AddApplicationInsights();
+    logging.AddConsole();
 }).CreateLogger<Program>();
 
 builder.ConfigureOpenTelemetry();
-builder.Logging.AddApplicationInsights();
 
 builder.Services
-    .AddAuthenticationJwtBearer(s => s.SigningKey = "ForTheLoveOfGodStoreAndLoadThisSecurely")
+    .AddAuthenticationJwtBearer(s => s.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))
     .AddAuthorization() 
     .AddFastEndpoints();
 
@@ -17,7 +16,7 @@ builder.Services
     .Configure<JwtCreationOptions>(o =>
     {
         o.ExpireAt = DateTime.UtcNow.AddDays(1);
-        o.SigningKey = "ForTheLoveOfGodStoreAndLoadThisSecurely";
+        o.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing.");
         o.Issuer = "https://identity.peris-studio.dev";
         o.Audience = "https://peris-studio.dev";
     });
@@ -78,6 +77,8 @@ var app = builder.Build();
 
 app.UseOutputCache();
 
+app.UseHealthChecks("/healthz");
+
 app.UseInfrastructure();
 
 app.UseAuthentication()
@@ -86,7 +87,6 @@ app.UseAuthentication()
         .UseMiddleware<ElapsedTimeMiddleware>()
         .UseMiddleware<ErrorHandlingMiddleware>();
 
-app.MapHealthChecks("/healthz");
 app.MapGet("/", () => "Hello World!");
 
 if (app.Environment.IsDevelopment())
@@ -98,8 +98,8 @@ app.MapApiClientEndpoint("/cs-client", c =>
     {
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.CSharp;
-        c.ClientNamespaceName = "MyCompanyName";
-        c.ClientClassName = "MyCsClient";
+        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
+        c.ClientClassName = "IdentityApiClient";
     },
     o =>
     {
@@ -113,8 +113,8 @@ await app.GenerateApiClientsAndExitAsync(
         c.SwaggerDocumentName = "v1"; //must match doc name above
         c.Language = GenerationLanguage.CSharp;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
-        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-        c.ClientClassName = "Cpnucleo.WebApi.Client";
+        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
+        c.ClientClassName = "IdentityApiClient";
         c.CreateZipArchive = true; //if you'd like a zip file as well
     },
     c =>
@@ -122,8 +122,8 @@ await app.GenerateApiClientsAndExitAsync(
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.TypeScript;
         c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
-        c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
-        c.ClientClassName = "cpnucleo-webapi-client";
+        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
+        c.ClientClassName = "cpnucleo-identityapi-client";
     });
 
 app.Run();
