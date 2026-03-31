@@ -39,7 +39,7 @@ x-common-api: &common-api
 services:
   webapi1-cpnucleo: &webapi1
     <<: *common-api
-    image: jonathanperis/cpnucleo-web-api:latest
+    image: ghcr.io/jonathanperis/cpnucleo-web-api:latest
     container_name: webapi1-cpnucleo
     ports:
       # Mapping internal port 5000 to external host port 5100 for webapi1 service
@@ -55,7 +55,7 @@ services:
 
   identityapi-cpnucleo:
     <<: *common-api
-    image: jonathanperis/cpnucleo-identity-api:latest
+    image: ghcr.io/jonathanperis/cpnucleo-identity-api:latest
     container_name: identityapi-cpnucleo
     ports:
       # Mapping internal port 5010 to external host port 5200 for identity API service
@@ -64,7 +64,7 @@ services:
 
   grpcserver-cpnucleo:
     <<: *common-api
-    image: jonathanperis/cpnucleo-grpc-server:latest
+    image: ghcr.io/jonathanperis/cpnucleo-grpc-server:latest
     container_name: grpcserver-cpnucleo
     ports:
       # Mapping internal port 5020 to external host port 5300 for grpc server service
@@ -75,7 +75,7 @@ services:
 
   webclient-cpnucleo:
     <<: *common-api
-    image: jonathanperis/cpnucleo-web-client:latest
+    image: ghcr.io/jonathanperis/cpnucleo-web-client:latest
     container_name: webclient-cpnucleo
     ports:
       # Mapping internal port 5030 to external host port 5400 for web client service
