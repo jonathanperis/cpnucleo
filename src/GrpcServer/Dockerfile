@@ -1,11 +1,11 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 
 LABEL maintainer="Jonathan Peris"
 
 USER app
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -21,6 +21,7 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src
 
 COPY ["GrpcServer/GrpcServer.csproj", "GrpcServer/"]
+COPY ["GrpcServer.Contracts/GrpcServer.Contracts.csproj", "GrpcServer.Contracts/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 
@@ -42,7 +43,7 @@ ARG ASPNETCORE_ENVIRONMENT
 ARG DB_CONNECTION_STRING
 
 WORKDIR /app
-ENV ASPNETCORE_URLS=https://+:5020;http://+:5021
+ENV ASPNETCORE_URLS=http://+:5020;http://+:5021
 ENV ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
 ENV DB_CONNECTION_STRING=${DB_CONNECTION_STRING}
 EXPOSE 5020

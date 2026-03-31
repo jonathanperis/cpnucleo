@@ -10,6 +10,6 @@ public abstract class BaseEntity
 
     public static Guid GetNewId(Guid id = default)
     {
-        return id == Guid.Empty ? Guid.NewGuid() : id;
+        return id == Guid.Empty ? Guid.CreateVersion7() : id;
     }
 }

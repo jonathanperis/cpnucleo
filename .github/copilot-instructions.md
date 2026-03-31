@@ -1,22 +1,22 @@
 # Cpnucleo - AI Coding Agent Instructions
 
-**A Production-Grade .NET 9 Microservices Reference Architecture**
+**A Production-Grade .NET 10 Microservices Reference Architecture**
 
-This repository implements Clean Architecture with Domain-Driven Design (DDD), CQRS pattern, and microservices using .NET 9. Read this file completely before starting any work to minimize exploration time and avoid common pitfalls.
+This repository implements Clean Architecture with Domain-Driven Design (DDD), CQRS pattern, and microservices using .NET 10. Read this file completely before starting any work to minimize exploration time and avoid common pitfalls.
 
 ## 🎯 Project Overview
 
 Cpnucleo is a comprehensive project management system demonstrating enterprise-grade .NET development. The business domain includes Organizations, Projects, Assignments (tasks), Users, Workflows, and Impediments (blockers).
 
 **Key Statistics:**
-- **Framework:** .NET 9.0 SDK (9.0.202+)
-- **Language:** C# 13 with nullable reference types enabled
+- **Framework:** .NET 10.0 SDK (10.0.102+)
+- **Language:** C# 14 with nullable reference types enabled
 - **Lines of Code:** ~15K across 7 projects + 3 test projects
 - **Architecture Style:** Clean Architecture + Microservices + CQRS
-- **Data Access:** Dual strategy - EF Core 9 (reads) + Dapper 2.1 (writes)
+- **Data Access:** Dual strategy - EF Core 10 (reads) + Dapper 2.1 (writes)
 - **Database:** PostgreSQL 16.7
-- **API Framework:** FastEndpoints 7.0 (not ASP.NET Core MVC/Minimal APIs)
-- **Frontend:** Blazor WebAssembly with MudBlazor
+- **API Framework:** FastEndpoints 7.2 (not ASP.NET Core MVC/Minimal APIs)
+- **Frontend:** Blazor Web App with MudBlazor (Interactive Server rendering)
 
 ## 🏗️ Architecture & Project Structure
 
@@ -55,13 +55,13 @@ src/
 │   ├── Endpoints/           # Login, register, token refresh
 │   └── Program.cs           # Port: 5200, JWT signing
 │
-└── WebClient/               # 🎨 Blazor WebAssembly frontend
+└── WebClient/               # 🎨 Blazor Web App frontend
     ├── Components/Pages/    # Page components
     └── Program.cs           # Port: 5400
 
 test/
 ├── Architecture.Tests/      # ⚠️ 25+ NetArchTest rules enforcing Clean Architecture
-├── WebApi.Unit.Tests/      # Unit tests with Moq
+├── WebApi.Unit.Tests/      # Unit tests with FakeItEasy
 └── WebApi.Integration.Tests/ # API integration tests with Alba
 ```
 
@@ -100,7 +100,7 @@ The architecture demonstrates CQRS (Command Query Responsibility Segregation) wi
 ## 🔨 Build, Test & Validation Commands
 
 ### Prerequisites
-- **.NET 9.0 SDK (9.0.202+)** - Verified by `global.json`
+- **.NET 10.0 SDK (10.0.102+)** - Verified by `global.json`
 - **Docker Desktop** - For database and full-stack testing
 - **dotnet-ef CLI tool** - For migrations: `dotnet tool install --global dotnet-ef`
 
@@ -395,7 +395,7 @@ taskkill /PID <PID> /F
 docker compose up nginx -d --build --force-recreate
 sleep 30
 
-# Retry logic (see .github/workflows/build-check-webapi.yml)
+# Retry logic (see .github/workflows/build-check.yml)
 for i in {1..20}; do
   STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999/healthz)
   if [ "$STATUS" -eq 200 ]; then exit 0; fi
@@ -463,11 +463,11 @@ exit 1
 ## 🔄 CI/CD Pipeline
 
 GitHub Actions workflows in `.github/workflows/`:
-- `build-check-*.yml`: PR validation (build + architecture tests + healthcheck)
-- `main-release-*.yml`: Main branch releases (Docker image push)
+- `build-check.yml`: PR validation (build + architecture tests + healthcheck)
+- `main-release.yml`: Main branch releases (Docker image push)
 
 **Workflow Pattern:**
-1. Setup .NET 9 SDK (uses `global.json`)
+1. Setup .NET 10 SDK (uses `global.json`)
 2. Restore dependencies
 3. Build with Debug configuration
 4. Run architecture tests (MUST PASS)

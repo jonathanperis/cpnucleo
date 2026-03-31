@@ -13,7 +13,7 @@ x-common-healthcheck:
     timeout: 10s
     retries: 3
   x-healthcheck-grpcserver: &healthcheck-grpcserver
-    test: ["CMD", "curl", "-f", "http://localhost:5020/healthz"]
+    test: ["CMD", "curl", "-f", "http://localhost:5021/healthz"]
     interval: 30s
     timeout: 10s
     retries: 3
@@ -122,7 +122,6 @@ services:
     depends_on: 
       - webapi1-cpnucleo
       - webapi2-cpnucleo
-      - identityapi-cpnucleo
     ports:
       # Mapping external port 9999 to internal port 9999 for NGINX reverse-proxy
       - "9999:9999"
