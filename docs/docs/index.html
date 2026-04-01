@@ -5,19 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>cpnucleo - Documentation</title>
   <meta name="description" content="Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a0a;
-      --sidebar-bg: #111111;
-      --text-primary: #ededed;
-      --text-muted: #888888;
-      --text-body: #c8c8c8;
-      --accent: #7c6af7;
-      --accent-hover: #9b8df9;
-      --code-bg: #1e1e2e;
+      --bg: #0a0f1e;
+      --sidebar-bg: #0d1a3a;
+      --text-primary: #f0f4ff;
+      --text-muted: #8b9bb4;
+      --text-body: #f0f4ff;
+      --accent: #00d4ff;
+      --accent-dim: rgba(0,212,255,0.15);
+      --accent-glow: #22e8ff;
+      --surface: #0f1a2e;
+      --surface-hover: #162240;
+      --code-bg: var(--surface);
       --code-text: #cdd6f4;
-      --border: #1f1f2e;
-      --code-border: #2a2a3e;
+      --border: rgba(0,212,255,0.2);
+      --code-border: var(--border);
       --sidebar-width: 260px;
     }
 
@@ -25,13 +29,16 @@
     
     html {
       scroll-behavior: smooth;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'JetBrains Mono', monospace;
     }
     
     body {
       margin: 0;
       padding: 0;
       background: var(--bg);
+      background-image: linear-gradient(rgba(0,212,255,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,212,255,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
       color: var(--text-primary);
       display: flex;
     }
@@ -56,11 +63,13 @@
     }
 
     .repo-title {
+      font-family: 'Rajdhani', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 3px;
       font-size: 18px;
       font-weight: 700;
       margin: 0 0 4px;
       color: var(--text-primary);
-      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -83,7 +92,7 @@
 
     .search-box {
       width: 100%;
-      background: #000;
+      background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text-primary);
       border-radius: 6px;
@@ -125,12 +134,12 @@
 
     .nav-item:hover {
       color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--surface-hover);
     }
 
     .nav-item.active {
       color: var(--accent);
-      background: rgba(124, 106, 247, 0.1);
+      background: var(--accent-dim);
       font-weight: 500;
     }
 
@@ -146,6 +155,12 @@
       text-decoration: none;
       display: block;
       margin-bottom: 8px;
+    }
+
+    .sidebar-footer a.back-home {
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-weight: 500;
     }
 
     .sidebar-footer a:hover {
@@ -169,17 +184,21 @@
 
     /* Typography */
     h1 {
+      font-family: 'Rajdhani', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       font-size: 32px;
       font-weight: 700;
-      letter-spacing: -0.02em;
       margin: 0 0 8px;
       color: var(--text-primary);
     }
 
     h2 {
+      font-family: 'Rajdhani', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       font-size: 22px;
       font-weight: 600;
-      letter-spacing: -0.01em;
       margin: 48px 0 16px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--border);
@@ -187,6 +206,9 @@
     }
 
     h3 {
+      font-family: 'Rajdhani', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
       font-size: 18px;
       font-weight: 600;
       margin: 32px 0 12px;
@@ -229,7 +251,7 @@
     }
 
     code {
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: 'JetBrains Mono', monospace;
       background: var(--code-bg);
       color: var(--code-text);
       border-radius: 4px;
@@ -254,7 +276,7 @@
     }
 
     th {
-      background: #1a1a2e;
+      background: var(--sidebar-bg);
       color: var(--text-primary);
       font-weight: 600;
       border-bottom: 1px solid var(--border);
@@ -266,7 +288,7 @@
     }
 
     tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--surface);
     }
     
     tr:last-child td {
@@ -277,7 +299,7 @@
     blockquote {
       margin: 24px 0;
       padding: 12px 20px;
-      background: var(--sidebar-bg);
+      background: var(--surface);
       border-left: 3px solid var(--accent);
       border-radius: 0 6px 6px 0;
       color: var(--text-muted);
@@ -305,7 +327,7 @@
     }
     
     .search-highlight {
-      background: rgba(124, 106, 247, 0.3);
+      background: var(--accent-dim);
       border-radius: 2px;
       padding: 0 2px;
     }
@@ -314,8 +336,8 @@
     .live-cta {
       margin-bottom: 40px;
       padding: 14px 20px;
-      background: rgba(124, 106, 247, 0.07);
-      border: 1px solid rgba(124, 106, 247, 0.22);
+      background: var(--accent-dim);
+      border: 1px solid var(--border);
       border-radius: 10px;
     }
 
@@ -332,14 +354,14 @@
       height: 8px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 8px rgba(124, 106, 247, 0.7);
+      box-shadow: 0 0 8px var(--accent-glow);
       flex-shrink: 0;
       animation: pulse-dot 2s ease-in-out infinite;
     }
 
     @keyframes pulse-dot {
-      0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(124, 106, 247, 0.7); }
-      50%       { opacity: 0.7; box-shadow: 0 0 14px rgba(124, 106, 247, 0.4); }
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent-glow); }
+      50%       { opacity: 0.7; box-shadow: 0 0 14px rgba(0,212,255,0.4); }
     }
 
     .live-cta-text {
@@ -352,12 +374,12 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       font-weight: 600;
       color: var(--accent);
-      background: rgba(124, 106, 247, 0.12);
-      border: 1px solid rgba(124, 106, 247, 0.28);
+      background: var(--accent-dim);
+      border: 1px solid var(--border);
       padding: 6px 16px;
       border-radius: 6px;
       text-decoration: none;
@@ -365,10 +387,10 @@
     }
 
     .live-cta-btn:hover {
-      background: rgba(124, 106, 247, 0.22);
-      color: var(--accent-hover);
+      background: rgba(0,212,255,0.25);
+      color: var(--accent-glow);
       text-decoration: none;
-      border-color: rgba(124, 106, 247, 0.5);
+      border-color: var(--accent);
     }
 
     /* Mobile */
@@ -471,6 +493,7 @@
 </ul>
     </div>
     <div class="sidebar-footer">
+      <a href="../" class="back-home">← Back to home</a>
       <a href="https://github.com/jonathanperis/cpnucleo" target="_blank" rel="noopener noreferrer">View on GitHub</a>
       <div>Built by Jonathan Peris</div>
     </div>
