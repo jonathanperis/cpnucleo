@@ -33,7 +33,7 @@ jobs:
           DOCS_DESCRIPTION: "Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC"
           GITHUB_URL: "https://github.com/jonathanperis/cpnucleo"
           LIVE_URL: "https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/"
-          OUTPUT_PATH: "docs/index.html"
+          OUTPUT_PATH: "docs/docs/index.html"
           TEMPLATE_PATH: ".github/docs-template.html"
         run: node .github/generate-docs.js
 
@@ -41,5 +41,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html
+          git add docs/docs/index.html
           git diff --staged --quiet || (git commit -m "chore: regenerate docs from wiki [skip ci]" && git push)

@@ -1,0 +1,2922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cpnucleo - Documentation</title>
+  <meta name="description" content="Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --sidebar-bg: #111111;
+      --text-primary: #ededed;
+      --text-muted: #888888;
+      --text-body: #c8c8c8;
+      --accent: #7c6af7;
+      --accent-hover: #9b8df9;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+      --border: #1f1f2e;
+      --code-border: #2a2a3e;
+      --sidebar-width: 260px;
+    }
+
+    * { box-sizing: border-box; }
+    
+    html {
+      scroll-behavior: smooth;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 24px 24px 16px;
+    }
+
+    .repo-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 4px;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .repo-title::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .repo-description {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0 0 16px;
+    }
+
+    .search-box {
+      width: 100%;
+      background: #000;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus {
+      border-color: var(--accent);
+    }
+
+    .sidebar-nav-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 16px 24px;
+    }
+
+    .sidebar-nav-container ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-nav-container li {
+      margin-bottom: 2px;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      background: rgba(124, 106, 247, 0.1);
+      font-weight: 500;
+    }
+
+    .sidebar-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .sidebar-footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-footer a:hover {
+      color: var(--text-primary);
+    }
+
+    /* Main Content */
+    .content-wrapper {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      width: calc(100% - var(--sidebar-width));
+    }
+
+    .content {
+      width: 100%;
+      max-width: 860px;
+      padding: 48px 64px;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 32px 0 12px;
+      color: var(--text-primary);
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin: 0 0 16px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Code */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      margin: 24px 0;
+      position: relative;
+    }
+    
+    pre code {
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      color: var(--code-text);
+      font-size: 13px;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 13px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 24px 0;
+      font-size: 14px;
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 10px 16px;
+      text-align: left;
+    }
+
+    th {
+      background: #1a1a2e;
+      color: var(--text-primary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      border-bottom: 1px solid var(--border);
+      color: var(--text-body);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Blockquotes */
+    blockquote {
+      margin: 24px 0;
+      padding: 12px 20px;
+      background: var(--sidebar-bg);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      color: var(--text-muted);
+    }
+
+    blockquote p {
+      margin: 0;
+    }
+
+    /* HR */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* Sections */
+    section.doc-section {
+      scroll-margin-top: 80px;
+      margin-bottom: 80px;
+    }
+    
+    .hidden-section {
+      display: none;
+    }
+    
+    .search-highlight {
+      background: rgba(124, 106, 247, 0.3);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    /* Live CTA banner */
+    .live-cta {
+      margin-bottom: 40px;
+      padding: 14px 20px;
+      background: rgba(124, 106, 247, 0.07);
+      border: 1px solid rgba(124, 106, 247, 0.22);
+      border-radius: 10px;
+    }
+
+    .live-cta-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(124, 106, 247, 0.7);
+      flex-shrink: 0;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(124, 106, 247, 0.7); }
+      50%       { opacity: 0.7; box-shadow: 0 0 14px rgba(124, 106, 247, 0.4); }
+    }
+
+    .live-cta-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .live-cta-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(124, 106, 247, 0.12);
+      border: 1px solid rgba(124, 106, 247, 0.28);
+      padding: 6px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .live-cta-btn:hover {
+      background: rgba(124, 106, 247, 0.22);
+      color: var(--accent-hover);
+      text-decoration: none;
+      border-color: rgba(124, 106, 247, 0.5);
+    }
+
+    /* Mobile */
+    .mobile-header {
+      display: none;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      z-index: 90;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 2px;
+    }
+    
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 95;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .content-wrapper {
+        margin-left: 0;
+        width: 100%;
+      }
+      .content {
+        padding: 32px 24px;
+      }
+      .mobile-header {
+        display: flex;
+      }
+      .overlay.open {
+        display: block;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="repo-title">cpnucleo</div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="repo-title">cpnucleo</h1>
+      <p class="repo-description">Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC</p>
+      <input type="text" id="searchInput" class="search-box" placeholder="Search documentation...">
+    </div>
+    <div class="sidebar-nav-container">
+      <ul>
+  <li><a href="#home" class="nav-item">Home</a></li>
+  <li><a href="#api-reference" class="nav-item">Api Reference</a></li>
+  <li><a href="#architecture" class="nav-item">Architecture</a></li>
+  <li><a href="#database" class="nav-item">Database</a></li>
+  <li><a href="#deployment" class="nav-item">Deployment</a></li>
+  <li><a href="#getting-started" class="nav-item">Getting Started</a></li>
+  <li><a href="#project-structure" class="nav-item">Project Structure</a></li>
+  <li><a href="#technologies" class="nav-item">Technologies</a></li>
+  <li><a href="#testing" class="nav-item">Testing</a></li>
+</ul>
+    </div>
+    <div class="sidebar-footer">
+      <a href="https://github.com/jonathanperis/cpnucleo" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      <div>Built by Jonathan Peris</div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <main class="content" id="mainContent">
+      <div class="live-cta">
+  <div class="live-cta-inner">
+    <span class="live-dot"></span>
+    <span class="live-cta-text">Live application available</span>
+    <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer" class="live-cta-btn">Try it live →</a>
+  </div>
+</div>
+
+<section id="home" class="doc-section">
+  <h1 class="page-title">Home</h1>
+  <h1>cpnucleo</h1>
+<p>Cpnucleo is a project management and task tracking system built with .NET 10, demonstrating Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy with REST (FastEndpoints + EF Core) and gRPC (FastEndpoints Remote Messaging + Dapper) against the same PostgreSQL database.</p>
+<hr>
+<h2>Quick Links</h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="architecture">Architecture</a></td>
+<td>Clean Architecture layers, CQRS dual implementation, DDD patterns</td>
+</tr>
+<tr>
+<td><a href="getting_started">Getting Started</a></td>
+<td>Prerequisites, build, run with Docker Compose or locally</td>
+</tr>
+<tr>
+<td><a href="project_structure">Project Structure</a></td>
+<td>Full tree of <code>src/</code> and <code>test/</code> with descriptions</td>
+</tr>
+<tr>
+<td><a href="api_reference">API Reference</a></td>
+<td>WebApi endpoints, IdentityApi auth, GrpcServer contracts</td>
+</tr>
+<tr>
+<td><a href="database">Database</a></td>
+<td>PostgreSQL setup, EF Core, Dapper, init scripts</td>
+</tr>
+<tr>
+<td><a href="testing">Testing</a></td>
+<td>Architecture tests, unit tests, integration tests</td>
+</tr>
+<tr>
+<td><a href="deployment">Deployment</a></td>
+<td>Docker Compose configs, GitHub Actions CI/CD, NGINX</td>
+</tr>
+<tr>
+<td><a href="technologies">Technologies</a></td>
+<td>Full tech stack table with versions</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Key Features</h2>
+<ul>
+<li>Clean Architecture with strict layer dependency enforcement validated by 25+ architecture tests</li>
+<li>Dual data access: EF Core for the REST API, Dapper with Unit of Work for the gRPC server</li>
+<li>FastEndpoints for both REST endpoints and gRPC-style remote command handling</li>
+<li>JWT authentication via the dedicated Identity API with PBKDF2-hashed credentials</li>
+<li>Rate limiting with fixed-window partitioning per IP (50/min WebApi, 10/min IdentityApi)</li>
+<li>OpenTelemetry observability with OTLP export and optional Grafana LGTM stack</li>
+<li>NGINX reverse proxy with least-connection load balancing across multiple WebApi instances</li>
+<li>Docker Compose configurations for development, default, and production environments</li>
+<li>AOT, Trim, and ExtraOptimize build options for production-optimized containers</li>
+<li>Blazor Server + WebAssembly frontend with MudBlazor UI components</li>
+<li>Automated CI/CD with GitHub Actions deploying to Azure Web Apps via GHCR</li>
+</ul>
+<hr>
+<h2>Repository</h2>
+<p><a href="https://github.com/jonathanperis/cpnucleo">github.com/jonathanperis/cpnucleo</a></p>
+
+</section>
+
+<section id="api-reference" class="doc-section">
+  <h1 class="page-title">Api Reference</h1>
+  <h1>API Reference</h1>
+<p>Cpnucleo exposes three API services: the WebApi (REST), the IdentityApi (authentication), and the GrpcServer (gRPC command handling).</p>
+<hr>
+<h2>WebApi -- REST Endpoints</h2>
+<p>The WebApi uses <a href="https://fast-endpoints.com/">FastEndpoints</a> to define REST endpoints with Swagger/OpenAPI documentation. Each entity has 5 standard CRUD endpoints.</p>
+<h3>Base URL</h3>
+<ul>
+<li>Direct: <code>http://localhost:5100</code></li>
+<li>Via NGINX load balancer: <code>http://localhost:9999</code></li>
+</ul>
+<h3>Swagger</h3>
+<p>Available in Development mode at <code>/swagger</code>.</p>
+<h3>Endpoint Pattern</h3>
+<p>Every entity follows this consistent pattern:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Route</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POST</code></td>
+<td><code>/api/{entity}</code></td>
+<td>Create a new record</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/{entity}/{id}</code></td>
+<td>Get a single record by ID</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/{entity}</code></td>
+<td>List records (paginated)</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/{entity}/{id}</code></td>
+<td>Update an existing record</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/{entity}/{id}</code></td>
+<td>Remove a record (soft delete)</td>
+</tr>
+</tbody></table>
+<h3>Available Entities</h3>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Route Prefix</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Appointment</td>
+<td><code>/api/appointment</code></td>
+<td>Appointments</td>
+</tr>
+<tr>
+<td>Assignment</td>
+<td><code>/api/assignment</code></td>
+<td>Assignments</td>
+</tr>
+<tr>
+<td>AssignmentImpediment</td>
+<td><code>/api/assignmentimpediment</code></td>
+<td>AssignmentImpediments</td>
+</tr>
+<tr>
+<td>AssignmentType</td>
+<td><code>/api/assignmenttype</code></td>
+<td>AssignmentTypes</td>
+</tr>
+<tr>
+<td>Impediment</td>
+<td><code>/api/impediment</code></td>
+<td>Impediments</td>
+</tr>
+<tr>
+<td>Organization</td>
+<td><code>/api/organization</code></td>
+<td>Organizations</td>
+</tr>
+<tr>
+<td>Project</td>
+<td><code>/api/project</code></td>
+<td>Projects</td>
+</tr>
+<tr>
+<td>User</td>
+<td><code>/api/user</code></td>
+<td>Users</td>
+</tr>
+<tr>
+<td>UserAssignment</td>
+<td><code>/api/userassignment</code></td>
+<td>UserAssignments</td>
+</tr>
+<tr>
+<td>UserProject</td>
+<td><code>/api/userproject</code></td>
+<td>UserProjects</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td><code>/api/workflow</code></td>
+<td>Workflows</td>
+</tr>
+</tbody></table>
+<h3>Example: Create Appointment</h3>
+<p><strong>Request:</strong></p>
+<pre><code class="language-http">POST /api/appointment
+Content-Type: application/json
+
+{
+  &quot;id&quot;: &quot;00000000-0000-0000-0000-000000000000&quot;,
+  &quot;description&quot;: &quot;Sprint planning meeting&quot;,
+  &quot;keepDate&quot;: &quot;2025-03-01T10:00:00Z&quot;,
+  &quot;amountHours&quot;: 2,
+  &quot;assignmentId&quot;: &quot;...&quot;,
+  &quot;userId&quot;: &quot;...&quot;
+}
+</code></pre>
+<p><strong>Response (200 OK):</strong></p>
+<pre><code class="language-json">{
+  &quot;appointment&quot;: {
+    &quot;id&quot;: &quot;...&quot;,
+    &quot;description&quot;: &quot;Sprint planning meeting&quot;,
+    &quot;keepDate&quot;: &quot;2025-03-01T10:00:00Z&quot;,
+    &quot;amountHours&quot;: 2,
+    &quot;assignmentId&quot;: &quot;...&quot;,
+    &quot;userId&quot;: &quot;...&quot;,
+    &quot;createdAt&quot;: &quot;...&quot;,
+    &quot;active&quot;: true
+  }
+}
+</code></pre>
+<h3>Data Access</h3>
+<p>All WebApi endpoints use EF Core via <code>IApplicationDbContext</code> for database operations. Endpoints inject the context directly:</p>
+<pre><code class="language-csharp">public class Endpoint(IApplicationDbContext dbContext) : Endpoint&lt;Request, Response&gt;
+</code></pre>
+<h3>Rate Limiting</h3>
+<ul>
+<li>50 requests per minute per IP address</li>
+<li>Fixed-window partitioning</li>
+<li>Queue limit: 10 additional requests</li>
+<li>Returns <code>429 Too Many Requests</code> with <code>Retry-After: 60</code> header when exceeded</li>
+</ul>
+<h3>API Client Generation</h3>
+<p>The WebApi generates downloadable API clients via Kiota:</p>
+<ul>
+<li><strong>C# client</strong>: Available at <code>/cs-client</code></li>
+<li><strong>TypeScript client</strong>: Generated during build</li>
+</ul>
+<hr>
+<h2>IdentityApi -- Authentication</h2>
+<h3>Base URL</h3>
+<p><code>http://localhost:5200</code></p>
+<h3>Swagger</h3>
+<p>Available in Development mode at <code>/swagger</code>.</p>
+<h3>Login Endpoint</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Route</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POST</code></td>
+<td><code>/api/login</code></td>
+<td>Authenticate and receive JWT token</td>
+</tr>
+</tbody></table>
+<p><strong>Request:</strong></p>
+<pre><code class="language-http">POST /api/login
+Content-Type: application/json
+
+{
+  &quot;login&quot;: &quot;user@example.com&quot;,
+  &quot;password&quot;: &quot;password123&quot;
+}
+</code></pre>
+<p><strong>Response (200 OK):</strong></p>
+<pre><code class="language-json">{
+  &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiIs...&quot;
+}
+</code></pre>
+<p><strong>Response (404 Not Found):</strong></p>
+<p>Returned when credentials are invalid.</p>
+<h3>JWT Configuration</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Issuer</td>
+<td><code>https://identity.peris-studio.dev</code></td>
+</tr>
+<tr>
+<td>Audience</td>
+<td><code>https://peris-studio.dev</code></td>
+</tr>
+<tr>
+<td>Expiration</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>Algorithm</td>
+<td>HMAC-SHA (via FastEndpoints.Security)</td>
+</tr>
+</tbody></table>
+<h3>Rate Limiting</h3>
+<ul>
+<li>10 requests per minute per IP address</li>
+<li>Queue limit: 3 additional requests</li>
+<li>Stricter than WebApi to protect against brute-force attacks</li>
+</ul>
+<h3>Output Caching</h3>
+<ul>
+<li>Base policy: 10-second cache expiration</li>
+<li>All responses are cached by default</li>
+</ul>
+<hr>
+<h2>GrpcServer -- Remote Command Handling</h2>
+<p>The GrpcServer uses FastEndpoints.Messaging.Remote to handle commands over HTTP/2 gRPC transport.</p>
+<h3>Ports</h3>
+<ul>
+<li>Health check: <code>http://localhost:5300/healthz</code> (HTTP/1.1)</li>
+<li>gRPC transport: <code>http://localhost:5301</code> (HTTP/2)</li>
+</ul>
+<h3>Command Pattern</h3>
+<p>Each operation is a command/result pair defined in <code>GrpcServer.Contracts</code>:</p>
+<pre><code>Command -&gt; Handler -&gt; Result
+</code></pre>
+<h3>Available Commands (per entity)</h3>
+<p>Each of the 11 entities has these 5 commands:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Create{Entity}Command</code></td>
+<td>Create a new record</td>
+</tr>
+<tr>
+<td><code>Get{Entity}ByIdCommand</code></td>
+<td>Retrieve by ID</td>
+</tr>
+<tr>
+<td><code>List{Entity}sCommand</code></td>
+<td>List with pagination</td>
+</tr>
+<tr>
+<td><code>Remove{Entity}Command</code></td>
+<td>Soft delete</td>
+</tr>
+<tr>
+<td><code>Update{Entity}Command</code></td>
+<td>Update fields</td>
+</tr>
+</tbody></table>
+<p>Total: 55 registered command handlers.</p>
+<h3>Data Access</h3>
+<p>All gRPC handlers use Dapper via <code>IUnitOfWork</code> for database operations, providing transactional support with explicit <code>BeginTransactionAsync</code>, <code>CommitAsync</code>, and <code>RollbackAsync</code>.</p>
+<h3>Handler Registration</h3>
+<p>Handlers are registered in <code>Program.cs</code>:</p>
+<pre><code class="language-csharp">app.MapHandlers(h =&gt;
+{
+    h.Register&lt;CreateAppointmentCommand, CreateAppointmentHandler, CreateAppointmentResult&gt;();
+    h.Register&lt;GetAppointmentByIdCommand, GetAppointmentByIdHandler, GetAppointmentByIdResult&gt;();
+    // ... 53 more handlers
+});
+</code></pre>
+<hr>
+<h2>Health Checks</h2>
+<p>All three APIs expose health check endpoints:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>URL</th>
+<th>Protocol</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WebApi</td>
+<td><code>/healthz</code></td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>IdentityApi</td>
+<td><code>/healthz</code></td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>GrpcServer</td>
+<td><code>/healthz</code></td>
+<td>HTTP</td>
+</tr>
+</tbody></table>
+<h3>Root Endpoint</h3>
+<p>All services also respond to <code>GET /</code> with <code>&quot;Hello World!&quot;</code>.</p>
+<hr>
+<h2>Authentication Flow</h2>
+<p>JWT authentication is configured but currently commented out in WebApi and GrpcServer. The IdentityApi is fully functional for token generation. When enabled:</p>
+<ol>
+<li>Client authenticates via <code>POST /api/login</code> on IdentityApi</li>
+<li>Receives JWT token</li>
+<li>Includes token in <code>Authorization: Bearer {token}</code> header for WebApi/GrpcServer requests</li>
+<li>Token validation checks issuer, audience, signing key, and expiration</li>
+</ol>
+
+</section>
+
+<section id="architecture" class="doc-section">
+  <h1 class="page-title">Architecture</h1>
+  <h1>Architecture</h1>
+<p>Cpnucleo follows Clean Architecture principles with strict layer separation enforced by automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database.</p>
+<hr>
+<h2>Layer Overview</h2>
+<pre><code>+-------------------------------------------------------------+
+|                    Presentation Layer                         |
+|  WebApi (REST)  |  GrpcServer (gRPC)  |  IdentityApi (Auth) |
+|                 |                      |  WebClient (Blazor)  |
++-------------------------------------------------------------+
+|                   Infrastructure Layer                        |
+|  EF Core (ApplicationDbContext)  |  Dapper (UnitOfWork)      |
+|  NpgsqlConnection  |  Mappings  |  Migrations                |
++-------------------------------------------------------------+
+|                     Domain Layer                              |
+|  Entities  |  Repositories (Interfaces)  |  UoW (Interface)  |
+|  Models  |  Common (Security)                                 |
++-------------------------------------------------------------+
+</code></pre>
+<hr>
+<h2>Domain Layer (<code>src/Domain</code>)</h2>
+<p>The innermost layer with zero external dependencies. Architecture tests verify that Domain does not depend on EF Core, Dapper, Npgsql, or any presentation project.</p>
+<h3>Entities</h3>
+<p>All entities inherit from <code>BaseEntity</code>, which provides:</p>
+<pre><code class="language-csharp">public abstract class BaseEntity
+{
+    public Guid Id { get; protected init; }
+    public DateTime CreatedAt { get; protected init; }
+    public DateTime? UpdatedAt { get; protected set; }
+    public DateTime? DeletedAt { get; protected set; }
+    public bool Active { get; protected set; }
+}
+</code></pre>
+<p>Each entity is <code>sealed</code> and uses static factory methods for creation, updates, and soft deletes:</p>
+<ul>
+<li><code>Create(...)</code> -- initializes a new entity with <code>Active = true</code></li>
+<li><code>Update(...)</code> -- modifies fields and sets <code>UpdatedAt</code></li>
+<li><code>Remove(...)</code> -- sets <code>Active = false</code> and <code>DeletedAt</code> (soft delete)</li>
+</ul>
+<p>Entities are annotated with <code>[Table(&quot;...&quot;)]</code> for Dapper&#39;s advanced repository to resolve table names.</p>
+<h3>Domain Entities</h3>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Key Fields</th>
+<th>Relationships</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Organization</td>
+<td>Name, Description</td>
+<td>Parent of Projects</td>
+</tr>
+<tr>
+<td>Project</td>
+<td>Name</td>
+<td>Belongs to Organization</td>
+</tr>
+<tr>
+<td>Assignment</td>
+<td>Name, Description, StartDate, EndDate, AmountHours</td>
+<td>Belongs to Project, Workflow, User, AssignmentType</td>
+</tr>
+<tr>
+<td>AssignmentType</td>
+<td>Name</td>
+<td>Referenced by Assignments</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>Name, Order</td>
+<td>Referenced by Assignments</td>
+</tr>
+<tr>
+<td>User</td>
+<td>Name, Login, Password, Salt</td>
+<td>PBKDF2-encrypted credentials</td>
+</tr>
+<tr>
+<td>Appointment</td>
+<td>Description, KeepDate, AmountHours</td>
+<td>Belongs to Assignment, User</td>
+</tr>
+<tr>
+<td>Impediment</td>
+<td>Name</td>
+<td>Referenced by AssignmentImpediments</td>
+</tr>
+<tr>
+<td>AssignmentImpediment</td>
+<td>Description</td>
+<td>Links Assignment to Impediment</td>
+</tr>
+<tr>
+<td>UserAssignment</td>
+<td>--</td>
+<td>Many-to-many: User to Assignment</td>
+</tr>
+<tr>
+<td>UserProject</td>
+<td>--</td>
+<td>Many-to-many: User to Project</td>
+</tr>
+</tbody></table>
+<h3>Repository Interfaces</h3>
+<ul>
+<li><code>IRepository&lt;T&gt;</code> -- generic CRUD: <code>GetByIdAsync</code>, <code>GetAllAsync</code> (paginated), <code>AddAsync</code>, <code>UpdateAsync</code>, <code>DeleteAsync</code>, <code>ExistsAsync</code></li>
+<li><code>IProjectRepository</code> -- specialized repository for Project-specific queries</li>
+<li><code>IUnitOfWork</code> -- transaction management: <code>BeginTransactionAsync</code>, <code>CommitAsync</code>, <code>RollbackAsync</code>, <code>GetRepository&lt;T&gt;</code></li>
+</ul>
+<hr>
+<h2>Infrastructure Layer (<code>src/Infrastructure</code>)</h2>
+<p>Implements data access with two strategies side by side:</p>
+<h3>EF Core (used by WebApi and IdentityApi)</h3>
+<ul>
+<li><code>ApplicationDbContext</code> with <code>IApplicationDbContext</code> interface</li>
+<li>DbSet properties for all entities</li>
+<li>Migrations generated from EF Core, applied via SQL init scripts in Docker</li>
+<li>Delta middleware for HTTP conditional requests based on database timestamps</li>
+</ul>
+<h3>Dapper (used by GrpcServer)</h3>
+<ul>
+<li><code>DapperRepository&lt;T&gt;</code> -- generic repository using raw SQL with reflection-based column mapping</li>
+<li>Caches <code>PropertyInfo[]</code> via <code>Lazy&lt;&gt;</code> for performance</li>
+<li>Supports paginated queries with configurable sort column/order and SQL injection protection</li>
+<li><code>UnitOfWork</code> wraps <code>NpgsqlConnection</code> + <code>NpgsqlTransaction</code> for transactional operations</li>
+<li><code>Dapper.AOT</code> enabled for compile-time SQL interception</li>
+</ul>
+<h3>Dependency Injection</h3>
+<p><code>DependencyInjection.AddInfrastructure()</code> registers:</p>
+<ul>
+<li><code>IApplicationDbContext</code> as <code>ApplicationDbContext</code> (EF Core, scoped)</li>
+<li><code>NpgsqlConnection</code> (Dapper basic, scoped)</li>
+<li><code>IProjectRepository</code> as <code>ProjectRepository</code> (Dapper specialized, scoped)</li>
+<li><code>IUnitOfWork</code> as <code>UnitOfWork</code> (Dapper advanced with transactions, scoped)</li>
+<li>Optional fake data generation via Bogus when <code>CreateFakeData</code> is configured</li>
+</ul>
+<hr>
+<h2>Presentation Layer</h2>
+<h3>WebApi (<code>src/WebApi</code>)</h3>
+<ul>
+<li>FastEndpoints for REST API with Swagger/OpenAPI documentation</li>
+<li>Uses EF Core via <code>IApplicationDbContext</code> for data access</li>
+<li>Rate limiting: 50 requests/minute per IP with fixed-window partitioning</li>
+<li>Kiota-based API client generation (C# and TypeScript)</li>
+<li>Middleware: <code>ElapsedTimeMiddleware</code>, <code>ErrorHandlingMiddleware</code></li>
+<li>Riok.Mapperly for compile-time DTO mapping</li>
+</ul>
+<h3>GrpcServer (<code>src/GrpcServer</code>)</h3>
+<ul>
+<li>FastEndpoints.Messaging.Remote for gRPC-style command/handler pattern</li>
+<li>Uses Dapper via <code>IUnitOfWork</code> for data access</li>
+<li>HTTP/2 on port 5021 for gRPC transport</li>
+<li>Command/Result pattern via <code>GrpcServer.Contracts</code></li>
+<li>All 11 entities have 5 handlers each: Create, GetById, List, Remove, Update (55 handlers total)</li>
+</ul>
+<h3>IdentityApi (<code>src/IdentityApi</code>)</h3>
+<ul>
+<li>JWT token generation via <code>FastEndpoints.Security</code></li>
+<li>Login endpoint authenticating against User credentials in the database</li>
+<li>Output caching with 10-second base policy</li>
+<li>Rate limiting: 10 requests/minute per IP</li>
+<li>Swagger/OpenAPI documentation</li>
+</ul>
+<h3>WebClient (<code>src/WebClient</code>)</h3>
+<ul>
+<li>Blazor Server + WebAssembly hybrid rendering</li>
+<li>MudBlazor UI component library with translations</li>
+<li>Interactive server and WebAssembly render modes</li>
+<li>Static asset serving</li>
+</ul>
+<hr>
+<h2>CQRS Dual Implementation</h2>
+<p>The system demonstrates two parallel approaches to the same domain:</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>WebApi (REST)</th>
+<th>GrpcServer (gRPC)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Framework</td>
+<td>FastEndpoints</td>
+<td>FastEndpoints.Messaging.Remote</td>
+</tr>
+<tr>
+<td>Data Access</td>
+<td>EF Core + ApplicationDbContext</td>
+<td>Dapper + UnitOfWork</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>HTTP/1.1 REST</td>
+<td>HTTP/2 gRPC</td>
+</tr>
+<tr>
+<td>Internal Port</td>
+<td>5000</td>
+<td>5021</td>
+</tr>
+<tr>
+<td>Load Balanced</td>
+<td>Yes (NGINX, 2 instances)</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p>Both implementations share the same Domain entities and PostgreSQL database.</p>
+<hr>
+<h2>Dependency Rules (Enforced by Architecture Tests)</h2>
+<ul>
+<li>Domain depends on nothing (no EF Core, no Dapper, no Npgsql)</li>
+<li>Infrastructure depends only on Domain</li>
+<li>GrpcServer.Contracts depends only on Domain</li>
+<li>WebApi does not depend on GrpcServer</li>
+<li>IdentityApi does not depend on GrpcServer</li>
+<li>All entities must inherit from <code>BaseEntity</code> and be <code>sealed</code></li>
+<li>All repository interfaces must start with <code>I</code></li>
+<li>All endpoints must be named <code>Endpoint</code></li>
+<li>All gRPC handlers must end with <code>Handler</code></li>
+<li>All commands must end with <code>Command</code></li>
+<li>All DTOs must end with <code>Dto</code></li>
+</ul>
+
+</section>
+
+<section id="database" class="doc-section">
+  <h1 class="page-title">Database</h1>
+  <h1>Database</h1>
+<p>Cpnucleo uses PostgreSQL 16.7 as its primary database, accessed via two parallel data access strategies: EF Core (for the REST API) and Dapper (for the gRPC server).</p>
+<hr>
+<h2>Database Setup</h2>
+<h3>Docker (Automatic)</h3>
+<p>The database is automatically provisioned when running with Docker Compose. The <code>db</code> service:</p>
+<ol>
+<li>Starts PostgreSQL 16.7</li>
+<li>Creates the database using credentials from <code>.env</code></li>
+<li>Runs SQL scripts from <code>docker-entrypoint-initdb.d/</code> in alphabetical order</li>
+</ol>
+<h3>Docker Configuration</h3>
+<pre><code class="language-yaml">db:
+  image: postgres:16.7
+  environment:
+    POSTGRES_USER: ${POSTGRES_USER}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    POSTGRES_DB: ${POSTGRES_DB}
+  volumes:
+    - db_data:/var/lib/postgresql/data
+    - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+  command: &gt;
+    postgres
+    -c checkpoint_timeout=600
+    -c max_wal_size=4096
+    -c synchronous_commit=0
+    -c fsync=0
+    -c full_page_writes=0
+</code></pre>
+<p>Performance flags (optimized for development speed over durability):</p>
+<ul>
+<li><code>checkpoint_timeout=600</code> -- less frequent checkpoints</li>
+<li><code>max_wal_size=4096</code> -- larger WAL before checkpoint</li>
+<li><code>synchronous_commit=0</code> -- async commits</li>
+<li><code>fsync=0</code> -- skip fsync (data loss risk, faster writes)</li>
+<li><code>full_page_writes=0</code> -- skip full-page writes</li>
+</ul>
+<h3>Manual Setup</h3>
+<pre><code class="language-bash">psql -U postgres -f docker-entrypoint-initdb.d/001-track-commit-timestamp.sql
+psql -U postgres -d cpnucleo -f docker-entrypoint-initdb.d/002-database-dump-ddl.sql
+</code></pre>
+<hr>
+<h2>Initialization Scripts</h2>
+<h3><code>001-track-commit-timestamp.sql</code></h3>
+<p>Enables commit timestamp tracking for the Delta middleware:</p>
+<pre><code class="language-sql">ALTER SYSTEM SET track_commit_timestamp = on;
+</code></pre>
+<p>This allows the Delta library to implement HTTP conditional requests based on when data was last modified.</p>
+<h3><code>002-database-dump-ddl.sql</code></h3>
+<p>Contains the full DDL schema generated from EF Core migrations. Creates all tables, constraints, and indexes idempotently (using <code>IF NOT EXISTS</code> checks).</p>
+<hr>
+<h2>Schema</h2>
+<h3>Tables</h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Primary Key</th>
+<th>Key Columns</th>
+<th>Foreign Keys</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Organizations</td>
+<td>Id (uuid)</td>
+<td>Name, Description</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Projects</td>
+<td>Id (uuid)</td>
+<td>Name</td>
+<td>OrganizationId -&gt; Organizations</td>
+</tr>
+<tr>
+<td>Assignments</td>
+<td>Id (uuid)</td>
+<td>Name, Description, StartDate, EndDate, AmountHours</td>
+<td>ProjectId -&gt; Projects, WorkflowId -&gt; Workflows, UserId -&gt; Users, AssignmentTypeId -&gt; AssignmentTypes</td>
+</tr>
+<tr>
+<td>AssignmentTypes</td>
+<td>Id (uuid)</td>
+<td>Name</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Workflows</td>
+<td>Id (uuid)</td>
+<td>Name, Order</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Users</td>
+<td>Id (uuid)</td>
+<td>Name, Login, Password, Salt</td>
+<td>--</td>
+</tr>
+<tr>
+<td>Appointments</td>
+<td>Id (uuid)</td>
+<td>Description, KeepDate, AmountHours</td>
+<td>AssignmentId -&gt; Assignments, UserId -&gt; Users</td>
+</tr>
+<tr>
+<td>Impediments</td>
+<td>Id (uuid)</td>
+<td>Name</td>
+<td>--</td>
+</tr>
+<tr>
+<td>AssignmentImpediments</td>
+<td>Id (uuid)</td>
+<td>Description</td>
+<td>AssignmentId -&gt; Assignments, ImpedimentId -&gt; Impediments</td>
+</tr>
+<tr>
+<td>UserAssignments</td>
+<td>Id (uuid)</td>
+<td>--</td>
+<td>UserId -&gt; Users, AssignmentId -&gt; Assignments</td>
+</tr>
+<tr>
+<td>UserProjects</td>
+<td>Id (uuid)</td>
+<td>--</td>
+<td>UserId -&gt; Users, ProjectId -&gt; Projects</td>
+</tr>
+</tbody></table>
+<h3>Common Columns (all tables)</h3>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Id</td>
+<td>uuid</td>
+<td>Primary key (generated via <code>Guid.NewGuid()</code>)</td>
+</tr>
+<tr>
+<td>CreatedAt</td>
+<td>timestamp with time zone</td>
+<td>Record creation time</td>
+</tr>
+<tr>
+<td>UpdatedAt</td>
+<td>timestamp with time zone (nullable)</td>
+<td>Last update time</td>
+</tr>
+<tr>
+<td>DeletedAt</td>
+<td>timestamp with time zone (nullable)</td>
+<td>Soft delete time</td>
+</tr>
+<tr>
+<td>Active</td>
+<td>boolean</td>
+<td>Soft delete flag (<code>true</code> = active)</td>
+</tr>
+</tbody></table>
+<h3>Indexes</h3>
+<p>All tables have indexes on:</p>
+<ul>
+<li><code>CreatedAt</code> -- for Delta middleware timestamp queries</li>
+<li>Foreign key columns -- for join performance</li>
+</ul>
+<hr>
+<h2>Connection Configuration</h2>
+<h3>Connection String</h3>
+<p>Configured via the <code>DB_CONNECTION_STRING</code> environment variable:</p>
+<pre><code>Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Host</td>
+<td><code>db</code> (Docker) / <code>localhost</code> (local)</td>
+<td>Database server</td>
+</tr>
+<tr>
+<td>Minimum Pool Size</td>
+<td>10</td>
+<td>Pre-allocated connections</td>
+</tr>
+<tr>
+<td>Maximum Pool Size</td>
+<td>10</td>
+<td>Connection limit</td>
+</tr>
+<tr>
+<td>Multiplexing</td>
+<td>true</td>
+<td>Npgsql multiplexing for better throughput</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>EF Core (WebApi + IdentityApi)</h2>
+<h3>ApplicationDbContext</h3>
+<p>The <code>ApplicationDbContext</code> implements <code>IApplicationDbContext</code> and provides DbSet properties for all 11 entities. It is registered as a scoped service.</p>
+<h3>Migrations</h3>
+<p>EF Core migrations are maintained in <code>src/Infrastructure/Migrations/</code>. The initial migration <code>20250219224724_InitiaDblMigration</code> creates the full schema.</p>
+<p>For production, migrations are exported as SQL and placed in <code>docker-entrypoint-initdb.d/</code> rather than running EF Core migrations at startup.</p>
+<h3>Delta Middleware</h3>
+<p>The <a href="https://github.com/SimonCropp/Delta">Delta</a> library is integrated for HTTP conditional requests:</p>
+<pre><code class="language-csharp">app.UseDelta(
+    getConnection: httpContext =&gt; httpContext.RequestServices.GetRequiredService&lt;NpgsqlConnection&gt;());
+</code></pre>
+<p>This enables <code>If-Modified-Since</code> / <code>304 Not Modified</code> responses using PostgreSQL&#39;s commit timestamps.</p>
+<hr>
+<h2>Dapper (GrpcServer)</h2>
+<h3>Generic Repository</h3>
+<p><code>DapperRepository&lt;T&gt;</code> provides CRUD operations via raw SQL:</p>
+<ul>
+<li><code>GetByIdAsync</code> -- <code>SELECT * FROM &quot;Table&quot; WHERE &quot;Id&quot; = @Id AND &quot;Active&quot; = true</code></li>
+<li><code>GetAllAsync</code> -- Paginated query with <code>OFFSET/LIMIT</code>, configurable sort column with SQL injection protection</li>
+<li><code>AddAsync</code> -- <code>INSERT INTO ... RETURNING &quot;Id&quot;</code> with reflection-based column mapping</li>
+<li><code>UpdateAsync</code> -- <code>UPDATE ... SET ... WHERE &quot;Id&quot; = @Id</code></li>
+<li><code>DeleteAsync</code> -- Hard delete (for gRPC operations)</li>
+<li><code>ExistsAsync</code> -- <code>SELECT EXISTS(...)</code> check</li>
+</ul>
+<h3>Performance Optimizations</h3>
+<ul>
+<li><code>PropertyInfo[]</code> cached via <code>Lazy&lt;&gt;</code> to avoid repeated reflection</li>
+<li><code>HashSet&lt;string&gt;</code> for O(1) sort column validation</li>
+<li><code>Dapper.AOT</code> for compile-time SQL interception</li>
+</ul>
+<h3>Unit of Work</h3>
+<p><code>UnitOfWork</code> wraps <code>NpgsqlConnection</code> and <code>NpgsqlTransaction</code>:</p>
+<pre><code class="language-csharp">public interface IUnitOfWork
+{
+    IRepository&lt;T&gt; GetRepository&lt;T&gt;() where T : BaseEntity;
+    Task BeginTransactionAsync();
+    Task CommitAsync(CancellationToken cancellationToken = default);
+    Task RollbackAsync(CancellationToken cancellationToken = default);
+}
+</code></pre>
+<h3>Specialized Repository</h3>
+<p><code>ProjectRepository</code> implements <code>IProjectRepository</code> for project-specific queries that go beyond the generic CRUD operations.</p>
+<hr>
+<h2>Fake Data Generation</h2>
+<p>The Infrastructure layer includes a <code>FakeDataHelper</code> that uses the Bogus library to generate realistic test data. When <code>CreateFakeData=true</code> is set in configuration:</p>
+<ol>
+<li>Bogus generates fake data for all entities</li>
+<li>Outputs SQL/CSV dump files</li>
+<li>Files should be placed in <code>docker-entrypoint-initdb.d/</code> for seeding</li>
+</ol>
+
+</section>
+
+<section id="deployment" class="doc-section">
+  <h1 class="page-title">Deployment</h1>
+  <h1>Deployment</h1>
+<p>Cpnucleo uses Docker Compose for containerized deployment and GitHub Actions for CI/CD, with final deployment to Azure Web Apps.</p>
+<hr>
+<h2>Docker Compose Configurations</h2>
+<p>The project provides three compose configurations that can be layered:</p>
+<h3>Base (<code>compose.yaml</code>)</h3>
+<p>The base configuration defines all services with pre-built GHCR images:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Image</th>
+<th>Internal Port</th>
+<th>External Port</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>webapi1-cpnucleo</td>
+<td>ghcr.io/jonathanperis/cpnucleo-web-api:latest</td>
+<td>5000</td>
+<td>5100</td>
+</tr>
+<tr>
+<td>webapi2-cpnucleo</td>
+<td>ghcr.io/jonathanperis/cpnucleo-web-api:latest</td>
+<td>5000</td>
+<td>5111</td>
+</tr>
+<tr>
+<td>identityapi-cpnucleo</td>
+<td>ghcr.io/jonathanperis/cpnucleo-identity-api:latest</td>
+<td>5010</td>
+<td>5200</td>
+</tr>
+<tr>
+<td>grpcserver-cpnucleo</td>
+<td>ghcr.io/jonathanperis/cpnucleo-grpc-server:latest</td>
+<td>5020/5021</td>
+<td>5300/5301</td>
+</tr>
+<tr>
+<td>webclient-cpnucleo</td>
+<td>ghcr.io/jonathanperis/cpnucleo-web-client:latest</td>
+<td>5030</td>
+<td>5400</td>
+</tr>
+<tr>
+<td>db</td>
+<td>postgres:16.7</td>
+<td>5432</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>nginx</td>
+<td>nginx</td>
+<td>9999</td>
+<td>9999</td>
+</tr>
+</tbody></table>
+<p>All API services depend on <code>db</code> being healthy before starting.</p>
+<h3>Development Override (<code>compose.override.yaml</code>)</h3>
+<pre><code class="language-bash">docker compose -f compose.yaml -f compose.override.yaml up --build
+</code></pre>
+<p>Differences from base:</p>
+<ul>
+<li>Builds from source using Dockerfiles in <code>src/</code></li>
+<li>Build args: <code>AOT=false</code>, <code>TRIM=false</code>, <code>EXTRA_OPTIMIZE=false</code>, <code>BUILD_CONFIGURATION=Debug</code></li>
+<li>Adds Grafana LGTM OpenTelemetry stack (ports 3000, 4317, 4318)</li>
+<li>Resource limits: 0.4 CPU, 100MB memory per service</li>
+</ul>
+<h3>Production Override (<code>compose.prod.yaml</code>)</h3>
+<pre><code class="language-bash">docker compose -f compose.yaml -f compose.prod.yaml up -d
+</code></pre>
+<p>Differences from base:</p>
+<ul>
+<li><code>restart: always</code> on all services</li>
+<li>Resource reservations: 0.25 CPU / 256MB per API, 0.50 CPU / 512MB per DB</li>
+<li>Resource limits: 0.50 CPU / 512MB per API, 1.0 CPU / 1GB for DB</li>
+<li>JSON logging with rotation: 10MB max size, 3 files retained</li>
+<li>No build step (uses pre-built images)</li>
+</ul>
+<hr>
+<h2>Dockerfiles</h2>
+<p>Each service has a multi-stage Dockerfile supporting configurable build options:</p>
+<h3>Build Arguments</h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+<th>Dev Value</th>
+<th>Prod Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AOT</code></td>
+<td>Enable Native AOT compilation</td>
+<td>false</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>TRIM</code></td>
+<td>Enable assembly trimming with ReadyToRun</td>
+<td>false</td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>EXTRA_OPTIMIZE</code></td>
+<td>Aggressive optimizations (remove symbols, disable debugger, invariant globalization)</td>
+<td>false</td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>BUILD_CONFIGURATION</code></td>
+<td>.NET build configuration</td>
+<td>Debug</td>
+<td>Release</td>
+</tr>
+<tr>
+<td><code>ASPNETCORE_ENVIRONMENT</code></td>
+<td>Runtime environment</td>
+<td>Development</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><code>DB_CONNECTION_STRING</code></td>
+<td>Database connection string</td>
+<td>(from .env)</td>
+<td>(from secrets)</td>
+</tr>
+</tbody></table>
+<h3>Build Stages</h3>
+<ol>
+<li><strong>base</strong> -- <code>mcr.microsoft.com/dotnet/aspnet:10.0</code> runtime image</li>
+<li><strong>build</strong> -- <code>mcr.microsoft.com/dotnet/sdk:10.0</code> with clang/zlib for AOT support; restores, builds</li>
+<li><strong>publish</strong> -- Publishes with configured optimizations</li>
+<li><strong>final</strong> -- Copies published output to runtime image</li>
+</ol>
+<h3>Platform Support</h3>
+<p>All images are built for <code>linux/amd64</code> and <code>linux/arm64/v8</code>.</p>
+<hr>
+<h2>NGINX Reverse Proxy</h2>
+<p>NGINX load-balances traffic across two WebApi instances:</p>
+<pre><code class="language-nginx">upstream api {
+    least_conn;
+    server webapi1-cpnucleo:5000;
+    server webapi2-cpnucleo:5000;
+}
+
+server {
+    listen 9999;
+    location / {
+        proxy_pass http://api;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+</code></pre>
+<h3>Configuration Highlights</h3>
+<ul>
+<li><strong>least_conn</strong> load balancing -- sends requests to the server with fewest active connections</li>
+<li><strong>gzip compression</strong> -- level 5, minimum 256 bytes</li>
+<li><strong>keepalive_timeout: 0</strong> -- persistent connections disabled for stateless APIs</li>
+<li><strong>server_tokens: off</strong> -- hides NGINX version</li>
+<li><strong>access_log: off</strong> -- disabled for performance</li>
+<li><strong>epoll</strong> event model with multi_accept</li>
+</ul>
+<hr>
+<h2>GitHub Actions CI/CD</h2>
+<h3>Build Check (<code>build-check.yml</code>)</h3>
+<p>Triggered on pull requests to main.</p>
+<p><strong>Jobs:</strong></p>
+<ol>
+<li><p><strong>Setup, Build &amp; Test</strong> (matrix: WebApi, GrpcServer, IdentityApi, WebClient)</p>
+<ul>
+<li>Checkout repository</li>
+<li>Setup .NET SDK (from global.json)</li>
+<li>Restore dependencies</li>
+<li>Build application (Debug, no AOT/Trim)</li>
+<li>Run Architecture Tests</li>
+</ul>
+</li>
+<li><p><strong>Container Healthcheck Test</strong> (depends on build)</p>
+<ul>
+<li>Build Docker image from source</li>
+<li>Start container via Docker Compose</li>
+<li>Poll <code>/healthz</code> endpoint up to 20 times with 5-second intervals</li>
+<li>Fail if health check does not return 200</li>
+</ul>
+</li>
+</ol>
+<h3>Main Release (<code>main-release.yml</code>)</h3>
+<p>Triggered on push to main and manual dispatch.</p>
+<p><strong>Jobs:</strong></p>
+<ol>
+<li><p><strong>Setup, Build &amp; Test</strong> -- Same as build check but with <code>TRIM=true</code>, <code>EXTRA_OPTIMIZE=true</code>, <code>BUILD_CONFIGURATION=Release</code></p>
+</li>
+<li><p><strong>Build &amp; Push Docker Image</strong> (depends on test)</p>
+<ul>
+<li>Setup QEMU and Docker Buildx for multi-platform builds</li>
+<li>Login to GHCR</li>
+<li>Build and push images for <code>linux/amd64</code> and <code>linux/arm64/v8</code></li>
+<li>Images pushed to GHCR: <code>ghcr.io/jonathanperis/cpnucleo-{service}:latest</code></li>
+</ul>
+</li>
+<li><p><strong>Container Healthcheck Test</strong> (depends on push)</p>
+<ul>
+<li>Pull production images</li>
+<li>Run healthcheck validation</li>
+</ul>
+</li>
+<li><p><strong>Deploy to Azure</strong> (depends on healthcheck)</p>
+<ul>
+<li>Deploy each service to its Azure Web App</li>
+<li>Uses publish profiles stored in GitHub Secrets</li>
+</ul>
+</li>
+</ol>
+<h3>Azure Deployment Targets</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Azure Web App Name</th>
+<th>Environment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WebApi</td>
+<td>cpnucleo-api-dotnet</td>
+<td>production-webapi</td>
+</tr>
+<tr>
+<td>GrpcServer</td>
+<td>cpnucleo-grpc-server</td>
+<td>production-grpcserver</td>
+</tr>
+<tr>
+<td>IdentityApi</td>
+<td>cpnucleo-identity-api</td>
+<td>production-identityapi</td>
+</tr>
+<tr>
+<td>WebClient</td>
+<td>cpnucleo-webclient-dotnet</td>
+<td>production-webclient</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Environment Variables</h2>
+<h3>Required (<code>.env</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POSTGRES_USER</code></td>
+<td>PostgreSQL username</td>
+<td>postgres</td>
+</tr>
+<tr>
+<td><code>POSTGRES_PASSWORD</code></td>
+<td>PostgreSQL password</td>
+<td>postgres</td>
+</tr>
+<tr>
+<td><code>POSTGRES_DB</code></td>
+<td>Database name</td>
+<td>cpnucleo</td>
+</tr>
+<tr>
+<td><code>DB_CONNECTION_STRING</code></td>
+<td>Full Npgsql connection string</td>
+<td>Host=db;Username=postgres;...</td>
+</tr>
+<tr>
+<td><code>OTEL_EXPORTER_OTLP_ENDPOINT</code></td>
+<td>OpenTelemetry collector endpoint</td>
+<td><a href="http://otel-lgtm:4317">http://otel-lgtm:4317</a></td>
+</tr>
+<tr>
+<td><code>OTEL_METRIC_EXPORT_INTERVAL</code></td>
+<td>Metric export interval (ms)</td>
+<td>5000</td>
+</tr>
+</tbody></table>
+<h3>GitHub Secrets (for CI/CD)</h3>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GITHUB_TOKEN</code></td>
+<td>GHCR authentication (automatic)</td>
+</tr>
+<tr>
+<td><code>DB_CONNECTION_STRING</code></td>
+<td>Production database connection</td>
+</tr>
+<tr>
+<td><code>AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI</code></td>
+<td>Azure publish profile for WebApi</td>
+</tr>
+<tr>
+<td><code>AZURE_WEBAPP_PUBLISH_PROFILE_GRPCSERVER</code></td>
+<td>Azure publish profile for GrpcServer</td>
+</tr>
+<tr>
+<td><code>AZURE_WEBAPP_PUBLISH_PROFILE_IDENTITYAPI</code></td>
+<td>Azure publish profile for IdentityApi</td>
+</tr>
+<tr>
+<td><code>AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT</code></td>
+<td>Azure publish profile for WebClient</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Network</h2>
+<p>All services communicate over a shared Docker bridge network:</p>
+<pre><code class="language-yaml">networks:
+  default:
+    name: cpnucleo_network
+    driver: bridge
+</code></pre>
+<p>Service discovery uses Docker DNS (e.g., <code>db</code>, <code>webapi1-cpnucleo</code>).</p>
+
+</section>
+
+<section id="getting-started" class="doc-section">
+  <h1 class="page-title">Getting Started</h1>
+  <h1>Getting Started</h1>
+<h2>Prerequisites</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.NET SDK</td>
+<td>10.0.102+</td>
+<td>Specified in <code>global.json</code> with <code>latestMinor</code> roll-forward</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>Latest</td>
+<td>For running with Docker Compose</td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td>v2+</td>
+<td>Bundled with Docker Desktop</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>16.7</td>
+<td>Provided via Docker; only needed if running locally without Docker</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Clone the Repository</h2>
+<pre><code class="language-bash">git clone https://github.com/jonathanperis/cpnucleo.git
+cd cpnucleo
+</code></pre>
+<hr>
+<h2>Run with Docker Compose (Recommended)</h2>
+<h3>Default Mode (Pre-built Images)</h3>
+<p>Uses pre-built images from GHCR:</p>
+<pre><code class="language-bash">docker compose up
+</code></pre>
+<h3>Development Mode</h3>
+<p>Builds from source with debug configuration and includes an OpenTelemetry/Grafana LGTM stack for observability:</p>
+<pre><code class="language-bash">docker compose -f compose.yaml -f compose.override.yaml up --build
+</code></pre>
+<h3>Production Mode</h3>
+<p>Uses pre-built images with resource reservations, restart policies, and structured JSON logging:</p>
+<pre><code class="language-bash">docker compose -f compose.yaml -f compose.prod.yaml up -d
+</code></pre>
+<h3>Services and Ports</h3>
+<p>Once running, the services are available at:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>URL</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WebApi (instance 1)</td>
+<td><a href="http://localhost:5100">http://localhost:5100</a></td>
+<td>REST API</td>
+</tr>
+<tr>
+<td>WebApi (instance 2)</td>
+<td><a href="http://localhost:5111">http://localhost:5111</a></td>
+<td>REST API (load-balanced pair)</td>
+</tr>
+<tr>
+<td>IdentityApi</td>
+<td><a href="http://localhost:5200">http://localhost:5200</a></td>
+<td>JWT Authentication API</td>
+</tr>
+<tr>
+<td>GrpcServer</td>
+<td><a href="http://localhost:5300">http://localhost:5300</a> (health) / :5301 (gRPC)</td>
+<td>gRPC command server</td>
+</tr>
+<tr>
+<td>WebClient</td>
+<td><a href="http://localhost:5400">http://localhost:5400</a></td>
+<td>Blazor UI</td>
+</tr>
+<tr>
+<td>NGINX</td>
+<td><a href="http://localhost:9999">http://localhost:9999</a></td>
+<td>Reverse proxy (load balances WebApi)</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>localhost:5432</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>Grafana (dev only)</td>
+<td><a href="http://localhost:3000">http://localhost:3000</a></td>
+<td>Observability dashboard</td>
+</tr>
+<tr>
+<td>OTLP Collector (dev only)</td>
+<td>localhost:4317 (gRPC) / :4318 (HTTP)</td>
+<td>OpenTelemetry collector</td>
+</tr>
+</tbody></table>
+<h3>Health Checks</h3>
+<p>All services expose a health endpoint:</p>
+<pre><code class="language-bash">curl http://localhost:5100/healthz   # WebApi
+curl http://localhost:5200/healthz   # IdentityApi
+curl http://localhost:5300/healthz   # GrpcServer
+curl http://localhost:5400/healthz   # WebClient
+</code></pre>
+<hr>
+<h2>Run Locally (Without Docker)</h2>
+<h3>1. Start PostgreSQL</h3>
+<p>Ensure PostgreSQL 16+ is running locally. Execute the init scripts to set up the schema:</p>
+<pre><code class="language-bash">psql -U postgres -f docker-entrypoint-initdb.d/001-track-commit-timestamp.sql
+psql -U postgres -d cpnucleo -f docker-entrypoint-initdb.d/002-database-dump-ddl.sql
+</code></pre>
+<h3>2. Configure Environment</h3>
+<p>The project uses environment variables loaded from the <code>.env</code> file. For local development, update the connection string to point to localhost:</p>
+<pre><code class="language-env">POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=cpnucleo
+DB_CONNECTION_STRING=Host=localhost;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+OTEL_METRIC_EXPORT_INTERVAL=5000
+</code></pre>
+<h3>3. Build the Solution</h3>
+<pre><code class="language-bash">dotnet build cpnucleo.slnx
+</code></pre>
+<h3>4. Run the Services</h3>
+<p>Each service must be run in a separate terminal:</p>
+<pre><code class="language-bash"># Terminal 1 - REST API
+cd src/WebApi &amp;&amp; dotnet run
+
+# Terminal 2 - Identity/Auth API
+cd src/IdentityApi &amp;&amp; dotnet run
+
+# Terminal 3 - gRPC Server
+cd src/GrpcServer &amp;&amp; dotnet run
+
+# Terminal 4 - Blazor Web Client
+cd src/WebClient &amp;&amp; dotnet run
+</code></pre>
+<hr>
+<h2>Swagger UI</h2>
+<p>When running in Development mode, Swagger UI is available for interactive API exploration:</p>
+<ul>
+<li><strong>WebApi</strong>: <a href="http://localhost:5100/swagger">http://localhost:5100/swagger</a></li>
+<li><strong>IdentityApi</strong>: <a href="http://localhost:5200/swagger">http://localhost:5200/swagger</a></li>
+</ul>
+<hr>
+<h2>Generate Fake Data</h2>
+<p>Set <code>CreateFakeData=true</code> in the application configuration to generate CSV/SQL dump files using Bogus. The generated files should be placed in <code>docker-entrypoint-initdb.d/</code> for automatic database seeding on container startup.</p>
+
+</section>
+
+<section id="project-structure" class="doc-section">
+  <h1 class="page-title">Project Structure</h1>
+  <h1>Project Structure</h1>
+<h2>Solution Overview</h2>
+<pre><code>cpnucleo/
+├── cpnucleo.slnx                         # Solution file
+├── global.json                           # .NET SDK version (10.0.102)
+├── compose.yaml                          # Docker Compose (default/base)
+├── compose.override.yaml                 # Docker Compose (development overrides)
+├── compose.prod.yaml                     # Docker Compose (production overrides)
+├── nginx.conf                            # NGINX reverse proxy configuration
+├── .env                                  # Environment variables
+├── docker-entrypoint-initdb.d/           # PostgreSQL initialization scripts
+├── .github/workflows/                    # CI/CD pipelines
+├── src/                                  # Source code
+└── test/                                 # Test projects
+</code></pre>
+<hr>
+<h2>Source Projects (<code>src/</code>)</h2>
+<h3>Domain (<code>src/Domain/</code>)</h3>
+<p>The core business layer with zero external dependencies.</p>
+<pre><code>Domain/
+├── Domain.csproj                         # No external NuGet packages
+├── Usings.cs                             # Global usings
+├── Common/
+│   └── Security/
+│       └── CryptographyManager.cs        # PBKDF2 password hashing
+├── Entities/
+│   ├── BaseEntity.cs                     # Abstract base (Id, CreatedAt, UpdatedAt, DeletedAt, Active)
+│   ├── Appointment.cs                    # Time tracking entries
+│   ├── Assignment.cs                     # Tasks/work items
+│   ├── AssignmentImpediment.cs           # Links assignments to impediments
+│   ├── AssignmentType.cs                 # Task categorization
+│   ├── Impediment.cs                     # Blockers/obstacles
+│   ├── Organization.cs                   # Top-level organizational unit
+│   ├── Project.cs                        # Projects within organizations
+│   ├── User.cs                           # System users with encrypted credentials
+│   ├── UserAssignment.cs                 # User-to-assignment mapping (many-to-many)
+│   ├── UserProject.cs                    # User-to-project mapping (many-to-many)
+│   └── Workflow.cs                       # Workflow stages with ordering
+├── Models/
+│   ├── PaginatedResult.cs                # Generic paginated response model
+│   └── PaginationParams.cs              # Pagination request parameters
+├── Repositories/
+│   ├── IRepository.cs                    # Generic CRUD repository interface
+│   └── IProjectRepository.cs            # Specialized project repository
+└── UoW/
+    └── IUnitOfWork.cs                    # Unit of Work interface for transactions
+</code></pre>
+<h3>Infrastructure (<code>src/Infrastructure/</code>)</h3>
+<p>Data access implementations using both EF Core and Dapper.</p>
+<pre><code>Infrastructure/
+├── Infrastructure.csproj                 # EF Core, Dapper, Dapper.AOT, Npgsql, Bogus, Delta
+├── DependencyInjection.cs                # Service registration for all data access
+├── Usings.cs
+├── Common/
+│   ├── Context/
+│   │   ├── ApplicationDbContext.cs       # EF Core DbContext implementation
+│   │   └── IApplicationDbContext.cs      # DbContext interface
+│   ├── Helpers/
+│   │   └── FakeDataHelper.cs             # Bogus-based test data generator
+│   └── Mappings/
+│       └── ...                           # EF Core entity configurations
+├── Migrations/
+│   └── ...                               # EF Core database migrations
+├── Repositories/
+│   ├── DapperRepository.cs               # Generic Dapper CRUD repository
+│   └── ProjectRepository.cs             # Specialized Dapper project repository
+└── UoW/
+    └── UnitOfWork.cs                     # Dapper-based Unit of Work with transactions
+</code></pre>
+<h3>WebApi (<code>src/WebApi/</code>)</h3>
+<p>REST API using FastEndpoints with EF Core data access.</p>
+<pre><code>WebApi/
+├── WebApi.csproj                         # FastEndpoints, Swagger, Mapperly, OpenTelemetry
+├── Program.cs                            # App configuration (rate limiting, health checks, Swagger)
+├── AssemblyInfo.cs
+├── Usings.cs
+├── Dockerfile                            # Multi-stage build with AOT/Trim support
+├── Common/
+│   └── Dtos/                             # Data transfer objects
+├── Endpoints/
+│   ├── Appointment/
+│   │   ├── CreateAppointment/            # POST /api/appointment
+│   │   │   ├── Endpoint.cs
+│   │   │   └── Models.cs                 # Request/Response models
+│   │   ├── GetAppointmentById/           # GET /api/appointment/{id}
+│   │   ├── ListAppointments/             # GET /api/appointment
+│   │   ├── RemoveAppointment/            # DELETE /api/appointment/{id}
+│   │   └── UpdateAppointment/            # PUT /api/appointment/{id}
+│   ├── Assignment/                       # Same 5 CRUD endpoints
+│   ├── AssignmentImpediment/
+│   ├── AssignmentType/
+│   ├── Impediment/
+│   ├── Organization/
+│   ├── Project/
+│   ├── User/
+│   ├── UserAssignment/
+│   ├── UserProject/
+│   └── Workflow/
+├── Middlewares/
+│   ├── ElapsedTimeMiddleware.cs          # Request timing
+│   └── ErrorHandlingMiddleware.cs        # Global error handling
+├── Properties/
+│   └── launchSettings.json
+├── ServiceExtensions/
+│   └── ...                               # OpenTelemetry configuration
+├── appsettings.json
+├── appsettings.Development.json
+└── appsettings.Testing.json
+</code></pre>
+<h3>GrpcServer (<code>src/GrpcServer/</code>)</h3>
+<p>gRPC command server using FastEndpoints Remote Messaging with Dapper data access.</p>
+<pre><code>GrpcServer/
+├── GrpcServer.csproj                     # FastEndpoints.Messaging.Remote, Mapperly, OpenTelemetry
+├── Program.cs                            # HTTP/2 on port 5021, handler registration (55 handlers)
+├── Usings.cs
+├── Dockerfile
+├── Common/
+│   └── Dtos/                             # Data transfer objects
+├── Handlers/
+│   ├── Appointment/
+│   │   ├── CreateAppointmentHandler.cs
+│   │   ├── GetAppointmentByIdHandler.cs
+│   │   ├── ListAppointmentsHandler.cs
+│   │   ├── RemoveAppointmentHandler.cs
+│   │   └── UpdateAppointmentHandler.cs
+│   ├── Assignment/                       # Same 5 handlers per entity
+│   ├── AssignmentImpediment/
+│   ├── AssignmentType/
+│   ├── Impediment/
+│   ├── Organization/
+│   ├── Project/
+│   ├── User/
+│   ├── UserAssignment/
+│   ├── UserProject/
+│   └── Workflow/
+├── Properties/
+│   └── launchSettings.json
+├── ServiceExtensions/
+│   └── ...                               # OpenTelemetry configuration
+├── appsettings.json
+└── appsettings.Development.json
+</code></pre>
+<h3>GrpcServer.Contracts (<code>src/GrpcServer.Contracts/</code>)</h3>
+<p>Shared command/result contracts between gRPC client and server.</p>
+<pre><code>GrpcServer.Contracts/
+├── GrpcServer.Contracts.csproj           # FastEndpoints.Messaging.Core, Domain reference
+├── Usings.cs
+├── Common/
+│   └── Dtos/                             # Shared DTOs
+└── Commands/
+    ├── Appointment/                      # CreateAppointmentCommand, GetAppointmentByIdCommand, etc.
+    ├── Assignment/
+    ├── AssignmentImpediment/
+    ├── AssignmentType/
+    ├── Impediment/
+    ├── Organization/
+    ├── Project/
+    ├── User/
+    ├── UserAssignment/
+    ├── UserProject/
+    └── Workflow/
+</code></pre>
+<h3>IdentityApi (<code>src/IdentityApi/</code>)</h3>
+<p>JWT authentication service.</p>
+<pre><code>IdentityApi/
+├── IdentityApi.csproj                    # FastEndpoints, FastEndpoints.Security, Swagger, OpenTelemetry
+├── Program.cs                            # JWT config, rate limiting (10/min), output caching
+├── Usings.cs
+├── Dockerfile
+├── Endpoints/
+│   └── Login/
+│       ├── Endpoint.cs                   # POST /api/login
+│       └── Models.cs                     # Request (Login, Password) / Response (Token)
+├── Middlewares/
+│   ├── ElapsedTimeMiddleware.cs
+│   └── ErrorHandlingMiddleware.cs
+├── Properties/
+│   └── launchSettings.json
+├── ServiceExtensions/
+│   └── ...                               # OpenTelemetry configuration
+├── appsettings.json
+└── appsettings.Development.json
+</code></pre>
+<h3>WebClient (<code>src/WebClient/</code>)</h3>
+<p>Blazor Server + WebAssembly frontend.</p>
+<pre><code>WebClient/
+├── WebClient.csproj                      # MudBlazor, MudBlazor.Translations, OpenTelemetry
+├── Program.cs                            # Blazor hybrid rendering, MudBlazor services
+├── Usings.cs
+├── Dockerfile
+├── Components/
+│   └── ...                               # Blazor components
+├── Properties/
+│   └── launchSettings.json
+├── ServiceExtensions/
+│   └── ...                               # OpenTelemetry configuration
+├── wwwroot/
+│   └── ...                               # Static assets
+├── appsettings.json
+└── appsettings.Development.json
+</code></pre>
+<hr>
+<h2>Test Projects (<code>test/</code>)</h2>
+<h3>Architecture.Tests (<code>test/Architecture.Tests/</code>)</h3>
+<p>Validates Clean Architecture dependency rules using NetArchTest.</p>
+<pre><code>Architecture.Tests/
+├── Architecture.Tests.csproj             # xUnit, NetArchTest.Rules, FluentAssertions
+├── ArchitectureTests.cs                  # 25+ architecture validation tests
+├── Usings.cs
+└── README.md
+</code></pre>
+<h3>WebApi.Unit.Tests (<code>test/WebApi.Unit.Tests/</code>)</h3>
+<p>Unit tests for WebApi endpoints.</p>
+<pre><code>WebApi.Unit.Tests/
+├── WebApi.Unit.Tests.csproj              # NUnit, FakeItEasy, Shouldly, FastEndpoints
+├── Endpoints/
+│   └── ...                               # Endpoint unit tests
+├── Usings.cs
+└── README.md
+</code></pre>
+<h3>WebApi.Integration.Tests (<code>test/WebApi.Integration.Tests/</code>)</h3>
+<p>Integration tests running against real services.</p>
+<pre><code>WebApi.Integration.Tests/
+├── WebApi.Integration.Tests.csproj       # xUnit v3, FastEndpoints.Testing, Shouldly
+├── AssemblyInfo.cs
+├── Endpoints/
+│   └── ...                               # Endpoint integration tests
+├── Hosts/
+│   └── ...                               # Test host configuration
+└── Usings.cs
+</code></pre>
+<hr>
+<h2>Configuration Files</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>compose.yaml</code></td>
+<td>Base Docker Compose with all services, PostgreSQL, NGINX</td>
+</tr>
+<tr>
+<td><code>compose.override.yaml</code></td>
+<td>Development overrides: build from source, Grafana LGTM</td>
+</tr>
+<tr>
+<td><code>compose.prod.yaml</code></td>
+<td>Production: resource limits/reservations, restart policies, logging</td>
+</tr>
+<tr>
+<td><code>nginx.conf</code></td>
+<td>NGINX reverse proxy with least-conn load balancing</td>
+</tr>
+<tr>
+<td><code>.env</code></td>
+<td>Database credentials, connection string, OTEL config</td>
+</tr>
+<tr>
+<td><code>global.json</code></td>
+<td>.NET SDK version pinning</td>
+</tr>
+<tr>
+<td><code>docker-entrypoint-initdb.d/</code></td>
+<td>SQL scripts run on PostgreSQL container startup</td>
+</tr>
+</tbody></table>
+
+</section>
+
+<section id="technologies" class="doc-section">
+  <h1 class="page-title">Technologies</h1>
+  <h1>Technologies</h1>
+<h2>Runtime &amp; Framework</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.NET</td>
+<td>10.0</td>
+<td>Runtime and SDK</td>
+</tr>
+<tr>
+<td>ASP.NET Core</td>
+<td>10.0</td>
+<td>Web framework</td>
+</tr>
+<tr>
+<td>C#</td>
+<td>Latest (via LangVersion)</td>
+<td>Programming language</td>
+</tr>
+</tbody></table>
+<h2>Web Frameworks &amp; API</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FastEndpoints</td>
+<td>7.2.0</td>
+<td>REST endpoint framework (WebApi, IdentityApi)</td>
+</tr>
+<tr>
+<td>FastEndpoints.Swagger</td>
+<td>7.2.0</td>
+<td>OpenAPI/Swagger documentation</td>
+</tr>
+<tr>
+<td>FastEndpoints.Security</td>
+<td>7.2.0</td>
+<td>JWT token generation and validation (IdentityApi)</td>
+</tr>
+<tr>
+<td>FastEndpoints.Messaging.Remote</td>
+<td>7.2.0</td>
+<td>gRPC-style remote command handling (GrpcServer)</td>
+</tr>
+<tr>
+<td>FastEndpoints.Messaging.Core</td>
+<td>7.2.0</td>
+<td>Shared command/result contracts (GrpcServer.Contracts)</td>
+</tr>
+<tr>
+<td>FastEndpoints.Generator</td>
+<td>7.2.0</td>
+<td>Source generator for endpoint discovery</td>
+</tr>
+<tr>
+<td>FastEndpoints.ClientGen.Kiota</td>
+<td>8.1.0</td>
+<td>API client generation (C#, TypeScript)</td>
+</tr>
+<tr>
+<td>FastEndpoints.Testing</td>
+<td>7.2.0</td>
+<td>Integration test support</td>
+</tr>
+</tbody></table>
+<h2>Data Access</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Entity Framework Core</td>
+<td>10.0.3</td>
+<td>ORM for WebApi and IdentityApi</td>
+</tr>
+<tr>
+<td>EF Core Design</td>
+<td>10.0.3</td>
+<td>Migration tooling</td>
+</tr>
+<tr>
+<td>Npgsql</td>
+<td>10.0.1</td>
+<td>PostgreSQL .NET driver</td>
+</tr>
+<tr>
+<td>Npgsql.EntityFrameworkCore.PostgreSQL</td>
+<td>10.0.0</td>
+<td>EF Core PostgreSQL provider</td>
+</tr>
+<tr>
+<td>Dapper</td>
+<td>2.1.72</td>
+<td>Micro-ORM for GrpcServer</td>
+</tr>
+<tr>
+<td>Dapper.AOT</td>
+<td>1.0.48</td>
+<td>Compile-time SQL interception</td>
+</tr>
+<tr>
+<td>Delta</td>
+<td>9.0.0</td>
+<td>HTTP conditional requests via DB timestamps</td>
+</tr>
+</tbody></table>
+<h2>Database</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PostgreSQL</td>
+<td>16.7</td>
+<td>Primary database</td>
+</tr>
+</tbody></table>
+<h2>Authentication</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Microsoft.AspNetCore.Authentication.JwtBearer</td>
+<td>10.0.3</td>
+<td>JWT Bearer authentication middleware</td>
+</tr>
+</tbody></table>
+<h2>Mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Riok.Mapperly</td>
+<td>4.3.1</td>
+<td>Compile-time object mapping (source generator)</td>
+</tr>
+</tbody></table>
+<h2>Querying</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>System.Linq.Dynamic.Core</td>
+<td>1.7.1</td>
+<td>Dynamic LINQ queries</td>
+</tr>
+</tbody></table>
+<h2>Observability &amp; Monitoring</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OpenTelemetry.Exporter.Console</td>
+<td>1.15.1</td>
+<td>Console telemetry export</td>
+</tr>
+<tr>
+<td>OpenTelemetry.Exporter.OpenTelemetryProtocol</td>
+<td>1.15.0</td>
+<td>OTLP telemetry export</td>
+</tr>
+<tr>
+<td>OpenTelemetry.Extensions.Hosting</td>
+<td>1.15.0</td>
+<td>Host integration</td>
+</tr>
+<tr>
+<td>OpenTelemetry.Instrumentation.AspNetCore</td>
+<td>1.15.0</td>
+<td>ASP.NET Core instrumentation</td>
+</tr>
+<tr>
+<td>OpenTelemetry.Instrumentation.Http</td>
+<td>1.15.0</td>
+<td>HTTP client instrumentation</td>
+</tr>
+<tr>
+<td>OpenTelemetry.Instrumentation.Process</td>
+<td>1.12.0-beta.1</td>
+<td>Process metrics</td>
+</tr>
+<tr>
+<td>OpenTelemetry.Instrumentation.Runtime</td>
+<td>1.15.0</td>
+<td>.NET runtime metrics</td>
+</tr>
+<tr>
+<td>Grafana LGTM</td>
+<td>Latest</td>
+<td>Observability stack (dev only, via Docker)</td>
+</tr>
+</tbody></table>
+<h2>Frontend</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Blazor Server</td>
+<td>10.0</td>
+<td>Server-side interactive rendering</td>
+</tr>
+<tr>
+<td>Blazor WebAssembly</td>
+<td>10.0</td>
+<td>Client-side interactive rendering</td>
+</tr>
+<tr>
+<td>MudBlazor</td>
+<td>8.x</td>
+<td>Material Design UI component library</td>
+</tr>
+<tr>
+<td>MudBlazor.Translations</td>
+<td>2.x</td>
+<td>MudBlazor localization support</td>
+</tr>
+</tbody></table>
+<h2>Testing</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xUnit</td>
+<td>2.9.x</td>
+<td>Test framework (Architecture.Tests)</td>
+</tr>
+<tr>
+<td>xUnit v3</td>
+<td>3.x</td>
+<td>Test framework (Integration.Tests)</td>
+</tr>
+<tr>
+<td>NUnit</td>
+<td>4.x</td>
+<td>Test framework (Unit.Tests)</td>
+</tr>
+<tr>
+<td>NetArchTest.Rules</td>
+<td>1.3.2</td>
+<td>Architecture rule validation</td>
+</tr>
+<tr>
+<td>FluentAssertions</td>
+<td>8.x</td>
+<td>Fluent assertion library</td>
+</tr>
+<tr>
+<td>FakeItEasy</td>
+<td>9.x</td>
+<td>Mocking framework</td>
+</tr>
+<tr>
+<td>Shouldly</td>
+<td>4.x</td>
+<td>Assertion library</td>
+</tr>
+<tr>
+<td>Bogus</td>
+<td>35.x</td>
+<td>Fake data generation</td>
+</tr>
+<tr>
+<td>coverlet.collector</td>
+<td>6.x</td>
+<td>Code coverage collection</td>
+</tr>
+<tr>
+<td>Microsoft.NET.Test.Sdk</td>
+<td>18.x</td>
+<td>.NET test infrastructure</td>
+</tr>
+</tbody></table>
+<h2>Infrastructure &amp; DevOps</h2>
+<table>
+<thead>
+<tr>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Docker</td>
+<td>Latest</td>
+<td>Containerization</td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td>v2</td>
+<td>Multi-container orchestration</td>
+</tr>
+<tr>
+<td>NGINX</td>
+<td>Latest</td>
+<td>Reverse proxy and load balancer</td>
+</tr>
+<tr>
+<td>GitHub Actions</td>
+<td>--</td>
+<td>CI/CD pipelines</td>
+</tr>
+<tr>
+<td>Azure Web Apps</td>
+<td>--</td>
+<td>Cloud hosting (production deployment target)</td>
+</tr>
+<tr>
+<td>GHCR</td>
+<td>--</td>
+<td>Container image registry</td>
+</tr>
+</tbody></table>
+<h2>Build Optimization</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PublishAot</td>
+<td>Native AOT compilation (optional)</td>
+</tr>
+<tr>
+<td>PublishReadyToRun</td>
+<td>ReadyToRun pre-compilation</td>
+</tr>
+<tr>
+<td>PublishReadyToRunComposite</td>
+<td>Composite R2R for better startup</td>
+</tr>
+<tr>
+<td>InvariantGlobalization</td>
+<td>Reduce binary size by removing culture data</td>
+</tr>
+<tr>
+<td>TrimmerRemoveSymbols</td>
+<td>Strip debug symbols</td>
+</tr>
+<tr>
+<td>Multi-platform</td>
+<td>linux/amd64 and linux/arm64/v8</td>
+</tr>
+</tbody></table>
+
+</section>
+
+<section id="testing" class="doc-section">
+  <h1 class="page-title">Testing</h1>
+  <h1>Testing</h1>
+<p>Cpnucleo has three test projects covering architecture validation, unit testing, and integration testing.</p>
+<hr>
+<h2>Test Projects Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Framework</th>
+<th>Focus</th>
+<th>Key Libraries</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Architecture.Tests</td>
+<td>xUnit</td>
+<td>Clean Architecture rules</td>
+<td>NetArchTest.Rules, FluentAssertions</td>
+</tr>
+<tr>
+<td>WebApi.Unit.Tests</td>
+<td>NUnit</td>
+<td>Endpoint unit tests</td>
+<td>FakeItEasy, Shouldly, FastEndpoints</td>
+</tr>
+<tr>
+<td>WebApi.Integration.Tests</td>
+<td>xUnit v3</td>
+<td>End-to-end endpoint tests</td>
+<td>FastEndpoints.Testing, Shouldly</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Architecture Tests (<code>test/Architecture.Tests/</code>)</h2>
+<p>These tests enforce Clean Architecture dependency rules at build time using NetArchTest and FluentAssertions. They run as part of both the PR build check and the release pipeline.</p>
+<h3>Layer Dependency Tests</h3>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Domain_Should_Not_HaveDependencyOnOtherProjects</code></td>
+<td>Domain has no dependency on Infrastructure, WebApi, IdentityApi, GrpcServer, GrpcServer.Contracts, or WebClient</td>
+</tr>
+<tr>
+<td><code>Infrastructure_Should_Not_HaveDependencyOnOtherProjects</code></td>
+<td>Infrastructure has no dependency on WebApi, IdentityApi, GrpcServer, GrpcServer.Contracts, or WebClient</td>
+</tr>
+<tr>
+<td><code>Infrastructure_Repositories_Should_HaveDependencyOnDomain</code></td>
+<td>Repository implementations in Infrastructure depend on Domain</td>
+</tr>
+<tr>
+<td><code>GrpcServerContracts_Should_OnlyDependOnDomain</code></td>
+<td>GrpcServer.Contracts has no dependency on Infrastructure or presentation layers</td>
+</tr>
+<tr>
+<td><code>WebApi_Should_NotDependOnGrpcServer</code></td>
+<td>WebApi does not depend on GrpcServer</td>
+</tr>
+<tr>
+<td><code>IdentityApi_Should_NotDependOnGrpcServer</code></td>
+<td>IdentityApi does not depend on GrpcServer</td>
+</tr>
+</tbody></table>
+<h3>Domain Layer Tests</h3>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Domain_Entities_Should_InheritFromBaseEntity</code></td>
+<td>All non-abstract entities in Domain.Entities inherit from BaseEntity</td>
+</tr>
+<tr>
+<td><code>Domain_Repositories_Should_BeInterfaces</code></td>
+<td>All types starting with &quot;I&quot; in Domain.Repositories are interfaces</td>
+</tr>
+<tr>
+<td><code>Domain_Entities_Should_BeSealed</code></td>
+<td>All non-abstract entities are sealed</td>
+</tr>
+</tbody></table>
+<h3>Infrastructure Layer Tests</h3>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Infrastructure_Repositories_Should_ImplementDomainInterfaces</code></td>
+<td>Repository classes implement <code>IRepository&lt;&gt;</code></td>
+</tr>
+<tr>
+<td><code>Infrastructure_DbContext_Should_BeInCorrectNamespace</code></td>
+<td>DbContext classes reside in <code>Infrastructure.Common.Context</code></td>
+</tr>
+</tbody></table>
+<h3>Naming Convention Tests</h3>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WebApi_Dtos_Should_HaveDtoSuffix</code></td>
+<td>DTOs in WebApi.Common.Dtos end with &quot;Dto&quot;</td>
+</tr>
+<tr>
+<td><code>GrpcServer_Handlers_Should_HaveHandlerSuffix</code></td>
+<td>Handler classes end with &quot;Handler&quot;</td>
+</tr>
+<tr>
+<td><code>GrpcServerContracts_Commands_Should_HaveCommandSuffix</code></td>
+<td>Command classes end with &quot;Command&quot;</td>
+</tr>
+<tr>
+<td><code>GrpcServerContracts_Dtos_Should_HaveDtoSuffix</code></td>
+<td>DTOs in GrpcServer.Contracts end with &quot;Dto&quot;</td>
+</tr>
+<tr>
+<td><code>WebApi_Endpoints_Should_BeNamedEndpoint</code></td>
+<td>All endpoint classes are named &quot;Endpoint&quot;</td>
+</tr>
+<tr>
+<td><code>IdentityApi_Endpoints_Should_BeNamedEndpoint</code></td>
+<td>All IdentityApi endpoint classes are named &quot;Endpoint&quot;</td>
+</tr>
+</tbody></table>
+<h3>Clean Architecture Pattern Tests</h3>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Domain_Should_NotDependOnEntityFramework</code></td>
+<td>Domain has no dependency on Microsoft.EntityFrameworkCore</td>
+</tr>
+<tr>
+<td><code>Domain_Should_NotDependOnDapper</code></td>
+<td>Domain has no dependency on Dapper</td>
+</tr>
+<tr>
+<td><code>Domain_Should_NotDependOnNpgsql</code></td>
+<td>Domain has no dependency on Npgsql</td>
+</tr>
+<tr>
+<td><code>Domain_Models_Should_BeRecordsOrClasses</code></td>
+<td>Models in Domain.Models are classes or sealed</td>
+</tr>
+<tr>
+<td><code>Domain_Repositories_Should_StartWithI</code></td>
+<td>Repository interfaces start with &quot;I&quot;</td>
+</tr>
+<tr>
+<td><code>Infrastructure_Should_NotContainInterfaces</code></td>
+<td>Only IApplicationDbContext is an acceptable public interface in Infrastructure</td>
+</tr>
+<tr>
+<td><code>GrpcServer_Handlers_Should_HaveDependencyOnDomain</code></td>
+<td>gRPC handlers depend on the Domain layer</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Unit Tests (<code>test/WebApi.Unit.Tests/</code>)</h2>
+<p>Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions.</p>
+<h3>Structure</h3>
+<pre><code>WebApi.Unit.Tests/
+├── Endpoints/
+│   └── ...                    # Tests organized by endpoint
+├── Usings.cs
+└── WebApi.Unit.Tests.csproj
+</code></pre>
+<h3>Key Libraries</h3>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NUnit</td>
+<td>Test framework</td>
+</tr>
+<tr>
+<td>FakeItEasy</td>
+<td>Mocking framework</td>
+</tr>
+<tr>
+<td>Shouldly</td>
+<td>Assertion library</td>
+</tr>
+<tr>
+<td>FastEndpoints</td>
+<td>Endpoint testing support</td>
+</tr>
+<tr>
+<td>coverlet.collector</td>
+<td>Code coverage</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Integration Tests (<code>test/WebApi.Integration.Tests/</code>)</h2>
+<p>Integration tests that exercise the full request pipeline using FastEndpoints.Testing and xUnit v3.</p>
+<h3>Structure</h3>
+<pre><code>WebApi.Integration.Tests/
+├── AssemblyInfo.cs
+├── Endpoints/
+│   └── ...                    # Integration tests by endpoint
+├── Hosts/
+│   └── ...                    # Test host/server configuration
+├── Usings.cs
+└── WebApi.Integration.Tests.csproj
+</code></pre>
+<h3>Key Libraries</h3>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xUnit v3</td>
+<td>Test framework</td>
+</tr>
+<tr>
+<td>FastEndpoints.Testing</td>
+<td>In-memory test server for FastEndpoints</td>
+</tr>
+<tr>
+<td>Shouldly</td>
+<td>Assertion library</td>
+</tr>
+<tr>
+<td>Microsoft.NET.Test.Sdk</td>
+<td>Test SDK</td>
+</tr>
+</tbody></table>
+<h3>Prerequisites</h3>
+<p>Integration tests require a running PostgreSQL database. In CI, this is provisioned via Docker Compose:</p>
+<pre><code class="language-bash">docker compose up db -d --build --force-recreate
+sleep 30
+</code></pre>
+<blockquote>
+<p>Integration tests are currently commented out in CI workflows and are run manually.</p>
+</blockquote>
+<hr>
+<h2>Running Tests</h2>
+<h3>Run All Tests</h3>
+<pre><code class="language-bash">dotnet test cpnucleo.slnx
+</code></pre>
+<h3>Run Architecture Tests Only</h3>
+<pre><code class="language-bash">dotnet test test/Architecture.Tests/
+</code></pre>
+<h3>Run Unit Tests Only</h3>
+<pre><code class="language-bash">dotnet test test/WebApi.Unit.Tests/
+</code></pre>
+<h3>Run Integration Tests (requires running database)</h3>
+<pre><code class="language-bash"># Start the database first
+docker compose up db -d
+sleep 30
+
+# Run integration tests
+dotnet test test/WebApi.Integration.Tests/
+</code></pre>
+<h3>Run with Code Coverage</h3>
+<pre><code class="language-bash">dotnet test --collect:&quot;XPlat Code Coverage&quot;
+</code></pre>
+<hr>
+<h2>CI Pipeline Test Execution</h2>
+<p>Architecture tests run automatically in both CI workflows:</p>
+<ul>
+<li><strong>build-check.yml</strong> (PR): runs architecture tests for each service (WebApi, GrpcServer, IdentityApi, WebClient)</li>
+<li><strong>main-release.yml</strong> (push to main): runs architecture tests before building Docker images</li>
+</ul>
+<p>Unit and integration tests are configured in the workflows but currently commented out, pending further setup.</p>
+
+</section>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile menu toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+
+      function toggleMenu() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+      }
+
+      if(menuToggle) menuToggle.addEventListener('click', toggleMenu);
+      if(overlay) overlay.addEventListener('click', toggleMenu);
+
+      // Scrollspy
+      const sections = document.querySelectorAll('section.doc-section');
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      const observerOptions = {
+        root: null,
+        rootMargin: '-80px 0px -60% 0px',
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navItems.forEach(item => {
+              item.classList.remove('active');
+              if (item.getAttribute('href') === `#${entry.target.id}`) {
+                item.classList.add('active');
+                // Scroll sidebar if needed
+                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach(section => observer.observe(section));
+
+      // Click on nav items (mobile close)
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            toggleMenu();
+          }
+        });
+      });
+
+      // Search
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          
+          sections.forEach(section => {
+            const text = section.textContent.toLowerCase();
+            const navItem = document.querySelector(`.nav-item[href="#${section.id}"]`);
+            const li = navItem ? navItem.parentElement : null;
+            
+            if (text.includes(query) || query === '') {
+              section.classList.remove('hidden-section');
+              if(li) li.style.display = '';
+            } else {
+              section.classList.add('hidden-section');
+              if(li) li.style.display = 'none';
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
