@@ -197,9 +197,34 @@ jobs:
             publish-profile-secret: AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT
 
     steps:
-      - name: Deploy Image to Azure Web App
+      - name: Deploy WebApi to Azure Web App
+        if: matrix.service == 'WebApi'
         uses: azure/webapps-deploy@v3
         with:
             app-name: ${{ matrix.app-name }}
-            publish-profile: ${{ secrets[matrix.publish-profile-secret] }}
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI }}
+            images: ${{ matrix.image }}
+
+      - name: Deploy GrpcServer to Azure Web App
+        if: matrix.service == 'GrpcServer'
+        uses: azure/webapps-deploy@v3
+        with:
+            app-name: ${{ matrix.app-name }}
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_GRPCSERVER }}
+            images: ${{ matrix.image }}
+
+      - name: Deploy IdentityApi to Azure Web App
+        if: matrix.service == 'IdentityApi'
+        uses: azure/webapps-deploy@v3
+        with:
+            app-name: ${{ matrix.app-name }}
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_IDENTITYAPI }}
+            images: ${{ matrix.image }}
+
+      - name: Deploy WebClient to Azure Web App
+        if: matrix.service == 'WebClient'
+        uses: azure/webapps-deploy@v3
+        with:
+            app-name: ${{ matrix.app-name }}
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT }}
             images: ${{ matrix.image }}

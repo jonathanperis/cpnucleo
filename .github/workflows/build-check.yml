@@ -16,6 +16,8 @@ jobs:
   setup-build-test:
     name: Setup, Build & Test (${{ matrix.service }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         include:
@@ -64,6 +66,8 @@ jobs:
     name: Container Healthcheck Test (${{ matrix.service }})
     needs: setup-build-test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         include:
