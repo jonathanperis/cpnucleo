@@ -487,3 +487,7 @@ $RECYCLE.BIN/
 dml-data
 003-database-dump-dml.sql
 003-database-dump-csv-dml.sql
+
+# Docs generation
+wiki/
+package-lock.json

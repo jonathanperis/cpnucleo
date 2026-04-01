@@ -1,0 +1,44 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+  gollum:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone wiki
+        run: git clone https://github.com/${{ github.repository }}.wiki.git wiki/ || echo "Wiki not found, skipping"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install marked
+        run: npm install marked --no-save
+
+      - name: Generate docs
+        env:
+          DOCS_TITLE: "cpnucleo"
+          DOCS_DESCRIPTION: "Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC"
+          GITHUB_URL: "https://github.com/jonathanperis/cpnucleo"
+          OUTPUT_PATH: "docs/index.html"
+          TEMPLATE_PATH: ".github/docs-template.html"
+        run: node .github/generate-docs.js
+
+      - name: Commit and push docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html
+          git diff --staged --quiet || (git commit -m "chore: regenerate docs from wiki [skip ci]" && git push)
