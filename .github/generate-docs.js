@@ -5,6 +5,7 @@ const marked = require('marked');
 const DOCS_TITLE = process.env.DOCS_TITLE || 'Documentation';
 const DOCS_DESCRIPTION = process.env.DOCS_DESCRIPTION || '';
 const GITHUB_URL = process.env.GITHUB_URL || '';
+const LIVE_URL = process.env.LIVE_URL || '';
 const OUTPUT_PATH = process.env.OUTPUT_PATH || 'docs/index.html';
 const TEMPLATE_PATH = process.env.TEMPLATE_PATH || path.join(__dirname, 'template.html');
 
@@ -41,6 +42,17 @@ async function generateDocs() {
 
   let mainContent = '';
   let sidebarNav = '<ul>\n';
+
+  if (LIVE_URL) {
+    mainContent += `<div class="live-cta">
+  <div class="live-cta-inner">
+    <span class="live-dot"></span>
+    <span class="live-cta-text">Live application available</span>
+    <a href="${LIVE_URL}" target="_blank" rel="noopener noreferrer" class="live-cta-btn">Try it live →</a>
+  </div>
+</div>\n`;
+  }
+
 
   for (const file of files) {
     const rawName = path.basename(file, '.md');

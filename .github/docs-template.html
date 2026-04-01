@@ -310,6 +310,67 @@
       padding: 0 2px;
     }
 
+    /* Live CTA banner */
+    .live-cta {
+      margin-bottom: 40px;
+      padding: 14px 20px;
+      background: rgba(124, 106, 247, 0.07);
+      border: 1px solid rgba(124, 106, 247, 0.22);
+      border-radius: 10px;
+    }
+
+    .live-cta-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(124, 106, 247, 0.7);
+      flex-shrink: 0;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(124, 106, 247, 0.7); }
+      50%       { opacity: 0.7; box-shadow: 0 0 14px rgba(124, 106, 247, 0.4); }
+    }
+
+    .live-cta-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .live-cta-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(124, 106, 247, 0.12);
+      border: 1px solid rgba(124, 106, 247, 0.28);
+      padding: 6px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .live-cta-btn:hover {
+      background: rgba(124, 106, 247, 0.22);
+      color: var(--accent-hover);
+      text-decoration: none;
+      border-color: rgba(124, 106, 247, 0.5);
+    }
+
     /* Mobile */
     .mobile-header {
       display: none;

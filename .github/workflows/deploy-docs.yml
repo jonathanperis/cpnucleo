@@ -32,6 +32,7 @@ jobs:
           DOCS_TITLE: "cpnucleo"
           DOCS_DESCRIPTION: "Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC"
           GITHUB_URL: "https://github.com/jonathanperis/cpnucleo"
+          LIVE_URL: "https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/"
           OUTPUT_PATH: "docs/index.html"
           TEMPLATE_PATH: ".github/docs-template.html"
         run: node .github/generate-docs.js
