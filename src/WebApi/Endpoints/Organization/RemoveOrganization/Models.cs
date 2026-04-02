@@ -3,7 +3,7 @@ namespace WebApi.Endpoints.Organization.RemoveOrganization;
 /// <summary>
 /// Request model for removing an organization.
 /// </summary>
-public class Request : RemoveRequest
+public class RemoveOrganizationRequest : RemoveRequest
 {
     public new class Validator : RemoveRequest.Validator
     {

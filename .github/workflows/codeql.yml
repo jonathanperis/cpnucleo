@@ -33,6 +33,11 @@ jobs:
         with:
           languages: csharp
           queries: security-and-quality
+          paths-ignore:
+            - '**/obj/**'
+            - '**/bin/**'
+            - '**/*.g.cs'
+            - '**/*.designer.cs'
 
       - name: Build for CodeQL
         run: dotnet build ./src/WebApi/WebApi.csproj -c Release

@@ -3,7 +3,7 @@ namespace WebApi.Endpoints.AssignmentImpediment.RemoveAssignmentImpediment;
 /// <summary>
 /// Request model for removing an assignment impediment.
 /// </summary>
-public class Request : RemoveRequest
+public class RemoveAssignmentImpedimentRequest : RemoveRequest
 {
     public new class Validator : RemoveRequest.Validator
     {
