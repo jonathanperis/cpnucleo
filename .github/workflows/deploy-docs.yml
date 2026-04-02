@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -38,9 +39,26 @@ jobs:
           TEMPLATE_PATH: ".github/docs-template.html"
         run: node .github/generate-docs.js
 
-      - name: Commit and push docs
+      - name: Create PR with docs changes
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/docs/index.html
-          git diff --staged --quiet || (git commit -m "chore: regenerate docs from wiki [skip ci]" && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          BRANCH="chore/regenerate-docs"
+          git checkout -b "$BRANCH"
+          git commit -m "chore: regenerate docs from wiki"
+          git push origin "$BRANCH" --force
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number')
+          if [ -z "$EXISTING_PR" ]; then
+            gh pr create \
+              --title "chore: regenerate docs from wiki" \
+              --body "Auto-generated documentation update from wiki changes."
+          else
+            echo "PR #$EXISTING_PR already exists — updated via force push"
+          fi
