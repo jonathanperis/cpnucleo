@@ -8,7 +8,11 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
         {
             await next(context);
         }
+// Intentional catch-all at the middleware boundary to prevent unhandled exceptions
+// from leaking to the client. All exceptions are logged server-side.
+#pragma warning disable CA1031
         catch (Exception ex)
+#pragma warning restore CA1031
         {
             logger.LogError(ex, "An unhandled exception occurred: {Message}", ex.Message);
             await HandleExceptionAsync(context, ex);
