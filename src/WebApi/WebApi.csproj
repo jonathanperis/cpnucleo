@@ -37,7 +37,7 @@
 	<ItemGroup>
 		<PackageReference Include="FastEndpoints" Version="7.2.0" />
 		<PackageReference Include="FastEndpoints.ClientGen.Kiota" Version="8.1.0" />
-		<PackageReference Include="FastEndpoints.Generator" Version="7.2.0">
+		<PackageReference Include="FastEndpoints.Generator" Version="8.1.0">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
