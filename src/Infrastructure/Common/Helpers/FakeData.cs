@@ -593,12 +593,14 @@ internal static class FakeDataHelper
 
     private static void WriteCsv<T>(string fileName, IEnumerable<T> items, Func<T, string[]> getFields)
     {
-        var path = Path.Combine("dml-data", fileName);
+        // Use Path.GetFileName to ensure fileName is never a rooted path
+        var safeFileName = Path.GetFileName(fileName);
+        var path = Path.Combine("dml-data", safeFileName);
         using var writer = new StreamWriter(path);
-        foreach (var item in items)
+        var lines = items.Select(item => string.Join(",", getFields(item).Select(EscapeCsvField)));
+        foreach (var line in lines)
         {
-            var fields = getFields(item).Select(EscapeCsvField).ToArray();
-            writer.WriteLine(string.Join(",", fields));
+            writer.WriteLine(line);
         }
     }
 }
