@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.AssignmentImpediment.RemoveAssignmentImpediment;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignmentImpedimentRequest, Response>
 {
     public override void Configure()
     {
@@ -16,7 +16,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         });
     }
 
-    public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(RemoveAssignmentImpedimentRequest request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Service started processing request.");
 

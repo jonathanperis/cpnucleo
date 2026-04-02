@@ -3,7 +3,7 @@ namespace WebApi.Endpoints.UserProject.RemoveUserProject;
 /// <summary>
 /// Request model for removing a user project.
 /// </summary>
-public class Request : RemoveRequest
+public class RemoveUserProjectRequest : RemoveRequest
 {
     public new class Validator : RemoveRequest.Validator
     {
