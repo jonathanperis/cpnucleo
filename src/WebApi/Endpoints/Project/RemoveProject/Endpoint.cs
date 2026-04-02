@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Project.RemoveProject;
 
 // Dapper Repository Basic
-public class Endpoint(IProjectRepository repository) : Endpoint<Request, Response>
+public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectRequest, Response>
 {
     public override void Configure()
     {
@@ -15,7 +15,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         });   
     }
 
-    public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(RemoveProjectRequest request, CancellationToken cancellationToken)
     {        
         Logger.LogInformation("Service started processing request.");
 
