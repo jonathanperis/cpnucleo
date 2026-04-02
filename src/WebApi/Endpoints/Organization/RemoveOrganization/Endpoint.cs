@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Organization.RemoveOrganization;
 
 // Dapper Repository Advanced
-public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
+public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationRequest, Response>
 {
     public override void Configure()
     {
@@ -15,7 +15,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         });   
     }
 
-    public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(RemoveOrganizationRequest request, CancellationToken cancellationToken)
     {        
         Logger.LogInformation("Service started processing request.");
 
