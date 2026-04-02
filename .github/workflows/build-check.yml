@@ -51,7 +51,14 @@ jobs:
 
       - name: Architecture Tests
         working-directory: "./test/Architecture.Tests"
-        run: dotnet test
+        run: dotnet test --collect:"XPlat Code Coverage" --results-directory ../../coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./coverage
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       # - name: Build and Run Docker Compose for Integration Tests
       #   run: |
