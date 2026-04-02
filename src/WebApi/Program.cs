@@ -106,7 +106,7 @@ await app.GenerateApiClientsAndExitAsync(
     {
         c.SwaggerDocumentName = "v1"; //must match doc name above
         c.Language = GenerationLanguage.CSharp;
-        c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
+        c.OutputPath = Path.Join(app.Environment.WebRootPath, "ApiClients", "CSharp");
         c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
         c.ClientClassName = "WebApiClient";
         c.CreateZipArchive = true; //if you'd like a zip file as well
@@ -115,7 +115,7 @@ await app.GenerateApiClientsAndExitAsync(
     {
         c.SwaggerDocumentName = "v1";
         c.Language = GenerationLanguage.TypeScript;
-        c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
+        c.OutputPath = Path.Join(app.Environment.WebRootPath, "ApiClients", "Typescript");
         c.ClientNamespaceName = "Cpnucleo.WebApi.Client";
         c.ClientClassName = "cpnucleo-webapi-client";
     });
