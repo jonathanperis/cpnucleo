@@ -1,19 +1,26 @@
 name: Deploy Docs
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
+  workflow_dispatch:
   gollum:
 
+permissions:
+  pages: write
+  id-token: write
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v6
@@ -39,26 +46,9 @@ jobs:
           TEMPLATE_PATH: ".github/docs-template.html"
         run: node .github/generate-docs.js
 
-      - name: Create PR with docs changes
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/docs/index.html
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          BRANCH="chore/regenerate-docs"
-          git checkout -b "$BRANCH"
-          git commit -m "chore: regenerate docs from wiki"
-          git push origin "$BRANCH" --force
-          EXISTING_PR=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number')
-          if [ -z "$EXISTING_PR" ]; then
-            gh pr create \
-              --title "chore: regenerate docs from wiki" \
-              --body "Auto-generated documentation update from wiki changes."
-          else
-            echo "PR #$EXISTING_PR already exists — updated via force push"
-          fi
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/
+      - id: deployment
+        uses: actions/deploy-pages@v5
