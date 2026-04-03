@@ -444,6 +444,15 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S0YFYR0XVK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-S0YFYR0XVK');
+</script>
 </head>
 <body>
 
@@ -499,7 +508,6 @@
 
 <section id="home" class="doc-section">
   <h1 class="page-title">Home</h1>
-  <h1>cpnucleo</h1>
 <p>Cpnucleo is a project management and task tracking system built with .NET 10, demonstrating Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy with REST (FastEndpoints + EF Core) and gRPC (FastEndpoints Remote Messaging + Dapper) against the same PostgreSQL database.</p>
 <hr>
 <h2>Quick Links</h2>
@@ -565,8 +573,7 @@
 </section>
 
 <section id="api-reference" class="doc-section">
-  <h1 class="page-title">Api Reference</h1>
-  <h1>API Reference</h1>
+  <h1 class="page-title">API Reference</h1>
 <p>Cpnucleo exposes three API services: the WebApi (REST), the IdentityApi (authentication), and the GrpcServer (gRPC command handling).</p>
 <hr>
 <h2>WebApi -- REST Endpoints</h2>
@@ -894,7 +901,6 @@ Content-Type: application/json
 
 <section id="architecture" class="doc-section">
   <h1 class="page-title">Architecture</h1>
-  <h1>Architecture</h1>
 <p>Cpnucleo follows Clean Architecture principles with strict layer separation enforced by automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database.</p>
 <hr>
 <h2>Layer Overview</h2>
@@ -1123,7 +1129,6 @@ Content-Type: application/json
 
 <section id="database" class="doc-section">
   <h1 class="page-title">Database</h1>
-  <h1>Database</h1>
 <p>Cpnucleo uses PostgreSQL 16.7 as its primary database, accessed via two parallel data access strategies: EF Core (for the REST API) and Dapper (for the gRPC server).</p>
 <hr>
 <h2>Database Setup</h2>
@@ -1264,7 +1269,7 @@ psql -U postgres -d cpnucleo -f docker-entrypoint-initdb.d/002-database-dump-ddl
 <tbody><tr>
 <td>Id</td>
 <td>uuid</td>
-<td>Primary key (generated via <code>Guid.NewGuid()</code>)</td>
+<td>Primary key (generated via <code>Guid.CreateVersion7()</code>)</td>
 </tr>
 <tr>
 <td>CreatedAt</td>
@@ -1384,7 +1389,6 @@ psql -U postgres -d cpnucleo -f docker-entrypoint-initdb.d/002-database-dump-ddl
 
 <section id="deployment" class="doc-section">
   <h1 class="page-title">Deployment</h1>
-  <h1>Deployment</h1>
 <p>Cpnucleo uses Docker Compose for containerized deployment and GitHub Actions for CI/CD, with final deployment to Azure Web Apps.</p>
 <hr>
 <h2>Docker Compose Configurations</h2>
@@ -1723,7 +1727,6 @@ server {
 
 <section id="getting-started" class="doc-section">
   <h1 class="page-title">Getting Started</h1>
-  <h1>Getting Started</h1>
 <h2>Prerequisites</h2>
 <table>
 <thead>
@@ -1884,7 +1887,6 @@ cd src/WebClient &amp;&amp; dotnet run
 
 <section id="project-structure" class="doc-section">
   <h1 class="page-title">Project Structure</h1>
-  <h1>Project Structure</h1>
 <h2>Solution Overview</h2>
 <pre><code>cpnucleo/
 ├── cpnucleo.slnx                         # Solution file
@@ -2158,7 +2160,6 @@ cd src/WebClient &amp;&amp; dotnet run
 
 <section id="technologies" class="doc-section">
   <h1 class="page-title">Technologies</h1>
-  <h1>Technologies</h1>
 <h2>Runtime &amp; Framework</h2>
 <table>
 <thead>
@@ -2195,7 +2196,7 @@ cd src/WebClient &amp;&amp; dotnet run
 </thead>
 <tbody><tr>
 <td>FastEndpoints</td>
-<td>7.2.0</td>
+<td>8.1.0</td>
 <td>REST endpoint framework (WebApi, IdentityApi)</td>
 </tr>
 <tr>
@@ -2205,22 +2206,22 @@ cd src/WebClient &amp;&amp; dotnet run
 </tr>
 <tr>
 <td>FastEndpoints.Security</td>
-<td>7.2.0</td>
+<td>8.1.0</td>
 <td>JWT token generation and validation (IdentityApi)</td>
 </tr>
 <tr>
 <td>FastEndpoints.Messaging.Remote</td>
-<td>7.2.0</td>
+<td>8.1.0</td>
 <td>gRPC-style remote command handling (GrpcServer)</td>
 </tr>
 <tr>
 <td>FastEndpoints.Messaging.Core</td>
-<td>7.2.0</td>
+<td>8.1.0</td>
 <td>Shared command/result contracts (GrpcServer.Contracts)</td>
 </tr>
 <tr>
 <td>FastEndpoints.Generator</td>
-<td>7.2.0</td>
+<td>8.1.0</td>
 <td>Source generator for endpoint discovery</td>
 </tr>
 <tr>
@@ -2410,12 +2411,12 @@ cd src/WebClient &amp;&amp; dotnet run
 </tr>
 <tr>
 <td>MudBlazor</td>
-<td>8.x</td>
+<td>8.15.0</td>
 <td>Material Design UI component library</td>
 </tr>
 <tr>
 <td>MudBlazor.Translations</td>
-<td>2.x</td>
+<td>2.7.0</td>
 <td>MudBlazor localization support</td>
 </tr>
 </tbody></table>
@@ -2430,17 +2431,17 @@ cd src/WebClient &amp;&amp; dotnet run
 </thead>
 <tbody><tr>
 <td>xUnit</td>
-<td>2.9.x</td>
+<td>2.9.3</td>
 <td>Test framework (Architecture.Tests)</td>
 </tr>
 <tr>
 <td>xUnit v3</td>
-<td>3.x</td>
+<td>3.2.2</td>
 <td>Test framework (Integration.Tests)</td>
 </tr>
 <tr>
 <td>NUnit</td>
-<td>4.x</td>
+<td>4.4.0</td>
 <td>Test framework (Unit.Tests)</td>
 </tr>
 <tr>
@@ -2450,32 +2451,32 @@ cd src/WebClient &amp;&amp; dotnet run
 </tr>
 <tr>
 <td>FluentAssertions</td>
-<td>8.x</td>
+<td>8.8.0</td>
 <td>Fluent assertion library</td>
 </tr>
 <tr>
 <td>FakeItEasy</td>
-<td>9.x</td>
+<td>9.0.1</td>
 <td>Mocking framework</td>
 </tr>
 <tr>
 <td>Shouldly</td>
-<td>4.x</td>
+<td>4.3.0</td>
 <td>Assertion library</td>
 </tr>
 <tr>
 <td>Bogus</td>
-<td>35.x</td>
+<td>35.6.5</td>
 <td>Fake data generation</td>
 </tr>
 <tr>
 <td>coverlet.collector</td>
-<td>6.x</td>
+<td>8.0.1</td>
 <td>Code coverage collection</td>
 </tr>
 <tr>
 <td>Microsoft.NET.Test.Sdk</td>
-<td>18.x</td>
+<td>18.0.1</td>
 <td>.NET test infrastructure</td>
 </tr>
 </tbody></table>
@@ -2557,7 +2558,6 @@ cd src/WebClient &amp;&amp; dotnet run
 
 <section id="testing" class="doc-section">
   <h1 class="page-title">Testing</h1>
-  <h1>Testing</h1>
 <p>Cpnucleo has three test projects covering architecture validation, unit testing, and integration testing.</p>
 <hr>
 <h2>Test Projects Overview</h2>
