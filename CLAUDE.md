@@ -13,6 +13,7 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 - PRs target `main`; CI must pass before merge
 - **Merge strategy: rebase only** — squash and merge commits are disabled; use `gh pr merge --rebase`
 - **Always use `gh` CLI** for GitHub operations (PRs, issues, checks, releases)
+- **Always sync main before creating branches and opening PRs** — run `git fetch origin main && git checkout main && git pull origin main` before branching; verify main is up to date before `gh pr create`
 - Architecture tests (`test/Architecture.Tests/`) **MUST** pass before committing
 
 ---
