@@ -2,7 +2,7 @@
 
 Production-grade .NET 10 project management system demonstrating Clean Architecture, DDD, CQRS, and dual data access strategies.
 
-**Live demo:** https://cpnucleo-webclient-dotnet.azurewebsites.net
+**Live demo:** https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/
 
 ---
 
