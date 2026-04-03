@@ -18,7 +18,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 |-----------|---------|---------|
 | .NET | 10.0 | Runtime and SDK |
 | ASP.NET Core | 10.0 | Web framework |
-| FastEndpoints | 7.2 | REST endpoint routing and gRPC messaging |
+| FastEndpoints | 8.1 | REST endpoint routing and gRPC messaging |
 | Entity Framework Core | 10.0 | ORM for WebApi and IdentityApi |
 | Dapper | 2.1 | Micro-ORM for GrpcServer |
 | Dapper.AOT | 1.0 | Compile-time SQL interception |
@@ -45,6 +45,33 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 - Blazor Server + WebAssembly frontend with MudBlazor components and translation support
 - Three test suites: architecture validation (xUnit + NetArchTest), unit tests (NUnit + FakeItEasy), integration tests (xUnit v3 + FastEndpoints.Testing)
 - Automated CI/CD with GitHub Actions deploying to Azure Web Apps via GHCR
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                 Presentation Layer                   │
+│  WebApi (REST)  GrpcServer  IdentityApi  WebClient  │
+│  FastEndpoints  FE.Messaging  JWT Auth    Blazor    │
+│  + EF Core      + Dapper                 + MudBlazor│
+└────────────────────────┬────────────────────────────┘
+                         │
+┌────────────────────────┴────────────────────────────┐
+│               Infrastructure Layer                   │
+│  ApplicationDbContext    DapperRepository<T>          │
+│  EF Core Migrations     Unit of Work                 │
+│                    Npgsql + PostgreSQL                │
+└────────────────────────┬────────────────────────────┘
+                         │
+┌────────────────────────┴────────────────────────────┐
+│                   Domain Layer                       │
+│  11 Entities (sealed, BaseEntity, factory methods)   │
+│  Repository interfaces    CryptographyManager        │
+│              Zero external dependencies              │
+└─────────────────────────────────────────────────────┘
+```
+
+Layer dependencies enforced by 25+ NetArchTest rules at build time.
 
 ## Getting Started
 
@@ -75,6 +102,12 @@ Development mode (build from source with Grafana LGTM observability):
 docker compose -f compose.yaml -f compose.override.yaml up --build
 ```
 
+Production mode (pre-built images from GHCR):
+
+```bash
+docker compose -f compose.yaml -f compose.prod.yaml up -d
+```
+
 ## Project Structure
 
 ```
@@ -93,6 +126,20 @@ test/
   WebApi.Unit.Tests/           Endpoint unit tests (NUnit + FakeItEasy)
   WebApi.Integration.Tests/    End-to-end API tests (xUnit v3 + FastEndpoints.Testing)
 ```
+
+## Testing
+
+```bash
+dotnet test cpnucleo.slnx                     # Run all tests
+dotnet test test/Architecture.Tests/           # Architecture rules only
+dotnet test test/WebApi.Unit.Tests/            # Unit tests only
+```
+
+| Suite | Framework | Coverage |
+|-------|-----------|----------|
+| Architecture.Tests | xUnit + NetArchTest | Layer deps, naming, sealed entities |
+| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | Endpoint happy/negative paths |
+| WebApi.Integration.Tests | xUnit v3 + FastEndpoints.Testing | Full HTTP CRUD per entity |
 
 ## CI/CD
 
