@@ -1,10 +1,9 @@
-name: Deploy Docs
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-  gollum:
 
 permissions:
   pages: write
@@ -21,31 +20,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v6
-
-      - name: Clone wiki
-        run: git clone https://github.com/${{ github.repository }}.wiki.git wiki/ || echo "Wiki not found, skipping"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-
-      - name: Install marked
-        run: npm install marked --no-save
-
-      - name: Generate docs
-        env:
-          DOCS_TITLE: "cpnucleo"
-          DOCS_DESCRIPTION: "Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC"
-          GITHUB_URL: "https://github.com/jonathanperis/cpnucleo"
-          LIVE_URL: "https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/"
-          OUTPUT_PATH: "docs/docs/index.html"
-          TEMPLATE_PATH: ".github/docs-template.html"
-        run: node .github/generate-docs.js
-
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v4
         with:
