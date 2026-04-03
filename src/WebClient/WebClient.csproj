@@ -33,6 +33,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.3" />
 		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.21.3" />
 		<PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.21.3" />
