@@ -3,6 +3,7 @@ name: Main Release
 permissions:
   contents: write
   packages: write
+  id-token: write
 
 on:
   push:
@@ -207,6 +208,34 @@ jobs:
           echo "Healthcheck failed after 20 attempts."
           exit 1
 
+  deploy-infra:
+    name: Deploy Infrastructure (Bicep)
+    needs: build-push-amd64
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+            fetch-depth: 0
+
+      - name: Login to Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Bicep (Incremental)
+        uses: azure/arm-deploy@v2
+        with:
+          resourceGroupName: github-jonathanperis
+          template: infra/main.bicep
+          parameters: infra/main.bicepparam
+          deploymentMode: Incremental
+
   merge-manifest:
     name: Merge Multi-arch Manifest (${{ matrix.service }})
     needs: [build-push-amd64, build-push-arm64]
@@ -238,64 +267,38 @@ jobs:
             ${{ matrix.image }}:latest \
             ${{ matrix.image }}:latest-arm64
 
-  deploy:
+  deploy-image:
     name: Deploy to Azure (${{ matrix.service }})
-    needs: container-test
+    needs: [container-test, deploy-infra]
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     strategy:
       matrix:
         include:
           - service: WebApi
-            environment: production-webapi
             app-name: cpnucleo-api-dotnet
             image: ghcr.io/jonathanperis/cpnucleo-web-api:latest
-            publish-profile-secret: AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI
           - service: GrpcServer
-            environment: production-grpcserver
             app-name: cpnucleo-grpc-server
             image: ghcr.io/jonathanperis/cpnucleo-grpc-server:latest
-            publish-profile-secret: AZURE_WEBAPP_PUBLISH_PROFILE_GRPCSERVER
           - service: IdentityApi
-            environment: production-identityapi
             app-name: cpnucleo-identity-api
             image: ghcr.io/jonathanperis/cpnucleo-identity-api:latest
-            publish-profile-secret: AZURE_WEBAPP_PUBLISH_PROFILE_IDENTITYAPI
           - service: WebClient
-            environment: production-webclient
             app-name: cpnucleo-webclient-dotnet
             image: ghcr.io/jonathanperis/cpnucleo-web-client:latest
-            publish-profile-secret: AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT
 
     steps:
-      - name: Deploy WebApi to Azure Web App
-        if: matrix.service == 'WebApi'
-        uses: azure/webapps-deploy@v3
+      - name: Login to Azure (OIDC)
+        uses: azure/login@v2
         with:
-            app-name: ${{ matrix.app-name }}
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI }}
-            images: ${{ matrix.image }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy GrpcServer to Azure Web App
-        if: matrix.service == 'GrpcServer'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-            app-name: ${{ matrix.app-name }}
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_GRPCSERVER }}
-            images: ${{ matrix.image }}
-
-      - name: Deploy IdentityApi to Azure Web App
-        if: matrix.service == 'IdentityApi'
-        uses: azure/webapps-deploy@v3
-        with:
-            app-name: ${{ matrix.app-name }}
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_IDENTITYAPI }}
-            images: ${{ matrix.image }}
-
-      - name: Deploy WebClient to Azure Web App
-        if: matrix.service == 'WebClient'
-        uses: azure/webapps-deploy@v3
-        with:
-            app-name: ${{ matrix.app-name }}
-            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT }}
-            images: ${{ matrix.image }}
+          app-name: ${{ matrix.app-name }}
+          images: ${{ matrix.image }}
