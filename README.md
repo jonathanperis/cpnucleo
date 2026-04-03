@@ -4,7 +4,7 @@
 
 [![Build Check](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml) [![Main Release](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml) [![CodeQL](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[Live demo &rarr;](https://cpnucleo-webclient-dotnet.azurewebsites.net) | [Documentation &rarr;](https://jonathanperis.github.io/cpnucleo/)
+**[Live demo &rarr;](https://cpnucleo-webclient-dotnet.azurewebsites.net)** | **[Documentation &rarr;](https://jonathanperis.github.io/cpnucleo/)**
 
 ---
 
