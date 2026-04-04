@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "8264433484234391200"
+      "templateHash": "2198157514563441332"
     }
   },
   "parameters": {
@@ -608,7 +608,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "7264439817585079344"
+              "templateHash": "5537484073317814241"
             }
           },
           "parameters": {
@@ -632,6 +632,13 @@
             },
             "projectName": {
               "type": "string"
+            },
+            "http20ProxyFlag": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Enable HTTP/2 proxy for end-to-end gRPC support. Required for gRPC services."
+              }
             }
           },
           "resources": [
@@ -651,6 +658,7 @@
                   "linuxFxVersion": "[format('DOCKER|{0}', parameters('containerImage'))]",
                   "alwaysOn": false,
                   "http20Enabled": true,
+                  "http20ProxyFlag": "[parameters('http20ProxyFlag')]",
                   "minTlsVersion": "1.2",
                   "ftpsState": "Disabled",
                   "appSettings": [
@@ -726,6 +734,9 @@
           },
           "projectName": {
             "value": "[parameters('projectName')]"
+          },
+          "http20ProxyFlag": {
+            "value": 1
           }
         },
         "template": {
@@ -735,7 +746,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "7264439817585079344"
+              "templateHash": "5537484073317814241"
             }
           },
           "parameters": {
@@ -759,6 +770,13 @@
             },
             "projectName": {
               "type": "string"
+            },
+            "http20ProxyFlag": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Enable HTTP/2 proxy for end-to-end gRPC support. Required for gRPC services."
+              }
             }
           },
           "resources": [
@@ -778,6 +796,7 @@
                   "linuxFxVersion": "[format('DOCKER|{0}', parameters('containerImage'))]",
                   "alwaysOn": false,
                   "http20Enabled": true,
+                  "http20ProxyFlag": "[parameters('http20ProxyFlag')]",
                   "minTlsVersion": "1.2",
                   "ftpsState": "Disabled",
                   "appSettings": [
@@ -862,7 +881,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "7264439817585079344"
+              "templateHash": "5537484073317814241"
             }
           },
           "parameters": {
@@ -886,6 +905,13 @@
             },
             "projectName": {
               "type": "string"
+            },
+            "http20ProxyFlag": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Enable HTTP/2 proxy for end-to-end gRPC support. Required for gRPC services."
+              }
             }
           },
           "resources": [
@@ -905,6 +931,7 @@
                   "linuxFxVersion": "[format('DOCKER|{0}', parameters('containerImage'))]",
                   "alwaysOn": false,
                   "http20Enabled": true,
+                  "http20ProxyFlag": "[parameters('http20ProxyFlag')]",
                   "minTlsVersion": "1.2",
                   "ftpsState": "Disabled",
                   "appSettings": [
@@ -989,7 +1016,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "7264439817585079344"
+              "templateHash": "5537484073317814241"
             }
           },
           "parameters": {
@@ -1013,6 +1040,13 @@
             },
             "projectName": {
               "type": "string"
+            },
+            "http20ProxyFlag": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Enable HTTP/2 proxy for end-to-end gRPC support. Required for gRPC services."
+              }
             }
           },
           "resources": [
@@ -1032,6 +1066,7 @@
                   "linuxFxVersion": "[format('DOCKER|{0}', parameters('containerImage'))]",
                   "alwaysOn": false,
                   "http20Enabled": true,
+                  "http20ProxyFlag": "[parameters('http20ProxyFlag')]",
                   "minTlsVersion": "1.2",
                   "ftpsState": "Disabled",
                   "appSettings": [
