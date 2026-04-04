@@ -100,6 +100,7 @@ module grpcServerApp 'modules/webApp.bicep' = {
     appInsightsConnectionString: appInsightsGrpcServer.outputs.connectionString
     appInsightsInstrumentationKey: appInsightsGrpcServer.outputs.instrumentationKey
     projectName: projectName
+    http20ProxyFlag: 1 // required for end-to-end gRPC (HTTP/2 proxy)
   }
 }
 
