@@ -31,6 +31,8 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 | Riok.Mapperly 4.3 | Compile-time DTO mapping (zero reflection) |
 | MudBlazor 8.x | Blazor UI components (Material Design) |
 | OpenTelemetry 1.15 | Observability (OTLP export) |
+| Azure.Monitor.OpenTelemetry.AspNetCore 1.4 | Azure Monitor OTel exporter (all 4 services) |
+| Bicep | Infrastructure as Code (`infra/`) |
 | Docker + NGINX | Containerization + load balancing |
 | GitHub Actions | CI/CD with Azure deployment |
 | Kiota | Auto-generated API client for WebClient |
@@ -108,6 +110,14 @@ cpnucleo/
 ├── compose.yaml / override / prod   # Docker Compose configs
 ├── nginx.conf                       # NGINX reverse proxy (least_conn)
 ├── docker-entrypoint-initdb.d/      # PostgreSQL init scripts
+├── infra/                           # Bicep IaC (Log Analytics, App Insights x4, Web Apps x4)
+│   ├── main.bicep                   # Entry point — references existing shared App Service Plan
+│   ├── main.bicepparam              # Production values (brazilsouth, cpnucleo-workspace)
+│   ├── main.json                    # Compiled ARM template
+│   └── modules/
+│       ├── logAnalytics.bicep       # Dedicated Log Analytics workspace (cpnucleo-workspace)
+│       ├── appInsights.bicep        # Workspace-based App Insights per service
+│       └── webApp.bicep             # Container Web App (HTTPS-only, App Insights env vars)
 ├── src/
 │   ├── Domain/                      # Business entities, interfaces, no deps
 │   ├── Infrastructure/              # EF Core + Dapper implementations
@@ -159,10 +169,45 @@ Exactly 14 expected warnings from `src/Infrastructure/Common/Helpers/FakeData.cs
 ## CI/CD
 
 - **PR (`build-check.yml`):** Build + Architecture Tests + Code Coverage (Codecov) + Container health check
-- **Main (`main-release.yml`):** Build (Release, TRIM=true) + Multi-platform Docker push (amd64/arm64) to GHCR + Health check + Azure deploy
+- **Main (`main-release.yml`):** 7-job pipeline (matrix x4 services each) — see pipeline flow below
 - **Security (`codeql.yml`):** CodeQL analysis on push/PR/weekly schedule
 - **Docs (`deploy-docs.yml`):** Auto-generates docs site from wiki, creates PR
 - **Registry:** `ghcr.io/jonathanperis/cpnucleo-{service}:latest`
+
+### Main Release Pipeline Flow
+
+```
+setup-build-test (x4)
+        │
+        ▼
+build-push-amd64 (x4) ──────────────────────────────┐
+        │                                            │
+        ├──→ container-test (x4) ─────────┐          ├──→ build-push-arm64 (x4)
+        │                                 │          │
+        ├──→ deploy-infra (Bicep, OIDC) ──┤          ▼
+        │                                 ▼      merge-manifest (x4)
+        │                           deploy-image (x4, OIDC)
+```
+
+| Job | Description |
+|-----|-------------|
+| `setup-build-test` (x4) | Restore + build Release + Architecture Tests |
+| `build-push-amd64` (x4) | Build linux/amd64, push as `:latest` |
+| `container-test` (x4) | Docker Compose health check per service |
+| `deploy-infra` | Bicep Incremental deploy (Log Analytics + App Insights + Web Apps) |
+| `deploy-image` (x4) | Deploy `:latest` to Azure via OIDC |
+| `build-push-arm64` (x4) | Build linux/arm64/v8, push as `:latest-arm64` (non-blocking) |
+| `merge-manifest` (x4) | Merge amd64 + arm64 into multi-arch `:latest` manifest |
+
+### Azure Deployment (OIDC)
+
+OIDC federated credentials — no secret rotation. Three secrets required:
+
+| Secret | Description |
+|--------|-------------|
+| `AZURE_CLIENT_ID` | App Registration client ID (`cpnucleo-github-actions`) |
+| `AZURE_TENANT_ID` | Azure AD tenant ID |
+| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
 
 ---
 
@@ -188,6 +233,8 @@ Exactly 14 expected warnings from `src/Infrastructure/Common/Helpers/FakeData.cs
 - Dev: Grafana LGTM container (port 3000 UI, 4317 gRPC, 4318 HTTP)
 - Service names: `WebApi-Cpnucleo`, `Identity-Cpnucleo`, `GrpcServer-Cpnucleo`, `WebClient-Cpnucleo`
 - Instrumentation: ASP.NET Core, HttpClient, Process, Runtime
+- **Azure Monitor:** `Azure.Monitor.OpenTelemetry.AspNetCore` 1.4.0 added to all services; `UseAzureMonitor()` plugs into the existing OTel pipeline as an additional exporter. Guarded — only active when `APPLICATIONINSIGHTS_CONNECTION_STRING` is present (set by Azure Bicep; no-op in CI/local).
+- **Bicep IaC** provisions a dedicated `cpnucleo-workspace` Log Analytics workspace with 4 workspace-based App Insights instances (one per service) in `github-jonathanperis` resource group.
 
 ---
 
