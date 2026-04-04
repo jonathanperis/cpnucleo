@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "10777507689421565448"
+      "templateHash": "8264433484234391200"
     }
   },
   "parameters": {
@@ -27,7 +27,26 @@
       "type": "string",
       "defaultValue": "github-jonathanperis",
       "metadata": {
-        "description": "Name of the shared App Service Plan (must already exist)."
+        "description": "Name of the App Service Plan (shared across all projects)."
+      }
+    },
+    "appServicePlanSku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1v3",
+        "P2v3",
+        "P3v3"
+      ],
+      "metadata": {
+        "description": "App Service Plan SKU."
       }
     },
     "logAnalyticsWorkspaceName": {
@@ -39,6 +58,99 @@
     }
   },
   "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "deploy-app-service-plan",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "appServicePlanName": {
+            "value": "[parameters('appServicePlanName')]"
+          },
+          "sku": {
+            "value": "[parameters('appServicePlanSku')]"
+          },
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "11657269007901833001"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "appServicePlanName": {
+              "type": "string"
+            },
+            "sku": {
+              "type": "string"
+            },
+            "projectName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "skuTierMap": {
+              "F1": "Free",
+              "B1": "Basic",
+              "B2": "Basic",
+              "B3": "Basic",
+              "S1": "Standard",
+              "S2": "Standard",
+              "S3": "Standard",
+              "P1v3": "PremiumV3",
+              "P2v3": "PremiumV3",
+              "P3v3": "PremiumV3"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/serverfarms",
+              "apiVersion": "2024-04-01",
+              "name": "[parameters('appServicePlanName')]",
+              "location": "[parameters('location')]",
+              "kind": "linux",
+              "tags": {
+                "project": "[parameters('projectName')]"
+              },
+              "sku": {
+                "name": "[parameters('sku')]",
+                "tier": "[variables('skuTierMap')[parameters('sku')]]"
+              },
+              "properties": {
+                "reserved": true
+              }
+            }
+          ],
+          "outputs": {
+            "planId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            },
+            "planName": {
+              "type": "string",
+              "value": "[parameters('appServicePlanName')]"
+            }
+          }
+        }
+      }
+    },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -474,7 +586,7 @@
             "value": "cpnucleo-api-dotnet"
           },
           "appServicePlanId": {
-            "value": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan'), '2025-04-01').outputs.planId.value]"
           },
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-web-api:latest"
@@ -580,7 +692,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webapi')]"
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webapi')]",
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     },
     {
@@ -600,7 +713,7 @@
             "value": "cpnucleo-grpc-server"
           },
           "appServicePlanId": {
-            "value": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan'), '2025-04-01').outputs.planId.value]"
           },
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-grpc-server:latest"
@@ -706,7 +819,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-grpcserver')]"
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-grpcserver')]",
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     },
     {
@@ -726,7 +840,7 @@
             "value": "cpnucleo-identity-api"
           },
           "appServicePlanId": {
-            "value": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan'), '2025-04-01').outputs.planId.value]"
           },
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-identity-api:latest"
@@ -832,7 +946,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-identityapi')]"
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-identityapi')]",
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     },
     {
@@ -852,7 +967,7 @@
             "value": "cpnucleo-webclient-dotnet"
           },
           "appServicePlanId": {
-            "value": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan'), '2025-04-01').outputs.planId.value]"
           },
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-web-client:latest"
@@ -958,7 +1073,8 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webclient')]"
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webclient')]",
+        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     }
   ],
