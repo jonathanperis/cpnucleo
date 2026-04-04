@@ -209,8 +209,8 @@ jobs:
           exit 1
 
   deploy-infra:
-    name: Deploy Infrastructure (Bicep)
-    needs: build-push-amd64
+    name: deploy-infra
+    needs: container-test
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -235,6 +235,7 @@ jobs:
           template: infra/main.bicep
           parameters: infra/main.bicepparam
           deploymentMode: Incremental
+          deploymentName: cpnucleo-infra
 
   merge-manifest:
     name: Merge Multi-arch Manifest (${{ matrix.service }})
@@ -269,7 +270,7 @@ jobs:
 
   deploy-image:
     name: Deploy to Azure (${{ matrix.service }})
-    needs: [container-test, deploy-infra]
+    needs: deploy-infra
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
