@@ -6,6 +6,9 @@ param appInsightsConnectionString string
 param appInsightsInstrumentationKey string
 param projectName string
 
+@description('Enable HTTP/2 proxy for end-to-end gRPC support. Required for gRPC services.')
+param http20ProxyFlag int = 0
+
 resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webAppName
   location: location
@@ -20,6 +23,8 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
       linuxFxVersion: 'DOCKER|${containerImage}'
       alwaysOn: false // must be false on F1
       http20Enabled: true
+      #disable-next-line BCP037 // valid ARM property, not yet in Bicep type library
+      http20ProxyFlag: http20ProxyFlag
       minTlsVersion: '1.2'
       ftpsState: 'Disabled'
       appSettings: [
