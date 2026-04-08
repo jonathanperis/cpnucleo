@@ -1,0 +1,64 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'cpnucleo | Enterprise .NET Architecture',
+  description = 'Production-grade .NET 10 project management system built with Clean Architecture, CQRS, and DDD. 55 REST endpoints + 55 gRPC handlers. Blazor WebClient deployed on Azure.'
+} = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  'name': 'cpnucleo',
+  'description': description,
+  'url': 'https://jonathanperis.github.io/cpnucleo/',
+  'codeRepository': 'https://github.com/jonathanperis/cpnucleo',
+  'programmingLanguage': 'C#',
+  'runtimePlatform': '.NET 10',
+  'license': 'https://github.com/jonathanperis/cpnucleo/blob/main/LICENSE',
+  'author': {
+    '@type': 'Person',
+    'name': 'Jonathan Peris',
+    'url': 'https://jonathanperis.github.io/'
+  }
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, microservices, ASP.NET Core, Blazor, Azure, gRPC, PostgreSQL, C#, FastEndpoints" />
+    <link rel="canonical" href="https://jonathanperis.github.io/cpnucleo/" />
+    <meta name="theme-color" content="#00d4ff" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://jonathanperis.github.io/cpnucleo/" />
+    <meta property="og:site_name" content="cpnucleo" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:creator" content="@jperis_silva" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

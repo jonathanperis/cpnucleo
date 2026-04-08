@@ -1,0 +1,29 @@
+---
+interface Tech {
+  name: string;
+  description: string;
+}
+
+const technologies: Tech[] = [
+  { name: '.NET 10 / C#', description: 'Latest LTS runtime with modern language features' },
+  { name: 'FastEndpoints', description: 'High-performance REST + gRPC endpoints' },
+  { name: 'Entity Framework Core', description: 'ORM for complex queries and migrations' },
+  { name: 'Dapper + AOT', description: 'Micro-ORM for high-performance data access' },
+  { name: 'PostgreSQL', description: 'Primary database with advanced features' },
+  { name: 'MudBlazor', description: 'Material Design components for Blazor' },
+  { name: 'OpenTelemetry', description: 'Distributed tracing and observability' },
+  { name: 'Azure', description: 'Cloud deployment with OIDC authentication' }
+];
+---
+
+<section class="tech-stack">
+  <h2>Technology Stack</h2>
+  <div class="tech-grid">
+    {technologies.map(tech => (
+      <div class="tech-card">
+        <h3>{tech.name}</h3>
+        <p>{tech.description}</p>
+      </div>
+    ))}
+  </div>
+</section>

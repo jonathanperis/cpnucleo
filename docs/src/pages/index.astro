@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Navbar from '@/components/home/Navbar.astro';
+import HeroContent from '@/components/home/HeroContent.astro';
+import ArchDiagram from '@/components/home/ArchDiagram.astro';
+import Stats from '@/components/home/Stats.astro';
+import TechStack from '@/components/home/TechStack.astro';
+import Footer from '@/components/home/Footer.astro';
+
+const title = 'cpnucleo | Enterprise .NET Architecture';
+const description = 'Production-grade .NET 10 project management system built with Clean Architecture, CQRS, and DDD. 55 REST endpoints + 55 gRPC handlers. Blazor WebClient deployed on Azure.';
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="container">
+    <Navbar />
+    
+    <section class="hero">
+      <HeroContent />
+      <ArchDiagram />
+    </section>
+    
+    <Stats />
+    <TechStack />
+    <Footer />
+  </div>
+</BaseLayout>

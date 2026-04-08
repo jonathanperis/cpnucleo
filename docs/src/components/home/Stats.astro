@@ -1,0 +1,22 @@
+---
+interface Stat {
+  value: string;
+  label: string;
+}
+
+const stats: Stat[] = [
+  { value: '55', label: 'REST Endpoints' },
+  { value: '55', label: 'gRPC Handlers' },
+  { value: '11', label: 'Domain Entities' },
+  { value: '25+', label: 'Arch Tests' }
+];
+---
+
+<section class="stats">
+  {stats.map(stat => (
+    <div class="stat">
+      <span class="stat-value">{stat.value}</span>
+      <span class="stat-label">{stat.label}</span>
+    </div>
+  ))}
+</section>

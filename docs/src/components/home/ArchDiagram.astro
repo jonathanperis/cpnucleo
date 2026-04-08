@@ -1,0 +1,55 @@
+---
+interface Service {
+  name: string;
+  port: string;
+}
+
+interface Layer {
+  label: string;
+  services: Service[];
+}
+
+const layers: Layer[] = [
+  {
+    label: 'Presentation Layer',
+    services: [
+      { name: 'WebClient', port: '5030' },
+      { name: 'WebApi', port: '5000' },
+      { name: 'GrpcServer', port: '5020' },
+      { name: 'IdentityApi', port: '5010' }
+    ]
+  },
+  {
+    label: 'Infrastructure Layer',
+    services: [
+      { name: 'EF Core', port: 'ORM' },
+      { name: 'Dapper', port: 'Micro-ORM' },
+      { name: 'PostgreSQL', port: '5432' }
+    ]
+  },
+  {
+    label: 'Domain Layer',
+    services: [
+      { name: 'Entities', port: '11 types' },
+      { name: 'Repositories', port: 'Interfaces' },
+      { name: 'Cryptography', port: 'PBKDF2' }
+    ]
+  }
+];
+---
+
+<div class="arch-diagram">
+  {layers.map(layer => (
+    <div class="layer">
+      <div class="layer-label">{layer.label}</div>
+      <div class="layer-content">
+        {layer.services.map(service => (
+          <div class="service">
+            <div class="service-name">{service.name}</div>
+            <div class="service-port">{service.port}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
