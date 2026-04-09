@@ -1,0 +1,89 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'cpnucleo | Enterprise .NET Architecture',
+  description = 'Production-grade .NET 10 project management system built with Clean Architecture, CQRS, and DDD. 55 REST endpoints + 55 gRPC handlers. Blazor WebClient deployed on Azure.'
+} = Astro.props;
+
+const GA_ID = import.meta.env.PUBLIC_GA_ID;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  'name': 'cpnucleo',
+  'description': description,
+  'url': 'https://jonathanperis.github.io/cpnucleo/',
+  'codeRepository': 'https://github.com/jonathanperis/cpnucleo',
+  'programmingLanguage': 'C#',
+  'runtimePlatform': '.NET 10',
+  'license': 'https://github.com/jonathanperis/cpnucleo/blob/main/LICENSE',
+  'author': {
+    '@type': 'Person',
+    'name': 'Jonathan Peris',
+    'url': 'https://jonathanperis.github.io/'
+  }
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, microservices, ASP.NET Core, Blazor, Azure, gRPC, PostgreSQL, C#, FastEndpoints" />
+    <link rel="canonical" href="https://jonathanperis.github.io/cpnucleo/" />
+    <meta name="theme-color" content="#00d4ff" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://jonathanperis.github.io/cpnucleo/" />
+    <meta property="og:site_name" content="cpnucleo" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:creator" content="@jperis_silva" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <!-- Google Analytics -->
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script is:inline define:vars={{ GA_ID }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', GA_ID);
+    </script>
+
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="glow"></div>
+
+    <slot />
+  </body>
+</html>

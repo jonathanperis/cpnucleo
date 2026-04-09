@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jonathanperis.github.io/cpnucleo/sitemap-index.xml
