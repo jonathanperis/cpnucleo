@@ -1,0 +1,82 @@
+---
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Feature {
+  title: string;
+  description: string;
+}
+
+const stats: Stat[] = [
+  { value: '55', label: 'REST Endpoints' },
+  { value: '55', label: 'gRPC Handlers' },
+  { value: '.NET 10', label: 'Runtime' },
+  { value: 'Azure', label: 'CI/CD Deployment' },
+];
+
+const features: Feature[] = [
+  {
+    title: 'Clean Architecture',
+    description: 'Strict separation of concerns. Domain and application layers remain completely independent of UI, databases, and external frameworks.'
+  },
+  {
+    title: 'Dual Transport',
+    description: 'Exposes both REST API and gRPC endpoints simultaneously, sharing the exact same application logic and core handlers.'
+  },
+  {
+    title: 'Domain-Driven Design',
+    description: 'Rich domain model encapsulating business logic, utilizing aggregates, value objects, and domain events for consistent state.'
+  },
+  {
+    title: 'CQRS Pattern',
+    description: 'Commands and queries are cleanly separated, enabling independent scaling, optimized read models, and clear intent in the codebase.'
+  },
+  {
+    title: 'Blazor WebClient',
+    description: 'Full-featured Blazor WebAssembly client consuming the API, deployed to Azure App Service with automated CI/CD pipelines.'
+  },
+  {
+    title: 'Full Test Coverage',
+    description: 'Comprehensive unit and integration test suite using xUnit, validating domain logic, application handlers, and API endpoints.'
+  },
+];
+---
+
+<section class="dashboard">
+  <div class="stats-grid">
+    {stats.map(stat => (
+      <div class="stat-item">
+        <h3>{stat.value}</h3>
+        <p>{stat.label}</p>
+      </div>
+    ))}
+  </div>
+
+  <div class="features-section">
+    <h3>Core Architecture</h3>
+    <div class="features-grid">
+      {features.map(f => (
+        <div class="feature-card">
+          <h4>{f.title}</h4>
+          <p>{f.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="quickstart-section">
+  <h3>Quick Start</h3>
+  <div class="code-block">
+    <pre><code><span class="comment"># Clone the repository</span>
+<span class="command">git clone</span> <span class="arg">https://github.com/jonathanperis/cpnucleo</span>
+
+<span class="comment"># Navigate into the directory</span>
+<span class="command">cd</span> <span class="arg">cpnucleo</span>
+
+<span class="comment"># Run with Docker Compose</span>
+<span class="command">docker compose up</span> <span class="arg">-d</span></code></pre>
+  </div>
+</section>
