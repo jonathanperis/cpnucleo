@@ -2,27 +2,52 @@
 ---
 
 <section class="hero">
-  <div class="hero-badge">SYSTEM ARCHITECTURE // V10</div>
-  <h1>Enterprise .NET<br>Architecture</h1>
-  <p class="tagline">
-    A production-ready blueprint demonstrating Clean Architecture and Domain-Driven Design.
-    Featuring a dual transport layer — REST API + gRPC — powered by Blazor and PostgreSQL.
-  </p>
+  <div class="hero-content">
+    <div class="hero-badge">SYSTEM ARCHITECTURE // V10</div>
+    <h1>Enterprise .NET<br><span class="hero-accent">Architecture</span></h1>
+    <p class="tagline">
+      A production-ready blueprint demonstrating Clean Architecture and Domain-Driven Design.
+      Featuring a dual transport layer — REST API + gRPC — powered by Blazor and PostgreSQL.
+    </p>
 
-  <div class="badges">
-    <span class="badge">.NET 10</span>
-    <span class="badge">Blazor</span>
-    <span class="badge">Clean Architecture</span>
-    <span class="badge">CQRS + DDD</span>
-    <span class="badge">gRPC</span>
-    <span class="badge">PostgreSQL</span>
-    <span class="badge">Azure</span>
-    <span class="badge">Docker</span>
+    <div class="badges">
+      <span class="badge">.NET 10</span>
+      <span class="badge">Blazor</span>
+      <span class="badge">Clean Architecture</span>
+      <span class="badge">CQRS + DDD</span>
+      <span class="badge">gRPC</span>
+      <span class="badge">PostgreSQL</span>
+      <span class="badge">Azure</span>
+      <span class="badge">Docker</span>
+    </div>
+
+    <div class="ctas">
+      <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Try it Live &rarr;</a>
+      <a href="./docs/" class="btn btn-outline">Documentation &rarr;</a>
+      <a href="https://github.com/jonathanperis/cpnucleo" class="btn btn-outline">GitHub &rarr;</a>
+    </div>
   </div>
 
-  <div class="ctas">
-    <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Try it Live &rarr;</a>
-    <a href="./docs/" class="btn btn-outline">Documentation &rarr;</a>
-    <a href="https://github.com/jonathanperis/cpnucleo" class="btn btn-outline">GitHub &rarr;</a>
+  <div class="hero-diagram" aria-hidden="true">
+    <div class="node n-ui">
+      <div class="node-title">Blazor UI</div>
+      <div class="node-desc">Client App</div>
+    </div>
+    <div class="line l-1"></div>
+    <div class="line l-2"></div>
+    <div class="node n-api">
+      <div class="node-title">REST API</div>
+      <div class="node-desc">Controllers</div>
+    </div>
+    <div class="node n-grpc">
+      <div class="node-title">gRPC</div>
+      <div class="node-desc">Services</div>
+    </div>
+    <div class="line l-3"></div>
+    <div class="line l-4"></div>
+    <div class="node n-app">
+      <div class="node-title">Application Core</div>
+      <div class="node-desc">Clean Architecture &amp; DDD &bull; PostgreSQL Infrastructure</div>
+    </div>
   </div>
 </section>
