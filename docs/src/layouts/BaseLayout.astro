@@ -1,5 +1,6 @@
 ---
 import '../styles/globals.css';
+import Analytics from '../components/Analytics.astro';
 
 interface Props {
   title?: string;
@@ -10,8 +11,6 @@ const {
   title = 'cpnucleo | Enterprise .NET Architecture',
   description = 'Production-grade .NET 10 project management system built with Clean Architecture, CQRS, and DDD. 55 REST endpoints + 55 gRPC handlers. Blazor WebClient deployed on Azure.'
 } = Astro.props;
-
-const GA_ID = import.meta.env.PUBLIC_GA_ID;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -62,16 +61,9 @@ const jsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <title>{title}</title>
+    <Analytics />
   </head>
   <body>
-    <!-- Google Analytics -->
-    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-    <script is:inline define:vars={{ GA_ID }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', GA_ID);
-    </script>
 
     <div class="particles">
       <div class="particle"></div>
