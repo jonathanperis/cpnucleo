@@ -37,7 +37,7 @@ jobs:
           NODE_ENV: production
           PUBLIC_GA_ID: ${{ secrets.PUBLIC_GA_ID }}
       - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: docs/out/
       - id: deployment
