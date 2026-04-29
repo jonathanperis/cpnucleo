@@ -34,9 +34,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.3" />
-		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.21.3" />
-		<PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.21.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.1" />
+		<PackageReference Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.22.1" />
 		<PackageReference Include="MudBlazor" Version="8.15.0" />
 		<PackageReference Include="MudBlazor.Translations" Version="2.7.0" />
 	</ItemGroup>
