@@ -1,9 +1,38 @@
 version: 2
 updates:
+  # NuGet — scan every project under src/ and test/
   - package-ecosystem: "nuget"
-    directory: "/"
+    directories:
+      - "/"
+      - "/src/Domain"
+      - "/src/GrpcServer"
+      - "/src/GrpcServer.Contracts"
+      - "/src/IdentityApi"
+      - "/src/Infrastructure"
+      - "/src/WebApi"
+      - "/src/WebApi.Client"
+      - "/src/WebClient"
+      - "/test/Architecture.Tests"
+      - "/test/WebApi.Integration.Tests"
+      - "/test/WebApi.Unit.Tests"
     schedule:
       interval: "weekly"
+    groups:
+      microsoft:
+        patterns:
+          - "Microsoft.*"
+      opentelemetry:
+        patterns:
+          - "OpenTelemetry.*"
+      testing:
+        patterns:
+          - "xunit*"
+          - "FluentAssertions*"
+          - "coverlet.*"
+          - "Moq*"
+          - "Microsoft.NET.Test.*"
+
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
