@@ -43,20 +43,20 @@
         </PackageReference>
         <PackageReference Include="FastEndpoints.Security" Version="8.1.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="7.2.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.1" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.3" />
 		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.3" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.2" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="1.12.0-beta.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
 		<!-- <PackageReference Include="OpenTelemetry.Resources.Container" Version="1.11.0-beta.2" />
 		<PackageReference Include="OpenTelemetry.Resources.Host" Version="1.11.0-beta.2" /> -->
 	</ItemGroup>	
