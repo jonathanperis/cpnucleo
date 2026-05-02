@@ -4,3 +4,6 @@ paths-ignore:
   - 'src/**/bin/**'
   - '**/*.g.cs'
   - '**/*.designer.cs'
+query-filters:
+  - exclude:
+      id: cs/class-name-matches-base-class
