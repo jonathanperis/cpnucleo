@@ -9,5 +9,10 @@ query-filters:
       id: cs/class-name-matches-base-class
   - exclude:
       id: cs/catch-of-all-exceptions
+      paths:
+        - 'src/WebApi/Middlewares/ErrorHandlingMiddleware.cs'
+        - 'src/IdentityApi/Middlewares/ErrorHandlingMiddleware.cs'
   - exclude:
       id: cs/path-combine
+      paths:
+        - 'src/Infrastructure/Common/Helpers/FakeData.cs'
