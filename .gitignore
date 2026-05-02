@@ -489,7 +489,6 @@ dml-data
 003-database-dump-csv-dml.sql
 
 # Docs generation
-wiki/
 package-lock.json
 # Allow the docs Astro project to commit its lockfile and env
 !docs/package-lock.json
