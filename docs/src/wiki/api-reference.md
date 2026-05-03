@@ -6,7 +6,7 @@ Cpnucleo exposes three API services: the WebApi (REST), the IdentityApi (authent
 
 ## WebApi -- REST Endpoints
 
-The WebApi uses [FastEndpointsL(https://fast-endpoints.com/.md) to define REST endpoints with Swagger/OpenAPI documentation. Each entity has 5 standard CRUD endpoints.
+The WebApi uses [FastEndpoints](https://fast-endpoints.com/) to define REST endpoints with Swagger/OpenAPI documentation. Each entity has 5 standard CRUD endpoints.
 
 ### Base URL
 
