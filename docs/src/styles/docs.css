@@ -332,10 +332,15 @@ section.doc-section.hidden-section { display: none; }
   border: none;
   color: var(--text-primary);
   cursor: pointer;
-  padding: 0;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.menu-toggle:hover {
+  background: var(--surface-hover);
 }
 .menu-toggle span {
   display: block;
