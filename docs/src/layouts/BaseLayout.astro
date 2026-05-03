@@ -12,12 +12,14 @@ const {
   description = 'Production-grade .NET 10 project management system built with Clean Architecture, CQRS, and DDD. 55 REST endpoints + 55 gRPC handlers. Blazor WebClient deployed on Azure.'
 } = Astro.props;
 
+const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://jonathanperis.github.io${Astro.url.pathname}`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareSourceCode',
   'name': 'cpnucleo',
   'description': description,
-  'url': 'https://jonathanperis.github.io/cpnucleo/',
+  'url': pageUrl,
   'codeRepository': 'https://github.com/jonathanperis/cpnucleo',
   'programmingLanguage': 'C#',
   'runtimePlatform': '.NET 10',
@@ -37,17 +39,17 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <meta name="description" content={description} />
     <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, microservices, ASP.NET Core, Blazor, Azure, gRPC, PostgreSQL, C#, FastEndpoints" />
-    <link rel="canonical" href="https://jonathanperis.github.io/cpnucleo/" />
+    <link rel="canonical" href={pageUrl} />
     <meta name="theme-color" content="#00d4ff" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://jonathanperis.github.io/cpnucleo/" />
+    <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content="cpnucleo" />
     <meta property="og:locale" content="en_US" />
 
@@ -64,7 +66,6 @@ const jsonLd = {
     <Analytics />
   </head>
   <body>
-
     <div class="particles">
       <div class="particle"></div>
       <div class="particle"></div>
@@ -75,6 +76,8 @@ const jsonLd = {
     </div>
 
     <div class="glow"></div>
+
+    <div class="data-streams"></div>
 
     <slot />
   </body>
