@@ -96,7 +96,7 @@ body {
   margin: 0 0 4px;
   color: var(--text-primary);
   letter-spacing: 3px;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: Rajdhani, sans-serif;
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -355,10 +355,11 @@ section.doc-section.hidden-section { display: none; }
 }
 
 @media (max-width: 768px) {
+  body { flex-direction: column; }
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .content-wrapper { margin-left: 0; width: 100%; }
   .content { padding: 32px 24px; }
-  .mobile-header { display: flex; }
+  .mobile-header { display: flex; width: 100%; }
   .overlay.open { display: block; }
 }
