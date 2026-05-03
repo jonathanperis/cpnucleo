@@ -261,8 +261,6 @@ pre:not(.astro-code) code {
   font-size: 13px;
 }
 pre.astro-code {
-  background-color: inherit;
-  color: inherit;
   border: 1px solid var(--code-border);
   border-radius: 8px;
   padding: 16px 20px;
