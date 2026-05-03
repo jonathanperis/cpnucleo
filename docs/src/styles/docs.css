@@ -245,7 +245,7 @@ a {
 }
 a:hover { text-decoration: underline; }
 
-pre {
+pre:not(.astro-code) {
   background: var(--code-bg);
   border: 1px solid var(--code-border);
   border-radius: 8px;
@@ -253,12 +253,18 @@ pre {
   overflow-x: auto;
   margin: 24px 0;
 }
-pre code {
+pre:not(.astro-code) code {
   background: transparent;
   padding: 0;
   border-radius: 0;
   color: var(--code-text);
   font-size: 13px;
+}
+pre.astro-code {
+  border: 1px solid var(--code-border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
 }
 code {
   background: var(--code-bg);
