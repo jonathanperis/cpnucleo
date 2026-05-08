@@ -15,7 +15,7 @@ const SLUG_LABEL: Record<string, string> = {
   deployment: 'Deployment',
 };
 
-const globResult = import.meta.glob('../../wiki/*.md', { eager: true });
+const globResult = import.meta.glob('../../../wiki/*.md', { eager: true });
 
 const pagesBySlug: Record<string, any> = {};
 for (const [path, module] of Object.entries(globResult)) {
