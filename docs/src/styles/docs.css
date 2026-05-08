@@ -253,7 +253,7 @@ pre:not(.astro-code) {
   overflow-x: auto;
   margin: 24px 0;
 }
-pre:not(.astro-code) code {
+pre:not(.astro-code) > code {
   background: transparent;
   padding: 0;
   border-radius: 0;
@@ -268,7 +268,13 @@ pre.astro-code {
   padding: 16px 20px;
   margin: 24px 0;
 }
-code {
+pre.astro-code > code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+}
+:not(pre) > code {
   background: var(--code-bg);
   color: var(--code-text);
   border-radius: 4px;
