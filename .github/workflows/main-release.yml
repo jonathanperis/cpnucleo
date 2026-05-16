@@ -96,7 +96,9 @@ jobs:
           context: ./src/
           file: ${{ matrix.dockerfile }}
           push: true
-          tags: ${{ matrix.image }}:latest
+          tags: |
+            ${{ matrix.image }}:sha-${{ github.sha }}-amd64
+            ${{ matrix.image }}:latest
           platforms: linux/amd64
           build-args: |
             AOT=${{ env.AOT }}
@@ -152,7 +154,9 @@ jobs:
           context: ./src/
           file: ${{ matrix.dockerfile }}
           push: true
-          tags: ${{ matrix.image }}:latest-arm64
+          tags: |
+            ${{ matrix.image }}:sha-${{ github.sha }}-arm64
+            ${{ matrix.image }}:latest-arm64
           platforms: linux/arm64/v8
           build-args: |
             AOT=${{ env.AOT }}
@@ -189,7 +193,7 @@ jobs:
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose -f compose.prod.yaml up ${{ matrix.compose_service }} -d --no-deps
+          docker compose up ${{ matrix.compose_service }} -d --no-deps
           sleep 30
 
       - name: Test Healthcheck Endpoint
@@ -264,13 +268,14 @@ jobs:
       - name: Merge into multi-arch manifest
         run: |
           docker buildx imagetools create \
+            --tag ${{ matrix.image }}:sha-${{ github.sha }} \
             --tag ${{ matrix.image }}:latest \
-            ${{ matrix.image }}:latest \
-            ${{ matrix.image }}:latest-arm64
+            ${{ matrix.image }}:sha-${{ github.sha }}-amd64 \
+            ${{ matrix.image }}:sha-${{ github.sha }}-arm64
 
   deploy-image:
     name: Deploy to Azure (${{ matrix.service }})
-    needs: deploy-infra
+    needs: [deploy-infra, merge-manifest]
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -279,16 +284,16 @@ jobs:
         include:
           - service: WebApi
             app-name: cpnucleo-api-dotnet
-            image: ghcr.io/jonathanperis/cpnucleo-web-api:latest
+            image: ghcr.io/jonathanperis/cpnucleo-web-api:sha-${{ github.sha }}
           - service: GrpcServer
             app-name: cpnucleo-grpc-server
-            image: ghcr.io/jonathanperis/cpnucleo-grpc-server:latest
+            image: ghcr.io/jonathanperis/cpnucleo-grpc-server:sha-${{ github.sha }}
           - service: IdentityApi
             app-name: cpnucleo-identity-api
-            image: ghcr.io/jonathanperis/cpnucleo-identity-api:latest
+            image: ghcr.io/jonathanperis/cpnucleo-identity-api:sha-${{ github.sha }}
           - service: WebClient
             app-name: cpnucleo-webclient-dotnet
-            image: ghcr.io/jonathanperis/cpnucleo-web-client:latest
+            image: ghcr.io/jonathanperis/cpnucleo-web-client:sha-${{ github.sha }}
 
     steps:
       - name: Login to Azure (OIDC)
