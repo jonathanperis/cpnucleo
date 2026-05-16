@@ -1,6 +1,10 @@
 name: "cpnucleo-prod"
 
-# Consolidated common healthcheck configurations.
+# Hostinger production profile.
+# Public traffic is terminated by the existing Traefik stack on the external
+# network below. Application/database ports stay private to Docker networks.
+# Minimum VPS: 2 vCPU / 4 GiB RAM. Recommended VPS: 4 vCPU / 8 GiB RAM.
+
 x-common-healthcheck:
   x-healthcheck-api: &healthcheck-api
     test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
@@ -23,7 +27,6 @@ x-common-healthcheck:
     timeout: 10s
     retries: 3
 
-# Extension defining common API configuration for production.
 x-common-api-prod: &common-api-prod
   depends_on:
     db:
@@ -38,9 +41,8 @@ x-common-api-prod: &common-api-prod
         memory: "512M"
       reservations:
         cpus: "0.25"
-        memory: "256M"    
+        memory: "256M"
 
-# Common logging options for production services.
 x-common-logging: &common-logging
   logging:
     driver: "json-file"
@@ -51,51 +53,79 @@ x-common-logging: &common-logging
 services:
   webapi1-cpnucleo: &webapi1
     <<: [*common-api-prod, *common-logging]
-    image: ghcr.io/jonathanperis/cpnucleo-web-api:latest
+    image: ${CPNUCLEO_WEB_API_IMAGE:?Set CPNUCLEO_WEB_API_IMAGE to an immutable GHCR tag, not latest}
     container_name: webapi1-cpnucleo
-    ports:
-      # Production port mapping: host port 5100 is forwarded to container port 5000
-      - "5100:5000"
+    expose:
+      - "5000"
     healthcheck: *healthcheck-api
 
   webapi2-cpnucleo:
     <<: [*webapi1, *common-api-prod, *common-logging]
     container_name: webapi2-cpnucleo
-    ports:
-      # Production port mapping: host port 5111 is forwarded to container port 5000
-      - "5111:5000"
+    expose:
+      - "5000"
 
   identityapi-cpnucleo:
     <<: [*common-api-prod, *common-logging]
-    image: ghcr.io/jonathanperis/cpnucleo-identity-api:latest
+    image: ${CPNUCLEO_IDENTITY_API_IMAGE:?Set CPNUCLEO_IDENTITY_API_IMAGE to an immutable GHCR tag, not latest}
     container_name: identityapi-cpnucleo
-    ports:
-      # Production port mapping: host port 5200 is forwarded to container port 5010
-      - "5200:5010"
+    expose:
+      - "5010"
+    networks:
+      - default
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
+      - "traefik.http.routers.cpnucleo-identity.rule=Host(`${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}`)"
+      - "traefik.http.routers.cpnucleo-identity.entrypoints=websecure"
+      - "traefik.http.routers.cpnucleo-identity.tls=true"
+      - "traefik.http.routers.cpnucleo-identity.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.services.cpnucleo-identity.loadbalancer.server.port=5010"
     healthcheck: *healthcheck-identity
 
   grpcserver-cpnucleo:
     <<: [*common-api-prod, *common-logging]
-    image: ghcr.io/jonathanperis/cpnucleo-grpc-server:latest
+    image: ${CPNUCLEO_GRPC_SERVER_IMAGE:?Set CPNUCLEO_GRPC_SERVER_IMAGE to an immutable GHCR tag, not latest}
     container_name: grpcserver-cpnucleo
-    ports:
-      # Production port mapping: host port 5300 is forwarded to container port 5020
-      - "5300:5020"
-      # Production port mapping: host port 5301 is forwarded to container port 5021
-      - "5301:5021"
+    expose:
+      - "5020"
+      - "5021"
+    networks:
+      - default
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
+      - "traefik.http.routers.cpnucleo-grpc.rule=Host(`${CPNUCLEO_GRPC_HOST:?Set CPNUCLEO_GRPC_HOST}`)"
+      - "traefik.http.routers.cpnucleo-grpc.entrypoints=websecure"
+      - "traefik.http.routers.cpnucleo-grpc.tls=true"
+      - "traefik.http.routers.cpnucleo-grpc.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.services.cpnucleo-grpc.loadbalancer.server.port=5020"
+      - "traefik.http.services.cpnucleo-grpc.loadbalancer.server.scheme=h2c"
     healthcheck: *healthcheck-grpcserver
-    
+
   webclient-cpnucleo:
     <<: [*common-logging]
-    image: ghcr.io/jonathanperis/cpnucleo-web-client:latest
+    image: ${CPNUCLEO_WEB_CLIENT_IMAGE:?Set CPNUCLEO_WEB_CLIENT_IMAGE to an immutable GHCR tag, not latest}
     container_name: webclient-cpnucleo
-    ports:
-      # Production port mapping: host port 5400 is forwarded to container port 5030
-      - "5400:5030"
-    healthcheck: *healthcheck-webclient    
+    expose:
+      - "5030"
+    healthcheck: *healthcheck-webclient
     env_file:
-      - .env      
+      - .env
     restart: always
+    networks:
+      - default
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
+      - "traefik.http.routers.cpnucleo-web.rule=Host(`${CPNUCLEO_WEB_HOST:?Set CPNUCLEO_WEB_HOST}`)"
+      - "traefik.http.routers.cpnucleo-web.entrypoints=websecure"
+      - "traefik.http.routers.cpnucleo-web.tls=true"
+      - "traefik.http.routers.cpnucleo-web.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.services.cpnucleo-web.loadbalancer.server.port=5030"
     deploy:
       resources:
         limits:
@@ -104,27 +134,27 @@ services:
         reservations:
           cpus: "0.25"
           memory: "256M"
-          
+
   db:
     image: postgres:16.7
     container_name: db-cpnucleo
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
-      retries: 5 
-    ports:
-      # Exposing PostgreSQL port consistently on host and container
-      - "5432:5432"
-    # WARNING: synchronous_commit=0, fsync=0, full_page_writes=0 disable durability for load-test performance. Do NOT use in production with real data.
-    command: postgres -c checkpoint_timeout=600 -c max_wal_size=4096 -c synchronous_commit=0 -c fsync=0 -c full_page_writes=0
+      retries: 5
+    # No host port: PostgreSQL is reachable only by containers on cpnucleo_network.
+    expose:
+      - "5432"
+    # Production-safe settings: keep durability enabled; only tune checkpoint/WAL size.
+    command: postgres -c checkpoint_timeout=600 -c max_wal_size=1024
     restart: always
     deploy:
       resources:
@@ -136,6 +166,8 @@ services:
           memory: "512M"
     <<: *common-logging
 
+  # Kept in production as the internal API load balancer, matching local dev topology.
+  # Traefik owns public TLS/host routing; NGINX only balances webapi1/webapi2.
   nginx:
     image: nginx:1.27-alpine
     container_name: nginx-cpnucleo
@@ -145,9 +177,19 @@ services:
       - webapi1-cpnucleo
       - webapi2-cpnucleo
       - identityapi-cpnucleo
-    ports:
-      # Production mapping: host port 9999 is forwarded to container port 9999 for NGINX
-      - "9999:9999"
+    expose:
+      - "9999"
+    networks:
+      - default
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
+      - "traefik.http.routers.cpnucleo-api.rule=Host(`${CPNUCLEO_API_HOST:?Set CPNUCLEO_API_HOST}`)"
+      - "traefik.http.routers.cpnucleo-api.entrypoints=websecure"
+      - "traefik.http.routers.cpnucleo-api.tls=true"
+      - "traefik.http.routers.cpnucleo-api.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.services.cpnucleo-api.loadbalancer.server.port=9999"
     restart: always
     deploy:
       resources:
@@ -171,3 +213,6 @@ networks:
     driver: bridge
     driver_opts:
       com.example.description: "Default network for cpnucleo services"
+  traefik:
+    name: ${TRAEFIK_NETWORK:-traefik}
+    external: true
