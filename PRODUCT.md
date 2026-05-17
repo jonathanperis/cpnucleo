@@ -30,7 +30,7 @@ Users usually arrive in evaluation mode. They are skeptical, time constrained, a
 
 ## Canonical facts for copy
 
-Use these facts only when the source remains true in README, CLAUDE.md, solution files, or docs:
+Use these facts only when the source remains true in README, AGENTS.md, solution files, or docs:
 
 - Runtime: .NET 10.
 - UI: Blazor Server plus WebAssembly with MudBlazor components.
