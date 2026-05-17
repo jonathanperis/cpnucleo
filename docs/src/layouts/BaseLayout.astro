@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'cpnucleo | Enterprise .NET Architecture',
-  description = 'Production-grade .NET 10 project management system built with Clean Architecture, CQRS, and DDD. 55 REST endpoints + 55 gRPC handlers. Blazor WebClient deployed on Azure.'
+  title = 'cpnucleo | .NET architecture workbench',
+  description = 'Source-backed documentation for a .NET 10 Clean Architecture reference system with REST, gRPC, Blazor, PostgreSQL, Docker, Azure, and automated architecture tests.'
 } = Astro.props;
 
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://jonathanperis.github.io${Astro.url.pathname}`;
@@ -39,13 +39,12 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
     <meta name="description" content={description} />
-    <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, microservices, ASP.NET Core, Blazor, Azure, gRPC, PostgreSQL, C#, FastEndpoints" />
+    <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, FastEndpoints, Blazor, Azure, gRPC, PostgreSQL, Docker, C#" />
     <link rel="canonical" href={pageUrl} />
-    <meta name="theme-color" content="#00d4ff" />
+    <meta name="theme-color" content="#061427" />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -53,32 +52,17 @@ const jsonLd = {
     <meta property="og:site_name" content="cpnucleo" />
     <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:creator" content="@jperis_silva" />
 
-    <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <title>{title}</title>
     <Analytics />
   </head>
   <body>
-    <div class="particles">
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-      <div class="particle"></div>
-    </div>
-
-    <div class="glow"></div>
-
-    <div class="data-streams"></div>
-
     <slot />
   </body>
 </html>
