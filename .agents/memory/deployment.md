@@ -6,7 +6,7 @@ type: reference
 
 ## Azure Deployment
 
-Live demo: https://cpnucleo-webclient-dotnet.azurewebsites.net
+Live demo: https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/
 
 Four services deployed to Azure Web Apps:
 - cpnucleo-api-dotnet (WebApi)
@@ -19,10 +19,9 @@ Four services deployed to Azure Web Apps:
 | Secret | Purpose |
 |--------|---------|
 | `GITHUB_TOKEN` | GHCR auth (automatic) |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI` | Azure WebApi deploy |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_GRPCSERVER` | Azure GrpcServer deploy |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_IDENTITYAPI` | Azure IdentityApi deploy |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT` | Azure WebClient deploy |
+| `AZURE_CLIENT_ID` | Azure OIDC app registration client ID |
+| `AZURE_TENANT_ID` | Azure tenant ID |
+| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
 
 ## Docker Compose Configs
 
@@ -32,9 +31,9 @@ Four services deployed to Azure Web Apps:
 
 ## GHCR Images
 
-- `ghcr.io/jonathanperis/cpnucleo-webapi:latest`
-- `ghcr.io/jonathanperis/cpnucleo-grpcserver:latest`
-- `ghcr.io/jonathanperis/cpnucleo-identityapi:latest`
-- `ghcr.io/jonathanperis/cpnucleo-webclient:latest`
+- `ghcr.io/jonathanperis/cpnucleo-web-api:latest`
+- `ghcr.io/jonathanperis/cpnucleo-grpc-server:latest`
+- `ghcr.io/jonathanperis/cpnucleo-identity-api:latest`
+- `ghcr.io/jonathanperis/cpnucleo-web-client:latest`
 
-All multi-platform: linux/amd64 + linux/arm64/v8
+Main release also publishes `sha-<commit>`, `sha-<commit>-amd64`, `sha-<commit>-arm64`, and `latest-arm64` tags; the final Azure deploy uses the `sha-<commit>` multi-arch image.
