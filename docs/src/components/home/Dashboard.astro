@@ -1,82 +1,85 @@
 ---
-interface Stat {
-  value: string;
-  label: string;
-}
+const docsBase = import.meta.env.BASE_URL.replace(/\/$/, '') + '/docs';
 
-interface Feature {
-  title: string;
-  description: string;
-}
-
-const stats: Stat[] = [
-  { value: '55', label: 'REST Endpoints' },
-  { value: '55', label: 'gRPC Handlers' },
-  { value: '.NET 10', label: 'Runtime' },
-  { value: 'Azure', label: 'CI/CD Deployment' },
+const proofRows = [
+  {
+    label: 'Transport parity',
+    value: 'REST and gRPC',
+    body: 'WebApi exposes REST endpoints through FastEndpoints and EF Core. GrpcServer uses FastEndpoints Remote Messaging with Dapper against the same PostgreSQL model.',
+    href: `${docsBase}/api-reference/`
+  },
+  {
+    label: 'Architecture gate',
+    value: 'NetArchTest',
+    body: 'Architecture tests protect the Domain layer from infrastructure, presentation, EF Core, Dapper, and Npgsql dependencies.',
+    href: `${docsBase}/testing/`
+  },
+  {
+    label: 'Runtime topology',
+    value: '4 services',
+    body: 'WebApi, IdentityApi, GrpcServer, and WebClient run behind Docker and NGINX with PostgreSQL as the primary database.',
+    href: `${docsBase}/architecture/`
+  },
+  {
+    label: 'Release path',
+    value: 'GHCR to Azure',
+    body: 'GitHub Actions builds container images, publishes to GHCR, runs security analysis, and deploys the application to Azure Web Apps.',
+    href: `${docsBase}/deployment/`
+  }
 ];
 
-const features: Feature[] = [
-  {
-    title: 'Clean Architecture',
-    description: 'Strict separation of concerns. Domain and application layers remain completely independent of UI, databases, and external frameworks.'
-  },
-  {
-    title: 'Dual Transport',
-    description: 'Exposes both REST API and gRPC endpoints simultaneously, sharing the exact same application logic and core handlers.'
-  },
-  {
-    title: 'Domain-Driven Design',
-    description: 'Rich domain model encapsulating business logic, utilizing aggregates, value objects, and domain events for consistent state.'
-  },
-  {
-    title: 'CQRS Pattern',
-    description: 'Commands and queries are cleanly separated, enabling independent scaling, optimized read models, and clear intent in the codebase.'
-  },
-  {
-    title: 'Blazor WebClient',
-    description: 'Full-featured Blazor WebAssembly client consuming the API, deployed to Azure App Service with automated CI/CD pipelines.'
-  },
-  {
-    title: 'Full Test Coverage',
-    description: 'Comprehensive unit and integration test suite using xUnit, validating domain logic, application handlers, and API endpoints.'
-  },
+const docsPaths = [
+  ['Architecture', 'Layer boundaries, transport split, and domain rules.', `${docsBase}/architecture/`],
+  ['API Reference', 'REST endpoints, Identity API, and gRPC contracts.', `${docsBase}/api-reference/`],
+  ['Database', 'PostgreSQL, EF Core, Dapper, migrations, and seed scripts.', `${docsBase}/database/`],
+  ['Testing', 'Architecture tests, unit tests, integration tests, and coverage.', `${docsBase}/testing/`]
 ];
 ---
 
-<section class="dashboard">
-  <div class="stats-grid">
-    {stats.map(stat => (
-      <div class="stat-item">
-        <h3>{stat.value}</h3>
-        <p>{stat.label}</p>
-      </div>
-    ))}
+<section class="proof-ledger" aria-labelledby="proof-title">
+  <div class="section-heading">
+    <p class="eyebrow">source-backed proof</p>
+    <h2 id="proof-title">Evidence before adjectives</h2>
+    <p>Each row points to the docs page that carries the implementation detail.</p>
   </div>
 
-  <div class="features-section">
-    <h3>Core Architecture</h3>
-    <div class="features-grid">
-      {features.map(f => (
-        <div class="feature-card">
-          <h4>{f.title}</h4>
-          <p>{f.description}</p>
-        </div>
-      ))}
-    </div>
+  <div class="ledger-list">
+    {proofRows.map((row) => (
+      <a class="ledger-row" href={row.href}>
+        <span class="ledger-label">{row.label}</span>
+        <strong>{row.value}</strong>
+        <p>{row.body}</p>
+      </a>
+    ))}
   </div>
 </section>
 
-<section class="quickstart-section">
-  <h3>Quick Start</h3>
-  <div class="code-block">
+<section class="docs-paths" aria-labelledby="docs-paths-title">
+  <div class="section-heading compact">
+    <p class="eyebrow">documentation paths</p>
+    <h2 id="docs-paths-title">Start where your review starts</h2>
+  </div>
+  <div class="path-grid">
+    {docsPaths.map(([title, body, href]) => (
+      <a class="path-card" href={href}>
+        <span>{title}</span>
+        <p>{body}</p>
+      </a>
+    ))}
+  </div>
+</section>
+
+<section class="quickstart-section" aria-labelledby="quickstart-title">
+  <div>
+    <p class="eyebrow">clone path</p>
+    <h2 id="quickstart-title">Run the stack, then inspect the boundaries</h2>
+  </div>
+  <div class="code-block" role="region" aria-label="Quick start commands" tabindex="0">
     <pre><code><span class="comment"># Clone the repository</span>
 <span class="command">git clone</span> <span class="arg">https://github.com/jonathanperis/cpnucleo</span>
 
-<span class="comment"># Navigate into the directory</span>
+<span class="comment"># Start the Docker topology</span>
 <span class="command">cd</span> <span class="arg">cpnucleo</span>
-
-<span class="comment"># Run with Docker Compose</span>
 <span class="command">docker compose up</span> <span class="arg">-d</span></code></pre>
   </div>
 </section>

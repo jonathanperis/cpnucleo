@@ -1,11 +1,13 @@
 ---
+const base = import.meta.env.BASE_URL;
+const docsUrl = base.replace(/\/$/, '') + '/docs/';
 ---
 
-<nav>
-  <div class="logo">cpnucleo</div>
+<nav class="site-nav" aria-label="Primary navigation">
+  <a class="logo" href={base}>cpnucleo</a>
   <div class="nav-links">
-    <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer">Live Demo</a>
-    <a href="./docs/">Docs</a>
+    <a href={docsUrl}>Docs</a>
     <a href="https://github.com/jonathanperis/cpnucleo">GitHub</a>
+    <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer">Live Demo</a>
   </div>
 </nav>
