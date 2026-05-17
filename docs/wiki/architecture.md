@@ -1,6 +1,6 @@
 # Architecture
 
-Cpnucleo follows Clean Architecture principles with strict layer separation enforced by automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database.
+Cpnucleo follows Clean Architecture principles with strict layer separation enforced by 25 automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database.
 
 ---
 
@@ -121,7 +121,7 @@ Implements data access with two strategies side by side:
 
 - FastEndpoints.Messaging.Remote for gRPC-style command/handler pattern
 - Uses Dapper via `IUnitOfWork` for data access
-- HTTP/2 on port 5021 for gRPC transport
+- HTTP/2 on port 5020 for gRPC transport, with HTTP/1 health checks on port 5021
 - Command/Result pattern via `GrpcServer.Contracts`
 - All 11 entities have 5 handlers each: Create, GetById, List, Remove, Update (55 handlers total)
 
@@ -151,7 +151,7 @@ The system demonstrates two parallel approaches to the same domain:
 | Framework | FastEndpoints | FastEndpoints.Messaging.Remote |
 | Data Access | EF Core + ApplicationDbContext | Dapper + UnitOfWork |
 | Transport | HTTP/1.1 REST | HTTP/2 gRPC |
-| Internal Port | 5000 | 5021 |
+| Internal Port | 5000 | 5020 (HTTP/2 gRPC) + 5021 (HTTP/1 health) |
 | Load Balanced | Yes (NGINX, 2 instances) | No |
 
 Both implementations share the same Domain entities and PostgreSQL database.

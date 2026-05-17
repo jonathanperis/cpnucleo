@@ -69,7 +69,7 @@ Infrastructure/
 │   │   ├── ApplicationDbContext.cs       # EF Core DbContext implementation
 │   │   └── IApplicationDbContext.cs      # DbContext interface
 │   ├── Helpers/
-│   │   └── FakeDataHelper.cs             # Bogus-based test data generator
+│   │   └── FakeData.cs                   # Bogus-based test data generator
 │   └── Mappings/
 │       └── ...                           # EF Core entity configurations
 ├── Migrations/
@@ -132,7 +132,7 @@ gRPC command server using FastEndpoints Remote Messaging with Dapper data access
 ```
 GrpcServer/
 ├── GrpcServer.csproj                     # FastEndpoints.Messaging.Remote, Mapperly, OpenTelemetry
-├── Program.cs                            # HTTP/2 on port 5021, handler registration (55 handlers)
+├── Program.cs                            # HTTP/2 on port 5020, HTTP/1 health on 5021, handler registration (55 handlers)
 ├── Usings.cs
 ├── Dockerfile
 ├── Common/
@@ -244,7 +244,7 @@ Validates Clean Architecture dependency rules using NetArchTest.
 ```
 Architecture.Tests/
 ├── Architecture.Tests.csproj             # xUnit, NetArchTest.Rules, FluentAssertions
-├── ArchitectureTests.cs                  # 25+ architecture validation tests
+├── ArchitectureTests.cs                  # 25 architecture validation tests
 ├── Usings.cs
 └── README.md
 ```
@@ -264,7 +264,7 @@ WebApi.Unit.Tests/
 
 ### WebApi.Integration.Tests (`test/WebApi.Integration.Tests/`)
 
-Integration tests running against real services.
+Integration tests using FastEndpoints.Testing host fixtures; run manually when a database-backed integration pass is needed.
 
 ```
 WebApi.Integration.Tests/

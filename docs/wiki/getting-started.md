@@ -40,7 +40,7 @@ docker compose -f compose.yaml -f compose.override.yaml up --build
 
 ### Production Mode
 
-Uses pre-built images with resource reservations, restart policies, and structured JSON logging:
+Uses image variables, Traefik labels, resource reservations, restart policies, and structured JSON logging for production hosts:
 
 ```bash
 docker compose -f compose.yaml -f compose.prod.yaml up -d
@@ -55,7 +55,7 @@ Once running, the services are available at:
 | WebApi (instance 1) | http://localhost:5100 | REST API |
 | WebApi (instance 2) | http://localhost:5111 | REST API (load-balanced pair) |
 | IdentityApi | http://localhost:5200 | JWT Authentication API |
-| GrpcServer | http://localhost:5300 (health) / :5301 (gRPC) | gRPC command server |
+| GrpcServer | http://localhost:5300 (gRPC) / http://localhost:5301 (health) | gRPC command server |
 | WebClient | http://localhost:5400 | Blazor UI |
 | NGINX | http://localhost:9999 | Reverse proxy (load balances WebApi) |
 | PostgreSQL | localhost:5432 | Database |
@@ -69,7 +69,7 @@ All services expose a health endpoint:
 ```bash
 curl http://localhost:5100/healthz   # WebApi
 curl http://localhost:5200/healthz   # IdentityApi
-curl http://localhost:5300/healthz   # GrpcServer
+curl http://localhost:5301/healthz   # GrpcServer (HTTP/1 health port)
 curl http://localhost:5400/healthz   # WebClient
 ```
 

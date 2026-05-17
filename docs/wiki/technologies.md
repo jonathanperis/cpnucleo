@@ -25,13 +25,13 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Entity Framework Core | 10.0.3 | ORM for WebApi and IdentityApi |
-| EF Core Design | 10.0.3 | Migration tooling |
+| Entity Framework Core | 10.0.7 | ORM for WebApi and IdentityApi |
+| EF Core Design | 10.0.7 | Migration tooling |
 | Npgsql | 10.0.1 | PostgreSQL .NET driver |
 | Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.0 | EF Core PostgreSQL provider |
 | Dapper | 2.1.72 | Micro-ORM for GrpcServer |
 | Dapper.AOT | 1.0.48 | Compile-time SQL interception |
-| Delta | 9.0.0 | HTTP conditional requests via DB timestamps |
+| Delta | 9.0.1 | HTTP conditional requests via DB timestamps |
 
 ## Database
 
@@ -43,7 +43,7 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.3 | JWT Bearer authentication middleware |
+| Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.7 | JWT Bearer authentication middleware |
 
 ## Mapping
 
@@ -61,13 +61,13 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| OpenTelemetry.Exporter.Console | 1.15.1 | Console telemetry export |
-| OpenTelemetry.Exporter.OpenTelemetryProtocol | 1.15.0 | OTLP telemetry export |
-| OpenTelemetry.Extensions.Hosting | 1.15.0 | Host integration |
-| OpenTelemetry.Instrumentation.AspNetCore | 1.15.0 | ASP.NET Core instrumentation |
-| OpenTelemetry.Instrumentation.Http | 1.15.0 | HTTP client instrumentation |
+| OpenTelemetry.Exporter.Console | 1.15.3 | Console telemetry export |
+| OpenTelemetry.Exporter.OpenTelemetryProtocol | 1.15.3 | OTLP telemetry export |
+| OpenTelemetry.Extensions.Hosting | 1.15.3 | Host integration |
+| OpenTelemetry.Instrumentation.AspNetCore | 1.15.2 | ASP.NET Core instrumentation |
+| OpenTelemetry.Instrumentation.Http | 1.15.1 | HTTP client instrumentation |
 | OpenTelemetry.Instrumentation.Process | 1.12.0-beta.1 | Process metrics |
-| OpenTelemetry.Instrumentation.Runtime | 1.15.0 | .NET runtime metrics |
+| OpenTelemetry.Instrumentation.Runtime | 1.15.1 | .NET runtime metrics |
 | Grafana LGTM | Latest | Observability stack (dev only, via Docker) |
 
 ## Frontend
@@ -91,8 +91,8 @@
 | FakeItEasy | 9.0.1 | Mocking framework |
 | Shouldly | 4.3.0 | Assertion library |
 | Bogus | 35.6.5 | Fake data generation |
-| coverlet.collector | 8.0.1 | Code coverage collection |
-| Microsoft.NET.Test.Sdk | 18.0.1 | .NET test infrastructure |
+| coverlet.collector | 10.0.0 | Code coverage collection |
+| Microsoft.NET.Test.Sdk | 18.5.1 | .NET test infrastructure |
 
 ## Infrastructure & DevOps
 
