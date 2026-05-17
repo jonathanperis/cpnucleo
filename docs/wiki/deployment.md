@@ -49,7 +49,7 @@ Differences from base:
 - Resource reservations: 0.25 CPU / 256MB per API, 0.50 CPU / 512MB per DB
 - Resource limits: 0.50 CPU / 512MB per API, 1.0 CPU / 1GB for DB
 - JSON logging with rotation: 10MB max size, 3 files retained
-- No build step (uses pre-built images)
+- No build step; production image variables such as `CPNUCLEO_WEB_API_IMAGE` are required and should point at immutable GHCR tags (for example `sha-...`)
 
 ---
 
@@ -77,7 +77,7 @@ Each service has a multi-stage Dockerfile supporting configurable build options:
 
 ### Platform Support
 
-All images are built for `linux/amd64` and `linux/arm64/v8`.
+The release workflow builds `linux/amd64` and `linux/arm64/v8` images, then merges them into `latest` and immutable `sha-${GITHUB_SHA}` manifests.
 
 ---
 
@@ -144,19 +144,18 @@ Triggered on push to main and manual dispatch.
 
 1. **Setup, Build & Test** -- Same as build check but with `TRIM=true`, `EXTRA_OPTIMIZE=true`, `BUILD_CONFIGURATION=Release`
 
-2. **Build & Push Docker Image** (depends on test)
-   - Setup QEMU and Docker Buildx for multi-platform builds
-   - Login to GHCR
-   - Build and push images for `linux/amd64` and `linux/arm64/v8`
-   - Images pushed to GHCR: `ghcr.io/jonathanperis/cpnucleo-{service}:latest`
+2. **Build & Push Docker Images** (depends on test)
+   - Build `linux/amd64` images tagged `sha-${GITHUB_SHA}-amd64` and `latest`
+   - Build `linux/arm64/v8` images tagged `sha-${GITHUB_SHA}-arm64` and `latest-arm64`
+   - Merge both architectures into multi-arch `sha-${GITHUB_SHA}` and `latest` manifests for each GHCR image
 
 3. **Container Healthcheck Test** (depends on push)
    - Pull production images
    - Run healthcheck validation
 
-4. **Deploy to Azure** (depends on healthcheck)
+4. **Deploy to Azure** (depends on infrastructure + manifest merge)
    - Deploy each service to its Azure Web App
-   - Uses publish profiles stored in GitHub Secrets
+   - Uses Azure OIDC secrets (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`) and immutable `sha-${GITHUB_SHA}` image tags
 
 ### Azure Deployment Targets
 
@@ -188,10 +187,9 @@ Triggered on push to main and manual dispatch.
 |--------|---------|
 | `GITHUB_TOKEN` | GHCR authentication (automatic) |
 | `DB_CONNECTION_STRING` | Production database connection |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_WEBAPI` | Azure publish profile for WebApi |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_GRPCSERVER` | Azure publish profile for GrpcServer |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_IDENTITYAPI` | Azure publish profile for IdentityApi |
-| `AZURE_WEBAPP_PUBLISH_PROFILE_WEBCLIENT` | Azure publish profile for WebClient |
+| `AZURE_CLIENT_ID` | Azure OIDC client ID |
+| `AZURE_TENANT_ID` | Azure tenant ID |
+| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
 
 ---
 

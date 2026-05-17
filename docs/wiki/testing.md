@@ -1,6 +1,6 @@
 # Testing
 
-Cpnucleo has three test projects covering architecture validation, unit testing, and integration testing.
+Cpnucleo has three test projects covering 25 architecture rules, 49 WebApi unit-test cases in source, and 55 integration tests. The active GitHub Actions gates run architecture tests and container health checks; unit/integration suites are kept for local/manual validation.
 
 ---
 
@@ -10,7 +10,7 @@ Cpnucleo has three test projects covering architecture validation, unit testing,
 |---------|-----------|-------|--------------|
 | Architecture.Tests | xUnit | Clean Architecture rules | NetArchTest.Rules, FluentAssertions |
 | WebApi.Unit.Tests | NUnit | Endpoint unit tests | FakeItEasy, Shouldly, FastEndpoints |
-| WebApi.Integration.Tests | xUnit v3 | End-to-end endpoint tests | FastEndpoints.Testing, Shouldly |
+| WebApi.Integration.Tests | xUnit v3 | 55 endpoint integration tests | FastEndpoints.Testing, Shouldly |
 
 ---
 
@@ -71,7 +71,7 @@ These tests enforce Clean Architecture dependency rules at build time using NetA
 
 ## Unit Tests (`test/WebApi.Unit.Tests/`)
 
-Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions.
+Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions. The source contains 49 test cases, but the suite is not part of the active CI gate and currently needs cleanup around several `Remove*` request-model references before it compiles end to end.
 
 ### Structure
 
@@ -97,7 +97,7 @@ WebApi.Unit.Tests/
 
 ## Integration Tests (`test/WebApi.Integration.Tests/`)
 
-Integration tests that exercise the full request pipeline using FastEndpoints.Testing and xUnit v3.
+55 integration tests exercise the FastEndpoints request pipeline with xUnit v3 and shared host fixtures.
 
 ### Structure
 
@@ -123,14 +123,14 @@ WebApi.Integration.Tests/
 
 ### Prerequisites
 
-Integration tests require a running PostgreSQL database. In CI, this is provisioned via Docker Compose:
+Integration tests require a database-backed test environment. For manual runs, start PostgreSQL with Docker Compose first:
 
 ```bash
 docker compose up db -d --build --force-recreate
 sleep 30
 ```
 
-> Integration tests are currently commented out in CI workflows and are run manually.
+> Integration tests are present in source but are not part of the active GitHub Actions gates; PR and release workflows currently run architecture tests and container health checks.
 
 ---
 
@@ -180,4 +180,4 @@ Architecture tests run automatically in both CI workflows:
 - **build-check.yml** (PR): runs architecture tests for each service (WebApi, GrpcServer, IdentityApi, WebClient)
 - **main-release.yml** (push to main): runs architecture tests before building Docker images
 
-Unit and integration tests are configured in the workflows but currently commented out, pending further setup.
+Unit and integration test projects remain available for local/manual runs; the active GitHub Actions gates run architecture tests and container health checks. Latest local audit: `Architecture.Tests` passes 25/25, while `WebApi.Unit.Tests` has compile drift around removed `Remove*.Request` model types.

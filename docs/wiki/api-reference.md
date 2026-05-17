@@ -25,7 +25,7 @@ Every entity follows this consistent pattern:
 |--------|-------|-------------|
 | `POST` | `/api/{entity}` | Create a new record |
 | `GET` | `/api/{entity}/{id}` | Get a single record by ID |
-| `GET` | `/api/{entity}` | List records (paginated) |
+| `GET` | `/api/{entities}` | List records (paginated; plural route such as `/api/projects`) |
 | `PUT` | `/api/{entity}/{id}` | Update an existing record |
 | `DELETE` | `/api/{entity}/{id}` | Remove a record (soft delete) |
 
@@ -33,17 +33,17 @@ Every entity follows this consistent pattern:
 
 | Entity | Route Prefix | Tag |
 |--------|-------------|-----|
-| Appointment | `/api/appointment` | Appointments |
-| Assignment | `/api/assignment` | Assignments |
-| AssignmentImpediment | `/api/assignmentimpediment` | AssignmentImpediments |
-| AssignmentType | `/api/assignmenttype` | AssignmentTypes |
-| Impediment | `/api/impediment` | Impediments |
-| Organization | `/api/organization` | Organizations |
-| Project | `/api/project` | Projects |
-| User | `/api/user` | Users |
-| UserAssignment | `/api/userassignment` | UserAssignments |
-| UserProject | `/api/userproject` | UserProjects |
-| Workflow | `/api/workflow` | Workflows |
+| Appointment | `/api/appointment` / `/api/appointments` | Appointments |
+| Assignment | `/api/assignment` / `/api/assignments` | Assignments |
+| AssignmentImpediment | `/api/assignmentImpediment` / `/api/assignmentImpediments` | AssignmentImpediments |
+| AssignmentType | `/api/assignmentType` / `/api/assignmentTypes` | AssignmentTypes |
+| Impediment | `/api/impediment` / `/api/impediments` | Impediments |
+| Organization | `/api/organization` / `/api/organizations` | Organizations |
+| Project | `/api/project` / `/api/projects` | Projects |
+| User | `/api/user` / `/api/users` | Users |
+| UserAssignment | `/api/userAssignment` / `/api/userAssignments` | UserAssignments |
+| UserProject | `/api/userProject` / `/api/userProjects` | UserProjects |
+| Workflow | `/api/workflow` / `/api/workflows` | Workflows |
 
 ### Example: Create Appointment
 
@@ -172,8 +172,8 @@ The GrpcServer uses FastEndpoints.Messaging.Remote to handle commands over HTTP/
 
 ### Ports
 
-- Health check: `http://localhost:5300/healthz` (HTTP/1.1)
-- gRPC transport: `http://localhost:5301` (HTTP/2)
+- gRPC transport: `http://localhost:5300` (HTTP/2)
+- Health check: `http://localhost:5301/healthz` (HTTP/1.1)
 
 ### Command Pattern
 
