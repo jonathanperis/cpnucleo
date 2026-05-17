@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import '../../styles/docs.css';
-import { SECTION_CATEGORIES, SECTION_ORDER } from './sidebar.config';
+import { SECTION_CATEGORIES, SECTION_ORDER } from '../../lib/sidebar.config';
 
 const SLUG_LABEL: Record<string, string> = {
   home: 'Home',
@@ -15,6 +15,18 @@ const SLUG_LABEL: Record<string, string> = {
   deployment: 'Deployment',
 };
 
+const DOC_SUMMARIES: Record<string, string> = {
+  home: 'Project overview, feature map, and repository entry points.',
+  architecture: 'Layer boundaries, Clean Architecture constraints, and service split.',
+  'api-reference': 'REST endpoints, Identity API, and gRPC command contracts.',
+  database: 'PostgreSQL setup, EF Core, Dapper, migrations, and seed scripts.',
+  'getting-started': 'Prerequisites, local build, Docker Compose, and first run path.',
+  'project-structure': 'Repository tree, source projects, tests, infrastructure, and docs.',
+  technologies: 'Runtime, libraries, infrastructure, observability, and deployment stack.',
+  testing: 'Architecture tests, unit tests, integration tests, and coverage workflow.',
+  deployment: 'Docker, GHCR, GitHub Actions, NGINX, Azure, and release pipeline.'
+};
+
 const globResult = import.meta.glob('../../../wiki/*.md', { eager: true });
 
 const pagesBySlug: Record<string, any> = {};
@@ -23,7 +35,6 @@ for (const [path, module] of Object.entries(globResult)) {
   pagesBySlug[fileName] = module;
 }
 
-// Build-time assertion: validate SECTION_CATEGORIES IDs against discovered slugs
 const availableSlugs = new Set(Object.keys(pagesBySlug));
 for (const cat of SECTION_CATEGORIES) {
   for (const id of cat.ids) {
@@ -39,16 +50,8 @@ for (const cat of SECTION_CATEGORIES) {
 const requestedSlug = Astro.params.slug;
 const isRoot = requestedSlug === undefined;
 const requestedKey = requestedSlug ?? 'home';
-
-const sectionsToRender = isRoot
-  ? SECTION_CATEGORIES.flatMap(cat => cat.ids)
-      .map(slug => ({ slug, page: pagesBySlug[slug] }))
-      .filter(s => s.page)
-  : (() => {
-      const page = pagesBySlug[requestedKey];
-      if (!page) return [];
-      return [{ slug: requestedSlug!, page }];
-    })();
+const selectedPage = pagesBySlug[requestedKey];
+const sectionsToRender = !isRoot && selectedPage ? [{ slug: requestedKey, page: selectedPage }] : [];
 
 export function getStaticPaths() {
   return [
@@ -57,15 +60,20 @@ export function getStaticPaths() {
   ];
 }
 
-const pageTitle = isRoot ? 'cpnucleo - Documentation' : `${SLUG_LABEL[requestedSlug] ?? requestedSlug} - cpnucleo`;
+const pageTitle = isRoot ? 'cpnucleo - Documentation' : `${SLUG_LABEL[requestedKey] ?? requestedKey} - cpnucleo`;
 const base = import.meta.env.BASE_URL;
 const docsBase = base.replace(/\/$/, '') + '/docs';
 const backHomeUrl = base.replace(/\/$/, '') + '/';
+const currentId = isRoot ? 'home' : requestedKey;
+const docsGroups = SECTION_CATEGORIES.map((cat) => ({
+  label: cat.label || 'Start',
+  ids: cat.ids,
+}));
 ---
 
 <BaseLayout title={pageTitle}>
   <div class="mobile-header">
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu" aria-controls="sidebar" aria-expanded="false">
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-controls="sidebar" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
@@ -75,33 +83,34 @@ const backHomeUrl = base.replace(/\/$/, '') + '/';
 
   <div class="overlay" id="overlay"></div>
 
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar" data-current-id={currentId}>
     <div class="sidebar-header">
-      <h1 class="repo-title">cpnucleo</h1>
-      <p class="repo-description">Project management system built with .NET 10 — Clean Architecture, DDD, and dual REST/gRPC</p>
-      <input type="text" id="searchInput" class="search-box" placeholder="Search documentation..." aria-label="Search documentation" hidden={!isRoot}>
+      <a class="repo-title" href={docsBase + '/'}>cpnucleo</a>
+      <p class="repo-description">.NET 10 Clean Architecture reference with REST, gRPC, Blazor, PostgreSQL, and Azure deployment.</p>
+      <input type="text" id="searchInput" class="search-box" placeholder="Filter documentation" aria-label="Filter documentation" />
+      <p class="search-empty" id="searchEmpty" role="status" hidden>No docs entry matches that filter.</p>
     </div>
     <div class="sidebar-nav-container">
-      {SECTION_CATEGORIES.map((cat) => {
-        const catIds = cat.ids;
-        return (
-          <div class="sidebar-category-group" data-category>
-            {cat.label && <div class="sidebar-category">{cat.label}</div>}
-            <ul>
-              {catIds.map((id) => (
+      {SECTION_CATEGORIES.map((cat) => (
+        <div class="sidebar-category-group" data-category>
+          {cat.label && <div class="sidebar-category">{cat.label}</div>}
+          <ul>
+            {cat.ids.map((id) => {
+              const href = id === 'home' ? `${docsBase}/` : `${docsBase}/${id}/`;
+              return (
                 <li>
-                  <a class="nav-item" href={`${docsBase}/#${id}`} data-nav-id={id}>
+                  <a class:list={["nav-item", currentId === id && "active"]} href={href} data-nav-id={id} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
                     {SLUG_LABEL[id]}
                   </a>
                 </li>
-              ))}
-            </ul>
-          </div>
-        );
-      })}
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </div>
     <div class="sidebar-footer">
-      <a href={backHomeUrl} class="back-home">← Back to home</a>
+      <a href={backHomeUrl} class="back-home">Back to home</a>
       <a href="https://github.com/jonathanperis/cpnucleo" target="_blank" rel="noopener noreferrer">View on GitHub</a>
       <div>Built by Jonathan Peris</div>
     </div>
@@ -109,127 +118,90 @@ const backHomeUrl = base.replace(/\/$/, '') + '/';
 
   <div class="content-wrapper">
     <main class="content" id="mainContent">
-      {sectionsToRender.map(({ slug, page: wikiPage }) => {
-        const Content = wikiPage.default ?? wikiPage;
-        return (
-          <section id={slug} class="doc-section">
-            <Content />
-          </section>
-        );
-      })}
+      {isRoot ? (
+        <section class="docs-command" aria-labelledby="docs-title">
+          <p class="eyebrow">documentation command center</p>
+          <h1 id="docs-title">Choose the proof trail you need</h1>
+          <p class="lead">The docs are grouped for architecture review, implementation study, and deployment checks. Start with the route that matches your question instead of scanning one compiled page.</p>
+
+          <div class="docs-group-grid">
+            {docsGroups.map((group) => (
+              <section class="docs-group" data-doc-group>
+                <h2>{group.label}</h2>
+                <div class="docs-link-list">
+                  {group.ids.map((id) => {
+                    const href = id === 'home' ? `${docsBase}/` : `${docsBase}/${id}/`;
+                    return (
+                      <a class="docs-link-card" href={href} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
+                        <span>{SLUG_LABEL[id]}</span>
+                        <p>{DOC_SUMMARIES[id]}</p>
+                      </a>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+      ) : (
+        sectionsToRender.map(({ slug, page: wikiPage }) => {
+          const Content = wikiPage.default ?? wikiPage;
+          return (
+            <section id={slug} class="doc-section">
+              <Content />
+            </section>
+          );
+        })
+      )}
     </main>
   </div>
 
-  {requestedSlug && <script is:inline define:vars={{ slug: requestedSlug, isRoot: isRoot }}>window.__docsSlug = slug; window.__isRoot = isRoot;</script>}
-
-  <script is:inline>
+  <script is:inline define:vars={{ currentId: currentId }}>
     document.addEventListener('DOMContentLoaded', () => {
       const menuToggle = document.getElementById('menuToggle');
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('overlay');
 
-      function toggleMenu() {
-        const isOpen = sidebar.classList.toggle('open');
-        overlay.classList.toggle('open');
-        if (menuToggle) menuToggle.setAttribute('aria-expanded', String(isOpen));
+      function setMenu(open) {
+        sidebar.classList.toggle('open', open);
+        overlay.classList.toggle('open', open);
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', String(open));
       }
 
-      if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
-      if (overlay) overlay.addEventListener('click', toggleMenu);
+      if (menuToggle) menuToggle.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+      if (overlay) overlay.addEventListener('click', () => setMenu(false));
 
-      const isRoot = window.__isRoot !== false;
-      const prefersReducedMotion = !window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-      const sections = document.querySelectorAll('section.doc-section');
-      const navItems = document.querySelectorAll('.nav-item');
-
-      if (isRoot) {
-        const targetSlug = window.__docsSlug;
-        const hash = window.location.hash;
-        const sectionId = targetSlug || (hash && hash.length > 1 ? hash.slice(1) : null);
-        if (sectionId) {
-          const target = document.getElementById(sectionId);
-          if (target) {
-            setTimeout(() => target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' }), 100);
-          }
-        }
-      }
-
-      if (isRoot && sections.length > 1) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const sectionId = entry.target.id;
-              navItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.navId === sectionId);
-                if (item.dataset.navId === sectionId) {
-                  item.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'nearest' });
-                }
-              });
-            }
-          });
-        }, { root: null, rootMargin: '-80px 0px -60% 0px', threshold: 0 });
-
-        sections.forEach(section => observer.observe(section));
-
-        navItems.forEach(item => {
-          item.addEventListener('click', () => {
-            if (window.innerWidth <= 768) toggleMenu();
-          });
+      document.querySelectorAll('.nav-item').forEach((item) => {
+        item.classList.toggle('active', item.dataset.navId === currentId);
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 768) setMenu(false);
         });
-      }
+      });
 
-      if (isRoot) {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-          searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const content = document.getElementById('mainContent');
-            if (!content) return;
+      const searchInput = document.getElementById('searchInput');
+      const searchEmpty = document.getElementById('searchEmpty');
+      const searchable = Array.from(document.querySelectorAll('[data-search-text]'));
+      const groups = Array.from(document.querySelectorAll('[data-category], [data-doc-group]'));
 
-            if (query === '') {
-              sections.forEach(s => s.classList.remove('hidden-section'));
-              navItems.forEach(item => {
-                item.style.display = '';
-                item.parentElement.style.display = '';
-              });
-              document.querySelectorAll('.sidebar-category-group').forEach(group => {
-                group.style.display = '';
-                const catLabel = group.querySelector('.sidebar-category');
-                if (catLabel) catLabel.style.display = '';
-              });
-              return;
-            }
+      if (searchInput) {
+        searchInput.addEventListener('input', (event) => {
+          const query = event.target.value.toLowerCase().trim();
+          let visible = 0;
 
-            sections.forEach(section => {
-              const text = section.textContent?.toLowerCase() ?? '';
-              const navItem = document.querySelector(`.nav-item[data-nav-id="${section.id}"]`);
-              const li = navItem ? navItem.parentElement : null;
-
-              if (text.includes(query)) {
-                section.classList.remove('hidden-section');
-                if (li) li.style.display = '';
-              } else {
-                section.classList.add('hidden-section');
-                if (li) li.style.display = 'none';
-              }
-            });
-
-            document.querySelectorAll('.sidebar-category-group').forEach(group => {
-              const items = group.querySelectorAll('.nav-item');
-              let visibleCount = 0;
-              items.forEach(item => {
-                const id = item.dataset.navId;
-                const sec = document.getElementById(id ?? '');
-                const vis = !sec || !sec.classList.contains('hidden-section');
-                item.style.display = vis ? '' : 'none';
-                if (vis) visibleCount++;
-              });
-              const catLabel = group.querySelector('.sidebar-category');
-              if (catLabel) catLabel.style.display = visibleCount === 0 ? 'none' : '';
-              group.style.display = visibleCount === 0 ? 'none' : '';
-            });
+          searchable.forEach((item) => {
+            const match = !query || item.dataset.searchText.toLowerCase().includes(query);
+            const container = item.closest('li') || item;
+            container.hidden = !match;
+            if (match) visible++;
           });
-        }
+
+          groups.forEach((group) => {
+            const entries = Array.from(group.querySelectorAll('[data-search-text]'));
+            group.hidden = entries.length > 0 && entries.every((entry) => (entry.closest('li') || entry).hidden);
+          });
+
+          if (searchEmpty) searchEmpty.hidden = query === '' || visible > 0;
+        });
       }
     });
   </script>

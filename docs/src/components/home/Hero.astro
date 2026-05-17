@@ -1,53 +1,86 @@
 ---
+const docsUrl = import.meta.env.BASE_URL.replace(/\/$/, '') + '/docs/';
 ---
 
-<section class="hero">
+<section class="hero" aria-labelledby="hero-title">
   <div class="hero-content">
-    <div class="hero-badge">SYSTEM ARCHITECTURE // V10</div>
-    <h1>Enterprise .NET<br><span class="hero-accent">Architecture</span></h1>
+    <p class="eyebrow">Architecture workbench · .NET 10</p>
+    <h1 id="hero-title">Clean Architecture reference system for .NET 10</h1>
     <p class="tagline">
-      A production-ready blueprint demonstrating Clean Architecture and Domain-Driven Design.
-      Featuring a dual transport layer — REST API + gRPC — powered by Blazor and PostgreSQL.
+      CPnucleo is a project management system built to expose real service boundaries:
+      REST with EF Core, gRPC style messaging with Dapper, Blazor UI, PostgreSQL,
+      Docker, NGINX, OpenTelemetry, and Azure deployment.
     </p>
 
-    <div class="badges">
-      <span class="badge">.NET 10</span>
-      <span class="badge">Blazor</span>
-      <span class="badge">Clean Architecture</span>
-      <span class="badge">CQRS + DDD</span>
-      <span class="badge">gRPC</span>
-      <span class="badge">PostgreSQL</span>
-      <span class="badge">Azure</span>
-      <span class="badge">Docker</span>
+    <div class="variant-switcher" aria-label="A/B variants">
+      <a href="?ab=proof" data-ab-link="proof">Proof hero</a>
+      <a href="?ab=architecture" data-ab-link="architecture">Architecture hero</a>
+      <a href="?ab=control" data-ab-link="control">Control</a>
     </div>
 
-    <div class="ctas">
-      <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Try it Live &rarr;</a>
-      <a href="./docs/" class="btn btn-outline">Documentation &rarr;</a>
-      <a href="https://github.com/jonathanperis/cpnucleo" class="btn btn-outline">GitHub &rarr;</a>
+    <div class="proof-chips" aria-label="Stack proof">
+      <span>.NET 10</span>
+      <span>FastEndpoints</span>
+      <span>Blazor</span>
+      <span>PostgreSQL</span>
+      <span>Docker</span>
+      <span>Azure</span>
+    </div>
+
+    <div class="ctas" data-analytics-scope="hero">
+      <a href={docsUrl} class="btn btn-primary" data-track="docs">Read docs</a>
+      <a href="https://github.com/jonathanperis/cpnucleo" class="btn btn-outline" data-track="github">Inspect GitHub</a>
+      <a href="https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/" target="_blank" rel="noopener noreferrer" class="btn btn-subtle" data-track="demo">Open live demo</a>
     </div>
   </div>
 
-  <div class="hero-diagram" aria-hidden="true">
-    <div class="node n-ui">
-      <div class="node-title">Blazor UI</div>
-      <div class="node-desc">Client App</div>
+  <aside class="hero-panel" aria-label="Architecture proof preview">
+    <div class="panel-kicker">live topology</div>
+    <div class="topology-map">
+      <div class="service webclient">WebClient<br /><span>Blazor</span></div>
+      <div class="service webapi">WebApi<br /><span>REST + EF Core</span></div>
+      <div class="service identity">IdentityApi<br /><span>JWT auth</span></div>
+      <div class="service grpc">GrpcServer<br /><span>Dapper</span></div>
+      <div class="core">Domain core<br /><span>entities, interfaces, rules</span></div>
+      <div class="storage">PostgreSQL · NGINX · OpenTelemetry</div>
     </div>
-    <div class="line l-1"></div>
-    <div class="line l-2"></div>
-    <div class="node n-api">
-      <div class="node-title">REST API</div>
-      <div class="node-desc">Controllers</div>
-    </div>
-    <div class="node n-grpc">
-      <div class="node-title">gRPC</div>
-      <div class="node-desc">Services</div>
-    </div>
-    <div class="line l-3"></div>
-    <div class="line l-4"></div>
-    <div class="node n-app">
-      <div class="node-title">Application Core</div>
-      <div class="node-desc">Clean Architecture &amp; DDD &bull; PostgreSQL Infrastructure</div>
-    </div>
-  </div>
+  </aside>
 </section>
+
+<section class="ab-panels" aria-label="A/B test previews">
+  <article class="ab-panel" data-ab-panel="proof">
+    <span>Variant B</span>
+    <strong>Proof-led hero</strong>
+    <p>Prioritizes docs and GitHub clicks with source-backed rows above the fold.</p>
+  </article>
+  <article class="ab-panel" data-ab-panel="architecture">
+    <span>Variant C</span>
+    <strong>Architecture-first hero</strong>
+    <p>Makes the service topology the dominant visual for first-time evaluators.</p>
+  </article>
+  <article class="ab-panel" data-ab-panel="control">
+    <span>Control</span>
+    <strong>Current hierarchy</strong>
+    <p>Keeps broad project positioning, then compares CTA and scroll behavior.</p>
+  </article>
+</section>
+
+<script is:inline>
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    const allowed = new Set(['control', 'proof', 'architecture']);
+    const variant = allowed.has(params.get('ab')) ? params.get('ab') : 'proof';
+    document.documentElement.dataset.ab = variant;
+    document.querySelectorAll('[data-ab-link]').forEach((link) => {
+      link.setAttribute('aria-current', link.dataset.abLink === variant ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-track]').forEach((link) => {
+      link.addEventListener('click', () => {
+        window.gtag?.('event', 'cpnucleo_cta_click', {
+          ab_variant: variant,
+          cta: link.dataset.track
+        });
+      });
+    });
+  })();
+</script>
