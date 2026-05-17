@@ -7,14 +7,14 @@ type: reference
 ## Core Versions (as of 2026-04)
 
 - **.NET SDK:** 10.0.102 (global.json with `latestMinor` rollForward)
-- **FastEndpoints:** 7.2.0 (REST + gRPC + Swagger + Security + Kiota)
-- **Entity Framework Core:** 10.0.3
+- **FastEndpoints:** 8.1.0 core packages (Swagger/Testing still 7.2.0)
+- **Entity Framework Core:** 10.0.7
 - **Dapper:** 2.1.72 + Dapper.AOT 1.0.48
 - **Npgsql:** 10.0.1 (driver) + 10.0.0 (EF Core provider)
 - **PostgreSQL:** 16.7
 - **Riok.Mapperly:** 4.3.1
-- **MudBlazor:** 8.x
-- **OpenTelemetry:** 1.15.x
+- **MudBlazor:** 8.15.0
+- **OpenTelemetry:** 1.15.x packages (OTLP/hosting 1.15.3)
 
 ## Test Frameworks
 

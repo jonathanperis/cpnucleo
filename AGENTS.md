@@ -1,4 +1,4 @@
-# Cpnucleo — Claude Code Guide
+# Cpnucleo — Agent Guide
 
 Production-grade .NET 10 project management system demonstrating Clean Architecture, DDD, CQRS, and dual data access strategies.
 
@@ -131,7 +131,8 @@ cpnucleo/
 │   ├── Architecture.Tests/          # 25+ Clean Architecture rules (xUnit + NetArchTest)
 │   ├── WebApi.Unit.Tests/           # Endpoint unit tests (NUnit + FakeItEasy + Shouldly)
 │   └── WebApi.Integration.Tests/    # E2E tests (xUnit v3 + FastEndpoints.Testing)
-└── wiki/                            # GitHub wiki documentation
+├── docs/wiki/                       # Source markdown for GitHub Pages documentation
+└── docs/                            # Astro GitHub Pages site
 ```
 
 ---
@@ -171,8 +172,8 @@ Exactly 14 expected warnings from `src/Infrastructure/Common/Helpers/FakeData.cs
 - **PR (`build-check.yml`):** Build + Architecture Tests + Code Coverage (Codecov) + Container health check
 - **Main (`main-release.yml`):** 7-job pipeline (matrix x4 services each) — see pipeline flow below
 - **Security (`codeql.yml`):** CodeQL analysis on push/PR/weekly schedule
-- **Docs (`deploy-docs.yml`):** Auto-generates docs site from wiki, creates PR
-- **Registry:** `ghcr.io/jonathanperis/cpnucleo-{service}:latest`
+- **Docs (`deploy.yml`):** Deploys the Astro docs site to GitHub Pages on main
+- **Registry:** `ghcr.io/jonathanperis/cpnucleo-{web-api|grpc-server|identity-api|web-client}`
 
 ### Main Release Pipeline Flow
 
@@ -192,12 +193,12 @@ build-push-amd64 (x4) ───────────────────�
 | Job | Description |
 |-----|-------------|
 | `setup-build-test` (x4) | Restore + build Release + Architecture Tests |
-| `build-push-amd64` (x4) | Build linux/amd64, push as `:latest` |
+| `build-push-amd64` (x4) | Build linux/amd64, push as `:latest` and `:sha-<commit>-amd64` |
 | `container-test` (x4) | Docker Compose health check per service |
 | `deploy-infra` | Bicep Incremental deploy (Log Analytics + App Insights + Web Apps) |
-| `deploy-image` (x4) | Deploy `:latest` to Azure via OIDC |
-| `build-push-arm64` (x4) | Build linux/arm64/v8, push as `:latest-arm64` (non-blocking) |
-| `merge-manifest` (x4) | Merge amd64 + arm64 into multi-arch `:latest` manifest |
+| `deploy-image` (x4) | Deploy `:sha-<commit>` to Azure via OIDC |
+| `build-push-arm64` (x4) | Build linux/arm64/v8, push as `:latest-arm64` and `:sha-<commit>-arm64` |
+| `merge-manifest` (x4) | Merge amd64 + arm64 into multi-arch `:latest` and `:sha-<commit>` manifests |
 
 ### Azure Deployment (OIDC)
 
