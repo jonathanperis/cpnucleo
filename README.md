@@ -10,7 +10,7 @@
 
 ## About
 
-Cpnucleo is a project management and task tracking system built as a .NET 10 reference implementation for Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy. The REST API uses FastEndpoints with EF Core while the gRPC server uses FastEndpoints Remote Messaging with Dapper, both operating against the same PostgreSQL database. Over 25 architecture tests (NetArchTest) enforce layer dependency rules at build time, ensuring the domain layer remains free of infrastructure concerns.
+Cpnucleo is a project management and task tracking system built as a .NET 10 reference implementation for Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy. The REST API uses FastEndpoints with EF Core while the gRPC server uses FastEndpoints Remote Messaging with Dapper, both operating against the same PostgreSQL database. 25 architecture tests (NetArchTest) enforce layer dependency rules at build time, ensuring the domain layer remains free of infrastructure concerns.
 
 ## Tech Stack
 
@@ -35,7 +35,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 
 ## Features
 
-- Clean Architecture with strict layer separation enforced by 25+ automated NetArchTest rules
+- Clean Architecture with strict layer separation enforced by 25 automated NetArchTest rules
 - Dual data access strategies: EF Core (REST API) and Dapper with Unit of Work (gRPC server) against the same database
 - JWT authentication via a dedicated Identity API with PBKDF2-hashed credentials
 - Rate limiting per IP: 50 req/min on WebApi, 10 req/min on IdentityApi
@@ -71,7 +71,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 └─────────────────────────────────────────────────────┘
 ```
 
-Layer dependencies enforced by 25+ NetArchTest rules at build time.
+Layer dependencies enforced by 25 NetArchTest rules at build time.
 
 ## Getting Started
 
@@ -93,7 +93,7 @@ docker compose up
 |---------|-----|
 | WebApi (via NGINX) | http://localhost:9999 |
 | IdentityApi | http://localhost:5200 |
-| GrpcServer | http://localhost:5300 |
+| GrpcServer | http://localhost:5300 (gRPC) / http://localhost:5301 (health) |
 | WebClient | http://localhost:5400 |
 
 Development mode (build from source with Grafana LGTM observability):
@@ -138,18 +138,18 @@ dotnet test test/WebApi.Unit.Tests/            # Unit tests only
 | Suite | Framework | Coverage |
 |-------|-----------|----------|
 | Architecture.Tests | xUnit + NetArchTest | Layer deps, naming, sealed entities |
-| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | Endpoint happy/negative paths |
+| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 49 endpoint unit-test cases; local compile cleanup currently needed |
 | WebApi.Integration.Tests | xUnit v3 + FastEndpoints.Testing | Full HTTP CRUD per entity |
 
 ## CI/CD
 
 **build-check.yml** (pull requests): builds each service, runs architecture tests, performs container health check validation.
 
-**main-release.yml** (push to main): builds and tests with `TRIM=true` and `EXTRA_OPTIMIZE=true`, builds multi-platform Docker images, pushes to GHCR, runs container health checks, deploys to Azure Web Apps.
+**main-release.yml** (push to main): builds and runs architecture tests with `TRIM=true` and `EXTRA_OPTIMIZE=true`, pushes amd64/arm64 GHCR images plus immutable `sha-${GITHUB_SHA}` manifests, runs container health checks, deploys to Azure Web Apps with OIDC.
 
 ## Documentation
 
-See the [Wiki](https://github.com/jonathanperis/cpnucleo/wiki) for detailed documentation on architecture, API reference, database setup, testing, and deployment.
+See the [Pages documentation](https://jonathanperis.github.io/cpnucleo/docs/) for detailed documentation on architecture, API reference, database setup, testing, and deployment.
 
 ## Contributing
 

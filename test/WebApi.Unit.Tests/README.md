@@ -46,12 +46,12 @@ A.CallTo(() => fakeDbContext.Entities).Returns(fakeDbSet);
 
 - **Total Test Files**: 11
 - **Total Tests Written**: 49
-- **Currently Passing**: 47 ✅
-- **Currently Skipped**: 2 (EF Core Create operations with DbSet.Any() extension method)
+- **Current local status**: compile cleanup needed around several `Remove*.Request` model references before the suite can run end to end
+- **Known skipped cases in source**: 2 EF Core Create operations with `DbSet.Any()` extension-method mocking limitations
 
 ## Dependencies
 
-- FastEndpoints 7.2.0
+- FastEndpoints 8.1.0
 - FakeItEasy 9.0.1
 - Shouldly 4.3.0
 - NUnit 4.4.0
@@ -66,5 +66,5 @@ dotnet test test/WebApi.Unit.Tests/WebApi.Unit.Tests.csproj
 
 - Two Create tests for User and Workflow endpoints are skipped because DbSet.Any() is a LINQ extension method that cannot be mocked with FakeItEasy
 - These scenarios are better tested with integration tests that use an in-memory database
-- All repository-based endpoints are fully tested and passing
-- EF Core-based endpoints have comprehensive Read/Update/Delete coverage
+- Repository-based endpoint coverage exists, but latest source drift means the suite should be repaired before treating it as a passing gate
+- EF Core-based endpoints have Read/Update/Delete coverage in source, with the same caveat that the suite currently needs compile cleanup
