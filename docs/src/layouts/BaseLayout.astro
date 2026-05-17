@@ -14,7 +14,16 @@ const {
 
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://jonathanperis.github.io${Astro.url.pathname}`;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-const faviconHref = `${basePath}/favicon.ico`;
+const assetPath = (path: string) => `${basePath}/${path.replace(/^\//, '')}`;
+const absoluteAsset = (path: string) => new URL(assetPath(path), Astro.site ?? 'https://jonathanperis.github.io').href;
+const faviconHref = assetPath('favicon.ico');
+const faviconPngHref = assetPath('favicon.png');
+const favicon32Href = assetPath('favicon-32x32.png');
+const appleTouchIconHref = assetPath('apple-touch-icon.png');
+const socialImageUrl = absoluteAsset('social-preview.png');
+const thumbnailHref = assetPath('thumbnail.png');
+const thumbnailUrl = absoluteAsset('thumbnail.png');
+const socialImageAlt = 'CPnucleo dark cyan architecture workbench preview with .NET service topology';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -22,6 +31,7 @@ const jsonLd = {
   'name': 'cpnucleo',
   'description': description,
   'url': pageUrl,
+  'image': socialImageUrl,
   'codeRepository': 'https://github.com/jonathanperis/cpnucleo',
   'programmingLanguage': 'C#',
   'runtimePlatform': '.NET 10',
@@ -46,6 +56,11 @@ const jsonLd = {
     <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, FastEndpoints, Blazor, Azure, gRPC, PostgreSQL, Docker, C#" />
     <link rel="canonical" href={pageUrl} />
     <link rel="icon" href={faviconHref} sizes="any" />
+    <link rel="icon" type="image/png" href={faviconPngHref} />
+    <link rel="icon" type="image/png" sizes="32x32" href={favicon32Href} />
+    <link rel="apple-touch-icon" href={appleTouchIconHref} />
+    <link rel="image_src" href={socialImageUrl} />
+    <link rel="thumbnail" href={thumbnailHref} />
     <meta name="theme-color" content="#061427" />
 
     <meta property="og:type" content="website" />
@@ -54,11 +69,20 @@ const jsonLd = {
     <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content="cpnucleo" />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <meta name="twitter:creator" content="@jperis_silva" />
+    <meta name="thumbnail" content={thumbnailUrl} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
