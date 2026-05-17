@@ -39,23 +39,28 @@ SUCCESS = (96, 210, 157, 255)
 
 
 def font(path: Path, size: int) -> ImageFont.FreeTypeFont:
+    """Load a TrueType font at the requested pixel size."""
     return ImageFont.truetype(str(path), size=size)
 
 
 def alpha(color: Tuple[int, int, int, int], a: int) -> Tuple[int, int, int, int]:
+    """Return a copy of an RGBA color with a replaced alpha channel."""
     return color[:3] + (a,)
 
 
 def text_size(draw: ImageDraw.ImageDraw, text: str, fnt: ImageFont.ImageFont) -> Tuple[int, int]:
+    """Measure text with Pillow's bounding-box API."""
     box = draw.textbbox((0, 0), text, font=fnt)
     return box[2] - box[0], box[3] - box[1]
 
 
 def rounded(draw: ImageDraw.ImageDraw, xy, radius: int, fill, outline=None, width: int = 1):
+    """Draw a rounded rectangle using the shared CPnucleo shape language."""
     draw.rounded_rectangle(xy, radius=radius, fill=fill, outline=outline, width=width)
 
 
 def draw_grid(draw: ImageDraw.ImageDraw, w: int, h: int) -> None:
+    """Paint the subtle blueprint grid used by the Pages surface."""
     for step, col, width in [(42, (24, 75, 103, 42), 1), (168, (38, 215, 242, 32), 1)]:
         for x in range(-step, w + step, step):
             draw.line((x, 0, x, h), fill=col, width=width)
@@ -64,6 +69,7 @@ def draw_grid(draw: ImageDraw.ImageDraw, w: int, h: int) -> None:
 
 
 def draw_glow(base: Image.Image, boxes: Iterable[Tuple[Tuple[int, int, int, int], Tuple[int, int, int, int], int]]) -> None:
+    """Composite a restrained cyan glow behind important rounded panels."""
     glow = Image.new("RGBA", base.size, (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
     for xy, col, radius in boxes:
@@ -73,11 +79,13 @@ def draw_glow(base: Image.Image, boxes: Iterable[Tuple[Tuple[int, int, int, int]
 
 
 def load_icon(size: int) -> Image.Image:
+    """Load the largest favicon frame and resize it for the requested asset."""
     icon = Image.open(FAVICON).convert("RGBA")
     return icon.resize((size, size), Image.Resampling.LANCZOS)
 
 
 def draw_badge(draw: ImageDraw.ImageDraw, xy, label: str, tone=CYAN) -> int:
+    """Draw a compact proof badge and return its right edge for layout flow."""
     f = font(FONT_MONO_BOLD, 17)
     pad_x, pad_y = 13, 7
     tw, th = text_size(draw, label, f)
@@ -88,6 +96,7 @@ def draw_badge(draw: ImageDraw.ImageDraw, xy, label: str, tone=CYAN) -> int:
 
 
 def draw_node(draw: ImageDraw.ImageDraw, xy, label: str, sub: str | None = None, accent=CYAN) -> None:
+    """Draw one service node inside the topology panel."""
     x1, y1, x2, y2 = xy
     rounded(draw, xy, 18, fill=(8, 24, 42, 245), outline=alpha(accent, 175), width=2)
     draw.ellipse((x1 + 18, y1 + 22, x1 + 30, y1 + 34), fill=accent)
@@ -97,6 +106,7 @@ def draw_node(draw: ImageDraw.ImageDraw, xy, label: str, sub: str | None = None,
 
 
 def draw_topology(draw: ImageDraw.ImageDraw) -> None:
+    """Draw the right-side service topology motif from the live Pages design."""
     panel = (728, 94, 1116, 542)
     rounded(draw, panel, 28, fill=PANEL, outline=(36, 97, 128, 170), width=1)
     draw.text((758, 122), "LIVE TOPOLOGY", font=font(FONT_MONO_BOLD, 18), fill=CYAN)
@@ -125,6 +135,7 @@ def draw_topology(draw: ImageDraw.ImageDraw) -> None:
 
 
 def draw_social(path: Path, size=(1200, 630), scale: float = 1.0) -> None:
+    """Render the primary Open Graph social preview image."""
     w, h = size
     img = Image.new("RGBA", size, BG)
     draw = ImageDraw.Draw(img)
@@ -170,6 +181,7 @@ def draw_social(path: Path, size=(1200, 630), scale: float = 1.0) -> None:
 
 
 def make_icons() -> None:
+    """Write PNG favicon fallbacks from the canonical ICO source."""
     icon256 = load_icon(256)
     icon256.save(OUT_FAVICON_PNG, optimize=True)
     icon256.resize((32, 32), Image.Resampling.LANCZOS).save(OUT_FAVICON_32, optimize=True)
@@ -177,6 +189,7 @@ def make_icons() -> None:
 
 
 def assert_assets() -> None:
+    """Verify generated image dimensions and formats before committing."""
     expected = {
         OUT_SOCIAL: (1200, 630),
         OUT_THUMB: (600, 315),
@@ -194,6 +207,7 @@ def assert_assets() -> None:
 
 
 def digest(paths: Iterable[Path]) -> str:
+    """Return a stable digest for deterministic asset checks."""
     h = hashlib.sha256()
     for path in paths:
         h.update(path.name.encode())
@@ -202,6 +216,7 @@ def digest(paths: Iterable[Path]) -> str:
 
 
 def main() -> None:
+    """Generate every CPnucleo social preview and icon fallback asset."""
     PUBLIC.mkdir(parents=True, exist_ok=True)
     make_icons()
     draw_social(OUT_SOCIAL, (1200, 630))
