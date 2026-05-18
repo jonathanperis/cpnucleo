@@ -35,47 +35,6 @@ module logAnalytics 'modules/logAnalytics.bicep' = {
   }
 }
 
-// ── Application Insights (one per service) ──────────────────────────────────
-module appInsightsWebApi 'modules/appInsights.bicep' = {
-  name: 'deploy-app-insights-webapi'
-  params: {
-    location: location
-    appInsightsName: 'cpnucleo-api-dotnet'
-    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-    projectName: projectName
-  }
-}
-
-module appInsightsGrpcServer 'modules/appInsights.bicep' = {
-  name: 'deploy-app-insights-grpcserver'
-  params: {
-    location: location
-    appInsightsName: 'cpnucleo-grpc-server'
-    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-    projectName: projectName
-  }
-}
-
-module appInsightsIdentityApi 'modules/appInsights.bicep' = {
-  name: 'deploy-app-insights-identityapi'
-  params: {
-    location: location
-    appInsightsName: 'cpnucleo-identity-api'
-    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-    projectName: projectName
-  }
-}
-
-module appInsightsWebClient 'modules/appInsights.bicep' = {
-  name: 'deploy-app-insights-webclient'
-  params: {
-    location: location
-    appInsightsName: 'cpnucleo-webclient-dotnet'
-    logAnalyticsWorkspaceId: logAnalytics.outputs.workspaceId
-    projectName: projectName
-  }
-}
-
 // ── Web Apps (one per service) ───────────────────────────────────────────────
 module webApiApp 'modules/webApp.bicep' = {
   name: 'deploy-webapp-webapi'
@@ -84,8 +43,6 @@ module webApiApp 'modules/webApp.bicep' = {
     webAppName: 'cpnucleo-api-dotnet'
     appServicePlanId: appServicePlan.outputs.planId
     containerImage: 'ghcr.io/jonathanperis/cpnucleo-web-api:latest'
-    appInsightsConnectionString: appInsightsWebApi.outputs.connectionString
-    appInsightsInstrumentationKey: appInsightsWebApi.outputs.instrumentationKey
     projectName: projectName
   }
 }
@@ -97,8 +54,6 @@ module grpcServerApp 'modules/webApp.bicep' = {
     webAppName: 'cpnucleo-grpc-server'
     appServicePlanId: appServicePlan.outputs.planId
     containerImage: 'ghcr.io/jonathanperis/cpnucleo-grpc-server:latest'
-    appInsightsConnectionString: appInsightsGrpcServer.outputs.connectionString
-    appInsightsInstrumentationKey: appInsightsGrpcServer.outputs.instrumentationKey
     projectName: projectName
     http20ProxyFlag: 1 // required for end-to-end gRPC (HTTP/2 proxy)
   }
@@ -111,8 +66,6 @@ module identityApiApp 'modules/webApp.bicep' = {
     webAppName: 'cpnucleo-identity-api'
     appServicePlanId: appServicePlan.outputs.planId
     containerImage: 'ghcr.io/jonathanperis/cpnucleo-identity-api:latest'
-    appInsightsConnectionString: appInsightsIdentityApi.outputs.connectionString
-    appInsightsInstrumentationKey: appInsightsIdentityApi.outputs.instrumentationKey
     projectName: projectName
   }
 }
@@ -124,8 +77,6 @@ module webClientApp 'modules/webApp.bicep' = {
     webAppName: 'cpnucleo-webclient-dotnet'
     appServicePlanId: appServicePlan.outputs.planId
     containerImage: 'ghcr.io/jonathanperis/cpnucleo-web-client:latest'
-    appInsightsConnectionString: appInsightsWebClient.outputs.connectionString
-    appInsightsInstrumentationKey: appInsightsWebClient.outputs.instrumentationKey
     projectName: projectName
   }
 }
