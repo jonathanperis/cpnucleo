@@ -29,3 +29,4 @@ global using WebApi.Common.Mappings;
 global using WebApi.Common.Models;
 global using WebApi.Middlewares;
 global using WebApi.ServiceExtensions;
+global using Npgsql;
