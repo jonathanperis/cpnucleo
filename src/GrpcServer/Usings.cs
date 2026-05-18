@@ -36,3 +36,4 @@ global using OpenTelemetry.Metrics;
 global using OpenTelemetry.Resources;
 global using OpenTelemetry.Trace;
 global using Riok.Mapperly.Abstractions;
+global using Npgsql;
