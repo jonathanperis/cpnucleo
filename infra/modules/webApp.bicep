@@ -2,8 +2,6 @@ param location string
 param webAppName string
 param appServicePlanId string
 param containerImage string
-param appInsightsConnectionString string
-param appInsightsInstrumentationKey string
 param projectName string
 
 @description('Enable HTTP/2 proxy for end-to-end gRPC support. Required for gRPC services.')
@@ -35,18 +33,6 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
         {
           name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
           value: 'false'
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsightsConnectionString
-        }
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: appInsightsInstrumentationKey
-        }
-        {
-          name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
-          value: '~3'
         }
       ]
     }

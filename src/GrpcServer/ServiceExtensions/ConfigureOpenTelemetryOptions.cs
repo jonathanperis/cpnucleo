@@ -1,5 +1,3 @@
-using Azure.Monitor.OpenTelemetry.AspNetCore;
-
 namespace GrpcServer.ServiceExtensions;
 
 public static class ConfigureOpenTelemetryOptions
@@ -8,7 +6,7 @@ public static class ConfigureOpenTelemetryOptions
     {
         // Configure OpenTelemetry tracing & metrics with auto-start using the
         // AddOpenTelemetry extension from OpenTelemetry.Extensions.Hosting.
-        var otelBuilder = builder.Services.AddOpenTelemetry()
+        builder.Services.AddOpenTelemetry()
             .ConfigureResource(ConfigureResource)
             .WithTracing(tpb =>
             {
@@ -39,9 +37,6 @@ public static class ConfigureOpenTelemetryOptions
                     otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("OTEL_EXPORTER_OTLP_ENDPOINT", defaultValue: "http://localhost:4317"));
                 });
             });
-
-        if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
-            otelBuilder.UseAzureMonitor();
 
         // Clear default logging providers used by WebApplication host.
         builder.Logging.ClearProviders();

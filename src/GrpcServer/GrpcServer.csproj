@@ -34,7 +34,6 @@
 	</PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
         <PackageReference Include="FastEndpoints.Messaging.Remote" Version="8.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
