@@ -31,7 +31,6 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 | Riok.Mapperly 4.3 | Compile-time DTO mapping (zero reflection) |
 | MudBlazor 8.x | Blazor UI components (Material Design) |
 | OpenTelemetry 1.15 | Observability (OTLP export) |
-| Azure.Monitor.OpenTelemetry.AspNetCore 1.4 | Azure Monitor OTel exporter (all 4 services) |
 | Bicep | Infrastructure as Code (`infra/`) |
 | Docker + NGINX | Containerization + load balancing |
 | GitHub Actions | CI/CD with Azure deployment |
@@ -116,8 +115,7 @@ cpnucleo/
 │   ├── main.json                    # Compiled ARM template
 │   └── modules/
 │       ├── logAnalytics.bicep       # Dedicated Log Analytics workspace (cpnucleo-workspace)
-│       ├── appInsights.bicep        # Workspace-based App Insights per service
-│       └── webApp.bicep             # Container Web App (HTTPS-only, App Insights env vars)
+│       └── webApp.bicep             # Container Web App (HTTPS-only)
 ├── src/
 │   ├── Domain/                      # Business entities, interfaces, no deps
 │   ├── Infrastructure/              # EF Core + Dapper implementations
@@ -234,8 +232,8 @@ OIDC federated credentials — no secret rotation. Three secrets required:
 - Dev: Grafana LGTM container (port 3000 UI, 4317 gRPC, 4318 HTTP)
 - Service names: `WebApi-Cpnucleo`, `Identity-Cpnucleo`, `GrpcServer-Cpnucleo`, `WebClient-Cpnucleo`
 - Instrumentation: ASP.NET Core, HttpClient, Process, Runtime
-- **Azure Monitor:** `Azure.Monitor.OpenTelemetry.AspNetCore` 1.4.0 added to all services; `UseAzureMonitor()` plugs into the existing OTel pipeline as an additional exporter. Guarded — only active when `APPLICATIONINSIGHTS_CONNECTION_STRING` is present (set by Azure Bicep; no-op in CI/local).
-- **Bicep IaC** provisions a dedicated `cpnucleo-workspace` Log Analytics workspace with 4 workspace-based App Insights instances (one per service) in `github-jonathanperis` resource group.
+- **OpenTelemetry:** services export traces, metrics, and logs through OTLP; Hostinger production points `OTEL_EXPORTER_OTLP_ENDPOINT` at the local `otel-collector`, which forwards to Grafana LGTM.
+- **Bicep IaC** provisions Azure Web Apps without vendor telemetry instrumentation settings; observability is handled through the OTLP collector path.
 
 ---
 

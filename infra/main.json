@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2198157514563441332"
+      "version": "0.43.8.12551",
+      "templateHash": "15149836511050705885"
     }
   },
   "parameters": {
@@ -87,8 +87,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11657269007901833001"
+              "version": "0.43.8.12551",
+              "templateHash": "10685347558967758328"
             }
           },
           "parameters": {
@@ -177,8 +177,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2501186460069170369"
+              "version": "0.43.8.12551",
+              "templateHash": "13020001867562261324"
             }
           },
           "parameters": {
@@ -228,350 +228,6 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "deploy-app-insights-webapi",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "appInsightsName": {
-            "value": "cpnucleo-api-dotnet"
-          },
-          "logAnalyticsWorkspaceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics'), '2025-04-01').outputs.workspaceId.value]"
-          },
-          "projectName": {
-            "value": "[parameters('projectName')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "571519510005159873"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            },
-            "appInsightsName": {
-              "type": "string"
-            },
-            "logAnalyticsWorkspaceId": {
-              "type": "string"
-            },
-            "projectName": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Insights/components",
-              "apiVersion": "2020-02-02",
-              "name": "[parameters('appInsightsName')]",
-              "location": "[parameters('location')]",
-              "kind": "web",
-              "tags": {
-                "project": "[parameters('projectName')]"
-              },
-              "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                "IngestionMode": "LogAnalytics",
-                "RetentionInDays": 90
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "value": "[parameters('appInsightsName')]"
-            },
-            "instrumentationKey": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').InstrumentationKey]"
-            },
-            "connectionString": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').ConnectionString]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "deploy-app-insights-grpcserver",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "appInsightsName": {
-            "value": "cpnucleo-grpc-server"
-          },
-          "logAnalyticsWorkspaceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics'), '2025-04-01').outputs.workspaceId.value]"
-          },
-          "projectName": {
-            "value": "[parameters('projectName')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "571519510005159873"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            },
-            "appInsightsName": {
-              "type": "string"
-            },
-            "logAnalyticsWorkspaceId": {
-              "type": "string"
-            },
-            "projectName": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Insights/components",
-              "apiVersion": "2020-02-02",
-              "name": "[parameters('appInsightsName')]",
-              "location": "[parameters('location')]",
-              "kind": "web",
-              "tags": {
-                "project": "[parameters('projectName')]"
-              },
-              "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                "IngestionMode": "LogAnalytics",
-                "RetentionInDays": 90
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "value": "[parameters('appInsightsName')]"
-            },
-            "instrumentationKey": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').InstrumentationKey]"
-            },
-            "connectionString": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').ConnectionString]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "deploy-app-insights-identityapi",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "appInsightsName": {
-            "value": "cpnucleo-identity-api"
-          },
-          "logAnalyticsWorkspaceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics'), '2025-04-01').outputs.workspaceId.value]"
-          },
-          "projectName": {
-            "value": "[parameters('projectName')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "571519510005159873"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            },
-            "appInsightsName": {
-              "type": "string"
-            },
-            "logAnalyticsWorkspaceId": {
-              "type": "string"
-            },
-            "projectName": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Insights/components",
-              "apiVersion": "2020-02-02",
-              "name": "[parameters('appInsightsName')]",
-              "location": "[parameters('location')]",
-              "kind": "web",
-              "tags": {
-                "project": "[parameters('projectName')]"
-              },
-              "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                "IngestionMode": "LogAnalytics",
-                "RetentionInDays": 90
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "value": "[parameters('appInsightsName')]"
-            },
-            "instrumentationKey": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').InstrumentationKey]"
-            },
-            "connectionString": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').ConnectionString]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "deploy-app-insights-webclient",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "appInsightsName": {
-            "value": "cpnucleo-webclient-dotnet"
-          },
-          "logAnalyticsWorkspaceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics'), '2025-04-01').outputs.workspaceId.value]"
-          },
-          "projectName": {
-            "value": "[parameters('projectName')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "571519510005159873"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            },
-            "appInsightsName": {
-              "type": "string"
-            },
-            "logAnalyticsWorkspaceId": {
-              "type": "string"
-            },
-            "projectName": {
-              "type": "string"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Insights/components",
-              "apiVersion": "2020-02-02",
-              "name": "[parameters('appInsightsName')]",
-              "location": "[parameters('location')]",
-              "kind": "web",
-              "tags": {
-                "project": "[parameters('projectName')]"
-              },
-              "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]",
-                "IngestionMode": "LogAnalytics",
-                "RetentionInDays": 90
-              }
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "value": "[parameters('appInsightsName')]"
-            },
-            "instrumentationKey": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').InstrumentationKey]"
-            },
-            "connectionString": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2020-02-02').ConnectionString]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-log-analytics')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
       "name": "deploy-webapp-webapi",
       "properties": {
         "expressionEvaluationOptions": {
@@ -591,12 +247,6 @@
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-web-api:latest"
           },
-          "appInsightsConnectionString": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webapi'), '2025-04-01').outputs.connectionString.value]"
-          },
-          "appInsightsInstrumentationKey": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webapi'), '2025-04-01').outputs.instrumentationKey.value]"
-          },
           "projectName": {
             "value": "[parameters('projectName')]"
           }
@@ -607,8 +257,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5537484073317814241"
+              "version": "0.43.8.12551",
+              "templateHash": "7220204354550354860"
             }
           },
           "parameters": {
@@ -622,12 +272,6 @@
               "type": "string"
             },
             "containerImage": {
-              "type": "string"
-            },
-            "appInsightsConnectionString": {
-              "type": "string"
-            },
-            "appInsightsInstrumentationKey": {
               "type": "string"
             },
             "projectName": {
@@ -669,18 +313,6 @@
                     {
                       "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
                       "value": "false"
-                    },
-                    {
-                      "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                      "value": "[parameters('appInsightsConnectionString')]"
-                    },
-                    {
-                      "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                      "value": "[parameters('appInsightsInstrumentationKey')]"
-                    },
-                    {
-                      "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-                      "value": "~3"
                     }
                   ]
                 }
@@ -700,7 +332,6 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webapi')]",
         "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     },
@@ -726,12 +357,6 @@
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-grpc-server:latest"
           },
-          "appInsightsConnectionString": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-grpcserver'), '2025-04-01').outputs.connectionString.value]"
-          },
-          "appInsightsInstrumentationKey": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-grpcserver'), '2025-04-01').outputs.instrumentationKey.value]"
-          },
           "projectName": {
             "value": "[parameters('projectName')]"
           },
@@ -745,8 +370,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5537484073317814241"
+              "version": "0.43.8.12551",
+              "templateHash": "7220204354550354860"
             }
           },
           "parameters": {
@@ -760,12 +385,6 @@
               "type": "string"
             },
             "containerImage": {
-              "type": "string"
-            },
-            "appInsightsConnectionString": {
-              "type": "string"
-            },
-            "appInsightsInstrumentationKey": {
               "type": "string"
             },
             "projectName": {
@@ -807,18 +426,6 @@
                     {
                       "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
                       "value": "false"
-                    },
-                    {
-                      "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                      "value": "[parameters('appInsightsConnectionString')]"
-                    },
-                    {
-                      "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                      "value": "[parameters('appInsightsInstrumentationKey')]"
-                    },
-                    {
-                      "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-                      "value": "~3"
                     }
                   ]
                 }
@@ -838,7 +445,6 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-grpcserver')]",
         "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     },
@@ -864,12 +470,6 @@
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-identity-api:latest"
           },
-          "appInsightsConnectionString": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-identityapi'), '2025-04-01').outputs.connectionString.value]"
-          },
-          "appInsightsInstrumentationKey": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-identityapi'), '2025-04-01').outputs.instrumentationKey.value]"
-          },
           "projectName": {
             "value": "[parameters('projectName')]"
           }
@@ -880,8 +480,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5537484073317814241"
+              "version": "0.43.8.12551",
+              "templateHash": "7220204354550354860"
             }
           },
           "parameters": {
@@ -895,12 +495,6 @@
               "type": "string"
             },
             "containerImage": {
-              "type": "string"
-            },
-            "appInsightsConnectionString": {
-              "type": "string"
-            },
-            "appInsightsInstrumentationKey": {
               "type": "string"
             },
             "projectName": {
@@ -942,18 +536,6 @@
                     {
                       "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
                       "value": "false"
-                    },
-                    {
-                      "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                      "value": "[parameters('appInsightsConnectionString')]"
-                    },
-                    {
-                      "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                      "value": "[parameters('appInsightsInstrumentationKey')]"
-                    },
-                    {
-                      "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-                      "value": "~3"
                     }
                   ]
                 }
@@ -973,7 +555,6 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-identityapi')]",
         "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     },
@@ -999,12 +580,6 @@
           "containerImage": {
             "value": "ghcr.io/jonathanperis/cpnucleo-web-client:latest"
           },
-          "appInsightsConnectionString": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webclient'), '2025-04-01').outputs.connectionString.value]"
-          },
-          "appInsightsInstrumentationKey": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webclient'), '2025-04-01').outputs.instrumentationKey.value]"
-          },
           "projectName": {
             "value": "[parameters('projectName')]"
           }
@@ -1015,8 +590,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5537484073317814241"
+              "version": "0.43.8.12551",
+              "templateHash": "7220204354550354860"
             }
           },
           "parameters": {
@@ -1030,12 +605,6 @@
               "type": "string"
             },
             "containerImage": {
-              "type": "string"
-            },
-            "appInsightsConnectionString": {
-              "type": "string"
-            },
-            "appInsightsInstrumentationKey": {
               "type": "string"
             },
             "projectName": {
@@ -1077,18 +646,6 @@
                     {
                       "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
                       "value": "false"
-                    },
-                    {
-                      "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                      "value": "[parameters('appInsightsConnectionString')]"
-                    },
-                    {
-                      "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                      "value": "[parameters('appInsightsInstrumentationKey')]"
-                    },
-                    {
-                      "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-                      "value": "~3"
                     }
                   ]
                 }
@@ -1108,7 +665,6 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'deploy-app-insights-webclient')]",
         "[resourceId('Microsoft.Resources/deployments', 'deploy-app-service-plan')]"
       ]
     }
