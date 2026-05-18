@@ -34,7 +34,6 @@ public static class ConfigureOpenTelemetryOptions
                         options.EnrichWithException = (activity, exception) =>
                         {
                             activity.SetTag("exception.type", exception.GetType().FullName);
-                            activity.SetTag("exception.message", exception.Message);
                         };
                     })
                     .AddHttpClientInstrumentation(options =>
@@ -53,7 +52,6 @@ public static class ConfigureOpenTelemetryOptions
                         options.EnrichWithException = (activity, exception) =>
                         {
                             activity.SetTag("exception.type", exception.GetType().FullName);
-                            activity.SetTag("exception.message", exception.Message);
                         };
                     })
                     .AddNpgsql()
@@ -101,7 +99,7 @@ public static class ConfigureOpenTelemetryOptions
     private static void ConfigureResource(IHostApplicationBuilder builder, ResourceBuilder resource)
     {
         var assembly = typeof(Program).Assembly.GetName();
-        var serviceName = builder.Configuration.GetValue("ServiceName", assembly.Name ?? "cpnucleo-service");
+        var serviceName = builder.Configuration.GetValue("ServiceName", "GrpcServer-Cpnucleo");
         var environmentName = builder.Environment.EnvironmentName;
 
         resource
