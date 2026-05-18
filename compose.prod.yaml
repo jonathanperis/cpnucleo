@@ -93,8 +93,9 @@ services:
     image: otel/opentelemetry-collector-contrib:0.126.0
     container_name: otel-collector-cpnucleo
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
-    volumes:
-      - ./otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    configs:
+      - source: otel_collector_config
+        target: /etc/otelcol-contrib/config.yaml
     depends_on:
       - otel-lgtm
     expose:
@@ -200,7 +201,11 @@ services:
     container_name: db-cpnucleo
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    configs:
+      - source: init_track_commit_timestamp
+        target: /docker-entrypoint-initdb.d/001-track-commit-timestamp.sql
+      - source: init_database_dump_ddl
+        target: /docker-entrypoint-initdb.d/002-database-dump-ddl.sql
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -231,8 +236,9 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: nginx-cpnucleo
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/nginx.conf
     depends_on:
       - webapi1-cpnucleo
       - webapi2-cpnucleo
@@ -270,6 +276,518 @@ volumes:
     driver: local
     labels:
       - "com.example.service=cpnucleo-db"
+
+configs:
+  otel_collector_config:
+    content: |
+      # Production OpenTelemetry Collector gateway for the single-VPS Hostinger stack.
+      # cpnucleo services send OTLP to otel-collector:4317; the collector forwards
+      # traces, metrics, and logs to the local Grafana LGTM stack.
+
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: 0.0.0.0:4317
+            http:
+              endpoint: 0.0.0.0:4318
+
+      processors:
+        memory_limiter:
+          check_interval: 5s
+          limit_mib: 192
+          spike_limit_mib: 64
+
+        resource:
+          attributes:
+            - key: deployment.environment
+              value: production
+              action: upsert
+            - key: service.namespace
+              value: cpnucleo
+              action: upsert
+            - key: host.provider
+              value: hostinger
+              action: upsert
+
+        batch:
+          timeout: 5s
+          send_batch_size: 1024
+          send_batch_max_size: 2048
+
+      exporters:
+        otlp/lgtm:
+          endpoint: otel-lgtm:4317
+          tls:
+            insecure: true
+          sending_queue:
+            enabled: true
+            num_consumers: 2
+            queue_size: 1024
+          retry_on_failure:
+            enabled: true
+            initial_interval: 5s
+            max_interval: 30s
+            max_elapsed_time: 300s
+
+        debug:
+          verbosity: basic
+
+      extensions:
+        health_check:
+          endpoint: 0.0.0.0:13133
+
+      service:
+        extensions: [health_check]
+        pipelines:
+          traces:
+            receivers: [otlp]
+            processors: [memory_limiter, resource, batch]
+            exporters: [otlp/lgtm]
+
+          metrics:
+            receivers: [otlp]
+            processors: [memory_limiter, resource, batch]
+            exporters: [otlp/lgtm]
+
+          logs:
+            receivers: [otlp]
+            processors: [memory_limiter, resource, batch]
+            exporters: [otlp/lgtm]
+  nginx_config:
+    content: |
+      worker_processes auto; # Auto-detects the number of cores and launches that many worker processes
+
+      events {
+          worker_connections 1024; # Increase if you need to handle more than 1,000 connections simultaneously
+          use epoll; # Use efficient event model for Linux
+          multi_accept on; # Accept as many connections as possible when they come in
+      }
+
+      http {
+          sendfile on; # Allows Nginx to use the sendfile system call to serve static files
+          tcp_nopush on; # Optimizes the amount of data sent at once
+          tcp_nodelay on; # Disables Nagle's algorithm to improve network efficiency
+          keepalive_timeout 0; # Allows persistent connections, which reduces latency for subsequent requests
+          types_hash_max_size 2048; # Increases the maximum size of the types hash tables
+          server_tokens off; # Hides Nginx version information from error pages and Server response header field
+
+          access_log off;
+
+          upstream api {
+              least_conn; # Sends new requests to the server with the least number of active connections
+              server webapi1-cpnucleo:5000;
+              server webapi2-cpnucleo:5000;
+          }
+
+          gzip on; # Enables gzip compression to reduce the size of the HTTP response
+          gzip_comp_level 5; # Sets the level of compression (1 is least, 9 is most)
+          gzip_min_length 256; # Sets the minimum length of a response that will be gzipped
+          gzip_proxied any; # Compress data even for clients that are connecting via proxies
+          gzip_vary on; # Tells proxies to cache both gzipped and regular versions of a resource
+
+          server {
+              listen 9999;
+
+              location / {
+                  proxy_pass http://api;
+                  proxy_set_header Host $$host; # Passes the original host header to the backend
+                  proxy_set_header X-Real-IP $$remote_addr; # Passes the original IP address of the client
+                  proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for; # Passes the original "X-Forwarded-For" header
+                  proxy_set_header X-Forwarded-Proto $$scheme; # Passes the original scheme of the client
+              }
+          }
+      }
+  init_track_commit_timestamp:
+    content: |
+      ALTER SYSTEM SET track_commit_timestamp = on;
+  init_database_dump_ddl:
+    content: |
+      CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+          "MigrationId" character varying(150) NOT NULL,
+          "ProductVersion" character varying(32) NOT NULL,
+          CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+      );
+
+      START TRANSACTION;
+
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "AssignmentTypes" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_AssignmentTypes" PRIMARY KEY ("Id")
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Impediments" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Impediments" PRIMARY KEY ("Id")
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Organizations" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "Description" text,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Organizations" PRIMARY KEY ("Id")
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Users" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "Login" text,
+              "Password" text,
+              "Salt" text,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Users" PRIMARY KEY ("Id")
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Workflows" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "Order" integer NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Workflows" PRIMARY KEY ("Id")
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Projects" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "OrganizationId" uuid NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Projects" PRIMARY KEY ("Id"),
+              CONSTRAINT "FK_Projects_Organizations_OrganizationId" FOREIGN KEY ("OrganizationId") REFERENCES "Organizations" ("Id") ON DELETE CASCADE
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Assignments" (
+              "Id" uuid NOT NULL,
+              "Name" text,
+              "Description" text,
+              "StartDate" timestamp with time zone NOT NULL,
+              "EndDate" timestamp with time zone NOT NULL,
+              "AmountHours" integer NOT NULL,
+              "ProjectId" uuid NOT NULL,
+              "WorkflowId" uuid NOT NULL,
+              "UserId" uuid NOT NULL,
+              "AssignmentTypeId" uuid NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Assignments" PRIMARY KEY ("Id"),
+              CONSTRAINT "FK_Assignments_AssignmentTypes_AssignmentTypeId" FOREIGN KEY ("AssignmentTypeId") REFERENCES "AssignmentTypes" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_Assignments_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_Assignments_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_Assignments_Workflows_WorkflowId" FOREIGN KEY ("WorkflowId") REFERENCES "Workflows" ("Id") ON DELETE CASCADE
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "UserProjects" (
+              "Id" uuid NOT NULL,
+              "UserId" uuid NOT NULL,
+              "ProjectId" uuid NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_UserProjects" PRIMARY KEY ("Id"),
+              CONSTRAINT "FK_UserProjects_Projects_ProjectId" FOREIGN KEY ("ProjectId") REFERENCES "Projects" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_UserProjects_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "Appointments" (
+              "Id" uuid NOT NULL,
+              "Description" text,
+              "KeepDate" timestamp with time zone NOT NULL,
+              "AmountHours" integer NOT NULL,
+              "AssignmentId" uuid NOT NULL,
+              "UserId" uuid NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_Appointments" PRIMARY KEY ("Id"),
+              CONSTRAINT "FK_Appointments_Assignments_AssignmentId" FOREIGN KEY ("AssignmentId") REFERENCES "Assignments" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_Appointments_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "AssignmentImpediments" (
+              "Id" uuid NOT NULL,
+              "Description" text,
+              "AssignmentId" uuid NOT NULL,
+              "ImpedimentId" uuid NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_AssignmentImpediments" PRIMARY KEY ("Id"),
+              CONSTRAINT "FK_AssignmentImpediments_Assignments_AssignmentId" FOREIGN KEY ("AssignmentId") REFERENCES "Assignments" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_AssignmentImpediments_Impediments_ImpedimentId" FOREIGN KEY ("ImpedimentId") REFERENCES "Impediments" ("Id") ON DELETE CASCADE
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE TABLE "UserAssignments" (
+              "Id" uuid NOT NULL,
+              "UserId" uuid NOT NULL,
+              "AssignmentId" uuid NOT NULL,
+              "CreatedAt" timestamp with time zone NOT NULL,
+              "UpdatedAt" timestamp with time zone,
+              "DeletedAt" timestamp with time zone,
+              "Active" boolean NOT NULL,
+              CONSTRAINT "PK_UserAssignments" PRIMARY KEY ("Id"),
+              CONSTRAINT "FK_UserAssignments_Assignments_AssignmentId" FOREIGN KEY ("AssignmentId") REFERENCES "Assignments" ("Id") ON DELETE CASCADE,
+              CONSTRAINT "FK_UserAssignments_Users_UserId" FOREIGN KEY ("UserId") REFERENCES "Users" ("Id") ON DELETE CASCADE
+          );
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Appointments_AssignmentId" ON "Appointments" ("AssignmentId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Appointments_CreatedAt" ON "Appointments" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Appointments_UserId" ON "Appointments" ("UserId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_AssignmentImpediments_AssignmentId" ON "AssignmentImpediments" ("AssignmentId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_AssignmentImpediments_CreatedAt" ON "AssignmentImpediments" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_AssignmentImpediments_ImpedimentId" ON "AssignmentImpediments" ("ImpedimentId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Assignments_AssignmentTypeId" ON "Assignments" ("AssignmentTypeId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Assignments_CreatedAt" ON "Assignments" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Assignments_ProjectId" ON "Assignments" ("ProjectId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Assignments_UserId" ON "Assignments" ("UserId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Assignments_WorkflowId" ON "Assignments" ("WorkflowId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_AssignmentTypes_CreatedAt" ON "AssignmentTypes" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Impediments_CreatedAt" ON "Impediments" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Organizations_CreatedAt" ON "Organizations" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Projects_CreatedAt" ON "Projects" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Projects_OrganizationId" ON "Projects" ("OrganizationId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_UserAssignments_AssignmentId" ON "UserAssignments" ("AssignmentId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_UserAssignments_CreatedAt" ON "UserAssignments" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_UserAssignments_UserId" ON "UserAssignments" ("UserId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_UserProjects_CreatedAt" ON "UserProjects" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_UserProjects_ProjectId" ON "UserProjects" ("ProjectId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_UserProjects_UserId" ON "UserProjects" ("UserId");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Users_CreatedAt" ON "Users" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          CREATE INDEX "IX_Workflows_CreatedAt" ON "Workflows" ("CreatedAt");
+          END IF;
+      END $$EF$$;
+
+      DO $$EF$$
+      BEGIN
+          IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20250219224724_InitiaDblMigration') THEN
+          INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+          VALUES ('20250219224724_InitiaDblMigration', '8.0.6');
+          END IF;
+      END $$EF$$;
+      COMMIT;
 
 networks:
   default:
