@@ -51,6 +51,59 @@ x-common-logging: &common-logging
       max-file: "3"
 
 services:
+  otel-lgtm:
+    image: grafana/otel-lgtm:0.11.10
+    container_name: otel-lgtm-cpnucleo
+    volumes:
+      - otel_lgtm_data:/data
+    expose:
+      - "3000"
+      - "4317"
+      - "4318"
+    networks:
+      - default
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
+      - "traefik.http.routers.cpnucleo-grafana.rule=Host(`${CPNUCLEO_GRAFANA_HOST:?Set CPNUCLEO_GRAFANA_HOST}`)"
+      - "traefik.http.routers.cpnucleo-grafana.entrypoints=websecure"
+      - "traefik.http.routers.cpnucleo-grafana.tls=true"
+      - "traefik.http.routers.cpnucleo-grafana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.services.cpnucleo-grafana.loadbalancer.server.port=3000"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: "1G"
+        reservations:
+          cpus: "0.25"
+          memory: "512M"
+    <<: *common-logging
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.126.0
+    container_name: otel-collector-cpnucleo
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    depends_on:
+      - otel-lgtm
+    expose:
+      - "4317"
+      - "4318"
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "256M"
+        reservations:
+          cpus: "0.10"
+          memory: "128M"
+    <<: *common-logging
+
   webapi1-cpnucleo: &webapi1
     <<: [*common-api-prod, *common-logging]
     image: ${CPNUCLEO_WEB_API_IMAGE:?Set CPNUCLEO_WEB_API_IMAGE to an immutable GHCR tag, not latest}
@@ -202,6 +255,10 @@ services:
     <<: *common-logging
 
 volumes:
+  otel_lgtm_data:
+    driver: local
+    labels:
+      - "com.example.service=cpnucleo-otel-lgtm"
   db_data:
     driver: local
     labels:
