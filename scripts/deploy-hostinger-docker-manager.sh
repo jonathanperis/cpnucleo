@@ -25,7 +25,10 @@ if [[ ! "${GITHUB_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
   exit 1
 fi
 
-tag="sha-${GITHUB_SHA}"
+# Hostinger VPS currently runs amd64 images. The multi-arch sha-${GITHUB_SHA}
+# manifest is created later by merge-manifest; deploy from the immutable amd64
+# tags that already exist when this job starts.
+tag="sha-${GITHUB_SHA}-amd64"
 web_api_image="ghcr.io/jonathanperis/cpnucleo-web-api:${tag}"
 identity_api_image="ghcr.io/jonathanperis/cpnucleo-identity-api:${tag}"
 grpc_server_image="ghcr.io/jonathanperis/cpnucleo-grpc-server:${tag}"
