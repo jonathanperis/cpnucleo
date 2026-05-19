@@ -290,7 +290,9 @@ jobs:
   deploy-hostinger:
     name: Deploy to Hostinger Docker Manager
     if: ${{ github.event_name == 'push' || inputs.deploy_hostinger }}
-    needs: [container-test, merge-manifest]
+    # Hostinger runs on amd64; deploy as soon as amd64 images and container
+    # healthchecks pass instead of waiting for slow arm64 multi-arch manifests.
+    needs: [container-test, build-push-amd64]
     runs-on: ubuntu-latest
     environment: production-hostinger
     env:
