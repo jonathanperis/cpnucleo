@@ -36,6 +36,7 @@ web_client_image="ghcr.io/jonathanperis/cpnucleo-web-client:${tag}"
 compose_url="https://raw.githubusercontent.com/${PROJECT_OWNER_REPO}/${GITHUB_SHA}/compose.prod.yaml"
 
 expected_containers=(
+  aaa-open-cpnucleo
   otel-lgtm-cpnucleo
   otel-collector-cpnucleo
   webapi1-cpnucleo
