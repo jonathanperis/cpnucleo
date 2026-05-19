@@ -113,20 +113,27 @@ with open(sys.argv[1], encoding="utf-8") as f:
 
 candidates = []
 
-def collect(obj):
+def collect(obj, path=()):
     if isinstance(obj, dict):
         for key, value in obj.items():
-            lk = key.lower()
+            key_path = path + (str(key),)
+            lk = str(key).lower()
             if lk in {"actionid", "action_id", "id"} and isinstance(value, (str, int)):
-                candidates.append(str(value))
-            collect(value)
+                path_text = ".".join(part.lower() for part in key_path)
+                action_distance = min(
+                    (i for i, part in enumerate(key_path) if "action" in part.lower()),
+                    default=10_000,
+                )
+                candidates.append((action_distance, -path_text.count("action"), len(key_path), str(value)))
+            collect(value, key_path)
     elif isinstance(obj, list):
-        for item in obj:
-            collect(item)
+        for index, item in enumerate(obj):
+            collect(item, path + (str(index),))
 
 collect(data)
 if candidates:
-    print(candidates[0])
+    candidates.sort()
+    print(candidates[0][3])
 PY
 }
 
@@ -176,6 +183,9 @@ required = {
     "CPNUCLEO_IDENTITY_HOST",
     "CPNUCLEO_GRPC_HOST",
     "CPNUCLEO_GRAFANA_HOST",
+    "CPNUCLEO_GRAFANA_BASIC_AUTH_USERS",
+    "GRAFANA_ADMIN_USER",
+    "GRAFANA_ADMIN_PASSWORD",
     "TRAEFIK_NETWORK",
     "TRAEFIK_CERT_RESOLVER",
     "ASPNETCORE_ENVIRONMENT",
@@ -317,7 +327,7 @@ check_url() {
   [[ -z "${url}" ]] && return 0
 
   for attempt in {1..30}; do
-    code="$(curl -sS -o "${workdir}/smoke-body" -w "%{http_code}" "${url}" || true)"
+    code="$(curl --connect-timeout 5 --max-time 15 -sS -o "${workdir}/smoke-body" -w "%{http_code}" "${url}" || true)"
     if [[ ",${allowed_codes}," == *",${code},"* ]]; then
       echo "${name} smoke passed: HTTP ${code}"
       return 0
