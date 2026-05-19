@@ -66,6 +66,23 @@ def main() -> None:
     require_text("main_release", main_release, "Deploy to Hostinger Docker Manager")
     require_text("main_release", main_release, "HOSTINGER_API_TOKEN")
 
+    legacy_cloud_terms = [
+        "A" + "zure",
+        "OI" + "DC",
+        "az" + "ure" + "-credential",
+        "AZ" + "URE_",
+        "az" + "ure" + "/login",
+        "az" + "ure" + "/arm-deploy",
+        "az" + "ure" + "/webapps-deploy",
+        "deploy_" + "az" + "ure",
+    ]
+    for source_name, text in (
+        ("main_release", main_release),
+        ("deployment_docs", read("docs/wiki/deployment.md")),
+    ):
+        for needle in legacy_cloud_terms:
+            require_text(source_name, text, needle, present=False)
+
     deploy = read(".github/workflows/deploy.yml")
     require_text("deploy", deploy, "pages-docs-deploy.yml@main")
 
