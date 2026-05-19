@@ -31,7 +31,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 - Docker Compose configurations for development, default, and production environments
 - AOT, Trim, and ExtraOptimize build options for production-optimized containers
 - Blazor Server + WebAssembly frontend with MudBlazor UI components
-- Automated CI/CD with GitHub Actions deploying to Azure Web Apps via GHCR
+- Automated CI/CD with GitHub Actions deploying to Hostinger Docker Manager via GHCR
 
 ---
 

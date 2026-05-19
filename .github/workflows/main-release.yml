@@ -3,7 +3,6 @@ name: Main Release
 permissions:
   contents: write
   packages: write
-  id-token: write
 
 on:
   push:
@@ -15,10 +14,6 @@ on:
         description: Deploy published images to Hostinger Docker Manager
         type: boolean
         default: true
-      deploy_azure:
-        description: Also deploy legacy Azure Web Apps
-        type: boolean
-        default: false
 
 concurrency:
   group: cpnucleo-release-${{ github.ref }}
@@ -46,7 +41,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
@@ -91,7 +86,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -146,7 +141,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
@@ -202,7 +197,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
@@ -224,36 +219,6 @@ jobs:
           done
           echo "Healthcheck failed after 20 attempts."
           exit 1
-
-  deploy-infra:
-    name: deploy-infra
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_azure }}
-    needs: container-test
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-        with:
-            fetch-depth: 0
-
-      - name: Login to Azure (OIDC)
-        uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy Bicep (Incremental)
-        uses: azure/arm-deploy@v2
-        with:
-          resourceGroupName: github-jonathanperis
-          template: infra/main.bicep
-          parameters: infra/main.bicepparam
-          deploymentMode: Incremental
-          deploymentName: cpnucleo-infra
 
   merge-manifest:
     name: Merge Multi-arch Manifest (${{ matrix.service }})
@@ -319,40 +284,3 @@ jobs:
 
       - name: Deploy Hostinger project
         run: scripts/deploy-hostinger-docker-manager.sh
-
-  deploy-image:
-    name: Deploy to Azure (${{ matrix.service }})
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_azure }}
-    needs: [deploy-infra, merge-manifest]
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    strategy:
-      matrix:
-        include:
-          - service: WebApi
-            app-name: cpnucleo-api-dotnet
-            image: ghcr.io/jonathanperis/cpnucleo-web-api:sha-${{ github.sha }}
-          - service: GrpcServer
-            app-name: cpnucleo-grpc-server
-            image: ghcr.io/jonathanperis/cpnucleo-grpc-server:sha-${{ github.sha }}
-          - service: IdentityApi
-            app-name: cpnucleo-identity-api
-            image: ghcr.io/jonathanperis/cpnucleo-identity-api:sha-${{ github.sha }}
-          - service: WebClient
-            app-name: cpnucleo-webclient-dotnet
-            image: ghcr.io/jonathanperis/cpnucleo-web-client:sha-${{ github.sha }}
-
-    steps:
-      - name: Login to Azure (OIDC)
-        uses: azure/login@v3
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ matrix.app-name }}
-          images: ${{ matrix.image }}

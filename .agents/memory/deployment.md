@@ -1,27 +1,34 @@
 ---
 name: Cpnucleo Deployment and CI/CD
-description: Azure deployment details, GHCR registry, GitHub Actions secrets, Docker compose configs
+description: Hostinger Docker Manager deployment details, GHCR registry, GitHub Actions secrets, Docker compose configs
 type: reference
 ---
 
-## Azure Deployment
+## Hostinger Deployment
 
-Live demo: https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/
+Live demo: https://cpnucleo.jonathanperis.tech/
 
-Four services deployed to Azure Web Apps:
-- cpnucleo-api-dotnet (WebApi)
-- cpnucleo-grpc-server (GrpcServer)
-- cpnucleo-identity-api (IdentityApi)
-- cpnucleo-webclient-dotnet (WebClient)
+Production is deployed through Hostinger Docker Manager with the repository production Compose configuration and immutable amd64 GHCR images.
+
+Public surfaces:
+- WebClient: https://cpnucleo.jonathanperis.tech/
+- WebApi: https://api-cpnucleo.jonathanperis.tech/
+- IdentityApi: https://identity-cpnucleo.jonathanperis.tech/
+- gRPC health: https://grpc-cpnucleo.jonathanperis.tech/healthz
 
 ## GitHub Secrets Required
 
 | Secret | Purpose |
 |--------|---------|
 | `GITHUB_TOKEN` | GHCR auth (automatic) |
-| `AZURE_CLIENT_ID` | Azure OIDC app registration client ID |
-| `AZURE_TENANT_ID` | Azure tenant ID |
-| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
+| `HOSTINGER_API_TOKEN` | Hostinger API authentication |
+| `HOSTINGER_VPS_ID` | Target VPS identifier |
+| `HOSTINGER_PROJECT_NAME` | Docker Manager project name |
+| `HOSTINGER_ENV_BASE64` | Base64 encoded production environment payload |
+| `CPNUCLEO_WEB_URL` | WebClient smoke-test URL |
+| `CPNUCLEO_API_URL` | WebApi smoke-test URL |
+| `CPNUCLEO_IDENTITY_URL` | IdentityApi smoke-test URL |
+| `CPNUCLEO_GRPC_HEALTH_URL` | gRPC health smoke-test URL |
 
 ## Docker Compose Configs
 
@@ -36,4 +43,4 @@ Four services deployed to Azure Web Apps:
 - `ghcr.io/jonathanperis/cpnucleo-identity-api:latest`
 - `ghcr.io/jonathanperis/cpnucleo-web-client:latest`
 
-Main release also publishes `sha-<commit>`, `sha-<commit>-amd64`, `sha-<commit>-arm64`, and `latest-arm64` tags; the final Azure deploy uses the `sha-<commit>` multi-arch image.
+Main release publishes `sha-<commit>`, `sha-<commit>-amd64`, `sha-<commit>-arm64`, and `latest-arm64` tags. Hostinger deploys the `sha-<commit>-amd64` image tags so it does not wait for the slower arm64/manifest lane.

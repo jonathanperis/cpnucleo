@@ -24,7 +24,7 @@ const DOC_SUMMARIES: Record<string, string> = {
   'project-structure': 'Repository tree, source projects, tests, infrastructure, and docs.',
   technologies: 'Runtime, libraries, infrastructure, observability, and deployment stack.',
   testing: 'Architecture tests, unit tests, integration tests, and coverage workflow.',
-  deployment: 'Docker, GHCR, GitHub Actions, NGINX, Azure, and release pipeline.'
+  deployment: 'Docker, GHCR, GitHub Actions, NGINX, Hostinger, and release pipeline.'
 };
 
 const globResult = import.meta.glob('../../../wiki/*.md', { eager: true });
@@ -86,7 +86,7 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
   <aside class="sidebar" id="sidebar" data-current-id={currentId}>
     <div class="sidebar-header">
       <a class="repo-title" href={docsBase + '/'}>cpnucleo</a>
-      <p class="repo-description">.NET 10 Clean Architecture reference with REST, gRPC, Blazor, PostgreSQL, and Azure deployment.</p>
+      <p class="repo-description">.NET 10 Clean Architecture reference with REST, gRPC, Blazor, PostgreSQL, and Hostinger deployment.</p>
       <input type="text" id="searchInput" class="search-box" placeholder="Filter documentation" aria-label="Filter documentation" />
       <p class="search-empty" id="searchEmpty" role="status" hidden>No docs entry matches that filter.</p>
     </div>

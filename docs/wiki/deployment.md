@@ -1,6 +1,6 @@
 # Deployment
 
-Cpnucleo uses Docker Compose for containerized deployment and GitHub Actions for CI/CD, with final deployment to Azure Web Apps.
+Cpnucleo uses Docker Compose for containerized deployment and GitHub Actions for CI/CD, with final deployment to Hostinger Docker Manager.
 
 ---
 
@@ -153,18 +153,19 @@ Triggered on push to main and manual dispatch.
    - Pull production images
    - Run healthcheck validation
 
-4. **Deploy to Azure** (depends on infrastructure + manifest merge)
-   - Deploy each service to its Azure Web App
-   - Uses Azure OIDC secrets (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`) and immutable `sha-${GITHUB_SHA}` image tags
+4. **Deploy to Hostinger Docker Manager** (depends on amd64 images + container health checks)
+   - Deploy the production Compose project through `scripts/deploy-hostinger-docker-manager.sh`
+   - Uses Hostinger project secrets plus immutable `sha-${GITHUB_SHA}-amd64` GHCR image tags
+   - Verifies the public WebClient, WebApi, IdentityApi, and gRPC health routes after deployment
 
-### Azure Deployment Targets
+### Hostinger Deployment Targets
 
-| Service | Azure Web App Name | Environment |
-|---------|-------------------|-------------|
-| WebApi | cpnucleo-api-dotnet | production-webapi |
-| GrpcServer | cpnucleo-grpc-server | production-grpcserver |
-| IdentityApi | cpnucleo-identity-api | production-identityapi |
-| WebClient | cpnucleo-webclient-dotnet | production-webclient |
+| Surface | Public URL | Backing service |
+|---------|------------|-----------------|
+| WebClient | `https://cpnucleo.jonathanperis.tech/` | `webclient-cpnucleo` |
+| WebApi | `https://api-cpnucleo.jonathanperis.tech/` | `webapi1-cpnucleo` / `webapi2-cpnucleo` |
+| IdentityApi | `https://identity-cpnucleo.jonathanperis.tech/` | `identityapi-cpnucleo` |
+| gRPC health | `https://grpc-cpnucleo.jonathanperis.tech/healthz` | `grpcserver-cpnucleo` |
 
 ---
 
@@ -187,9 +188,14 @@ Triggered on push to main and manual dispatch.
 |--------|---------|
 | `GITHUB_TOKEN` | GHCR authentication (automatic) |
 | `DB_CONNECTION_STRING` | Production database connection |
-| `AZURE_CLIENT_ID` | Azure OIDC client ID |
-| `AZURE_TENANT_ID` | Azure tenant ID |
-| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
+| `HOSTINGER_API_TOKEN` | Hostinger API authentication |
+| `HOSTINGER_VPS_ID` | Target Hostinger VPS identifier |
+| `HOSTINGER_PROJECT_NAME` | Docker Manager project name |
+| `HOSTINGER_ENV_BASE64` | Base64-encoded production `.env` payload |
+| `CPNUCLEO_WEB_URL` | Public WebClient smoke-test URL |
+| `CPNUCLEO_API_URL` | Public WebApi smoke-test URL |
+| `CPNUCLEO_IDENTITY_URL` | Public IdentityApi smoke-test URL |
+| `CPNUCLEO_GRPC_HEALTH_URL` | Public gRPC health smoke-test URL |
 
 ---
 
