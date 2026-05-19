@@ -10,6 +10,19 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      deploy_hostinger:
+        description: Deploy published images to Hostinger Docker Manager
+        type: boolean
+        default: true
+      deploy_azure:
+        description: Also deploy legacy Azure Web Apps
+        type: boolean
+        default: false
+
+concurrency:
+  group: cpnucleo-release-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   AOT: false
@@ -42,11 +55,11 @@ jobs:
 
       - name: Restore Dependencies
         working-directory: "./src/${{ matrix.service }}"
-        run: dotnet restore "${{ matrix.service }}.csproj" -p:Configuration=${${{ env.BUILD_CONFIGURATION }}} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}}
+        run: dotnet restore "${{ matrix.service }}.csproj" -p:Configuration=${{ env.BUILD_CONFIGURATION }} -p:AOT=${{ env.AOT }} -p:Trim=${{ env.TRIM }}
 
       - name: Build Application
         working-directory: "./src/${{ matrix.service }}"
-        run: dotnet build "${{ matrix.service }}.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${${{ env.AOT }}} -p:Trim=${${{ env.TRIM }}} -p:ExtraOptimize=${${{ env.EXTRA_OPTIMIZE }}}
+        run: dotnet build "${{ matrix.service }}.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${{ env.AOT }} -p:Trim=${{ env.TRIM }} -p:ExtraOptimize=${{ env.EXTRA_OPTIMIZE }}
 
       - name: Architecture Tests
         working-directory: "./test/Architecture.Tests"
@@ -214,6 +227,7 @@ jobs:
 
   deploy-infra:
     name: deploy-infra
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_azure }}
     needs: container-test
     runs-on: ubuntu-latest
     env:
@@ -273,8 +287,40 @@ jobs:
             ${{ matrix.image }}:sha-${{ github.sha }}-amd64 \
             ${{ matrix.image }}:sha-${{ github.sha }}-arm64
 
+  deploy-hostinger:
+    name: Deploy to Hostinger Docker Manager
+    if: ${{ github.event_name == 'push' || inputs.deploy_hostinger }}
+    needs: [container-test, merge-manifest]
+    runs-on: ubuntu-latest
+    environment: production-hostinger
+    env:
+      HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+      HOSTINGER_VPS_ID: ${{ secrets.HOSTINGER_VPS_ID }}
+      HOSTINGER_PROJECT_NAME: ${{ secrets.HOSTINGER_PROJECT_NAME }}
+      HOSTINGER_ENV_BASE64: ${{ secrets.HOSTINGER_ENV_BASE64 }}
+      CPNUCLEO_WEB_URL: ${{ secrets.CPNUCLEO_WEB_URL }}
+      CPNUCLEO_API_URL: ${{ secrets.CPNUCLEO_API_URL }}
+      CPNUCLEO_IDENTITY_URL: ${{ secrets.CPNUCLEO_IDENTITY_URL }}
+      CPNUCLEO_GRPC_HEALTH_URL: ${{ secrets.CPNUCLEO_GRPC_HEALTH_URL }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy Hostinger project
+        run: scripts/deploy-hostinger-docker-manager.sh
+
   deploy-image:
     name: Deploy to Azure (${{ matrix.service }})
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_azure }}
     needs: [deploy-infra, merge-manifest]
     runs-on: ubuntu-latest
     env:
