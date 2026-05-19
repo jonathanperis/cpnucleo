@@ -63,9 +63,8 @@ def main() -> None:
     require_text("main_release", main_release, "${{ matrix.image }}:sha-${{ github.sha }}-amd64")
     require_text("main_release", main_release, "${{ matrix.image }}:sha-${{ github.sha }}-arm64")
     require_text("main_release", main_release, "--tag ${{ matrix.image }}:sha-${{ github.sha }}")
-    require_text("main_release", main_release, "images: ${{ matrix.image }}")
-    require_text("main_release", main_release, "AZURE_CLIENT_ID")
-    require_text("main_release", main_release, "AZURE_WEBAPP_PUBLISH_PROFILE", present=False)
+    require_text("main_release", main_release, "Deploy to Hostinger Docker Manager")
+    require_text("main_release", main_release, "HOSTINGER_API_TOKEN")
 
     deploy = read(".github/workflows/deploy.yml")
     require_text("deploy", deploy, "pages-docs-deploy.yml@main")
@@ -98,7 +97,7 @@ def main() -> None:
     assert_contains("docs/wiki/api-reference.md", "gRPC transport: `http://localhost:5300` (HTTP/2)")
     assert_contains("docs/wiki/api-reference.md", "Health check: `http://localhost:5301/healthz` (HTTP/1.1)")
     assert_contains("docs/wiki/testing.md", "55 integration tests")
-    assert_contains("docs/wiki/deployment.md", "OIDC")
+    assert_contains("docs/wiki/deployment.md", "Hostinger Docker Manager")
 
     print("README/wiki drift checks passed")
 

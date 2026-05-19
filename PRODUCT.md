@@ -2,7 +2,7 @@
 
 ## Product identity and purpose
 
-CPnucleo is a production-grade .NET 10 project management and task tracking reference system. It demonstrates Clean Architecture, Domain-Driven Design, REST and gRPC transports, dual data access with EF Core and Dapper, PostgreSQL persistence, Blazor UI, Docker, NGINX, OpenTelemetry, GitHub Actions, GHCR, and Azure Web Apps deployment.
+CPnucleo is a production-grade .NET 10 project management and task tracking reference system. It demonstrates Clean Architecture, Domain-Driven Design, REST and gRPC transports, dual data access with EF Core and Dapper, PostgreSQL persistence, Blazor UI, Docker, NGINX, OpenTelemetry, GitHub Actions, GHCR, and Hostinger Docker Manager deployment.
 
 The public GitHub Pages site under `docs/` is the trust surface for the repository. It should help a technical visitor decide whether the repo is worth cloning, studying, adapting, or using as an architecture reference.
 
@@ -13,7 +13,7 @@ brand
 ## Primary users
 
 - Senior .NET engineers evaluating architecture patterns, data access tradeoffs, and service boundaries.
-- Backend and platform engineers checking Docker, NGINX, CI/CD, telemetry, and Azure deployment practice.
+- Backend and platform engineers checking Docker, NGINX, CI/CD, telemetry, and container deployment practice.
 - Technical reviewers and recruiters who need proof that the project is complete, current, and inspectable.
 - Maintainers returning to the docs to find commands, topology, tests, API contracts, and deployment notes.
 
@@ -25,7 +25,7 @@ Users usually arrive in evaluation mode. They are skeptical, time constrained, a
 - Dual transport implementation: REST through FastEndpoints and gRPC style messaging through FastEndpoints Remote Messaging.
 - Dual persistence strategies against the same PostgreSQL database: EF Core for REST paths, Dapper and Unit of Work for gRPC paths.
 - Four-service presentation layer: WebApi, GrpcServer, IdentityApi, and WebClient.
-- Production path through Docker, NGINX, GHCR, GitHub Actions, Azure Web Apps, and OpenTelemetry.
+- Production path through Docker, NGINX, GHCR, GitHub Actions, Hostinger Docker Manager, and OpenTelemetry.
 - Documentation that maps architecture, API reference, database, tests, project structure, technologies, and deployment.
 
 ## Canonical facts for copy
@@ -40,9 +40,9 @@ Use these facts only when the source remains true in README, AGENTS.md, solution
 - Database: PostgreSQL 16.7 with Npgsql.
 - Reverse proxy: NGINX with least-connection load balancing.
 - Observability: OpenTelemetry with OTLP export and optional Grafana LGTM stack.
-- CI/CD: GitHub Actions, GHCR, CodeQL, Azure Web Apps.
+- CI/CD: GitHub Actions, GHCR, CodeQL, Hostinger Docker Manager.
 - Public docs: `https://jonathanperis.github.io/cpnucleo/`.
-- Live demo: Azure WebClient URL from README and docs navigation.
+- Live demo: canonical Hostinger URL from README and docs navigation.
 
 Avoid unsupported claims like full coverage unless the current test reports prove them.
 
