@@ -274,8 +274,10 @@ case "${terminal_state,,}" in
     ;;
 esac
 
-api_curl "${HOSTINGER_API}/virtual-machines/${HOSTINGER_VPS_ID}/docker/${HOSTINGER_PROJECT_NAME}/containers" > "${containers_file}" || true
-python3 - "${containers_file}" "${expected_containers[@]}" <<'PY'
+containers_verified=false
+for attempt in {1..24}; do
+  api_curl "${HOSTINGER_API}/virtual-machines/${HOSTINGER_VPS_ID}/docker/${HOSTINGER_PROJECT_NAME}/containers" > "${containers_file}" || true
+  if python3 - "${containers_file}" "${expected_containers[@]}" <<'PY'
 import json, sys
 path = sys.argv[1]
 expected = set(sys.argv[2:])
@@ -312,6 +314,17 @@ if missing or not_running:
     raise SystemExit(1)
 print(f"Hostinger containers verified: {len(expected)} expected containers present/running")
 PY
+  then
+    containers_verified=true
+    break
+  fi
+  echo "Hostinger containers not healthy yet; retrying (${attempt}/24)..."
+  sleep 10
+done
+if [[ "${containers_verified}" != "true" ]]; then
+  echo "Timed out waiting for Hostinger containers to become healthy." >&2
+  exit 1
+fi
 
 api_curl "${HOSTINGER_API}/virtual-machines/${HOSTINGER_VPS_ID}/docker/${HOSTINGER_PROJECT_NAME}/logs" > "${logs_file}" || true
 if grep -Eiq 'Unhandled exception|panic:|segmentation fault|no space left on device' "${logs_file}"; then
