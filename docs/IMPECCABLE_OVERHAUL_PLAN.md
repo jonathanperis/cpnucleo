@@ -53,7 +53,7 @@ Fix: keep the dark technical aesthetic, but make it feel like an architecture wo
 
 ### P1: The proof is broad, not inspectable
 
-The page claims 55 REST endpoints, 55 gRPC handlers, architecture tests, CI/CD, Azure, and Docker. Those are valuable, but visitors do not get fast proof trails.
+The page claims 55 REST endpoints, 55 gRPC handlers, architecture tests, CI/CD, Hostinger, and Docker. Those are valuable, but visitors do not get fast proof trails.
 
 Fix: turn generic stats into source-backed proof modules:
 
@@ -101,7 +101,7 @@ Layout: replace template cards with three source-backed proof zones:
 ### Home page
 
 1. Hero: `Clean Architecture reference system for .NET 10`.
-2. Short proof line: REST, gRPC, Blazor, PostgreSQL, NGINX, Azure, architecture tests.
+2. Short proof line: REST, gRPC, Blazor, PostgreSQL, NGINX, Hostinger, architecture tests.
 3. CTA order: Docs, GitHub, Live Demo.
 4. Architecture map: four service boxes plus infrastructure layer and domain core.
 5. Proof ledger: endpoint parity, architecture tests, CI/CD, Docker topology.

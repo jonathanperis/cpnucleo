@@ -81,7 +81,7 @@ Hierarchy:
 ### Hero
 
 - Headline: `Clean Architecture reference system for .NET 10`.
-- Subcopy should name REST, gRPC, Blazor, PostgreSQL, Docker, Azure, and tests without overclaiming.
+- Subcopy should name REST, gRPC, Blazor, PostgreSQL, Docker, Hostinger, and tests without overclaiming.
 - CTA hierarchy: Documentation, GitHub, Live Demo.
 - Include visible A/B variant controls when testing.
 

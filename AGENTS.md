@@ -2,7 +2,7 @@
 
 Production-grade .NET 10 project management system demonstrating Clean Architecture, DDD, CQRS, and dual data access strategies.
 
-**Live demo:** https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/
+**Live demo:** https://cpnucleo.jonathanperis.tech/
 
 ---
 
@@ -31,9 +31,8 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 | Riok.Mapperly 4.3 | Compile-time DTO mapping (zero reflection) |
 | MudBlazor 8.x | Blazor UI components (Material Design) |
 | OpenTelemetry 1.15 | Observability (OTLP export) |
-| Bicep | Infrastructure as Code (`infra/`) |
 | Docker + NGINX | Containerization + load balancing |
-| GitHub Actions | CI/CD with Azure deployment |
+| GitHub Actions | CI/CD with Hostinger deployment |
 | Kiota | Auto-generated API client for WebClient |
 
 ---
@@ -109,13 +108,6 @@ cpnucleo/
 ├── compose.yaml / override / prod   # Docker Compose configs
 ├── nginx.conf                       # NGINX reverse proxy (least_conn)
 ├── docker-entrypoint-initdb.d/      # PostgreSQL init scripts
-├── infra/                           # Bicep IaC (Log Analytics, App Insights x4, Web Apps x4)
-│   ├── main.bicep                   # Entry point — references existing shared App Service Plan
-│   ├── main.bicepparam              # Production values (brazilsouth, cpnucleo-workspace)
-│   ├── main.json                    # Compiled ARM template
-│   └── modules/
-│       ├── logAnalytics.bicep       # Dedicated Log Analytics workspace (cpnucleo-workspace)
-│       └── webApp.bicep             # Container Web App (HTTPS-only)
 ├── src/
 │   ├── Domain/                      # Business entities, interfaces, no deps
 │   ├── Infrastructure/              # EF Core + Dapper implementations
@@ -168,7 +160,7 @@ Exactly 14 expected warnings from `src/Infrastructure/Common/Helpers/FakeData.cs
 ## CI/CD
 
 - **PR (`build-check.yml`):** Build + Architecture Tests + Code Coverage (Codecov) + Container health check
-- **Main (`main-release.yml`):** 7-job pipeline (matrix x4 services each) — see pipeline flow below
+- **Main (`main-release.yml`):** release pipeline builds/tests images, deploys Hostinger, and publishes multi-arch manifests
 - **Security (`codeql.yml`):** CodeQL analysis on push/PR/weekly schedule
 - **Docs (`deploy.yml`):** Deploys the Astro docs site to GitHub Pages on main
 - **Registry:** `ghcr.io/jonathanperis/cpnucleo-{web-api|grpc-server|identity-api|web-client}`
@@ -183,9 +175,8 @@ build-push-amd64 (x4) ───────────────────�
         │                                            │
         ├──→ container-test (x4) ─────────┐          ├──→ build-push-arm64 (x4)
         │                                 │          │
-        ├──→ deploy-infra (Bicep, OIDC) ──┤          ▼
+        ├──→ deploy-hostinger ───────────┤          ▼
         │                                 ▼      merge-manifest (x4)
-        │                           deploy-image (x4, OIDC)
 ```
 
 | Job | Description |
@@ -193,20 +184,13 @@ build-push-amd64 (x4) ───────────────────�
 | `setup-build-test` (x4) | Restore + build Release + Architecture Tests |
 | `build-push-amd64` (x4) | Build linux/amd64, push as `:latest` and `:sha-<commit>-amd64` |
 | `container-test` (x4) | Docker Compose health check per service |
-| `deploy-infra` | Bicep Incremental deploy (Log Analytics + App Insights + Web Apps) |
-| `deploy-image` (x4) | Deploy `:sha-<commit>` to Azure via OIDC |
+| `deploy-hostinger` | Deploy immutable amd64 GHCR images to Hostinger Docker Manager |
 | `build-push-arm64` (x4) | Build linux/arm64/v8, push as `:latest-arm64` and `:sha-<commit>-arm64` |
 | `merge-manifest` (x4) | Merge amd64 + arm64 into multi-arch `:latest` and `:sha-<commit>` manifests |
 
-### Azure Deployment (OIDC)
+### Hostinger Deployment
 
-OIDC federated credentials — no secret rotation. Three secrets required:
-
-| Secret | Description |
-|--------|-------------|
-| `AZURE_CLIENT_ID` | App Registration client ID (`cpnucleo-github-actions`) |
-| `AZURE_TENANT_ID` | Azure AD tenant ID |
-| `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
+Production deploys through Hostinger Docker Manager using `scripts/deploy-hostinger-docker-manager.sh`. The workflow requires Hostinger project secrets, immutable amd64 GHCR image tags, and public route smoke-test URLs for WebClient, WebApi, IdentityApi, and gRPC health.
 
 ---
 
@@ -233,7 +217,6 @@ OIDC federated credentials — no secret rotation. Three secrets required:
 - Service names: `WebApi-Cpnucleo`, `Identity-Cpnucleo`, `GrpcServer-Cpnucleo`, `WebClient-Cpnucleo`
 - Instrumentation: ASP.NET Core, HttpClient, Process, Runtime
 - **OpenTelemetry:** services export traces, metrics, and logs through OTLP; Hostinger production points `OTEL_EXPORTER_OTLP_ENDPOINT` at the local `otel-collector`, which forwards to Grafana LGTM.
-- **Bicep IaC** provisions Azure Web Apps without vendor telemetry instrumentation settings; observability is handled through the OTLP collector path.
 
 ---
 

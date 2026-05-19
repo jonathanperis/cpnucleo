@@ -102,7 +102,7 @@
 | Docker Compose | v2 | Multi-container orchestration |
 | NGINX | Latest | Reverse proxy and load balancer |
 | GitHub Actions | -- | CI/CD pipelines |
-| Azure Web Apps | -- | Cloud hosting (production deployment target) |
+| Hostinger Docker Manager | -- | Cloud hosting (production deployment target) |
 | GHCR | -- | Container image registry |
 
 ## Build Optimization

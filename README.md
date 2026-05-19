@@ -4,7 +4,7 @@
 
 [![Build Check](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml) [![Main Release](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml) [![CodeQL](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**[Live demo &rarr;](https://cpnucleo-webclient-dotnet-d6gve6cabpefbmfz.brazilsouth-01.azurewebsites.net/)** | **[Documentation &rarr;](https://jonathanperis.github.io/cpnucleo/)**
+**[Live demo &rarr;](https://cpnucleo.jonathanperis.tech/)** | **[Documentation &rarr;](https://jonathanperis.github.io/cpnucleo/)**
 
 ---
 
@@ -31,7 +31,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 | Docker + Compose | Latest | Containerization and orchestration |
 | NGINX | Latest | Reverse proxy and load balancing |
 | GitHub Actions | -- | CI/CD pipelines |
-| Azure Web Apps | -- | Production deployment target |
+| Hostinger Docker Manager | -- | Production deployment target |
 
 ## Features
 
@@ -44,7 +44,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 - Multi-platform Docker builds (linux/amd64 + linux/arm64/v8) with AOT, trimming, and extra optimization options
 - Blazor Server + WebAssembly frontend with MudBlazor components and translation support
 - Three test suites: architecture validation (xUnit + NetArchTest), unit tests (NUnit + FakeItEasy), integration tests (xUnit v3 + FastEndpoints.Testing)
-- Automated CI/CD with GitHub Actions deploying to Azure Web Apps via GHCR
+- Automated CI/CD with GitHub Actions deploying GHCR images to Hostinger Docker Manager
 
 ## Architecture
 
@@ -145,7 +145,7 @@ dotnet test test/WebApi.Unit.Tests/            # Unit tests only
 
 **build-check.yml** (pull requests): builds each service, runs architecture tests, performs container health check validation.
 
-**main-release.yml** (push to main): builds and runs architecture tests with `TRIM=true` and `EXTRA_OPTIMIZE=true`, pushes amd64/arm64 GHCR images plus immutable `sha-${GITHUB_SHA}` manifests, runs container health checks, deploys to Azure Web Apps with OIDC.
+**main-release.yml** (push to main): builds and runs architecture tests with `TRIM=true` and `EXTRA_OPTIMIZE=true`, pushes amd64/arm64 GHCR images plus immutable `sha-${GITHUB_SHA}` manifests, runs container health checks, deploys immutable amd64 GHCR images to Hostinger Docker Manager.
 
 ## Documentation
 

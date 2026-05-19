@@ -164,12 +164,12 @@ def draw_social(path: Path, size=(1200, 630), scale: float = 1.0) -> None:
         draw.text((64, y), line, font=head, fill=TEXT)
         y += 68
     draw.text((68, 478), "Source-backed docs for service boundaries,", font=font(FONT_BODY, 23), fill=TEXT_BODY)
-    draw.text((68, 510), "release paths, Azure deploys, and tests.", font=font(FONT_BODY, 23), fill=TEXT_BODY)
+    draw.text((68, 510), "release paths, Hostinger deploys, and tests.", font=font(FONT_BODY, 23), fill=TEXT_BODY)
 
     # badges
     x = 68
     y = 562
-    for label, tone in [("FastEndpoints", CYAN), ("PostgreSQL", SUCCESS), ("Docker", VIOLET), ("Azure", CYAN)]:
+    for label, tone in [("FastEndpoints", CYAN), ("PostgreSQL", SUCCESS), ("Docker", VIOLET), ("Hostinger", CYAN)]:
         next_x = draw_badge(draw, (x, y), label, tone)
         x = next_x + 12
 
