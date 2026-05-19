@@ -62,7 +62,7 @@ services:
       - source: hostinger_open_redirect_config
         target: /etc/nginx/conf.d/default.conf
     ports:
-      - "${HOSTINGER_OPEN_REDIRECT_PORT:-1080}:8080"
+      - "3000:8080"
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/healthz"]
       interval: 30s
