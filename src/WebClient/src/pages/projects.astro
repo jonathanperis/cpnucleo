@@ -1,0 +1,11 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { AuthGuard } from '../components/auth-guard';
+import Page from '../routes/projects/index';
+---
+
+<AppLayout path="/projects">
+  <AuthGuard>
+    <Page />
+  </AuthGuard>
+</AppLayout>

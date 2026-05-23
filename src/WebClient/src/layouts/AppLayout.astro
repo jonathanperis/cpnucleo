@@ -1,0 +1,79 @@
+---
+import '../global.css';
+import { AuthStatus } from '../components/auth-guard';
+
+const groups = [
+  { name: 'Work', items: [
+    ['Dashboard', '/'], ['Organizations', '/organizations'], ['Projects', '/projects'], ['Assignments', '/assignments'], ['Workflows', '/workflows'], ['Appointments', '/appointments'],
+  ] },
+  { name: 'People', items: [['Users', '/users'], ['User assignments', '/user-assignments'], ['User projects', '/user-projects']] },
+  { name: 'Configuration', items: [['Types', '/settings/types'], ['Relations', '/settings/relations'], ['Assignment types', '/assignment-types'], ['Impediments', '/impediments'], ['Assignment impediments', '/assignment-impediments']] },
+  { name: 'System', items: [['API health', '/api-health'], ['Login', '/login']] },
+] as const;
+
+const { path = '/' } = Astro.props;
+const pathname = path.replace(/\/$/, '') || '/';
+const isActive = (href: string) => href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CPnucleo</title>
+  </head>
+  <body>
+    <div class="min-h-screen bg-canvas text-ink">
+      <aside class="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-line bg-surface px-5 py-6 lg:block">
+        <a href="/" class="mb-8 flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-sm font-bold text-white">CP</span>
+          <span><span class="block text-base font-semibold">CPnucleo</span><span class="block text-xs text-muted">Project management</span></span>
+        </a>
+        <nav class="mt-8 space-y-6">
+          {groups.map((group) => (
+            <section>
+              <h2 class="px-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.name}</h2>
+              <div class="mt-2 space-y-1">
+                {group.items.map(([label, href]) => (
+                  <a href={href} class:list={["block rounded-lg px-3 py-2 text-sm font-medium transition", isActive(href) ? "bg-ink text-white shadow-sm" : "text-muted hover:bg-raised hover:text-ink"]}>{label}</a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </nav>
+      </aside>
+      <div class="lg:pl-72">
+        <header class="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
+          <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <details class="relative lg:hidden">
+              <summary class="cursor-pointer list-none rounded-md border border-line px-3 py-2 text-sm">Menu</summary>
+              <div class="absolute left-0 top-12 z-50 w-80 rounded-xl border border-line bg-surface p-5 shadow-soft">
+                <nav class="space-y-5">
+                  {groups.map((group) => (
+                    <section>
+                      <h2 class="px-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.name}</h2>
+                      <div class="mt-2 space-y-1">
+                        {group.items.map(([label, href]) => (
+                          <a href={href} class:list={["block rounded-lg px-3 py-2 text-sm font-medium transition", isActive(href) ? "bg-ink text-white shadow-sm" : "text-muted hover:bg-raised hover:text-ink"]}>{label}</a>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </nav>
+              </div>
+            </details>
+            <div>
+              <p class="text-sm font-medium text-muted">CPnucleo WebClient</p>
+              <h1 class="text-lg font-semibold">Project operations</h1>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="rounded-full border border-line bg-raised px-3 py-1 text-muted">Local-ready</span>
+              <AuthStatus />
+            </div>
+          </div>
+        </header>
+        <main class="px-4 py-8 sm:px-6 lg:px-8"><slot /></main>
+      </div>
+    </div>
+  </body>
+</html>

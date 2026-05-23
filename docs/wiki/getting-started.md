@@ -120,7 +120,7 @@ cd src/IdentityApi && dotnet run
 cd src/GrpcServer && dotnet run
 
 # Terminal 4 - Qwik Web Client (requires Node.js 22+)
-cd src/WebClient && npm install && npm run dev
+cd src/WebClient && bun install && bun run dev
 ```
 
 ---

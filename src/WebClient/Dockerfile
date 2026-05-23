@@ -1,9 +1,11 @@
 FROM node:22-alpine AS build
 WORKDIR /app
-COPY WebClient/package*.json ./
-RUN npm ci
+RUN npm install -g bun@1.3.11
+COPY WebClient/package.json WebClient/bun.lock ./
+COPY WebClient/scripts ./scripts
+RUN bun install --frozen-lockfile
 COPY WebClient/ ./
-RUN npm run build
+RUN bun run build
 
 FROM nginx:1.27-alpine AS runtime
 RUN mkdir -p /var/run \

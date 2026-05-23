@@ -1,5 +1,4 @@
 import { component$, useSignal } from '@builder.io/qwik';
-import { Link } from '@builder.io/qwik-city';
 import { login } from '~/lib/api/identity-client';
 
 export default component$(() => {
@@ -21,7 +20,14 @@ export default component$(() => {
         const password = String(data.get('password') ?? '');
         if (!loginName || !password) { error.value = 'Enter both login and password.'; return; }
         loading.value = true; error.value = ''; success.value = false;
-        try { await login(loginName, password); success.value = true; form.reset(); }
+        try {
+          await login(loginName, password);
+          success.value = true;
+          form.reset();
+          const params = new URLSearchParams(window.location.search);
+          const returnUrl = params.get('returnUrl');
+          window.location.assign(returnUrl && returnUrl.startsWith('/') ? returnUrl : '/');
+        }
         catch (err) { error.value = err instanceof Error ? err.message : 'Unable to log in.'; }
         finally { loading.value = false; }
       }}>
@@ -29,7 +35,7 @@ export default component$(() => {
         <label><span class="mb-1 block text-sm font-medium">Password</span><input name="password" type="password" autocomplete="current-password" class="w-full rounded-lg border border-line bg-raised px-3 py-2" /></label>
         <button disabled={loading.value} class="w-full rounded-lg bg-ink px-4 py-2 font-semibold text-white disabled:opacity-50">{loading.value ? 'Signing in…' : 'Sign in'}</button>
       </form>
-      <Link class="mt-4 block text-center text-sm text-accent" href="/">Back to dashboard</Link>
+      <a class="mt-4 block text-center text-sm text-accent" href="/">Back to dashboard</a>
     </section>
   );
 });
