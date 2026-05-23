@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUserHandler> logger) : ICommandHandler<UpdateUserCommand, UpdateUserResult>
+public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUserHandler> logger, IPasswordHasher passwordHasher) : ICommandHandler<UpdateUserCommand, UpdateUserResult>
 {
     public async Task<UpdateUserResult> ExecuteAsync(UpdateUserCommand command, CancellationToken cancellationToken)
     {
@@ -24,7 +24,8 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
             }
 
             logger.LogInformation("Updating user entity with Id: {UserId}", command.Id);
-            Domain.Entities.User.Update(item, command.Name, command.Password);
+            var passwordHash = passwordHasher.Hash(command.Password);
+            Domain.Entities.User.Update(item, command.Name, passwordHash);
 
             logger.LogInformation("Beginning transaction.");
             await unitOfWork.BeginTransactionAsync();

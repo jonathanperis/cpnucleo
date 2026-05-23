@@ -8,31 +8,27 @@ public sealed class User : BaseEntity
     public string? Password { get; set; }
     public string? Salt { get; set; }
 
-    public static User Create(string? name, string? login, string? password, Guid id = default)
+    public static User Create(string? name, string? login, PasswordHash passwordHash, Guid id = default)
     {
-        CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
-
         var user = new User
         {
             Id = GetNewId(id),
             CreatedAt = DateTime.UtcNow,
             Name = name,
             Login = login,
-            Password = encryptedPassword,
-            Salt = salt,
+            Password = passwordHash.Hash,
+            Salt = passwordHash.Salt,
             Active = true
         };
         
         return user;
     }
 
-    public static void Update(User obj, string? name, string? password)
+    public static void Update(User obj, string? name, PasswordHash passwordHash)
     {
-        CryptographyManager.CryptPbkdf2(password, out var encryptedPassword, out var salt);
-
         obj.Name = name;
-        obj.Password = encryptedPassword;
-        obj.Salt = salt;
+        obj.Password = passwordHash.Hash;
+        obj.Salt = passwordHash.Salt;
         obj.UpdatedAt = DateTime.UtcNow;
     }
 

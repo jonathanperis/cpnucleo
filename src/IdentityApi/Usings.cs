@@ -2,6 +2,7 @@ global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Net;
 global using System.Threading.RateLimiting;
+global using Domain.Common.Security;
 global using FastEndpoints;
 global using FastEndpoints.ClientGen.Kiota;
 global using FastEndpoints.Security;
