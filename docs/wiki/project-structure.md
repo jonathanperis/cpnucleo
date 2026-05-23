@@ -230,16 +230,16 @@ IdentityApi/
 
 ### WebClient (`src/WebClient/`)
 
-Blazor Server + WebAssembly frontend.
+Qwik + Qwik City + Tailwind frontend served from the existing WebClient container slot.
 
 ```
 WebClient/
-├── WebClient.csproj                      # MudBlazor, MudBlazor.Translations, OpenTelemetry
-├── Program.cs                            # Blazor hybrid rendering, MudBlazor services
+├── package.json                           # Qwik, Qwik City, Tailwind, Vite scripts
+├── src/root.tsx                           # Qwik City application root
 ├── Usings.cs
 ├── Dockerfile
 ├── Components/
-│   └── ...                               # Blazor components
+│   └── ...                               # Qwik routes, API metadata, and CRUD components
 ├── Properties/
 │   └── launchSettings.json
 ├── ServiceExtensions/

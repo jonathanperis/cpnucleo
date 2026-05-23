@@ -10,7 +10,7 @@ Cpnucleo follows Clean Architecture principles with strict layer separation enfo
 +-------------------------------------------------------------+
 |                    Presentation Layer                         |
 |  WebApi (REST)  |  GrpcServer (gRPC)  |  IdentityApi (Auth) |
-|                 |                      |  WebClient (Blazor)  |
+|                 |                      |  WebClient (Qwik)    |
 +-------------------------------------------------------------+
 |                 Application Layer                         |
 |  Feature Slices / Use Cases (pilot: Projects/Create)      |
@@ -151,9 +151,9 @@ Implements data access with two strategies side by side:
 
 ### WebClient (`src/WebClient`)
 
-- Blazor Server + WebAssembly hybrid rendering
-- MudBlazor UI component library with translations
-- Interactive server and WebAssembly render modes
+- Qwik + Qwik City routing and rendering
+- Tailwind CSS with Catalyst-inspired product UI patterns reimplemented in Qwik
+- Static container runtime served by NGINX on port 5030
 - Static asset serving
 
 ---

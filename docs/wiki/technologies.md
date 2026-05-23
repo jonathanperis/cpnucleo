@@ -74,10 +74,10 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Blazor Server | 10.0 | Server-side interactive rendering |
-| Blazor WebAssembly | 10.0 | Client-side interactive rendering |
-| MudBlazor | 8.15.0 | Material Design UI component library |
-| MudBlazor.Translations | 2.7.0 | MudBlazor localization support |
+| Qwik | 1.x | Component framework for the WebClient |
+| Qwik City | 1.x | File-based routing for the WebClient |
+| Tailwind CSS | 3.x | Utility-first styling and design tokens |
+| Vite | 7.x | Frontend development and production build tooling |
 
 ## Testing
 

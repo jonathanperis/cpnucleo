@@ -16,7 +16,7 @@ Dark theme is correct because the scene is focused technical evaluation in a low
 - Release notebook.
 - Service topology map.
 - Build pipeline ledger.
-- MudBlazor and Material component familiarity on the live app side, while the Pages site remains a static docs and proof surface.
+- Qwik, Qwik City, and Tailwind CSS on the live app side, with Catalyst-inspired product UI patterns reimplemented in Qwik while the Pages site remains a static docs and proof surface.
 
 ## Color strategy
 
@@ -81,7 +81,7 @@ Hierarchy:
 ### Hero
 
 - Headline: `Clean Architecture reference system for .NET 10`.
-- Subcopy should name REST, gRPC, Blazor, PostgreSQL, Docker, Hostinger, and tests without overclaiming.
+- Subcopy should name REST, gRPC, Qwik, PostgreSQL, Docker, Hostinger, and tests without overclaiming.
 - CTA hierarchy: Documentation, GitHub, Live Demo.
 - Include visible A/B variant controls when testing.
 

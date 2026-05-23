@@ -2,7 +2,7 @@
 
 ## Product identity and purpose
 
-CPnucleo is a production-grade .NET 10 project management and task tracking reference system. It demonstrates Clean Architecture, Domain-Driven Design, REST and gRPC transports, dual data access with EF Core and Dapper, PostgreSQL persistence, Blazor UI, Docker, NGINX, OpenTelemetry, GitHub Actions, GHCR, and Hostinger Docker Manager deployment.
+CPnucleo is a production-grade .NET 10 project management and task tracking reference system. It demonstrates Clean Architecture, Domain-Driven Design, REST and gRPC transports, dual data access with EF Core and Dapper, PostgreSQL persistence, Qwik UI, Docker, NGINX, OpenTelemetry, GitHub Actions, GHCR, and Hostinger Docker Manager deployment.
 
 The public GitHub Pages site under `docs/` is the trust surface for the repository. It should help a technical visitor decide whether the repo is worth cloning, studying, adapting, or using as an architecture reference.
 
@@ -33,7 +33,7 @@ Users usually arrive in evaluation mode. They are skeptical, time constrained, a
 Use these facts only when the source remains true in README, AGENTS.md, solution files, or docs:
 
 - Runtime: .NET 10.
-- UI: Blazor Server plus WebAssembly with MudBlazor components.
+- UI: Qwik plus Qwik City with Tailwind CSS, using Catalyst-inspired product patterns reimplemented in Qwik.
 - REST: FastEndpoints with EF Core through WebApi.
 - gRPC style messaging: FastEndpoints Remote Messaging with Dapper through GrpcServer.
 - Authentication: dedicated IdentityApi with JWT and Argon2id-hashed credentials.
