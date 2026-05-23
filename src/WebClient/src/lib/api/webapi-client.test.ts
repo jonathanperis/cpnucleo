@@ -30,4 +30,9 @@ describe('webapi client', () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ title: 'Too many requests' }), { status: 429 }));
     await expect(requestJson('http://example.test')).rejects.toMatchObject({ name: 'ApiError', status: 429, message: 'Too many requests' });
   });
+
+  it('normalizes fetch transport failures', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'));
+    await expect(requestJson('http://example.test')).rejects.toMatchObject({ name: 'ApiError', status: 0, message: 'Network error. Please check your connection and try again.' });
+  });
 });

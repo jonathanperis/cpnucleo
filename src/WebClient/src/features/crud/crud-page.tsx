@@ -145,7 +145,39 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
         )}
       </div>
 
-      {details.value && <div class="fixed inset-0 z-50 flex justify-end bg-black/30" onClick$={() => (details.value = null)}><aside class="h-full w-full max-w-xl overflow-y-auto bg-surface p-6 shadow-soft" onClick$={(event) => event.stopPropagation()}><div class="mb-4 flex items-center justify-between"><h3 class="text-lg font-semibold">{resource.label} details</h3><button class="rounded-md border border-line px-3 py-2" onClick$={() => (details.value = null)}>Close</button></div><dl class="divide-y divide-line rounded-lg border border-line">{resource.fields.map((field) => <div key={field.name} class="grid grid-cols-3 gap-3 px-4 py-3 text-sm"><dt class="font-medium text-muted">{field.label}</dt><dd class="col-span-2 break-all">{formatValue(details.value?.[field.name])}</dd></div>)}</dl></aside></div>}
+      {details.value && (
+        <div
+          class="fixed inset-0 z-50 flex justify-end bg-black/30"
+          onClick$={() => (details.value = null)}
+          onKeyDown$={(event) => { if (event.key === 'Escape') details.value = null; }}
+        >
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`${resource.key}-details-title`}
+            tabIndex={-1}
+            class="h-full w-full max-w-xl overflow-y-auto bg-surface p-6 shadow-soft"
+            onClick$={(event) => event.stopPropagation()}
+            onKeyDown$={(event) => {
+              if (event.key !== 'Tab') return;
+              const focusable = Array.from((event.currentTarget as HTMLElement).querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter((element) => !element.hasAttribute('disabled'));
+              const first = focusable[0];
+              const last = focusable[focusable.length - 1];
+              if (!first || !last) return;
+              if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+              else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            }}
+          >
+            <div class="mb-4 flex items-center justify-between">
+              <h3 id={`${resource.key}-details-title`} class="text-lg font-semibold">{resource.label} details</h3>
+              <button class="rounded-md border border-line px-3 py-2" onClick$={() => (details.value = null)}>Close</button>
+            </div>
+            <dl class="divide-y divide-line rounded-lg border border-line">
+              {resource.fields.map((field) => <div key={field.name} class="grid grid-cols-3 gap-3 px-4 py-3 text-sm"><dt class="font-medium text-muted">{field.label}</dt><dd class="col-span-2 break-all">{formatValue(details.value?.[field.name])}</dd></div>)}
+            </dl>
+          </aside>
+        </div>
+      )}
     </section>
   );
 });

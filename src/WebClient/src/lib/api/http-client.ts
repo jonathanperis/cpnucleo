@@ -67,7 +67,12 @@ export const requestJson = async <T>(url: string, options: HttpOptions = {}): Pr
   if (options.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
   if (token) headers.set('Authorization', `Bearer ${token}`);
 
-  const response = await fetch(url, { ...options, headers });
+  let response: Response;
+  try {
+    response = await fetch(url, { ...options, headers });
+  } catch (error) {
+    throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
+  }
   const body = await parseJson(response);
   if (!response.ok) throw new ApiError(response.status, errorMessage(response.status, body), body);
   return body as T;

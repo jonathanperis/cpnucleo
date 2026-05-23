@@ -119,8 +119,8 @@ cd src/IdentityApi && dotnet run
 # Terminal 3 - gRPC Server
 cd src/GrpcServer && dotnet run
 
-# Terminal 4 - Qwik Web Client
-cd src/WebClient && dotnet run
+# Terminal 4 - Qwik Web Client (requires Node.js 22+)
+cd src/WebClient && npm install && npm run dev
 ```
 
 ---
