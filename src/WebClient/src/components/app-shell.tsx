@@ -26,7 +26,15 @@ export const AppShell = component$(() => {
       <div class="lg:pl-72">
         <header class="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
           <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-            <button class="rounded-md border border-line px-3 py-2 text-sm lg:hidden" type="button" aria-expanded={mobileOpen.value} onClick$={() => (mobileOpen.value = true)}>Menu</button>
+            <button
+              class="rounded-md border border-line px-3 py-2 text-sm lg:hidden"
+              type="button"
+              aria-expanded={mobileOpen.value}
+              aria-controls="mobile-nav-drawer"
+              onClick$={() => (mobileOpen.value = true)}
+            >
+              Menu
+            </button>
             <div>
               <p class="text-sm font-medium text-muted">CPnucleo WebClient</p>
               <h1 class="text-lg font-semibold">Project operations</h1>
@@ -41,7 +49,14 @@ export const AppShell = component$(() => {
         </header>
         {mobileOpen.value && (
           <div class="fixed inset-0 z-50 bg-black/30 lg:hidden" onClick$={() => (mobileOpen.value = false)}>
-            <div class="h-full w-80 bg-surface p-5 shadow-soft" onClick$={(event) => event.stopPropagation()}>
+            <div
+              id="mobile-nav-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              class="h-full w-80 bg-surface p-5 shadow-soft"
+              onClick$={(event) => event.stopPropagation()}
+            >
               <div class="flex items-center justify-between">
                 <Brand />
                 <button class="rounded-md border border-line px-3 py-2" onClick$={() => (mobileOpen.value = false)}>Close</button>
@@ -63,18 +78,22 @@ export const Brand = component$(() => (
   </Link>
 ));
 
-export const Navigation = component$<{ path: string }>(({ path }) => (
-  <nav class="mt-8 space-y-6">
-    {groups.map((group) => (
-      <section key={group.name}>
-        <h2 class="px-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.name}</h2>
-        <div class="mt-2 space-y-1">
-          {group.items.map(([label, href]) => {
-            const active = path === href;
-            return <Link key={href} href={href} class={["block rounded-lg px-3 py-2 text-sm font-medium transition", active ? "bg-ink text-white shadow-sm" : "text-muted hover:bg-raised hover:text-ink"]}>{label}</Link>;
-          })}
-        </div>
-      </section>
-    ))}
-  </nav>
-));
+export const Navigation = component$<{ path: string }>(({ path }) => {
+  const normalizedPath = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+
+  return (
+    <nav class="mt-8 space-y-6">
+      {groups.map((group) => (
+        <section key={group.name}>
+          <h2 class="px-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.name}</h2>
+          <div class="mt-2 space-y-1">
+            {group.items.map(([label, href]) => {
+              const active = href === '/' ? normalizedPath === '/' : normalizedPath === href || normalizedPath.startsWith(`${href}/`);
+              return <Link key={href} href={href} class={["block rounded-lg px-3 py-2 text-sm font-medium transition", active ? "bg-ink text-white shadow-sm" : "text-muted hover:bg-raised hover:text-ink"]}>{label}</Link>;
+            })}
+          </div>
+        </section>
+      ))}
+    </nav>
+  );
+});

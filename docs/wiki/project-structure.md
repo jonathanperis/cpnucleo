@@ -232,22 +232,20 @@ IdentityApi/
 
 Qwik + Qwik City + Tailwind frontend served from the existing WebClient container slot.
 
-```
+```text
 WebClient/
-├── package.json                           # Qwik, Qwik City, Tailwind, Vite scripts
-├── src/root.tsx                           # Qwik City application root
-├── Usings.cs
-├── Dockerfile
-├── Components/
-│   └── ...                               # Qwik routes, API metadata, and CRUD components
-├── Properties/
-│   └── launchSettings.json
-├── ServiceExtensions/
-│   └── ...                               # OpenTelemetry configuration
-├── wwwroot/
-│   └── ...                               # Static assets
-├── appsettings.json
-└── appsettings.Development.json
+├── package.json                          # Qwik, Qwik City, Tailwind, Vite scripts
+├── package-lock.json                     # npm dependency lockfile
+├── Dockerfile                            # Node build + nginx static runtime
+├── nginx.conf                            # Static serving and /healthz on port 5030
+├── src/
+│   ├── root.tsx                          # Qwik City application root
+│   ├── components/                       # App shell and navigation
+│   ├── features/crud/                    # Shared CRUD screen renderer
+│   ├── lib/api/                          # API clients and resource metadata
+│   └── routes/                           # Qwik City pages for all resources
+├── tailwind.config.ts                    # Tailwind design tokens
+└── vite.config.ts                        # Qwik/Vite build configuration
 ```
 
 ---

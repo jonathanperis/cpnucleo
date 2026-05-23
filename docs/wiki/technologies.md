@@ -74,10 +74,10 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Qwik | 1.x | Component framework for the WebClient |
-| Qwik City | 1.x | File-based routing for the WebClient |
-| Tailwind CSS | 3.x | Utility-first styling and design tokens |
-| Vite | 7.x | Frontend development and production build tooling |
+| Qwik | 1.16.0 | Component framework for the WebClient |
+| Qwik City | 1.16.0 | File-based routing for the WebClient |
+| Tailwind CSS | 3.4.18 | Utility-first styling and design tokens |
+| Vite | 7.2.4 | Frontend development and production build tooling |
 
 ## Testing
 
