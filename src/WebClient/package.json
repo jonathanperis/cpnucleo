@@ -2,34 +2,35 @@
   "name": "cpnucleo-webclient",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "bun@1.3.11",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5030",
-    "build": "qwik build",
-    "build.client": "vite build",
-    "build.server": "vite build --ssr src/entry.ssr.tsx",
+    "dev": "node ./node_modules/astro/astro.js dev --host 0.0.0.0 --port 5030",
+    "build": "node ./node_modules/astro/astro.js build",
     "preview": "node scripts/preview.mjs",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "astro check && tsc --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "postinstall": "node scripts/patch-qwikdev-astro.mjs",
+    "prebuild": "node scripts/patch-qwikdev-astro.mjs"
   },
   "dependencies": {
     "@builder.io/qwik": "^1.16.0",
-    "@builder.io/qwik-city": "^1.16.0",
-    "@vitejs/plugin-basic-ssl": "^2.1.0",
+    "@qwikdev/astro": "^0.8.3",
+    "astro": "5.9.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^6.3.5"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@types/node": "^24.10.1",
     "autoprefixer": "^10.4.22",
     "ignore": "^7.0.5",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18",
     "undici": "^7.16.0",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.13"
+    "vitest": "^3.2.4"
   }
 }

@@ -278,6 +278,7 @@ FakesAssemblies/
 node_modules/
 .npm-cache/
 src/WebClient/dist/
+src/WebClient/.astro/
 src/WebClient/server/
 
 # Visual Studio 6 build log
@@ -478,5 +479,5 @@ dml-data
 package-lock.json
 # Allow the docs Astro project and Qwik WebClient to commit their lockfiles and env
 !docs/package-lock.json
-!src/WebClient/package-lock.json
+!src/WebClient/bun.lock
 !docs/.env

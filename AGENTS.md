@@ -29,7 +29,7 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 | PostgreSQL 16.7 | Primary database |
 | Npgsql 10 | PostgreSQL driver with multiplexing |
 | Riok.Mapperly 4.3 | Compile-time DTO mapping (zero reflection) |
-| Qwik + Qwik City | WebClient routing and rendering |
+| Astro + Qwik | WebClient routing and interactive islands |
 | OpenTelemetry 1.15 | Observability (OTLP export) |
 | Docker + NGINX | Containerization + load balancing |
 | GitHub Actions | CI/CD with Hostinger deployment |
@@ -65,7 +65,7 @@ Presentation Layer
 ├── WebApi (REST, FastEndpoints + EF Core, port 5000)
 ├── GrpcServer (gRPC, FastEndpoints.Messaging + Dapper, port 5020/5021)
 ├── IdentityApi (JWT auth, port 5010)
-└── WebClient (Qwik + Qwik City + Tailwind, port 5030)
+└── WebClient (Astro + Qwik + Tailwind, port 5030)
 
 ├── Application Layer
 │   └── Feature slices/use cases (pilot: Projects/CreateProject)

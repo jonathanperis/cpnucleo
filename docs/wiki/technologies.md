@@ -74,10 +74,10 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Qwik | 1.16.0 | Component framework for the WebClient |
-| Qwik City | 1.16.0 | File-based routing for the WebClient |
+| Qwik | 1.16.0 | Resumable interactive components for the WebClient |
+| Astro | 5.9.2 | Static routing and production build for the WebClient |
 | Tailwind CSS | 3.4.18 | Utility-first styling and design tokens |
-| Vite | 7.2.4 | Frontend development and production build tooling |
+| Vite | 6.x | Frontend development and production build tooling |
 
 ## Testing
 

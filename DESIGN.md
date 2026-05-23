@@ -16,7 +16,7 @@ Dark theme is correct because the scene is focused technical evaluation in a low
 - Release notebook.
 - Service topology map.
 - Build pipeline ledger.
-- Qwik, Qwik City, and Tailwind CSS on the live app side, with Catalyst-inspired product UI patterns reimplemented in Qwik while the Pages site remains a static docs and proof surface.
+- Astro, Qwik, and Tailwind CSS on the live app side, with Catalyst-inspired product UI patterns implemented as resumable Qwik components while the Pages site remains a static docs and proof surface.
 
 ## Color strategy
 

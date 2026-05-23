@@ -16,6 +16,6 @@
       "~/*": ["src/*"]
     }
   },
-  "include": ["src", "vite.config.ts", "tailwind.config.ts"],
+  "include": [".astro/types.d.ts", "src", "astro.config.mjs", "vitest.config.ts", "tailwind.config.ts"],
   "exclude": ["node_modules", "dist", "server"]
 }
