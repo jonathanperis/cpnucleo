@@ -70,7 +70,7 @@ public sealed class Argon2PasswordHasher : IPasswordHasher
 
     private static byte[] HashArgon2id(string password, byte[] salt, int memorySize, int iterations, int degreeOfParallelism, int hashSize)
     {
-        var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+        using var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
         {
             Salt = salt,
             MemorySize = memorySize,
