@@ -59,7 +59,7 @@ A.CallTo(() => fakeDbContext.Entities).Returns(fakeDbSet);
 ## Running Tests
 
 ```bash
-dotnet test test/WebApi.Unit.Tests/WebApi.Unit.Tests.csproj
+dotnet test tests/WebApi.Unit.Tests/WebApi.Unit.Tests.csproj
 ```
 
 ## Notes

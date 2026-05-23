@@ -94,9 +94,9 @@ def main() -> None:
         if slug not in sidebar_slugs:
             fail(f"docs/wiki/{slug}.md is not represented in sidebar config")
 
-    arch_tests = count_attrs("test/Architecture.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    unit_tests = count_attrs("test/WebApi.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    integration_tests = count_attrs("test/WebApi.Integration.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
+    arch_tests = count_attrs("tests/Architecture.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
+    unit_tests = count_attrs("tests/WebApi.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
+    integration_tests = count_attrs("tests/WebApi.Integration.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     if (arch_tests, unit_tests, integration_tests) != (25, 49, 55):
         fail(f"unexpected test counts: architecture={arch_tests}, unit={unit_tests}, integration={integration_tests}")
 

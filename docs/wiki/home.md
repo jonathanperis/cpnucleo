@@ -10,7 +10,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 |------|-------------|
 | [Architecture](architecture) | Clean Architecture layers, CQRS dual implementation, DDD patterns |
 | [Getting Started](getting-started) | Prerequisites, build, run with Docker Compose or locally |
-| [Project Structure](project-structure) | Full tree of `src/` and `test/` with descriptions |
+| [Project Structure](project-structure) | Full tree of `src/` and `tests/` with descriptions |
 | [API Reference](api-reference) | WebApi endpoints, IdentityApi auth, GrpcServer contracts |
 | [Database](database) | PostgreSQL setup, EF Core, Dapper, init scripts |
 | [Testing](testing) | Architecture tests, unit tests, integration tests |

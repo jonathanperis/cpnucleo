@@ -14,7 +14,7 @@ Cpnucleo has three test projects covering 25 architecture rules, 49 WebApi unit-
 
 ---
 
-## Architecture Tests (`test/Architecture.Tests/`)
+## Architecture Tests (`tests/Architecture.Tests/`)
 
 These tests enforce Clean Architecture dependency rules at build time using NetArchTest and FluentAssertions. They run as part of both the PR build check and the release pipeline.
 
@@ -69,7 +69,7 @@ These tests enforce Clean Architecture dependency rules at build time using NetA
 
 ---
 
-## Unit Tests (`test/WebApi.Unit.Tests/`)
+## Unit Tests (`tests/WebApi.Unit.Tests/`)
 
 Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions. The source contains 49 test cases, but the suite is not part of the active CI gate and currently needs cleanup around several `Remove*` request-model references before it compiles end to end.
 
@@ -95,7 +95,7 @@ WebApi.Unit.Tests/
 
 ---
 
-## Integration Tests (`test/WebApi.Integration.Tests/`)
+## Integration Tests (`tests/WebApi.Integration.Tests/`)
 
 55 integration tests exercise the FastEndpoints request pipeline with xUnit v3 and shared host fixtures.
 
@@ -145,13 +145,13 @@ dotnet test cpnucleo.slnx
 ### Run Architecture Tests Only
 
 ```bash
-dotnet test test/Architecture.Tests/
+dotnet test tests/Architecture.Tests/
 ```
 
 ### Run Unit Tests Only
 
 ```bash
-dotnet test test/WebApi.Unit.Tests/
+dotnet test tests/WebApi.Unit.Tests/
 ```
 
 ### Run Integration Tests (requires running database)
@@ -162,7 +162,7 @@ docker compose up db -d
 sleep 30
 
 # Run integration tests
-dotnet test test/WebApi.Integration.Tests/
+dotnet test tests/WebApi.Integration.Tests/
 ```
 
 ### Run with Code Coverage

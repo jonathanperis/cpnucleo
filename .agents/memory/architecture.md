@@ -22,7 +22,7 @@ The project intentionally implements two data access approaches against the same
 - Presentation projects cannot cross-reference each other (WebApi cannot depend on GrpcServer)
 - Naming conventions are enforced (DTOs end with `Dto`, handlers end with `Handler`, etc.)
 
-**How to apply:** Before adding new packages or cross-project references, check if it would violate an architecture test. Run `dotnet test test/Architecture.Tests/` to verify.
+**How to apply:** Before adding new packages or cross-project references, check if it would violate an architecture test. Run `dotnet test tests/Architecture.Tests/` to verify.
 
 ## Entity Lifecycle Pattern
 

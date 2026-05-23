@@ -82,7 +82,7 @@ The solution follows Clean Architecture with these layers:
 ## Running Tests
 
 ```bash
-dotnet test test/Architecture.Tests/Architecture.Tests.csproj
+dotnet test tests/Architecture.Tests/Architecture.Tests.csproj
 ```
 
 ## Adding New Tests
