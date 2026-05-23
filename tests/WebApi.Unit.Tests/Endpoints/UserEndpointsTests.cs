@@ -125,6 +125,9 @@ public class UserEndpointsTests
         // Assert
         ep.Response.ShouldNotBeNull();
         ep.Response.Success.ShouldBeTrue();
+        A.CallTo(() => passwordHasher.Hash("Password@123")).MustHaveHappenedOnceExactly();
+        user.Password.ShouldBe("$argon2id$updated-hash");
+        user.Salt.ShouldBeEmpty();
     }
 
     [Test]

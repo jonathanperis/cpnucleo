@@ -16,6 +16,16 @@ public class Argon2PasswordHasherTests
     }
 
     [Test]
+    public void Hash_ShouldRejectNullOrWhitespacePassword()
+    {
+        var hasher = new Argon2PasswordHasher();
+
+        Should.Throw<ArgumentException>(() => hasher.Hash(null));
+        Should.Throw<ArgumentException>(() => hasher.Hash(""));
+        Should.Throw<ArgumentException>(() => hasher.Hash("   "));
+    }
+
+    [Test]
     public void Verify_ShouldAcceptCorrectArgon2Password()
     {
         var hasher = new Argon2PasswordHasher();
