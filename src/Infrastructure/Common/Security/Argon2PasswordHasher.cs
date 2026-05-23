@@ -1,5 +1,6 @@
 namespace Infrastructure.Common.Security;
 
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using Konscious.Security.Cryptography;
@@ -20,7 +21,7 @@ public sealed class Argon2PasswordHasher : IPasswordHasher
     {
         if (string.IsNullOrWhiteSpace(password))
         {
-            return new PasswordHash(string.Empty, string.Empty);
+            throw new ArgumentException("Password cannot be null, empty, or whitespace.", nameof(password));
         }
 
         var salt = RandomNumberGenerator.GetBytes(SaltSize);
@@ -113,7 +114,7 @@ public sealed class Argon2PasswordHasher : IPasswordHasher
         var parameters = value
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(x => x.Split('=', 2))
-            .ToDictionary(x => x[0], x => int.Parse(x[1]));
+            .ToDictionary(x => x[0], x => int.Parse(x[1], CultureInfo.InvariantCulture));
 
         return new Argon2Parameters(
             parameters["m"],
