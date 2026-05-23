@@ -230,20 +230,20 @@ IdentityApi/
 
 ### WebClient (`src/WebClient/`)
 
-Qwik + Qwik City + Tailwind frontend served from the existing WebClient container slot.
+Astro + Qwik + Tailwind frontend served from the existing WebClient container slot.
 
 ```text
 WebClient/
-├── package.json                          # Qwik, Qwik City, Tailwind, Vite scripts
-├── package-lock.json                     # npm dependency lockfile
+├── package.json                          # Astro, Qwik, Tailwind, Bun scripts
+├── bun.lock                              # Bun dependency lockfile
 ├── Dockerfile                            # Node build + nginx static runtime
 ├── nginx.conf                            # Static serving and /healthz on port 5030
 ├── src/
-│   ├── root.tsx                          # Qwik City application root
+│   ├── layouts/                          # Astro application shell
 │   ├── components/                       # App shell and navigation
 │   ├── features/crud/                    # Shared CRUD screen renderer
 │   ├── lib/api/                          # API clients and resource metadata
-│   └── routes/                           # Qwik City pages for all resources
+│   └── pages/                            # Astro routes for all resources
 ├── tailwind.config.ts                    # Tailwind design tokens
 └── vite.config.ts                        # Qwik/Vite build configuration
 ```

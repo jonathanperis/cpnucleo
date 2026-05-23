@@ -33,7 +33,7 @@ Users usually arrive in evaluation mode. They are skeptical, time constrained, a
 Use these facts only when the source remains true in README, AGENTS.md, solution files, or docs:
 
 - Runtime: .NET 10.
-- UI: Qwik plus Qwik City with Tailwind CSS, using Catalyst-inspired product patterns reimplemented in Qwik.
+- UI: Astro plus Qwik islands with Tailwind CSS, using Catalyst-inspired product patterns implemented as resumable Qwik components.
 - REST: FastEndpoints with EF Core through WebApi.
 - gRPC style messaging: FastEndpoints Remote Messaging with Dapper through GrpcServer.
 - Authentication: dedicated IdentityApi with JWT and Argon2id-hashed credentials.

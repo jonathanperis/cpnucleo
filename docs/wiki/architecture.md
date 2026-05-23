@@ -151,10 +151,10 @@ Implements data access with two strategies side by side:
 
 ### WebClient (`src/WebClient`)
 
-- Qwik + Qwik City routing and rendering
-- Tailwind CSS with Catalyst-inspired product UI patterns reimplemented in Qwik
+- Astro static routing with Qwik interactive islands
+- Tailwind CSS with Catalyst-inspired product UI patterns implemented as resumable Qwik components
 - Static container runtime served by NGINX on port 5030
-- Static asset serving
+- IdentityApi-backed login and bearer-token authorization for protected pages
 
 ---
 

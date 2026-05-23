@@ -38,13 +38,11 @@ jobs:
         with:
           global-json-file: global.json
 
-      - name: Setup Node.js
+      - name: Setup Bun
         if: matrix.service == 'WebClient'
-        uses: actions/setup-node@v5
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: src/WebClient/package-lock.json
+          bun-version: 1.3.11
 
       - name: Restore Dependencies
         if: matrix.service != 'WebClient'
@@ -54,7 +52,7 @@ jobs:
       - name: Install WebClient Dependencies
         if: matrix.service == 'WebClient'
         working-directory: ./src/WebClient
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Build Application
         if: matrix.service != 'WebClient'
@@ -64,17 +62,17 @@ jobs:
       - name: Typecheck WebClient
         if: matrix.service == 'WebClient'
         working-directory: ./src/WebClient
-        run: npm run typecheck
+        run: bun run typecheck
 
       - name: Test WebClient
         if: matrix.service == 'WebClient'
         working-directory: ./src/WebClient
-        run: npm test
+        run: bun test
 
       - name: Build WebClient
         if: matrix.service == 'WebClient'
         working-directory: ./src/WebClient
-        run: npm run build
+        run: bun run build
 
       # - name: Unit Tests
       #   working-directory: "./tests/Application.Tests"
