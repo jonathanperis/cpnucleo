@@ -1,33 +1,46 @@
 namespace Architecture.Tests;
 
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Xml.Linq;
 
 public class FastEndpointsConfigurationTests
 {
     private static readonly string[] HttpVerbRouteMethods = ["Get", "Post", "Put", "Delete", "Patch"];
 
-    [Theory]
-    [InlineData("src/WebApi/WebApi.csproj")]
-    [InlineData("src/IdentityApi/IdentityApi.csproj")]
-    [InlineData("tests/WebApi.Integration.Tests/WebApi.Integration.Tests.csproj")]
-    public void FastEndpointsPackageVersions_ShouldBeAligned(string projectPath)
+    [Fact]
+    public void FastEndpointsPackageVersions_ShouldBeAligned()
     {
-        var project = XDocument.Load(GetRepositoryPath(projectPath));
-        var fastEndpointsPackageVersions = project
-            .Descendants("PackageReference")
-            .Where(x => x.Attribute("Include")?.Value.StartsWith("FastEndpoints", StringComparison.Ordinal) == true)
-            .Select(x => x.Attribute("Version")!.Value)
-            .Distinct()
+        var repositoryRoot = GetRepositoryPath(".");
+        var fastEndpointsPackageVersions = Directory
+            .EnumerateFiles(repositoryRoot, "*.csproj", SearchOption.AllDirectories)
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
+                && !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .SelectMany(projectPath => XDocument
+                .Load(projectPath)
+                .Descendants("PackageReference")
+                .Where(x => x.Attribute("Include")?.Value.StartsWith("FastEndpoints", StringComparison.Ordinal) == true)
+                .Select(x => new
+                {
+                    ProjectPath = Path.GetRelativePath(repositoryRoot, projectPath),
+                    Version = x.Attribute("Version")?.Value
+                }))
             .ToArray();
 
-        fastEndpointsPackageVersions.Should().Equal("8.1.0");
+        fastEndpointsPackageVersions.Should().NotBeEmpty();
+        fastEndpointsPackageVersions
+            .Select(x => x.Version)
+            .Distinct()
+            .Should()
+            .ContainSingle("all FastEndpoints packages should use the same reviewed version: {0}", string.Join(", ", fastEndpointsPackageVersions.Select(x => $"{x.ProjectPath}: {x.Version}")))
+            .Which.Should().Be("8.1.0");
     }
 
     [Fact]
     public void IdentityApi_ShouldRegisterFastEndpointsOnce()
     {
         var program = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
-        var registrationCount = CountOccurrences(program, ".AddFastEndpoints(");
+        var registrationCount = CountInvocationExpressions(program, "AddFastEndpoints");
 
         registrationCount.Should().Be(1);
     }
@@ -70,17 +83,18 @@ public class FastEndpointsConfigurationTests
         return Path.Combine(directory!.FullName, relativePath);
     }
 
-    private static int CountOccurrences(string value, string search)
+    private static int CountInvocationExpressions(string value, string methodName)
     {
-        var count = 0;
-        var index = 0;
+        var root = CSharpSyntaxTree.ParseText(value).GetRoot();
 
-        while ((index = value.IndexOf(search, index, StringComparison.Ordinal)) >= 0)
-        {
-            count++;
-            index += search.Length;
-        }
-
-        return count;
+        return root
+            .DescendantNodes()
+            .OfType<InvocationExpressionSyntax>()
+            .Count(invocation => invocation.Expression switch
+            {
+                IdentifierNameSyntax identifier => identifier.Identifier.ValueText == methodName,
+                MemberAccessExpressionSyntax memberAccess => memberAccess.Name.Identifier.ValueText == methodName,
+                _ => false
+            });
     }
 }
