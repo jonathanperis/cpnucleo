@@ -56,6 +56,22 @@ Domain/
     └── IUnitOfWork.cs                    # Unit of Work interface for transactions
 ```
 
+### Application (`src/Application/`)
+
+Feature-oriented use cases shared by REST and gRPC transport adapters.
+
+```
+Application/
+├── Application.csproj                    # Shared feature slices and Microsoft DI
+├── DependencyInjection.cs                # Application handler registration
+├── Features/
+│   └── Projects/
+│       ├── ProjectDetails.cs             # Transport-neutral project result model
+│       └── CreateProject/
+│           └── CreateProjectHandler.cs   # Shared create-project use case + store port
+└── Usings.cs
+```
+
 ### Infrastructure (`src/Infrastructure/`)
 
 Data access implementations using both EF Core and Dapper.
@@ -245,7 +261,7 @@ Validates Clean Architecture dependency rules using NetArchTest.
 ```
 Architecture.Tests/
 ├── Architecture.Tests.csproj             # xUnit, NetArchTest.Rules, FluentAssertions
-├── ArchitectureTests.cs                  # 25 architecture validation tests
+├── ArchitectureTests.cs                  # 27 architecture validation tests
 ├── Usings.cs
 └── README.md
 ```

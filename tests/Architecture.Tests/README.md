@@ -4,14 +4,16 @@ This project contains comprehensive architecture tests to ensure the Clean Archi
 
 ## Test Categories
 
-### 1. Layer Dependency Tests (6 tests)
+### 1. Layer Dependency Tests (8 tests)
 These tests ensure that layers only depend on appropriate other layers according to Clean Architecture principles:
 
 - **Domain_Should_Not_HaveDependencyOnOtherProjects**: Domain layer is the core and should have no dependencies on other projects
+- **Application_Should_OnlyDependOnDomain**: Application use cases should not depend on Infrastructure or transport projects
 - **Infrastructure_Should_Not_HaveDependencyOnOtherProjects**: Infrastructure should not depend on API/UI layers
 - **Infrastructure_Repositories_Should_HaveDependencyOnDomain**: Repository implementations must depend on Domain
 - **GrpcServerContracts_Should_OnlyDependOnDomain**: Command contracts should only depend on Domain, not Infrastructure
 - **WebApi_Should_NotDependOnGrpcServer**: WebApi and GrpcServer should be independent
+- **GrpcServer_Should_NotDependOnWebApi**: GrpcServer and WebApi should be independent
 - **IdentityApi_Should_NotDependOnGrpcServer**: IdentityApi and GrpcServer should be independent
 
 ### 2. Domain Layer Tests (3 tests)
@@ -65,7 +67,7 @@ The solution follows Clean Architecture with these layers:
                  │
 ┌────────────────▼────────────────────────────┐
 │         Application Layer                   │
-│       GrpcServer.Contracts                  │
+│  Feature slices/use cases shared by APIs    │
 └────────────────┬────────────────────────────┘
                  │
 ┌────────────────▼────────────────────────────┐

@@ -97,7 +97,7 @@ def main() -> None:
     arch_tests = count_attrs("tests/Architecture.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     unit_tests = count_attrs("tests/WebApi.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     integration_tests = count_attrs("tests/WebApi.Integration.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    if (arch_tests, unit_tests, integration_tests) != (25, 49, 55):
+    if (arch_tests, unit_tests, integration_tests) != (27, 49, 55):
         fail(f"unexpected test counts: architecture={arch_tests}, unit={unit_tests}, integration={integration_tests}")
 
     endpoint_count = len(list((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs")))
@@ -106,7 +106,7 @@ def main() -> None:
     if (endpoint_count, handler_count, command_count) != (55, 55, 55):
         fail(f"unexpected endpoint/handler/command counts: {endpoint_count}/{handler_count}/{command_count}")
 
-    assert_contains("README.md", "25 architecture tests")
+    assert_contains("README.md", "27 architecture tests")
     assert_contains("README.md", "Pages documentation")
     assert_absent("README.md", "github.com/jonathanperis/cpnucleo/wiki")
     assert_absent("docs/wiki/getting-started.md", "http://localhost:5300/healthz")

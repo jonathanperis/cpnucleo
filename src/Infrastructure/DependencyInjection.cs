@@ -12,6 +12,8 @@ public static class DependencyInjection
         services.AddScoped(_ => new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING")));
         services.AddScoped<IProjectRepository, ProjectRepository>();
 
+        services.AddScoped<IProjectCreateStore, ProjectCreateStore>();
+
         // Dapper Repository Advanced        
         services.AddScoped<IUnitOfWork>(_ => 
             new UnitOfWork(new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING"))));

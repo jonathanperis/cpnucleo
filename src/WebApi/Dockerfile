@@ -21,6 +21,7 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src
 
 COPY ["WebApi/WebApi.csproj", "WebApi/"]
+COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 

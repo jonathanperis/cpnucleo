@@ -1,6 +1,6 @@
 # Architecture
 
-Cpnucleo follows Clean Architecture principles with strict layer separation enforced by 25 automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database.
+Cpnucleo follows Clean Architecture principles with strict layer separation enforced by 27 automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database, with migrated use cases shared through feature-oriented Application slices.
 
 ---
 
@@ -11,6 +11,9 @@ Cpnucleo follows Clean Architecture principles with strict layer separation enfo
 |                    Presentation Layer                         |
 |  WebApi (REST)  |  GrpcServer (gRPC)  |  IdentityApi (Auth) |
 |                 |                      |  WebClient (Blazor)  |
++-------------------------------------------------------------+
+|                 Application Layer                         |
+|  Feature Slices / Use Cases (pilot: Projects/Create)      |
 +-------------------------------------------------------------+
 |                   Infrastructure Layer                        |
 |  EF Core (ApplicationDbContext)  |  Dapper (UnitOfWork)      |
@@ -75,6 +78,18 @@ Entities are annotated with `[Table("...")]` for Dapper's advanced repository to
 
 ---
 
+## Application Layer (`src/Application`)
+
+Application contains feature-oriented use cases shared by the REST and gRPC adapters. New migrations should move orchestration, validation that is not transport-specific, and persistence-facing ports into the relevant feature slice while keeping domain invariants in `Domain`.
+
+Current pilot slice:
+
+- `Features/Projects/CreateProject` contains the shared create-project handler and `IProjectCreateStore` port.
+- `WebApi.Endpoints.Project.CreateProject.Endpoint` and `GrpcServer.Handlers.Project.CreateProjectHandler` are thin adapters over the shared handler.
+- Infrastructure implements the port while preserving the existing EF Core + Dapper project choices.
+
+---
+
 ## Infrastructure Layer (`src/Infrastructure`)
 
 Implements data access with two strategies side by side:
@@ -102,6 +117,7 @@ Implements data access with two strategies side by side:
 - `NpgsqlConnection` (Dapper basic, scoped)
 - `IProjectRepository` as `ProjectRepository` (Dapper specialized, scoped)
 - `IUnitOfWork` as `UnitOfWork` (Dapper advanced with transactions, scoped)
+- `IProjectCreateStore` as `ProjectCreateStore` (Application port implemented with Dapper UnitOfWork, scoped)
 - Optional fake data generation via Bogus when `CreateFakeData` is configured
 
 ---
@@ -154,16 +170,18 @@ The system demonstrates two parallel approaches to the same domain:
 | Internal Port | 5000 | 5020 (HTTP/2 gRPC) + 5021 (HTTP/1 health) |
 | Load Balanced | Yes (NGINX, 2 instances) | No |
 
-Both implementations share the same Domain entities and PostgreSQL database.
+Both implementations share the same Domain entities and PostgreSQL database. Migrated slices also share Application use-case handlers so transport adapters stay thin while REST and gRPC remain separate public APIs.
 
 ---
 
 ## Dependency Rules (Enforced by Architecture Tests)
 
 - Domain depends on nothing (no EF Core, no Dapper, no Npgsql)
-- Infrastructure depends only on Domain
+- Application depends on Domain only, plus minimal framework abstractions
+- Infrastructure depends on Application and Domain
 - GrpcServer.Contracts depends only on Domain
 - WebApi does not depend on GrpcServer
+- GrpcServer does not depend on WebApi
 - IdentityApi does not depend on GrpcServer
 - All entities must inherit from `BaseEntity` and be `sealed`
 - All repository interfaces must start with `I`
