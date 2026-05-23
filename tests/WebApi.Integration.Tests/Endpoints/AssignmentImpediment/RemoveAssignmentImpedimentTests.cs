@@ -11,7 +11,7 @@ public class RemoveAssignmentImpedimentTests(WebAppFixture app, WebAppState stat
     [Fact, Priority(1)]
     public async Task AssignmentImpediments_ShouldDeleteAnAssignmentImpediment()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveAssignmentImpedimentRequest, ErrorResponse>(new RemoveAssignmentImpedimentRequest
         {
             Ids = [_assignmentImpedimentId]
         });

@@ -131,7 +131,7 @@ public class OrganizationEndpointsTests
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
         var ep = Factory.Create<WebApi.Endpoints.Organization.RemoveOrganization.Endpoint>(fakeUnitOfWork);
-        var req = new WebApi.Endpoints.Organization.RemoveOrganization.Request { Ids = new List<Guid> { organizationId } };
+        var req = new WebApi.Endpoints.Organization.RemoveOrganization.RemoveOrganizationRequest { Ids = new List<Guid> { organizationId } };
 
         // Act
         await ep.HandleAsync(req, default);

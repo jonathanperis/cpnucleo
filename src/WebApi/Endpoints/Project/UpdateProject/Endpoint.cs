@@ -5,7 +5,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
 {
     public override void Configure()
     {
-        Patch("/api/project");
+        Patch("/project");
         Description(x => x.WithTags("Projects"));
         AllowAnonymous();
 

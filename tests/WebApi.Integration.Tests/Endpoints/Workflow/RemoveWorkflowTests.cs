@@ -11,7 +11,7 @@ public class RemoveWorkflowTests(WebAppFixture app, WebAppState state) : TestBas
     [Fact, Priority(1)]
     public async Task Workflows_ShouldDeleteAnWorkflow()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveWorkflowRequest, ErrorResponse>(new RemoveWorkflowRequest
         {
             Ids = [_workflowId]
         });

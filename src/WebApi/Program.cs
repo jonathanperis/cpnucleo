@@ -78,7 +78,7 @@ app.UseHealthChecks("/healthz");
 app.UseInfrastructure();
 
 app.
-    UseFastEndpoints()
+    UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();
 

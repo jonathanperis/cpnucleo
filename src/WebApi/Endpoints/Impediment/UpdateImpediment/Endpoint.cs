@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 {
     public override void Configure()
     {
-        Patch("/api/impediment");
+        Patch("/impediment");
         Description(x => x.WithTags("Impediments"));
         AllowAnonymous();
 

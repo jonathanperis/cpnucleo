@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 {
     public override void Configure()
     {
-        Patch("/api/workflow");
+        Patch("/workflow");
         Description(x => x.WithTags("Workflows"));
         AllowAnonymous();
 

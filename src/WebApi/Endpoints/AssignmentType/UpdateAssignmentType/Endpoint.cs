@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 {
     public override void Configure()
     {
-        Patch("/api/assignmentType");
+        Patch("/assignmentType");
         Description(x => x.WithTags("AssignmentTypes"));
         AllowAnonymous();
 

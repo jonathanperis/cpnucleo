@@ -11,7 +11,7 @@ public class RemoveAssignmentTypeTests(WebAppFixture app, WebAppState state) : T
     [Fact, Priority(1)]
     public async Task AssignmentTypes_ShouldDeleteAnAssignmentType()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveAssignmentTypeRequest, ErrorResponse>(new RemoveAssignmentTypeRequest
         {
             Ids = [_assignmentTypeId]
         });
