@@ -1,0 +1,35 @@
+{
+  "name": "cpnucleo-webclient",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5030",
+    "build": "qwik build",
+    "build.client": "vite build",
+    "build.server": "vite build --ssr src/entry.ssr.tsx",
+    "preview": "node scripts/preview.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@builder.io/qwik": "^1.16.0",
+    "@builder.io/qwik-city": "^1.16.0",
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "autoprefixer": "^10.4.22",
+    "ignore": "^7.0.5",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "undici": "^7.16.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.13"
+  }
+}

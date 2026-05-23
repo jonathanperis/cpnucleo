@@ -30,7 +30,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 - NGINX reverse proxy with least-connection load balancing across multiple WebApi instances
 - Docker Compose configurations for development, default, and production environments
 - AOT, Trim, and ExtraOptimize build options for production-optimized containers
-- Blazor Server + WebAssembly frontend with MudBlazor UI components
+- Qwik + Qwik City frontend with Tailwind CSS CRUD screens for all WebApi resources
 - Automated CI/CD with GitHub Actions deploying to Hostinger Docker Manager via GHCR
 
 ---

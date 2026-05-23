@@ -276,6 +276,9 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 node_modules/
+.npm-cache/
+src/WebClient/dist/
+src/WebClient/server/
 
 # Visual Studio 6 build log
 *.plg
@@ -473,6 +476,7 @@ dml-data
 
 # Docs generation
 package-lock.json
-# Allow the docs Astro project to commit its lockfile and env
+# Allow the docs Astro project and Qwik WebClient to commit their lockfiles and env
 !docs/package-lock.json
+!src/WebClient/package-lock.json
 !docs/.env

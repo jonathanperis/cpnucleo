@@ -101,7 +101,7 @@ Layout: replace template cards with three source-backed proof zones:
 ### Home page
 
 1. Hero: `Clean Architecture reference system for .NET 10`.
-2. Short proof line: REST, gRPC, Blazor, PostgreSQL, NGINX, Hostinger, architecture tests.
+2. Short proof line: REST, gRPC, Qwik, PostgreSQL, NGINX, Hostinger, architecture tests.
 3. CTA order: Docs, GitHub, Live Demo.
 4. Architecture map: four service boxes plus infrastructure layer and domain core.
 5. Proof ledger: endpoint parity, architecture tests, CI/CD, Docker topology.
