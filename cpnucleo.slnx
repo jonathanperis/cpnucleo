@@ -13,6 +13,7 @@
     <File Path="README.md" />    
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\Application\Application.csproj" />
     <Project Path="src/WebApi.Client/WebApi.Client.csproj" />
     <Project Path="src\Domain\Domain.csproj" />
     <Project Path="src\GrpcServer.Contracts\GrpcServer.Contracts.csproj" />
@@ -23,6 +24,7 @@
     <Project Path="src\WebClient\WebClient.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests\Application.Unit.Tests\Application.Unit.Tests.csproj" />
     <Project Path="tests\Architecture.Tests\Architecture.Tests.csproj" />
     <Project Path="tests\Security.Unit.Tests\Security.Unit.Tests.csproj" />
     <Project Path="tests\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" />

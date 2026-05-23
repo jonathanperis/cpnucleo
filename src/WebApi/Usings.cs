@@ -1,3 +1,5 @@
+global using Application;
+global using Application.Features.Projects.CreateProject;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Linq.Dynamic.Core;

@@ -56,12 +56,14 @@ public class ProjectEndpointsTests
         var organizationId = Guid.NewGuid();
         var project = Project.Create("New Project", organizationId, projectId);
         
-        var fakeRepository = A.Fake<IProjectRepository>();
-        A.CallTo(() => fakeRepository.ExistsAsync(projectId)).Returns(Task.FromResult(false));
-        A.CallTo(() => fakeRepository.AddAsync(A<Project>._)).Returns(Task.FromResult(projectId));
-        A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(project));
+        var fakeStore = A.Fake<IProjectCreateStore>();
+        A.CallTo(() => fakeStore.ExistsAsync(projectId, A<CancellationToken>._)).Returns(false);
+        A.CallTo(() => fakeStore.AddAsync(A<Project>._, A<CancellationToken>._)).Returns(project);
+        var handler = new Application.Features.Projects.CreateProject.CreateProjectHandler(
+            fakeStore,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<Application.Features.Projects.CreateProject.CreateProjectHandler>.Instance);
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler);
         var req = new WebApi.Endpoints.Project.CreateProject.Request
         {
             Id = projectId,
@@ -86,10 +88,13 @@ public class ProjectEndpointsTests
         var projectId = Guid.NewGuid();
         var organizationId = Guid.NewGuid();
         
-        var fakeRepository = A.Fake<IProjectRepository>();
-        A.CallTo(() => fakeRepository.ExistsAsync(projectId)).Returns(Task.FromResult(true));
+        var fakeStore = A.Fake<IProjectCreateStore>();
+        A.CallTo(() => fakeStore.ExistsAsync(projectId, A<CancellationToken>._)).Returns(true);
+        var handler = new Application.Features.Projects.CreateProject.CreateProjectHandler(
+            fakeStore,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<Application.Features.Projects.CreateProject.CreateProjectHandler>.Instance);
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler);
         var req = new WebApi.Endpoints.Project.CreateProject.Request
         {
             Id = projectId,

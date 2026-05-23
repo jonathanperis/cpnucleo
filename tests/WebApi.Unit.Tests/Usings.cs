@@ -6,3 +6,4 @@ global using Domain.UoW;
 global using Domain.Repositories;
 global using Domain.Models;
 global using Domain.Entities;
+global using Application.Features.Projects.CreateProject;
