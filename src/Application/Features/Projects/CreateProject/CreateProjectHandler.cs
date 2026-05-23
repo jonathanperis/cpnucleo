@@ -29,7 +29,7 @@ public sealed class CreateProjectHandler(IProjectCreateStore store, ILogger<Crea
         }
 
         logger.LogInformation("Checking if a project entity exists with Id: {ProjectId}", request.Id);
-        var itemExists = await store.ExistsAsync(request.Id, cancellationToken);
+        var itemExists = await store.ExistsAsync(request.Id, cancellationToken).ConfigureAwait(false);
 
         if (itemExists)
         {
@@ -42,7 +42,7 @@ public sealed class CreateProjectHandler(IProjectCreateStore store, ILogger<Crea
         logger.LogInformation("Created new project entity with Id: {ProjectId}", newItem.Id);
 
         logger.LogInformation("Adding project to store.");
-        var createdItem = await store.AddAsync(newItem, cancellationToken);
+        var createdItem = await store.AddAsync(newItem, cancellationToken).ConfigureAwait(false);
 
         logger.LogInformation("Service completed successfully.");
         return new CreateProjectResult(true, "Project created successfully.", ProjectDetails.FromEntity(createdItem));
