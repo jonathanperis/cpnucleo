@@ -1,6 +1,6 @@
 # Testing
 
-Cpnucleo has three test projects covering 25 architecture rules, 49 WebApi unit-test cases in source, and 55 integration tests. The active GitHub Actions gates run architecture tests and container health checks; unit/integration suites are kept for local/manual validation.
+Cpnucleo has four test projects covering 27 architecture rules, 4 Application unit-test cases, 49 WebApi unit-test cases in source, and 55 integration tests. The active GitHub Actions gates run architecture tests and container health checks; unit/integration suites are kept for local/manual validation.
 
 ---
 
@@ -180,4 +180,4 @@ Architecture tests run automatically in both CI workflows:
 - **build-check.yml** (PR): runs architecture tests for each service (WebApi, GrpcServer, IdentityApi, WebClient)
 - **main-release.yml** (push to main): runs architecture tests before building Docker images
 
-Unit and integration test projects remain available for local/manual runs; the active GitHub Actions gates run architecture tests and container health checks. Latest local audit: `Architecture.Tests` passes 25/25, while `WebApi.Unit.Tests` has compile drift around removed `Remove*.Request` model types.
+Unit and integration test projects remain available for local/manual runs; the active GitHub Actions gates run architecture tests and container health checks. Latest local audit: `Architecture.Tests` passes 27/27 and `Application.Unit.Tests` passes 4/4, while `WebApi.Unit.Tests` has compile drift around removed `Remove*.Request` model types.

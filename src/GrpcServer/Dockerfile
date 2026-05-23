@@ -22,6 +22,7 @@ WORKDIR /src
 
 COPY ["GrpcServer/GrpcServer.csproj", "GrpcServer/"]
 COPY ["GrpcServer.Contracts/GrpcServer.Contracts.csproj", "GrpcServer.Contracts/"]
+COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 

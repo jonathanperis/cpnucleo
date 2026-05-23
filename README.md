@@ -10,7 +10,7 @@
 
 ## About
 
-Cpnucleo is a project management and task tracking system built as a .NET 10 reference implementation for Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy. The REST API uses FastEndpoints with EF Core while the gRPC server uses FastEndpoints Remote Messaging with Dapper, both operating against the same PostgreSQL database. 25 architecture tests (NetArchTest) enforce layer dependency rules at build time, ensuring the domain layer remains free of infrastructure concerns.
+Cpnucleo is a project management and task tracking system built as a .NET 10 reference implementation for Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy. The REST API uses FastEndpoints with EF Core while the gRPC server uses FastEndpoints Remote Messaging with Dapper, both operating against the same PostgreSQL database. 27 architecture tests (NetArchTest) enforce layer dependency rules at build time, ensuring the domain layer remains free of infrastructure concerns.
 
 ## Tech Stack
 
@@ -35,7 +35,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 
 ## Features
 
-- Clean Architecture with strict layer separation enforced by 25 automated NetArchTest rules
+- Clean Architecture with strict layer separation enforced by 27 automated NetArchTest rules
 - Dual data access strategies: EF Core (REST API) and Dapper with Unit of Work (gRPC server) against the same database
 - JWT authentication via a dedicated Identity API with Argon2id-hashed credentials
 - Rate limiting per IP: 50 req/min on WebApi, 10 req/min on IdentityApi
@@ -57,6 +57,12 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 └────────────────────────┬────────────────────────────┘
                          │
 ┌────────────────────────┴────────────────────────────┐
+│                 Application Layer                   │
+│  Feature slices/use cases shared by REST and gRPC    │
+│  Pilot: Projects/CreateProject                       │
+└────────────────────────┬────────────────────────────┘
+                         │
+┌────────────────────────┴────────────────────────────┐
 │               Infrastructure Layer                   │
 │  ApplicationDbContext    DapperRepository<T>          │
 │  EF Core Migrations     Unit of Work                 │
@@ -71,7 +77,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 └─────────────────────────────────────────────────────┘
 ```
 
-Layer dependencies enforced by 25 NetArchTest rules at build time.
+Layer dependencies enforced by 27 NetArchTest rules at build time.
 
 ## Getting Started
 
@@ -113,6 +119,7 @@ docker compose -f compose.yaml -f compose.prod.yaml up -d
 ```
 src/
   Domain/                      Core business logic (zero external dependencies)
+  Application/                 Feature slices/use cases shared by REST + gRPC
   Infrastructure/              EF Core + Dapper data access implementations
   WebApi/                      REST API (FastEndpoints + EF Core)
   GrpcServer/                  gRPC command server (FastEndpoints.Messaging + Dapper)

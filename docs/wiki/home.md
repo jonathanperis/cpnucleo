@@ -21,7 +21,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 
 ## Key Features
 
-- Clean Architecture with strict layer dependency enforcement validated by 25 architecture tests
+- Clean Architecture with strict layer dependency enforcement validated by 27 architecture tests
 - Dual data access: EF Core for the REST API, Dapper with Unit of Work for the gRPC server
 - FastEndpoints for both REST endpoints and gRPC-style remote command handling
 - JWT authentication via the dedicated Identity API with Argon2id-hashed credentials

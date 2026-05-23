@@ -3,6 +3,7 @@ namespace Architecture.Tests;
 public class ArchitectureTests
 {
     private const string DomainNamespace = "Domain";
+    private const string ApplicationNamespace = "Application";
     private const string InfrastructureNamespace = "Infrastructure";
     private const string WebApiNamespace = "WebApi";
     private const string IdentityApiNamespace = "IdentityApi";
@@ -20,6 +21,7 @@ public class ArchitectureTests
 
         var otherProjects = new[]
         {
+            ApplicationNamespace,
             InfrastructureNamespace,
             WebApiNamespace,
             IdentityApiNamespace,
@@ -28,15 +30,46 @@ public class ArchitectureTests
             WebClientNamespace
         };
 
-        // Act
-        var testResult = Types
-            .InAssembly(assembly)
-            .ShouldNot()
-            .HaveDependencyOnAll(otherProjects)
-            .GetResult();
+        // Act / Assert
+        foreach (var project in otherProjects)
+        {
+            var testResult = Types
+                .InAssembly(assembly)
+                .ShouldNot()
+                .HaveDependencyOn(project)
+                .GetResult();
 
-        // Assert
-        testResult.IsSuccessful.Should().BeTrue();
+            testResult.IsSuccessful.Should().BeTrue($"Domain should not depend on {project}");
+        }
+    }
+
+    [Fact]
+    public void Application_Should_OnlyDependOnDomain()
+    {
+        // Arrange
+        var assembly = typeof(Application.Features.Projects.CreateProject.CreateProjectHandler).Assembly;
+
+        var otherProjects = new[]
+        {
+            InfrastructureNamespace,
+            WebApiNamespace,
+            IdentityApiNamespace,
+            GrpcServerNamespace,
+            GrpcServerContractsNamespace,
+            WebClientNamespace
+        };
+
+        // Act / Assert
+        foreach (var project in otherProjects)
+        {
+            var testResult = Types
+                .InAssembly(assembly)
+                .ShouldNot()
+                .HaveDependencyOn(project)
+                .GetResult();
+
+            testResult.IsSuccessful.Should().BeTrue($"Application should not depend on {project}");
+        }
     }
 
     [Fact]
@@ -140,6 +173,30 @@ public class ArchitectureTests
             .InAssembly(webApiAssembly)
             .ShouldNot()
             .HaveDependencyOn(GrpcServerNamespace)
+            .GetResult();
+
+        // Assert
+        testResult.IsSuccessful.Should().BeTrue();
+    }
+
+    [Fact]
+    public void GrpcServer_Should_NotDependOnWebApi()
+    {
+        // Arrange - GrpcServer should not depend on WebApi
+        var grpcServerAssembly = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => a.GetName().Name == "GrpcServer");
+
+        if (grpcServerAssembly == null)
+        {
+            // Skip test if assembly not loaded
+            return;
+        }
+
+        // Act
+        var testResult = Types
+            .InAssembly(grpcServerAssembly)
+            .ShouldNot()
+            .HaveDependencyOn(WebApiNamespace)
             .GetResult();
 
         // Assert

@@ -67,7 +67,10 @@ Presentation Layer
 ├── IdentityApi (JWT auth, port 5010)
 └── WebClient (Blazor Server + WASM, port 5030)
 
-Infrastructure Layer
+├── Application Layer
+│   └── Feature slices/use cases (pilot: Projects/CreateProject)
+│
+├── Infrastructure Layer
 ├── EF Core (ApplicationDbContext) — used by WebApi + IdentityApi
 ├── Dapper (DapperRepository<T> + UnitOfWork) — used by GrpcServer
 └── PostgreSQL 16.7 with Npgsql multiplexing
@@ -78,7 +81,7 @@ Domain Layer (zero external dependencies)
 └── IPasswordHasher abstraction (Argon2id implementation in Infrastructure)
 ```
 
-**Clean Architecture enforced by 25+ NetArchTest rules** — Domain depends on nothing, Infrastructure depends only on Domain.
+**Clean Architecture enforced by 27 NetArchTest rules** — Domain depends on nothing; Application contains shared feature slices; Infrastructure provides EF Core + Dapper implementations behind Domain/Application ports.
 
 **Key dependency rule:** WebApi and GrpcServer are **independent** — neither references the other. Both depend on Domain and Infrastructure.
 
@@ -110,6 +113,7 @@ cpnucleo/
 ├── docker-entrypoint-initdb.d/      # PostgreSQL init scripts
 ├── src/
 │   ├── Domain/                      # Business entities, interfaces, no deps
+│   ├── Application/                 # Feature slices/use cases shared by REST + gRPC
 │   ├── Infrastructure/              # EF Core + Dapper implementations
 │   ├── WebApi/                      # 55 REST endpoints (11 entities x 5 ops)
 │   ├── GrpcServer/                  # 55 gRPC handlers
@@ -131,7 +135,8 @@ cpnucleo/
 
 | Suite | Framework | Tests | Purpose |
 |-------|-----------|-------|---------|
-| Architecture.Tests | xUnit + NetArchTest + FluentAssertions | 25 | Layer deps, naming, sealed entities |
+| Architecture.Tests | xUnit + NetArchTest + FluentAssertions | 27 | Layer deps, naming, sealed entities |
+| Application.Unit.Tests | NUnit + FakeItEasy + Shouldly | 4 | Shared Application use cases |
 | WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 49 | Endpoint happy/negative paths |
 | WebApi.Integration.Tests | xUnit v3 + FastEndpoints.Testing | 50+ | Full HTTP CRUD per entity |
 
