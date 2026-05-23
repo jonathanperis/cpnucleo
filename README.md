@@ -121,7 +121,7 @@ src/
   WebApi.Client/               Auto-generated Kiota API client
   WebClient/                   Blazor Server + WebAssembly frontend
 
-test/
+tests/
   Architecture.Tests/          Clean Architecture rules (xUnit + NetArchTest)
   WebApi.Unit.Tests/           Endpoint unit tests (NUnit + FakeItEasy)
   WebApi.Integration.Tests/    End-to-end API tests (xUnit v3 + FastEndpoints.Testing)
@@ -131,8 +131,8 @@ test/
 
 ```bash
 dotnet test cpnucleo.slnx                     # Run all tests
-dotnet test test/Architecture.Tests/           # Architecture rules only
-dotnet test test/WebApi.Unit.Tests/            # Unit tests only
+dotnet test tests/Architecture.Tests/           # Architecture rules only
+dotnet test tests/WebApi.Unit.Tests/            # Unit tests only
 ```
 
 | Suite | Framework | Coverage |

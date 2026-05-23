@@ -22,10 +22,10 @@
     <Project Path="src\WebApi\WebApi.csproj" />
     <Project Path="src\WebClient\WebClient.csproj" />
   </Folder>
-  <Folder Name="/test/">
-    <Project Path="test\Architecture.Tests\Architecture.Tests.csproj" />
-    <Project Path="test\Security.Unit.Tests\Security.Unit.Tests.csproj" />
-    <Project Path="test\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" />
-    <Project Path="test\WebApi.Unit.Tests\WebApi.Unit.Tests.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests\Architecture.Tests\Architecture.Tests.csproj" />
+    <Project Path="tests\Security.Unit.Tests\Security.Unit.Tests.csproj" />
+    <Project Path="tests\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" />
+    <Project Path="tests\WebApi.Unit.Tests\WebApi.Unit.Tests.csproj" />
   </Folder>
 </Solution>

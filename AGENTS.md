@@ -14,7 +14,7 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 - **Merge strategy: rebase only** — squash and merge commits are disabled; use `gh pr merge --rebase`
 - **Always use `gh` CLI** for GitHub operations (PRs, issues, checks, releases)
 - **Always sync main before creating branches and opening PRs** — run `git fetch origin main && git checkout main && git pull origin main` before branching; verify main is up to date before `gh pr create`
-- Architecture tests (`test/Architecture.Tests/`) **MUST** pass before committing
+- Architecture tests (`tests/Architecture.Tests/`) **MUST** pass before committing
 
 ---
 
@@ -42,8 +42,8 @@ Production-grade .NET 10 project management system demonstrating Clean Architect
 ```sh
 dotnet build cpnucleo.slnx                    # Build entire solution
 dotnet test cpnucleo.slnx                     # Run all tests
-dotnet test test/Architecture.Tests/           # Architecture tests only (MANDATORY)
-dotnet test test/WebApi.Unit.Tests/            # Unit tests only
+dotnet test tests/Architecture.Tests/           # Architecture tests only (MANDATORY)
+dotnet test tests/WebApi.Unit.Tests/            # Unit tests only
 docker compose -f compose.yaml -f compose.override.yaml up --build  # Dev mode
 docker compose -f compose.yaml -f compose.prod.yaml up -d           # Prod mode
 ```
@@ -117,7 +117,7 @@ cpnucleo/
 │   ├── IdentityApi/                 # JWT login (rate limited 10/min)
 │   ├── WebClient/                   # Blazor UI with MudBlazor
 │   └── WebApi.Client/               # Auto-generated Kiota client
-├── test/
+├── tests/
 │   ├── Architecture.Tests/          # 25+ Clean Architecture rules (xUnit + NetArchTest)
 │   ├── WebApi.Unit.Tests/           # Endpoint unit tests (NUnit + FakeItEasy + Shouldly)
 │   └── WebApi.Integration.Tests/    # E2E tests (xUnit v3 + FastEndpoints.Testing)
