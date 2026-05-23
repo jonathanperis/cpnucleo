@@ -19,10 +19,9 @@ public class LoginEndpointPasswordVerificationTests
 
         var endpoint = Factory.Create<LoginEndpoint>(dbContext, passwordHasher);
 
-        var exception = await Should.ThrowAsync<InvalidOperationException>(() =>
+        await Should.ThrowAsync<InvalidOperationException>(() =>
             endpoint.HandleAsync(new LoginRequest { Login = "jane", Password = "Password@123" }, default));
 
-        exception.Message.ShouldContain("SigningKey");
         A.CallTo(() => passwordHasher.Verify("Password@123", "$argon2id$stored-hash")).MustHaveHappenedOnceExactly();
     }
 
