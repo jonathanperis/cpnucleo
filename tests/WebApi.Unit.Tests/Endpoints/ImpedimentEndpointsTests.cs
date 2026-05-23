@@ -13,13 +13,11 @@ public class ImpedimentEndpointsTests
         var impedimentId = Guid.NewGuid();
         var impediment = Impediment.Create("Test Impediment", impedimentId);
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>(impediment));
+        await using var dbContext = CreateDbContext();
+        dbContext.Impediments!.Add(impediment);
+        await dbContext.SaveChangesAsync(default);
 
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(fakeDbContext);
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(dbContext);
         var req = new WebApi.Endpoints.Impediment.GetImpedimentById.Request { Id = impedimentId };
 
         // Act
@@ -38,13 +36,9 @@ public class ImpedimentEndpointsTests
         // Arrange
         var impedimentId = Guid.NewGuid();
         
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>((Impediment?)null));
+        await using var dbContext = CreateDbContext();
 
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(fakeDbContext);
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.GetImpedimentById.Endpoint>(dbContext);
         var req = new WebApi.Endpoints.Impediment.GetImpedimentById.Request { Id = impedimentId };
 
         // Act
@@ -98,7 +92,7 @@ public class ImpedimentEndpointsTests
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
 
         var ep = Factory.Create<WebApi.Endpoints.Impediment.RemoveImpediment.Endpoint>(fakeDbContext);
-        var req = new WebApi.Endpoints.Impediment.RemoveImpediment.Request { Ids = new List<Guid> { impedimentId } };
+        var req = new WebApi.Endpoints.Impediment.RemoveImpediment.RemoveImpedimentRequest { Ids = new List<Guid> { impedimentId } };
 
         // Act
         await ep.HandleAsync(req, default);
@@ -106,5 +100,14 @@ public class ImpedimentEndpointsTests
         // Assert
         ep.Response.ShouldNotBeNull();
         ep.Response.Success.ShouldBeTrue();
+    }
+
+    private static ApplicationDbContext CreateDbContext()
+    {
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        return new ApplicationDbContext(options);
     }
 }

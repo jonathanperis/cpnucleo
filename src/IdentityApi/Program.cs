@@ -81,7 +81,7 @@ app.UseInfrastructure();
 
 app.UseAuthentication()
     .UseAuthorization()
-    .UseFastEndpoints()
+    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
         .UseMiddleware<ElapsedTimeMiddleware>()
         .UseMiddleware<ErrorHandlingMiddleware>();
 

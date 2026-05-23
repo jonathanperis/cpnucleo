@@ -4,6 +4,8 @@ using System.Xml.Linq;
 
 public class FastEndpointsConfigurationTests
 {
+    private static readonly string[] HttpVerbRouteMethods = ["Get", "Post", "Put", "Delete", "Patch"];
+
     [Theory]
     [InlineData("src/WebApi/WebApi.csproj")]
     [InlineData("src/IdentityApi/IdentityApi.csproj")]
@@ -28,6 +30,30 @@ public class FastEndpointsConfigurationTests
         var registrationCount = CountOccurrences(program, ".AddFastEndpoints(");
 
         registrationCount.Should().Be(1);
+    }
+
+    [Theory]
+    [InlineData("src/WebApi/Program.cs")]
+    [InlineData("src/IdentityApi/Program.cs")]
+    public void ApiProjects_ShouldUseGlobalFastEndpointsApiRoutePrefix(string programPath)
+    {
+        var program = File.ReadAllText(GetRepositoryPath(programPath));
+
+        program.Should().Contain("UseFastEndpoints(c => c.Endpoints.RoutePrefix = \"api\")");
+    }
+
+    [Theory]
+    [InlineData("src/WebApi/Endpoints")]
+    [InlineData("src/IdentityApi/Endpoints")]
+    public void FastEndpoints_ShouldNotHardCodeApiRoutePrefix(string endpointsPath)
+    {
+        var endpointFiles = Directory.GetFiles(GetRepositoryPath(endpointsPath), "*.cs", SearchOption.AllDirectories);
+        var filesWithHardCodedPrefix = endpointFiles
+            .Where(path => HttpVerbRouteMethods.Any(method => File.ReadAllText(path).Contains($"{method}(\"/api", StringComparison.Ordinal)))
+            .Select(path => Path.GetRelativePath(GetRepositoryPath("."), path))
+            .ToArray();
+
+        filesWithHardCodedPrefix.Should().BeEmpty();
     }
 
     private static string GetRepositoryPath(string relativePath)

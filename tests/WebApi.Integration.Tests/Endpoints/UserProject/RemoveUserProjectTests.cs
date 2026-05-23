@@ -11,7 +11,7 @@ public class RemoveUserProjectTests(WebAppFixture app, WebAppState state) : Test
     [Fact, Priority(1)]
     public async Task UserProjects_ShouldDeleteAnUserProject()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveUserProjectRequest, ErrorResponse>(new RemoveUserProjectRequest
         {
             Ids = [_userProjectId]
         });

@@ -5,7 +5,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
 {
     public override void Configure()
     {
-        Get("/api/projects");
+        Get("/projects");
         Description(x => x.WithTags("Projects"));
         AllowAnonymous();
 

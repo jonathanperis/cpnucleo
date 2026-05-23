@@ -5,7 +5,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
 {
     public override void Configure()
     {
-        Delete("/api/project");
+        Delete("/project");
         Description(x => x.WithTags("Projects"));
         AllowAnonymous();
 

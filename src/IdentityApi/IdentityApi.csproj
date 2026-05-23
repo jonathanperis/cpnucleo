@@ -46,6 +46,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.1" />
 	</ItemGroup>
 
 	<ItemGroup>

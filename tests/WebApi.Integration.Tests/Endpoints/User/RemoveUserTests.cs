@@ -11,7 +11,7 @@ public class RemoveUserTests(WebAppFixture app, WebAppState state) : TestBase<We
     [Fact, Priority(1)]
     public async Task Users_ShouldDeleteAnUser()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveUserRequest, ErrorResponse>(new RemoveUserRequest
         {
             Ids = [_userId]
         });

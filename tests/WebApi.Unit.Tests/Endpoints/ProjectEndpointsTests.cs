@@ -172,7 +172,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.UpdateAsync(A<Project>._)).Returns(Task.FromResult(true));
 
         var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository);
-        var req = new WebApi.Endpoints.Project.RemoveProject.Request { Ids = new List<Guid> { projectId } };
+        var req = new WebApi.Endpoints.Project.RemoveProject.RemoveProjectRequest { Ids = new List<Guid> { projectId } };
 
         // Act
         await ep.HandleAsync(req, default);
@@ -192,7 +192,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(null));
 
         var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository);
-        var req = new WebApi.Endpoints.Project.RemoveProject.Request { Ids = new List<Guid> { projectId } };
+        var req = new WebApi.Endpoints.Project.RemoveProject.RemoveProjectRequest { Ids = new List<Guid> { projectId } };
 
         // Act
         await ep.HandleAsync(req, default);

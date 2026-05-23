@@ -11,7 +11,7 @@ public class RemoveAppointmentTests(WebAppFixture app, WebAppState state) : Test
     [Fact, Priority(1)]
     public async Task Appointments_ShouldDeleteAnAppointment()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveAppointmentRequest, ErrorResponse>(new RemoveAppointmentRequest
         {
             Ids = [_appointmentId]
         });

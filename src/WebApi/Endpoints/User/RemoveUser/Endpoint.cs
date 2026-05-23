@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserRequ
 {
     public override void Configure()
     {
-        Delete("/api/user");
+        Delete("/user");
         Description(x => x.WithTags("Users"));
         AllowAnonymous();
 

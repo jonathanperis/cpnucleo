@@ -4,7 +4,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
 {
     public override void Configure()
     {
-        Post("/api/login");
+        Post("/login");
         Description(x => x.WithTags("Authentication"));
         AllowAnonymous();
 

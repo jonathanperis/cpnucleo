@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 {
     public override void Configure()
     {
-        Post("/api/appointment");
+        Post("/appointment");
         Description(x => x.WithTags("Appointments"));
         AllowAnonymous();
 

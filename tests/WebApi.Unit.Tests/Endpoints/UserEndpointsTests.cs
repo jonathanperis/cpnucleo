@@ -145,7 +145,7 @@ public class UserEndpointsTests
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
 
         var ep = Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(fakeDbContext);
-        var req = new WebApi.Endpoints.User.RemoveUser.Request { Ids = new List<Guid> { userId } };
+        var req = new WebApi.Endpoints.User.RemoveUser.RemoveUserRequest { Ids = new List<Guid> { userId } };
 
         // Act
         await ep.HandleAsync(req, default);

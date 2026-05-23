@@ -5,7 +5,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("/api/appointment");
+        Get("/appointment");
         Description(x => x.WithTags("Appointments"));
         AllowAnonymous();
 

@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignme
 {
     public override void Configure()
     {
-        Delete("/api/assignment");
+        Delete("/assignment");
         Description(x => x.WithTags("Assignments"));
         AllowAnonymous();
 

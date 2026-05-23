@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserProj
 {
     public override void Configure()
     {
-        Delete("/api/userProject");
+        Delete("/userProject");
         Description(x => x.WithTags("UserProjects"));
         AllowAnonymous();
 
