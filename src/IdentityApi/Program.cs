@@ -29,7 +29,7 @@ builder.Services.AddRateLimiter(options =>
             {
                 PermitLimit = 10, // Allow 10 requests
                 Window = TimeSpan.FromMinutes(1), // Per 1-minute window
-                QueueLimit = 3, // Queue up to 10 additional requests
+                QueueLimit = 5, // Queue up to 5 additional requests
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst, // Process oldest requests first
                 AutoReplenishment = true // Default: automatically replenish permits
             }));
