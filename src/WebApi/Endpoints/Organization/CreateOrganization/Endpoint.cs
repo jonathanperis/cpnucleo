@@ -5,7 +5,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("/api/organization");
+        Post("/organization");
         Description(x => x.WithTags("Organizations"));
         AllowAnonymous();
 

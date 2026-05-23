@@ -11,7 +11,7 @@ public class RemoveImpedimentTests(WebAppFixture app, WebAppState state) : TestB
     [Fact, Priority(1)]
     public async Task Impediments_ShouldDeleteAnImpediment()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveImpedimentRequest, ErrorResponse>(new RemoveImpedimentRequest
         {
             Ids = [_impedimentId]
         });

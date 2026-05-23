@@ -135,7 +135,7 @@ public class WorkflowEndpointsTests
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
 
         var ep = Factory.Create<WebApi.Endpoints.Workflow.RemoveWorkflow.Endpoint>(fakeDbContext);
-        var req = new WebApi.Endpoints.Workflow.RemoveWorkflow.Request { Ids = new List<Guid> { workflowId } };
+        var req = new WebApi.Endpoints.Workflow.RemoveWorkflow.RemoveWorkflowRequest { Ids = new List<Guid> { workflowId } };
 
         // Act
         await ep.HandleAsync(req, default);

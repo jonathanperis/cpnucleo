@@ -5,7 +5,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
 {
     public override void Configure()
     {
-        Delete("/api/organization");
+        Delete("/organization");
         Description(x => x.WithTags("Organizations"));
         AllowAnonymous();
 

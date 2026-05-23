@@ -5,7 +5,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveWorkflow
 {
     public override void Configure()
     {
-        Delete("/api/workflow");
+        Delete("/workflow");
         Description(x => x.WithTags("Workflows"));
         AllowAnonymous();
 

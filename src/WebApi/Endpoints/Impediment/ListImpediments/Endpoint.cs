@@ -12,7 +12,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     
     public override void Configure()
     {
-        Get("/api/impediments");
+        Get("/impediments");
         Description(x => x.WithTags("Impediments"));
         AllowAnonymous();
 

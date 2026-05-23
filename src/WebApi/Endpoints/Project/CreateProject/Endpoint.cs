@@ -4,7 +4,7 @@ public class Endpoint(CreateProjectHandler handler) : Endpoint<Request, Response
 {
     public override void Configure()
     {
-        Post("/api/project");
+        Post("/project");
         Description(x => x.WithTags("Projects"));
         AllowAnonymous();
 

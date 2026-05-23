@@ -11,7 +11,7 @@ public class RemoveOrganizationTests(WebAppFixture app, WebAppState state) : Tes
     [Fact, Priority(1)]
     public async Task Organizations_ShouldDeleteAnOrganization()
     {
-        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, Request, ErrorResponse>(new Request
+        var (rsp, err) = await app.Client.DELETEAsync<Endpoint, RemoveOrganizationRequest, ErrorResponse>(new RemoveOrganizationRequest
         {
             Ids = [_organizationId]
         });
