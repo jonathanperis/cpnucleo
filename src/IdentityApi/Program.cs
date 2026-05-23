@@ -9,8 +9,7 @@ builder.ConfigureOpenTelemetry();
 
 builder.Services
     .AddAuthenticationJwtBearer(s => s.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))
-    .AddAuthorization() 
-    .AddFastEndpoints();
+    .AddAuthorization();
 
 builder.Services
     .Configure<JwtCreationOptions>(o =>
@@ -58,7 +57,6 @@ builder.Services.AddOutputCache(options =>
 builder.Services.AddHealthChecks();
 
 builder.Services
-    // .AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = WebApi.DiscoveredTypes.All)
     .AddFastEndpoints()
     .SwaggerDocument(o =>
     {
