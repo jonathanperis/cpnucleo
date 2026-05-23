@@ -14,7 +14,7 @@ cpnucleo/
 ├── docker-entrypoint-initdb.d/           # PostgreSQL initialization scripts
 ├── .github/workflows/                    # CI/CD pipelines
 ├── src/                                  # Source code
-└── test/                                 # Test projects
+└── tests/                                 # Test projects
 ```
 
 ---
@@ -236,9 +236,9 @@ WebClient/
 
 ---
 
-## Test Projects (`test/`)
+## Test Projects (`tests/`)
 
-### Architecture.Tests (`test/Architecture.Tests/`)
+### Architecture.Tests (`tests/Architecture.Tests/`)
 
 Validates Clean Architecture dependency rules using NetArchTest.
 
@@ -250,7 +250,7 @@ Architecture.Tests/
 └── README.md
 ```
 
-### WebApi.Unit.Tests (`test/WebApi.Unit.Tests/`)
+### WebApi.Unit.Tests (`tests/WebApi.Unit.Tests/`)
 
 Unit tests for WebApi endpoints.
 
@@ -263,7 +263,7 @@ WebApi.Unit.Tests/
 └── README.md
 ```
 
-### WebApi.Integration.Tests (`test/WebApi.Integration.Tests/`)
+### WebApi.Integration.Tests (`tests/WebApi.Integration.Tests/`)
 
 Integration tests using FastEndpoints.Testing host fixtures; run manually when a database-backed integration pass is needed.
 
