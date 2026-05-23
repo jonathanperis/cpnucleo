@@ -12,8 +12,8 @@ export default component$(() => {
       <p class="text-sm font-medium text-accent">IdentityApi</p>
       <h2 class="mt-1 text-2xl font-semibold">Sign in</h2>
       <p class="mt-2 text-sm text-muted">Session tokens are stored in sessionStorage and sent as bearer tokens to WebApi requests.</p>
-      {error.value && <div class="mt-4 rounded-lg border border-danger/25 bg-danger/5 px-3 py-2 text-sm text-danger">{error.value}</div>}
-      {success.value && <div class="mt-4 rounded-lg border border-success/25 bg-success/5 px-3 py-2 text-sm text-success">Login successful. Continue to the dashboard.</div>}
+      {error.value && <div role="alert" aria-live="assertive" aria-atomic="true" class="mt-4 rounded-lg border border-danger/25 bg-danger/5 px-3 py-2 text-sm text-danger">{error.value}</div>}
+      {success.value && <div role="status" aria-live="polite" aria-atomic="true" class="mt-4 rounded-lg border border-success/25 bg-success/5 px-3 py-2 text-sm text-success">Login successful. Continue to the dashboard.</div>}
       <form class="mt-5 space-y-4" preventdefault:submit onSubmit$={async (event) => {
         const form = event.currentTarget as HTMLFormElement;
         const data = new FormData(form);
