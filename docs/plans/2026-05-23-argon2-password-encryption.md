@@ -2,9 +2,9 @@
 
 > **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task.
 
-**Goal:** Replace new password hashing from PBKDF2 to Argon2id while preserving login access for existing PBKDF2-hashed users via verify-and-rehash migration.
+**Goal:** Replace PBKDF2 password hashing with Argon2id only, cleaning out PBKDF2 code paths entirely for this POC project.
 
-**Architecture:** Keep Domain free of external cryptography packages by moving password hashing behind a small Domain-owned `IPasswordHasher` abstraction implemented in Infrastructure. New/updated users receive Argon2id PHC-formatted hashes in `Users.Password`; existing PBKDF2 rows continue to verify using their `Users.Salt` value and are upgraded to Argon2id on successful login.
+**Architecture:** Keep Domain free of external cryptography packages by moving password hashing behind a small Domain-owned `IPasswordHasher` abstraction implemented in Infrastructure. New/updated users receive Argon2id PHC-formatted hashes in `Users.Password`; `Users.Salt` becomes unused/empty because PHC stores salt and parameters inside the hash string.
 
 **Tech Stack:** .NET 10, C#, EF Core, Dapper, FastEndpoints, `Konscious.Security.Cryptography.Argon2` 1.3.1, xUnit/NUnit tests.
 
@@ -16,13 +16,14 @@
 - **Remote:** `origin https://github.com/jonathanperis/cpnucleo.git`
 - **Base branch/ref:** `main` at `6066cb3af79627c7c89c2a43d957eae02b647f0c` (`chore: remove Hostinger open redirect helper`), equal to `origin/main` after `git fetch origin main --prune`
 - **Planning branch:** `docs/plan-argon2-password-encryption`
-- **Working tree before plan:** clean
+- **Working tree before original plan:** clean
 - **Current implementation evidence:**
   - `src/Domain/Common/Security/CryptographyManager.cs` hashes PBKDF2 with 48-byte random salt, 600,000 iterations, SHA-256, 48-byte output.
   - `src/Domain/Entities/User.cs` calls `CryptographyManager.CryptPbkdf2()` inside `Create()` and `Update()`.
   - `src/IdentityApi/Endpoints/Login/Endpoint.cs` currently queries `u.Login == req.Login && u.Password == req.Password`, which cannot verify hashed passwords and must change to fetch by login then verify.
   - `Users.Password` and `Users.Salt` are nullable PostgreSQL `text`, so Argon2 PHC strings fit without a schema migration.
 - **External package fact checked:** NuGet search shows `Konscious.Security.Cryptography.Argon2` latest stable `1.3.1`.
+- **POC scope update:** Jonathan explicitly does not want PBKDF2 fallback or verify-and-rehash migration. The implementation should remove PBKDF2 entirely and accept that existing PBKDF2 rows will no longer authenticate unless reseeded/recreated.
 - **Implementation status:** not implemented; this is a plan only.
 
 ---
@@ -31,10 +32,11 @@
 
 1. **Use Argon2id, not Argon2i/d:** Argon2id is the recommended general-purpose password hashing variant.
 2. **Store Argon2 as PHC in `Users.Password`:** Example shape: `$argon2id$v=19$m=65536,t=3,p=2$<base64-salt>$<base64-hash>`. This records parameters with the hash, enabling future tuning.
-3. **Keep `Users.Salt` for PBKDF2 compatibility:** New Argon2 rows set `Salt = string.Empty`. Existing PBKDF2 rows keep the old base64 salt until the user logs in successfully and is rehashed.
-4. **Preserve Clean Architecture:** Domain defines password-hashing contracts but does not reference `Konscious.Security.Cryptography.Argon2`; Infrastructure contains the implementation and NuGet dependency.
-5. **Rehash on successful legacy login:** When PBKDF2 verifies, IdentityApi writes a new Argon2 hash immediately and clears `Salt`.
-6. **Use fixed-time comparison:** Verifiers must use `CryptographicOperations.FixedTimeEquals`, not `SequenceEqual`.
+3. **No PBKDF2 compatibility:** This is a POC, so delete PBKDF2 helpers and tests. Do not implement legacy verification, `NeedsRehash`, or login migration.
+4. **Treat `Users.Salt` as obsolete:** New Argon2 rows set `Salt = string.Empty`. Do not use `Salt` for verification.
+5. **Preserve Clean Architecture:** Domain defines password-hashing contracts but does not reference `Konscious.Security.Cryptography.Argon2`; Infrastructure contains the implementation and NuGet dependency.
+6. **Use fixed-time comparison:** Verifiers must use `CryptographicOperations.FixedTimeEquals`.
+7. **Fail closed on malformed hashes:** Bad PHC strings or invalid base64 should return authentication failure, not throw a 500.
 
 ---
 
@@ -42,8 +44,7 @@
 
 - Create `src/Domain/Common/Security/IPasswordHasher.cs`
 - Create `src/Domain/Common/Security/PasswordHash.cs`
-- Create `src/Domain/Common/Security/PasswordVerificationResult.cs`
-- Modify `src/Domain/Common/Security/CryptographyManager.cs` (remove or stop using PBKDF2 production entry points; keep no external deps)
+- Delete `src/Domain/Common/Security/CryptographyManager.cs` or reduce it only if a transition commit needs compile scaffolding; final state must have no PBKDF2 implementation.
 - Modify `src/Domain/Entities/User.cs`
 - Modify `src/Infrastructure/Infrastructure.csproj`
 - Create `src/Infrastructure/Common/Security/Argon2PasswordHasher.cs`
@@ -54,7 +55,8 @@
 - Modify `src/GrpcServer/Handlers/User/CreateUserHandler.cs`
 - Modify `src/GrpcServer/Handlers/User/UpdateUserHandler.cs`
 - Modify `src/IdentityApi/Endpoints/Login/Endpoint.cs`
-- Add tests under either existing suites or new focused projects as described below.
+- Modify `src/Infrastructure/Common/Helpers/FakeData.cs`
+- Add/update tests under existing suites or new focused projects as described below.
 
 ---
 
@@ -64,10 +66,9 @@
 
 **Files:**
 - Create: `src/Domain/Common/Security/PasswordHash.cs`
-- Create: `src/Domain/Common/Security/PasswordVerificationResult.cs`
 - Create: `src/Domain/Common/Security/IPasswordHasher.cs`
 
-**Step 1: Create the value objects and interface**
+**Step 1: Create the value object and interface**
 
 ```csharp
 namespace Domain.Common.Security;
@@ -78,23 +79,15 @@ public sealed record PasswordHash(string Hash, string Salt);
 ```csharp
 namespace Domain.Common.Security;
 
-public sealed record PasswordVerificationResult(bool Verified, bool NeedsRehash);
-```
-
-```csharp
-namespace Domain.Common.Security;
-
 public interface IPasswordHasher
 {
     PasswordHash Hash(string? password);
 
-    PasswordVerificationResult Verify(string? password, string? hash, string? salt);
+    bool Verify(string? password, string? hash);
 }
 ```
 
 **Step 2: Build**
-
-Run:
 
 ```bash
 dotnet build cpnucleo.slnx
@@ -105,7 +98,7 @@ Expected: build succeeds; existing expected FakeData warnings are acceptable.
 **Step 3: Commit**
 
 ```bash
-git add src/Domain/Common/Security/PasswordHash.cs src/Domain/Common/Security/PasswordVerificationResult.cs src/Domain/Common/Security/IPasswordHasher.cs
+git add src/Domain/Common/Security/PasswordHash.cs src/Domain/Common/Security/IPasswordHasher.cs
 git commit -m "feat: add password hashing contract"
 ```
 
@@ -126,22 +119,22 @@ If no Domain unit-test project exists, create `test/Domain.Unit.Tests/Domain.Uni
 [Fact]
 public void Create_ShouldStoreProvidedPasswordHashAndSalt()
 {
-    var user = User.Create("Jane", "jane", new PasswordHash("hash-value", "salt-value"));
+    var user = User.Create("Jane", "jane", new PasswordHash("hash-value", string.Empty));
 
     user.Password.Should().Be("hash-value");
-    user.Salt.Should().Be("salt-value");
+    user.Salt.Should().BeEmpty();
 }
 
 [Fact]
 public void Update_ShouldStoreProvidedPasswordHashAndSalt()
 {
-    var user = User.Create("Jane", "jane", new PasswordHash("old-hash", "old-salt"));
+    var user = User.Create("Jane", "jane", new PasswordHash("old-hash", string.Empty));
 
-    User.Update(user, "Jane Updated", new PasswordHash("new-hash", "new-salt"));
+    User.Update(user, "Jane Updated", new PasswordHash("new-hash", string.Empty));
 
     user.Name.Should().Be("Jane Updated");
     user.Password.Should().Be("new-hash");
-    user.Salt.Should().Be("new-salt");
+    user.Salt.Should().BeEmpty();
     user.UpdatedAt.Should().NotBeNull();
 }
 ```
@@ -211,9 +204,9 @@ git commit -m "refactor: keep password hashing outside user entity"
 
 ---
 
-## Task 3: Implement Argon2id hasher with PBKDF2 fallback in Infrastructure
+## Task 3: Implement Argon2id hasher in Infrastructure
 
-**Objective:** Add a production `IPasswordHasher` implementation that creates Argon2id hashes and verifies both Argon2id and legacy PBKDF2 rows.
+**Objective:** Add a production `IPasswordHasher` implementation that creates and verifies only Argon2id hashes.
 
 **Files:**
 - Modify: `src/Infrastructure/Infrastructure.csproj`
@@ -234,19 +227,8 @@ Test behaviors:
 1. `Hash_ShouldReturnArgon2idPhcHashAndEmptySalt`
 2. `Verify_ShouldAcceptCorrectArgon2Password`
 3. `Verify_ShouldRejectWrongArgon2Password`
-4. `Verify_ShouldAcceptLegacyPbkdf2AndMarkNeedsRehash`
+4. `Verify_ShouldRejectNonArgon2Hash`
 5. `Verify_ShouldReturnFalseForMalformedStoredValues`
-
-PBKDF2 fixture helper for test 4:
-
-```csharp
-private static PasswordHash CreateLegacyPbkdf2(string password)
-{
-    byte[] saltBytes = RandomNumberGenerator.GetBytes(48);
-    byte[] hashBytes = Rfc2898DeriveBytes.Pbkdf2(password, saltBytes, 600_000, HashAlgorithmName.SHA256, 48);
-    return new PasswordHash(Convert.ToBase64String(hashBytes), Convert.ToBase64String(saltBytes));
-}
-```
 
 Run RED:
 
@@ -272,11 +254,10 @@ private const string Argon2idPrefix = "$argon2id$";
 Required implementation points:
 
 - `Hash()` returns `new PasswordHash(phcString, string.Empty)`.
-- `Verify()` detects `hash.StartsWith("$argon2id$", StringComparison.Ordinal)` and verifies Argon2id.
-- Otherwise, `Verify()` attempts legacy PBKDF2 using provided `salt`; on success returns `new PasswordVerificationResult(true, true)`.
-- Argon2id success returns `new PasswordVerificationResult(true, false)`.
-- All failed/malformed paths return `new PasswordVerificationResult(false, false)`.
-- Use `CryptographicOperations.FixedTimeEquals` for both Argon2 and PBKDF2 byte comparison.
+- `Verify()` only accepts hashes starting with `$argon2id$`.
+- Any non-Argon2 hash returns `false`; do not attempt PBKDF2 fallback.
+- All failed/malformed paths return `false`.
+- Use `CryptographicOperations.FixedTimeEquals` for derived hash comparison.
 
 Pseudo-shape:
 
@@ -296,19 +277,19 @@ public sealed class Argon2PasswordHasher : IPasswordHasher
         return new PasswordHash(phc, string.Empty);
     }
 
-    public PasswordVerificationResult Verify(string? password, string? hash, string? salt)
+    public bool Verify(string? password, string? hash)
     {
         if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(hash))
         {
-            return new PasswordVerificationResult(false, false);
+            return false;
         }
 
-        if (hash.StartsWith(Argon2idPrefix, StringComparison.Ordinal))
+        if (!hash.StartsWith(Argon2idPrefix, StringComparison.Ordinal))
         {
-            return VerifyArgon2id(password, hash);
+            return false;
         }
 
-        return VerifyLegacyPbkdf2(password, hash, salt);
+        return VerifyArgon2id(password, hash);
     }
 }
 ```
@@ -331,12 +312,67 @@ git commit -m "feat: add argon2 password hasher"
 
 ---
 
-## Task 4: Register password hasher in DI
+## Task 4: Delete PBKDF2 code
+
+**Objective:** Remove the old PBKDF2 implementation from the codebase instead of preserving a fallback.
+
+**Files:**
+- Delete: `src/Domain/Common/Security/CryptographyManager.cs`
+- Modify: `src/Domain/Usings.cs`
+
+**Step 1: Write or run a source guard**
+
+Run:
+
+```bash
+rg "Pbkdf2|PBKDF2|Rfc2898DeriveBytes|CryptPbkdf2|VerifyPbkdf2|CryptographyManager" src test
+```
+
+Expected before deletion: matches current PBKDF2 code.
+
+**Step 2: Delete PBKDF2 implementation and stale using**
+
+Delete `src/Domain/Common/Security/CryptographyManager.cs`.
+
+If `src/Domain/Usings.cs` no longer needs cryptography after deletion, remove:
+
+```csharp
+global using System.Security.Cryptography;
+```
+
+Keep:
+
+```csharp
+global using Domain.Common.Security;
+```
+
+because `User` now uses `PasswordHash`.
+
+**Step 3: Verify cleanup**
+
+```bash
+rg "Pbkdf2|PBKDF2|Rfc2898DeriveBytes|CryptPbkdf2|VerifyPbkdf2|CryptographyManager" src test
+dotnet build cpnucleo.slnx
+```
+
+Expected: `rg` returns no matches; build succeeds.
+
+**Step 4: Commit**
+
+```bash
+git add -A src/Domain/Common/Security/CryptographyManager.cs src/Domain/Usings.cs
+git commit -m "refactor: remove pbkdf2 password hashing"
+```
+
+---
+
+## Task 5: Register password hasher in DI
 
 **Objective:** Make `IPasswordHasher` injectable into WebApi, IdentityApi, and GrpcServer through `AddInfrastructure()`.
 
 **Files:**
 - Modify: `src/Infrastructure/DependencyInjection.cs`
+- Modify: `src/Infrastructure/Usings.cs`
 
 **Step 1: Add registration**
 
@@ -346,7 +382,7 @@ In `AddInfrastructure()` near other service registrations:
 services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>();
 ```
 
-Add missing using/global using as needed:
+Add missing global usings:
 
 ```csharp
 global using Domain.Common.Security;
@@ -370,7 +406,7 @@ git commit -m "chore: register password hasher"
 
 ---
 
-## Task 5: Hash passwords before creating/updating users in WebApi
+## Task 6: Hash passwords before creating/updating users in WebApi
 
 **Objective:** Update REST user endpoints to pass already-hashed values to Domain.
 
@@ -428,7 +464,7 @@ git commit -m "feat: hash REST user passwords with argon2"
 
 ---
 
-## Task 6: Hash passwords before creating/updating users in GrpcServer
+## Task 7: Hash passwords before creating/updating users in GrpcServer
 
 **Objective:** Update gRPC user handlers to pass already-hashed values to Domain.
 
@@ -478,9 +514,9 @@ git commit -m "feat: hash grpc user passwords with argon2"
 
 ---
 
-## Task 7: Fix IdentityApi login verification and legacy rehash
+## Task 8: Fix IdentityApi login verification
 
-**Objective:** Replace plaintext equality login with password verifier and automatic PBKDF2-to-Argon2 upgrade.
+**Objective:** Replace plaintext equality login with Argon2 verification only.
 
 **Files:**
 - Modify: `src/IdentityApi/Endpoints/Login/Endpoint.cs`
@@ -491,8 +527,8 @@ Add focused tests covering:
 
 1. Argon2-hashed user can log in with the correct password.
 2. Argon2-hashed user cannot log in with the wrong password.
-3. Legacy PBKDF2 user can log in with the correct password.
-4. Legacy PBKDF2 user is rehashed to `$argon2id$...` and `Salt == string.Empty` after successful login.
+3. Non-Argon2/PBKDF2-shaped stored hash is rejected.
+4. Malformed Argon2 PHC hash is rejected without a 500.
 
 Run RED. Expected: current code fails because it compares stored hash to plaintext.
 
@@ -524,23 +560,15 @@ if (item is null)
     return;
 }
 
-var verification = passwordHasher.Verify(req.Password, item.Password, item.Salt);
-if (!verification.Verified)
+if (!passwordHasher.Verify(req.Password, item.Password))
 {
     Logger.LogWarning("Invalid password for Login: {UserLogin}", req.Login);
     await Send.NotFoundAsync(cancellation: cancellationToken);
     return;
 }
-
-if (verification.NeedsRehash)
-{
-    var upgradedHash = passwordHasher.Hash(req.Password);
-    Domain.Entities.User.Update(item, item.Name, upgradedHash);
-    await dbContext.SaveChangesAsync(cancellationToken);
-}
 ```
 
-Then continue JWT creation.
+Then continue JWT creation. Do not update/rewrite the user row on login.
 
 **Step 3: Verify GREEN**
 
@@ -559,7 +587,7 @@ git commit -m "feat: verify argon2 passwords on login"
 
 ---
 
-## Task 8: Update fake data generation to produce login-compatible hashes
+## Task 9: Update fake data generation to produce login-compatible Argon2 hashes
 
 **Objective:** Avoid seed/fake users with random unhashed password strings that cannot pass login verification.
 
@@ -582,7 +610,7 @@ Add a focused test/helper assertion that generated fake user rows use `$argon2id
 
 **Step 3: Implement minimal change**
 
-Replace the user faker password/salt rules with hashed values. Avoid generating invalid random salt strings.
+Replace the user faker password/salt rules with hashed values. Avoid generating random salt strings because `Salt` is obsolete for Argon2 PHC storage.
 
 **Step 4: Verify**
 
@@ -602,9 +630,9 @@ git commit -m "chore: generate argon2 fake user passwords"
 
 ---
 
-## Task 9: Documentation and API notes
+## Task 10: Documentation and API notes
 
-**Objective:** Document the password-hashing migration behavior for maintainers.
+**Objective:** Document the POC-only Argon2 behavior for maintainers.
 
 **Files:**
 - Modify: `README.md` or `docs/wiki/architecture.md`
@@ -615,8 +643,8 @@ git commit -m "chore: generate argon2 fake user passwords"
 Document:
 
 - New users use Argon2id PHC hashes in `Users.Password`.
-- `Users.Salt` is retained for legacy PBKDF2 rows and empty for new Argon2 rows.
-- Legacy PBKDF2 hashes are upgraded on successful login.
+- `Users.Salt` is obsolete and empty for new Argon2 rows.
+- This POC intentionally has no PBKDF2 fallback; old PBKDF2 rows should be reseeded/recreated.
 - Do not compare plaintext passwords in queries.
 
 **Step 2: Verify docs build if available**
@@ -636,9 +664,9 @@ git commit -m "docs: document argon2 password hashing"
 
 ---
 
-## Task 10: Final validation and PR
+## Task 11: Final validation and PR
 
-**Objective:** Prove the migration is safe and ready for review.
+**Objective:** Prove the cleanup is safe and ready for review.
 
 **Step 1: Run required gates**
 
@@ -658,14 +686,14 @@ Expected:
 **Step 2: Search for unsafe leftovers**
 
 ```bash
-rg "Pbkdf2|CryptPbkdf2|VerifyPbkdf2|u\.Password == req\.Password|SequenceEqual\(.*password|Password ==" src test
+rg "Pbkdf2|PBKDF2|Rfc2898DeriveBytes|CryptPbkdf2|VerifyPbkdf2|CryptographyManager|u\.Password == req\.Password|SequenceEqual\(.*password|Password ==" src test
 ```
 
 Expected:
 
-- No production PBKDF2 creation path remains.
-- Only intentional legacy PBKDF2 verification fallback remains.
+- No PBKDF2 references remain anywhere in `src` or `test`.
 - No plaintext password equality query remains.
+- Any `Password ==` matches are tests that intentionally compare against non-plaintext expected values, or are removed.
 
 **Step 3: Open PR**
 
@@ -674,7 +702,7 @@ git status --short
 git push -u origin feat/argon2-password-encryption
 gh pr create --base main --head feat/argon2-password-encryption \
   --title "feat: migrate password hashing to Argon2" \
-  --body "Migrates new password hashes to Argon2id, keeps PBKDF2 legacy verification, and rehashes legacy users after successful login."
+  --body "Migrates password hashing to Argon2id only for the POC, removes PBKDF2 code paths, and fixes login password verification."
 ```
 
 **Step 4: Monitor checks**
@@ -695,10 +723,11 @@ gh pr merge --rebase --delete-branch
 
 - [ ] Argon2 dependency is only in Infrastructure, not Domain.
 - [ ] `Users.Password` never stores plaintext.
+- [ ] `Users.Salt` is empty/unused for Argon2 rows.
 - [ ] Login never filters by plaintext password.
-- [ ] Existing PBKDF2 users can still log in once.
-- [ ] Successful PBKDF2 login upgrades the row to Argon2id.
-- [ ] Wrong password fails for Argon2 and PBKDF2 hashes.
+- [ ] PBKDF2 implementation and tests are removed.
+- [ ] Non-Argon2 stored hashes are rejected.
+- [ ] Wrong password fails for Argon2 hashes.
 - [ ] Malformed stored hashes fail closed, not with a 500.
 - [ ] Architecture tests pass.
 - [ ] Fake/seed data remains compatible with login behavior.
