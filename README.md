@@ -24,8 +24,8 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 | Dapper.AOT | 1.0 | Compile-time SQL interception |
 | Npgsql | 10.0 | PostgreSQL driver |
 | PostgreSQL | 16.7 | Primary database |
-| Blazor Server + WebAssembly | 10.0 | Frontend rendering |
-| MudBlazor | 8.x | Material Design UI components |
+| Qwik + Qwik City | 1.x | Frontend routing and rendering |
+| Tailwind CSS | 3.x | Catalyst-inspired product UI styling |
 | Riok.Mapperly | 4.3 | Compile-time object mapping |
 | OpenTelemetry | 1.15 | Distributed tracing, metrics, logging |
 | Docker + Compose | Latest | Containerization and orchestration |
@@ -42,7 +42,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 - OpenTelemetry observability with OTLP export and optional Grafana LGTM stack
 - NGINX load balancing across two WebApi instances with least-connection routing
 - Multi-platform Docker builds (linux/amd64 + linux/arm64/v8) with AOT, trimming, and extra optimization options
-- Blazor Server + WebAssembly frontend with MudBlazor components and translation support
+- Qwik + Qwik City frontend with Tailwind CSS and Catalyst-inspired CRUD screens for all WebApi resources
 - Three test suites: architecture validation (xUnit + NetArchTest), unit tests (NUnit + FakeItEasy), integration tests (xUnit v3 + FastEndpoints.Testing)
 - Automated CI/CD with GitHub Actions deploying GHCR images to Hostinger Docker Manager
 
@@ -52,8 +52,8 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 ┌─────────────────────────────────────────────────────┐
 │                 Presentation Layer                   │
 │  WebApi (REST)  GrpcServer  IdentityApi  WebClient  │
-│  FastEndpoints  FE.Messaging  JWT Auth    Blazor    │
-│  + EF Core      + Dapper                 + MudBlazor│
+│  FastEndpoints  FE.Messaging  JWT Auth    Qwik      │
+│  + EF Core      + Dapper                 + Tailwind │
 └────────────────────────┬────────────────────────────┘
                          │
 ┌────────────────────────┴────────────────────────────┐
@@ -126,7 +126,7 @@ src/
   GrpcServer.Contracts/        Shared command/result DTOs
   IdentityApi/                 JWT authentication service
   WebApi.Client/               Auto-generated Kiota API client
-  WebClient/                   Blazor Server + WebAssembly frontend
+  WebClient/                   Qwik + Qwik City + Tailwind frontend
 
 tests/
   Architecture.Tests/          Clean Architecture rules (xUnit + NetArchTest)

@@ -44,19 +44,51 @@ jobs:
           fetch-depth: 0
 
       - name: Setup .NET SDK
+        if: matrix.service != 'WebClient'
         uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
 
+      - name: Setup Node.js
+        if: matrix.service == 'WebClient'
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/WebClient/package-lock.json
+
       - name: Restore Dependencies
+        if: matrix.service != 'WebClient'
         working-directory: "./src/${{ matrix.service }}"
         run: dotnet restore "${{ matrix.service }}.csproj" -p:Configuration=${{ env.BUILD_CONFIGURATION }} -p:AOT=${{ env.AOT }} -p:Trim=${{ env.TRIM }}
 
+      - name: Install WebClient Dependencies
+        if: matrix.service == 'WebClient'
+        working-directory: ./src/WebClient
+        run: npm ci
+
       - name: Build Application
+        if: matrix.service != 'WebClient'
         working-directory: "./src/${{ matrix.service }}"
         run: dotnet build "${{ matrix.service }}.csproj" -c ${{ env.BUILD_CONFIGURATION }} -p:AOT=${{ env.AOT }} -p:Trim=${{ env.TRIM }} -p:ExtraOptimize=${{ env.EXTRA_OPTIMIZE }}
 
+      - name: Typecheck WebClient
+        if: matrix.service == 'WebClient'
+        working-directory: ./src/WebClient
+        run: npm run typecheck
+
+      - name: Test WebClient
+        if: matrix.service == 'WebClient'
+        working-directory: ./src/WebClient
+        run: npm test
+
+      - name: Build WebClient
+        if: matrix.service == 'WebClient'
+        working-directory: ./src/WebClient
+        run: npm run build
+
       - name: Architecture Tests
+        if: matrix.service != 'WebClient'
         working-directory: "./tests/Architecture.Tests"
         run: dotnet test
 

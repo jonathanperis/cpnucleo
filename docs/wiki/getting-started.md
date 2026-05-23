@@ -56,7 +56,7 @@ Once running, the services are available at:
 | WebApi (instance 2) | http://localhost:5111 | REST API (load-balanced pair) |
 | IdentityApi | http://localhost:5200 | JWT Authentication API |
 | GrpcServer | http://localhost:5300 (gRPC) / http://localhost:5301 (health) | gRPC command server |
-| WebClient | http://localhost:5400 | Blazor UI |
+| WebClient | http://localhost:5400 | Qwik + Tailwind UI |
 | NGINX | http://localhost:9999 | Reverse proxy (load balances WebApi) |
 | PostgreSQL | localhost:5432 | Database |
 | Grafana (dev only) | http://localhost:3000 | Observability dashboard |
@@ -119,7 +119,7 @@ cd src/IdentityApi && dotnet run
 # Terminal 3 - gRPC Server
 cd src/GrpcServer && dotnet run
 
-# Terminal 4 - Blazor Web Client
+# Terminal 4 - Qwik Web Client
 cd src/WebClient && dotnet run
 ```
 
