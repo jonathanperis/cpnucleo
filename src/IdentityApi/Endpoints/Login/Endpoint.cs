@@ -1,6 +1,6 @@
 namespace IdentityApi.Endpoints.Login;
 
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -22,11 +22,18 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Fetching user entity with Login: {UserLogin}", req.Login);
         var item = await dbContext.Users!
-            .FirstOrDefaultAsync(u => u.Login == req.Login && u.Password == req.Password, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Login == req.Login, cancellationToken);
 
         if (item is null)
         {
             Logger.LogWarning("User not found with Login: {UserLogin}", req.Login);
+            await Send.NotFoundAsync(cancellation: cancellationToken);
+            return;
+        }
+
+        if (!passwordHasher.Verify(req.Password, item.Password))
+        {
+            Logger.LogWarning("Invalid password for Login: {UserLogin}", req.Login);
             await Send.NotFoundAsync(cancellation: cancellationToken);
             return;
         }

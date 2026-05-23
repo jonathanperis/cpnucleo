@@ -18,6 +18,7 @@ internal static class FakeDataHelper
     {
         var random = new Random();
         var sb = new StringBuilder();
+        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
         
         var organizationFaker = new Faker<Organization>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
@@ -145,8 +146,8 @@ internal static class FakeDataHelper
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => f.Name.FullName())
             .RuleFor(x => x.Login, f => f.Internet.UserName())
-            .RuleFor(x => x.Password, f => string.Concat(f.Internet.Password(), f.Internet.Password(), f.Internet.Password()))
-            .RuleFor(x => x.Salt, f => f.Internet.Password())
+            .RuleFor(x => x.Password, _ => fakeUserPasswordHash.Hash)
+            .RuleFor(x => x.Salt, _ => fakeUserPasswordHash.Salt)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
@@ -298,6 +299,7 @@ internal static class FakeDataHelper
     internal static void CreateSqlCsvDumpFile()
     {
         var sb = new StringBuilder();
+        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
 
         Directory.CreateDirectory("dml-data");
 
@@ -416,8 +418,8 @@ internal static class FakeDataHelper
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => f.Name.FullName())
             .RuleFor(x => x.Login, f => f.Internet.UserName())
-            .RuleFor(x => x.Password, f => string.Concat(f.Internet.Password(), f.Internet.Password(), f.Internet.Password()))
-            .RuleFor(x => x.Salt, f => f.Internet.Password())
+            .RuleFor(x => x.Password, _ => fakeUserPasswordHash.Hash)
+            .RuleFor(x => x.Salt, _ => fakeUserPasswordHash.Salt)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))

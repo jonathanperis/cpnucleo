@@ -31,7 +31,8 @@ Domain/
 ├── Usings.cs                             # Global usings
 ├── Common/
 │   └── Security/
-│       └── CryptographyManager.cs        # PBKDF2 password hashing
+│       ├── IPasswordHasher.cs            # Password hashing abstraction
+│       └── PasswordHash.cs                # Hash value object
 ├── Entities/
 │   ├── BaseEntity.cs                     # Abstract base (Id, CreatedAt, UpdatedAt, DeletedAt, Active)
 │   ├── Appointment.cs                    # Time tracking entries

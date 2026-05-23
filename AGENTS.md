@@ -75,7 +75,7 @@ Infrastructure Layer
 Domain Layer (zero external dependencies)
 ├── 11 Entities (Organization, Project, Assignment, User, etc.)
 ├── Repository interfaces (IRepository<T>, IProjectRepository)
-└── CryptographyManager (PBKDF2)
+└── IPasswordHasher abstraction (Argon2id implementation in Infrastructure)
 ```
 
 **Clean Architecture enforced by 25+ NetArchTest rules** — Domain depends on nothing, Infrastructure depends only on Domain.
@@ -224,5 +224,5 @@ Production deploys through Hostinger Docker Manager using `scripts/deploy-hostin
 
 - All WebApi endpoints currently use `AllowAnonymous()` — auth is configured but not enforced
 - JWT validation code exists in WebApi but is commented out (reference implementation mode)
-- IdentityApi uses `CryptographyManager` (PBKDF2) for password hashing
+- IdentityApi verifies Argon2id password hashes through the Domain-owned `IPasswordHasher` abstraction
 - WebApi and GrpcServer have parallel CRUD logic — future improvement: extract shared application services

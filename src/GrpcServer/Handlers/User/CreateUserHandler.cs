@@ -1,7 +1,7 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger) : ICommandHandler<CreateUserCommand, CreateUserResult>
+public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger, IPasswordHasher passwordHasher) : ICommandHandler<CreateUserCommand, CreateUserResult>
 {
     public async Task<CreateUserResult> ExecuteAsync(CreateUserCommand command, CancellationToken cancellationToken)
     {
@@ -24,7 +24,8 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUser
             }
 
             logger.LogInformation("Validation passed, proceeding to create new user entity.");
-            var newItem = Domain.Entities.User.Create(command.Name, command.Login, command.Password, command.Id);
+            var passwordHash = passwordHasher.Hash(command.Password);
+            var newItem = Domain.Entities.User.Create(command.Name, command.Login, passwordHash, command.Id);
             logger.LogInformation("Created new user entity with Id: {UserId}", newItem.Id);
 
             logger.LogInformation("Beginning transaction.");

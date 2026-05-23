@@ -5,6 +5,7 @@ global using System.Net;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Threading.RateLimiting;
+global using Domain.Common.Security;
 global using Domain.Entities;
 global using Domain.Models;
 global using Domain.Repositories;

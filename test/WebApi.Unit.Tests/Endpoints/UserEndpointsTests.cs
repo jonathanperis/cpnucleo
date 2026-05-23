@@ -11,7 +11,7 @@ public class UserEndpointsTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = User.Create("Test User", "testuser", "password123", userId);
+        var user = User.Create("Test User", "testuser", new PasswordHash("hash-value", string.Empty), userId);
         
         var fakeRepository = A.Fake<IRepository<User>>();
         A.CallTo(() => fakeRepository.GetByIdAsync(userId))
@@ -62,7 +62,7 @@ public class UserEndpointsTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = User.Create("New User", "newuser", "Password@123", userId);
+        var user = User.Create("New User", "newuser", new PasswordHash("hash-value", string.Empty), userId);
         
         var fakeDbContext = A.Fake<IApplicationDbContext>();
         var fakeDbSet = A.Fake<DbSet<User>>();
@@ -72,7 +72,10 @@ public class UserEndpointsTests
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
         A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
 
-        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeDbContext);
+        var passwordHasher = A.Fake<IPasswordHasher>();
+        A.CallTo(() => passwordHasher.Hash("Password@123")).Returns(new PasswordHash("$argon2id$hash", string.Empty));
+
+        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeDbContext, passwordHasher);
         var req = new WebApi.Endpoints.User.CreateUser.Request
         {
             Id = userId,
@@ -96,7 +99,7 @@ public class UserEndpointsTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = User.Create("Original User", "originaluser", "password123", userId);
+        var user = User.Create("Original User", "originaluser", new PasswordHash("hash-value", string.Empty), userId);
         
         var fakeDbContext = A.Fake<IApplicationDbContext>();
         var fakeDbSet = A.Fake<DbSet<User>>();
@@ -105,7 +108,10 @@ public class UserEndpointsTests
         A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
 
-        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeDbContext);
+        var passwordHasher = A.Fake<IPasswordHasher>();
+        A.CallTo(() => passwordHasher.Hash("Password@123")).Returns(new PasswordHash("$argon2id$updated-hash", string.Empty));
+
+        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeDbContext, passwordHasher);
         var req = new WebApi.Endpoints.User.UpdateUser.Request
         {
             Id = userId,
@@ -126,7 +132,7 @@ public class UserEndpointsTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = User.Create("User to Delete", "deleteuser", "password123", userId);
+        var user = User.Create("User to Delete", "deleteuser", new PasswordHash("hash-value", string.Empty), userId);
         
         var fakeDbContext = A.Fake<IApplicationDbContext>();
         var fakeDbSet = A.Fake<DbSet<User>>();
@@ -152,8 +158,8 @@ public class UserEndpointsTests
         // Arrange
         var userId1 = Guid.NewGuid();
         var userId2 = Guid.NewGuid();
-        var user1 = User.Create("User 1", "user1", "password1", userId1);
-        var user2 = User.Create("User 2", "user2", "password2", userId2);
+        var user1 = User.Create("User 1", "user1", new PasswordHash("hash-value-1", string.Empty), userId1);
+        var user2 = User.Create("User 2", "user2", new PasswordHash("hash-value-2", string.Empty), userId2);
         
         var paginatedResult = new PaginatedResult<User?>
         {

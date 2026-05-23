@@ -24,7 +24,7 @@
   - `Users.Password` and `Users.Salt` are nullable PostgreSQL `text`, so Argon2 PHC strings fit without a schema migration.
 - **External package fact checked:** NuGet search shows `Konscious.Security.Cryptography.Argon2` latest stable `1.3.1`.
 - **POC scope update:** Jonathan explicitly does not want PBKDF2 fallback or verify-and-rehash migration. The implementation should remove PBKDF2 entirely and accept that existing PBKDF2 rows will no longer authenticate unless reseeded/recreated.
-- **Implementation status:** not implemented; this is a plan only.
+- **Implementation status:** implemented on branch `feat/argon2-password-encryption`; validation evidence is in the PR/commit notes.
 
 ---
 

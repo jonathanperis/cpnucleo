@@ -36,7 +36,7 @@ Use these facts only when the source remains true in README, AGENTS.md, solution
 - UI: Blazor Server plus WebAssembly with MudBlazor components.
 - REST: FastEndpoints with EF Core through WebApi.
 - gRPC style messaging: FastEndpoints Remote Messaging with Dapper through GrpcServer.
-- Authentication: dedicated IdentityApi with JWT and PBKDF2-hashed credentials.
+- Authentication: dedicated IdentityApi with JWT and Argon2id-hashed credentials.
 - Database: PostgreSQL 16.7 with Npgsql.
 - Reverse proxy: NGINX with least-connection load balancing.
 - Observability: OpenTelemetry with OTLP export and optional Grafana LGTM stack.

@@ -37,7 +37,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 
 - Clean Architecture with strict layer separation enforced by 25 automated NetArchTest rules
 - Dual data access strategies: EF Core (REST API) and Dapper with Unit of Work (gRPC server) against the same database
-- JWT authentication via a dedicated Identity API with PBKDF2-hashed credentials
+- JWT authentication via a dedicated Identity API with Argon2id-hashed credentials
 - Rate limiting per IP: 50 req/min on WebApi, 10 req/min on IdentityApi
 - OpenTelemetry observability with OTLP export and optional Grafana LGTM stack
 - NGINX load balancing across two WebApi instances with least-connection routing
@@ -66,7 +66,7 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 ┌────────────────────────┴────────────────────────────┐
 │                   Domain Layer                       │
 │  11 Entities (sealed, BaseEntity, factory methods)   │
-│  Repository interfaces    CryptographyManager        │
+│  Repository interfaces    IPasswordHasher contract   │
 │              Zero external dependencies              │
 └─────────────────────────────────────────────────────┘
 ```
