@@ -21,7 +21,6 @@
     <Project Path="src\IdentityApi\IdentityApi.csproj" />
     <Project Path="src\Infrastructure\Infrastructure.csproj" />
     <Project Path="src\WebApi\WebApi.csproj" />
-    <Project Path="src\WebClient\WebClient.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests\Application.Unit.Tests\Application.Unit.Tests.csproj" />
