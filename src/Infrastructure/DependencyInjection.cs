@@ -6,6 +6,7 @@ public static class DependencyInjection
     {
         // EF Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>();
 
         // Dapper Repository Basic
         services.AddScoped(_ => new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING")));

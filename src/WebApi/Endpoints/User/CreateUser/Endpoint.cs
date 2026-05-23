@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.User.CreateUser;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -32,7 +32,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         ThrowIfAnyErrors();
 
         Logger.LogInformation("Validation passed, proceeding to create new user entity.");
-        var newItem = Domain.Entities.User.Create(request.Name, request.Login, request.Password, request.Id);
+        var passwordHash = passwordHasher.Hash(request.Password);
+        var newItem = Domain.Entities.User.Create(request.Name, request.Login, passwordHash, request.Id);
         Logger.LogInformation("Created new user entity with Id: {UserId}", newItem.Id);
 
         Logger.LogInformation("Adding user to repository.");

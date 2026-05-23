@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.User.UpdateUser;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -30,7 +30,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         }
 
         Logger.LogInformation("Updating user entity with Id: {UserId}", request.Id);
-        Domain.Entities.User.Update(item, request.Name, request.Password);
+        var passwordHash = passwordHasher.Hash(request.Password);
+        Domain.Entities.User.Update(item, request.Name, passwordHash);
 
         Logger.LogInformation("Updating entity in repository.");
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);

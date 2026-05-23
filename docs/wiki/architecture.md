@@ -60,7 +60,7 @@ Entities are annotated with `[Table("...")]` for Dapper's advanced repository to
 | Assignment | Name, Description, StartDate, EndDate, AmountHours | Belongs to Project, Workflow, User, AssignmentType |
 | AssignmentType | Name | Referenced by Assignments |
 | Workflow | Name, Order | Referenced by Assignments |
-| User | Name, Login, Password, Salt | PBKDF2-encrypted credentials |
+| User | Name, Login, Password, Salt | Argon2id PHC password hash in Password; Salt is obsolete/empty for new rows |
 | Appointment | Description, KeepDate, AmountHours | Belongs to Assignment, User |
 | Impediment | Name | Referenced by AssignmentImpediments |
 | AssignmentImpediment | Description | Links Assignment to Impediment |
