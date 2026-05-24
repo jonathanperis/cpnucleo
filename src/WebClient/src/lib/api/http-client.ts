@@ -53,6 +53,13 @@ export const clearStoredToken = (): void => {
   if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(tokenStorageKey);
 };
 
+const redirectToLoginForExpiredSession = () => {
+  if (typeof window === 'undefined') return;
+  if (window.location.pathname === '/login') return;
+  const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  window.location.assign(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
+};
+
 const errorMessage = (status: number, body: unknown): string => {
   if (body && typeof body === 'object') {
     const candidate = body as { message?: unknown; title?: unknown; detail?: unknown; errors?: unknown };
@@ -100,6 +107,12 @@ export const requestJson = async <T>(url: string, options: HttpOptions = {}): Pr
     throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
   }
   const body = await parseJson(response);
-  if (!response.ok) throw new ApiError(response.status, errorMessage(response.status, body), body);
+  if (!response.ok) {
+    if (response.status === 401) {
+      clearStoredToken();
+      redirectToLoginForExpiredSession();
+    }
+    throw new ApiError(response.status, errorMessage(response.status, body), body);
+  }
   return body as T;
 };
