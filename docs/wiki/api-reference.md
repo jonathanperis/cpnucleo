@@ -148,8 +148,8 @@ Returned when credentials are invalid.
 
 | Parameter | Value |
 |-----------|-------|
-| Issuer | `https://identity.peris-studio.dev` |
-| Audience | `https://peris-studio.dev` |
+| Issuer | `https://identity-cpnucleo.jonathanperis.tech` |
+| Audience | `https://api-cpnucleo.jonathanperis.tech` |
 | Expiration | 1 day |
 | Algorithm | HMAC-SHA (via FastEndpoints.Security) |
 
