@@ -7,23 +7,23 @@ name: "cpnucleo-prod"
 
 x-common-healthcheck:
   x-healthcheck-api: &healthcheck-api
-    test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/127.0.0.1/5000'"]
-    interval: 30s
+    test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5000; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
+    interval: 10m
     timeout: 10s
     retries: 3
   x-healthcheck-identity: &healthcheck-identity
-    test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/127.0.0.1/5010'"]
-    interval: 30s
+    test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5010; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
+    interval: 10m
     timeout: 10s
     retries: 3
   x-healthcheck-grpcserver: &healthcheck-grpcserver
-    test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/127.0.0.1/5021'"]
-    interval: 30s
+    test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5021; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
+    interval: 10m
     timeout: 10s
     retries: 3
   x-healthcheck-webclient: &healthcheck-webclient
     test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5030/healthz"]
-    interval: 30s
+    interval: 10m
     timeout: 10s
     retries: 3
 
