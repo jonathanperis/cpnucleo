@@ -9,9 +9,9 @@ export default component$(() => {
 
   return (
     <section class="w-full max-w-md rounded-[2rem] border border-line bg-surface/95 p-6 shadow-soft backdrop-blur sm:p-8">
-      <p class="text-sm font-semibold text-accent">IdentityApi login</p>
+      <p class="text-sm font-semibold text-accent">Secure sign in</p>
       <h2 class="mt-2 text-3xl font-semibold tracking-tight">Welcome back</h2>
-      <p class="mt-3 text-sm leading-6 text-muted">Enter your CPnucleo credentials to open the dashboard workspace.</p>
+      <p class="mt-3 text-sm leading-6 text-muted">Enter your Cpnucleo credentials to open the dashboard workspace.</p>
       {error.value && <div role="alert" aria-live="assertive" aria-atomic="true" class="mt-5 rounded-xl border border-danger/25 bg-danger/5 px-4 py-3 text-sm text-danger">{error.value}</div>}
       {success.value && <div role="status" aria-live="polite" aria-atomic="true" class="mt-5 rounded-xl border border-success/25 bg-success/5 px-4 py-3 text-sm text-success">Login successful. Opening the dashboard…</div>}
       <form class="mt-6 space-y-5" preventdefault:submit onSubmit$={async (event) => {

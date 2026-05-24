@@ -17,57 +17,57 @@ const resource = (
 ): ResourceMetadata => ({ key, label, pluralLabel, listPath: `/${key}`, itemPath: `/${itemPath}`, routePath, description, displayField, fields: [...baseFields, ...fields] });
 
 export const resourceMetadata = [
-  resource('organizations', 'Organization', 'Organizations', 'organization', '/organizations', 'Companies and teams that own projects.', 'name', [
+  resource('organizations', 'Organization', 'Organizations', 'organization', '/organizations', 'Teams and groups that own projects.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
     { name: 'description', label: 'Description', type: 'textarea', table: true },
   ]),
-  resource('projects', 'Project', 'Projects', 'project', '/projects', 'Project records linked to an organization.', 'name', [
+  resource('projects', 'Project', 'Projects', 'project', '/projects', 'Project spaces connected to an organization.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
     { name: 'organizationId', label: 'Organization', type: 'guid', required: true, table: true, relation: 'organizations' },
   ]),
-  resource('assignments', 'Assignment', 'Assignments', 'assignment', '/assignments', 'Work items with schedule, budget, workflow, and people links.', 'name', [
+  resource('assignments', 'Task', 'Tasks', 'assignment', '/assignments', 'Work items with dates, hours, progress, and owner links.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
     { name: 'description', label: 'Description', type: 'textarea', table: true },
     { name: 'startDate', label: 'Start date', type: 'date', table: true },
     { name: 'endDate', label: 'End date', type: 'date', table: true },
     { name: 'amountHours', label: 'Hours', type: 'number', table: true },
     { name: 'projectId', label: 'Project', type: 'guid', required: true, table: true, relation: 'projects' },
-    { name: 'workflowId', label: 'Workflow', type: 'guid', table: true, relation: 'workflows' },
-    { name: 'userId', label: 'User', type: 'guid', table: true, relation: 'users' },
-    { name: 'assignmentTypeId', label: 'Assignment type', type: 'guid', table: true, relation: 'assignmentTypes' },
+    { name: 'workflowId', label: 'Progress step', type: 'guid', table: true, relation: 'workflows' },
+    { name: 'userId', label: 'Owner', type: 'guid', table: true, relation: 'users' },
+    { name: 'assignmentTypeId', label: 'Task type', type: 'guid', table: true, relation: 'assignmentTypes' },
   ]),
-  resource('assignmentTypes', 'Assignment type', 'Assignment types', 'assignmentType', '/assignment-types', 'Reusable categories for assignments.', 'name', [
+  resource('assignmentTypes', 'Task type', 'Task types', 'assignmentType', '/assignment-types', 'Reusable labels for different kinds of work.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
   ]),
-  resource('impediments', 'Impediment', 'Impediments', 'impediment', '/impediments', 'Known blockers that can affect work.', 'name', [
+  resource('impediments', 'Blocker', 'Blockers', 'impediment', '/impediments', 'Issues that may slow work down.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
   ]),
-  resource('assignmentImpediments', 'Assignment impediment', 'Assignment impediments', 'assignmentImpediment', '/assignment-impediments', 'Links blockers to assignments with context.', 'description', [
+  resource('assignmentImpediments', 'Task blocker', 'Task blockers', 'assignmentImpediment', '/assignment-impediments', 'Notes that connect blockers to a task.', 'description', [
     { name: 'description', label: 'Description', type: 'textarea', required: true, table: true },
-    { name: 'assignmentId', label: 'Assignment', type: 'guid', required: true, table: true, relation: 'assignments' },
-    { name: 'impedimentId', label: 'Impediment', type: 'guid', required: true, table: true, relation: 'impediments' },
+    { name: 'assignmentId', label: 'Task', type: 'guid', required: true, table: true, relation: 'assignments' },
+    { name: 'impedimentId', label: 'Blocker', type: 'guid', required: true, table: true, relation: 'impediments' },
   ]),
-  resource('appointments', 'Appointment', 'Appointments', 'appointment', '/appointments', 'Calendar entries for users on assignments.', 'description', [
+  resource('appointments', 'Calendar item', 'Calendar items', 'appointment', '/appointments', 'Scheduled moments connected to people and tasks.', 'description', [
     { name: 'description', label: 'Description', type: 'textarea', required: true, table: true },
     { name: 'keepDate', label: 'Date', type: 'datetime-local', required: true, table: true },
     { name: 'amountHours', label: 'Hours', type: 'number', table: true },
-    { name: 'assignmentId', label: 'Assignment', type: 'guid', required: true, table: true, relation: 'assignments' },
-    { name: 'userId', label: 'User', type: 'guid', required: true, table: true, relation: 'users' },
+    { name: 'assignmentId', label: 'Task', type: 'guid', required: true, table: true, relation: 'assignments' },
+    { name: 'userId', label: 'Person', type: 'guid', required: true, table: true, relation: 'users' },
   ]),
-  resource('workflows', 'Workflow', 'Workflows', 'workflow', '/workflows', 'Ordered workflow states for assignment progress.', 'name', [
+  resource('workflows', 'Progress step', 'Progress steps', 'workflow', '/workflows', 'Steps that show where a task is in the work path.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
     { name: 'order', label: 'Order', type: 'number', table: true },
   ]),
-  resource('users', 'User', 'Users', 'user', '/users', 'People that can own projects, assignments, and appointments.', 'name', [
+  resource('users', 'Team member', 'Team members', 'user', '/users', 'People who can own projects, tasks, and calendar items.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
     { name: 'login', label: 'Login', type: 'text', required: true, table: true },
   ]),
-  resource('userAssignments', 'User assignment', 'User assignments', 'userAssignment', '/user-assignments', 'Join records between users and assignments.', 'id', [
-    { name: 'userId', label: 'User', type: 'guid', required: true, table: true, relation: 'users' },
-    { name: 'assignmentId', label: 'Assignment', type: 'guid', required: true, table: true, relation: 'assignments' },
+  resource('userAssignments', 'Person on task', 'People on tasks', 'userAssignment', '/user-assignments', 'Connections between people and the tasks they help with.', 'id', [
+    { name: 'userId', label: 'Person', type: 'guid', required: true, table: true, relation: 'users' },
+    { name: 'assignmentId', label: 'Task', type: 'guid', required: true, table: true, relation: 'assignments' },
   ]),
-  resource('userProjects', 'User project', 'User projects', 'userProject', '/user-projects', 'Join records between users and projects.', 'id', [
-    { name: 'userId', label: 'User', type: 'guid', required: true, table: true, relation: 'users' },
+  resource('userProjects', 'Person on project', 'People on projects', 'userProject', '/user-projects', 'Connections between people and their project spaces.', 'id', [
+    { name: 'userId', label: 'Person', type: 'guid', required: true, table: true, relation: 'users' },
     { name: 'projectId', label: 'Project', type: 'guid', required: true, table: true, relation: 'projects' },
   ]),
 ] as const satisfies readonly ResourceMetadata[];

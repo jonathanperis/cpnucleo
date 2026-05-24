@@ -4,12 +4,12 @@ import { AuthStatus } from '../components/auth-guard';
 import { ThemeToggle } from '../components/theme-toggle';
 
 const groups = [
-  { name: 'Work', items: [
-    ['Dashboard', '/'], ['Organizations', '/organizations'], ['Projects', '/projects'], ['Assignments', '/assignments'], ['Workflows', '/workflows'], ['Appointments', '/appointments'],
+  { name: 'Start', items: [
+    ['Home', '/'], ['Organizations', '/organizations'], ['Projects', '/projects'], ['Tasks', '/assignments'], ['Progress steps', '/workflows'], ['Calendar', '/appointments'],
   ] },
-  { name: 'People', items: [['Users', '/users'], ['User assignments', '/user-assignments'], ['User projects', '/user-projects']] },
-  { name: 'Configuration', items: [['Types', '/settings/types'], ['Relations', '/settings/relations'], ['Assignment types', '/assignment-types'], ['Impediments', '/impediments'], ['Assignment impediments', '/assignment-impediments']] },
-  { name: 'System', items: [['API health', '/api-health']] },
+  { name: 'People', items: [['Team members', '/users'], ['People on tasks', '/user-assignments'], ['People on projects', '/user-projects']] },
+  { name: 'Setup', items: [['Task types', '/assignment-types'], ['Blockers', '/impediments'], ['Task blockers', '/assignment-impediments']] },
+  { name: 'Status', items: [['Service health', '/api-health']] },
 ] as const;
 
 const { path = '/' } = Astro.props;
@@ -21,7 +21,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname ==
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CPnucleo</title>
+    <title>Cpnucleo</title>
     <script is:inline>
       (() => {
         try {
@@ -37,23 +37,32 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname ==
   </head>
   <body>
     <div class="min-h-screen bg-canvas text-ink">
-      <aside class="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-line bg-surface px-5 py-6 lg:block">
-        <a href="/" class="mb-8 flex items-center gap-3">
-          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-sm font-bold text-canvas">CP</span>
-          <span><span class="block text-base font-semibold">CPnucleo</span><span class="block text-xs text-muted">Project management</span></span>
+      <aside class="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-line bg-surface/95 px-5 py-6 shadow-soft lg:block">
+        <a href="/" class="mb-7 flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-sm font-bold text-canvas shadow-soft">Cn</span>
+          <span>
+            <span class="block text-base font-semibold">Cpnucleo</span>
+            <span class="block text-xs text-muted">Project hub</span>
+          </span>
         </a>
-        <nav class="mt-8 space-y-6">
+        <label class="block rounded-2xl border border-line bg-raised px-3 py-2 text-sm text-muted">
+          Search pages or actions
+        </label>
+        <nav class="mt-7 space-y-6">
           {groups.map((group) => (
             <section>
-              <h2 class="px-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.name}</h2>
+              <h2 class="px-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">{group.name}</h2>
               <div class="mt-2 space-y-1">
                 {group.items.map(([label, href]) => (
-                  <a href={href} class:list={["block rounded-lg px-3 py-2 text-sm font-medium transition", isActive(href) ? "bg-ink text-canvas shadow-sm" : "text-muted hover:bg-raised hover:text-ink"]}>{label}</a>
+                  <a href={href} aria-current={isActive(href) ? 'page' : undefined} class:list={["block rounded-xl border px-3 py-2 text-sm font-medium transition", isActive(href) ? "border-accent/40 bg-accent/10 text-accent shadow-sm" : "border-transparent text-muted hover:border-line hover:bg-raised hover:text-ink"]}>{label}</a>
                 ))}
               </div>
             </section>
           ))}
         </nav>
+        <div class="absolute inset-x-5 bottom-6 rounded-2xl border border-line bg-raised p-4 text-xs leading-5 text-muted">
+          Built as a clear place to review work, people, data, and releases without reading code first.
+        </div>
       </aside>
       <div class="lg:pl-72">
         <header class="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
@@ -64,10 +73,10 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname ==
                 <nav class="space-y-5">
                   {groups.map((group) => (
                     <section>
-                      <h2 class="px-3 text-xs font-semibold uppercase tracking-wide text-muted">{group.name}</h2>
+                      <h2 class="px-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">{group.name}</h2>
                       <div class="mt-2 space-y-1">
                         {group.items.map(([label, href]) => (
-                          <a href={href} class:list={["block rounded-lg px-3 py-2 text-sm font-medium transition", isActive(href) ? "bg-ink text-canvas shadow-sm" : "text-muted hover:bg-raised hover:text-ink"]}>{label}</a>
+                          <a href={href} aria-current={isActive(href) ? 'page' : undefined} class:list={["block rounded-xl border px-3 py-2 text-sm font-medium transition", isActive(href) ? "border-accent/40 bg-accent/10 text-accent shadow-sm" : "border-transparent text-muted hover:border-line hover:bg-raised hover:text-ink"]}>{label}</a>
                         ))}
                       </div>
                     </section>
@@ -76,12 +85,12 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname ==
               </div>
             </details>
             <div>
-              <p class="text-sm font-medium text-muted">CPnucleo WebClient</p>
-              <h1 class="text-lg font-semibold">Project operations</h1>
+              <p class="text-sm font-medium text-muted">Cpnucleo</p>
+              <h1 class="text-lg font-semibold">Application hub</h1>
             </div>
             <div class="flex items-center gap-2 text-sm">
               <ThemeToggle />
-              <span class="hidden rounded-full border border-line bg-raised px-3 py-1 text-muted sm:inline-flex">Local-ready</span>
+              <span class="hidden rounded-full border border-line bg-raised px-3 py-1 text-muted sm:inline-flex">Ready</span>
               <AuthStatus />
             </div>
           </div>
