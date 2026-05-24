@@ -77,7 +77,7 @@ export default component$(() => {
             <p class="text-sm font-semibold text-accent">Work areas</p>
             <h3 class="mt-1 text-2xl font-semibold tracking-tight">Manage the records that power the app</h3>
           </div>
-          <span class="hidden text-sm text-muted sm:inline">Light by default · dark-ready</span>
+          <span class="hidden text-sm text-muted sm:inline">Dark by default · light-ready</span>
         </div>
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {resourceMetadata.map((resource) => (

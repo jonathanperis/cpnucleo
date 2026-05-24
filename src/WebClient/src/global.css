@@ -9,7 +9,9 @@
   --ink: 18% 0.026 255;
   --muted: 48% 0.032 255;
   --line: 86% 0.018 250;
-  --accent: 58% 0.16 225;
+  --accent: 78% 0.17 215;
+  --accent-hover: 83% 0.17 210;
+  --scrollbar-thumb: 62% 0.12 225;
   --danger: 56% 0.18 25;
   --success: 55% 0.14 155;
   color-scheme: light;
@@ -22,7 +24,9 @@
   --ink: 96% 0.006 250;
   --muted: 72% 0.028 255;
   --line: 31% 0.028 255;
-  --accent: 72% 0.15 260;
+  --accent: 78% 0.17 215;
+  --accent-hover: 83% 0.17 210;
+  --scrollbar-thumb: 62% 0.12 225;
   --danger: 68% 0.18 25;
   --success: 70% 0.14 155;
   color-scheme: dark;
@@ -36,7 +40,9 @@
     --ink: 96% 0.006 250;
     --muted: 72% 0.028 255;
     --line: 31% 0.028 255;
-    --accent: 72% 0.15 260;
+    --accent: 78% 0.17 215;
+    --accent-hover: 83% 0.17 210;
+    --scrollbar-thumb: 62% 0.12 225;
     --danger: 68% 0.18 25;
     --success: 70% 0.14 155;
     color-scheme: dark;
@@ -44,8 +50,23 @@
 }
 
 * { box-sizing: border-box; }
-html { color-scheme: light; }
-html[data-theme='dark'] { color-scheme: dark; }
+html {
+  color-scheme: dark;
+  scrollbar-color: oklch(var(--accent-hover)) oklch(var(--canvas));
+  scrollbar-width: thin;
+}
+html[data-theme='light'] { color-scheme: light; }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track { background: oklch(var(--canvas)); }
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--scrollbar-thumb) / 0.58);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: oklch(var(--accent-hover)); }
+::-webkit-scrollbar-corner { background: oklch(var(--canvas)); }
 body {
   margin: 0;
   min-height: 100vh;

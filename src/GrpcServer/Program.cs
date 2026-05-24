@@ -90,10 +90,10 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseRateLimiter();
 app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
-app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
