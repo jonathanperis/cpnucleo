@@ -1,5 +1,6 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
+import { recordHttpError, recordHttpRequest, startHttpRequestSpan } from './otel.mjs';
 import { extname, join, normalize } from 'node:path';
 
 const root = join(process.cwd(), 'dist');
@@ -30,25 +31,43 @@ const resolvePath = (urlPath) => {
 };
 
 createServer((request, response) => {
-  if (request.url === '/healthz') {
-    response.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-    response.end('ok');
-    return;
-  }
+  const startTime = process.hrtime.bigint();
+  const span = startHttpRequestSpan(request);
 
-  const filePath = resolvePath(request.url ?? '/');
-  if (!existsSync(filePath)) {
-    response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    response.end('not found');
-    return;
-  }
+  response.on('finish', () => recordHttpRequest(request, response, startTime, span));
+  response.on('error', (error) => recordHttpError(request, error, span));
 
-  const extension = extname(filePath);
-  response.writeHead(200, {
-    'Content-Type': contentTypes[extension] ?? 'application/octet-stream',
-    ...(extension && extension !== '.html' ? { 'Cache-Control': 'public, max-age=31536000, immutable' } : {}),
-  });
-  createReadStream(filePath).pipe(response);
+  try {
+    if (request.url === '/healthz') {
+      response.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      response.end('ok');
+      return;
+    }
+
+    const filePath = resolvePath(request.url ?? '/');
+    if (!existsSync(filePath)) {
+      response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      response.end('not found');
+      return;
+    }
+
+    const extension = extname(filePath);
+    response.writeHead(200, {
+      'Content-Type': contentTypes[extension] ?? 'application/octet-stream',
+      ...(extension && extension !== '.html' ? { 'Cache-Control': 'public, max-age=31536000, immutable' } : {}),
+    });
+    createReadStream(filePath)
+      .on('error', (error) => {
+        recordHttpError(request, error, span);
+        response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        response.end('internal server error');
+      })
+      .pipe(response);
+  } catch (error) {
+    recordHttpError(request, error, span);
+    response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+    response.end('internal server error');
+  }
 }).listen(port, host, () => {
   console.log(`Preview server listening on http://${host}:${port}`);
 });

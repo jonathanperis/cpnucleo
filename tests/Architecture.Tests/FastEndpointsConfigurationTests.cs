@@ -126,6 +126,114 @@ public class FastEndpointsConfigurationTests
         anonymousEndpoints.Should().BeEmpty("WebApi endpoints must require IdentityApi-issued bearer tokens");
     }
 
+    [Theory]
+    [InlineData("src/WebApi/ServiceExtensions/ConfigureOpenTelemetryOptions.cs", "webapi", true)]
+    [InlineData("src/IdentityApi/ServiceExtensions/ConfigureOpenTelemetryOptions.cs", "identityapi", true)]
+    [InlineData("src/GrpcServer/ServiceExtensions/ConfigureOpenTelemetryOptions.cs", "grpcserver", false)]
+    public void DotNetHosts_ShouldExportRichOpenTelemetrySignals(string telemetryPath, string projectName, bool shouldIncludeEfCore)
+    {
+        var telemetry = File.ReadAllText(GetRepositoryPath(telemetryPath));
+        var requiredSnippets = new[]
+        {
+            ".AddAspNetCoreInstrumentation(options =>",
+            "options.RecordException = true",
+            "EnrichWithHttpRequest",
+            "http.request.host",
+            "http.request.scheme",
+            "http.request.protocol",
+            "http.request.path",
+            "http.request.query_string_length",
+            "user_agent.original",
+            "EnrichWithHttpResponse",
+            "http.response.content_length",
+            "http.response.content_type",
+            "EnrichWithException",
+            "exception.type",
+            ".AddHttpClientInstrumentation(options =>",
+            ".AddRuntimeInstrumentation()",
+            ".AddProcessInstrumentation()",
+            "Microsoft.AspNetCore.Hosting",
+            "Microsoft.AspNetCore.Server.Kestrel",
+            "System.Net.Http",
+            "System.Net.NameResolution",
+            "Npgsql",
+            ".AddNpgsql()",
+            ".AddNpgsqlInstrumentation",
+            "Logging.AddOpenTelemetry",
+            "IncludeFormattedMessage",
+            "IncludeScopes",
+            "ParseStateValues",
+            "SetResourceBuilder",
+            "serviceNamespace: \"cpnucleo\"",
+            "deployment.environment",
+            "host.name",
+            "process.id",
+            "process.runtime.name",
+            "os.description",
+            $"[\"cpnucleo.project\"] = \"{projectName}\"",
+            "OTEL_EXPORTER_OTLP_ENDPOINT"
+        };
+
+        foreach (var snippet in requiredSnippets)
+        {
+            telemetry.Should().Contain(snippet);
+        }
+
+        if (shouldIncludeEfCore)
+        {
+            telemetry.Should().Contain(".AddEntityFrameworkCoreInstrumentation(options =>");
+            telemetry.Should().Contain("EnrichWithIDbCommand");
+            telemetry.Should().Contain("db.system");
+            telemetry.Should().Contain("db.name");
+            telemetry.Should().Contain("db.command.timeout");
+        }
+        else
+        {
+            telemetry.Should().NotContain(".AddEntityFrameworkCoreInstrumentation", "GrpcServer uses Dapper/Npgsql instead of EF Core");
+        }
+    }
+
+    [Fact]
+    public void WebClient_ShouldSendServerTelemetryToCollector()
+    {
+        var packageJson = File.ReadAllText(GetRepositoryPath("src/WebClient/package.json"));
+        var dockerfile = File.ReadAllText(GetRepositoryPath("src/WebClient/Dockerfile"));
+        var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
+        var telemetry = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/otel.mjs"));
+        var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));
+        var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
+
+        foreach (var dependency in new[]
+        {
+            "@opentelemetry/sdk-node",
+            "@opentelemetry/exporter-trace-otlp-http",
+            "@opentelemetry/exporter-metrics-otlp-http",
+            "@opentelemetry/exporter-logs-otlp-http",
+            "@opentelemetry/auto-instrumentations-node"
+        })
+        {
+            packageJson.Should().Contain(dependency);
+        }
+
+        previewServer.Should().Contain("./otel.mjs");
+        telemetry.Should().Contain("service.name");
+        telemetry.Should().Contain("WebClient-Cpnucleo");
+        telemetry.Should().Contain("cpnucleo.project");
+        telemetry.Should().Contain("webclient");
+        telemetry.Should().Contain("OTEL_EXPORTER_OTLP_ENDPOINT");
+        telemetry.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT");
+        telemetry.Should().Contain("getNodeAutoInstrumentations");
+        telemetry.Should().Contain("OTLPTraceExporter");
+        telemetry.Should().Contain("OTLPMetricExporter");
+        telemetry.Should().Contain("OTLPLogExporter");
+
+        dockerfile.Should().Contain("FROM node:22-alpine AS runtime");
+        dockerfile.Should().Contain("CMD [\"bun\", \"run\", \"preview\"]");
+
+        compose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
+        prodCompose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
+    }
+
     [Fact]
     public void IdentityApi_ShouldRegisterFastEndpointsOnce()
     {
