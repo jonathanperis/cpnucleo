@@ -87,7 +87,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
           <h2 class="mt-1 text-3xl font-semibold tracking-tight">Manage {resource.pluralLabel.toLowerCase()}</h2>
           <p class="mt-2 max-w-2xl text-sm text-muted">{resource.description}</p>
         </div>
-        <button class="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-ink/90 disabled:opacity-50" onClick$={startCreate}>New {resource.label}</button>
+        <button class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-canvas shadow-soft ring-1 ring-accent/30 transition hover:bg-accent-hover hover:text-canvas disabled:opacity-50" onClick$={startCreate}>New {resource.label}</button>
       </div>
 
       {error.value && <div class="rounded-lg border border-danger/25 bg-danger/5 px-4 py-3 text-sm text-danger">{error.value}</div>}
@@ -121,7 +121,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
           </div>
           <div class="mt-5 flex justify-end gap-2">
             <button type="button" class="rounded-lg border border-line px-4 py-2 text-sm font-medium" onClick$={cancelForm}>Cancel</button>
-            <button type="submit" disabled={saving.value} class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{saving.value ? 'Saving…' : 'Save'}</button>
+            <button type="submit" disabled={saving.value} class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-canvas shadow-sm ring-1 ring-accent/30 transition hover:bg-accent-hover disabled:opacity-50">{saving.value ? 'Saving…' : 'Save'}</button>
           </div>
         </form>
       )}

@@ -31,4 +31,13 @@ describe('public service URLs', () => {
     expect(WEBAPI_BASE_URL).not.toContain('localhost');
     expect(IDENTITY_API_BASE_URL).not.toContain('localhost');
   });
+
+  it('replaces localhost service URLs when the public app is running in the browser', async () => {
+    const { resolveBrowserServiceUrl } = await importConfigWithPublicEnvCleared();
+
+    expect(resolveBrowserServiceUrl('http://localhost:5200/api', 'https://identity-cpnucleo.jonathanperis.tech/api', 'https://cpnucleo.jonathanperis.tech'))
+      .toBe('https://identity-cpnucleo.jonathanperis.tech/api');
+    expect(resolveBrowserServiceUrl('http://localhost:5100/api', 'https://api-cpnucleo.jonathanperis.tech/api', 'http://localhost:5400'))
+      .toBe('http://localhost:5100/api');
+  });
 });
