@@ -33,9 +33,23 @@ const resolvePath = (urlPath) => {
 createServer((request, response) => {
   const startTime = process.hrtime.bigint();
   const span = startHttpRequestSpan(request);
+  let finalized = false;
+  const finalize = (record) => {
+    if (finalized) return;
+    finalized = true;
+    record();
+  };
 
-  response.on('finish', () => recordHttpRequest(request, response, startTime, span));
-  response.on('error', (error) => recordHttpError(request, error, span));
+  response.on('finish', () => finalize(() => recordHttpRequest(request, response, startTime, span)));
+  response.on('error', (error) => finalize(() => recordHttpError(request, error, span)));
+  response.on('close', () => finalize(() => {
+    if (response.writableFinished) {
+      recordHttpRequest(request, response, startTime, span);
+      return;
+    }
+
+    recordHttpError(request, new Error('response closed before finish'), span);
+  }));
 
   try {
     if (request.url === '/healthz') {
@@ -58,13 +72,13 @@ createServer((request, response) => {
     });
     createReadStream(filePath)
       .on('error', (error) => {
-        recordHttpError(request, error, span);
+        finalize(() => recordHttpError(request, error, span));
         response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
         response.end('internal server error');
       })
       .pipe(response);
   } catch (error) {
-    recordHttpError(request, error, span);
+    finalize(() => recordHttpError(request, error, span));
     response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
     response.end('internal server error');
   }

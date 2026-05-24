@@ -14,7 +14,11 @@ import { version as processVersion } from 'node:process';
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'WebClient-Cpnucleo';
 const serviceVersion = process.env.npm_package_version ?? '0.1.0';
 const deploymentEnvironment = process.env.NODE_ENV ?? process.env.ASPNETCORE_ENVIRONMENT ?? 'Production';
-const exportIntervalMillis = Number(process.env.OTEL_METRIC_EXPORT_INTERVAL ?? '30000');
+const defaultMetricExportIntervalMillis = 30_000;
+const parsedMetricExportIntervalMillis = Number(process.env.OTEL_METRIC_EXPORT_INTERVAL);
+const exportIntervalMillis = Number.isFinite(parsedMetricExportIntervalMillis) && parsedMetricExportIntervalMillis > 0
+  ? parsedMetricExportIntervalMillis
+  : defaultMetricExportIntervalMillis;
 
 const normalizeOtlpHttpEndpoint = () => {
   const explicitHttpEndpoint = process.env.OTEL_EXPORTER_OTLP_HTTP_ENDPOINT;
