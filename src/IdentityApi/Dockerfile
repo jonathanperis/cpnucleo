@@ -46,6 +46,7 @@ ENV ASPNETCORE_URLS=http://+:5010
 ENV ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
 ENV DB_CONNECTION_STRING=${DB_CONNECTION_STRING}
 EXPOSE 5010
+HEALTHCHECK --interval=10m --timeout=5s --retries=3 CMD bash -ec "exec 3<>/dev/tcp/127.0.0.1/5010; printf 'GET /healthz HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3; head -n 1 <&3 | grep -q ' 200 '" || exit 1
 
 COPY --from=publish /app/publish .
 ENTRYPOINT ["./IdentityApi"]

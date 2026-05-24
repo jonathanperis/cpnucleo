@@ -25,5 +25,5 @@ RUN bun install --frozen-lockfile --production
 COPY --from=build /app/dist ./dist
 USER node
 EXPOSE 5030
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://localhost:5030/healthz >/dev/null || exit 1
+HEALTHCHECK --interval=10m --timeout=5s --retries=3 CMD wget -qO- http://localhost:5030/healthz >/dev/null || exit 1
 CMD ["bun", "run", "preview"]
