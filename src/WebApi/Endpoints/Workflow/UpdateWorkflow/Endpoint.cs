@@ -21,7 +21,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request.");
 
         Logger.LogInformation("Checking if an workflow entity exists with Id: {WorkflowId}", request.Id);
-        var item = await dbContext.Workflows!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
+        var item = await dbContext.Workflows!.FindAsync([request.Id], cancellationToken: cancellationToken);
 
         if (item is null)
         {

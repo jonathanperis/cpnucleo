@@ -25,7 +25,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAppointm
 
         foreach (var id in request.Ids)
         {
-            var item = await dbContext.Appointments!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+            var item = await dbContext.Appointments!.FindAsync([id], cancellationToken: cancellationToken);
             if (item is null)
             {
                 await Send.NotFoundAsync(cancellation: cancellationToken);

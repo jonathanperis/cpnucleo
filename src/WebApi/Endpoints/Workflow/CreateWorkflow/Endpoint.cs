@@ -42,7 +42,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Fetching workflow by Id: {WorkflowId}", newItem.Id);
-        var createdItem = await dbContext.Workflows!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+        var createdItem = await dbContext.Workflows!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
 
         Response.Workflow = createdItem!.MapToDto();
 

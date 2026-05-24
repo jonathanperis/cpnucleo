@@ -21,7 +21,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request.");
 
         Logger.LogInformation("Checking if an assignmentType entity exists with Id: {AssignmentTypeId}", request.Id);
-        var item = await dbContext.AssignmentTypes!.FindAsync([request.Id, cancellationToken], cancellationToken: cancellationToken);
+        var item = await dbContext.AssignmentTypes!.FindAsync([request.Id], cancellationToken: cancellationToken);
 
         if (item is null)
         {
