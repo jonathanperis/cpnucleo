@@ -137,8 +137,13 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("Window = TimeSpan.FromMinutes(1)");
         program.Should().Contain("QueueLimit");
         program.Should().Contain("Status429TooManyRequests");
+        program.Should().Contain("Response.ContentType = \"text/plain\"");
+        program.Should().Contain("context.Lease.TryGetMetadata(MetadataName.RetryAfter");
         program.Should().Contain("Headers.RetryAfter");
+        program.Should().Contain("RequestServices");
+        program.Should().Contain("GetRequiredService<ILoggerFactory>()");
         program.Should().Contain("LogWarning");
+        program.Should().NotContain("LoggerFactory.Create(logging =>", "rate-limit rejection logs must use the host logging pipeline so OpenTelemetry receives them");
         useRateLimiterIndex.Should().BeGreaterThanOrEqualTo(0);
         protectedPipelineIndex.Should().BeGreaterThan(useRateLimiterIndex, "global rate limiting must run before authenticated API endpoints/handlers");
     }
