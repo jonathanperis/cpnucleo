@@ -4,7 +4,7 @@ import { ThemeToggle } from '../components/theme-toggle';
 import Page from '../routes/login/index';
 ---
 
-<html lang="en">
+<html lang="en" data-theme="dark" style="color-scheme: dark;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,7 +15,7 @@ import Page from '../routes/login/index';
           const stored = localStorage.getItem('cpnucleo-theme');
           const theme = stored === 'dark' || stored === 'light'
             ? stored
-            : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            : 'dark';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {}

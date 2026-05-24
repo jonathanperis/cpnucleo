@@ -17,7 +17,7 @@ const pathname = path.replace(/\/$/, '') || '/';
 const isActive = (href: string) => href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 ---
 
-<html lang="en">
+<html lang="en" data-theme="dark" style="color-scheme: dark;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -28,7 +28,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname ==
           const stored = localStorage.getItem('cpnucleo-theme');
           const theme = stored === 'dark' || stored === 'light'
             ? stored
-            : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            : 'dark';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {}
@@ -60,9 +60,6 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname ==
             </section>
           ))}
         </nav>
-        <div class="absolute inset-x-5 bottom-6 rounded-2xl border border-line bg-raised p-4 text-xs leading-5 text-muted">
-          Built as a clear place to review work, people, data, and releases without reading code first.
-        </div>
       </aside>
       <div class="lg:pl-72">
         <header class="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">

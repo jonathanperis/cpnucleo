@@ -6,6 +6,8 @@ public static class ConfigureOpenTelemetryOptions
 
     public static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
     {
+        var includeExceptionDetails = builder.Configuration.GetValue("OpenTelemetry:IncludeExceptionDetails", false);
+
         builder.Services.Configure<AspNetCoreTraceInstrumentationOptions>(
             builder.Configuration.GetSection("AspNetCoreInstrumentation"));
 
@@ -36,8 +38,11 @@ public static class ConfigureOpenTelemetryOptions
                         options.EnrichWithException = (activity, exception) =>
                         {
                             activity.SetTag("exception.type", exception.GetType().FullName);
-                            activity.SetTag("exception.message", exception.Message);
-                            activity.SetTag("exception.stacktrace", exception.StackTrace);
+                            if (includeExceptionDetails)
+                            {
+                                activity.SetTag("exception.message", exception.Message);
+                                activity.SetTag("exception.stacktrace", exception.StackTrace);
+                            }
                         };
                     })
                     .AddHttpClientInstrumentation(options =>
@@ -57,8 +62,11 @@ public static class ConfigureOpenTelemetryOptions
                         options.EnrichWithException = (activity, exception) =>
                         {
                             activity.SetTag("exception.type", exception.GetType().FullName);
-                            activity.SetTag("exception.message", exception.Message);
-                            activity.SetTag("exception.stacktrace", exception.StackTrace);
+                            if (includeExceptionDetails)
+                            {
+                                activity.SetTag("exception.message", exception.Message);
+                                activity.SetTag("exception.stacktrace", exception.StackTrace);
+                            }
                         };
                     })
                     .AddNpgsql()

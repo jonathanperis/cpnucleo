@@ -10,13 +10,13 @@ const applyTheme = (theme: Theme) => {
 };
 
 export const ThemeToggle = component$(() => {
-  const theme = useSignal<Theme>('light');
+  const theme = useSignal<Theme>('dark');
 
   useVisibleTask$(() => {
     const stored = window.localStorage.getItem(storageKey);
     const next = stored === 'dark' || stored === 'light'
       ? stored
-      : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      : 'dark';
     theme.value = next;
     applyTheme(next);
   });
