@@ -78,14 +78,45 @@ builder.Services
     .AddFastEndpoints()
     .SwaggerDocument(o =>
     {
+        o.EnableJWTBearerAuth = true;
+        o.ShortSchemaNames = true;
+        o.AutoTagPathSegmentIndex = 1;
+        o.TagDescriptions = tags =>
+        {
+            tags["Appointment"] = "Manage appointments and scheduling records.";
+            tags["Assignment"] = "Manage work assignments and ownership.";
+            tags["AssignmentImpediment"] = "Track impediments attached to assignments.";
+            tags["AssignmentType"] = "Manage assignment classification data.";
+            tags["Impediment"] = "Manage project and workflow blockers.";
+            tags["Organization"] = "Manage tenant organizations.";
+            tags["Project"] = "Manage projects and project metadata.";
+            tags["User"] = "Manage users exposed by the Web API.";
+            tags["UserAssignment"] = "Manage user-to-assignment relationships.";
+            tags["UserProject"] = "Manage user-to-project relationships.";
+            tags["Workflow"] = "Manage workflow definitions and transitions.";
+        };
         o.DocumentSettings = s =>
         {
+            s.DocumentName = "v1";
             s.Title = "Cpnucleo Web API";
-            s.Description = "A sample project that implements best practices when building modern .NET projects";
+            s.Description = "Authenticated REST API for Cpnucleo project, workflow, assignment, organization, and user management.";
             s.Version = "v1";
             s.SchemaSettings.SchemaNameGenerator = new SchemaNameGenerator();
+            s.PostProcess = document =>
+            {
+                document.Info.Contact = new NSwag.OpenApiContact
+                {
+                    Name = "Cpnucleo API Support",
+                    Url = "https://cpnucleo.jonathanperis.tech"
+                };
+                document.Info.License = new NSwag.OpenApiLicense
+                {
+                    Name = "Proprietary",
+                    Url = "https://cpnucleo.jonathanperis.tech"
+                };
+                document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
+            };
         };
-        o.AutoTagPathSegmentIndex = 0; // Disable the auto-tagging by setting the AutoTagPathSegmentIndex property to 0
     });
 
 builder.Services.AddApplication();
@@ -108,9 +139,6 @@ app.UseCors("CpnucleoWebClient")
 
 app.MapGet("/", () => "Hello World!");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerGen();
-}
+app.UseSwaggerGen();
 
 app.Run();

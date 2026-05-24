@@ -77,13 +77,36 @@ builder.Services
     .AddFastEndpoints()
     .SwaggerDocument(o =>
     {
+        o.EnableJWTBearerAuth = true;
+        o.ShortSchemaNames = true;
+        o.AutoTagPathSegmentIndex = 1;
+        o.TagDescriptions = tags =>
+        {
+            tags["Login"] = "Authenticate users and issue Cpnucleo access tokens.";
+            tags["Refresh"] = "Refresh authenticated sessions and issued tokens.";
+            tags["Register"] = "Register new Cpnucleo users.";
+        };
         o.DocumentSettings = s =>
         {
+            s.DocumentName = "v1";
             s.Title = "Cpnucleo Identity API";
-            s.Description = "API for managing user authentication and authorization.";
+            s.Description = "Authentication and authorization API for Cpnucleo users, tokens, and sessions.";
             s.Version = "v1";
+            s.PostProcess = document =>
+            {
+                document.Info.Contact = new NSwag.OpenApiContact
+                {
+                    Name = "Cpnucleo Identity Support",
+                    Url = "https://cpnucleo.jonathanperis.tech"
+                };
+                document.Info.License = new NSwag.OpenApiLicense
+                {
+                    Name = "Proprietary",
+                    Url = "https://cpnucleo.jonathanperis.tech"
+                };
+                document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
+            };
         };
-        o.AutoTagPathSegmentIndex = 0; // Disable the auto-tagging by setting the AutoTagPathSegmentIndex property to 0
     });
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -107,9 +130,6 @@ app.UseCors("CpnucleoWebClient")
 
 app.MapGet("/", () => "Hello World!");
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerGen();
-}
+app.UseSwaggerGen();
 
 app.Run();

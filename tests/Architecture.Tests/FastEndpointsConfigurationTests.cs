@@ -118,6 +118,54 @@ public class FastEndpointsConfigurationTests
     }
 
     [Theory]
+    [InlineData("src/WebApi/Program.cs")]
+    [InlineData("src/IdentityApi/Program.cs")]
+    [InlineData("src/GrpcServer/Program.cs")]
+    public void ApiHosts_ShouldEnforceGlobalRateLimiting(string programPath)
+    {
+        var program = StripLineComments(File.ReadAllText(GetRepositoryPath(programPath)));
+        var useRateLimiterIndex = program.IndexOf("UseRateLimiter()", StringComparison.Ordinal);
+        var protectedPipelineIndex = programPath.Contains("GrpcServer", StringComparison.Ordinal)
+            ? program.IndexOf("MapHandlers(h =>", StringComparison.Ordinal)
+            : program.IndexOf("UseAuthentication()", StringComparison.Ordinal);
+
+        program.Should().Contain("AddRateLimiter(options =>");
+        program.Should().Contain("options.GlobalLimiter");
+        program.Should().Contain("PartitionedRateLimiter.Create<HttpContext, string>");
+        program.Should().Contain("RateLimitPartition.GetFixedWindowLimiter");
+        program.Should().Contain("PermitLimit");
+        program.Should().Contain("Window = TimeSpan.FromMinutes(1)");
+        program.Should().Contain("QueueLimit");
+        program.Should().Contain("Status429TooManyRequests");
+        program.Should().Contain("Headers.RetryAfter");
+        program.Should().Contain("LogWarning");
+        useRateLimiterIndex.Should().BeGreaterThanOrEqualTo(0);
+        protectedPipelineIndex.Should().BeGreaterThan(useRateLimiterIndex, "global rate limiting must run before authenticated API endpoints/handlers");
+    }
+
+    [Theory]
+    [InlineData("src/WebApi/Program.cs", "Cpnucleo Web API")]
+    [InlineData("src/IdentityApi/Program.cs", "Cpnucleo Identity API")]
+    public void BrowserFacingApis_ShouldPublishRichSwaggerDocumentation(string programPath, string title)
+    {
+        var program = File.ReadAllText(GetRepositoryPath(programPath));
+
+        program.Should().Contain(".SwaggerDocument(o =>");
+        program.Should().Contain("o.EnableJWTBearerAuth = true");
+        program.Should().Contain("o.ShortSchemaNames = true");
+        program.Should().Contain("o.TagDescriptions");
+        program.Should().Contain($"s.Title = \"{title}\"");
+        program.Should().Contain("s.DocumentName = \"v1\"");
+        program.Should().Contain("s.Description =");
+        program.Should().Contain("s.Version = \"v1\"");
+        program.Should().Contain("s.PostProcess = document =>");
+        program.Should().Contain("document.Info.Contact");
+        program.Should().Contain("document.Info.License");
+        program.Should().Contain("document.Info.TermsOfService");
+        program.Should().Contain("UseSwaggerGen();");
+    }
+
+    [Theory]
     [InlineData("src/IdentityApi/appsettings.json")]
     [InlineData("src/IdentityApi/appsettings.Development.json")]
     [InlineData("src/WebApi/appsettings.json")]
@@ -169,9 +217,14 @@ public class FastEndpointsConfigurationTests
             "http.response.content_type",
             "EnrichWithException",
             "exception.type",
+            "exception.message",
+            "exception.stacktrace",
+            "http.request.method",
             ".AddHttpClientInstrumentation(options =>",
+            "SetSampler(new AlwaysOnSampler())",
             ".AddRuntimeInstrumentation()",
             ".AddProcessInstrumentation()",
+            "Microsoft.AspNetCore.RateLimiting",
             "Microsoft.AspNetCore.Hosting",
             "Microsoft.AspNetCore.Server.Kestrel",
             "System.Net.Http",
@@ -180,6 +233,7 @@ public class FastEndpointsConfigurationTests
             ".AddNpgsql()",
             ".AddNpgsqlInstrumentation",
             "Logging.AddOpenTelemetry",
+            "Logging.AddConsole()",
             "IncludeFormattedMessage",
             "IncludeScopes",
             "ParseStateValues",
@@ -252,6 +306,10 @@ public class FastEndpointsConfigurationTests
 
         compose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
         prodCompose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
+        prodCompose.Should().Contain("PUBLIC_WEBAPI_BASE_URL: https://${CPNUCLEO_API_HOST:?Set CPNUCLEO_API_HOST}/api");
+        prodCompose.Should().Contain("PUBLIC_IDENTITY_API_BASE_URL: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}/api");
+        prodCompose.Should().Contain("PUBLIC_IDENTITY_API_ISSUER: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}");
+        prodCompose.Should().NotContain("PUBLIC_IDENTITY_API_BASE_URL: http://localhost:5200");
     }
 
     [Fact]
@@ -324,6 +382,15 @@ public class FastEndpointsConfigurationTests
         directory.Should().NotBeNull("the test should run from inside the cpnucleo repository output tree");
 
         return Path.Combine(directory!.FullName, relativePath);
+    }
+
+    private static string StripLineComments(string value)
+    {
+        return string.Join(Environment.NewLine, value
+            .Split('\n')
+            .Select(line => line.Contains("//", StringComparison.Ordinal)
+                ? line[..line.IndexOf("//", StringComparison.Ordinal)]
+                : line));
     }
 
     private static int CountInvocationExpressions(string value, string methodName)
