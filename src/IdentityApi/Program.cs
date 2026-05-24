@@ -16,8 +16,8 @@ builder.Services
     {
         o.ExpireAt = DateTime.UtcNow.AddDays(1);
         o.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing.");
-        o.Issuer = "https://identity.peris-studio.dev";
-        o.Audience = "https://peris-studio.dev";
+        o.Issuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing.");
+        o.Audience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing.");
     });
 
 builder.Services.AddRateLimiter(options =>

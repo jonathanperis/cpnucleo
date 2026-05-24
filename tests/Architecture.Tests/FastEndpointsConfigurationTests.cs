@@ -7,7 +7,17 @@ using System.Xml.Linq;
 public class FastEndpointsConfigurationTests
 {
     private static readonly string[] HttpVerbRouteMethods = ["Get", "Post", "Put", "Delete", "Patch"];
-    private static readonly string[] AuthenticationPackageNames = ["FastEndpoints.Security", "Microsoft.AspnetCore.Authentication.JwtBearer"];
+    private static readonly string[] AuthenticationPackageNames = ["FastEndpoints.Security", "Microsoft.AspNetCore.Authentication.JwtBearer"];
+    private static readonly string[] WebApiJwtValidationSnippets =
+    [
+        "AddAuthentication(JwtBearerDefaults.AuthenticationScheme)",
+        "ValidateIssuerSigningKey = true",
+        "ValidateLifetime = true",
+        "ValidateIssuer = true",
+        "ValidateAudience = true",
+        "ValidIssuer = builder.Configuration[\"Jwt:Issuer\"]",
+        "ValidAudience = builder.Configuration[\"Jwt:Audience\"]"
+    ];
 
     [Fact]
     public void FastEndpointsPackageVersions_ShouldBeAligned()
@@ -38,7 +48,7 @@ public class FastEndpointsConfigurationTests
     }
 
     [Fact]
-    public void AuthenticationPackages_ShouldStayInIdentityApi()
+    public void AuthenticationPackages_ShouldStayInIdentityAndWebApi()
     {
         var repositoryRoot = GetRepositoryPath(".");
         var projectsWithAuthenticationPackages = Directory
@@ -53,7 +63,37 @@ public class FastEndpointsConfigurationTests
             .Distinct()
             .ToArray();
 
-        projectsWithAuthenticationPackages.Should().Equal("src/IdentityApi/IdentityApi.csproj");
+        projectsWithAuthenticationPackages.Should().BeEquivalentTo(
+        [
+            "src/IdentityApi/IdentityApi.csproj",
+            "src/WebApi/WebApi.csproj"
+        ]);
+    }
+
+    [Fact]
+    public void WebApi_ShouldValidateIdentityApiBearerTokens()
+    {
+        var program = File.ReadAllText(GetRepositoryPath("src/WebApi/Program.cs"));
+
+        foreach (var snippet in WebApiJwtValidationSnippets)
+        {
+            program.Should().Contain(snippet);
+        }
+
+        program.Should().Contain("UseAuthentication()");
+        program.Should().Contain("UseAuthorization()");
+    }
+
+    [Fact]
+    public void WebApiEndpoints_ShouldRequireAuthorizationByDefault()
+    {
+        var endpointFiles = Directory.GetFiles(GetRepositoryPath("src/WebApi/Endpoints"), "Endpoint.cs", SearchOption.AllDirectories);
+        var anonymousEndpoints = endpointFiles
+            .Where(path => File.ReadAllText(path).Contains("AllowAnonymous();", StringComparison.Ordinal))
+            .Select(path => Path.GetRelativePath(GetRepositoryPath("."), path))
+            .ToArray();
+
+        anonymousEndpoints.Should().BeEmpty("WebApi endpoints must require IdentityApi-issued bearer tokens");
     }
 
     [Fact]

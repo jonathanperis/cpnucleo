@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Get("/impediment");
         Description(x => x.WithTags("Impediments"));
-        AllowAnonymous();
 
         Summary(s =>
         {
