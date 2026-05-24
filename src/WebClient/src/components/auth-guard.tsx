@@ -1,7 +1,8 @@
 import { component$, Slot, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 import { clearStoredToken, getStoredToken } from '~/lib/api/http-client';
+import { getLoginPath, getLoginRedirectTarget } from '~/lib/auth-navigation';
 
-const loginPath = '/login';
+const loginPath = getLoginPath();
 
 export const AuthGuard = component$(() => {
   const checked = useSignal(false);
@@ -12,9 +13,7 @@ export const AuthGuard = component$(() => {
     authenticated.value = Boolean(token);
     checked.value = true;
     if (!token) {
-      const current = `${window.location.pathname}${window.location.search}`;
-      const returnUrl = current && current !== '/' ? `?returnUrl=${encodeURIComponent(current)}` : '';
-      window.location.replace(`${loginPath}${returnUrl}`);
+      window.location.replace(getLoginRedirectTarget(window.location));
     }
   });
 

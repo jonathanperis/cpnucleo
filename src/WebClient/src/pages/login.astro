@@ -1,8 +1,61 @@
 ---
-import AppLayout from '../layouts/AppLayout.astro';
+import '../global.css';
+import { ThemeToggle } from '../components/theme-toggle';
 import Page from '../routes/login/index';
 ---
 
-<AppLayout path="/login">
-  <Page />
-</AppLayout>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in · CPnucleo</title>
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('cpnucleo-theme');
+          const theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {}
+      })();
+    </script>
+  </head>
+  <body>
+    <main class="min-h-screen overflow-hidden bg-canvas text-ink">
+      <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,oklch(var(--accent)/0.14),transparent_34%),radial-gradient(circle_at_bottom_right,oklch(var(--success)/0.12),transparent_28%)]"></div>
+      <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 px-6 py-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
+        <section class="flex flex-col justify-between py-4 lg:py-8">
+          <div class="flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-ink text-sm font-bold text-canvas shadow-soft">CP</span>
+              <span>
+                <span class="block text-base font-semibold">CPnucleo</span>
+                <span class="block text-xs text-muted">Operations workspace</span>
+              </span>
+            </a>
+            <ThemeToggle />
+          </div>
+
+          <div class="max-w-2xl py-12 lg:py-0">
+            <p class="mb-4 inline-flex rounded-full border border-line bg-surface px-3 py-1 text-sm font-semibold text-accent shadow-sm">Identity-first access</p>
+            <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">Sign in before entering the dashboard.</h1>
+            <p class="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg">A standalone login keeps the project dashboard private until IdentityApi issues a bearer token for WebApi operations.</p>
+            <div class="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
+              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">12</p><p class="mt-1 text-sm text-muted">CRUD surfaces</p></div>
+              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">JWT</p><p class="mt-1 text-sm text-muted">Session bearer</p></div>
+              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">REST</p><p class="mt-1 text-sm text-muted">WebApi access</p></div>
+            </div>
+          </div>
+
+          <p class="hidden text-sm text-muted lg:block">Protected dashboard · Light and dark mode ready</p>
+        </section>
+
+        <section class="flex items-center justify-center pb-8 lg:pb-0">
+          <Page />
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
