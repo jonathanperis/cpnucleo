@@ -1,5 +1,6 @@
 import type { ApiErrorShape } from './types';
 import { IDENTITY_API_ISSUER } from '../config';
+import { getLoginRedirectTarget } from '../auth-navigation';
 
 export class ApiError extends Error implements ApiErrorShape {
   status: number;
@@ -55,9 +56,8 @@ export const clearStoredToken = (): void => {
 
 const redirectToLoginForExpiredSession = () => {
   if (typeof window === 'undefined') return;
-  if (window.location.pathname === '/login') return;
-  const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-  window.location.assign(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
+  if (window.location.pathname === '/login' || window.location.pathname === '/login/') return;
+  window.location.assign(getLoginRedirectTarget(window.location));
 };
 
 const errorMessage = (status: number, body: unknown): string => {

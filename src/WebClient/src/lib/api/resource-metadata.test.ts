@@ -10,6 +10,10 @@ describe('resource metadata', () => {
     expect(resourceMetadata.every((resource) => resource.listPath.startsWith('/') && resource.itemPath.startsWith('/'))).toBe(true);
   });
 
+  it('uses canonical trailing-slash static page routes', () => {
+    expect(resourceMetadata.every((resource) => resource.routePath.startsWith('/') && resource.routePath.endsWith('/'))).toBe(true);
+  });
+
   it('keeps passwords out of user table/form metadata', () => {
     const users = resourceMetadata.find((resource) => resource.key === 'users');
     expect(users).toBeDefined();
