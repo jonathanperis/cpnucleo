@@ -36,7 +36,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="FastEndpoints" Version="8.1.0" />
-		<PackageReference Include="FastEndpoints.ClientGen.Kiota" Version="8.1.0" />
 		<PackageReference Include="FastEndpoints.Generator" Version="8.1.0">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
@@ -47,7 +46,6 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-        <PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.1" />
         <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.1" />
 	</ItemGroup>

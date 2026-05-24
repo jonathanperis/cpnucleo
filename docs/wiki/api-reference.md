@@ -95,13 +95,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 - Queue limit: 10 additional requests
 - Returns `429 Too Many Requests` with `Retry-After: 60` header when exceeded
 
-### API Client Generation
-
-The WebApi generates downloadable API clients via Kiota:
-
-- **C# client**: Available at `/cs-client`
-- **TypeScript client**: Generated during build
-
 ---
 
 ## IdentityApi -- Authentication

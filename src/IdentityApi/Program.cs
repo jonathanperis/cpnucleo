@@ -92,36 +92,4 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerGen();
 }
 
-app.MapApiClientEndpoint("/cs-client", c =>
-    {
-        c.SwaggerDocumentName = "v1";
-        c.Language = GenerationLanguage.CSharp;
-        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
-        c.ClientClassName = "IdentityApiClient";
-    },
-    o =>
-    {
-        o.CacheOutput(p => p.Expire(TimeSpan.FromDays(365))); //cache the zip
-        o.ExcludeFromDescription();
-    });
-
-await app.GenerateApiClientsAndExitAsync(
-    c =>
-    {
-        c.SwaggerDocumentName = "v1"; //must match doc name above
-        c.Language = GenerationLanguage.CSharp;
-        c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "CSharp");
-        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
-        c.ClientClassName = "IdentityApiClient";
-        c.CreateZipArchive = true; //if you'd like a zip file as well
-    },
-    c =>
-    {
-        c.SwaggerDocumentName = "v1";
-        c.Language = GenerationLanguage.TypeScript;
-        c.OutputPath = Path.Combine(app.Environment.WebRootPath, "ApiClients", "Typescript");
-        c.ClientNamespaceName = "Cpnucleo.IdentityApi.Client";
-        c.ClientClassName = "cpnucleo-identityapi-client";
-    });
-
 app.Run();
