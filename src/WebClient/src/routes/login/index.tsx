@@ -1,6 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { login } from '~/lib/api/identity-client';
 import { getPostLoginRedirectTarget } from '~/lib/auth-navigation';
+import { DEMO_LOGIN, DEMO_PASSWORD, getLoginFormElement } from './login-form';
 
 export default component$(() => {
   const loading = useSignal(false);
@@ -14,8 +15,8 @@ export default component$(() => {
       <p class="mt-3 text-sm leading-6 text-muted">Enter your Cpnucleo credentials to open the dashboard workspace.</p>
       {error.value && <div role="alert" aria-live="assertive" aria-atomic="true" class="mt-5 rounded-xl border border-danger/25 bg-danger/5 px-4 py-3 text-sm text-danger">{error.value}</div>}
       {success.value && <div role="status" aria-live="polite" aria-atomic="true" class="mt-5 rounded-xl border border-success/25 bg-success/5 px-4 py-3 text-sm text-success">Login successful. Opening the dashboard…</div>}
-      <form class="mt-6 space-y-5" preventdefault:submit onSubmit$={async (event) => {
-        const form = event.currentTarget as HTMLFormElement;
+      <form class="mt-6 space-y-5" preventdefault:submit onSubmit$={async (event, currentTarget) => {
+        const form = getLoginFormElement(event, currentTarget);
         const data = new FormData(form);
         const loginName = String(data.get('login') ?? '');
         const password = String(data.get('password') ?? '');
@@ -24,7 +25,6 @@ export default component$(() => {
         try {
           await login(loginName, password);
           success.value = true;
-          form.reset();
           const params = new URLSearchParams(window.location.search);
           const returnUrl = params.get('returnUrl');
           window.location.assign(getPostLoginRedirectTarget(returnUrl));
@@ -34,11 +34,11 @@ export default component$(() => {
       }}>
         <label class="block">
           <span class="mb-2 block text-sm font-semibold">Login</span>
-          <input name="login" autocomplete="username" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" placeholder="your.login" />
+          <input name="login" autocomplete="username" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" value={DEMO_LOGIN} />
         </label>
         <label class="block">
           <span class="mb-2 block text-sm font-semibold">Password</span>
-          <input name="password" type="password" autocomplete="current-password" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" placeholder="••••••••" />
+          <input name="password" type="password" autocomplete="current-password" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" value={DEMO_PASSWORD} />
         </label>
         <button disabled={loading.value} class="w-full rounded-xl bg-ink px-4 py-3 font-semibold text-canvas shadow-soft transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{loading.value ? 'Signing in…' : 'Enter dashboard'}</button>
       </form>
