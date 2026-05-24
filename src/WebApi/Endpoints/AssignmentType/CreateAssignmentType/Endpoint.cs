@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Post("/assignmentType");
         Description(x => x.WithTags("AssignmentTypes"));
-        AllowAnonymous();
 
         Summary(s =>
         {

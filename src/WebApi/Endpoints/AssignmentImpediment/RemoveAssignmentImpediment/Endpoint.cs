@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignme
     {
         Delete("/assignmentImpediment");
         Description(x => x.WithTags("AssignmentImpediments"));
-        AllowAnonymous();
 
         Summary(s =>
         {

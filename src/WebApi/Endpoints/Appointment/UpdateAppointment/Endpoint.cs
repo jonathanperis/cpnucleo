@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Patch("/appointment");
         Description(x => x.WithTags("Appointments"));
-        AllowAnonymous();
 
         Summary(s =>
         {

@@ -7,7 +7,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     {
         Get("/organization");
         Description(x => x.WithTags("Organizations"));
-        AllowAnonymous();
 
         Summary(s => {
             s.Summary = "Retrieve an organization by Id";

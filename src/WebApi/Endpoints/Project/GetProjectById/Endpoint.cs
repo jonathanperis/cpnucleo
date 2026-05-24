@@ -7,7 +7,6 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
     {
         Get("/project");
         Description(x => x.WithTags("Projects"));
-        AllowAnonymous();
 
         Summary(s => {
             s.Summary = "Retrieve an project by Id";

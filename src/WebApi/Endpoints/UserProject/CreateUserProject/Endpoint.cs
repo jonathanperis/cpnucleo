@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Post("/userProject");
         Description(x => x.WithTags("UserProjects"));
-        AllowAnonymous();
 
         Summary(s =>
         {

@@ -7,6 +7,25 @@ var logger = LoggerFactory.Create(logging =>
 
 builder.ConfigureOpenTelemetry();
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))),
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing."),
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing."),
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
@@ -61,8 +80,9 @@ app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
 
-app.
-    UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
+app.UseAuthentication()
+    .UseAuthorization()
+    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();
 

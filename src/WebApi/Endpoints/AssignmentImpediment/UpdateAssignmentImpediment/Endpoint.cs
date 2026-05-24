@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Patch("/assignmentImpediment");
         Description(x => x.WithTags("AssignmentImpediments"));
-        AllowAnonymous();
 
         Summary(s =>
         {

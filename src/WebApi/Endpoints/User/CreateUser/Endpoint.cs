@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
     {
         Post("/user");
         Description(x => x.WithTags("Users"));
-        AllowAnonymous();
 
         Summary(s =>
         {

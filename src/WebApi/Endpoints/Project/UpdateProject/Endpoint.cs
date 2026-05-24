@@ -7,7 +7,6 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
     {
         Patch("/project");
         Description(x => x.WithTags("Projects"));
-        AllowAnonymous();
 
         Summary(s =>
         {
