@@ -7,9 +7,26 @@ var logger = LoggerFactory.Create(logging =>
 
 builder.ConfigureOpenTelemetry();
 
+var allowedCorsOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() is { Length: > 0 } configuredOrigins
+        ? configuredOrigins
+        : ["https://cpnucleo.jonathanperis.tech"];
+
 builder.Services
     .AddAuthenticationJwtBearer(s => s.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))
     .AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CpnucleoWebClient", policy =>
+    {
+        policy
+            .WithOrigins(allowedCorsOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services
     .Configure<JwtCreationOptions>(o =>
@@ -79,7 +96,8 @@ app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
 
-app.UseAuthentication()
+app.UseCors("CpnucleoWebClient")
+    .UseAuthentication()
     .UseAuthorization()
     .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
         .UseMiddleware<ElapsedTimeMiddleware>()
