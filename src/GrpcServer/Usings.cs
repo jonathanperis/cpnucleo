@@ -35,6 +35,7 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Server.Kestrel.Core;
 global using Microsoft.IdentityModel.Tokens;
+global using System.Threading.RateLimiting;
 global using OpenTelemetry.Instrumentation.AspNetCore;
 global using OpenTelemetry.Logs;
 global using OpenTelemetry.Metrics;
