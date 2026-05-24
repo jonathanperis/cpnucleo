@@ -255,6 +255,31 @@ public class FastEndpointsConfigurationTests
     }
 
     [Fact]
+    public void ApplicationContainers_ShouldCheckHealthzEveryTenMinutes()
+    {
+        var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));
+        var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
+        var apiDockerfile = File.ReadAllText(GetRepositoryPath("src/WebApi/Dockerfile"));
+        var identityDockerfile = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Dockerfile"));
+        var grpcDockerfile = File.ReadAllText(GetRepositoryPath("src/GrpcServer/Dockerfile"));
+        var webClientDockerfile = File.ReadAllText(GetRepositoryPath("src/WebClient/Dockerfile"));
+
+        compose.Should().Contain("interval: 10m");
+        prodCompose.Should().Contain("interval: 10m");
+        compose.Should().Contain("/healthz");
+        prodCompose.Should().Contain("/healthz");
+
+        apiDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        apiDockerfile.Should().Contain("GET /healthz HTTP/1.1");
+        identityDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        identityDockerfile.Should().Contain("GET /healthz HTTP/1.1");
+        grpcDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        grpcDockerfile.Should().Contain("GET /healthz HTTP/1.1");
+        webClientDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        webClientDockerfile.Should().Contain("http://localhost:5030/healthz");
+    }
+
+    [Fact]
     public void IdentityApi_ShouldRegisterFastEndpointsOnce()
     {
         var program = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
