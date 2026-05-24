@@ -1,10 +1,5 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
-var logger = LoggerFactory.Create(logging =>
-{
-    logging.AddConsole();
-}).CreateLogger<Program>();
-
 builder.ConfigureOpenTelemetry();
 
 var allowedCorsOrigins = builder.Configuration
@@ -59,13 +54,19 @@ builder.Services.AddRateLimiter(options =>
 
     options.OnRejected = async (context, cancellationToken) =>
     {
-        // Custom rejection handling logic
         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-        context.HttpContext.Response.Headers.RetryAfter = "60";
+        context.HttpContext.Response.ContentType = "text/plain";
+
+        var retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
+            ? Math.Ceiling(retryAfter.TotalSeconds).ToString()
+            : "60";
+        context.HttpContext.Response.Headers.RetryAfter = retryAfterSeconds;
 
         await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken);
 
-        // Optional logging
+        var logger = context.HttpContext.RequestServices
+            .GetRequiredService<ILoggerFactory>()
+            .CreateLogger("WebApi.RateLimiting");
         logger.LogWarning("Rate limit exceeded for IP: {IpAddress}",
             context.HttpContext.Connection.RemoteIpAddress);
     };
