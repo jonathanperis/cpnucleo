@@ -13,21 +13,60 @@ export default component$(() => {
     counts.value = next;
   });
 
+  const featured = resourceMetadata.slice(0, 6);
+
   return (
     <div class="space-y-8">
-      <section class="rounded-2xl border border-line bg-surface p-6 shadow-soft">
-        <p class="text-sm font-medium text-accent">Astro + Qwik WebClient</p>
-        <h2 class="mt-2 text-3xl font-semibold tracking-tight">Run CPnucleo operations from one clean workspace.</h2>
-        <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">Manage organizations, projects, assignments, workflows, people, appointments, and join records through the WebApi CRUD surface.</p>
-        <div class="mt-5 flex flex-wrap gap-2">
-          <a class="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-white" href="/projects">Open projects</a>
-          <a class="rounded-lg border border-line px-4 py-2 text-sm font-semibold" href="/api-health">Check API health</a>
+      <section class="overflow-hidden rounded-[2rem] border border-line bg-surface shadow-soft">
+        <div class="grid gap-6 p-6 lg:grid-cols-[1.15fr_0.85fr] lg:p-8">
+          <div>
+            <p class="inline-flex rounded-full border border-line bg-raised px-3 py-1 text-sm font-semibold text-accent">Astro + Qwik WebClient</p>
+            <h2 class="mt-5 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">Run CPnucleo operations from one polished workspace.</h2>
+            <p class="mt-4 max-w-2xl text-base leading-7 text-muted">Manage organizations, projects, assignments, workflows, people, appointments, and configuration records through a clean WebApi CRUD surface.</p>
+            <div class="mt-7 flex flex-wrap gap-3">
+              <a class="rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas shadow-soft transition hover:opacity-90" href="/projects">Open projects</a>
+              <a class="rounded-xl border border-line bg-raised px-5 py-3 text-sm font-semibold transition hover:border-accent/40 hover:text-accent" href="/api-health">Check API health</a>
+            </div>
+          </div>
+          <div class="rounded-[1.5rem] border border-line bg-raised p-5">
+            <div class="flex items-center justify-between border-b border-line pb-4">
+              <div>
+                <p class="text-sm font-semibold">Workspace pulse</p>
+                <p class="text-xs text-muted">Live counts after login</p>
+              </div>
+              <span class="rounded-full bg-success/10 px-3 py-1 text-xs font-semibold text-success">Online</span>
+            </div>
+            <div class="mt-4 grid gap-3">
+              {featured.slice(0, 4).map((resource) => (
+                <a href={resource.routePath} class="flex items-center justify-between rounded-xl border border-line bg-surface px-4 py-3 transition hover:border-accent/40">
+                  <span class="text-sm font-semibold">{resource.pluralLabel}</span>
+                  <span class="rounded-full bg-raised px-2.5 py-1 text-xs text-muted">{counts.value[resource.key] ?? '—'}</span>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
+
       <section>
-        <h3 class="mb-3 text-lg font-semibold">Resource overview</h3>
-        <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {resourceMetadata.map((resource) => <a key={resource.key} href={resource.routePath} class="rounded-xl border border-line bg-surface p-4 shadow-sm hover:shadow-soft"><div class="flex items-center justify-between"><span class="font-semibold">{resource.pluralLabel}</span><span class="rounded-full bg-raised px-2 py-1 text-xs text-muted">{counts.value[resource.key] ?? '—'}</span></div><p class="mt-2 text-sm text-muted">{resource.description}</p></a>)}
+        <div class="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-semibold text-accent">Resources</p>
+            <h3 class="mt-1 text-2xl font-semibold tracking-tight">Operational modules</h3>
+          </div>
+          <span class="hidden text-sm text-muted sm:inline">Light by default · dark-ready</span>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {resourceMetadata.map((resource) => (
+            <a key={resource.key} href={resource.routePath} class="group rounded-2xl border border-line bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-soft">
+              <div class="flex items-start justify-between gap-3">
+                <span class="font-semibold">{resource.pluralLabel}</span>
+                <span class="rounded-full bg-raised px-2.5 py-1 text-xs text-muted">{counts.value[resource.key] ?? '—'}</span>
+              </div>
+              <p class="mt-3 text-sm leading-6 text-muted">{resource.description}</p>
+              <span class="mt-4 inline-flex text-sm font-semibold text-accent opacity-80 transition group-hover:opacity-100">Open module →</span>
+            </a>
+          ))}
         </div>
       </section>
     </div>
