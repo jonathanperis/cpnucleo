@@ -14,11 +14,13 @@ public static class ConfigureOpenTelemetryOptions
             .WithTracing(tracing =>
             {
                 tracing
+                    .SetSampler(new AlwaysOnSampler())
                     .AddAspNetCoreInstrumentation(options =>
                     {
                         options.RecordException = true;
                         options.EnrichWithHttpRequest = (activity, request) =>
                         {
+                            activity.SetTag("http.request.method", request.Method);
                             activity.SetTag("http.request.host", request.Host.Value);
                             activity.SetTag("http.request.scheme", request.Scheme);
                             activity.SetTag("http.request.protocol", request.Protocol);
@@ -34,6 +36,8 @@ public static class ConfigureOpenTelemetryOptions
                         options.EnrichWithException = (activity, exception) =>
                         {
                             activity.SetTag("exception.type", exception.GetType().FullName);
+                            activity.SetTag("exception.message", exception.Message);
+                            activity.SetTag("exception.stacktrace", exception.StackTrace);
                         };
                     })
                     .AddHttpClientInstrumentation(options =>
@@ -41,6 +45,7 @@ public static class ConfigureOpenTelemetryOptions
                         options.RecordException = true;
                         options.EnrichWithHttpRequestMessage = (activity, request) =>
                         {
+                            activity.SetTag("http.request.method", request.Method.Method);
                             activity.SetTag("http.request.host", request.RequestUri?.Host);
                             activity.SetTag("http.request.path", request.RequestUri?.AbsolutePath);
                         };
@@ -52,6 +57,8 @@ public static class ConfigureOpenTelemetryOptions
                         options.EnrichWithException = (activity, exception) =>
                         {
                             activity.SetTag("exception.type", exception.GetType().FullName);
+                            activity.SetTag("exception.message", exception.Message);
+                            activity.SetTag("exception.stacktrace", exception.StackTrace);
                         };
                     })
                     .AddEntityFrameworkCoreInstrumentation(options =>
@@ -74,6 +81,7 @@ public static class ConfigureOpenTelemetryOptions
                     .AddRuntimeInstrumentation()
                     .AddProcessInstrumentation()
                     .AddMeter(
+                        "Microsoft.AspNetCore.RateLimiting",
                         "Microsoft.AspNetCore.Hosting",
                         "Microsoft.AspNetCore.Server.Kestrel",
                         "System.Net.Http",
@@ -83,6 +91,7 @@ public static class ConfigureOpenTelemetryOptions
                     .AddOtlpExporter(options => ConfigureOtlpExporter(builder, options));
             });
 
+        builder.Logging.AddConsole();
         builder.Logging.AddOpenTelemetry(options =>
         {
             var loggingSection = builder.Configuration.GetSection("Logging:OpenTelemetry");
@@ -96,11 +105,6 @@ public static class ConfigureOpenTelemetryOptions
 
             options.AddOtlpExporter(otlpOptions => ConfigureOtlpExporter(builder, otlpOptions));
         });
-
-        if (builder.Environment.IsDevelopment())
-        {
-            builder.Logging.AddConsole();
-        }
 
         return builder;
     }
