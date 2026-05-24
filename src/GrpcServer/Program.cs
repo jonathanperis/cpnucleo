@@ -2,22 +2,6 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.ConfigureOpenTelemetry();
 
-// builder.Services.AddAuthorization();
-// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//     .AddJwtBearer(options =>
-//     {
-//         options.TokenValidationParameters = new TokenValidationParameters
-//         {
-//             IssuerSigningKey = new SymmetricSecurityKey("ForTheLoveOfGodStoreAndLoadThisSecurely"u8.ToArray()),
-//             ValidIssuer = "https://identity.peris-studio.dev",
-//             ValidAudience = "https://peris-studio.dev",
-//             ValidateIssuerSigningKey = true,
-//             ValidateLifetime = true,
-//             ValidateIssuer = true,
-//             ValidateAudience = true
-//         };
-//     });
-
 // builder.Services.AddRateLimiter(options =>
 // {
 //     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
