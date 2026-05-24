@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Local Hermes agent workspace
+.hermes/
+
 # User-specific files
 *.rsuser
 *.suo

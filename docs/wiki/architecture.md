@@ -129,7 +129,6 @@ Implements data access with two strategies side by side:
 - FastEndpoints for REST API with Swagger/OpenAPI documentation
 - Uses EF Core via `IApplicationDbContext` for data access
 - Rate limiting: 50 requests/minute per IP with fixed-window partitioning
-- Kiota-based API client generation (C# and TypeScript)
 - Middleware: `ElapsedTimeMiddleware`, `ErrorHandlingMiddleware`
 - Riok.Mapperly for compile-time DTO mapping
 
