@@ -14,7 +14,6 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\Application\Application.csproj" />
-    <Project Path="src/WebApi.Client/WebApi.Client.csproj" />
     <Project Path="src\Domain\Domain.csproj" />
     <Project Path="src\GrpcServer.Contracts\GrpcServer.Contracts.csproj" />
     <Project Path="src\GrpcServer\GrpcServer.csproj" />

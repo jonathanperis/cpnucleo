@@ -18,7 +18,6 @@
 | FastEndpoints.Messaging.Remote | 8.1.0 | gRPC-style remote command handling (GrpcServer) |
 | FastEndpoints.Messaging.Core | 8.1.0 | Shared command/result contracts (GrpcServer.Contracts) |
 | FastEndpoints.Generator | 8.1.0 | Source generator for endpoint discovery |
-| FastEndpoints.ClientGen.Kiota | 8.1.0 | API client generation (C#, TypeScript) |
 | FastEndpoints.Testing | 7.2.0 | Integration test support |
 
 ## Data Access

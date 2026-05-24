@@ -125,7 +125,6 @@ src/
   GrpcServer/                  gRPC command server (FastEndpoints.Messaging + Dapper)
   GrpcServer.Contracts/        Shared command/result DTOs
   IdentityApi/                 JWT authentication service
-  WebApi.Client/               Auto-generated Kiota API client
   WebClient/                   Astro + Qwik + Tailwind frontend
 
 tests/

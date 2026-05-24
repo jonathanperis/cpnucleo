@@ -120,7 +120,6 @@ cpnucleo/
 │   ├── GrpcServer.Contracts/        # Shared command/result DTOs
 │   ├── IdentityApi/                 # JWT login (rate limited 10/min)
 │   ├── WebClient/                   # Qwik UI with Tailwind CSS
-│   └── WebApi.Client/               # Auto-generated Kiota client
 ├── tests/
 │   ├── Architecture.Tests/          # 25+ Clean Architecture rules (xUnit + NetArchTest)
 │   ├── WebApi.Unit.Tests/           # Endpoint unit tests (NUnit + FakeItEasy + Shouldly)
