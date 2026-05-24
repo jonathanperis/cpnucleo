@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         Patch("/workflow");
         Description(x => x.WithTags("Workflows"));
-        AllowAnonymous();
 
         Summary(s =>
         {

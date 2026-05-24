@@ -6,7 +6,6 @@ public class Endpoint(CreateProjectHandler handler) : Endpoint<Request, Response
     {
         Post("/project");
         Description(x => x.WithTags("Projects"));
-        AllowAnonymous();
 
         Summary(s =>
         {

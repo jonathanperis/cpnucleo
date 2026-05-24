@@ -1,4 +1,5 @@
 import type { ApiErrorShape } from './types';
+import { IDENTITY_API_ISSUER } from '../config';
 
 export class ApiError extends Error implements ApiErrorShape {
   status: number;
@@ -14,13 +15,38 @@ export class ApiError extends Error implements ApiErrorShape {
 
 export const tokenStorageKey = 'cpnucleo.jwt';
 
+const decodeJwtPayload = (token: string): { iss?: unknown } | null => {
+  const payload = token.split('.')[1];
+  if (!payload) return null;
+
+  try {
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized.padEnd(normalized.length + ((4 - normalized.length % 4) % 4), '=');
+    return JSON.parse(atob(padded)) as { iss?: unknown };
+  } catch {
+    return null;
+  }
+};
+
+export const tokenWasIssuedByIdentityApi = (token: string, issuer = IDENTITY_API_ISSUER): boolean =>
+  decodeJwtPayload(token)?.iss === issuer;
+
 export const getStoredToken = (): string | null => {
   if (typeof sessionStorage === 'undefined') return null;
-  return sessionStorage.getItem(tokenStorageKey);
+  const token = sessionStorage.getItem(tokenStorageKey);
+  if (!token) return null;
+  if (tokenWasIssuedByIdentityApi(token)) return token;
+  sessionStorage.removeItem(tokenStorageKey);
+  return null;
 };
 
 export const setStoredToken = (token: string): void => {
-  if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(tokenStorageKey, token);
+  if (typeof sessionStorage === 'undefined') return;
+  if (tokenWasIssuedByIdentityApi(token)) {
+    sessionStorage.setItem(tokenStorageKey, token);
+    return;
+  }
+  sessionStorage.removeItem(tokenStorageKey);
 };
 
 export const clearStoredToken = (): void => {

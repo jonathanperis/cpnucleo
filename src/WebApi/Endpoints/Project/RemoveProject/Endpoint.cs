@@ -7,7 +7,6 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
     {
         Delete("/project");
         Description(x => x.WithTags("Projects"));
-        AllowAnonymous();
 
         Summary(s => {
             s.Summary = "Delete projects by Ids";
