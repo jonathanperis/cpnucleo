@@ -20,9 +20,9 @@ export const AuthGuard = component$(() => {
   if (!checked.value) {
     return (
       <section class="rounded-2xl border border-line bg-surface p-6 shadow-soft" aria-live="polite">
-        <p class="text-sm font-medium text-accent">IdentityApi</p>
+        <p class="text-sm font-medium text-accent">Secure session</p>
         <h2 class="mt-2 text-2xl font-semibold">Checking your session…</h2>
-        <p class="mt-2 text-sm text-muted">Protected CPnucleo pages require a valid IdentityApi bearer token.</p>
+        <p class="mt-2 text-sm text-muted">Please sign in before opening the Cpnucleo workspace.</p>
       </section>
     );
   }
@@ -30,7 +30,7 @@ export const AuthGuard = component$(() => {
   if (!authenticated.value) {
     return (
       <section class="rounded-2xl border border-line bg-surface p-6 shadow-soft" aria-live="polite">
-        <p class="text-sm font-medium text-accent">IdentityApi</p>
+        <p class="text-sm font-medium text-accent">Secure session</p>
         <h2 class="mt-2 text-2xl font-semibold">Redirecting to sign in…</h2>
         <p class="mt-2 text-sm text-muted">Sign in to continue.</p>
       </section>
