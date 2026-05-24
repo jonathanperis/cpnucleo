@@ -180,6 +180,9 @@ services:
     environment:
       OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318
       OTEL_SERVICE_NAME: WebClient-Cpnucleo
+      PUBLIC_WEBAPI_BASE_URL: https://${CPNUCLEO_API_HOST:?Set CPNUCLEO_API_HOST}/api
+      PUBLIC_IDENTITY_API_BASE_URL: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}/api
+      PUBLIC_IDENTITY_API_ISSUER: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}
     depends_on:
       otel-collector:
         condition: service_started
