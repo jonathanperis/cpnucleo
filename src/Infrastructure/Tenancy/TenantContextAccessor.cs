@@ -2,15 +2,19 @@ namespace Infrastructure.Tenancy;
 
 public sealed class TenantContextAccessor : ITenantContextAccessor
 {
-    public TenantContext Current { get; private set; } = TenantContext.Empty;
+    private static readonly AsyncLocal<TenantContext?> CurrentContext = new();
+
+    public TenantContext Current => CurrentContext.Value ?? TenantContext.Empty;
 
     public void Set(TenantContext context)
     {
-        Current = context;
+        ArgumentNullException.ThrowIfNull(context);
+
+        CurrentContext.Value = context;
     }
 
     public void Clear()
     {
-        Current = TenantContext.Empty;
+        CurrentContext.Value = null;
     }
 }
