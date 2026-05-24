@@ -5,16 +5,20 @@ import { ThemeToggle } from '../components/theme-toggle';
 
 const groups = [
   { name: 'Start', items: [
-    ['Home', '/'], ['Organizations', '/organizations'], ['Projects', '/projects'], ['Tasks', '/assignments'], ['Progress steps', '/workflows'], ['Calendar', '/appointments'],
+    ['Home', '/'], ['Organizations', '/organizations/'], ['Projects', '/projects/'], ['Tasks', '/assignments/'], ['Progress steps', '/workflows/'], ['Calendar', '/appointments/'],
   ] },
-  { name: 'People', items: [['Team members', '/users'], ['People on tasks', '/user-assignments'], ['People on projects', '/user-projects']] },
-  { name: 'Setup', items: [['Task types', '/assignment-types'], ['Blockers', '/impediments'], ['Task blockers', '/assignment-impediments']] },
-  { name: 'Status', items: [['Service health', '/api-health']] },
+  { name: 'People', items: [['Team members', '/users/'], ['People on tasks', '/user-assignments/'], ['People on projects', '/user-projects/']] },
+  { name: 'Setup', items: [['Task types', '/assignment-types/'], ['Blockers', '/impediments/'], ['Task blockers', '/assignment-impediments/']] },
+  { name: 'Status', items: [['Service health', '/api-health/']] },
 ] as const;
 
 const { path = '/' } = Astro.props;
 const pathname = path.replace(/\/$/, '') || '/';
-const isActive = (href: string) => href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
+const normalizePath = (href: string) => href.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  const normalizedHref = normalizePath(href);
+  return normalizedHref === '/' ? pathname === '/' : pathname === normalizedHref || pathname.startsWith(`${normalizedHref}/`);
+};
 ---
 
 <html lang="en" data-theme="dark" style="color-scheme: dark;">

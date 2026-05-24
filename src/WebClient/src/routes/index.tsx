@@ -3,10 +3,10 @@ import { resourceMetadata } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 
 const shortcuts = [
-  ['Project overview', 'See what the app does, where the main work areas are, and where to begin.', '/projects'],
-  ['People and access', 'Review team members and the work they are connected to.', '/users'],
-  ['Data and storage', 'Browse the core records that keep projects, tasks, blockers, and calendar items connected.', '/organizations'],
-  ['Checks and status', 'Confirm the app services are reachable before you keep working.', '/api-health'],
+  ['Project overview', 'See what the app does, where the main work areas are, and where to begin.', '/projects/'],
+  ['People and access', 'Review team members and the work they are connected to.', '/users/'],
+  ['Data and storage', 'Browse the core records that keep projects, tasks, blockers, and calendar items connected.', '/organizations/'],
+  ['Checks and status', 'Confirm the app services are reachable before you keep working.', '/api-health/'],
 ] as const;
 
 export default component$(() => {
@@ -31,8 +31,8 @@ export default component$(() => {
             <h2 class="mt-5 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">Choose where to start in Cpnucleo.</h2>
             <p class="mt-4 max-w-2xl text-base leading-7 text-muted">Use this space to review projects, people, tasks, blockers, calendar items, and service status without digging through setup details first.</p>
             <div class="mt-7 flex flex-wrap gap-3">
-              <a class="rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas shadow-soft transition hover:opacity-90" href="/projects">Open projects</a>
-              <a class="rounded-xl border border-line bg-raised px-5 py-3 text-sm font-semibold transition hover:border-accent/40 hover:text-accent" href="/api-health">Check service status</a>
+              <a class="rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas shadow-soft transition hover:opacity-90" href="/projects/">Open projects</a>
+              <a class="rounded-xl border border-line bg-raised px-5 py-3 text-sm font-semibold transition hover:border-accent/40 hover:text-accent" href="/api-health/">Check service status</a>
             </div>
           </div>
           <div class="rounded-[1.5rem] border border-line bg-raised p-5">

@@ -19,6 +19,7 @@ Object.defineProperty(globalThis, 'sessionStorage', {
 
 afterEach(() => {
   sessionStorage.clear();
+  Reflect.deleteProperty(globalThis, 'window');
   vi.restoreAllMocks();
 });
 
@@ -41,5 +42,28 @@ describe('http client token handling', () => {
     setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
     await requestJson('http://example.test');
     expect(new Headers(fetchMock.mock.calls[1][1]?.headers).get('Authorization')).toMatch(/^Bearer /);
+  });
+
+  it('redirects expired sessions to the canonical trailing-slash login route without leaking the current port', async () => {
+    const assign = vi.fn();
+    Object.defineProperty(globalThis, 'window', {
+      value: {
+        location: {
+          pathname: '/projects',
+          search: '?page=2',
+          hash: '',
+          origin: 'https://cpnucleo.jonathanperis.tech:5030',
+          assign,
+        },
+      },
+      configurable: true,
+    });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ title: 'Unauthorized' }), { status: 401 }));
+
+    await expect(requestJson('http://example.test')).rejects.toMatchObject({ status: 401 });
+
+    expect(assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F%3Fpage%3D2');
+    expect(assign.mock.calls[0][0]).not.toContain('5030');
+    expect(assign.mock.calls[0][0]).not.toContain('cpnucleo.jonathanperis.tech');
   });
 });
