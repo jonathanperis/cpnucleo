@@ -222,8 +222,7 @@ public class FastEndpointsConfigurationTests
             "http.response.content_type",
             "EnrichWithException",
             "exception.type",
-            "exception.message",
-            "exception.stacktrace",
+            "OpenTelemetry:IncludeExceptionDetails",
             "http.request.method",
             ".AddHttpClientInstrumentation(options =>",
             "SetSampler(new AlwaysOnSampler())",
@@ -279,6 +278,11 @@ public class FastEndpointsConfigurationTests
         var dockerfile = File.ReadAllText(GetRepositoryPath("src/WebClient/Dockerfile"));
         var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
         var telemetry = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/otel.mjs"));
+        var appLayout = File.ReadAllText(GetRepositoryPath("src/WebClient/src/layouts/AppLayout.astro"));
+        var globalCss = File.ReadAllText(GetRepositoryPath("src/WebClient/src/global.css"));
+        var loginPage = File.ReadAllText(GetRepositoryPath("src/WebClient/src/pages/login.astro"));
+        var themeToggle = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/theme-toggle.tsx"));
+        var dashboard = File.ReadAllText(GetRepositoryPath("src/WebClient/src/routes/index.tsx"));
         var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));
         var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
 
@@ -305,6 +309,22 @@ public class FastEndpointsConfigurationTests
         telemetry.Should().Contain("OTLPTraceExporter");
         telemetry.Should().Contain("OTLPMetricExporter");
         telemetry.Should().Contain("OTLPLogExporter");
+
+        appLayout.Should().Contain("<html lang=\"en\" data-theme=\"dark\" style=\"color-scheme: dark;\">");
+        appLayout.Should().Contain(": 'dark';");
+        globalCss.Should().Contain("--accent: 78% 0.17 215;");
+        globalCss.Should().Contain("--accent-hover: 83% 0.17 210;");
+        globalCss.Should().Contain("scrollbar-color: oklch(var(--accent-hover)) oklch(var(--canvas));");
+        globalCss.Should().Contain("scrollbar-width: thin;");
+        globalCss.Should().Contain("::-webkit-scrollbar");
+        globalCss.Should().Contain("::-webkit-scrollbar-thumb:hover { background: oklch(var(--accent-hover)); }");
+        appLayout.Should().NotContain("Built as a clear place to review work, people, data, and releases without reading code first.");
+        loginPage.Should().Contain("<html lang=\"en\" data-theme=\"dark\" style=\"color-scheme: dark;\">");
+        loginPage.Should().Contain(": 'dark';");
+        themeToggle.Should().Contain("useSignal<Theme>('dark')");
+        themeToggle.Should().Contain(": 'dark';");
+        dashboard.Should().Contain("Dark by default · light-ready");
+        dashboard.Should().NotContain("Light by default · dark-ready");
 
         dockerfile.Should().Contain("FROM node:22-alpine AS runtime");
         dockerfile.Should().Contain("CMD [\"bun\", \"run\", \"preview\"]");
@@ -335,6 +355,8 @@ public class FastEndpointsConfigurationTests
 
         compose.Should().Contain("interval: 10m");
         prodCompose.Should().Contain("interval: 10m");
+        compose.Should().Contain("start_period: 1m");
+        prodCompose.Should().Contain("start_period: 1m");
         compose.Should().Contain("start_interval: 10s");
         prodCompose.Should().Contain("start_interval: 10s");
         compose.Should().Contain("/healthz");
@@ -401,9 +423,50 @@ public class FastEndpointsConfigurationTests
     {
         return string.Join(Environment.NewLine, value
             .Split('\n')
-            .Select(line => line.Contains("//", StringComparison.Ordinal)
-                ? line[..line.IndexOf("//", StringComparison.Ordinal)]
-                : line));
+            .Select(StripLineComment));
+    }
+
+    private static string StripLineComment(string line)
+    {
+        var inSingleQuote = false;
+        var inDoubleQuote = false;
+        var isEscaped = false;
+
+        for (var i = 0; i < line.Length - 1; i++)
+        {
+            var current = line[i];
+
+            if (isEscaped)
+            {
+                isEscaped = false;
+                continue;
+            }
+
+            if (current == '\\' && (inSingleQuote || inDoubleQuote))
+            {
+                isEscaped = true;
+                continue;
+            }
+
+            if (current == '\'' && !inDoubleQuote)
+            {
+                inSingleQuote = !inSingleQuote;
+                continue;
+            }
+
+            if (current == '"' && !inSingleQuote)
+            {
+                inDoubleQuote = !inDoubleQuote;
+                continue;
+            }
+
+            if (!inSingleQuote && !inDoubleQuote && current == '/' && line[i + 1] == '/')
+            {
+                return line[..i];
+            }
+        }
+
+        return line;
     }
 
     private static int CountInvocationExpressions(string value, string methodName)
