@@ -1,10 +1,31 @@
 export const getLoginPath = () => '/login/';
 
-type LocationLike = Pick<Location, 'pathname' | 'search'> & { origin?: string };
+type LocationLike = Pick<Location, 'pathname' | 'search'> & { hash?: string; origin?: string };
 
-export const getLoginRedirectTarget = ({ pathname, search }: LocationLike): string => {
+const canonicalStaticRoutes = new Set([
+  '/login',
+  '/organizations',
+  '/projects',
+  '/assignments',
+  '/assignment-types',
+  '/impediments',
+  '/assignment-impediments',
+  '/appointments',
+  '/workflows',
+  '/users',
+  '/user-assignments',
+  '/user-projects',
+  '/api-health',
+]);
+
+export const canonicalizeStaticRoute = (pathname: string): string => {
+  const normalized = pathname.replace(/\/$/, '') || '/';
+  return canonicalStaticRoutes.has(normalized) ? `${normalized}/` : pathname;
+};
+
+export const getLoginRedirectTarget = ({ pathname, search, hash = '' }: LocationLike): string => {
   const loginPath = getLoginPath();
-  const current = `${pathname}${search}`;
+  const current = `${canonicalizeStaticRoute(pathname)}${search}${hash}`;
   const isLoginPage = pathname === '/login' || pathname === loginPath;
   const returnUrl = current && current !== '/' && !isLoginPage
     ? `?returnUrl=${encodeURIComponent(current)}`
@@ -18,5 +39,6 @@ export const getPostLoginRedirectTarget = (returnUrl: string | null): string => 
     return '/';
   }
 
-  return returnUrl;
+  const parsed = new URL(returnUrl, 'https://cpnucleo.local');
+  return `${canonicalizeStaticRoute(parsed.pathname)}${parsed.search}${parsed.hash}`;
 };
