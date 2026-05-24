@@ -12,6 +12,7 @@ export default {
         muted: 'oklch(var(--muted) / <alpha-value>)',
         line: 'oklch(var(--line) / <alpha-value>)',
         accent: 'oklch(var(--accent) / <alpha-value>)',
+        'accent-hover': 'oklch(var(--accent-hover) / <alpha-value>)',
         danger: 'oklch(var(--danger) / <alpha-value>)',
         success: 'oklch(var(--success) / <alpha-value>)',
       },
