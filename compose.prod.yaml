@@ -22,7 +22,7 @@ x-common-healthcheck:
     timeout: 10s
     retries: 3
   x-healthcheck-webclient: &healthcheck-webclient
-    test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/127.0.0.1/5030'"]
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5030/healthz"]
     interval: 30s
     timeout: 10s
     retries: 3
