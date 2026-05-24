@@ -29,5 +29,5 @@ public class Response
     /// <summary>
     /// Gets or sets the paginated result of assignmentTypes.
     /// </summary>
-    public required PaginatedResult<AssignmentTypeDto?> Result { get; set; }
+    public PaginatedResult<AssignmentTypeDto?> Result { get; set; } = null!;
 }

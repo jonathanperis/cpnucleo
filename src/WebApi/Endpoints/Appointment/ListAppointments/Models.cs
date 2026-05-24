@@ -29,5 +29,5 @@ public class Response
     /// <summary>
     /// Gets or sets the paginated result of appointments.
     /// </summary>
-    public required PaginatedResult<AppointmentDto?> Result { get; set; }
+    public PaginatedResult<AppointmentDto?> Result { get; set; } = null!;
 }

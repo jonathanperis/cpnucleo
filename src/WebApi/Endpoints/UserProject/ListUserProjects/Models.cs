@@ -29,5 +29,5 @@ public class Response
     /// <summary>
     /// Gets or sets the paginated result of userProjects.
     /// </summary>
-    public required PaginatedResult<UserProjectDto?> Result { get; set; }
+    public PaginatedResult<UserProjectDto?> Result { get; set; } = null!;
 }
