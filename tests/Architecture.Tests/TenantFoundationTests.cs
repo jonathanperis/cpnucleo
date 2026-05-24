@@ -14,19 +14,36 @@ public class TenantFoundationTests
 
         tenantType.Should().NotBeNull();
         tenantType!.BaseType.Should().Be(typeof(Domain.Entities.BaseEntity));
-        tenantType.GetProperty("Slug")!.PropertyType.Should().Be(typeof(string));
-        tenantType.GetProperty("Name")!.PropertyType.Should().Be(typeof(string));
+        var slugProperty = tenantType.GetProperty("Slug");
+        slugProperty.Should().NotBeNull();
+        slugProperty!.PropertyType.Should().Be(typeof(string));
+
+        var nameProperty = tenantType.GetProperty("Name");
+        nameProperty.Should().NotBeNull();
+        nameProperty!.PropertyType.Should().Be(typeof(string));
 
         tenantScopedType.Should().NotBeNull();
-        tenantScopedType!.GetProperty("TenantId")!.PropertyType.Should().Be(typeof(Guid));
+        var tenantIdProperty = tenantScopedType!.GetProperty("TenantId");
+        tenantIdProperty.Should().NotBeNull();
+        tenantIdProperty!.PropertyType.Should().Be(typeof(Guid));
 
         tenantContextType.Should().NotBeNull();
-        tenantContextType!.GetProperty("TenantId")!.PropertyType.Should().Be(typeof(Guid));
-        tenantContextType.GetProperty("TenantSlug")!.PropertyType.Should().Be(typeof(string));
-        tenantContextType.GetProperty("UserId")!.PropertyType.Should().Be(typeof(Guid?));
+        var contextTenantIdProperty = tenantContextType!.GetProperty("TenantId");
+        contextTenantIdProperty.Should().NotBeNull();
+        contextTenantIdProperty!.PropertyType.Should().Be(typeof(Guid));
+
+        var tenantSlugProperty = tenantContextType.GetProperty("TenantSlug");
+        tenantSlugProperty.Should().NotBeNull();
+        tenantSlugProperty!.PropertyType.Should().Be(typeof(string));
+
+        var userIdProperty = tenantContextType.GetProperty("UserId");
+        userIdProperty.Should().NotBeNull();
+        userIdProperty!.PropertyType.Should().Be(typeof(Guid?));
 
         tenantContextAccessorType.Should().NotBeNull();
-        tenantContextAccessorType!.GetProperty("Current")!.PropertyType.Should().Be(tenantContextType);
+        var currentProperty = tenantContextAccessorType!.GetProperty("Current");
+        currentProperty.Should().NotBeNull();
+        currentProperty!.PropertyType.Should().Be(tenantContextType);
     }
 
     [Fact]
@@ -39,6 +56,22 @@ public class TenantFoundationTests
         accessor.Should().Contain("class TenantContextAccessor");
         accessor.Should().Contain("ITenantContextAccessor");
         accessor.Should().Contain("TenantContext.Empty");
+        accessor.Should().Contain("AsyncLocal<TenantContext?>");
+        accessor.Should().Contain("ArgumentNullException.ThrowIfNull(context)");
+    }
+
+    [Fact]
+    public void TenantEntity_ShouldEnforceInvariantsAndIdempotentSoftDelete()
+    {
+        var tenantSource = File.ReadAllText(GetRepositoryPath("src/Domain/Entities/Tenant.cs"));
+
+        tenantSource.Should().Contain("string.IsNullOrWhiteSpace(slug)");
+        tenantSource.Should().Contain("string.IsNullOrWhiteSpace(name)");
+        tenantSource.Should().Contain("slug.Trim()");
+        tenantSource.Should().Contain("name.Trim()");
+        tenantSource.Should().Contain("ArgumentNullException.ThrowIfNull(obj)");
+        tenantSource.Should().Contain("if (!obj.Active)");
+        tenantSource.Should().Contain("obj.DeletedAt ??= DateTime.UtcNow");
     }
 
     private static string GetRepositoryPath(string relativePath)

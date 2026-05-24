@@ -112,6 +112,7 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("https://cpnucleo.jonathanperis.tech");
         program.Should().Contain("AllowAnyHeader()");
         program.Should().Contain("AllowAnyMethod()");
+        program.Should().Contain("UseRateLimiter()");
         useCorsIndex.Should().BeGreaterThanOrEqualTo(0);
         useAuthenticationIndex.Should().BeGreaterThan(useCorsIndex, "CORS middleware must run before authentication/authorization so browser preflights are answered");
     }

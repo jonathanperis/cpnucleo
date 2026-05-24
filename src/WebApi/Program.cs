@@ -97,6 +97,8 @@ app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
 
+app.UseRateLimiter();
+
 app.UseCors("CpnucleoWebClient")
     .UseAuthentication()
     .UseAuthorization()
