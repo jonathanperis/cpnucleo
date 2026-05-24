@@ -29,5 +29,5 @@ public class Response
     /// <summary>
     /// Gets or sets the paginated result of workflows.
     /// </summary>
-    public required PaginatedResult<WorkflowDto?> Result { get; set; }
+    public PaginatedResult<WorkflowDto?> Result { get; set; } = null!;
 }

@@ -3,6 +3,36 @@ namespace Architecture.Tests;
 public class WebApiEndpointSourceTests
 {
     [Fact]
+    public void WebApi_Response_Dtos_Should_Not_Use_Required_Members()
+    {
+        var repoRoot = LocateRepositoryRoot();
+        var modelFiles = Directory.GetFiles(
+            Path.Combine(repoRoot, "src", "WebApi", "Endpoints"),
+            "Models.cs",
+            SearchOption.AllDirectories);
+
+        var requiredResponseMemberPattern = new System.Text.RegularExpressions.Regex(
+            @"public\s+class\s+Response[\s\S]*?\{(?<body>[\s\S]*?)^\}",
+            System.Text.RegularExpressions.RegexOptions.Multiline);
+
+        var offenders = modelFiles
+            .Select(path => new
+            {
+                Path = Path.GetRelativePath(repoRoot, path),
+                Text = File.ReadAllText(path)
+            })
+            .SelectMany(file => requiredResponseMemberPattern
+                .Matches(file.Text)
+                .Cast<System.Text.RegularExpressions.Match>()
+                .Where(match => match.Groups["body"].Value.Contains("public required "))
+                .Select(_ => file.Path))
+            .OrderBy(path => path)
+            .ToArray();
+
+        offenders.Should().BeEmpty("FastEndpoints creates response DTOs reflectively before handlers assign properties, and required response members make that instantiation fail at runtime");
+    }
+
+    [Fact]
     public void WebApi_Endpoints_Should_Not_Pass_CancellationToken_As_FindAsync_Key()
     {
         var repoRoot = LocateRepositoryRoot();

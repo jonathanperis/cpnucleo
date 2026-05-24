@@ -49,6 +49,42 @@ public class ImpedimentEndpointsTests
     }
 
     [Test]
+    public async Task ListImpediments_WithValidPagination_ShouldReturnPaginatedImpediments()
+    {
+        // Arrange
+        var firstImpedimentId = Guid.NewGuid();
+        var secondImpedimentId = Guid.NewGuid();
+        var firstImpediment = Impediment.Create("Blocked dependency", firstImpedimentId);
+        var secondImpediment = Impediment.Create("Missing access", secondImpedimentId);
+
+        await using var dbContext = CreateDbContext();
+        dbContext.Impediments!.AddRange(firstImpediment, secondImpediment);
+        await dbContext.SaveChangesAsync(default);
+
+        var ep = Factory.Create<WebApi.Endpoints.Impediment.ListImpediments.Endpoint>(dbContext);
+        var req = new WebApi.Endpoints.Impediment.ListImpediments.Request
+        {
+            Pagination = new PaginationParams
+            {
+                PageNumber = 1,
+                PageSize = 10,
+                SortColumn = "Name",
+                SortOrder = "ASC"
+            }
+        };
+
+        // Act
+        await ep.HandleAsync(req, default);
+
+        // Assert
+        ep.Response.ShouldNotBeNull();
+        ep.Response.Result.ShouldNotBeNull();
+        ep.Response.Result.TotalCount.ShouldBe(2);
+        ep.Response.Result.Data.ShouldNotBeNull();
+        ep.Response.Result.Data.Count().ShouldBe(2);
+    }
+
+    [Test]
     public async Task UpdateImpediment_WithValidData_ShouldUpdateImpediment()
     {
         // Arrange
