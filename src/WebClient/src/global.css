@@ -12,17 +12,51 @@
   --accent: 58% 0.16 225;
   --danger: 56% 0.18 25;
   --success: 55% 0.14 155;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --canvas: 12% 0.018 260;
+  --surface: 17% 0.02 260;
+  --raised: 22% 0.022 260;
+  --ink: 96% 0.006 250;
+  --muted: 72% 0.028 255;
+  --line: 31% 0.028 255;
+  --accent: 72% 0.15 260;
+  --danger: 68% 0.18 25;
+  --success: 70% 0.14 155;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --canvas: 12% 0.018 260;
+    --surface: 17% 0.02 260;
+    --raised: 22% 0.022 260;
+    --ink: 96% 0.006 250;
+    --muted: 72% 0.028 255;
+    --line: 31% 0.028 255;
+    --accent: 72% 0.15 260;
+    --danger: 68% 0.18 25;
+    --success: 70% 0.14 155;
+    color-scheme: dark;
+  }
 }
 
 * { box-sizing: border-box; }
 html { color-scheme: light; }
+html[data-theme='dark'] { color-scheme: dark; }
 body {
   margin: 0;
   min-height: 100vh;
-  background: oklch(var(--canvas));
+  background:
+    radial-gradient(circle at top left, oklch(var(--accent) / 0.08), transparent 34rem),
+    oklch(var(--canvas));
   color: oklch(var(--ink));
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-feature-settings: "cv01", "ss03";
 }
 a { color: inherit; text-decoration: none; }
 button, input, select, textarea { font: inherit; }
+input, select, textarea { color: oklch(var(--ink)); }
 :focus-visible { outline: 2px solid oklch(var(--accent)); outline-offset: 2px; }

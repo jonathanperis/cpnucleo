@@ -1,5 +1,6 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { login } from '~/lib/api/identity-client';
+import { getPostLoginRedirectTarget } from '~/lib/auth-navigation';
 
 export default component$(() => {
   const loading = useSignal(false);
@@ -7,13 +8,13 @@ export default component$(() => {
   const success = useSignal(false);
 
   return (
-    <section class="mx-auto max-w-md rounded-2xl border border-line bg-surface p-6 shadow-soft">
-      <p class="text-sm font-medium text-accent">IdentityApi</p>
-      <h2 class="mt-1 text-2xl font-semibold">Sign in</h2>
-      <p class="mt-2 text-sm text-muted">Session tokens are stored in sessionStorage and sent as bearer tokens to WebApi requests.</p>
-      {error.value && <div role="alert" aria-live="assertive" aria-atomic="true" class="mt-4 rounded-lg border border-danger/25 bg-danger/5 px-3 py-2 text-sm text-danger">{error.value}</div>}
-      {success.value && <div role="status" aria-live="polite" aria-atomic="true" class="mt-4 rounded-lg border border-success/25 bg-success/5 px-3 py-2 text-sm text-success">Login successful. Continue to the dashboard.</div>}
-      <form class="mt-5 space-y-4" preventdefault:submit onSubmit$={async (event) => {
+    <section class="w-full max-w-md rounded-[2rem] border border-line bg-surface/95 p-6 shadow-soft backdrop-blur sm:p-8">
+      <p class="text-sm font-semibold text-accent">IdentityApi login</p>
+      <h2 class="mt-2 text-3xl font-semibold tracking-tight">Welcome back</h2>
+      <p class="mt-3 text-sm leading-6 text-muted">Enter your CPnucleo credentials to open the dashboard workspace.</p>
+      {error.value && <div role="alert" aria-live="assertive" aria-atomic="true" class="mt-5 rounded-xl border border-danger/25 bg-danger/5 px-4 py-3 text-sm text-danger">{error.value}</div>}
+      {success.value && <div role="status" aria-live="polite" aria-atomic="true" class="mt-5 rounded-xl border border-success/25 bg-success/5 px-4 py-3 text-sm text-success">Login successful. Opening the dashboard…</div>}
+      <form class="mt-6 space-y-5" preventdefault:submit onSubmit$={async (event) => {
         const form = event.currentTarget as HTMLFormElement;
         const data = new FormData(form);
         const loginName = String(data.get('login') ?? '');
@@ -26,16 +27,22 @@ export default component$(() => {
           form.reset();
           const params = new URLSearchParams(window.location.search);
           const returnUrl = params.get('returnUrl');
-          window.location.assign(returnUrl && returnUrl.startsWith('/') ? returnUrl : '/');
+          window.location.assign(getPostLoginRedirectTarget(returnUrl));
         }
         catch (err) { error.value = err instanceof Error ? err.message : 'Unable to log in.'; }
         finally { loading.value = false; }
       }}>
-        <label><span class="mb-1 block text-sm font-medium">Login</span><input name="login" autocomplete="username" class="w-full rounded-lg border border-line bg-raised px-3 py-2" /></label>
-        <label><span class="mb-1 block text-sm font-medium">Password</span><input name="password" type="password" autocomplete="current-password" class="w-full rounded-lg border border-line bg-raised px-3 py-2" /></label>
-        <button disabled={loading.value} class="w-full rounded-lg bg-ink px-4 py-2 font-semibold text-white disabled:opacity-50">{loading.value ? 'Signing in…' : 'Sign in'}</button>
+        <label class="block">
+          <span class="mb-2 block text-sm font-semibold">Login</span>
+          <input name="login" autocomplete="username" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" placeholder="your.login" />
+        </label>
+        <label class="block">
+          <span class="mb-2 block text-sm font-semibold">Password</span>
+          <input name="password" type="password" autocomplete="current-password" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" placeholder="••••••••" />
+        </label>
+        <button disabled={loading.value} class="w-full rounded-xl bg-ink px-4 py-3 font-semibold text-canvas shadow-soft transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{loading.value ? 'Signing in…' : 'Enter dashboard'}</button>
       </form>
-      <a class="mt-4 block text-center text-sm text-accent" href="/">Back to dashboard</a>
+      <p class="mt-5 text-center text-sm text-muted">You will be redirected to your requested dashboard page after login.</p>
     </section>
   );
 });
