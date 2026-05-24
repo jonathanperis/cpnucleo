@@ -42,7 +42,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Fetching user by Id: {UserId}", newItem.Id);
-        var createdItem = await dbContext.Users!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+        var createdItem = await dbContext.Users!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
 
         Response.User = createdItem!.MapToDto();
 
