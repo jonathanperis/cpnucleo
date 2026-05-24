@@ -7,7 +7,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     {
         Get("/assignmentImpediments");
         Description(x => x.WithTags("AssignmentImpediments"));
-        AllowAnonymous();
 
         Summary(s =>
         {

@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveWorkflow
     {
         Delete("/workflow");
         Description(x => x.WithTags("Workflows"));
-        AllowAnonymous();
 
         Summary(s =>
         {

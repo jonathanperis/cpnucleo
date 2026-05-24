@@ -7,7 +7,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserRequ
     {
         Delete("/user");
         Description(x => x.WithTags("Users"));
-        AllowAnonymous();
 
         Summary(s =>
         {

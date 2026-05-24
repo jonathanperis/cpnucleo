@@ -7,7 +7,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
     {
         Delete("/organization");
         Description(x => x.WithTags("Organizations"));
-        AllowAnonymous();
 
         Summary(s => {
             s.Summary = "Delete organizations by Ids";
