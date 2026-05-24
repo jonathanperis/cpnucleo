@@ -8,7 +8,7 @@ public class FastEndpointsConfigurationTests
 {
     private static readonly string[] HttpVerbRouteMethods = ["Get", "Post", "Put", "Delete", "Patch"];
     private static readonly string[] AuthenticationPackageNames = ["FastEndpoints.Security", "Microsoft.AspNetCore.Authentication.JwtBearer"];
-    private static readonly string[] WebApiJwtValidationSnippets =
+    private static readonly string[] JwtValidationSnippets =
     [
         "AddAuthentication(JwtBearerDefaults.AuthenticationScheme)",
         "ValidateIssuerSigningKey = true",
@@ -48,7 +48,7 @@ public class FastEndpointsConfigurationTests
     }
 
     [Fact]
-    public void AuthenticationPackages_ShouldStayInIdentityAndWebApi()
+    public void AuthenticationPackages_ShouldStayInIdentityAndApiHosts()
     {
         var repositoryRoot = GetRepositoryPath(".");
         var projectsWithAuthenticationPackages = Directory
@@ -65,23 +65,53 @@ public class FastEndpointsConfigurationTests
 
         projectsWithAuthenticationPackages.Should().BeEquivalentTo(
         [
+            "src/GrpcServer/GrpcServer.csproj",
             "src/IdentityApi/IdentityApi.csproj",
             "src/WebApi/WebApi.csproj"
         ]);
     }
 
-    [Fact]
-    public void WebApi_ShouldValidateIdentityApiBearerTokens()
+    [Theory]
+    [InlineData("src/WebApi/Program.cs")]
+    [InlineData("src/GrpcServer/Program.cs")]
+    public void ApiHosts_ShouldValidateIdentityApiBearerTokens(string programPath)
     {
-        var program = File.ReadAllText(GetRepositoryPath("src/WebApi/Program.cs"));
+        var program = File.ReadAllText(GetRepositoryPath(programPath));
 
-        foreach (var snippet in WebApiJwtValidationSnippets)
+        foreach (var snippet in JwtValidationSnippets)
         {
             program.Should().Contain(snippet);
         }
 
         program.Should().Contain("UseAuthentication()");
         program.Should().Contain("UseAuthorization()");
+    }
+
+    [Fact]
+    public void GrpcServer_ShouldRequireAuthorizationForHandlers()
+    {
+        var program = File.ReadAllText(GetRepositoryPath("src/GrpcServer/Program.cs"));
+
+        program.Should().Contain("MapHandlers(h =>");
+        program.Should().Contain("FallbackPolicy = new AuthorizationPolicyBuilder()");
+        program.Should().Contain("RequireAuthenticatedUser()");
+    }
+
+    [Theory]
+    [InlineData("src/IdentityApi/appsettings.json")]
+    [InlineData("src/IdentityApi/appsettings.Development.json")]
+    [InlineData("src/WebApi/appsettings.json")]
+    [InlineData("src/WebApi/appsettings.Development.json")]
+    [InlineData("src/WebApi/appsettings.Testing.json")]
+    [InlineData("src/GrpcServer/appsettings.json")]
+    [InlineData("src/GrpcServer/appsettings.Development.json")]
+    public void AuthConfiguration_ShouldUseCpnucleoJonathanPerisTechDomains(string appSettingsPath)
+    {
+        var appSettings = File.ReadAllText(GetRepositoryPath(appSettingsPath));
+
+        appSettings.Should().Contain("\"Issuer\": \"https://identity-cpnucleo.jonathanperis.tech\"");
+        appSettings.Should().Contain("\"Audience\": \"https://api-cpnucleo.jonathanperis.tech\"");
+        appSettings.Should().NotContain("peris-studio.dev");
     }
 
     [Fact]

@@ -24,7 +24,7 @@ afterEach(() => {
 
 describe('http client token handling', () => {
   it('stores only tokens emitted by IdentityApi', () => {
-    setStoredToken(tokenWithIssuer('https://identity.peris-studio.dev'));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
     expect(getStoredToken()).toBeTruthy();
 
     setStoredToken(tokenWithIssuer('https://evil.test'));
@@ -38,7 +38,7 @@ describe('http client token handling', () => {
     await requestJson('http://example.test');
     expect(new Headers(fetchMock.mock.calls[0][1]?.headers).has('Authorization')).toBe(false);
 
-    setStoredToken(tokenWithIssuer('https://identity.peris-studio.dev'));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
     await requestJson('http://example.test');
     expect(new Headers(fetchMock.mock.calls[1][1]?.headers).get('Authorization')).toMatch(/^Bearer /);
   });
