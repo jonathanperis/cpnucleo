@@ -28,7 +28,7 @@
     "@opentelemetry/sdk-node": "^0.218.0",
     "@opentelemetry/semantic-conventions": "^1.41.1",
     "@qwikdev/astro": "^0.8.3",
-    "astro": "5.9.2",
+    "astro": "6.1.10",
     "typescript": "^5.9.3",
     "vite": "^6.3.5"
   },
