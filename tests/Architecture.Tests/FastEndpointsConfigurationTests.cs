@@ -7,6 +7,7 @@ using System.Xml.Linq;
 public class FastEndpointsConfigurationTests
 {
     private static readonly string[] HttpVerbRouteMethods = ["Get", "Post", "Put", "Delete", "Patch"];
+    private static readonly string[] AuthenticationPackageNames = ["FastEndpoints.Security", "Microsoft.AspnetCore.Authentication.JwtBearer"];
 
     [Fact]
     public void FastEndpointsPackageVersions_ShouldBeAligned()
@@ -34,6 +35,25 @@ public class FastEndpointsConfigurationTests
             .Should()
             .ContainSingle("all FastEndpoints packages should use the same reviewed version: {0}", string.Join(", ", fastEndpointsPackageVersions.Select(x => $"{x.ProjectPath}: {x.Version}")))
             .Which.Should().Be("8.1.0");
+    }
+
+    [Fact]
+    public void AuthenticationPackages_ShouldStayInIdentityApi()
+    {
+        var repositoryRoot = GetRepositoryPath(".");
+        var projectsWithAuthenticationPackages = Directory
+            .EnumerateFiles(repositoryRoot, "*.csproj", SearchOption.AllDirectories)
+            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
+                && !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .SelectMany(projectPath => XDocument
+                .Load(projectPath)
+                .Descendants("PackageReference")
+                .Where(x => AuthenticationPackageNames.Contains(x.Attribute("Include")?.Value, StringComparer.Ordinal))
+                .Select(x => Path.GetRelativePath(repositoryRoot, projectPath)))
+            .Distinct()
+            .ToArray();
+
+        projectsWithAuthenticationPackages.Should().Equal("src/IdentityApi/IdentityApi.csproj");
     }
 
     [Fact]
