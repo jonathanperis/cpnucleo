@@ -31,6 +31,8 @@ x-common-api-prod: &common-api-prod
   depends_on:
     db:
       condition: service_healthy
+    otel-collector:
+      condition: service_started
   env_file:
     - .env
   restart: always
@@ -175,6 +177,12 @@ services:
     healthcheck: *healthcheck-webclient
     env_file:
       - .env
+    environment:
+      OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318
+      OTEL_SERVICE_NAME: WebClient-Cpnucleo
+    depends_on:
+      otel-collector:
+        condition: service_started
     restart: always
     networks:
       - default

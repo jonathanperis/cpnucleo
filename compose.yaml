@@ -120,6 +120,9 @@ services:
     <<: [*common-api, *common-logging]
     image: ghcr.io/jonathanperis/cpnucleo-web-client:latest
     container_name: webclient-cpnucleo
+    environment:
+      OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318
+      OTEL_SERVICE_NAME: WebClient-Cpnucleo
     ports:
       # Mapping internal port 5030 to external host port 5400 for web client service.
       - "5400:5030"
