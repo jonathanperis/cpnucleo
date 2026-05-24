@@ -307,7 +307,7 @@ for name, item in containers.items():
     health = str(item.get("health") or "").lower()
     if name in expected and "running" not in state and "up" not in state:
         not_running.append(f"{name}: {item.get('state') or item.get('status')}")
-    if name in expected and health and health not in {"healthy", "none", "null"}:
+    if name in expected and health and health not in {"healthy", "none", "null", "starting"}:
         not_running.append(f"{name}: health={health}")
 if missing or not_running:
     if missing:

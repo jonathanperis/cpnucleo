@@ -8,21 +8,25 @@ x-common-healthcheck:
   x-healthcheck-api: &healthcheck-api
     test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
     interval: 10m
+    start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-identity: &healthcheck-identity
     test: ["CMD", "curl", "-f", "http://localhost:5010/healthz"]
     interval: 10m
+    start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-grpcserver: &healthcheck-grpcserver
     test: ["CMD", "curl", "-f", "http://localhost:5021/healthz"]
     interval: 10m
+    start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-webclient: &healthcheck-webclient
     test: ["CMD", "curl", "-f", "http://localhost:5030/healthz"]
     interval: 10m
+    start_interval: 10s
     timeout: 10s
     retries: 3
 

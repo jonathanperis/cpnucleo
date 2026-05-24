@@ -315,6 +315,12 @@ public class FastEndpointsConfigurationTests
         prodCompose.Should().Contain("PUBLIC_IDENTITY_API_BASE_URL: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}/api");
         prodCompose.Should().Contain("PUBLIC_IDENTITY_API_ISSUER: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}");
         prodCompose.Should().NotContain("PUBLIC_IDENTITY_API_BASE_URL: http://localhost:5200");
+
+        var releaseWorkflow = File.ReadAllText(GetRepositoryPath(".github/workflows/main-release.yml"));
+        releaseWorkflow.Should().Contain("PUBLIC_WEBAPI_BASE_URL=https://api-cpnucleo.jonathanperis.tech/api");
+        releaseWorkflow.Should().Contain("PUBLIC_IDENTITY_API_BASE_URL=https://identity-cpnucleo.jonathanperis.tech/api");
+        releaseWorkflow.Should().Contain("PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.tech");
+        releaseWorkflow.Should().NotContain("PUBLIC_IDENTITY_API_BASE_URL=http://localhost:5200/api");
     }
 
     [Fact]
@@ -329,6 +335,8 @@ public class FastEndpointsConfigurationTests
 
         compose.Should().Contain("interval: 10m");
         prodCompose.Should().Contain("interval: 10m");
+        compose.Should().Contain("start_interval: 10s");
+        prodCompose.Should().Contain("start_interval: 10s");
         compose.Should().Contain("/healthz");
         prodCompose.Should().Contain("/healthz");
 
