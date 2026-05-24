@@ -24,7 +24,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveWorkflow
 
         foreach (var id in request.Ids)
         {
-            var item = await dbContext.Workflows!.FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+            var item = await dbContext.Workflows!.FindAsync([id], cancellationToken: cancellationToken);
             if (item is null)
             {
                 await Send.NotFoundAsync(cancellation: cancellationToken);

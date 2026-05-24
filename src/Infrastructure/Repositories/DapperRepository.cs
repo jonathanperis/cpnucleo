@@ -109,9 +109,24 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
 
     private static IEnumerable<PropertyInfo> GetProperties(bool excludeKey = false)
     {
-        return excludeKey 
-            ? CachedProperties.Value.Where(p => !p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase))
-            : CachedProperties.Value;
+        var properties = CachedProperties.Value.Where(IsColumnProperty);
+
+        return excludeKey
+            ? properties.Where(p => !p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase))
+            : properties;
+    }
+
+    private static bool IsColumnProperty(PropertyInfo property)
+    {
+        var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+
+        return type.IsPrimitive
+            || type.IsEnum
+            || type == typeof(string)
+            || type == typeof(Guid)
+            || type == typeof(DateTime)
+            || type == typeof(DateTimeOffset)
+            || type == typeof(decimal);
     }
 
     private static string GetColumns(bool excludeKey = false)

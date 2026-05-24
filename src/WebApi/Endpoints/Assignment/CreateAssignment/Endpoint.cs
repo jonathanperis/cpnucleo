@@ -50,7 +50,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Fetching assignment by Id: {AssignmentId}", newItem.Id);
-        var createdItem = await dbContext.Assignments!.FindAsync([newItem.Id, cancellationToken], cancellationToken: cancellationToken);
+        var createdItem = await dbContext.Assignments!.FindAsync([newItem.Id], cancellationToken: cancellationToken);
 
         Response.Assignment = createdItem!.MapToDto();
 
