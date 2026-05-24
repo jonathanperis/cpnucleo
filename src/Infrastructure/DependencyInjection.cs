@@ -6,6 +6,7 @@ public static class DependencyInjection
     {
         // EF Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
         services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>();
 
         // Dapper Repository Basic

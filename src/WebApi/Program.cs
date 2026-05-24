@@ -7,6 +7,12 @@ var logger = LoggerFactory.Create(logging =>
 
 builder.ConfigureOpenTelemetry();
 
+var allowedCorsOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() is { Length: > 0 } configuredOrigins
+        ? configuredOrigins
+        : ["https://cpnucleo.jonathanperis.tech"];
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -25,6 +31,17 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CpnucleoWebClient", policy =>
+    {
+        policy
+            .WithOrigins(allowedCorsOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -80,7 +97,8 @@ app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
 
-app.UseAuthentication()
+app.UseCors("CpnucleoWebClient")
+    .UseAuthentication()
     .UseAuthorization()
     .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
     .UseMiddleware<ElapsedTimeMiddleware>()

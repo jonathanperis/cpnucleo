@@ -98,6 +98,25 @@ public class FastEndpointsConfigurationTests
     }
 
     [Theory]
+    [InlineData("src/WebApi/Program.cs")]
+    [InlineData("src/IdentityApi/Program.cs")]
+    public void BrowserFacingApiHosts_ShouldAllowConfiguredWebClientCorsPreflight(string programPath)
+    {
+        var program = File.ReadAllText(GetRepositoryPath(programPath));
+        var useCorsIndex = program.IndexOf("UseCors(\"CpnucleoWebClient\")", StringComparison.Ordinal);
+        var useAuthenticationIndex = program.IndexOf("UseAuthentication()", StringComparison.Ordinal);
+
+        program.Should().Contain("AddCors(options =>");
+        program.Should().Contain("CpnucleoWebClient");
+        program.Should().Contain("Cors:AllowedOrigins");
+        program.Should().Contain("https://cpnucleo.jonathanperis.tech");
+        program.Should().Contain("AllowAnyHeader()");
+        program.Should().Contain("AllowAnyMethod()");
+        useCorsIndex.Should().BeGreaterThanOrEqualTo(0);
+        useAuthenticationIndex.Should().BeGreaterThan(useCorsIndex, "CORS middleware must run before authentication/authorization so browser preflights are answered");
+    }
+
+    [Theory]
     [InlineData("src/IdentityApi/appsettings.json")]
     [InlineData("src/IdentityApi/appsettings.Development.json")]
     [InlineData("src/WebApi/appsettings.json")]
