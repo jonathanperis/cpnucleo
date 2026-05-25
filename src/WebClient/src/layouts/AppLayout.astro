@@ -49,9 +49,6 @@ const isActive = (href: string) => {
             <span class="block text-xs text-muted">Project hub</span>
           </span>
         </a>
-        <label class="block rounded-2xl border border-line bg-raised px-3 py-2 text-sm text-muted">
-          Search pages or actions
-        </label>
         <nav class="mt-7 space-y-6">
           {groups.map((group) => (
             <section>
@@ -86,12 +83,10 @@ const isActive = (href: string) => {
               </div>
             </details>
             <div>
-              <p class="text-sm font-medium text-muted">Cpnucleo</p>
               <h1 class="text-lg font-semibold">Application hub</h1>
             </div>
             <div class="flex items-center gap-2 text-sm">
               <ThemeToggle />
-              <span class="hidden rounded-full border border-line bg-raised px-3 py-1 text-muted sm:inline-flex">Ready</span>
               <AuthStatus />
             </div>
           </div>
