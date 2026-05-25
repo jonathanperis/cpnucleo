@@ -8,5 +8,5 @@ public class Response
     /// <summary>
     /// A renewed 30-minute JWT for the authenticated user session.
     /// </summary>
-    public string? Token { get; set; }
+    public string Token { get; set; } = string.Empty;
 }

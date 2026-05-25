@@ -43,6 +43,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         var jwtToken = JwtBearer.CreateToken(
             o =>
             {
+                o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
                 // o.User.Roles.Add("Manager", "Auditor");
                 // o.User.Claims.Add(("UserName", req.Username));
                 // o.User["UserId"] = "001"; //indexer based claim setting
