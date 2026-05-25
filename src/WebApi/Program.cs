@@ -135,14 +135,15 @@ app.Use(async (context, next) =>
     }
 });
 
+app.UseCors("CpnucleoWebClient");
+
 app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
 
 app.UseRateLimiter();
 
-app.UseCors("CpnucleoWebClient")
-    .UseAuthentication()
+app.UseAuthentication()
     .UseAuthorization()
     .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
     .UseMiddleware<ElapsedTimeMiddleware>()

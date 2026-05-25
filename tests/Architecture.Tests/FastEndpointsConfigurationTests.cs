@@ -104,6 +104,7 @@ public class FastEndpointsConfigurationTests
     {
         var program = File.ReadAllText(GetRepositoryPath(programPath));
         var useCorsIndex = program.IndexOf("UseCors(\"CpnucleoWebClient\")", StringComparison.Ordinal);
+        var useHealthChecksIndex = program.IndexOf("UseHealthChecks(\"/healthz\")", StringComparison.Ordinal);
         var useAuthenticationIndex = program.IndexOf("UseAuthentication()", StringComparison.Ordinal);
 
         program.Should().Contain("AddCors(options =>");
@@ -114,6 +115,7 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("AllowAnyMethod()");
         program.Should().Contain("UseRateLimiter()");
         useCorsIndex.Should().BeGreaterThanOrEqualTo(0);
+        useHealthChecksIndex.Should().BeGreaterThan(useCorsIndex, "browser-run health checks call /healthz across subdomains and need CORS headers");
         useAuthenticationIndex.Should().BeGreaterThan(useCorsIndex, "CORS middleware must run before authentication/authorization so browser preflights are answered");
     }
 
