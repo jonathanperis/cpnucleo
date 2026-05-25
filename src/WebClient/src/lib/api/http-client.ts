@@ -19,6 +19,7 @@ export const lastActivityStorageKey = 'cpnucleo.lastActivityAt';
 export const sessionInactivityTimeoutMs = 15 * 60 * 1000;
 export const tokenRefreshLeadMs = 5 * 60 * 1000;
 const tokenRefreshCooldownMs = 60 * 1000;
+const activityThrottleMs = 250;
 
 let inactivityTimer: number | undefined;
 let refreshTimer: number | undefined;
@@ -181,23 +182,37 @@ const scheduleSessionTimers = () => {
   refreshTimer = window.setTimeout(refreshTokenIfNeeded, refreshIn);
 };
 
+const throttleLeading = (callback: () => void, waitMs: number): (() => void) => {
+  let lastCalledAt = 0;
+  return () => {
+    const currentTime = now();
+    if (currentTime - lastCalledAt < waitMs) return;
+    lastCalledAt = currentTime;
+    callback();
+  };
+};
+
 export const setupSessionActivityTracking = (): (() => void) => {
   if (typeof window === 'undefined') return () => undefined;
 
-  const activityEvents = ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'] as const;
+  const highFrequencyActivityEvents = ['mousemove', 'scroll'] as const;
+  const lowFrequencyActivityEvents = ['click', 'keydown', 'touchstart'] as const;
   const onActivity = () => {
     if (!getStoredToken()) return;
     markSessionActivity();
     scheduleSessionTimers();
     refreshTokenIfNeeded();
   };
+  const onHighFrequencyActivity = throttleLeading(onActivity, activityThrottleMs);
 
   if (getStoredToken() && getLastActivityAt() === null) markSessionActivity();
   scheduleSessionTimers();
-  activityEvents.forEach(event => window.addEventListener(event, onActivity, { passive: true }));
+  highFrequencyActivityEvents.forEach(event => window.addEventListener(event, onHighFrequencyActivity, { passive: true }));
+  lowFrequencyActivityEvents.forEach(event => window.addEventListener(event, onActivity, { passive: true }));
 
   return () => {
-    activityEvents.forEach(event => window.removeEventListener(event, onActivity));
+    highFrequencyActivityEvents.forEach(event => window.removeEventListener(event, onHighFrequencyActivity));
+    lowFrequencyActivityEvents.forEach(event => window.removeEventListener(event, onActivity));
     if (inactivityTimer) clearTimeout(inactivityTimer);
     if (refreshTimer) clearTimeout(refreshTimer);
   };

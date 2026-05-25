@@ -18,7 +18,10 @@ public class Endpoint : EndpointWithoutRequest<Response>
     {
         Logger.LogInformation("Refreshing JWT token for an active session.");
 
-        Response.Token = JwtBearer.CreateToken(o => { });
+        Response.Token = JwtBearer.CreateToken(o =>
+        {
+            o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
+        });
 
         await Send.OkAsync(Response, cancellationToken);
     }
