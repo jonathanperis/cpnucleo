@@ -378,6 +378,9 @@ public class FastEndpointsConfigurationTests
     {
         var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));
         var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
+        var apiProgram = File.ReadAllText(GetRepositoryPath("src/WebApi/Program.cs"));
+        var identityProgram = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
+        var grpcProgram = File.ReadAllText(GetRepositoryPath("src/GrpcServer/Program.cs"));
         var apiDockerfile = File.ReadAllText(GetRepositoryPath("src/WebApi/Dockerfile"));
         var identityDockerfile = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Dockerfile"));
         var grpcDockerfile = File.ReadAllText(GetRepositoryPath("src/GrpcServer/Dockerfile"));
@@ -391,6 +394,12 @@ public class FastEndpointsConfigurationTests
         prodCompose.Should().Contain("start_interval: 10s");
         compose.Should().Contain("/healthz");
         prodCompose.Should().Contain("/healthz");
+
+        foreach (var program in new[] { apiProgram, identityProgram, grpcProgram })
+        {
+            program.Should().Contain("context.Request.Path.Value?.Equals(\"/healthz\", StringComparison.OrdinalIgnoreCase) == true");
+            program.Should().Contain("app.Logger.LogInformation(\"{Method} {Path} {StatusCode}\"");
+        }
 
         apiDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
         apiDockerfile.Should().Contain("GET /healthz HTTP/1.1");
