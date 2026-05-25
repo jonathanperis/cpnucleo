@@ -1,5 +1,5 @@
 import { component$, Slot, useSignal, useVisibleTask$ } from '@builder.io/qwik';
-import { clearStoredToken, getStoredToken } from '~/lib/api/http-client';
+import { clearStoredToken, getStoredToken, setupSessionActivityTracking } from '~/lib/api/http-client';
 import { getLoginPath, getLoginRedirectTarget } from '~/lib/auth-navigation';
 
 const loginPath = getLoginPath();
@@ -14,7 +14,10 @@ export const AuthGuard = component$(() => {
     checked.value = true;
     if (!token) {
       window.location.replace(getLoginRedirectTarget(window.location));
+      return;
     }
+
+    return setupSessionActivityTracking();
   });
 
   if (!checked.value) {
