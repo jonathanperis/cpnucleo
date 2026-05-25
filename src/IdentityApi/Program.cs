@@ -26,7 +26,6 @@ builder.Services.AddCors(options =>
 builder.Services
     .Configure<JwtCreationOptions>(o =>
     {
-        o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
         o.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing.");
         o.Issuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing.");
         o.Audience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing.");

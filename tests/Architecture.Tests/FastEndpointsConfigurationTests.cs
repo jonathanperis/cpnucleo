@@ -203,11 +203,14 @@ public class FastEndpointsConfigurationTests
     public void IdentityApi_ShouldIssueThirtyMinuteTokensAndRefreshAuthenticatedSessions()
     {
         var program = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
+        var loginEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Login/Endpoint.cs"));
         var refreshEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Refresh/Endpoint.cs"));
 
-        program.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
+        program.Should().NotContain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)", "JWT expiry must be computed when each token is created, not once at startup");
+        loginEndpoint.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
+        refreshEndpoint.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
         refreshEndpoint.Should().Contain("Post(\"/refresh\")");
-        refreshEndpoint.Should().Contain("JwtBearer.CreateToken(o => { })");
+        refreshEndpoint.Should().Contain("JwtBearer.CreateToken(");
         refreshEndpoint.Should().NotContain("AllowAnonymous();", "refresh must require an authenticated bearer token");
     }
 
