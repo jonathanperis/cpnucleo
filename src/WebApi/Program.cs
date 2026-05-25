@@ -131,10 +131,7 @@ app.Use(async (context, next) =>
 
     if (context.Request.Path.Value?.Equals("/healthz", StringComparison.OrdinalIgnoreCase) == true)
     {
-        app.Logger.LogInformation("{Method} {Path} {StatusCode}",
-            context.Request.Method,
-            context.Request.Path,
-            context.Response.StatusCode);
+        app.Logger.LogInformation("GET /healthz {StatusCode}", context.Response.StatusCode);
     }
 });
 
