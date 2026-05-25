@@ -125,6 +125,19 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Request.Path.Value?.Equals("/healthz", StringComparison.OrdinalIgnoreCase) == true)
+    {
+        app.Logger.LogInformation("{Method} {Path} {StatusCode}",
+            context.Request.Method,
+            context.Request.Path,
+            context.Response.StatusCode);
+    }
+});
+
 app.UseHealthChecks("/healthz");
 
 app.UseInfrastructure();
