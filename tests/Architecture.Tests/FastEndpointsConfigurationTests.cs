@@ -398,7 +398,7 @@ public class FastEndpointsConfigurationTests
         foreach (var program in new[] { apiProgram, identityProgram, grpcProgram })
         {
             program.Should().Contain("context.Request.Path.Value?.Equals(\"/healthz\", StringComparison.OrdinalIgnoreCase) == true");
-            program.Should().Contain("app.Logger.LogInformation(\"{Method} {Path} {StatusCode}\"");
+            program.Should().Contain("app.Logger.LogInformation(\"GET /healthz {StatusCode}\", context.Response.StatusCode)");
         }
 
         apiDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
