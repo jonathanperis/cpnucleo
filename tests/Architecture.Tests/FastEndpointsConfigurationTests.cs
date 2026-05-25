@@ -199,6 +199,33 @@ public class FastEndpointsConfigurationTests
         anonymousEndpoints.Should().BeEmpty("WebApi endpoints must require IdentityApi-issued bearer tokens");
     }
 
+    [Fact]
+    public void IdentityApi_ShouldIssueThirtyMinuteTokensAndRefreshAuthenticatedSessions()
+    {
+        var program = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
+        var refreshEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Refresh/Endpoint.cs"));
+
+        program.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
+        refreshEndpoint.Should().Contain("Post(\"/refresh\")");
+        refreshEndpoint.Should().Contain("JwtBearer.CreateToken(o => { })");
+        refreshEndpoint.Should().NotContain("AllowAnonymous();", "refresh must require an authenticated bearer token");
+    }
+
+    [Fact]
+    public void WebClient_ShouldExpireInactiveSessionsAndRefreshActiveTokens()
+    {
+        var httpClient = File.ReadAllText(GetRepositoryPath("src/WebClient/src/lib/api/http-client.ts"));
+        var authGuard = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/auth-guard.tsx"));
+
+        httpClient.Should().Contain("sessionInactivityTimeoutMs = 15 * 60 * 1000");
+        httpClient.Should().Contain("tokenRefreshLeadMs = 5 * 60 * 1000");
+        httpClient.Should().Contain("/refresh");
+        httpClient.Should().Contain("lastActivityStorageKey");
+        httpClient.Should().Contain("setupSessionActivityTracking");
+        httpClient.Should().Contain("redirectToLoginForExpiredSession()");
+        authGuard.Should().Contain("setupSessionActivityTracking()");
+    }
+
     [Theory]
     [InlineData("src/WebApi/ServiceExtensions/ConfigureOpenTelemetryOptions.cs", "webapi", true)]
     [InlineData("src/IdentityApi/ServiceExtensions/ConfigureOpenTelemetryOptions.cs", "identityapi", true)]
