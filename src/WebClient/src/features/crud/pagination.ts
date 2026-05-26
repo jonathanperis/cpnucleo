@@ -1,3 +1,5 @@
+export const DEFAULT_PAGE_SIZE = 10;
+
 export const normalizePageSize = (pageSize: number) => Math.max(1, Math.trunc(pageSize) || 1);
 
 export const getLastPage = (totalCount: number, pageSize: number) =>
