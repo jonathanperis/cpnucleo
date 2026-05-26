@@ -6,9 +6,9 @@ public static class ListingSseExtensions
 
     public static bool AcceptsServerSentEvents(this HttpRequest request)
     {
-        foreach (var value in request.Headers.Accept)
+        foreach (var value in request.Headers.Accept.Where(value => !string.IsNullOrWhiteSpace(value)).Select(value => value!))
         {
-            foreach (var part in value?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [])
+            foreach (var part in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
                 if (!MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType)) continue;
                 if (!"text/event-stream".Equals(mediaType.MediaType, StringComparison.OrdinalIgnoreCase)) continue;
@@ -30,7 +30,17 @@ public static class ListingSseExtensions
         ILogger logger,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var lastSnapshot = await getSnapshot(cancellationToken);
+        TResponse lastSnapshot;
+        try
+        {
+            lastSnapshot = await getSnapshot(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            logger.LogDebug("Listing SSE stream disconnected by the client.");
+            yield break;
+        }
+
         var lastSnapshotJson = JsonSerializer.Serialize(lastSnapshot);
         yield return lastSnapshot;
 
@@ -46,7 +56,17 @@ public static class ListingSseExtensions
                 yield break;
             }
 
-            var nextSnapshot = await getSnapshot(cancellationToken);
+            TResponse nextSnapshot;
+            try
+            {
+                nextSnapshot = await getSnapshot(cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                logger.LogDebug("Listing SSE stream disconnected by the client.");
+                yield break;
+            }
+
             var nextSnapshotJson = JsonSerializer.Serialize(nextSnapshot);
             if (nextSnapshotJson == lastSnapshotJson) continue;
 
