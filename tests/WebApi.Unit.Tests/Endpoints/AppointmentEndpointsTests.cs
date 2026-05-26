@@ -19,7 +19,7 @@ public class AppointmentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Appointment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Appointment.GetAppointmentById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Appointment.GetAppointmentById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Appointment.GetAppointmentById.Request { Id = appointmentId };
 
         // Act
@@ -45,7 +45,7 @@ public class AppointmentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Appointment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Appointment.GetAppointmentById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Appointment.GetAppointmentById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Appointment.GetAppointmentById.Request { Id = appointmentId };
 
         // Act
@@ -81,7 +81,7 @@ public class AppointmentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Appointment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Appointment.ListAppointments.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Appointment.ListAppointments.Endpoint>(fakeUnitOfWork).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.Appointment.ListAppointments.Response 

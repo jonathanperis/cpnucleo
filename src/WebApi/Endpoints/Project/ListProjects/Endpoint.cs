@@ -20,7 +20,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         if (HttpContext.Request.AcceptsServerSentEvents())
         {
             await TypedResults
-                .ServerSentEvents(ListingSseExtensions.CreateListingStream(ct => BuildResponseAsync(request, ct), Logger, cancellationToken), "listing")
+                .ServerSentEvents(ListingSseExtensions.CreateListingStream(ct => BuildResponseAsync(request, ct), HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>(), Logger, cancellationToken), "listing")
                 .ExecuteAsync(HttpContext);
             return;
         }

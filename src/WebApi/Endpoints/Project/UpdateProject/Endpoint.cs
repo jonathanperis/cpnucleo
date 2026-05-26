@@ -37,6 +37,8 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Logger.LogInformation("Update result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");
 
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -17,7 +17,7 @@ public class OrganizationEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Organization.GetOrganizationById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Organization.GetOrganizationById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Organization.GetOrganizationById.Request { Id = organizationId };
 
         // Act
@@ -43,7 +43,7 @@ public class OrganizationEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Organization.GetOrganizationById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Organization.GetOrganizationById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Organization.GetOrganizationById.Request { Id = organizationId };
 
         // Act
@@ -68,7 +68,7 @@ public class OrganizationEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Organization.CreateOrganization.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Organization.CreateOrganization.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Organization.CreateOrganization.Request
         {
             Id = organizationId,
@@ -100,7 +100,7 @@ public class OrganizationEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Organization.UpdateOrganization.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Organization.UpdateOrganization.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Organization.UpdateOrganization.Request
         {
             Id = organizationId,
@@ -130,7 +130,7 @@ public class OrganizationEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Organization.RemoveOrganization.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Organization.RemoveOrganization.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.Organization.RemoveOrganization.RemoveOrganizationRequest { Ids = new List<Guid> { organizationId } };
 
         // Act
@@ -165,7 +165,7 @@ public class OrganizationEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Organization.ListOrganizations.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.Organization.ListOrganizations.Endpoint>(fakeUnitOfWork).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.Organization.ListOrganizations.Response 

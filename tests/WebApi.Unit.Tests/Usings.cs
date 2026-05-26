@@ -7,3 +7,7 @@ global using Domain.Repositories;
 global using Domain.Models;
 global using Domain.Entities;
 global using Application.Features.Projects.CreateProject;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.DependencyInjection;
+global using WebApi.Common.Services;
+global using WebApi.Unit.Tests.Common;

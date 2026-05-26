@@ -19,7 +19,7 @@ public class UserAssignmentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<UserAssignment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.UserAssignment.GetUserAssignmentById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.UserAssignment.GetUserAssignmentById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.UserAssignment.GetUserAssignmentById.Request { Id = userAssignmentId };
 
         // Act
@@ -44,7 +44,7 @@ public class UserAssignmentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<UserAssignment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.UserAssignment.GetUserAssignmentById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.UserAssignment.GetUserAssignmentById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.UserAssignment.GetUserAssignmentById.Request { Id = userAssignmentId };
 
         // Act
@@ -80,7 +80,7 @@ public class UserAssignmentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<UserAssignment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.UserAssignment.ListUserAssignments.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.UserAssignment.ListUserAssignments.Endpoint>(fakeUnitOfWork).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.UserAssignment.ListUserAssignments.Response 

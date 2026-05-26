@@ -15,7 +15,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId))
             .Returns(Task.FromResult<Project?>(project));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.GetProjectById.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.GetProjectById.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.GetProjectById.Request { Id = projectId };
 
         // Act
@@ -38,7 +38,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId))
             .Returns(Task.FromResult<Project?>(null));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.GetProjectById.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.GetProjectById.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.GetProjectById.Request { Id = projectId };
 
         // Act
@@ -63,7 +63,7 @@ public class ProjectEndpointsTests
             fakeStore,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<Application.Features.Projects.CreateProject.CreateProjectHandler>.Instance);
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler);
+        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler).WithListingServices();
         var req = new WebApi.Endpoints.Project.CreateProject.Request
         {
             Id = projectId,
@@ -94,7 +94,7 @@ public class ProjectEndpointsTests
             fakeStore,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<Application.Features.Projects.CreateProject.CreateProjectHandler>.Instance);
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler);
+        var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler).WithListingServices();
         var req = new WebApi.Endpoints.Project.CreateProject.Request
         {
             Id = projectId,
@@ -118,7 +118,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(project));
         A.CallTo(() => fakeRepository.UpdateAsync(A<Project>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.UpdateProject.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.UpdateProject.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.UpdateProject.Request
         {
             Id = projectId,
@@ -144,7 +144,7 @@ public class ProjectEndpointsTests
         var fakeRepository = A.Fake<IProjectRepository>();
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(null));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.UpdateProject.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.UpdateProject.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.UpdateProject.Request
         {
             Id = projectId,
@@ -171,7 +171,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(project));
         A.CallTo(() => fakeRepository.UpdateAsync(A<Project>._)).Returns(Task.FromResult(true));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.RemoveProject.RemoveProjectRequest { Ids = new List<Guid> { projectId } };
 
         // Act
@@ -191,7 +191,7 @@ public class ProjectEndpointsTests
         var fakeRepository = A.Fake<IProjectRepository>();
         A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(null));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.RemoveProject.RemoveProjectRequest { Ids = new List<Guid> { projectId } };
 
         // Act
@@ -223,7 +223,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeRepository.GetAllAsync(A<PaginationParams>._))
             .Returns(Task.FromResult(paginatedResult));
 
-        var ep = Factory.Create<WebApi.Endpoints.Project.ListProjects.Endpoint>(fakeRepository);
+        var ep = Factory.Create<WebApi.Endpoints.Project.ListProjects.Endpoint>(fakeRepository).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.Project.ListProjects.Response 
