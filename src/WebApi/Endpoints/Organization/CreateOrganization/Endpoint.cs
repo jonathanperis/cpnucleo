@@ -51,6 +51,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Service completed successfully.");
 
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }

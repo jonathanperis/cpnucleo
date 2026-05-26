@@ -20,7 +20,7 @@ public class UserEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<User>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.User.GetUserById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.User.GetUserById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.User.GetUserById.Request { Id = userId };
 
         // Act
@@ -46,7 +46,7 @@ public class UserEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<User>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.User.GetUserById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.User.GetUserById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.User.GetUserById.Request { Id = userId };
 
         // Act
@@ -75,7 +75,7 @@ public class UserEndpointsTests
         var passwordHasher = A.Fake<IPasswordHasher>();
         A.CallTo(() => passwordHasher.Hash("Password@123")).Returns(new PasswordHash("$argon2id$hash", string.Empty));
 
-        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeDbContext, passwordHasher);
+        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeDbContext, passwordHasher).WithListingServices();
         var req = new WebApi.Endpoints.User.CreateUser.Request
         {
             Id = userId,
@@ -111,7 +111,7 @@ public class UserEndpointsTests
         var passwordHasher = A.Fake<IPasswordHasher>();
         A.CallTo(() => passwordHasher.Hash("Password@123")).Returns(new PasswordHash("$argon2id$updated-hash", string.Empty));
 
-        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeDbContext, passwordHasher);
+        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeDbContext, passwordHasher).WithListingServices();
         var req = new WebApi.Endpoints.User.UpdateUser.Request
         {
             Id = userId,
@@ -144,7 +144,7 @@ public class UserEndpointsTests
         A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
 
-        var ep = Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(fakeDbContext);
+        var ep = Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(fakeDbContext).WithListingServices();
         var req = new WebApi.Endpoints.User.RemoveUser.RemoveUserRequest { Ids = new List<Guid> { userId } };
 
         // Act
@@ -179,7 +179,7 @@ public class UserEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<User>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.User.ListUsers.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.User.ListUsers.Endpoint>(fakeUnitOfWork).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.User.ListUsers.Response 

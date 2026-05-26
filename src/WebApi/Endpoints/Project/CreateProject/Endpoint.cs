@@ -36,6 +36,8 @@ public class Endpoint(CreateProjectHandler handler) : Endpoint<Request, Response
                 OrganizationId = result.Project.OrganizationId
             };
 
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }

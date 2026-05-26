@@ -51,6 +51,8 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
         Logger.LogInformation("Remove result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");
 
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }

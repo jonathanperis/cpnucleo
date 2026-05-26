@@ -2,8 +2,6 @@ namespace WebApi.Common.Extensions;
 
 public static class ListingSseExtensions
 {
-    private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(10);
-
     public static bool AcceptsServerSentEvents(this HttpRequest request) =>
         request.Headers.Accept
             .Where(value => !string.IsNullOrWhiteSpace(value))
@@ -21,15 +19,18 @@ public static class ListingSseExtensions
 
     public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
         Func<CancellationToken, Task<TResponse>> getSnapshot,
+        ListingChangeNotifier listingChanges,
         ILogger logger,
         CancellationToken cancellationToken) =>
-        ReadListingSnapshots(getSnapshot, logger, cancellationToken);
+        ReadListingSnapshots(getSnapshot, listingChanges, logger, cancellationToken);
 
     private static async IAsyncEnumerable<TResponse> ReadListingSnapshots<TResponse>(
         Func<CancellationToken, Task<TResponse>> getSnapshot,
+        ListingChangeNotifier listingChanges,
         ILogger logger,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        var observedVersion = listingChanges.CurrentVersion;
         TResponse lastSnapshot;
         try
         {
@@ -48,7 +49,7 @@ public static class ListingSseExtensions
         {
             try
             {
-                await Task.Delay(RefreshInterval, cancellationToken);
+                observedVersion = await listingChanges.WaitForChangeAsync(observedVersion, cancellationToken);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {

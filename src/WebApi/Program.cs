@@ -73,6 +73,7 @@ builder.Services.AddRateLimiter(options =>
 });
 
 builder.Services.AddHealthChecks();
+builder.Services.AddSingleton<ListingChangeNotifier>();
 
 builder.Services
     // .AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = WebApi.DiscoveredTypes.All)

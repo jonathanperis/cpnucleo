@@ -38,6 +38,8 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         Logger.LogInformation("Update result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");
 
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -59,6 +59,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
 
         Logger.LogInformation("Service completed successfully.");
 
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }
