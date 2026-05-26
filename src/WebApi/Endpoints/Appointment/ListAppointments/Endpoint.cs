@@ -35,7 +35,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Fetching all appointments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
-        var response = await repository.GetAllAsync(request.Pagination);
+        var response = await repository.GetAllAsync(request.Pagination, cancellationToken);
 
         Logger.LogInformation("Fetched {Count} appointment records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");

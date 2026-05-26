@@ -38,8 +38,15 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
     error.value = '';
 
     void webApiClient.subscribeList(resource.key, page.value, pageSize.value, (result) => {
+      const nextTotal = result.totalCount ?? result.items?.length ?? 0;
+      const lastPage = Math.max(1, Math.ceil(nextTotal / pageSize.value));
+      if (page.value > lastPage) {
+        page.value = lastPage;
+        return;
+      }
+
       items.value = result.items ?? [];
-      total.value = result.totalCount ?? items.value.length;
+      total.value = nextTotal;
       loading.value = false;
     }, controller.signal).catch((err) => {
       if (controller.signal.aborted) return;

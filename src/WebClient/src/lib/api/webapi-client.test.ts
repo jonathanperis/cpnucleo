@@ -44,6 +44,24 @@ describe('webapi client', () => {
     expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 3, items: [{ id: '1' }] }));
   });
 
+  it('fails closed when the list response is not an SSE stream', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    const client = createWebApiClient('http://example.test/api');
+    await expect(client.list('projects')).rejects.toMatchObject({ name: 'ApiError', message: 'The server did not open a listing stream.' });
+  });
+
+  it('fails closed when the SSE stream ends before data arrives', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
+    const client = createWebApiClient('http://example.test/api');
+    await expect(client.list('projects')).rejects.toMatchObject({ name: 'ApiError', message: 'The listing stream ended before sending data.' });
+  });
+
+  it('normalizes malformed SSE payloads as API errors', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('event: listing\ndata: {nope}\n\n', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
+    const client = createWebApiClient('http://example.test/api');
+    await expect(client.list('projects')).rejects.toMatchObject({ name: 'ApiError', status: 0 });
+  });
+
   it('normalizes API errors', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ title: 'Too many requests' }), { status: 429 }));
     await expect(requestJson('http://example.test')).rejects.toMatchObject({ name: 'ApiError', status: 429, message: 'Too many requests' });

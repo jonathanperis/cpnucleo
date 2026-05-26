@@ -4,8 +4,20 @@ public static class ListingSseExtensions
 {
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(10);
 
-    public static bool AcceptsServerSentEvents(this HttpRequest request) =>
-        request.Headers.Accept.Any(value => value?.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase) == true);
+    public static bool AcceptsServerSentEvents(this HttpRequest request)
+    {
+        foreach (var value in request.Headers.Accept)
+        {
+            foreach (var part in value?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [])
+            {
+                if (!MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType)) continue;
+                if (!"text/event-stream".Equals(mediaType.MediaType, StringComparison.OrdinalIgnoreCase)) continue;
+                if (mediaType.Quality is null or > 0) return true;
+            }
+        }
+
+        return false;
+    }
 
     public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
         Func<CancellationToken, Task<TResponse>> getSnapshot,
@@ -18,10 +30,12 @@ public static class ListingSseExtensions
         ILogger logger,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        var lastSnapshot = await getSnapshot(cancellationToken);
+        var lastSnapshotJson = JsonSerializer.Serialize(lastSnapshot);
+        yield return lastSnapshot;
+
         while (!cancellationToken.IsCancellationRequested)
         {
-            yield return await getSnapshot(cancellationToken);
-
             try
             {
                 await Task.Delay(RefreshInterval, cancellationToken);
@@ -31,6 +45,14 @@ public static class ListingSseExtensions
                 logger.LogDebug("Listing SSE stream disconnected by the client.");
                 yield break;
             }
+
+            var nextSnapshot = await getSnapshot(cancellationToken);
+            var nextSnapshotJson = JsonSerializer.Serialize(nextSnapshot);
+            if (nextSnapshotJson == lastSnapshotJson) continue;
+
+            lastSnapshot = nextSnapshot;
+            lastSnapshotJson = nextSnapshotJson;
+            yield return lastSnapshot;
         }
     }
 }
