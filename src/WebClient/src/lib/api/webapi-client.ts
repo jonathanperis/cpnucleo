@@ -1,6 +1,6 @@
 import { WEBAPI_BASE_URL } from '../config';
 import { findResource } from './resource-metadata';
-import { requestJson } from './http-client';
+import { ApiError, getStoredToken, requestJson } from './http-client';
 import type { ApiEntity, PaginatedResult, ResourceKey } from './types';
 
 const normalizeBase = (baseUrl: string) => baseUrl.replace(/\/$/, '');
@@ -13,6 +13,7 @@ const withQuery = (url: string, params?: Record<string, string | number | undefi
 };
 
 type ListEnvelope<T extends ApiEntity> = T[] | PaginatedResult<T> | { result?: PaginatedResult<T> };
+type ListSubscriber<T extends ApiEntity> = (page: PaginatedResult<T>) => void;
 
 export const normalizeList = <T extends ApiEntity>(payload: ListEnvelope<T>): PaginatedResult<T> => {
   if (Array.isArray(payload)) return { items: payload, totalCount: payload.length, pageNumber: 1, pageSize: payload.length };
@@ -26,6 +27,14 @@ export const normalizeList = <T extends ApiEntity>(payload: ListEnvelope<T>): Pa
   };
 };
 
+export const parseServerSentEventData = (event: string): string[] => {
+  const dataLines = event
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith('data:'))
+    .map((line) => line.slice(5).trimStart());
+  return dataLines.length > 0 ? [dataLines.join('\n')] : [];
+};
+
 const paginationParams = (pageNumber: number, pageSize: number) => ({
   pageNumber,
   pageSize,
@@ -33,13 +42,82 @@ const paginationParams = (pageNumber: number, pageSize: number) => ({
   'pagination.pageSize': pageSize,
 });
 
+const createAbortError = () => new DOMException('The operation was aborted.', 'AbortError');
+
+const throwIfAborted = (signal?: AbortSignal) => {
+  if (signal?.aborted) throw createAbortError();
+};
+
+const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T> | undefined> => {
+  throwIfAborted(signal);
+
+  const headers = new Headers({ Accept: 'text/event-stream' });
+  const token = getStoredToken();
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+
+  let response: Response;
+  try {
+    response = await fetch(url, { headers, signal });
+  } catch (error) {
+    if (signal?.aborted) throw createAbortError();
+    throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
+  }
+
+  if (!response.ok) throw new ApiError(response.status, `Request failed with status ${response.status}.`);
+  if (!response.body) throw new ApiError(0, 'The server did not open a listing stream.');
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      throwIfAborted(signal);
+      const { done, value } = await reader.read();
+      buffer += decoder.decode(value, { stream: !done });
+      const events = buffer.split(/\r?\n\r?\n/);
+      buffer = events.pop() ?? '';
+
+      for (const event of events) {
+        for (const data of parseServerSentEventData(event)) {
+          const page = normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
+          onPage(page);
+          if (stopAfterFirst) {
+            await reader.cancel();
+            return page;
+          }
+        }
+      }
+
+      if (done) break;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  if (buffer.trim()) {
+    for (const data of parseServerSentEventData(buffer)) {
+      const page = normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
+      onPage(page);
+      return page;
+    }
+  }
+
+  return undefined;
+};
+
 export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
   const root = normalizeBase(baseUrl);
   return {
     async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
-      const payload = await requestJson<ListEnvelope<T>>(withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize)), { signal });
-      return normalizeList(payload);
+      const url = withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize));
+      const page = await streamList<T>(url, () => undefined, signal, true);
+      return page ?? { items: [], totalCount: 0, pageNumber, pageSize };
+    },
+    async subscribeList<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber: number, pageSize: number, onPage: ListSubscriber<T>, signal?: AbortSignal) {
+      const resource = findResource(resourceKey);
+      await streamList<T>(withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize)), onPage, signal);
     },
     async get<T extends ApiEntity>(resourceKey: ResourceKey, id: string, signal?: AbortSignal) {
       const resource = findResource(resourceKey);

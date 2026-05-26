@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createWebApiClient, normalizeList } from './webapi-client';
+import { createWebApiClient, normalizeList, parseServerSentEventData } from './webapi-client';
 import { requestJson } from './http-client';
+
+const sseResponse = (payload: unknown) => new Response(
+  `event: listing\ndata: ${JSON.stringify(payload)}\n\n`,
+  { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+);
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -10,8 +15,12 @@ describe('webapi client', () => {
     expect(normalizeList({ data: [{ id: '2' }], total: 4, page: 2, pageSize: 1 }).items?.[0].id).toBe('2');
   });
 
+  it('parses server sent event data lines', () => {
+    expect(parseServerSentEventData('event: listing\ndata: {"ok":true}\n\n')).toEqual(['{"ok":true}']);
+  });
+
   it('uses plural list and singular item endpoints', async () => {
-    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }));
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseResponse([]));
     const client = createWebApiClient('http://example.test/api');
     await client.list('projects', 2, 10);
     const listUrl = new URL(fetchMock.mock.calls[0][0]?.toString() ?? '');
@@ -20,10 +29,19 @@ describe('webapi client', () => {
     expect(listUrl.searchParams.get('pageSize')).toBe('10');
     expect(listUrl.searchParams.get('pagination.pageNumber')).toBe('2');
     expect(listUrl.searchParams.get('pagination.pageSize')).toBe('10');
+    expect(new Headers((fetchMock.mock.calls[0][1] as RequestInit).headers).get('Accept')).toBe('text/event-stream');
     fetchMock.mockResolvedValue(new Response(JSON.stringify({ id: 'abc' }), { status: 200 }));
     await client.update('projects', 'abc', { name: 'Demo' });
     expect(fetchMock.mock.calls[1][0]?.toString()).toBe('http://example.test/api/project?id=abc');
     expect((fetchMock.mock.calls[1][1] as RequestInit).method).toBe('PATCH');
+  });
+
+  it('notifies subscribers for streamed list pages', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseResponse({ result: { data: [{ id: '1' }], totalCount: 3, pageNumber: 1, pageSize: 1 } }));
+    const client = createWebApiClient('http://example.test/api');
+    const onPage = vi.fn();
+    await client.subscribeList('projects', 1, 1, onPage);
+    expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 3, items: [{ id: '1' }] }));
   });
 
   it('normalizes API errors', async () => {
