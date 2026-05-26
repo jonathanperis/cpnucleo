@@ -35,7 +35,8 @@ jobs:
       - name: Setup .NET SDK
         if: matrix.service != 'WebClient'
         run: |
-          curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+          curl -fsSL https://raw.githubusercontent.com/dotnet/install-scripts/dc10e883fdc4c1a655990507ca050d969ebe7d6f/src/dotnet-install.sh -o dotnet-install.sh
+          echo "082f7685e156738a1b2e2ed8381a621870d4ce8e8c59278034556f05c186eb2e  dotnet-install.sh" | sha256sum -c -
           chmod +x dotnet-install.sh
           ./dotnet-install.sh --jsonfile global.json --install-dir "$HOME/.dotnet"
           echo "$HOME/.dotnet" >> "$GITHUB_PATH"
@@ -43,7 +44,9 @@ jobs:
       - name: Setup Bun
         if: matrix.service == 'WebClient'
         run: |
-          curl -fsSL https://bun.sh/install | bash -s "bun-v1.3.11"
+          curl -fsSL https://raw.githubusercontent.com/oven-sh/bun/4c954ab998383f72ca7baee5a9e77fd16c623fb2/src/runtime/cli/install.sh -o bun-install.sh
+          echo "bab8acfb046aac8c72407bdcce903957665d655d7acaa3e11c7c4616beae68dd  bun-install.sh" | sha256sum -c -
+          bash bun-install.sh "bun-v1.3.11"
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
 
       - name: Restore Dependencies
@@ -96,6 +99,8 @@ jobs:
           fi
 
           curl -Os https://uploader.codecov.io/latest/linux/codecov
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+          sha256sum -c codecov.SHA256SUM
           chmod +x codecov
           ./codecov -d ./coverage -t "$CODECOV_TOKEN" || true
 
