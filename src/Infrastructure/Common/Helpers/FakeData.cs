@@ -2,6 +2,11 @@ namespace Infrastructure.Common.Helpers;
 
 internal static class FakeDataHelper
 {
+    private const string DefaultDemoLogin = "demo@cpnucleo.local";
+    private const string DefaultDemoPassword = "CpnucleoDemo2026!";
+    private const string DefaultDemoName = "Cpnucleo Demo";
+    private static readonly Guid DefaultDemoUserId = Guid.Parse("0198a4a8-6d1f-7a54-9b1c-c9c430f2d001");
+
     private static List<Appointment>? Appointments { get; set; }
     private static List<AssignmentImpediment>? AssignmentImpediments { get; set; }
     private static List<Assignment>? Assignments { get; set; }
@@ -19,6 +24,8 @@ internal static class FakeDataHelper
         var random = new Random();
         var sb = new StringBuilder();
         var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
+        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(DefaultDemoPassword);
+        AppendDatabaseResetAndDefaultUserSql(sb, defaultDemoPasswordHash);
         
         var organizationFaker = new Faker<Organization>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
@@ -300,8 +307,10 @@ internal static class FakeDataHelper
     {
         var sb = new StringBuilder();
         var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
+        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(DefaultDemoPassword);
 
         Directory.CreateDirectory("dml-data");
+        AppendDatabaseResetAndDefaultUserSql(sb, defaultDemoPasswordHash);
 
         var organizationFaker = new Faker<Organization>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
@@ -580,6 +589,40 @@ internal static class FakeDataHelper
         const string filePath = "003-database-dump-csv-dml.sql";
         File.WriteAllText(filePath, sb.ToString());
     }
+
+    private static void AppendDatabaseResetAndDefaultUserSql(StringBuilder sb, PasswordHash defaultDemoPasswordHash)
+    {
+        sb.AppendLine($"""
+                      TRUNCATE TABLE
+                          "Appointments",
+                          "AssignmentImpediments",
+                          "UserAssignments",
+                          "Assignments",
+                          "UserProjects",
+                          "Projects",
+                          "Organizations",
+                          "Workflows",
+                          "AssignmentTypes",
+                          "Impediments"
+                      RESTART IDENTITY CASCADE;
+
+                      DELETE FROM "Users" WHERE "Login" <> '{DefaultDemoLogin}';
+
+                      INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "DeletedAt", "Active")
+                      SELECT '{DefaultDemoUserId}'::UUID, '{EscapeSqlField(DefaultDemoName)}', '{DefaultDemoLogin}', '{EscapeSqlField(defaultDemoPasswordHash.Hash)}', '{EscapeSqlField(defaultDemoPasswordHash.Salt)}', NOW(), NULL, NULL, true
+                      WHERE NOT EXISTS (SELECT 1 FROM "Users" WHERE "Login" = '{DefaultDemoLogin}');
+
+                      UPDATE "Users"
+                      SET "Name" = '{EscapeSqlField(DefaultDemoName)}',
+                          "Password" = '{EscapeSqlField(defaultDemoPasswordHash.Hash)}',
+                          "Salt" = '{EscapeSqlField(defaultDemoPasswordHash.Salt)}',
+                          "DeletedAt" = NULL,
+                          "Active" = true
+                      WHERE "Login" = '{DefaultDemoLogin}';
+                      """);
+    }
+
+    private static string EscapeSqlField(string value) => value.Replace("'", "''");
 
     private static string EscapeCsvField(string value)
     {
