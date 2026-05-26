@@ -2,7 +2,7 @@ import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io
 import { formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
-import { buildPageOptions, getLastPage } from './pagination';
+import { buildPageOptions, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 
 const formatValue = (value: unknown): string => {
   if (value === null || value === undefined || value === '') return '—';
@@ -22,7 +22,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
   const selected = useSignal<ApiEntity | null>(null);
   const details = useSignal<ApiEntity | null>(null);
   const page = useSignal(1);
-  const pageSize = useSignal(25);
+  const pageSize = useSignal(DEFAULT_PAGE_SIZE);
   const total = useSignal(0);
   const refreshKey = useSignal(0);
 
