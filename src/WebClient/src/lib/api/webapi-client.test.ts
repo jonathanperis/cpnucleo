@@ -19,8 +19,8 @@ describe('webapi client', () => {
     expect(parseServerSentEventData('event: listing\ndata: {"ok":true}\n\n')).toEqual(['{"ok":true}']);
   });
 
-  it('uses plural list and singular item endpoints', async () => {
-    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseResponse([]));
+  it('uses paginated JSON lists and singular item endpoints', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     const client = createWebApiClient('http://example.test/api');
     await client.list('projects', 2, 10);
     const listUrl = new URL(fetchMock.mock.calls[0][0]?.toString() ?? '');
@@ -29,7 +29,7 @@ describe('webapi client', () => {
     expect(listUrl.searchParams.get('pageSize')).toBe('10');
     expect(listUrl.searchParams.get('pagination.pageNumber')).toBe('2');
     expect(listUrl.searchParams.get('pagination.pageSize')).toBe('10');
-    expect(new Headers((fetchMock.mock.calls[0][1] as RequestInit).headers).get('Accept')).toBe('text/event-stream');
+    expect(new Headers((fetchMock.mock.calls[0][1] as RequestInit).headers).get('Accept')).toBe('application/json');
     fetchMock.mockResolvedValue(new Response(JSON.stringify({ id: 'abc' }), { status: 200 }));
     await client.update('projects', 'abc', { name: 'Demo' });
     expect(fetchMock.mock.calls[1][0]?.toString()).toBe('http://example.test/api/project?id=abc');
@@ -37,29 +37,47 @@ describe('webapi client', () => {
   });
 
   it('notifies subscribers for streamed list pages', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseResponse({ result: { data: [{ id: '1' }], totalCount: 3, pageNumber: 1, pageSize: 1 } }));
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [], totalCount: 0, pageNumber: 1, pageSize: 1 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(sseResponse({ result: { data: [{ id: '1' }], totalCount: 3, pageNumber: 1, pageSize: 1 } }));
     const client = createWebApiClient('http://example.test/api');
     const onPage = vi.fn();
     await client.subscribeList('projects', 1, 1, onPage);
     expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 3, items: [{ id: '1' }] }));
   });
 
-  it('fails closed when the list response is not an SSE stream', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+  it('seeds subscribers from the paged JSON endpoint before waiting for live SSE updates', async () => {
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [{ id: 'seed' }], totalCount: 7, pageNumber: 1, pageSize: 5 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockReturnValueOnce(new Promise(() => undefined));
     const client = createWebApiClient('http://example.test/api');
-    await expect(client.list('projects')).rejects.toMatchObject({ name: 'ApiError', message: 'The server did not open a listing stream.' });
+    const onPage = vi.fn();
+    void client.subscribeList('projects', 1, 5, onPage).catch(() => undefined);
+    await vi.waitFor(() => expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 7, items: [{ id: 'seed' }] })));
+  });
+
+  it('fails closed when the subscription response is not an SSE stream', async () => {
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    const client = createWebApiClient('http://example.test/api');
+    await expect(client.subscribeList('projects', 1, 25, () => undefined)).rejects.toMatchObject({ name: 'ApiError', message: 'The server did not open a listing stream.' });
   });
 
   it('fails closed when the SSE stream ends before data arrives', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response('', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
     const client = createWebApiClient('http://example.test/api');
-    await expect(client.list('projects')).rejects.toMatchObject({ name: 'ApiError', message: 'The listing stream ended before sending data.' });
+    await expect(client.subscribeList('projects', 1, 25, () => undefined)).rejects.toMatchObject({ name: 'ApiError', message: 'The listing stream ended before sending data.' });
   });
 
   it('normalizes malformed SSE payloads as API errors', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('event: listing\ndata: {nope}\n\n', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response('event: listing\ndata: {nope}\n\n', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
     const client = createWebApiClient('http://example.test/api');
-    await expect(client.list('projects')).rejects.toMatchObject({ name: 'ApiError', status: 0 });
+    await expect(client.subscribeList('projects', 1, 25, () => undefined)).rejects.toMatchObject({ name: 'ApiError', status: 0 });
   });
 
   it('normalizes API errors', async () => {
