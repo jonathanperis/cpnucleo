@@ -19,7 +19,7 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
             new { Id = id });
     }
 
-    public async Task<PaginatedResult<Project?>> GetAllAsync(PaginationParams pagination)
+    public async Task<PaginatedResult<Project?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
@@ -33,11 +33,13 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
                    SELECT COUNT(*) FROM "Projects" WHERE "Active" = true;
                    """;
 
-        await using var multi = await connection.QueryMultipleAsync(sql, new
+        var command = new CommandDefinition(sql, new
         {
             pagination.Offset,
             pagination.PageSize
-        });
+        }, cancellationToken: cancellationToken);
+
+        await using var multi = await connection.QueryMultipleAsync(command);
 
         return new PaginatedResult<Project?>
         {

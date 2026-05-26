@@ -48,7 +48,16 @@ const throwIfAborted = (signal?: AbortSignal) => {
   if (signal?.aborted) throw createAbortError();
 };
 
-const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T> | undefined> => {
+const toApiError = (error: unknown) => {
+  if (error instanceof ApiError) return error;
+  if (error instanceof DOMException && error.name === 'AbortError') return error;
+  return new ApiError(0, error instanceof Error ? error.message : 'Unable to read the listing stream.', error);
+};
+
+const parseListPage = <T extends ApiEntity>(data: string): PaginatedResult<T> =>
+  normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
+
+const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T>> => {
   throwIfAborted(signal);
 
   const headers = new Headers({ Accept: 'text/event-stream' });
@@ -64,46 +73,66 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
   }
 
   if (!response.ok) throw new ApiError(response.status, `Request failed with status ${response.status}.`);
+  if (!response.headers.get('Content-Type')?.toLowerCase().includes('text/event-stream')) {
+    throw new ApiError(0, 'The server did not open a listing stream.');
+  }
   if (!response.body) throw new ApiError(0, 'The server did not open a listing stream.');
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
+  let lastPage: PaginatedResult<T> | undefined;
+  let receivedData = false;
+
+  const handleEvent = async (event: string): Promise<PaginatedResult<T> | undefined> => {
+    for (const data of parseServerSentEventData(event)) {
+      receivedData = true;
+      const page = parseListPage<T>(data);
+      lastPage = page;
+      onPage(page);
+      if (stopAfterFirst) {
+        await reader.cancel();
+        return page;
+      }
+    }
+    return undefined;
+  };
 
   try {
     while (true) {
       throwIfAborted(signal);
-      const { done, value } = await reader.read();
-      buffer += decoder.decode(value, { stream: !done });
-      const events = buffer.split(/\r?\n\r?\n/);
-      buffer = events.pop() ?? '';
+      let chunk: ReadableStreamReadResult<Uint8Array>;
+      try {
+        chunk = await reader.read();
+        buffer += decoder.decode(chunk.value, { stream: !chunk.done });
+        const events = buffer.split(/\r?\n\r?\n/);
+        buffer = events.pop() ?? '';
 
-      for (const event of events) {
-        for (const data of parseServerSentEventData(event)) {
-          const page = normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
-          onPage(page);
-          if (stopAfterFirst) {
-            await reader.cancel();
-            return page;
-          }
+        for (const event of events) {
+          const page = await handleEvent(event);
+          if (page) return page;
         }
+      } catch (error) {
+        throw toApiError(error);
       }
 
-      if (done) break;
+      if (chunk.done) break;
     }
   } finally {
     reader.releaseLock();
   }
 
   if (buffer.trim()) {
-    for (const data of parseServerSentEventData(buffer)) {
-      const page = normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
-      onPage(page);
-      return page;
+    try {
+      const page = await handleEvent(buffer);
+      if (page) return page;
+    } catch (error) {
+      throw toApiError(error);
     }
   }
 
-  return undefined;
+  if (!receivedData) throw new ApiError(0, 'The listing stream ended before sending data.');
+  return lastPage!;
 };
 
 export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
@@ -113,7 +142,7 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
       const resource = findResource(resourceKey);
       const url = withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize));
       const page = await streamList<T>(url, () => undefined, signal, true);
-      return page ?? { items: [], totalCount: 0, pageNumber, pageSize };
+      return page;
     },
     async subscribeList<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber: number, pageSize: number, onPage: ListSubscriber<T>, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
