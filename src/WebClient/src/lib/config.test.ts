@@ -10,7 +10,7 @@ const clearPublicServiceEnv = () => {
 
 const importConfigWithPublicEnvCleared = async () => {
   clearPublicServiceEnv();
-  return import(`./config?defaults=${Date.now()}-${Math.random()}`);
+  return import(`./config?defaults=${Date.now()}-${Math.random().toString(36).slice(2)}`);
 };
 
 describe('public service URLs', () => {
