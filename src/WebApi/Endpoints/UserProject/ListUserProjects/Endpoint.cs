@@ -35,7 +35,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Fetching all userProjects with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
-        var response = await repository.GetAllAsync(request.Pagination);
+        var response = await repository.GetAllAsync(request.Pagination, cancellationToken);
 
         Logger.LogInformation("Fetched {Count} userProject records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");

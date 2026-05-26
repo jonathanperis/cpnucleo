@@ -23,7 +23,7 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
             new { Id = id }, transaction);
     }
 
-    public async Task<PaginatedResult<T?>> GetAllAsync(PaginationParams pagination)
+    public async Task<PaginatedResult<T?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
@@ -37,11 +37,13 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
                    SELECT COUNT(*) FROM "{tableName}" WHERE "Active" = true;
                    """;
 
-        await using var multi = await connection.QueryMultipleAsync(sql, new
+        var command = new CommandDefinition(sql, new
         {
             pagination.Offset,
             pagination.PageSize
-        }, transaction);
+        }, transaction, cancellationToken: cancellationToken);
+
+        await using var multi = await connection.QueryMultipleAsync(command);
 
         return new PaginatedResult<T?>
         {
