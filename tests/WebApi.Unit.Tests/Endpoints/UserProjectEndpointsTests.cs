@@ -19,7 +19,7 @@ public class UserProjectEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<UserProject>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.UserProject.GetUserProjectById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.UserProject.GetUserProjectById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.UserProject.GetUserProjectById.Request { Id = userProjectId };
 
         // Act
@@ -44,7 +44,7 @@ public class UserProjectEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<UserProject>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.UserProject.GetUserProjectById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.UserProject.GetUserProjectById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.UserProject.GetUserProjectById.Request { Id = userProjectId };
 
         // Act
@@ -80,7 +80,7 @@ public class UserProjectEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<UserProject>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.UserProject.ListUserProjects.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.UserProject.ListUserProjects.Endpoint>(fakeUnitOfWork).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.UserProject.ListUserProjects.Response 

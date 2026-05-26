@@ -47,6 +47,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Service completed successfully.");
 
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+
         await Send.OkAsync(Response, cancellationToken);
     }
 }

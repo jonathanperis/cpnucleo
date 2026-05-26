@@ -19,7 +19,7 @@ public class AssignmentImpedimentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<AssignmentImpediment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.AssignmentImpediment.GetAssignmentImpedimentById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.AssignmentImpediment.GetAssignmentImpedimentById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.AssignmentImpediment.GetAssignmentImpedimentById.Request { Id = assignmentImpedimentId };
 
         // Act
@@ -45,7 +45,7 @@ public class AssignmentImpedimentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<AssignmentImpediment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.AssignmentImpediment.GetAssignmentImpedimentById.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.AssignmentImpediment.GetAssignmentImpedimentById.Endpoint>(fakeUnitOfWork).WithListingServices();
         var req = new WebApi.Endpoints.AssignmentImpediment.GetAssignmentImpedimentById.Request { Id = assignmentImpedimentId };
 
         // Act
@@ -81,7 +81,7 @@ public class AssignmentImpedimentEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<AssignmentImpediment>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.AssignmentImpediment.ListAssignmentImpediments.Endpoint>(fakeUnitOfWork);
+        var ep = Factory.Create<WebApi.Endpoints.AssignmentImpediment.ListAssignmentImpediments.Endpoint>(fakeUnitOfWork).WithListingServices();
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.AssignmentImpediment.ListAssignmentImpediments.Response 
