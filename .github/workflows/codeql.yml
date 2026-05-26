@@ -26,7 +26,8 @@ jobs:
 
       - name: Setup .NET SDK
         run: |
-          curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+          curl -fsSL https://raw.githubusercontent.com/dotnet/install-scripts/dc10e883fdc4c1a655990507ca050d969ebe7d6f/src/dotnet-install.sh -o dotnet-install.sh
+          echo "082f7685e156738a1b2e2ed8381a621870d4ce8e8c59278034556f05c186eb2e  dotnet-install.sh" | sha256sum -c -
           chmod +x dotnet-install.sh
           ./dotnet-install.sh --jsonfile global.json --install-dir "$HOME/.dotnet"
           echo "$HOME/.dotnet" >> "$GITHUB_PATH"

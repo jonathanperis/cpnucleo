@@ -86,12 +86,16 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
 
   const handleEvent = async (event: string): Promise<PaginatedResult<T> | undefined> => {
     for (const data of parseServerSentEventData(event)) {
+      throwIfAborted(signal);
       receivedData = true;
       const page = parseListPage<T>(data);
       lastPage = page;
+      throwIfAborted(signal);
       onPage(page);
       if (stopAfterFirst) {
+        throwIfAborted(signal);
         await reader.cancel();
+        throwIfAborted(signal);
         return page;
       }
     }
@@ -104,6 +108,7 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
       let chunk: ReadableStreamReadResult<Uint8Array>;
       try {
         chunk = await reader.read();
+        throwIfAborted(signal);
         buffer += decoder.decode(chunk.value, { stream: !chunk.done });
         const events = buffer.split(/\r?\n\r?\n/);
         buffer = events.pop() ?? '';
@@ -123,6 +128,7 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
   }
 
   if (buffer.trim()) {
+    throwIfAborted(signal);
     try {
       const page = await handleEvent(buffer);
       if (page) return page;
