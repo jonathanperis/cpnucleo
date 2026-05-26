@@ -147,12 +147,14 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
     async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
       const url = withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize));
-      const page = await streamList<T>(url, () => undefined, signal, true);
-      return page;
+      const payload = await requestJson<ListEnvelope<T>>(url, { signal });
+      return normalizeList<T>(payload);
     },
     async subscribeList<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber: number, pageSize: number, onPage: ListSubscriber<T>, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
-      await streamList<T>(withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize)), onPage, signal);
+      const url = withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize));
+      onPage(normalizeList<T>(await requestJson<ListEnvelope<T>>(url, { signal })));
+      await streamList<T>(url, onPage, signal);
     },
     async get<T extends ApiEntity>(resourceKey: ResourceKey, id: string, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
