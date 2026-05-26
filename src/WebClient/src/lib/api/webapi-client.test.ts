@@ -71,12 +71,14 @@ describe('webapi client', () => {
     await waitForExpectation(() => expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 7, items: [{ id: 'seed' }] })));
   });
 
-  it('fails closed when the subscription response is not an SSE stream', async () => {
+  it('keeps the seeded page when the server does not open an SSE stream', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [{ id: 'seed' }], totalCount: 1, pageNumber: 1, pageSize: 25 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
       .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     const client = createWebApiClient('http://example.test/api');
-    await expect(client.subscribeList('projects', 1, 25, () => undefined)).rejects.toMatchObject({ name: 'ApiError', message: 'The server did not open a listing stream.' });
+    const onPage = vi.fn();
+    await expect(client.subscribeList('projects', 1, 25, onPage)).resolves.toBeUndefined();
+    expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 1, items: [{ id: 'seed' }] }));
   });
 
   it('fails closed when the SSE stream ends before data arrives', async () => {
