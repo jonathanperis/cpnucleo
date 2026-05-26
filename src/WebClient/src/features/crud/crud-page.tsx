@@ -2,6 +2,7 @@ import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io
 import { formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
+import { buildPageOptions, getLastPage } from './pagination';
 
 const formatValue = (value: unknown): string => {
   if (value === null || value === undefined || value === '') return '—';
@@ -39,7 +40,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
 
     void webApiClient.subscribeList(resource.key, page.value, pageSize.value, (result) => {
       const nextTotal = result.totalCount ?? result.items?.length ?? 0;
-      const lastPage = Math.max(1, Math.ceil(nextTotal / pageSize.value));
+      const lastPage = getLastPage(nextTotal, pageSize.value);
       if (page.value > lastPage) {
         page.value = lastPage;
         return;
@@ -99,7 +100,12 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
   });
 
   const previousPage = $(() => { if (page.value > 1) page.value -= 1; });
-  const nextPage = $(() => { if (page.value * pageSize.value < total.value) page.value += 1; });
+  const nextPage = $(() => { if (page.value < getLastPage(total.value, pageSize.value)) page.value += 1; });
+  const goToPage = $((nextPageNumber: number) => { page.value = Math.min(Math.max(1, nextPageNumber), getLastPage(total.value, pageSize.value)); });
+  const changePageSize = $((_event: Event, currentTarget: HTMLSelectElement) => {
+    pageSize.value = Number(currentTarget.value);
+    page.value = 1;
+  });
 
   return (
     <section class="space-y-6">
@@ -149,11 +155,30 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
       )}
 
       <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
-        <div class="flex flex-col gap-3 border-b border-line px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-sm text-muted">{total.value} records · page {page.value} of {Math.max(1, Math.ceil(total.value / pageSize.value))}</p>
-          <div class="flex items-center gap-2">
+        <div class="flex flex-col gap-3 border-b border-line px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+          <p class="text-sm text-muted">{total.value} records · page {page.value} of {getLastPage(total.value, pageSize.value)}</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="flex items-center gap-2 text-sm text-muted">
+              Rows
+              <select class="rounded-md border border-line bg-raised px-2 py-2 text-sm text-ink" value={pageSize.value} onChange$={changePageSize}>
+                {[10, 25, 50, 100].map((size) => <option key={String(size)} value={String(size)}>{String(size)}</option>)}
+              </select>
+            </label>
             <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={previousPage} disabled={page.value <= 1}>Previous</button>
-            <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={nextPage} disabled={page.value * pageSize.value >= total.value}>Next</button>
+            <div class="flex flex-wrap items-center gap-1" aria-label={`${resource.label} pages`}>
+              {buildPageOptions(total.value, pageSize.value).map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  type="button"
+                  class={`min-w-10 rounded-md border px-3 py-2 text-sm ${page.value === pageNumber ? 'border-accent bg-accent text-canvas' : 'border-line'}`}
+                  aria-current={page.value === pageNumber ? 'page' : undefined}
+                  onClick$={() => goToPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+            </div>
+            <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={nextPage} disabled={page.value >= getLastPage(total.value, pageSize.value)}>Next</button>
             <button class="rounded-md border border-line px-3 py-2 text-sm" onClick$={refresh}>Refresh</button>
           </div>
         </div>

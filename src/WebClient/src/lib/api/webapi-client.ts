@@ -57,7 +57,7 @@ const toApiError = (error: unknown) => {
 const parseListPage = <T extends ApiEntity>(data: string): PaginatedResult<T> =>
   normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
 
-const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T>> => {
+const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T> | undefined> => {
   throwIfAborted(signal);
 
   const headers = new Headers({ Accept: 'text/event-stream' });
@@ -73,10 +73,8 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
   }
 
   if (!response.ok) throw new ApiError(response.status, `Request failed with status ${response.status}.`);
-  if (!response.headers.get('Content-Type')?.toLowerCase().includes('text/event-stream')) {
-    throw new ApiError(0, 'The server did not open a listing stream.');
-  }
-  if (!response.body) throw new ApiError(0, 'The server did not open a listing stream.');
+  if (!response.headers.get('Content-Type')?.toLowerCase().includes('text/event-stream')) return undefined;
+  if (!response.body) return undefined;
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
