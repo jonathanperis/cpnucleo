@@ -9,6 +9,21 @@ const sseResponse = (payload: unknown) => new Response(
 
 afterEach(() => vi.restoreAllMocks());
 
+const waitForExpectation = async (assertion: () => void) => {
+  const startedAt = Date.now();
+  let lastError: unknown;
+  while (Date.now() - startedAt < 1000) {
+    try {
+      assertion();
+      return;
+    } catch (error) {
+      lastError = error;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+  }
+  throw lastError;
+};
+
 describe('webapi client', () => {
   it('normalizes array and paginated list payloads', () => {
     expect(normalizeList([{ id: '1' }]).totalCount).toBe(1);
@@ -53,7 +68,7 @@ describe('webapi client', () => {
     const client = createWebApiClient('http://example.test/api');
     const onPage = vi.fn();
     void client.subscribeList('projects', 1, 5, onPage).catch(() => undefined);
-    await vi.waitFor(() => expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 7, items: [{ id: 'seed' }] })));
+    await waitForExpectation(() => expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 7, items: [{ id: 'seed' }] })));
   });
 
   it('fails closed when the subscription response is not an SSE stream', async () => {
