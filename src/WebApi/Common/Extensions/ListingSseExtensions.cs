@@ -4,20 +4,20 @@ public static class ListingSseExtensions
 {
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(10);
 
-    public static bool AcceptsServerSentEvents(this HttpRequest request)
-    {
-        foreach (var value in request.Headers.Accept.Where(value => !string.IsNullOrWhiteSpace(value)).Select(value => value!))
-        {
-            foreach (var part in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-            {
-                if (!MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType)) continue;
-                if (!"text/event-stream".Equals(mediaType.MediaType, StringComparison.OrdinalIgnoreCase)) continue;
-                if (mediaType.Quality is null or > 0) return true;
-            }
-        }
+    public static bool AcceptsServerSentEvents(this HttpRequest request) =>
+        request.Headers.Accept
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Select(value => value!)
+            .SelectMany(value => value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .Select(ParseMediaType)
+            .Where(mediaType => mediaType is not null)
+            .Select(mediaType => mediaType!)
+            .Any(mediaType =>
+                "text/event-stream".Equals(mediaType.MediaType, StringComparison.OrdinalIgnoreCase) &&
+                mediaType.Quality is null or > 0);
 
-        return false;
-    }
+    private static MediaTypeWithQualityHeaderValue? ParseMediaType(string part) =>
+        MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType) ? mediaType : null;
 
     public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
         Func<CancellationToken, Task<TResponse>> getSnapshot,
