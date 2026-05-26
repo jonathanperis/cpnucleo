@@ -21,25 +21,37 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
   const selected = useSignal<ApiEntity | null>(null);
   const details = useSignal<ApiEntity | null>(null);
   const page = useSignal(1);
+  const pageSize = useSignal(25);
   const total = useSignal(0);
+  const refreshKey = useSignal(0);
 
-  const load = $(async () => {
+  const refresh = $(() => { refreshKey.value += 1; });
+
+  useVisibleTask$(({ track, cleanup }) => {
+    track(() => resource.key);
+    track(() => page.value);
+    track(() => pageSize.value);
+    track(() => refreshKey.value);
+
+    const controller = new AbortController();
     loading.value = true;
     error.value = '';
-    try {
-      const result = await webApiClient.list(resource.key, page.value, 25);
+
+    void webApiClient.subscribeList(resource.key, page.value, pageSize.value, (result) => {
       items.value = result.items ?? [];
       total.value = result.totalCount ?? items.value.length;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to load records.';
-    } finally {
       loading.value = false;
-    }
+    }, controller.signal).catch((err) => {
+      if (controller.signal.aborted) return;
+      error.value = err instanceof Error ? err.message : 'Unable to load records.';
+      loading.value = false;
+    });
+
+    cleanup(() => controller.abort());
   });
 
   useVisibleTask$(async ({ track }) => {
     track(() => resource.key);
-    await load();
     const relationKeys = [...new Set(formFields(resource).map((field) => field.relation).filter(Boolean))] as ResourceKey[];
     await Promise.all(relationKeys.map(async (key) => {
       try { relations[key] = (await webApiClient.list(key, 1, 100)).items ?? []; } catch { relations[key] = []; }
@@ -67,7 +79,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
       else await webApiClient.create(resource.key, payload);
       mode.value = 'list';
       selected.value = null;
-      await load();
+      refreshKey.value += 1;
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Unable to save record.';
     } finally { saving.value = false; }
@@ -75,9 +87,12 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
 
   const remove = $(async (item: ApiEntity) => {
     if (!item.id || !confirm(`Delete this ${resource.label.toLowerCase()}?`)) return;
-    try { await webApiClient.delete(resource.key, String(item.id)); await load(); }
+    try { await webApiClient.delete(resource.key, String(item.id)); refreshKey.value += 1; }
     catch (err) { error.value = err instanceof Error ? err.message : 'Unable to delete record.'; }
   });
+
+  const previousPage = $(() => { if (page.value > 1) page.value -= 1; });
+  const nextPage = $(() => { if (page.value * pageSize.value < total.value) page.value += 1; });
 
   return (
     <section class="space-y-6">
@@ -127,9 +142,13 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
       )}
 
       <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
-        <div class="flex items-center justify-between border-b border-line px-4 py-3">
-          <p class="text-sm text-muted">{total.value} records</p>
-          <button class="rounded-md border border-line px-3 py-2 text-sm" onClick$={load}>Refresh</button>
+        <div class="flex flex-col gap-3 border-b border-line px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-sm text-muted">{total.value} records · page {page.value} of {Math.max(1, Math.ceil(total.value / pageSize.value))}</p>
+          <div class="flex items-center gap-2">
+            <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={previousPage} disabled={page.value <= 1}>Previous</button>
+            <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={nextPage} disabled={page.value * pageSize.value >= total.value}>Next</button>
+            <button class="rounded-md border border-line px-3 py-2 text-sm" onClick$={refresh}>Refresh</button>
+          </div>
         </div>
         {loading.value ? <p class="p-6 text-sm text-muted">Loading {resource.pluralLabel.toLowerCase()}…</p> : items.value.length === 0 ? (
           <div class="p-8 text-center"><h3 class="font-semibold">No {resource.pluralLabel.toLowerCase()} yet</h3><p class="mt-1 text-sm text-muted">Create the first record to start using this resource.</p></div>

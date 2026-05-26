@@ -17,6 +17,20 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
+        if (HttpContext.Request.AcceptsServerSentEvents())
+        {
+            await TypedResults
+                .ServerSentEvents(ListingSseExtensions.CreateListingStream(ct => BuildResponseAsync(request, ct), Logger, cancellationToken), "listing")
+                .ExecuteAsync(HttpContext);
+            return;
+        }
+
+        var response = await BuildResponseAsync(request, cancellationToken);
+        await Send.OkAsync(response, cancellationToken);
+    }
+
+    private async Task<Response> BuildResponseAsync(Request request, CancellationToken cancellationToken)
+    {
         Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all assignments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
@@ -26,11 +40,10 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Fetched {Count} assignment records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");
 
-        Response.Result = response.MapToDto(x => x?.MapToDto());
 
         Logger.LogInformation("Mapping complete, setting response result.");
         Logger.LogInformation("Service completed successfully.");
 
-        await Send.OkAsync(Response, cancellationToken);
+        return new Response { Result = response.MapToDto(x => x?.MapToDto()) };
     }
 }

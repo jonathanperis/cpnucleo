@@ -24,6 +24,20 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
+        if (HttpContext.Request.AcceptsServerSentEvents())
+        {
+            await TypedResults
+                .ServerSentEvents(ListingSseExtensions.CreateListingStream(ct => BuildResponseAsync(request, ct), Logger, cancellationToken), "listing")
+                .ExecuteAsync(HttpContext);
+            return;
+        }
+
+        var response = await BuildResponseAsync(request, cancellationToken);
+        await Send.OkAsync(response, cancellationToken);
+    }
+
+    private async Task<Response> BuildResponseAsync(Request request, CancellationToken cancellationToken)
+    {
         Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
@@ -44,17 +58,18 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Fetched {Count} impediment records", response.Count);
         Logger.LogInformation("Mapping entities to DTOs.");
 
-        Response.Result = new PaginatedResult<ImpedimentDto?>
-        {
-            Data = response.Select(x => x.MapToDto()).ToList(),
-            TotalCount = totalCount,
-            PageNumber = request.Pagination.PageNumber.GetValueOrDefault(),
-            PageSize = request.Pagination.PageSize.GetValueOrDefault()
-        };
-
         Logger.LogInformation("Service completed successfully.");
 
-        await Send.OkAsync(Response, cancellationToken);
+        return new Response
+        {
+            Result = new PaginatedResult<ImpedimentDto?>
+            {
+                Data = response.Select(x => x.MapToDto()).ToList(),
+                TotalCount = totalCount,
+                PageNumber = request.Pagination.PageNumber.GetValueOrDefault(),
+                PageSize = request.Pagination.PageSize.GetValueOrDefault()
+            }
+        };
     }
 
     private static string ValidateSortColumn(string? column)
