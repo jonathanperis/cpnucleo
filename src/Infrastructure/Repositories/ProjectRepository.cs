@@ -64,7 +64,11 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
     {
         const string query = """
                              UPDATE "Projects"
-                             SET "Name" = @Name, "OrganizationId" = @OrganizationId, "UpdatedAt" = @UpdatedAt
+                             SET "Name" = @Name,
+                                 "OrganizationId" = @OrganizationId,
+                                 "UpdatedAt" = @UpdatedAt,
+                                 "DeletedAt" = @DeletedAt,
+                                 "Active" = @Active
                              WHERE "Id" = @Id;
                              """;
 
