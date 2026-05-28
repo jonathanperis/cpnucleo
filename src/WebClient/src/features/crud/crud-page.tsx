@@ -175,7 +175,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
                 <span aria-hidden="true" class="text-lg leading-none">‹</span>
                 Previous
               </button>
-              <div class="flex items-center gap-1.5" aria-label={`${resource.label} pages`}>
+              <div class="flex items-center gap-1.5" role="group" aria-label={`${resource.label} pages`}>
                 {buildPaginationItems(page.value, getLastPage(total.value, pageSize.value)).map((paginationItem) => (
                   typeof paginationItem === 'number' ? (
                     <button
