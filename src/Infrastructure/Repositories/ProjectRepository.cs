@@ -72,7 +72,7 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
                              WHERE "Id" = @Id;
                              """;
 
-        var affectedRows = await connection.ExecuteAsync(query, entity);
+        var affectedRows = await connection.ExecuteAsync(query, entity).ConfigureAwait(false);
         return affectedRows > 0;
     }
 
