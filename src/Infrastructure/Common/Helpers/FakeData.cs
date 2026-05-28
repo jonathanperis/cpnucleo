@@ -306,6 +306,7 @@ internal static class FakeDataHelper
     internal static void CreateSqlCsvDumpFile()
     {
         var sb = new StringBuilder();
+        var random = new Random();
         var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
         var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(DefaultDemoPassword);
 
@@ -338,13 +339,19 @@ internal static class FakeDataHelper
         var projectFaker = new Faker<Project>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
             .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(p => p.OrganizationId, f => f.PickRandom(Organizations).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Projects = projectFaker.Generate(1258);
+        for (var i = 0; i < Projects.Count; i++)
+        {
+            Projects[i].OrganizationId = i < Organizations.Count
+                ? Organizations[i].Id
+                : PickRandom(Organizations, random).Id;
+        }
+
         WriteCsv("Projects.csv", Projects, x =>
         [
             x.Id.ToString(),
@@ -435,6 +442,10 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Users = userFaker.Generate(11154);
+        var userOrganizationIds = Users
+            .Select((user, index) => new { user.Id, OrganizationId = Organizations[index % Organizations.Count].Id })
+            .ToDictionary(x => x.Id, x => x.OrganizationId);
+
         WriteCsv("Users.csv", Users, x =>
         [
             x.Id.ToString(),
@@ -450,16 +461,16 @@ internal static class FakeDataHelper
 
         sb.AppendLine("""COPY "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") FROM '/docker-entrypoint-initdb.d/dml-data/Users.csv' WITH (FORMAT CSV);""");
 
-        var userProjectFaker = new Faker<UserProject>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(up => up.UserId, f => f.PickRandom(Users).Id)
-            .RuleFor(up => up.ProjectId, f => f.PickRandom(Projects).Id)
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
+        UserProjects = Projects
+            .Select(project => UserProject.Create(DefaultDemoUserId, project.Id))
+            .ToList();
 
-        UserProjects = userProjectFaker.Generate(24400);
+        while (UserProjects.Count < 24400)
+        {
+            var user = PickRandom(Users, random);
+            var project = PickProjectForOrganization(Projects, userOrganizationIds[user.Id], random);
+            UserProjects.Add(UserProject.Create(user.Id, project.Id));
+        }
         WriteCsv("UserProjects.csv", UserProjects, x =>
         [
             x.Id.ToString(),
@@ -480,9 +491,7 @@ internal static class FakeDataHelper
             .RuleFor(o => o.StartDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.EndDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(x => x.AmountHours, f => f.Random.Number(12, 60))
-            .RuleFor(a => a.ProjectId, f => f.PickRandom(Projects).Id)
             .RuleFor(a => a.WorkflowId, f => f.PickRandom(Workflows).Id)
-            .RuleFor(a => a.UserId, f => f.PickRandom(Users).Id)
             .RuleFor(a => a.AssignmentTypeId, f => f.PickRandom(AssignmentTypes).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
@@ -490,6 +499,16 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Assignments = assignmentFaker.Generate(464587);
+        var assignmentOrganizationIds = new Dictionary<Guid, Guid>(Assignments.Count);
+        foreach (var assignment in Assignments)
+        {
+            var project = PickRandom(Projects, random);
+            var organizationId = project.OrganizationId;
+            assignment.ProjectId = project.Id;
+            assignment.UserId = PickUserForOrganization(Users, userOrganizationIds, organizationId, random).Id;
+            assignmentOrganizationIds[assignment.Id] = organizationId;
+        }
+
         WriteCsv("Assignments.csv", Assignments, x =>
         [
             x.Id.ToString(),
@@ -512,14 +531,19 @@ internal static class FakeDataHelper
 
         var userAssignmentFaker = new Faker<UserAssignment>()
             .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(ua => ua.UserId, f => f.PickRandom(Users).Id)
-            .RuleFor(ua => ua.AssignmentId, f => f.PickRandom(Assignments).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         UserAssignments = userAssignmentFaker.Generate(363554);
+        foreach (var userAssignment in UserAssignments)
+        {
+            var assignment = PickRandom(Assignments, random);
+            userAssignment.AssignmentId = assignment.Id;
+            userAssignment.UserId = PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random).Id;
+        }
+
         WriteCsv("UserAssignments.csv", UserAssignments, x =>
         [
             x.Id.ToString(),
@@ -562,14 +586,19 @@ internal static class FakeDataHelper
             .RuleFor(x => x.Description, f => f.Hacker.Phrase())
             .RuleFor(o => o.KeepDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -9)), DateTime.UtcNow.AddMonths(f.Random.Number(-8, -6))))
             .RuleFor(x => x.AmountHours, f => f.Random.Number(1, 6))
-            .RuleFor(a => a.AssignmentId, f => f.PickRandom(Assignments).Id)
-            .RuleFor(a => a.UserId, f => f.PickRandom(Users).Id)
             .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
             .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
             .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
             .RuleFor(x => x.Active, f => f.Random.Bool());
 
         Appointments = appointmentFaker.Generate(489571);
+        foreach (var appointment in Appointments)
+        {
+            var assignment = PickRandom(Assignments, random);
+            appointment.AssignmentId = assignment.Id;
+            appointment.UserId = PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random).Id;
+        }
+
         WriteCsv("Appointments.csv", Appointments, x =>
         [
             x.Id.ToString(),
@@ -623,6 +652,38 @@ internal static class FakeDataHelper
     }
 
     private static string EscapeSqlField(string value) => value.Replace("'", "''");
+
+    private static T PickRandom<T>(IReadOnlyList<T> values, Random random) => values[random.Next(values.Count)];
+
+    private static Project PickProjectForOrganization(IReadOnlyList<Project> projects, Guid organizationId, Random random)
+    {
+        var start = random.Next(projects.Count);
+        for (var offset = 0; offset < projects.Count; offset++)
+        {
+            var index = (start + offset) % projects.Count;
+            if (projects[index].OrganizationId == organizationId)
+            {
+                return projects[index];
+            }
+        }
+
+        throw new InvalidOperationException($"No project exists for organization {organizationId}.");
+    }
+
+    private static User PickUserForOrganization(IReadOnlyList<User> users, IReadOnlyDictionary<Guid, Guid> userOrganizationIds, Guid organizationId, Random random)
+    {
+        var start = random.Next(users.Count);
+        for (var offset = 0; offset < users.Count; offset++)
+        {
+            var index = (start + offset) % users.Count;
+            if (userOrganizationIds[users[index].Id] == organizationId)
+            {
+                return users[index];
+            }
+        }
+
+        throw new InvalidOperationException($"No user exists for organization {organizationId}.");
+    }
 
     private static string EscapeCsvField(string value)
     {

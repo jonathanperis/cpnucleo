@@ -36,7 +36,10 @@ public class FakeDataSeedingTests
         fakeData.Should().Contain("\"Organizations\"");
         fakeData.Should().Contain("\"Workflows\"");
         fakeData.Should().Contain("\"AssignmentTypes\"");
-        fakeData.Should().Contain("\"Impediments\"");
+        fakeData.Should().Contain("UserProject.Create(DefaultDemoUserId, project.Id)");
+        fakeData.Should().Contain("PickProjectForOrganization(Projects, userOrganizationIds[user.Id], random)");
+        fakeData.Should().Contain("PickUserForOrganization(Users, userOrganizationIds, organizationId, random)");
+        fakeData.Should().Contain("PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random)");
     }
 
     [Fact]
@@ -57,6 +60,14 @@ public class FakeDataSeedingTests
         importer.Should().Contain("__FakeDataCsvImports");
         importer.Should().Contain("TRUNCATE TABLE");
         importer.Should().Contain("DefaultDemoLogin = \"demo@cpnucleo.local\"");
+        importer.Should().Contain("DefaultDemoUserId");
+        importer.Should().Contain("ImportUserProjectsAsync(connection, userIds, projectIds, projectOrganizationIds, projectOrganizationIndexMap, userOrganizationIds");
+        importer.Should().Contain("ImportAssignmentsAsync(connection, assignmentIds, projectIds, projectOrganizationIds, workflowIds, userIds, userOrganizationIds, userOrganizationIndexMap");
+        importer.Should().Contain("ImportUserAssignmentsAsync(connection, userIds, userOrganizationIndexMap, assignmentIds, assignmentOrganizationIds");
+        importer.Should().Contain("ImportAppointmentsAsync(connection, assignmentIds, assignmentOrganizationIds, userIds, userOrganizationIndexMap");
+        importer.Should().Contain("DefaultDemoUserId, projectId");
+        importer.Should().Contain("PickProjectForOrganization(projectIds, projectOrganizationIndexMap, userOrganizationId");
+        importer.Should().Contain("PickUserForOrganization(userIds, userOrganizationIndexMap, assignmentOrganizationId");
 
         program.Should().Contain("--run-fake-data-csv-import");
         program.Should().Contain("FakeDataCsvImporter.RunAsync");

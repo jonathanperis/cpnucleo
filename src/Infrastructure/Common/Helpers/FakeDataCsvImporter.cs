@@ -2,7 +2,7 @@ namespace Infrastructure.Common.Helpers;
 
 public static class FakeDataCsvImporter
 {
-    private const string SeedVersion = "fake-data-csv-v2-20260528-active-visible";
+    private const string SeedVersion = "fake-data-csv-v3-20260528-tenant-scoped";
     private const string DefaultDemoLogin = "demo@cpnucleo.local";
     private const string DefaultDemoPassword = "CpnucleoDemo2026!";
     private const string DefaultDemoName = "Cpnucleo Demo";
@@ -48,24 +48,29 @@ public static class FakeDataCsvImporter
 
         var organizationIds = CreateIds(OrganizationCount);
         var projectIds = CreateIds(ProjectCount);
+        var projectOrganizationIds = new Guid[ProjectCount];
         var impedimentIds = CreateIds(ImpedimentCount);
         var assignmentTypeIds = CreateIds(AssignmentTypeCount);
         var workflowIds = CreateIds(WorkflowCount);
         var userIds = CreateIds(UserCount);
+        var userOrganizationIds = CreateRoundRobinTenancyAssignments(UserCount, organizationIds);
+        var userOrganizationIndexMap = BuildIndexMap(userOrganizationIds);
         var assignmentIds = CreateIds(AssignmentCount);
+        var assignmentOrganizationIds = new Guid[AssignmentCount];
 
         await ImportOrganizationsAsync(connection, organizationIds, logger, cancellationToken).ConfigureAwait(false);
-        await ImportProjectsAsync(connection, projectIds, organizationIds, logger, cancellationToken).ConfigureAwait(false);
+        await ImportProjectsAsync(connection, projectIds, organizationIds, projectOrganizationIds, random, logger, cancellationToken).ConfigureAwait(false);
+        var projectOrganizationIndexMap = BuildIndexMap(projectOrganizationIds);
         await ImportImpedimentsAsync(connection, impedimentIds, logger, cancellationToken).ConfigureAwait(false);
         await ImportAssignmentTypesAsync(connection, assignmentTypeIds, logger, cancellationToken).ConfigureAwait(false);
         await ImportWorkflowsAsync(connection, workflowIds, logger, cancellationToken).ConfigureAwait(false);
         await ImportUsersAsync(connection, userIds, fakeUserPasswordHash, logger, cancellationToken).ConfigureAwait(false);
         await InsertDefaultDemoUserAsync(connection, defaultDemoPasswordHash, cancellationToken).ConfigureAwait(false);
-        await ImportUserProjectsAsync(connection, userIds, projectIds, random, logger, cancellationToken).ConfigureAwait(false);
-        await ImportAssignmentsAsync(connection, assignmentIds, projectIds, workflowIds, userIds, assignmentTypeIds, random, logger, cancellationToken).ConfigureAwait(false);
-        await ImportUserAssignmentsAsync(connection, userIds, assignmentIds, random, logger, cancellationToken).ConfigureAwait(false);
+        await ImportUserProjectsAsync(connection, userIds, projectIds, projectOrganizationIds, projectOrganizationIndexMap, userOrganizationIds, random, logger, cancellationToken).ConfigureAwait(false);
+        await ImportAssignmentsAsync(connection, assignmentIds, projectIds, projectOrganizationIds, workflowIds, userIds, userOrganizationIds, userOrganizationIndexMap, assignmentTypeIds, assignmentOrganizationIds, random, logger, cancellationToken).ConfigureAwait(false);
+        await ImportUserAssignmentsAsync(connection, userIds, userOrganizationIndexMap, assignmentIds, assignmentOrganizationIds, random, logger, cancellationToken).ConfigureAwait(false);
         await ImportAssignmentImpedimentsAsync(connection, assignmentIds, impedimentIds, random, logger, cancellationToken).ConfigureAwait(false);
-        await ImportAppointmentsAsync(connection, assignmentIds, userIds, random, logger, cancellationToken).ConfigureAwait(false);
+        await ImportAppointmentsAsync(connection, assignmentIds, assignmentOrganizationIds, userIds, userOrganizationIndexMap, random, logger, cancellationToken).ConfigureAwait(false);
         await MarkSeedAppliedAsync(connection, startedAt, cancellationToken).ConfigureAwait(false);
 
         logger.LogWarning(
@@ -172,6 +177,25 @@ public static class FakeDataCsvImporter
         return ids;
     }
 
+    private static Guid[] CreateRoundRobinTenancyAssignments(int count, Guid[] organizationIds)
+    {
+        var assignments = new Guid[count];
+        for (var i = 0; i < assignments.Length; i++)
+        {
+            assignments[i] = organizationIds[i % organizationIds.Length];
+        }
+
+        return assignments;
+    }
+
+    private static Dictionary<Guid, int[]> BuildIndexMap(Guid[] organizationIds)
+    {
+        return organizationIds
+            .Select((organizationId, index) => new { organizationId, index })
+            .GroupBy(x => x.organizationId)
+            .ToDictionary(group => group.Key, group => group.Select(x => x.index).ToArray());
+    }
+
     private static async Task ImportOrganizationsAsync(NpgsqlConnection connection, Guid[] ids, ILogger logger, CancellationToken cancellationToken)
     {
         var faker = new Faker();
@@ -195,7 +219,7 @@ public static class FakeDataCsvImporter
         logger.LogInformation("Imported {Count} organizations via CSV COPY.", ids.Length);
     }
 
-    private static async Task ImportProjectsAsync(NpgsqlConnection connection, Guid[] ids, Guid[] organizationIds, ILogger logger, CancellationToken cancellationToken)
+    private static async Task ImportProjectsAsync(NpgsqlConnection connection, Guid[] ids, Guid[] organizationIds, Guid[] projectOrganizationIds, Random random, ILogger logger, CancellationToken cancellationToken)
     {
         var faker = new Faker();
         await using var writer = await connection.BeginTextImportAsync(
@@ -208,7 +232,7 @@ public static class FakeDataCsvImporter
             await writer.WriteLineAsync(Csv(
                 ids[i],
                 $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}",
-                faker.PickRandom(organizationIds),
+                projectOrganizationIds[i] = i < organizationIds.Length ? organizationIds[i] : Pick(organizationIds, random),
                 PastCreatedAt(faker),
                 PastUpdatedAt(faker),
                 active ? null : PastDeletedAt(faker),
@@ -282,23 +306,34 @@ public static class FakeDataCsvImporter
         logger.LogInformation("Imported {Count} users via CSV COPY.", ids.Length);
     }
 
-    private static async Task ImportUserProjectsAsync(NpgsqlConnection connection, Guid[] userIds, Guid[] projectIds, Random random, ILogger logger, CancellationToken cancellationToken)
+    private static async Task ImportUserProjectsAsync(NpgsqlConnection connection, Guid[] userIds, Guid[] projectIds, Guid[] projectOrganizationIds, IReadOnlyDictionary<Guid, int[]> projectOrganizationIndexMap, Guid[] userOrganizationIds, Random random, ILogger logger, CancellationToken cancellationToken)
     {
         var faker = new Faker();
         await using var writer = await connection.BeginTextImportAsync(
             "COPY \"UserProjects\" (\"Id\", \"UserId\", \"ProjectId\", \"CreatedAt\", \"UpdatedAt\", \"DeletedAt\", \"Active\") FROM STDIN WITH (FORMAT CSV)",
             cancellationToken).ConfigureAwait(false);
 
-        for (var i = 0; i < UserProjectCount; i++)
+        var written = 0;
+        foreach (var projectId in projectIds)
         {
             var active = true;
-            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), Pick(userIds, random), Pick(projectIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
+            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), DefaultDemoUserId, projectId, PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
+            written++;
         }
 
-        logger.LogInformation("Imported {Count} user projects via CSV COPY.", UserProjectCount);
+        for (; written < UserProjectCount; written++)
+        {
+            var active = true;
+            var userIndex = random.Next(userIds.Length);
+            var userOrganizationId = userOrganizationIds[userIndex];
+            var projectId = PickProjectForOrganization(projectIds, projectOrganizationIndexMap, userOrganizationId, random);
+            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), userIds[userIndex], projectId, PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
+        }
+
+        logger.LogInformation("Imported {Count} tenant-scoped user projects via CSV COPY, including demo access to all {ProjectCount} projects.", UserProjectCount, projectIds.Length);
     }
 
-    private static async Task ImportAssignmentsAsync(NpgsqlConnection connection, Guid[] ids, Guid[] projectIds, Guid[] workflowIds, Guid[] userIds, Guid[] assignmentTypeIds, Random random, ILogger logger, CancellationToken cancellationToken)
+    private static async Task ImportAssignmentsAsync(NpgsqlConnection connection, Guid[] ids, Guid[] projectIds, Guid[] projectOrganizationIds, Guid[] workflowIds, Guid[] userIds, Guid[] userOrganizationIds, IReadOnlyDictionary<Guid, int[]> userOrganizationIndexMap, Guid[] assignmentTypeIds, Guid[] assignmentOrganizationIds, Random random, ILogger logger, CancellationToken cancellationToken)
     {
         var faker = new Faker();
         await using var writer = await connection.BeginTextImportAsync(
@@ -308,6 +343,9 @@ public static class FakeDataCsvImporter
         for (var i = 0; i < ids.Length; i++)
         {
             var active = true;
+            var projectIndex = random.Next(projectIds.Length);
+            var projectOrganizationId = projectOrganizationIds[projectIndex];
+            assignmentOrganizationIds[i] = projectOrganizationId;
             await writer.WriteLineAsync(Csv(
                 ids[i],
                 $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}",
@@ -315,9 +353,9 @@ public static class FakeDataCsvImporter
                 AssignmentStartDate(faker),
                 AssignmentEndDate(faker),
                 faker.Random.Number(12, 60),
-                Pick(projectIds, random),
+                projectIds[projectIndex],
                 Pick(workflowIds, random),
-                Pick(userIds, random),
+                PickUserForOrganization(userIds, userOrganizationIndexMap, projectOrganizationId, random),
                 Pick(assignmentTypeIds, random),
                 PastCreatedAt(faker),
                 PastUpdatedAt(faker),
@@ -328,7 +366,7 @@ public static class FakeDataCsvImporter
         logger.LogInformation("Imported {Count} assignments via CSV COPY.", ids.Length);
     }
 
-    private static async Task ImportUserAssignmentsAsync(NpgsqlConnection connection, Guid[] userIds, Guid[] assignmentIds, Random random, ILogger logger, CancellationToken cancellationToken)
+    private static async Task ImportUserAssignmentsAsync(NpgsqlConnection connection, Guid[] userIds, IReadOnlyDictionary<Guid, int[]> userOrganizationIndexMap, Guid[] assignmentIds, Guid[] assignmentOrganizationIds, Random random, ILogger logger, CancellationToken cancellationToken)
     {
         var faker = new Faker();
         await using var writer = await connection.BeginTextImportAsync(
@@ -338,7 +376,9 @@ public static class FakeDataCsvImporter
         for (var i = 0; i < UserAssignmentCount; i++)
         {
             var active = true;
-            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), Pick(userIds, random), Pick(assignmentIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
+            var assignmentIndex = random.Next(assignmentIds.Length);
+            var assignmentOrganizationId = assignmentOrganizationIds[assignmentIndex];
+            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), PickUserForOrganization(userIds, userOrganizationIndexMap, assignmentOrganizationId, random), assignmentIds[assignmentIndex], PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
         logger.LogInformation("Imported {Count} user assignments via CSV COPY.", UserAssignmentCount);
@@ -360,7 +400,7 @@ public static class FakeDataCsvImporter
         logger.LogInformation("Imported {Count} assignment impediments via CSV COPY.", AssignmentImpedimentCount);
     }
 
-    private static async Task ImportAppointmentsAsync(NpgsqlConnection connection, Guid[] assignmentIds, Guid[] userIds, Random random, ILogger logger, CancellationToken cancellationToken)
+    private static async Task ImportAppointmentsAsync(NpgsqlConnection connection, Guid[] assignmentIds, Guid[] assignmentOrganizationIds, Guid[] userIds, IReadOnlyDictionary<Guid, int[]> userOrganizationIndexMap, Random random, ILogger logger, CancellationToken cancellationToken)
     {
         var faker = new Faker();
         await using var writer = await connection.BeginTextImportAsync(
@@ -370,13 +410,35 @@ public static class FakeDataCsvImporter
         for (var i = 0; i < AppointmentCount; i++)
         {
             var active = true;
-            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), faker.Hacker.Phrase(), KeepDate(faker), faker.Random.Number(1, 6), Pick(assignmentIds, random), Pick(userIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
+            var assignmentIndex = random.Next(assignmentIds.Length);
+            var assignmentOrganizationId = assignmentOrganizationIds[assignmentIndex];
+            await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), faker.Hacker.Phrase(), KeepDate(faker), faker.Random.Number(1, 6), assignmentIds[assignmentIndex], PickUserForOrganization(userIds, userOrganizationIndexMap, assignmentOrganizationId, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
         logger.LogInformation("Imported {Count} appointments via CSV COPY.", AppointmentCount);
     }
 
     private static Guid Pick(Guid[] values, Random random) => values[random.Next(values.Length)];
+
+    private static Guid PickProjectForOrganization(Guid[] projectIds, IReadOnlyDictionary<Guid, int[]> projectOrganizationIndexMap, Guid organizationId, Random random)
+    {
+        if (!projectOrganizationIndexMap.TryGetValue(organizationId, out var indexes) || indexes.Length == 0)
+        {
+            throw new InvalidOperationException($"No project exists for organization {organizationId}.");
+        }
+
+        return projectIds[indexes[random.Next(indexes.Length)]];
+    }
+
+    private static Guid PickUserForOrganization(Guid[] userIds, IReadOnlyDictionary<Guid, int[]> userOrganizationIndexMap, Guid organizationId, Random random)
+    {
+        if (!userOrganizationIndexMap.TryGetValue(organizationId, out var indexes) || indexes.Length == 0)
+        {
+            throw new InvalidOperationException($"No user exists for organization {organizationId}.");
+        }
+
+        return userIds[indexes[random.Next(indexes.Length)]];
+    }
 
     private static DateTimeOffset PastCreatedAt(Faker faker) => ToUtc(faker.Date.Between(DateTime.UtcNow.AddMonths(faker.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(faker.Random.Number(-24, -12))));
 
