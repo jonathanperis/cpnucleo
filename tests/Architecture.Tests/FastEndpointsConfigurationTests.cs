@@ -383,11 +383,20 @@ public class FastEndpointsConfigurationTests
 
         releaseWorkflow.Should().Contain("- name: Run production smoke tests");
         releaseWorkflow.Should().Contain("run: scripts/smoke-production.sh");
+
+        var deployIndex = releaseWorkflow.IndexOf("- name: Deploy Hostinger project", StringComparison.Ordinal);
+        var smokeIndex = releaseWorkflow.IndexOf("- name: Run production smoke tests", StringComparison.Ordinal);
+        deployIndex.Should().BeGreaterThanOrEqualTo(0);
+        smokeIndex.Should().BeGreaterThan(deployIndex, "production smoke tests must run after the Hostinger deploy step");
+
         releaseWorkflow.Should().Contain("CPNUCLEO_WEB_URL: ${{ secrets.CPNUCLEO_WEB_URL }}");
         releaseWorkflow.Should().Contain("CPNUCLEO_API_URL: ${{ secrets.CPNUCLEO_API_URL }}");
         releaseWorkflow.Should().Contain("CPNUCLEO_IDENTITY_URL: ${{ secrets.CPNUCLEO_IDENTITY_URL }}");
         releaseWorkflow.Should().Contain("CPNUCLEO_GRPC_HEALTH_URL: ${{ secrets.CPNUCLEO_GRPC_HEALTH_URL }}");
 
+        smokeScript.Should().Contain("for attempt in {1..10}");
+        smokeScript.Should().Contain("--max-time 10");
+        smokeScript.Should().Contain("sleep 5");
         smokeScript.Should().Contain("check_url \"WebClient\" \"${CPNUCLEO_WEB_URL:-}\" \"200,301,302\"");
         smokeScript.Should().Contain("check_url \"WebApi health\" \"${CPNUCLEO_API_URL%/}/healthz\" \"200\"");
         smokeScript.Should().Contain("check_url \"IdentityApi health\" \"${CPNUCLEO_IDENTITY_URL%/}/healthz\" \"200\"");

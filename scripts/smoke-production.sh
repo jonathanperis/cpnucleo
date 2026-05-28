@@ -14,15 +14,15 @@ check_url() {
     return 0
   fi
 
-  for attempt in {1..30}; do
-    code="$(curl --connect-timeout 5 --max-time 15 -sS -o "${workdir}/smoke-body" -w "%{http_code}" "${url}" || true)"
+  for attempt in {1..10}; do
+    code="$(curl --connect-timeout 5 --max-time 10 -sS -o "${workdir}/smoke-body" -w "%{http_code}" "${url}" || true)"
     if [[ ",${allowed_codes}," == *",${code},"* ]]; then
       echo "${name} smoke passed: HTTP ${code}"
       return 0
     fi
 
     echo "${name} smoke attempt ${attempt} got HTTP ${code}; retrying..."
-    sleep 10
+    sleep 5
   done
 
   echo "${name} smoke failed for ${url}" >&2
