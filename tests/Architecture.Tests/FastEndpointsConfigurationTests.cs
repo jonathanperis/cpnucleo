@@ -376,6 +376,25 @@ public class FastEndpointsConfigurationTests
     }
 
     [Fact]
+    public void MainReleasePipeline_ShouldRunProductionSmokeTestsAfterHostingerDeploy()
+    {
+        var releaseWorkflow = File.ReadAllText(GetRepositoryPath(".github/workflows/main-release.yml"));
+        var smokeScript = File.ReadAllText(GetRepositoryPath("scripts/smoke-production.sh"));
+
+        releaseWorkflow.Should().Contain("- name: Run production smoke tests");
+        releaseWorkflow.Should().Contain("run: scripts/smoke-production.sh");
+        releaseWorkflow.Should().Contain("CPNUCLEO_WEB_URL: ${{ secrets.CPNUCLEO_WEB_URL }}");
+        releaseWorkflow.Should().Contain("CPNUCLEO_API_URL: ${{ secrets.CPNUCLEO_API_URL }}");
+        releaseWorkflow.Should().Contain("CPNUCLEO_IDENTITY_URL: ${{ secrets.CPNUCLEO_IDENTITY_URL }}");
+        releaseWorkflow.Should().Contain("CPNUCLEO_GRPC_HEALTH_URL: ${{ secrets.CPNUCLEO_GRPC_HEALTH_URL }}");
+
+        smokeScript.Should().Contain("check_url \"WebClient\" \"${CPNUCLEO_WEB_URL:-}\" \"200,301,302\"");
+        smokeScript.Should().Contain("check_url \"WebApi health\" \"${CPNUCLEO_API_URL%/}/healthz\" \"200\"");
+        smokeScript.Should().Contain("check_url \"IdentityApi health\" \"${CPNUCLEO_IDENTITY_URL%/}/healthz\" \"200\"");
+        smokeScript.Should().Contain("check_url \"Grpc health\" \"${CPNUCLEO_GRPC_HEALTH_URL}\" \"200\"");
+    }
+
+    [Fact]
     public void ApplicationContainers_ShouldCheckHealthzEveryTenMinutes()
     {
         var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));

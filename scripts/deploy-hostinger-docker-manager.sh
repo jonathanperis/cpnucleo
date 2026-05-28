@@ -336,35 +336,4 @@ if grep -Eiq 'Unhandled exception|panic:|segmentation fault|no space left on dev
   exit 1
 fi
 
-check_url() {
-  local name="$1"
-  local url="$2"
-  local allowed_codes="${3:-200}"
-  [[ -z "${url}" ]] && return 0
-
-  for attempt in {1..30}; do
-    code="$(curl --connect-timeout 5 --max-time 15 -sS -o "${workdir}/smoke-body" -w "%{http_code}" "${url}" || true)"
-    if [[ ",${allowed_codes}," == *",${code},"* ]]; then
-      echo "${name} smoke passed: HTTP ${code}"
-      return 0
-    fi
-    echo "${name} smoke attempt ${attempt} got HTTP ${code}; retrying..."
-    sleep 10
-  done
-
-  echo "${name} smoke failed for ${url}" >&2
-  return 1
-}
-
-check_url "WebClient" "${CPNUCLEO_WEB_URL:-}" "200,301,302"
-if [[ -n "${CPNUCLEO_API_URL:-}" ]]; then
-  check_url "WebApi health" "${CPNUCLEO_API_URL%/}/healthz" "200"
-fi
-if [[ -n "${CPNUCLEO_IDENTITY_URL:-}" ]]; then
-  check_url "IdentityApi health" "${CPNUCLEO_IDENTITY_URL%/}/healthz" "200"
-fi
-if [[ -n "${CPNUCLEO_GRPC_HEALTH_URL:-}" ]]; then
-  check_url "Grpc health" "${CPNUCLEO_GRPC_HEALTH_URL}" "200"
-fi
-
 echo "Hostinger deployment completed successfully for ${tag}."

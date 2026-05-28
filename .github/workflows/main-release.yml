@@ -320,3 +320,6 @@ jobs:
 
       - name: Deploy Hostinger project
         run: scripts/deploy-hostinger-docker-manager.sh
+
+      - name: Run production smoke tests
+        run: scripts/smoke-production.sh
