@@ -9,7 +9,9 @@ describe('CRUD pagination helpers', () => {
 
   it('builds a compact cohesive pagination range with boundary pages and ellipses', () => {
     expect(buildPaginationItems(1, 100)).toEqual([1, 2, 3, 4, 5, 6, 7, 'end-ellipsis', 100]);
+    expect(buildPaginationItems(5, 100)).toEqual([1, 2, 3, 4, 5, 6, 7, 'end-ellipsis', 100]);
     expect(buildPaginationItems(50, 100)).toEqual([1, 'start-ellipsis', 47, 48, 49, 50, 51, 52, 53, 'end-ellipsis', 100]);
+    expect(buildPaginationItems(96, 100)).toEqual([1, 'start-ellipsis', 94, 95, 96, 97, 98, 99, 100]);
     expect(buildPaginationItems(98, 100)).toEqual([1, 'start-ellipsis', 94, 95, 96, 97, 98, 99, 100]);
   });
 

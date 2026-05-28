@@ -21,11 +21,11 @@ export const buildPaginationItems = (currentPage: number, totalPages: number): P
     return Array.from({ length: lastPage }, (_, index) => index + 1);
   }
 
-  if (activePage <= COMPACT_EDGE_COUNT - COMPACT_WINDOW_RADIUS) {
+  if (activePage <= COMPACT_EDGE_COUNT - COMPACT_WINDOW_RADIUS + 1) {
     return [...Array.from({ length: COMPACT_EDGE_COUNT }, (_, index) => index + 1), 'end-ellipsis', lastPage];
   }
 
-  if (activePage >= lastPage - (COMPACT_EDGE_COUNT - COMPACT_WINDOW_RADIUS) + 1) {
+  if (activePage >= lastPage - (COMPACT_EDGE_COUNT - COMPACT_WINDOW_RADIUS)) {
     const start = lastPage - COMPACT_EDGE_COUNT + 1;
     return [1, 'start-ellipsis', ...Array.from({ length: COMPACT_EDGE_COUNT }, (_, index) => start + index)];
   }
