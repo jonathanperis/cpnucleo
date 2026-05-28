@@ -136,9 +136,9 @@ jobs:
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${{ matrix.port }}/healthz)
+            STATUS=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 http://localhost:${{ matrix.port }}/healthz) || STATUS=000
             echo "Attempt $i: Status $STATUS"
-            if [ "$STATUS" -eq 200 ]; then
+            if [ "$STATUS" = "200" ]; then
               echo "Healthcheck passed with status $STATUS"
               exit 0
             else
