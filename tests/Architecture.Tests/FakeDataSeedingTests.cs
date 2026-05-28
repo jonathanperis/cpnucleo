@@ -39,6 +39,32 @@ public class FakeDataSeedingTests
         fakeData.Should().Contain("\"Impediments\"");
     }
 
+    [Fact]
+    public void ProductionCsvSeeder_ShouldUseCanonicalFakeDataCountsAndOneShotContainer()
+    {
+        var importer = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Common/Helpers/FakeDataCsvImporter.cs"));
+        var program = File.ReadAllText(GetRepositoryPath("src/WebApi/Program.cs"));
+        var compose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
+
+        importer.Should().Contain("private const int OrganizationCount = 686");
+        importer.Should().Contain("private const int ProjectCount = 1_258");
+        importer.Should().Contain("private const int UserCount = 11_154");
+        importer.Should().Contain("private const int AssignmentCount = 464_587");
+        importer.Should().Contain("private const int UserAssignmentCount = 363_554");
+        importer.Should().Contain("private const int AppointmentCount = 489_571");
+        importer.Should().Contain("FROM STDIN WITH (FORMAT CSV)");
+        importer.Should().Contain("__FakeDataCsvImports");
+        importer.Should().Contain("TRUNCATE TABLE");
+        importer.Should().Contain("DefaultDemoLogin = \"demo@cpnucleo.local\"");
+
+        program.Should().Contain("--run-fake-data-csv-import");
+        program.Should().Contain("FakeDataCsvImporter.RunAsync");
+
+        compose.Should().Contain("seed-csv-cpnucleo:");
+        compose.Should().Contain("command: [\"--run-fake-data-csv-import\"]");
+        compose.Should().Contain("restart: \"no\"");
+    }
+
     private static string GetRepositoryPath(string relativePath)
     {
         var currentDirectory = new DirectoryInfo(AppContext.BaseDirectory);

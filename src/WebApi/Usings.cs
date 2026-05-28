@@ -17,6 +17,7 @@ global using FastEndpoints.Swagger;
 global using FluentValidation;
 global using Infrastructure;
 global using Infrastructure.Common.Context;
+global using Infrastructure.Common.Helpers;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;

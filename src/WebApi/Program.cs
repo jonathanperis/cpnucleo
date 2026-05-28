@@ -1,5 +1,13 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
+if (args.Contains("--run-fake-data-csv-import", StringComparer.OrdinalIgnoreCase))
+{
+    await FakeDataCsvImporter.RunAsync(
+        builder.Configuration.GetValue<string>("DB_CONNECTION_STRING") ?? throw new InvalidOperationException("DB_CONNECTION_STRING configuration is missing."),
+        new ConsoleSeedLogger("FakeDataCsvImporter"));
+    return;
+}
+
 builder.ConfigureOpenTelemetry();
 
 var allowedCorsOrigins = builder.Configuration
