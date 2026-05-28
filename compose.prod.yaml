@@ -250,6 +250,26 @@ services:
           memory: "512M"
     <<: *common-logging
 
+  seed-csv-cpnucleo:
+    <<: *common-logging
+    image: ${CPNUCLEO_WEB_API_IMAGE:?Set CPNUCLEO_WEB_API_IMAGE to an immutable GHCR tag, not latest}
+    container_name: seed-csv-cpnucleo
+    env_file:
+      - .env
+    command: ["--run-fake-data-csv-import"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: "2G"
+        reservations:
+          cpus: "0.50"
+          memory: "1G"
+
   # Kept in production as the internal API load balancer, matching local dev topology.
   # Traefik owns public TLS/host routing; NGINX only balances webapi1/webapi2.
   nginx:
