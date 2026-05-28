@@ -2,7 +2,7 @@ namespace Infrastructure.Common.Helpers;
 
 public static class FakeDataCsvImporter
 {
-    private const string SeedVersion = "fake-data-csv-v1-20260528";
+    private const string SeedVersion = "fake-data-csv-v2-20260528-active-visible";
     private const string DefaultDemoLogin = "demo@cpnucleo.local";
     private const string DefaultDemoPassword = "CpnucleoDemo2026!";
     private const string DefaultDemoName = "Cpnucleo Demo";
@@ -181,7 +181,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(
                 ids[i],
                 $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}",
@@ -204,7 +204,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(
                 ids[i],
                 $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}",
@@ -227,7 +227,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(ids[i], $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}", PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -243,7 +243,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(ids[i], $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}", PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -259,7 +259,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(ids[i], $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}", i + 1, PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -275,7 +275,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(ids[i], faker.Name.FullName(), faker.Internet.UserName(), passwordHash.Hash, passwordHash.Salt, PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -291,7 +291,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < UserProjectCount; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), Pick(userIds, random), Pick(projectIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -307,7 +307,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < ids.Length; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(
                 ids[i],
                 $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}",
@@ -337,7 +337,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < UserAssignmentCount; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), Pick(userIds, random), Pick(assignmentIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -353,7 +353,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < AssignmentImpedimentCount; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), faker.Hacker.Phrase(), Pick(assignmentIds, random), Pick(impedimentIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
@@ -369,7 +369,7 @@ public static class FakeDataCsvImporter
 
         for (var i = 0; i < AppointmentCount; i++)
         {
-            var active = faker.Random.Bool();
+            var active = true;
             await writer.WriteLineAsync(Csv(BaseEntity.GetNewId(), faker.Hacker.Phrase(), KeepDate(faker), faker.Random.Number(1, 6), Pick(assignmentIds, random), Pick(userIds, random), PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 

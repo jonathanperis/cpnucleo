@@ -52,6 +52,7 @@ public class FakeDataSeedingTests
         importer.Should().Contain("private const int AssignmentCount = 464_587");
         importer.Should().Contain("private const int UserAssignmentCount = 363_554");
         importer.Should().Contain("private const int AppointmentCount = 489_571");
+        importer.Should().NotContain("faker.Random.Bool()");
         importer.Should().Contain("FROM STDIN WITH (FORMAT CSV)");
         importer.Should().Contain("__FakeDataCsvImports");
         importer.Should().Contain("TRUNCATE TABLE");
