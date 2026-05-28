@@ -2,7 +2,7 @@ import { $, component$, useSignal, useStore, useVisibleTask$ } from '@builder.io
 import { formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
-import { buildPageOptions, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
+import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 
 const formatValue = (value: unknown): string => {
   if (value === null || value === undefined || value === '') return '—';
@@ -157,28 +157,53 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
       <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
         <div class="flex flex-col gap-3 border-b border-line px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
           <p class="text-sm text-muted">{total.value} records · page {page.value} of {getLastPage(total.value, pageSize.value)}</p>
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-3">
             <label class="flex items-center gap-2 text-sm text-muted">
               Rows
               <select class="rounded-md border border-line bg-raised px-2 py-2 text-sm text-ink" value={pageSize.value} onChange$={changePageSize}>
                 {[10, 25, 50, 100].map((size) => <option key={String(size)} value={String(size)}>{String(size)}</option>)}
               </select>
             </label>
-            <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={previousPage} disabled={page.value <= 1}>Previous</button>
-            <div class="flex flex-wrap items-center gap-1" aria-label={`${resource.label} pages`}>
-              {buildPageOptions(total.value, pageSize.value).map((pageNumber) => (
-                <button
-                  key={pageNumber}
-                  type="button"
-                  class={`min-w-10 rounded-md border px-3 py-2 text-sm ${page.value === pageNumber ? 'border-accent bg-accent text-canvas' : 'border-line'}`}
-                  aria-current={page.value === pageNumber ? 'page' : undefined}
-                  onClick$={() => goToPage(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              ))}
-            </div>
-            <button class="rounded-md border border-line px-3 py-2 text-sm disabled:opacity-50" onClick$={nextPage} disabled={page.value >= getLastPage(total.value, pageSize.value)}>Next</button>
+            <nav class="flex items-center gap-2 rounded-lg px-1 py-1" aria-label={`${resource.label} pagination`}>
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 rounded-md px-1.5 py-2 text-sm font-medium text-muted transition hover:text-accent disabled:cursor-not-allowed disabled:text-muted/50 disabled:hover:text-muted/50"
+                onClick$={previousPage}
+                disabled={page.value <= 1}
+                aria-label="Go to previous page"
+              >
+                <span aria-hidden="true" class="text-lg leading-none">‹</span>
+                Previous
+              </button>
+              <div class="flex items-center gap-1.5" aria-label={`${resource.label} pages`}>
+                {buildPaginationItems(page.value, getLastPage(total.value, pageSize.value)).map((paginationItem) => (
+                  typeof paginationItem === 'number' ? (
+                    <button
+                      key={paginationItem}
+                      type="button"
+                      class={`h-8 min-w-8 rounded-lg px-2 text-sm font-medium transition ${page.value === paginationItem ? 'bg-accent text-canvas shadow-sm' : 'text-ink hover:bg-raised hover:text-accent'}`}
+                      aria-current={page.value === paginationItem ? 'page' : undefined}
+                      aria-label={`Go to page ${paginationItem}`}
+                      onClick$={() => goToPage(paginationItem)}
+                    >
+                      {paginationItem}
+                    </button>
+                  ) : (
+                    <span key={paginationItem} class="flex h-8 min-w-8 items-center justify-center text-sm font-medium text-muted" aria-hidden="true">…</span>
+                  )
+                ))}
+              </div>
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 rounded-md px-1.5 py-2 text-sm font-medium text-accent transition hover:text-accent-hover disabled:cursor-not-allowed disabled:text-muted/50 disabled:hover:text-muted/50"
+                onClick$={nextPage}
+                disabled={page.value >= getLastPage(total.value, pageSize.value)}
+                aria-label="Go to next page"
+              >
+                Next
+                <span aria-hidden="true" class="text-lg leading-none">›</span>
+              </button>
+            </nav>
             <button class="rounded-md border border-line px-3 py-2 text-sm" onClick$={refresh}>Refresh</button>
           </div>
         </div>
