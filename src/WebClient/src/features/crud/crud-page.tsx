@@ -164,44 +164,46 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
                 {[10, 25, 50, 100].map((size) => <option key={String(size)} value={String(size)}>{String(size)}</option>)}
               </select>
             </label>
-            <nav class="flex items-center gap-2 rounded-lg px-1 py-1" aria-label={`${resource.label} pagination`}>
+            <nav class="flex items-center" aria-label="Pagination">
               <button
                 type="button"
-                class="inline-flex items-center gap-1 rounded-md px-1.5 py-2 text-sm font-medium text-muted transition hover:text-accent disabled:cursor-not-allowed disabled:text-muted/50 disabled:hover:text-muted/50"
+                class="mr-1 inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-md px-1.5 py-2 text-sm font-normal text-muted transition hover:bg-raised hover:text-ink disabled:cursor-not-allowed disabled:text-muted/70 disabled:hover:bg-transparent disabled:hover:text-muted/70"
                 onClick$={previousPage}
                 disabled={page.value <= 1}
-                aria-label="Go to previous page"
+                aria-disabled={page.value <= 1 ? 'true' : undefined}
+                aria-label="Previous Page"
               >
-                <span aria-hidden="true" class="text-lg leading-none">‹</span>
+                <span aria-hidden="true" class="text-base leading-none">‹</span>
                 Previous
               </button>
-              <div class="flex items-center gap-1.5" role="group" aria-label={`${resource.label} pages`}>
+              <div class="flex items-center" role="group" aria-label={`${resource.label} pages`}>
                 {buildPaginationItems(page.value, getLastPage(total.value, pageSize.value)).map((paginationItem) => (
                   typeof paginationItem === 'number' ? (
                     <button
                       key={paginationItem}
                       type="button"
-                      class={`h-8 min-w-8 rounded-lg px-2 text-sm font-medium transition ${page.value === paginationItem ? 'bg-accent text-canvas shadow-sm' : 'text-ink hover:bg-raised hover:text-accent'}`}
+                      class={`mr-1 inline-flex h-8 min-w-8 items-center justify-center rounded-md px-1.5 py-2 text-sm font-normal transition ${page.value === paginationItem ? 'bg-[#0969da] text-white' : 'text-ink hover:bg-raised hover:text-[#0969da]'}`}
                       aria-current={page.value === paginationItem ? 'page' : undefined}
-                      aria-label={`Go to page ${paginationItem}`}
+                      aria-label={`Page ${paginationItem}`}
                       onClick$={() => goToPage(paginationItem)}
                     >
                       {paginationItem}
                     </button>
                   ) : (
-                    <span key={paginationItem} class="flex h-8 min-w-8 items-center justify-center text-sm font-medium text-muted" aria-hidden="true">…</span>
+                    <span key={paginationItem} class="mr-1 inline-flex h-8 min-w-8 items-center justify-center rounded-md px-1.5 py-2 text-sm font-normal text-muted" aria-hidden="true">…</span>
                   )
                 ))}
               </div>
               <button
                 type="button"
-                class="inline-flex items-center gap-1 rounded-md px-1.5 py-2 text-sm font-medium text-accent transition hover:text-accent-hover disabled:cursor-not-allowed disabled:text-muted/50 disabled:hover:text-muted/50"
+                class="inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-md px-1.5 py-2 text-sm font-normal text-[#0969da] transition hover:bg-raised hover:text-[#0969da] disabled:cursor-not-allowed disabled:text-muted/70 disabled:hover:bg-transparent disabled:hover:text-muted/70"
                 onClick$={nextPage}
                 disabled={page.value >= getLastPage(total.value, pageSize.value)}
-                aria-label="Go to next page"
+                aria-disabled={page.value >= getLastPage(total.value, pageSize.value) ? 'true' : undefined}
+                aria-label="Next Page"
               >
                 Next
-                <span aria-hidden="true" class="text-lg leading-none">›</span>
+                <span aria-hidden="true" class="text-base leading-none">›</span>
               </button>
             </nav>
             <button class="rounded-md border border-line px-3 py-2 text-sm" onClick$={refresh}>Refresh</button>
