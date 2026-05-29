@@ -114,6 +114,8 @@ public class OrganizationEndpointsTests
         // Assert
         ep.Response.ShouldNotBeNull();
         ep.Response.Success.ShouldBeTrue();
+        A.CallTo(() => fakeUnitOfWork.BeginTransactionAsync()).MustHaveHappenedOnceExactly();
+        A.CallTo(() => fakeUnitOfWork.CommitAsync(A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
 
     [Test]
