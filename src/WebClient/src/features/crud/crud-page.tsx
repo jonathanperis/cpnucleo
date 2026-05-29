@@ -3,6 +3,7 @@ import { formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
+import { getCrudFormElement } from './crud-form';
 import { collectMissingRelationIds, displayEntityLabel, displayFieldValue } from './relation-display';
 
 const inputType = (type: string) => type === 'guid' ? 'text' : type;
@@ -87,9 +88,9 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
   const startEdit = $((item: ApiEntity) => { selected.value = item; mode.value = 'edit'; });
   const cancelForm = $(() => { selected.value = null; mode.value = 'list'; });
 
-  const submit = $(async (event: SubmitEvent) => {
+  const submit = $(async (event: SubmitEvent, currentTarget: HTMLFormElement) => {
     event.preventDefault();
-    const form = event.currentTarget as HTMLFormElement;
+    const form = getCrudFormElement(event, currentTarget);
     const values = Object.fromEntries(new FormData(form).entries());
     const payload: Record<string, unknown> = {};
     for (const field of formFields(resource)) {
