@@ -13,8 +13,8 @@ export default component$(() => {
   const counts = useSignal<Record<string, number>>({});
   useVisibleTask$(async () => {
     const next: Record<string, number> = {};
-    await Promise.all(resourceMetadata.slice(0, 6).map(async (resource) => {
-      try { next[resource.key] = (await webApiClient.list(resource.key, 1, 5)).totalCount ?? 0; }
+    await Promise.all(resourceMetadata.map(async (resource) => {
+      try { next[resource.key] = (await webApiClient.list(resource.key, 1, 1)).totalCount ?? 0; }
       catch { next[resource.key] = 0; }
     }));
     counts.value = next;
