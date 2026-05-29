@@ -18,10 +18,16 @@ public class Request
     public required string Name { get; set; }
 
     /// <summary>
+    /// Gets or sets the login of the user.
+    /// </summary>
+    [DefaultValue("updated-user")]
+    public string? Login { get; set; }
+
+    /// <summary>
     /// Gets or sets the password of the user.
     /// </summary>
     [DefaultValue("veryverysecretpassword")]
-    public required string Password { get; set; }
+    public string? Password { get; set; }
 
     public class Validator : Validator<Request>
     {
@@ -33,14 +39,10 @@ public class Request
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.");
 
-            RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Password is required.");
-
-            RuleFor(x => x.Password)
-                .MinimumLength(8).WithMessage("Password must be at least 8 characters long.");
-
-            RuleFor(x => x.Password)
-                .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$").WithMessage("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.");
+            RuleFor(x => x.Password!)
+                .MinimumLength(8).WithMessage("Password must be at least 8 characters long.")
+                .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$").WithMessage("Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.")
+                .When(x => !string.IsNullOrWhiteSpace(x.Password));
         }
     }
 }
