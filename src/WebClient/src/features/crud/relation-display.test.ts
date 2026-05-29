@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ApiEntity, FieldMetadata } from '~/lib/api/types';
-import { displayEntityLabel, displayFieldValue, collectMissingRelationIds } from './relation-display';
+import { displayEntityLabel, displayFieldValue, collectMissingRelationIds, mergeRelationRecords } from './relation-display';
 
 const organizations: ApiEntity[] = [
   { id: 'org-1', name: 'Cpnucleo Core' },
@@ -37,6 +37,16 @@ describe('CRUD relation display values', () => {
 
   it('skips empty display fields before falling back to the next readable value', () => {
     expect(displayEntityLabel({ id: 'project-1', name: '', description: 'Readable description' })).toBe('Readable description');
+  });
+
+  it('merges prefetched and on-demand relation records without dropping missing-page lookups', () => {
+    expect(mergeRelationRecords(
+      [{ id: 'org-missing', name: 'Fetched by id' }],
+      [{ id: 'org-page', name: 'Prefetched page' }, { id: 'org-missing', name: 'Duplicate from page' }],
+    )).toEqual([
+      { id: 'org-missing', name: 'Fetched by id' },
+      { id: 'org-page', name: 'Prefetched page' },
+    ]);
   });
 
   it('collects only visible relation ids missing from the prefetched relation records', () => {
