@@ -7,12 +7,12 @@ const source = readFileSync(sourcePath, 'utf8');
 
 describe('home page resource counters', () => {
   it('loads counts for every work-area card instead of only the featured cards', () => {
-    expect(source).toContain('Promise.all(resourceMetadata.map(async (resource) => {');
-    expect(source).not.toContain('resourceMetadata.slice(0, 6).map(async (resource)');
+    expect(source).toMatch(/Promise\.all\(\s*resourceMetadata\.map\(/);
+    expect(source).not.toMatch(/resourceMetadata\.slice\(\s*0\s*,\s*6\s*\)\.map\(/);
   });
 
   it('requests the smallest page needed when only totalCount is displayed', () => {
-    expect(source).toContain('webApiClient.list(resource.key, 1, 1)');
-    expect(source).not.toContain('webApiClient.list(resource.key, 1, 5)');
+    expect(source).toMatch(/webApiClient\.list\(\s*resource\.key\s*,\s*1\s*,\s*1\s*\)/);
+    expect(source).not.toMatch(/webApiClient\.list\(\s*resource\.key\s*,\s*1\s*,\s*5\s*\)/);
   });
 });
