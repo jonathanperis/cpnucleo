@@ -166,7 +166,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
 
       <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
         <div class="flex flex-col gap-3 border-b border-line px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
-          <p key={`page-summary-${displayPage}-${lastPage}-${total.value}`} class="text-sm text-muted" aria-live="polite">{total.value} records · page {displayPage} of {lastPage}</p>
+          <p class="text-sm text-muted" aria-live="polite">{total.value} records · page {displayPage} of {lastPage}</p>
           <div class="flex flex-wrap items-center gap-3">
             <label class="flex items-center gap-2 text-sm text-muted">
               Rows
@@ -190,7 +190,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
                 {paginationItems.map((paginationItem) => (
                   typeof paginationItem === 'number' ? (
                     <button
-                      key={`${paginationItem}-${displayPage === paginationItem ? 'active' : 'idle'}`}
+                      key={paginationItem}
                       type="button"
                       class={`mr-1 inline-flex h-8 min-w-8 items-center justify-center rounded-md px-1.5 py-2 text-sm font-normal transition ${displayPage === paginationItem ? 'bg-[#0969da] text-white' : 'text-ink hover:bg-raised hover:text-[#0969da]'}`}
                       aria-current={displayPage === paginationItem ? 'page' : undefined}
