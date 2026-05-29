@@ -52,12 +52,22 @@ describe('webapi client', () => {
   });
 
   it('unwraps singular item response envelopes for relation lookups', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({
-      organization: { id: 'org-1', name: 'Cpnucleo Core' },
-    }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     const client = createWebApiClient('http://example.test/api');
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        organization: { id: 'org-1', name: 'Cpnucleo Core' },
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        result: { id: 'org-2', name: 'Cpnucleo Result' },
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        id: 'org-3', name: 'Cpnucleo Raw',
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
 
     await expect(client.get('organizations', 'org-1')).resolves.toEqual({ id: 'org-1', name: 'Cpnucleo Core' });
+    await expect(client.get('organizations', 'org-2')).resolves.toEqual({ id: 'org-2', name: 'Cpnucleo Result' });
+    await expect(client.get('organizations', 'org-3')).resolves.toEqual({ id: 'org-3', name: 'Cpnucleo Raw' });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
   it('adds the appointment name required by WebApi from the visible description field', async () => {
