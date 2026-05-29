@@ -27,6 +27,14 @@ describe('CRUD relation display values', () => {
     expect(displayEntityLabel({ id: 'user-1', login: 'demo@cpnucleo.test' })).toBe('demo@cpnucleo.test');
   });
 
+  it('combines name and description for richer relation labels', () => {
+    expect(displayEntityLabel({ id: 'task-1', name: 'Build API', description: 'Create endpoint contract' })).toBe('Build API — Create endpoint contract');
+  });
+
+  it('combines name and login for people relation labels', () => {
+    expect(displayEntityLabel({ id: 'user-1', name: 'Cpnucleo Demo', login: 'demo@cpnucleo.test' })).toBe('Cpnucleo Demo (demo@cpnucleo.test)');
+  });
+
   it('skips empty display fields before falling back to the next readable value', () => {
     expect(displayEntityLabel({ id: 'project-1', name: '', description: 'Readable description' })).toBe('Readable description');
   });

@@ -13,6 +13,7 @@ const withQuery = (url: string, params?: Record<string, string | number | undefi
 };
 
 type ListEnvelope<T extends ApiEntity> = T[] | PaginatedResult<T> | { result?: PaginatedResult<T> };
+type ItemEnvelope<T extends ApiEntity> = T | { result?: T } | Record<string, unknown>;
 type ListSubscriber<T extends ApiEntity> = (page: PaginatedResult<T>) => void;
 
 export const normalizeList = <T extends ApiEntity>(payload: ListEnvelope<T>): PaginatedResult<T> => {
@@ -25,6 +26,16 @@ export const normalizeList = <T extends ApiEntity>(payload: ListEnvelope<T>): Pa
     pageNumber: page.pageNumber ?? page.page ?? 1,
     pageSize: page.pageSize ?? page.items?.length ?? page.data?.length ?? page.results?.length ?? 0,
   };
+};
+
+export const normalizeItem = <T extends ApiEntity>(payload: ItemEnvelope<T>, envelopeKey: string): T => {
+  if (payload && typeof payload === 'object') {
+    const record = payload as Record<string, unknown>;
+    if (record.id !== undefined) return payload as T;
+    if (record.result && typeof record.result === 'object') return record.result as T;
+    if (record[envelopeKey] && typeof record[envelopeKey] === 'object') return record[envelopeKey] as T;
+  }
+  return payload as T;
 };
 
 export const parseServerSentEventData = (event: string): string[] => {
@@ -161,7 +172,8 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
     },
     async get<T extends ApiEntity>(resourceKey: ResourceKey, id: string, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
-      return requestJson<T>(withQuery(`${root}${resource.itemPath}`, { id }), { signal });
+      const envelopeKey = resource.itemPath.replace(/^\//, '');
+      return normalizeItem<T>(await requestJson<ItemEnvelope<T>>(withQuery(`${root}${resource.itemPath}`, { id }), { signal }), envelopeKey);
     },
     async create<T extends ApiEntity>(resourceKey: ResourceKey, body: Record<string, unknown>) {
       const resource = findResource(resourceKey);

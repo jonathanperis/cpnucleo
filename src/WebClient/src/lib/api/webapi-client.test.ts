@@ -51,6 +51,15 @@ describe('webapi client', () => {
     expect((fetchMock.mock.calls[1][1] as RequestInit).method).toBe('PATCH');
   });
 
+  it('unwraps singular item response envelopes for relation lookups', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({
+      organization: { id: 'org-1', name: 'Cpnucleo Core' },
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    const client = createWebApiClient('http://example.test/api');
+
+    await expect(client.get('organizations', 'org-1')).resolves.toEqual({ id: 'org-1', name: 'Cpnucleo Core' });
+  });
+
   it('adds the appointment name required by WebApi from the visible description field', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ id: 'abc' }), { status: 200 }));
     const client = createWebApiClient('http://example.test/api');

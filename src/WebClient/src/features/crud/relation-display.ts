@@ -8,9 +8,16 @@ export const formatValue = (value: unknown): string => {
   return String(value);
 };
 
+const nonEmptyString = (value: unknown): string => typeof value === 'string' && value.trim() ? value.trim() : '';
+
 export const displayEntityLabel = (entity: ApiEntity | undefined): string => {
   if (!entity) return '—';
-  return formatValue(entity.name || entity.description || entity.login || entity.id);
+  const name = nonEmptyString(entity.name);
+  const description = nonEmptyString(entity.description);
+  const login = nonEmptyString(entity.login);
+  if (name && description && description !== name) return `${name} — ${description}`;
+  if (name && login && login !== name) return `${name} (${login})`;
+  return formatValue(name || description || login || entity.id);
 };
 
 export const displayFieldValue = (value: unknown, relation: ResourceKey | undefined, relations: RelationRecords): string => {
