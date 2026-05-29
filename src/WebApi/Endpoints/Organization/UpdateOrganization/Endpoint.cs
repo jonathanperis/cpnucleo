@@ -32,6 +32,9 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Updating organization entity with Id: {OrganizationId}", request.Id);
         Domain.Entities.Organization.Update(item, request.Name, request.Description);
 
+        Logger.LogInformation("Beginning transaction.");
+        await unitOfWork.BeginTransactionAsync();
+
         Logger.LogInformation("Updating entity in repository.");
         Response.Success = await repository.UpdateAsync(item);
 
