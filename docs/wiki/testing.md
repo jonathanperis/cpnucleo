@@ -1,6 +1,6 @@
 # Testing
 
-Cpnucleo has four test projects covering 27 architecture rules, 4 Application unit-test cases, 49 WebApi unit-test cases in source, and 55 integration tests. The active GitHub Actions gates run architecture tests and container health checks; unit/integration suites are kept for local/manual validation.
+Cpnucleo has five test projects covering the architecture rules plus source checks, 4 Application unit-test cases, 11 security unit-test cases, 53 WebApi unit-test cases in source, and 55 integration tests. The active GitHub Actions gates run architecture tests and container health checks; unit/integration suites are kept for local/manual validation.
 
 ---
 
@@ -9,6 +9,8 @@ Cpnucleo has four test projects covering 27 architecture rules, 4 Application un
 | Project | Framework | Focus | Key Libraries |
 |---------|-----------|-------|--------------|
 | Architecture.Tests | xUnit | Clean Architecture rules | NetArchTest.Rules, FluentAssertions |
+| Application.Unit.Tests | NUnit | Shared Application use cases | FakeItEasy, Shouldly |
+| Security.Unit.Tests | NUnit | Password hashing and login verification | Shouldly |
 | WebApi.Unit.Tests | NUnit | Endpoint unit tests | FakeItEasy, Shouldly, FastEndpoints |
 | WebApi.Integration.Tests | xUnit v3 | 55 endpoint integration tests | FastEndpoints.Testing, Shouldly |
 
@@ -71,7 +73,7 @@ These tests enforce Clean Architecture dependency rules at build time using NetA
 
 ## Unit Tests (`tests/WebApi.Unit.Tests/`)
 
-Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions. The source contains 49 test cases, but the suite is not part of the active CI gate and currently needs cleanup around several `Remove*` request-model references before it compiles end to end.
+Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions. The source contains 53 test cases, but the suite is not part of the active CI gate and currently needs cleanup around several `Remove*` request-model references before it compiles end to end.
 
 ### Structure
 
@@ -136,7 +138,18 @@ sleep 30
 
 ## Running Tests
 
-### Run All Tests
+### Run WebClient Tests
+
+```bash
+cd src/WebClient
+bun test
+bun run typecheck
+bun run build
+```
+
+The WebClient Vitest suite covers generated CRUD behaviors including edit-field date normalization, controlled relation selects, fallback selected relation options, readable relation labels, merged relation caches, and singular WebApi item response envelopes.
+
+### Run All .NET Tests
 
 ```bash
 dotnet test cpnucleo.slnx
@@ -180,4 +193,4 @@ Architecture tests run automatically in both CI workflows:
 - **build-check.yml** (PR): runs architecture tests for each service (WebApi, GrpcServer, IdentityApi, WebClient)
 - **main-release.yml** (push to main): runs architecture tests before building Docker images
 
-Unit and integration test projects remain available for local/manual runs; the active GitHub Actions gates run architecture tests and container health checks. Latest local audit: `Architecture.Tests` passes 27/27 and `Application.Unit.Tests` passes 4/4, while `WebApi.Unit.Tests` has compile drift around removed `Remove*.Request` model types.
+Unit and integration test projects remain available for local/manual runs; the active GitHub Actions gates run architecture tests and container health checks. Latest source audit: `Architecture.Tests` contains 55 test cases including the original 27 architecture-rule tests, `Application.Unit.Tests` contains 4, `Security.Unit.Tests` contains 11, and `WebApi.Unit.Tests` contains 53 test cases with known compile drift around removed `Remove*.Request` model types.

@@ -12,6 +12,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 | [Getting Started](getting-started) | Prerequisites, build, run with Docker Compose or locally |
 | [Project Structure](project-structure) | Full tree of `src/` and `tests/` with descriptions |
 | [API Reference](api-reference) | WebApi endpoints, IdentityApi auth, GrpcServer contracts |
+| [WebClient CRUD](webclient-crud) | Qwik CRUD screens, edit-form prefill, relation labels, response normalization |
 | [Database](database) | PostgreSQL setup, EF Core, Dapper, init scripts |
 | [Testing](testing) | Architecture tests, unit tests, integration tests |
 | [Deployment](deployment) | Docker Compose configs, GitHub Actions CI/CD, NGINX |
@@ -30,7 +31,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 - NGINX reverse proxy with least-connection load balancing across multiple WebApi instances
 - Docker Compose configurations for development, default, and production environments
 - AOT, Trim, and ExtraOptimize build options for production-optimized containers
-- Astro + Qwik frontend with Tailwind CSS, IdentityApi login, and CRUD screens for all WebApi resources
+- Astro + Qwik frontend with Tailwind CSS, IdentityApi login, and CRUD screens for all WebApi resources, including prefilled edit forms and readable relation labels
 - Automated CI/CD with GitHub Actions deploying to Hostinger Docker Manager via GHCR
 
 ---

@@ -154,6 +154,9 @@ Implements data access with two strategies side by side:
 - Tailwind CSS with Catalyst-inspired product UI patterns implemented as resumable Qwik components
 - Static container runtime served by NGINX on port 5030
 - IdentityApi-backed login and bearer-token authorization for protected pages
+- Metadata-driven CRUD screens for all WebApi resources, with generated list/form fields, pagination, details panels, create/edit/delete actions, and relation-aware selects
+- Relation fields resolve readable labels from prefetched relation pages plus on-demand lookups for visible rows; fetched records are merged so off-page relation labels survive later prefetches
+- Edit forms prefill selected records, normalize date/datetime values for native inputs, and preserve selected relation IDs even when the related record is outside the prefetched option page
 
 ---
 
