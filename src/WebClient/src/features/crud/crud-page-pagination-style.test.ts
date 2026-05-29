@@ -22,7 +22,9 @@ describe('CRUD pagination GitHub-style controls', () => {
     expect(source).toContain('data-current-page={displayPage}');
     expect(source).toContain('buildPaginationItems(displayPage, lastPage)');
     expect(source).toContain('displayPage === paginationItem ? \'bg-[#0969da] text-white\'');
-    expect(source).toContain("key={`${paginationItem}-${displayPage === paginationItem ? 'active' : 'idle'}`}");
+    expect(source).toContain('key={paginationItem}');
+    expect(source).not.toContain('page-summary-${displayPage}');
+    expect(source).not.toContain("displayPage === paginationItem ? 'active' : 'idle'");
   });
 
   it('ignores stale listing responses after the selected page changes', () => {
