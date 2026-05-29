@@ -3,12 +3,7 @@ import { formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
-
-const formatValue = (value: unknown): string => {
-  if (value === null || value === undefined || value === '') return '—';
-  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) return new Date(value).toLocaleString();
-  return String(value);
-};
+import { displayEntityLabel, displayFieldValue } from './relation-display';
 
 const inputType = (type: string) => type === 'guid' ? 'text' : type;
 
@@ -64,7 +59,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
 
   useVisibleTask$(async ({ track }) => {
     track(() => resource.key);
-    const relationKeys = [...new Set(formFields(resource).map((field) => field.relation).filter(Boolean))] as ResourceKey[];
+    const relationKeys = [...new Set(resource.fields.map((field) => field.relation).filter(Boolean))] as ResourceKey[];
     await Promise.all(relationKeys.map(async (key) => {
       try { relations[key] = (await webApiClient.list(key, 1, 100)).items ?? []; } catch { relations[key] = []; }
     }));
@@ -146,7 +141,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
                   {field.relation ? (
                     <select name={field.name} required={field.required} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm">
                       <option value="">{`Select ${field.label.toLowerCase()}`}</option>
-                      {relation.map((option) => <option key={String(option.id)} value={String(option.id)} selected={String(option.id) === String(value ?? '')}>{formatValue(option.name ?? option.description ?? option.login ?? option.id)}</option>)}
+                      {relation.map((option) => <option key={String(option.id)} value={String(option.id)} selected={String(option.id) === String(value ?? '')}>{displayEntityLabel(option)}</option>)}
                     </select>
                   ) : field.type === 'textarea' ? (
                     <textarea name={field.name} required={field.required} rows={3} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" value={String(value ?? '')} />
@@ -226,7 +221,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
             <table class="min-w-full divide-y divide-line text-sm">
               <thead class="bg-raised text-left text-xs font-semibold uppercase tracking-wide text-muted"><tr>{tableFields(resource).map((field) => <th key={field.name} class="px-4 py-3">{field.label}</th>)}<th class="px-4 py-3 text-right">Actions</th></tr></thead>
               <tbody class="divide-y divide-line">
-                {items.value.map((item) => <tr key={String(item.id)} class="hover:bg-raised/70">{tableFields(resource).map((field) => <td key={field.name} class="max-w-xs truncate px-4 py-3">{formatValue(item[field.name])}</td>)}<td class="whitespace-nowrap px-4 py-3 text-right"><button class="mr-2 text-accent" onClick$={() => (details.value = item)}>Details</button><button class="mr-2 text-accent" onClick$={() => startEdit(item)}>Edit</button><button class="text-danger" onClick$={() => remove(item)}>Delete</button></td></tr>)}
+                {items.value.map((item) => <tr key={String(item.id)} class="hover:bg-raised/70">{tableFields(resource).map((field) => <td key={field.name} class="max-w-xs truncate px-4 py-3">{displayFieldValue(item[field.name], field.relation, relations)}</td>)}<td class="whitespace-nowrap px-4 py-3 text-right"><button class="mr-2 text-accent" onClick$={() => (details.value = item)}>Details</button><button class="mr-2 text-accent" onClick$={() => startEdit(item)}>Edit</button><button class="text-danger" onClick$={() => remove(item)}>Delete</button></td></tr>)}
               </tbody>
             </table>
           </div>
@@ -261,7 +256,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
               <button class="rounded-md border border-line px-3 py-2" onClick$={() => (details.value = null)}>Close</button>
             </div>
             <dl class="divide-y divide-line rounded-lg border border-line">
-              {resource.fields.map((field) => <div key={field.name} class="grid grid-cols-3 gap-3 px-4 py-3 text-sm"><dt class="font-medium text-muted">{field.label}</dt><dd class="col-span-2 break-all">{formatValue(details.value?.[field.name])}</dd></div>)}
+              {resource.fields.map((field) => <div key={field.name} class="grid grid-cols-3 gap-3 px-4 py-3 text-sm"><dt class="font-medium text-muted">{field.label}</dt><dd class="col-span-2 break-all">{displayFieldValue(details.value?.[field.name], field.relation, relations)}</dd></div>)}
             </dl>
           </aside>
         </div>
