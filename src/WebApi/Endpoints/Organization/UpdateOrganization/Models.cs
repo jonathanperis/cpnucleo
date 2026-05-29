@@ -21,7 +21,7 @@ public class Request
     /// Gets or sets the description of the organization.
     /// </summary>
     [DefaultValue("Updated organization description goes here")]
-    public required string Description { get; set; }
+    public string? Description { get; set; }
 
     public class Validator : Validator<Request>
     {
@@ -33,8 +33,6 @@ public class Request
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required.");
 
-            RuleFor(x => x.Description)
-                .NotEmpty().WithMessage("Description is required.");
         }
     }
 }

@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the name of the appointment.
     /// </summary>
     [DefaultValue("New Appointment")]
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Gets or sets the description of the appointment.
@@ -51,9 +51,6 @@ public class Request
     {
         public Validator()
         {
-            RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Name is required.");
-
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Description is required.");
 

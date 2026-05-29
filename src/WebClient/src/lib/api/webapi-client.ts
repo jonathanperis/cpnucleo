@@ -57,6 +57,11 @@ const toApiError = (error: unknown) => {
 const parseListPage = <T extends ApiEntity>(data: string): PaginatedResult<T> =>
   normalizeList<T>(JSON.parse(data) as ListEnvelope<T>);
 
+const prepareWriteBody = (resourceKey: ResourceKey, body: Record<string, unknown>) => {
+  if (resourceKey !== 'appointments' || typeof body.name === 'string' || typeof body.description !== 'string') return body;
+  return { ...body, name: body.description };
+};
+
 const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T> | undefined> => {
   throwIfAborted(signal);
 
@@ -160,11 +165,11 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
     },
     async create<T extends ApiEntity>(resourceKey: ResourceKey, body: Record<string, unknown>) {
       const resource = findResource(resourceKey);
-      return requestJson<T>(`${root}${resource.itemPath}`, { method: 'POST', body: JSON.stringify({ id: crypto.randomUUID(), ...body }) });
+      return requestJson<T>(`${root}${resource.itemPath}`, { method: 'POST', body: JSON.stringify(prepareWriteBody(resourceKey, { id: crypto.randomUUID(), ...body })) });
     },
     async update<T extends ApiEntity>(resourceKey: ResourceKey, id: string, body: Record<string, unknown>) {
       const resource = findResource(resourceKey);
-      return requestJson<T>(withQuery(`${root}${resource.itemPath}`, { id }), { method: 'PATCH', body: JSON.stringify({ ...body, id }) });
+      return requestJson<T>(withQuery(`${root}${resource.itemPath}`, { id }), { method: 'PATCH', body: JSON.stringify(prepareWriteBody(resourceKey, { ...body, id })) });
     },
     async delete(resourceKey: ResourceKey, id: string) {
       const resource = findResource(resourceKey);

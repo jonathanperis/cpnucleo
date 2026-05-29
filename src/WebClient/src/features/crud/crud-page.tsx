@@ -95,7 +95,8 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
     const payload: Record<string, unknown> = {};
     for (const field of formFields(resource)) {
       const value = values[field.name];
-      if (value === undefined || value === '') continue;
+      if (value === undefined) continue;
+      if (value === '' && (field.type === 'guid' || field.type === 'number' || field.type === 'date' || field.type === 'datetime-local')) continue;
       payload[field.name] = field.type === 'number' ? Number(value) : String(value);
     }
     saving.value = true;

@@ -21,6 +21,16 @@ describe('resource metadata', () => {
     expect(formFields(users!).some((field) => /password/i.test(field.name))).toBe(false);
   });
 
+  it('marks fields required when WebApi update endpoints require them', () => {
+    const assignments = resourceMetadata.find((resource) => resource.key === 'assignments')!;
+    const appointments = resourceMetadata.find((resource) => resource.key === 'appointments')!;
+
+    expect(formFields(assignments).filter((field) => field.required).map((field) => field.name)).toEqual([
+      'name', 'description', 'startDate', 'endDate', 'amountHours', 'projectId', 'workflowId', 'userId', 'assignmentTypeId',
+    ]);
+    expect(formFields(appointments).find((field) => field.name === 'amountHours')).toMatchObject({ required: true });
+  });
+
   it('declares relation selectors for foreign keys', () => {
     const assignments = resourceMetadata.find((resource) => resource.key === 'assignments')!;
     expect(assignments.fields.filter((field) => field.relation).map((field) => field.relation)).toEqual(['projects', 'workflows', 'users', 'assignmentTypes']);
