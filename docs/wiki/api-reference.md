@@ -88,6 +88,17 @@ All WebApi endpoints use EF Core via `IApplicationDbContext` for database operat
 public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
 ```
 
+### WebClient response expectations
+
+The WebClient CRUD screens consume the REST endpoints through `src/WebClient/src/lib/api/webapi-client.ts` and normalize the response shapes used by the API:
+
+- list arrays, paginated objects, and `{ result: ... }` list envelopes
+- raw singular items with an `id`
+- `{ result: item }` singular envelopes
+- resource-key singular envelopes such as `{ organization: { ... } }`
+
+Relation lookups rely on that singular normalization before resolving table labels. When a visible row references a related record outside the first prefetched relation page, the client fetches the specific related item and merges it into the relation cache instead of overwriting previously fetched labels.
+
 ### Rate Limiting
 
 - 50 requests per minute per IP address

@@ -134,9 +134,10 @@ cpnucleo/
 
 | Suite | Framework | Tests | Purpose |
 |-------|-----------|-------|---------|
-| Architecture.Tests | xUnit + NetArchTest + FluentAssertions | 27 | Layer deps, naming, sealed entities |
+| Architecture.Tests | xUnit + NetArchTest + FluentAssertions | 55 | Layer deps, naming, source checks, sealed entities |
 | Application.Unit.Tests | NUnit + FakeItEasy + Shouldly | 4 | Shared Application use cases |
-| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 49 | Endpoint happy/negative paths |
+| Security.Unit.Tests | NUnit + Shouldly | 11 | Password hashing and login verification |
+| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 53 | Endpoint happy/negative paths |
 | WebApi.Integration.Tests | xUnit v3 + FastEndpoints.Testing | 50+ | Full HTTP CRUD per entity |
 
 **CI note:** Unit and integration tests are currently commented out in `build-check.yml` — only architecture tests run in CI.
