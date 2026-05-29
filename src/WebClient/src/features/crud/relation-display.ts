@@ -10,6 +10,11 @@ export const formatValue = (value: unknown): string => {
 
 const nonEmptyString = (value: unknown): string => typeof value === 'string' && value.trim() ? value.trim() : '';
 
+export const mergeRelationRecords = (existing: ApiEntity[], incoming: ApiEntity[]): ApiEntity[] => {
+  const existingIds = new Set(existing.map((entity) => String(entity.id ?? '')));
+  return [...existing, ...incoming.filter((entity) => !existingIds.has(String(entity.id ?? '')))];
+};
+
 export const displayEntityLabel = (entity: ApiEntity | undefined): string => {
   if (!entity) return '—';
   const name = nonEmptyString(entity.name);

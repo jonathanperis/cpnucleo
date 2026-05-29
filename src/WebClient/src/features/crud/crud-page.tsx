@@ -5,7 +5,7 @@ import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 import { getCrudFormElement } from './crud-form';
 import { formatFormFieldValue, relationOptionsLoaded, withSelectedRelationOption } from './crud-field-values';
-import { collectMissingRelationIds, displayEntityLabel, displayFieldValue } from './relation-display';
+import { collectMissingRelationIds, displayEntityLabel, displayFieldValue, mergeRelationRecords } from './relation-display';
 
 const inputType = (type: string) => type === 'guid' ? 'text' : type;
 
@@ -63,7 +63,10 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
     track(() => resource.key);
     const relationKeys = [...new Set(resource.fields.map((field) => field.relation).filter(Boolean))] as ResourceKey[];
     await Promise.all(relationKeys.map(async (key) => {
-      try { relations[key] = (await webApiClient.list(key, 1, 100)).items ?? []; } catch { relations[key] = []; }
+      try {
+        const fetched = (await webApiClient.list(key, 1, 100)).items ?? [];
+        relations[key] = mergeRelationRecords(relations[key] ?? [], fetched);
+      } catch { relations[key] = relations[key] ?? []; }
     }));
   });
 
@@ -80,8 +83,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
       const found = loaded.filter((entity): entity is ApiEntity => Boolean(entity));
       if (found.length === 0) return;
       const existing = relations[resourceKey] ?? [];
-      const existingIds = new Set(existing.map((entity) => String(entity.id ?? '')));
-      relations[resourceKey] = [...existing, ...found.filter((entity) => !existingIds.has(String(entity.id ?? '')))];
+      relations[resourceKey] = mergeRelationRecords(existing, found);
     }));
   });
 
