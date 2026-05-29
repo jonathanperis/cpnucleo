@@ -12,7 +12,23 @@ describe('CRUD pagination GitHub-style controls', () => {
     expect(source).toContain('bg-[#0969da] text-white');
     expect(source).toContain('text-[#0969da] transition hover:bg-raised hover:text-[#0969da]');
     expect(source).toContain('aria-label={`Page ${paginationItem}`}');
-    expect(source).toContain('aria-disabled={page.value <= 1 ? \'true\' : undefined}');
-    expect(source).toContain('aria-disabled={page.value >= getLastPage(total.value, pageSize.value) ? \'true\' : undefined}');
+    expect(source).toContain('aria-disabled={isFirstPage ? \'true\' : undefined}');
+    expect(source).toContain('aria-disabled={isLastPage ? \'true\' : undefined}');
+  });
+
+  it('uses one derived display page for the summary and active controls', () => {
+    expect(source).toContain('const displayPage = Math.min(Math.max(1, page.value), lastPage);');
+    expect(source).toContain('records · page {displayPage} of {lastPage}');
+    expect(source).toContain('data-current-page={displayPage}');
+    expect(source).toContain('buildPaginationItems(displayPage, lastPage)');
+    expect(source).toContain('displayPage === paginationItem ? \'bg-[#0969da] text-white\'');
+    expect(source).toContain("key={`${paginationItem}-${displayPage === paginationItem ? 'active' : 'idle'}`}");
+  });
+
+  it('ignores stale listing responses after the selected page changes', () => {
+    expect(source).toContain('const requestedPage = page.value;');
+    expect(source).toContain('const requestedPageSize = pageSize.value;');
+    expect(source).toContain('webApiClient.subscribeList(resource.key, requestedPage, requestedPageSize');
+    expect(source).toContain('if (controller.signal.aborted || page.value !== requestedPage || pageSize.value !== requestedPageSize) return;');
   });
 });

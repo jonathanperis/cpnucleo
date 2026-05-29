@@ -35,13 +35,17 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
     track(() => refreshKey.value);
 
     const controller = new AbortController();
+    const requestedPage = page.value;
+    const requestedPageSize = pageSize.value;
     loading.value = true;
     error.value = '';
 
-    void webApiClient.subscribeList(resource.key, page.value, pageSize.value, (result) => {
+    void webApiClient.subscribeList(resource.key, requestedPage, requestedPageSize, (result) => {
+      if (controller.signal.aborted || page.value !== requestedPage || pageSize.value !== requestedPageSize) return;
+
       const nextTotal = result.totalCount ?? result.items?.length ?? 0;
-      const lastPage = getLastPage(nextTotal, pageSize.value);
-      if (page.value > lastPage) {
+      const lastPage = getLastPage(nextTotal, requestedPageSize);
+      if (requestedPage > lastPage) {
         page.value = lastPage;
         return;
       }
@@ -107,6 +111,12 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
     page.value = 1;
   });
 
+  const lastPage = getLastPage(total.value, pageSize.value);
+  const displayPage = Math.min(Math.max(1, page.value), lastPage);
+  const paginationItems = buildPaginationItems(displayPage, lastPage);
+  const isFirstPage = displayPage <= 1;
+  const isLastPage = displayPage >= lastPage;
+
   return (
     <section class="space-y-6">
       <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -156,7 +166,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
 
       <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
         <div class="flex flex-col gap-3 border-b border-line px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
-          <p class="text-sm text-muted">{total.value} records · page {page.value} of {getLastPage(total.value, pageSize.value)}</p>
+          <p key={`page-summary-${displayPage}-${lastPage}-${total.value}`} class="text-sm text-muted" aria-live="polite">{total.value} records · page {displayPage} of {lastPage}</p>
           <div class="flex flex-wrap items-center gap-3">
             <label class="flex items-center gap-2 text-sm text-muted">
               Rows
@@ -164,26 +174,26 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
                 {[10, 25, 50, 100].map((size) => <option key={String(size)} value={String(size)}>{String(size)}</option>)}
               </select>
             </label>
-            <nav class="flex items-center" aria-label="Pagination">
+            <nav class="flex items-center" aria-label="Pagination" data-current-page={displayPage}>
               <button
                 type="button"
                 class="mr-1 inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-md px-1.5 py-2 text-sm font-normal text-muted transition hover:bg-raised hover:text-ink disabled:cursor-not-allowed disabled:text-muted/70 disabled:hover:bg-transparent disabled:hover:text-muted/70"
                 onClick$={previousPage}
-                disabled={page.value <= 1}
-                aria-disabled={page.value <= 1 ? 'true' : undefined}
+                disabled={isFirstPage}
+                aria-disabled={isFirstPage ? 'true' : undefined}
                 aria-label="Previous Page"
               >
                 <span aria-hidden="true" class="text-base leading-none">‹</span>
                 Previous
               </button>
               <div class="flex items-center" role="group" aria-label={`${resource.label} pages`}>
-                {buildPaginationItems(page.value, getLastPage(total.value, pageSize.value)).map((paginationItem) => (
+                {paginationItems.map((paginationItem) => (
                   typeof paginationItem === 'number' ? (
                     <button
-                      key={paginationItem}
+                      key={`${paginationItem}-${displayPage === paginationItem ? 'active' : 'idle'}`}
                       type="button"
-                      class={`mr-1 inline-flex h-8 min-w-8 items-center justify-center rounded-md px-1.5 py-2 text-sm font-normal transition ${page.value === paginationItem ? 'bg-[#0969da] text-white' : 'text-ink hover:bg-raised hover:text-[#0969da]'}`}
-                      aria-current={page.value === paginationItem ? 'page' : undefined}
+                      class={`mr-1 inline-flex h-8 min-w-8 items-center justify-center rounded-md px-1.5 py-2 text-sm font-normal transition ${displayPage === paginationItem ? 'bg-[#0969da] text-white' : 'text-ink hover:bg-raised hover:text-[#0969da]'}`}
+                      aria-current={displayPage === paginationItem ? 'page' : undefined}
                       aria-label={`Page ${paginationItem}`}
                       onClick$={() => goToPage(paginationItem)}
                     >
@@ -198,8 +208,8 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
                 type="button"
                 class="inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-md px-1.5 py-2 text-sm font-normal text-[#0969da] transition hover:bg-raised hover:text-[#0969da] disabled:cursor-not-allowed disabled:text-muted/70 disabled:hover:bg-transparent disabled:hover:text-muted/70"
                 onClick$={nextPage}
-                disabled={page.value >= getLastPage(total.value, pageSize.value)}
-                aria-disabled={page.value >= getLastPage(total.value, pageSize.value) ? 'true' : undefined}
+                disabled={isLastPage}
+                aria-disabled={isLastPage ? 'true' : undefined}
                 aria-label="Next Page"
               >
                 Next
