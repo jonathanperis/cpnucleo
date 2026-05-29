@@ -4,6 +4,7 @@ import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 import { getCrudFormElement } from './crud-form';
+import { formatFormFieldValue, relationOptionsLoaded } from './crud-field-values';
 import { collectMissingRelationIds, displayEntityLabel, displayFieldValue } from './relation-display';
 
 const inputType = (type: string) => type === 'guid' ? 'text' : type;
@@ -153,20 +154,21 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             {formFields(resource).map((field) => {
-              const value = selected.value?.[field.name];
-              const relation = field.relation ? relations[field.relation] ?? [] : [];
+              const value = formatFormFieldValue(selected.value?.[field.name], field.type);
+              const relationLoaded = relationOptionsLoaded(relations, field.relation);
+              const relation = field.relation && relationLoaded ? relations[field.relation] ?? [] : [];
               return (
                 <label key={field.name} class={field.type === 'textarea' ? 'md:col-span-2' : ''}>
                   <span class="mb-1 block text-sm font-medium">{field.label}{field.required ? ' *' : ''}</span>
                   {field.relation ? (
-                    <select name={field.name} required={field.required} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm">
-                      <option value="">{`Select ${field.label.toLowerCase()}`}</option>
-                      {relation.map((option) => <option key={String(option.id)} value={String(option.id)} selected={String(option.id) === String(value ?? '')}>{displayEntityLabel(option)}</option>)}
+                    <select name={field.name} required={field.required} value={value} disabled={!relationLoaded} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm disabled:opacity-70">
+                      <option value="">{relationLoaded ? `Select ${field.label.toLowerCase()}` : 'Loading options…'}</option>
+                      {relation.map((option) => <option key={String(option.id)} value={String(option.id)}>{displayEntityLabel(option)}</option>)}
                     </select>
                   ) : field.type === 'textarea' ? (
-                    <textarea name={field.name} required={field.required} rows={3} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" value={String(value ?? '')} />
+                    <textarea name={field.name} required={field.required} rows={3} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" value={value} />
                   ) : (
-                    <input name={field.name} required={field.required} type={inputType(field.type)} step={field.type === 'number' ? '0.25' : undefined} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" value={String(value ?? '')} />
+                    <input name={field.name} required={field.required} type={inputType(field.type)} step={field.type === 'number' ? '0.25' : undefined} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" value={value} />
                   )}
                 </label>
               );
