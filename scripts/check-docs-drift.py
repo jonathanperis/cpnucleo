@@ -97,8 +97,10 @@ def main() -> None:
     arch_tests = count_attrs("tests/Architecture.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     unit_tests = count_attrs("tests/WebApi.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     integration_tests = count_attrs("tests/WebApi.Integration.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    if (arch_tests, unit_tests, integration_tests) != (27, 49, 55):
-        fail(f"unexpected test counts: architecture={arch_tests}, unit={unit_tests}, integration={integration_tests}")
+    app_tests = count_attrs("tests/Application.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
+    security_tests = count_attrs("tests/Security.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
+    if (arch_tests, app_tests, security_tests, unit_tests, integration_tests) != (55, 4, 11, 53, 55):
+        fail(f"unexpected test counts: architecture={arch_tests}, application={app_tests}, security={security_tests}, webapi_unit={unit_tests}, integration={integration_tests}")
 
     endpoint_count = len(list((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs")))
     handler_count = len(list((ROOT / "src/GrpcServer/Handlers").glob("**/*Handler.cs")))
@@ -107,13 +109,19 @@ def main() -> None:
         fail(f"unexpected endpoint/handler/command counts: {endpoint_count}/{handler_count}/{command_count}")
 
     assert_contains("README.md", "27 architecture tests")
+    assert_contains("README.md", "Five test projects")
     assert_contains("README.md", "Pages documentation")
     assert_absent("README.md", "github.com/jonathanperis/cpnucleo/wiki")
     assert_absent("docs/wiki/getting-started.md", "http://localhost:5300/healthz")
     assert_contains("docs/wiki/getting-started.md", "http://localhost:5301/healthz")
     assert_contains("docs/wiki/api-reference.md", "gRPC transport: `http://localhost:5300` (HTTP/2)")
     assert_contains("docs/wiki/api-reference.md", "Health check: `http://localhost:5301/healthz` (HTTP/1.1)")
+    assert_contains("docs/wiki/api-reference.md", "resource-key singular envelopes")
+    assert_contains("docs/wiki/webclient-crud.md", "prefilled edit forms")
+    assert_contains("docs/wiki/webclient-crud.md", "readable relation labels")
+    assert_contains("docs/wiki/webclient-crud.md", "singular item response normalization")
     assert_contains("docs/wiki/testing.md", "55 integration tests")
+    assert_contains("docs/wiki/testing.md", "WebClient Vitest suite")
     assert_contains("docs/wiki/deployment.md", "Hostinger Docker Manager")
 
     print("README/wiki drift checks passed")

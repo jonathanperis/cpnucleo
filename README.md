@@ -42,8 +42,8 @@ Cpnucleo is a project management and task tracking system built as a .NET 10 ref
 - OpenTelemetry observability with OTLP export and optional Grafana LGTM stack
 - NGINX load balancing across two WebApi instances with least-connection routing
 - Multi-platform Docker builds (linux/amd64 + linux/arm64/v8) with AOT, trimming, and extra optimization options
-- Astro + Qwik frontend with Tailwind CSS, IdentityApi login, and Catalyst-inspired CRUD screens for all WebApi resources
-- Three test suites: architecture validation (xUnit + NetArchTest), unit tests (NUnit + FakeItEasy), integration tests (xUnit v3 + FastEndpoints.Testing)
+- Astro + Qwik frontend with Tailwind CSS, IdentityApi login, and Catalyst-inspired CRUD screens for all WebApi resources, including prefilled edit forms and readable relation labels
+- Five test projects: architecture validation, Application and security unit tests, WebApi unit tests, and WebApi integration tests
 - Automated CI/CD with GitHub Actions deploying GHCR images to Hostinger Docker Manager
 
 ## Architecture
@@ -144,7 +144,9 @@ dotnet test tests/WebApi.Unit.Tests/            # Unit tests only
 | Suite | Framework | Coverage |
 |-------|-----------|----------|
 | Architecture.Tests | xUnit + NetArchTest | Layer deps, naming, sealed entities |
-| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 49 endpoint unit-test cases; local compile cleanup currently needed |
+| Application.Unit.Tests | NUnit + FakeItEasy + Shouldly | Shared Application use cases |
+| Security.Unit.Tests | NUnit + Shouldly | Password hashing and login verification |
+| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 53 endpoint unit-test cases; local compile cleanup currently needed |
 | WebApi.Integration.Tests | xUnit v3 + FastEndpoints.Testing | Full HTTP CRUD per entity |
 
 ## CI/CD
@@ -155,7 +157,7 @@ dotnet test tests/WebApi.Unit.Tests/            # Unit tests only
 
 ## Documentation
 
-See the [Pages documentation](https://jonathanperis.github.io/cpnucleo/docs/) for detailed documentation on architecture, API reference, database setup, testing, and deployment.
+See the [Pages documentation](https://jonathanperis.github.io/cpnucleo/docs/) for detailed documentation on architecture, API reference, WebClient CRUD behavior, database setup, testing, and deployment.
 
 ## Contributing
 
