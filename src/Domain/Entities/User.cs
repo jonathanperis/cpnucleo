@@ -24,11 +24,15 @@ public sealed class User : BaseEntity
         return user;
     }
 
-    public static void Update(User obj, string? name, PasswordHash passwordHash)
+    public static void Update(User obj, string? name, string? login, PasswordHash? passwordHash = null)
     {
         obj.Name = name;
-        obj.Password = passwordHash.Hash;
-        obj.Salt = passwordHash.Salt;
+        obj.Login = login;
+        if (passwordHash is not null)
+        {
+            obj.Password = passwordHash.Hash;
+            obj.Salt = passwordHash.Salt;
+        }
         obj.UpdatedAt = DateTime.UtcNow;
     }
 

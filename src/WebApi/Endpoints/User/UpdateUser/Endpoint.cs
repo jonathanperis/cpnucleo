@@ -29,8 +29,12 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         }
 
         Logger.LogInformation("Updating user entity with Id: {UserId}", request.Id);
-        var passwordHash = passwordHasher.Hash(request.Password);
-        Domain.Entities.User.Update(item, request.Name, passwordHash);
+        PasswordHash? passwordHash = null;
+        if (!string.IsNullOrWhiteSpace(request.Password))
+        {
+            passwordHash = passwordHasher.Hash(request.Password);
+        }
+        Domain.Entities.User.Update(item, request.Name, request.Login ?? item.Login, passwordHash);
 
         Logger.LogInformation("Updating entity in repository.");
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);

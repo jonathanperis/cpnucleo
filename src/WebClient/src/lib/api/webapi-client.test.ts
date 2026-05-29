@@ -51,6 +51,20 @@ describe('webapi client', () => {
     expect((fetchMock.mock.calls[1][1] as RequestInit).method).toBe('PATCH');
   });
 
+  it('adds the appointment name required by WebApi from the visible description field', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ id: 'abc' }), { status: 200 }));
+    const client = createWebApiClient('http://example.test/api');
+
+    await client.update('appointments', 'abc', { description: 'Planning', amountHours: 1 });
+
+    expect(JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)).toMatchObject({
+      id: 'abc',
+      name: 'Planning',
+      description: 'Planning',
+      amountHours: 1,
+    });
+  });
+
   it('notifies subscribers for streamed list pages', async () => {
     vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [], totalCount: 0, pageNumber: 1, pageSize: 1 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))

@@ -25,7 +25,7 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
 
             logger.LogInformation("Updating user entity with Id: {UserId}", command.Id);
             var passwordHash = passwordHasher.Hash(command.Password);
-            Domain.Entities.User.Update(item, command.Name, passwordHash);
+            Domain.Entities.User.Update(item, command.Name, item.Login, passwordHash);
 
             logger.LogInformation("Beginning transaction.");
             await unitOfWork.BeginTransactionAsync();

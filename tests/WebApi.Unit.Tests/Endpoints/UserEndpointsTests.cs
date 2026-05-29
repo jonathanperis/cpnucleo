@@ -131,6 +131,42 @@ public class UserEndpointsTests
     }
 
     [Test]
+    public async Task UpdateUser_WithoutPassword_ShouldPreservePasswordAndUpdateLogin()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var user = User.Create("Original User", "originaluser", new PasswordHash("hash-value", "salt-value"), userId);
+
+        var fakeDbContext = A.Fake<IApplicationDbContext>();
+        var fakeDbSet = A.Fake<DbSet<User>>();
+
+        A.CallTo(() => fakeDbContext.Users).Returns(fakeDbSet);
+        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
+        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
+
+        var passwordHasher = A.Fake<IPasswordHasher>();
+        var ep = Factory.Create<WebApi.Endpoints.User.UpdateUser.Endpoint>(fakeDbContext, passwordHasher).WithListingServices();
+        var req = new WebApi.Endpoints.User.UpdateUser.Request
+        {
+            Id = userId,
+            Name = "Updated User",
+            Login = "updateduser"
+        };
+
+        // Act
+        await ep.HandleAsync(req, default);
+
+        // Assert
+        ep.Response.ShouldNotBeNull();
+        ep.Response.Success.ShouldBeTrue();
+        A.CallTo(() => passwordHasher.Hash(A<string>._)).MustNotHaveHappened();
+        user.Name.ShouldBe("Updated User");
+        user.Login.ShouldBe("updateduser");
+        user.Password.ShouldBe("hash-value");
+        user.Salt.ShouldBe("salt-value");
+    }
+
+    [Test]
     public async Task RemoveUser_WithValidId_ShouldDeleteUser()
     {
         // Arrange
