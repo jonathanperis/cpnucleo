@@ -3,7 +3,7 @@ import { formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
-import { displayEntityLabel, displayFieldValue } from './relation-display';
+import { collectMissingRelationIds, displayEntityLabel, displayFieldValue } from './relation-display';
 
 const inputType = (type: string) => type === 'guid' ? 'text' : type;
 
@@ -62,6 +62,24 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
     const relationKeys = [...new Set(resource.fields.map((field) => field.relation).filter(Boolean))] as ResourceKey[];
     await Promise.all(relationKeys.map(async (key) => {
       try { relations[key] = (await webApiClient.list(key, 1, 100)).items ?? []; } catch { relations[key] = []; }
+    }));
+  });
+
+  useVisibleTask$(async ({ track }) => {
+    track(() => resource.key);
+    track(() => items.value);
+
+    const missing = collectMissingRelationIds(items.value, resource.fields, relations);
+    await Promise.all(Object.entries(missing).map(async ([key, ids]) => {
+      const resourceKey = key as ResourceKey;
+      const loaded = await Promise.all((ids ?? []).map(async (id) => {
+        try { return await webApiClient.get(resourceKey, id); } catch { return undefined; }
+      }));
+      const found = loaded.filter((entity): entity is ApiEntity => Boolean(entity));
+      if (found.length === 0) return;
+      const existing = relations[resourceKey] ?? [];
+      const existingIds = new Set(existing.map((entity) => String(entity.id ?? '')));
+      relations[resourceKey] = [...existing, ...found.filter((entity) => !existingIds.has(String(entity.id ?? '')))];
     }));
   });
 

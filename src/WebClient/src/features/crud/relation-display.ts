@@ -1,4 +1,4 @@
-import type { ApiEntity, ResourceKey } from '~/lib/api/types';
+import type { ApiEntity, FieldMetadata, ResourceKey } from '~/lib/api/types';
 
 export type RelationRecords = Partial<Record<ResourceKey, ApiEntity[]>>;
 
@@ -10,11 +10,32 @@ export const formatValue = (value: unknown): string => {
 
 export const displayEntityLabel = (entity: ApiEntity | undefined): string => {
   if (!entity) return '—';
-  return formatValue(entity.name ?? entity.description ?? entity.login ?? entity.id);
+  return formatValue(entity.name || entity.description || entity.login || entity.id);
 };
 
 export const displayFieldValue = (value: unknown, relation: ResourceKey | undefined, relations: RelationRecords): string => {
   if (!relation) return formatValue(value);
   const related = relations[relation]?.find((entity) => String(entity.id ?? '') === String(value ?? ''));
   return related ? displayEntityLabel(related) : formatValue(value);
+};
+
+export const collectMissingRelationIds = (items: ApiEntity[], fields: FieldMetadata[], relations: RelationRecords): Partial<Record<ResourceKey, string[]>> => {
+  const missing: Partial<Record<ResourceKey, string[]>> = {};
+
+  for (const field of fields) {
+    if (!field.relation) continue;
+    const loadedIds = new Set((relations[field.relation] ?? []).map((entity) => String(entity.id ?? '')));
+    const missingIds = new Set<string>();
+
+    for (const item of items) {
+      const value = item[field.name];
+      if (value === null || value === undefined || value === '') continue;
+      const id = String(value);
+      if (!loadedIds.has(id)) missingIds.add(id);
+    }
+
+    if (missingIds.size > 0) missing[field.relation] = [...missingIds];
+  }
+
+  return missing;
 };
