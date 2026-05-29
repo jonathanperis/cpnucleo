@@ -1,4 +1,4 @@
-import type { FieldMetadata, ResourceKey } from '~/lib/api/types';
+import type { ApiEntity, FieldMetadata, ResourceKey } from '~/lib/api/types';
 
 const toDate = (value: unknown) => {
   if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
@@ -41,4 +41,9 @@ export const formatFormFieldValue = (value: unknown, fieldType: FieldMetadata['t
 export const relationOptionsLoaded = (relations: Partial<Record<ResourceKey, unknown[]>>, relation: ResourceKey | undefined) => {
   if (!relation) return true;
   return Object.prototype.hasOwnProperty.call(relations, relation);
+};
+
+export const withSelectedRelationOption = (options: ApiEntity[], selectedValue: string): ApiEntity[] => {
+  if (!selectedValue || options.some((option) => String(option.id ?? '') === selectedValue)) return options;
+  return [{ id: selectedValue }, ...options];
 };

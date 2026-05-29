@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatFormFieldValue, relationOptionsLoaded } from './crud-field-values';
+import { formatFormFieldValue, relationOptionsLoaded, withSelectedRelationOption } from './crud-field-values';
 
 describe('CRUD edit form field values', () => {
   it('formats existing date and datetime values for browser edit controls', () => {
@@ -15,9 +15,14 @@ describe('CRUD edit form field values', () => {
     expect(formatFormFieldValue(null, 'text')).toBe('');
   });
 
-  it('tracks whether relation options have loaded before rendering editable selectors', () => {
+  it('includes the selected relation id when it is outside the prefetched option page', () => {
     expect(relationOptionsLoaded({}, 'organizations')).toBe(false);
     expect(relationOptionsLoaded({ organizations: [] }, 'organizations')).toBe(true);
-    expect(relationOptionsLoaded({}, undefined)).toBe(true);
+
+    const selected = '019e6fc4-5cf1-7252-b14c-979447ccda20';
+    const options = withSelectedRelationOption([{ id: 'other' }], selected);
+
+    expect(options[0]).toEqual({ id: selected });
+    expect(withSelectedRelationOption(options, selected)).toHaveLength(2);
   });
 });

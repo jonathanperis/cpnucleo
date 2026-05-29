@@ -4,7 +4,7 @@ import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 import { getCrudFormElement } from './crud-form';
-import { formatFormFieldValue, relationOptionsLoaded } from './crud-field-values';
+import { formatFormFieldValue, relationOptionsLoaded, withSelectedRelationOption } from './crud-field-values';
 import { collectMissingRelationIds, displayEntityLabel, displayFieldValue } from './relation-display';
 
 const inputType = (type: string) => type === 'guid' ? 'text' : type;
@@ -156,7 +156,7 @@ export const CrudPage = component$<{ resource: ResourceMetadata }>(({ resource }
             {formFields(resource).map((field) => {
               const value = formatFormFieldValue(selected.value?.[field.name], field.type);
               const relationLoaded = relationOptionsLoaded(relations, field.relation);
-              const relation = field.relation && relationLoaded ? relations[field.relation] ?? [] : [];
+              const relation = field.relation && relationLoaded ? withSelectedRelationOption(relations[field.relation] ?? [], value) : [];
               return (
                 <label key={field.name} class={field.type === 'textarea' ? 'md:col-span-2' : ''}>
                   <span class="mb-1 block text-sm font-medium">{field.label}{field.required ? ' *' : ''}</span>
