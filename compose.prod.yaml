@@ -152,6 +152,12 @@ services:
       - "traefik.http.routers.cpnucleo-identity.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-identity.tls=true"
       - "traefik.http.routers.cpnucleo-identity.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.cpnucleo-identity.middlewares=cpnucleo-security-headers"
+      - "traefik.http.middlewares.cpnucleo-security-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.cpnucleo-security-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.cpnucleo-security-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.cpnucleo-security-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.cpnucleo-security-headers.headers.referrerPolicy=strict-origin-when-cross-origin"
       - "traefik.http.services.cpnucleo-identity.loadbalancer.server.port=5010"
     healthcheck: *healthcheck-identity
 
@@ -172,6 +178,7 @@ services:
       - "traefik.http.routers.cpnucleo-grpc.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-grpc.tls=true"
       - "traefik.http.routers.cpnucleo-grpc.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.cpnucleo-grpc.middlewares=cpnucleo-security-headers"
       - "traefik.http.services.cpnucleo-grpc.loadbalancer.server.port=5020"
       - "traefik.http.services.cpnucleo-grpc.loadbalancer.server.scheme=h2c"
     healthcheck: *healthcheck-grpcserver
@@ -205,6 +212,7 @@ services:
       - "traefik.http.routers.cpnucleo-web.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-web.tls=true"
       - "traefik.http.routers.cpnucleo-web.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.cpnucleo-web.middlewares=cpnucleo-security-headers"
       - "traefik.http.services.cpnucleo-web.loadbalancer.server.port=5030"
     deploy:
       resources:
@@ -250,26 +258,6 @@ services:
           memory: "512M"
     <<: *common-logging
 
-  seed-csv-cpnucleo:
-    <<: *common-logging
-    image: ${CPNUCLEO_WEB_API_IMAGE:?Set CPNUCLEO_WEB_API_IMAGE to an immutable GHCR tag, not latest}
-    container_name: seed-csv-cpnucleo
-    env_file:
-      - .env
-    command: ["--run-fake-data-csv-import"]
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: "no"
-    deploy:
-      resources:
-        limits:
-          cpus: "1.00"
-          memory: "2G"
-        reservations:
-          cpus: "0.50"
-          memory: "1G"
-
   # Kept in production as the internal API load balancer, matching local dev topology.
   # Traefik owns public TLS/host routing; NGINX only balances webapi1/webapi2.
   nginx:
@@ -294,6 +282,7 @@ services:
       - "traefik.http.routers.cpnucleo-api.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-api.tls=true"
       - "traefik.http.routers.cpnucleo-api.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.cpnucleo-api.middlewares=cpnucleo-security-headers"
       - "traefik.http.services.cpnucleo-api.loadbalancer.server.port=9999"
     restart: always
     deploy:

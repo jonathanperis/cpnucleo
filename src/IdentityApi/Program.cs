@@ -117,6 +117,12 @@ app.UseOutputCache();
 
 app.Use(async (context, next) =>
 {
+    context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+
     await next();
 
     if (context.Request.Path.Value?.Equals("/healthz", StringComparison.OrdinalIgnoreCase) == true)
@@ -133,8 +139,22 @@ app.UseInfrastructure();
 
 app.UseRateLimiter();
 
-app.UseAuthentication()
-    .UseAuthorization()
+app.UseAuthentication();
+
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true &&
+        !context.User.HasClaim(claim => claim.Type == CpnucleoClaimTypes.Subject && !string.IsNullOrWhiteSpace(claim.Value)))
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await context.Response.WriteAsync("Authenticated tokens must include a subject claim.");
+        return;
+    }
+
+    await next();
+});
+
+app.UseAuthorization()
     .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
         .UseMiddleware<ElapsedTimeMiddleware>()
         .UseMiddleware<ErrorHandlingMiddleware>();

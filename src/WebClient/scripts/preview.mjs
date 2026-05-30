@@ -7,6 +7,14 @@ const root = join(process.cwd(), 'dist');
 const port = Number(process.env.PORT ?? '5030');
 const host = process.env.HOST ?? '0.0.0.0';
 
+const securityHeaders = {
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api-cpnucleo.jonathanperis.tech https://identity-cpnucleo.jonathanperis.tech; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+};
+
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
@@ -53,33 +61,34 @@ createServer((request, response) => {
 
   try {
     if (request.url === '/healthz') {
-      response.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      response.writeHead(200, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
       response.end('ok');
       return;
     }
 
     const filePath = resolvePath(request.url ?? '/');
     if (!existsSync(filePath)) {
-      response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      response.writeHead(404, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
       response.end('not found');
       return;
     }
 
     const extension = extname(filePath);
     response.writeHead(200, {
+      ...securityHeaders,
       'Content-Type': contentTypes[extension] ?? 'application/octet-stream',
       ...(extension && extension !== '.html' ? { 'Cache-Control': 'public, max-age=31536000, immutable' } : {}),
     });
     createReadStream(filePath)
       .on('error', (error) => {
         finalize(() => recordHttpError(request, error, span));
-        response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        response.writeHead(500, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
         response.end('internal server error');
       })
       .pipe(response);
   } catch (error) {
     finalize(() => recordHttpError(request, error, span));
-    response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+    response.writeHead(500, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
     response.end('internal server error');
   }
 }).listen(port, host, () => {
