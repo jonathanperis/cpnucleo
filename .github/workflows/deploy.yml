@@ -12,5 +12,4 @@ permissions:
 
 jobs:
   deploy:
-    uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@main
-    secrets: inherit
+    uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@fd64028bd04e861ed173c15fdb9766d787ee4d0d

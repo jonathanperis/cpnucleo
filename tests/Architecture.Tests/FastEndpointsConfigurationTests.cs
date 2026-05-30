@@ -210,9 +210,13 @@ public class FastEndpointsConfigurationTests
 
         program.Should().NotContain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)", "JWT expiry must be computed when each token is created, not once at startup");
         loginEndpoint.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
+        loginEndpoint.Should().Contain("CpnucleoClaimTypes.Subject");
+        loginEndpoint.Should().Contain("CpnucleoClaimTypes.UserId");
+        loginEndpoint.Should().Contain("CpnucleoClaimTypes.TenantId");
         refreshEndpoint.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
         refreshEndpoint.Should().Contain("Post(\"/refresh\")");
         refreshEndpoint.Should().Contain("JwtBearer.CreateToken(");
+        refreshEndpoint.Should().Contain("preservedClaims");
         refreshEndpoint.Should().NotContain("AllowAnonymous();", "refresh must require an authenticated bearer token");
     }
 
@@ -439,6 +443,37 @@ public class FastEndpointsConfigurationTests
         grpcDockerfile.Should().Contain("GET /healthz HTTP/1.1");
         webClientDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
         webClientDockerfile.Should().Contain("http://localhost:5030/healthz");
+    }
+
+
+    [Fact]
+    public void SecurityAuditFindings_ShouldStayRemediated()
+    {
+        var deployWorkflow = File.ReadAllText(GetRepositoryPath(".github/workflows/deploy.yml"));
+        var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
+        var webApiProgram = File.ReadAllText(GetRepositoryPath("src/WebApi/Program.cs"));
+        var identityProgram = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
+        var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
+
+        File.Exists(GetRepositoryPath(".env")).Should().BeFalse("dotenv files with credentials must not be tracked");
+        deployWorkflow.Should().Contain("pages-docs-deploy.yml@fd64028bd04e861ed173c15fdb9766d787ee4d0d");
+        deployWorkflow.Should().NotContain("secrets: inherit");
+        prodCompose.Should().NotContain("seed-csv-cpnucleo:");
+        prodCompose.Should().Contain("cpnucleo-security-headers");
+
+        foreach (var program in new[] { webApiProgram, identityProgram })
+        {
+            program.Should().Contain("Strict-Transport-Security");
+            program.Should().Contain("X-Content-Type-Options");
+            program.Should().Contain("X-Frame-Options");
+            program.Should().Contain("Referrer-Policy");
+            program.Should().Contain("Content-Security-Policy");
+        }
+
+        webApiProgram.Should().Contain("AddPolicy(\"UserAdministration\"");
+        webApiProgram.Should().Contain("RequireClaim(CpnucleoClaimTypes.Subject)");
+        previewServer.Should().Contain("securityHeaders");
+        previewServer.Should().Contain("Content-Security-Policy");
     }
 
     [Fact]
