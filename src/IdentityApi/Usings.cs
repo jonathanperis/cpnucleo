@@ -1,6 +1,7 @@
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Net;
+global using System.Security.Claims;
 global using System.Threading.RateLimiting;
 global using Domain.Common.Security;
 global using FastEndpoints;

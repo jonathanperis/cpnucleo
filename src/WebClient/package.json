@@ -8,8 +8,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "node ./node_modules/astro/astro.js dev --host 0.0.0.0 --port 5030",
-    "build": "node ./node_modules/astro/astro.js build",
+    "dev": "astro dev --host 0.0.0.0 --port 5030",
+    "build": "astro build",
     "preview": "node scripts/preview.mjs",
     "typecheck": "astro check && tsc --noEmit",
     "test": "vitest run --config vitest.config.ts",
@@ -29,7 +29,7 @@
     "@opentelemetry/sdk-node": "^0.218.0",
     "@opentelemetry/semantic-conventions": "^1.41.1",
     "@qwikdev/astro": "^0.8.3",
-    "astro": "5.9.2",
+    "astro": "^5.18.2",
     "typescript": "^5.9.3",
     "vite": "^6.3.5"
   },
@@ -41,6 +41,10 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18",
     "undici": "^7.16.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "yaml": "^2.8.3"
+  },
+  "overrides": {
+    "yaml-language-server": "1.23.0"
   }
 }

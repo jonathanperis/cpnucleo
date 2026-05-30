@@ -3,18 +3,16 @@ namespace Architecture.Tests;
 public class FakeDataSeedingTests
 {
     [Fact]
-    public void FakeDataSeed_ShouldPreserveLoginPageDemoUserAndCleanExistingData()
+    public void FakeDataSeed_ShouldNotExposeDemoCredentialsOnLoginPage()
     {
-        var fakeData = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Common/Helpers/FakeData.cs"));
         var loginForm = File.ReadAllText(GetRepositoryPath("src/WebClient/src/routes/login/login-form.ts"));
+        var loginPage = File.ReadAllText(GetRepositoryPath("src/WebClient/src/routes/login/index.tsx"));
 
-        loginForm.Should().Contain("DEMO_LOGIN = 'demo@cpnucleo.local'");
-        loginForm.Should().Contain("DEMO_PASSWORD = 'CpnucleoDemo2026!'");
-        fakeData.Should().Contain("DefaultDemoLogin = \"demo@cpnucleo.local\"");
-        fakeData.Should().Contain("DefaultDemoPassword = \"CpnucleoDemo2026!\"");
-        fakeData.Should().Contain("AppendDatabaseResetAndDefaultUserSql(sb, defaultDemoPasswordHash)");
-        fakeData.Should().Contain("DELETE FROM \"Users\" WHERE \"Login\" <> '{DefaultDemoLogin}'");
-        fakeData.Should().Contain("WHERE NOT EXISTS (SELECT 1 FROM \"Users\" WHERE \"Login\" = '{DefaultDemoLogin}')");
+        loginForm.Should().Contain("DEFAULT_LOGIN = ''");
+        loginForm.Should().NotContain("demo@cpnucleo.local");
+        loginForm.Should().NotContain("DEMO_PASSWORD");
+        loginPage.Should().NotContain("demo@cpnucleo.local");
+        loginPage.Should().NotContain("DEMO_PASSWORD");
     }
 
     [Fact]
@@ -43,7 +41,7 @@ public class FakeDataSeedingTests
     }
 
     [Fact]
-    public void ProductionCsvSeeder_ShouldUseCanonicalFakeDataCountsAndOneShotContainer()
+    public void ProductionCsvSeeder_ShouldUseCanonicalFakeDataCountsAndRemainExplicitlyOptIn()
     {
         var importer = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Common/Helpers/FakeDataCsvImporter.cs"));
         var program = File.ReadAllText(GetRepositoryPath("src/WebApi/Program.cs"));
@@ -60,6 +58,9 @@ public class FakeDataSeedingTests
         importer.Should().Contain("__FakeDataCsvImports");
         importer.Should().Contain("TRUNCATE TABLE");
         importer.Should().Contain("DefaultDemoLogin = \"demo@cpnucleo.local\"");
+        importer.Should().Contain("DemoPasswordEnvironmentVariable");
+        importer.Should().Contain("Environment.GetEnvironmentVariable(DemoPasswordEnvironmentVariable)");
+        importer.Should().NotContain("DefaultDemoPassword");
         importer.Should().Contain("DefaultDemoUserId");
         importer.Should().Contain("ImportUserProjectsAsync(connection, userIds, projectIds, projectOrganizationIds, projectOrganizationIndexMap, userOrganizationIds");
         importer.Should().Contain("ImportAssignmentsAsync(connection, assignmentIds, projectIds, projectOrganizationIds, workflowIds, userIds, userOrganizationIds, userOrganizationIndexMap");
@@ -70,11 +71,11 @@ public class FakeDataSeedingTests
         importer.Should().Contain("PickUserForOrganization(userIds, userOrganizationIndexMap, assignmentOrganizationId");
 
         program.Should().Contain("--run-fake-data-csv-import");
+        program.Should().Contain("FakeDataCsvImporter:AllowProduction");
         program.Should().Contain("FakeDataCsvImporter.RunAsync");
 
-        compose.Should().Contain("seed-csv-cpnucleo:");
-        compose.Should().Contain("command: [\"--run-fake-data-csv-import\"]");
-        compose.Should().Contain("restart: \"no\"");
+        compose.Should().NotContain("seed-csv-cpnucleo:");
+        compose.Should().NotContain("command: [\"--run-fake-data-csv-import\"]");
     }
 
     private static string GetRepositoryPath(string relativePath)

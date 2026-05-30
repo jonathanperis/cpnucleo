@@ -2,6 +2,11 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 if (args.Contains("--run-fake-data-csv-import", StringComparer.OrdinalIgnoreCase))
 {
+    if (builder.Environment.IsProduction() && !builder.Configuration.GetValue<bool>("FakeDataCsvImporter:AllowProduction"))
+    {
+        throw new InvalidOperationException("FakeData CSV import is disabled in Production unless FakeDataCsvImporter:AllowProduction is explicitly true.");
+    }
+
     await FakeDataCsvImporter.RunAsync(
         builder.Configuration.GetValue<string>("DB_CONNECTION_STRING") ?? throw new InvalidOperationException("DB_CONNECTION_STRING configuration is missing."),
         new ConsoleSeedLogger("FakeDataCsvImporter"));
@@ -33,7 +38,13 @@ builder.Services
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserAdministration", policy => policy
+        .RequireAuthenticatedUser()
+        .RequireClaim(CpnucleoClaimTypes.Subject)
+        .RequireClaim(CpnucleoClaimTypes.Admin, "true"));
+});
 
 builder.Services.AddCors(options =>
 {
@@ -136,6 +147,12 @@ var app = builder.Build();
 
 app.Use(async (context, next) =>
 {
+    context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+
     await next();
 
     if (context.Request.Path.Value?.Equals("/healthz", StringComparison.OrdinalIgnoreCase) == true)
@@ -152,8 +169,22 @@ app.UseInfrastructure();
 
 app.UseRateLimiter();
 
-app.UseAuthentication()
-    .UseAuthorization()
+app.UseAuthentication();
+
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true &&
+        !context.User.HasClaim(claim => claim.Type == CpnucleoClaimTypes.Subject && !string.IsNullOrWhiteSpace(claim.Value)))
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await context.Response.WriteAsync("Authenticated tokens must include a subject claim.");
+        return;
+    }
+
+    await next();
+});
+
+app.UseAuthorization()
     .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
     .UseMiddleware<ElapsedTimeMiddleware>()
     .UseMiddleware<ErrorHandlingMiddleware>();

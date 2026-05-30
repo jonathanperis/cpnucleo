@@ -3,7 +3,7 @@ namespace Infrastructure.Common.Helpers;
 internal static class FakeDataHelper
 {
     private const string DefaultDemoLogin = "demo@cpnucleo.local";
-    private const string DefaultDemoPassword = "CpnucleoDemo2026!";
+    private const string DemoPasswordEnvironmentVariable = "CPNUCLEO_DEMO_PASSWORD";
     private const string DefaultDemoName = "Cpnucleo Demo";
     private static readonly Guid DefaultDemoUserId = Guid.Parse("0198a4a8-6d1f-7a54-9b1c-c9c430f2d001");
 
@@ -23,8 +23,8 @@ internal static class FakeDataHelper
     {
         var random = new Random();
         var sb = new StringBuilder();
-        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
-        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(DefaultDemoPassword);
+        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash(Guid.NewGuid().ToString("N"));
+        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(GetDefaultDemoPassword());
         AppendDatabaseResetAndDefaultUserSql(sb, defaultDemoPasswordHash);
         
         var organizationFaker = new Faker<Organization>()
@@ -307,8 +307,8 @@ internal static class FakeDataHelper
     {
         var sb = new StringBuilder();
         var random = new Random();
-        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash("FakeUser@123");
-        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(DefaultDemoPassword);
+        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash(Guid.NewGuid().ToString("N"));
+        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(GetDefaultDemoPassword());
 
         Directory.CreateDirectory("dml-data");
         AppendDatabaseResetAndDefaultUserSql(sb, defaultDemoPasswordHash);
@@ -649,6 +649,12 @@ internal static class FakeDataHelper
                           "Active" = true
                       WHERE "Login" = '{DefaultDemoLogin}';
                       """);
+    }
+
+    private static string GetDefaultDemoPassword()
+    {
+        return Environment.GetEnvironmentVariable(DemoPasswordEnvironmentVariable)
+            ?? throw new InvalidOperationException($"{DemoPasswordEnvironmentVariable} must be set to generate the default demo user seed.");
     }
 
     private static string EscapeSqlField(string value) => value.Replace("'", "''");

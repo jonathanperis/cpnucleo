@@ -1,6 +1,4 @@
-export const DEMO_LOGIN = 'demo@cpnucleo.local';
-export const DEMO_PASSWORD = 'CpnucleoDemo2026!';
-
+export const DEFAULT_LOGIN = '';
 const isHtmlFormElement = (target: unknown): target is HTMLFormElement => {
   if (!target || typeof target !== 'object') return false;
   if (typeof HTMLFormElement !== 'undefined' && target instanceof HTMLFormElement) return true;

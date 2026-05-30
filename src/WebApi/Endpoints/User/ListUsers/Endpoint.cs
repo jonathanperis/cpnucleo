@@ -7,6 +7,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     {
         Get("/users");
         Description(x => x.WithTags("Users"));
+        Policies("UserAdministration");
 
         Summary(s =>
         {

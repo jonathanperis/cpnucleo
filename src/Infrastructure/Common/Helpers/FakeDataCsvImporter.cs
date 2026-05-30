@@ -4,7 +4,7 @@ public static class FakeDataCsvImporter
 {
     private const string SeedVersion = "fake-data-csv-v3-20260528-tenant-scoped";
     private const string DefaultDemoLogin = "demo@cpnucleo.local";
-    private const string DefaultDemoPassword = "CpnucleoDemo2026!";
+    private const string DemoPasswordEnvironmentVariable = "CPNUCLEO_DEMO_PASSWORD";
     private const string DefaultDemoName = "Cpnucleo Demo";
     private static readonly Guid DefaultDemoUserId = Guid.Parse("0198a4a8-6d1f-7a54-9b1c-c9c430f2d001");
 
@@ -43,8 +43,10 @@ public static class FakeDataCsvImporter
         Randomizer.Seed = new Random(20260528);
 
         var passwordHasher = new Argon2PasswordHasher();
-        var fakeUserPasswordHash = passwordHasher.Hash("FakeUser@123");
-        var defaultDemoPasswordHash = passwordHasher.Hash(DefaultDemoPassword);
+        var fakeUserPasswordHash = passwordHasher.Hash(Guid.NewGuid().ToString("N"));
+        var defaultDemoPassword = Environment.GetEnvironmentVariable(DemoPasswordEnvironmentVariable)
+            ?? throw new InvalidOperationException($"{DemoPasswordEnvironmentVariable} must be set to seed the default demo user.");
+        var defaultDemoPasswordHash = passwordHasher.Hash(defaultDemoPassword);
 
         var organizationIds = CreateIds(OrganizationCount);
         var projectIds = CreateIds(ProjectCount);

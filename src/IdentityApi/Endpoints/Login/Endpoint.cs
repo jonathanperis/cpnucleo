@@ -39,16 +39,43 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         }
 
         Logger.LogInformation("Creating JWT token for user with Login: {UserLogin}", req.Login);
-        
-        var jwtToken = JwtBearer.CreateToken(
-            o =>
+
+        var tenantId = await (from userProject in dbContext.UserProjects!
+                join project in dbContext.Projects! on userProject.ProjectId equals project.Id
+                where userProject.UserId == item.Id
+                select project.OrganizationId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var adminLogins = (Environment.GetEnvironmentVariable("CPNUCLEO_ADMIN_LOGINS") ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var isAdmin = adminLogins.Any(login => string.Equals(login, item.Login, StringComparison.OrdinalIgnoreCase));
+
+        var jwtToken = JwtBearer.CreateToken(o =>
+        {
+            o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
+            o.User.Claims.Add((CpnucleoClaimTypes.Subject, item.Id.ToString()));
+            o.User.Claims.Add((CpnucleoClaimTypes.UserId, item.Id.ToString()));
+            o.User.Claims.Add((ClaimTypes.NameIdentifier, item.Id.ToString()));
+
+            if (!string.IsNullOrWhiteSpace(item.Login))
             {
-                o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
-                // o.User.Roles.Add("Manager", "Auditor");
-                // o.User.Claims.Add(("UserName", req.Username));
-                // o.User["UserId"] = "001"; //indexer based claim setting
-            });     
-        
+                o.User.Claims.Add((CpnucleoClaimTypes.Login, item.Login));
+                o.User.Claims.Add((ClaimTypes.Name, item.Login));
+            }
+
+            if (tenantId != Guid.Empty)
+            {
+                var tenantValue = tenantId.ToString();
+                o.User.Claims.Add((CpnucleoClaimTypes.TenantId, tenantValue));
+                o.User.Claims.Add((CpnucleoClaimTypes.TenantSlug, tenantValue));
+            }
+
+            if (isAdmin)
+            {
+                o.User.Claims.Add((CpnucleoClaimTypes.Admin, "true"));
+            }
+        });
+
         Response.Token = jwtToken;
         
         Logger.LogInformation("Service completed successfully.");

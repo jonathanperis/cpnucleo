@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEMO_LOGIN, DEMO_PASSWORD, getLoginFormElement } from './login-form';
+import { DEFAULT_LOGIN, getLoginFormElement } from './login-form';
 
 const formElement = { tagName: 'FORM' } as HTMLFormElement;
 const documentLikeTarget = { tagName: 'DOCUMENT' } as unknown as EventTarget;
@@ -15,8 +15,7 @@ describe('login form helpers', () => {
     expect(getLoginFormElement(delegatedSubmitEvent, formElement)).toBe(formElement);
   });
 
-  it('keeps demonstration credentials available for the prefilled login form', () => {
-    expect(DEMO_LOGIN).toBe('demo@cpnucleo.local');
-    expect(DEMO_PASSWORD).toBe('CpnucleoDemo2026!');
+  it('does not ship source-known demo credentials in the login form', () => {
+    expect(DEFAULT_LOGIN).toBe('');
   });
 });

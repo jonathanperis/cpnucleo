@@ -1,7 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { login } from '~/lib/api/identity-client';
 import { getPostLoginRedirectTarget } from '~/lib/auth-navigation';
-import { DEMO_LOGIN, DEMO_PASSWORD, getLoginFormElement } from './login-form';
+import { DEFAULT_LOGIN, getLoginFormElement } from './login-form';
 
 export default component$(() => {
   const loading = useSignal(false);
@@ -34,11 +34,11 @@ export default component$(() => {
       }}>
         <label class="block">
           <span class="mb-2 block text-sm font-semibold">Login</span>
-          <input name="login" autocomplete="username" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" value={DEMO_LOGIN} />
+          <input name="login" autocomplete="username" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" value={DEFAULT_LOGIN} />
         </label>
         <label class="block">
           <span class="mb-2 block text-sm font-semibold">Password</span>
-          <input name="password" type="password" autocomplete="current-password" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" value={DEMO_PASSWORD} />
+          <input name="password" type="password" autocomplete="current-password" class="w-full rounded-xl border border-line bg-raised px-4 py-3 text-ink shadow-sm transition placeholder:text-muted focus:border-accent" value="" />
         </label>
         <button disabled={loading.value} class="w-full rounded-xl bg-ink px-4 py-3 font-semibold text-canvas shadow-soft transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">{loading.value ? 'Signing in…' : 'Enter dashboard'}</button>
       </form>
