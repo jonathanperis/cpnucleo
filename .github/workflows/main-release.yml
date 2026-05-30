@@ -235,6 +235,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Create CI compose environment
+        run: |
+          cat > .env <<'ENV'
+          POSTGRES_USER=cpnucleo_ci
+          POSTGRES_PASSWORD=cpnucleo_ci_password
+          POSTGRES_DB=cpnucleo_ci
+          DB_CONNECTION_STRING=Host=db;Username=cpnucleo_ci;Password=cpnucleo_ci_password;Database=cpnucleo_ci;Minimum Pool Size=1;Maximum Pool Size=5;Multiplexing=true;
+          Jwt__SigningKey=ci-healthcheck-signing-key-with-at-least-32-chars
+          Cors__AllowedOrigins__0=http://localhost:5400
+          OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+          OTEL_EXPORTER_OTLP_HTTP_ENDPOINT=http://otel-collector:4318
+          ENV
+
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
           docker compose up ${{ matrix.compose_service }} -d --no-deps
