@@ -84,22 +84,35 @@ def main() -> None:
             require_text(source_name, text, needle, present=False)
 
     deploy = read(".github/workflows/deploy.yml")
-    require_text("deploy", deploy, "pages-docs-deploy.yml@main")
+    require_text("deploy", deploy, "pages-docs-deploy.yml@")
 
     wiki_files = sorted((ROOT / "docs/wiki").glob("*.md"))
     slugs = {p.stem for p in wiki_files}
     sidebar = read("docs/src/lib/sidebar.config.ts")
     sidebar_slugs = set(re.findall(r'"([a-z0-9-]+)"', sidebar))
+    docs_page = read("docs/src/pages/docs/[...slug].astro")
+    required_markers = ["const SLUG_LABEL", "const DOC_SUMMARIES", "const globResult"]
+    for marker in required_markers:
+        if marker not in docs_page:
+            fail(f"docs/src/pages/docs/[...slug].astro is missing expected marker: {marker}")
+    label_block = docs_page.split("const SLUG_LABEL", 1)[1].split("const DOC_SUMMARIES", 1)[0]
+    summary_block = docs_page.split("const DOC_SUMMARIES", 1)[1].split("const globResult", 1)[0]
+    label_slugs = set(re.findall(r"(?:^|\n)\s*'?([a-z0-9-]+)'?:\s*'[^']+',?", label_block))
+    summary_slugs = set(re.findall(r"(?:^|\n)\s*'?([a-z0-9-]+)'?:\s*'[^']+',?", summary_block))
     for slug in slugs:
         if slug not in sidebar_slugs:
             fail(f"docs/wiki/{slug}.md is not represented in sidebar config")
+        if slug not in label_slugs:
+            fail(f"docs/wiki/{slug}.md has no sidebar/card label in [...slug].astro")
+        if slug not in summary_slugs:
+            fail(f"docs/wiki/{slug}.md has no search/card summary in [...slug].astro")
 
     arch_tests = count_attrs("tests/Architecture.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     unit_tests = count_attrs("tests/WebApi.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     integration_tests = count_attrs("tests/WebApi.Integration.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     app_tests = count_attrs("tests/Application.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
     security_tests = count_attrs("tests/Security.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    if (arch_tests, app_tests, security_tests, unit_tests, integration_tests) != (55, 4, 11, 53, 55):
+    if (arch_tests, app_tests, security_tests, unit_tests, integration_tests) != (56, 4, 11, 53, 55):
         fail(f"unexpected test counts: architecture={arch_tests}, application={app_tests}, security={security_tests}, webapi_unit={unit_tests}, integration={integration_tests}")
 
     endpoint_count = len(list((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs")))
