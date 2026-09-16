@@ -52,8 +52,8 @@ curl --fail http://localhost:5100/readyz
 dotnet test cpnucleo.slnx
 ```
 
-The database integration suite provisions a separate Testcontainers PostgreSQL instance. Continue with [Learning Lab](learning-lab) for guided exercises.
+The database integration suite provisions a separate Testcontainers PostgreSQL instance. Continue with [Learning Lab](../learning-lab/) for guided exercises.
 
 ## Production
 
-Use `compose.prod.yaml` alone with the variables documented in `.env.hostinger.example`. See [Deployment](deployment). Do not combine production with development files.
+Use `compose.prod.yaml` alone with the variables documented in `.env.hostinger.example`. See [Deployment](../deployment/). Do not combine production with development files.
