@@ -98,7 +98,7 @@ jobs:
 
       - name: Backend behavioral and database tests
         if: matrix.service == 'WebApi'
-        run: dotnet test cpnucleo.slnx --nologo
+        run: dotnet test cpnucleo.slnx -c Release -p:AOT=false -p:Trim=false -p:ExtraOptimize=false -p:SelfContained=false --nologo
 
   build-push-amd64:
     name: Build & Push amd64 (${{ matrix.service }})

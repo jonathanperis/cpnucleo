@@ -82,7 +82,7 @@ jobs:
 
       - name: Backend behavioral and database tests
         if: matrix.service == 'WebApi'
-        run: dotnet test cpnucleo.slnx --nologo
+        run: dotnet test cpnucleo.slnx -p:AOT=false -p:Trim=false -p:ExtraOptimize=false -p:SelfContained=false --nologo
 
       - name: Verify isolated learning experiments
         if: matrix.service == 'WebApi'
