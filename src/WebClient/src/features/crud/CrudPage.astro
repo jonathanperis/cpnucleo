@@ -1,6 +1,7 @@
 ---
 import { formFields, tableFields } from '../../lib/api/resource-metadata';
 import type { ResourceMetadata } from '../../lib/api/types';
+import { DEFAULT_PAGE_SIZE } from './pagination';
 interface Props { resource: ResourceMetadata }
 const { resource } = Astro.props;
 const fields = formFields(resource);
@@ -34,7 +35,7 @@ const fields = formFields(resource);
     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
       <p data-summary class="text-sm text-muted" aria-live="polite">Loading records…</p>
       <div class="flex flex-wrap items-center gap-3">
-        <label class="text-sm text-muted">Rows <select data-page-size class="rounded-md border border-line bg-raised px-2 py-2 text-sm">{[10,25,50,100].map(size => <option value={size} selected={size === 25}>{size}</option>)}</select></label>
+        <label class="text-sm text-muted">Rows <select data-page-size class="rounded-md border border-line bg-raised px-2 py-2 text-sm">{[10,25,50,100].map(size => <option value={size} selected={size === DEFAULT_PAGE_SIZE}>{size}</option>)}</select></label>
         <nav data-pagination aria-label="Pagination" class="flex items-center"></nav>
         <button data-action="refresh" class="rounded-md border border-line px-3 py-2 text-sm">Refresh</button>
       </div>
