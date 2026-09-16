@@ -39,11 +39,16 @@ def main():
     page = read("docs/src/pages/docs/[...slug].astro")
     labels = page.split("const SLUG_LABEL", 1)[1].split("const DOC_SUMMARIES", 1)[0]
     summaries = page.split("const DOC_SUMMARIES", 1)[1].split("const globResult", 1)[0]
+    slugs = {path.stem for path in (ROOT / "docs/wiki").glob("*.md")}
     for path in (ROOT / "docs/wiki").glob("*.md"):
         slug = path.stem
         require(f'"{slug}"' in sidebar, f"{slug} is missing from navigation")
         require(re.search(rf"(?:^|\n)\s*'?{re.escape(slug)}'?:", labels), f"{slug} needs a page label")
         require(re.search(rf"(?:^|\n)\s*'?{re.escape(slug)}'?:", summaries), f"{slug} needs a page summary")
+        # Individual pages are served at /docs/<slug>/, unlike the home index.
+        if slug != "home":
+            for target in re.findall(r"\]\(([a-z0-9-]+)\)", path.read_text(encoding="utf-8")):
+                require(target not in slugs, f"{slug}: link to {target} must use ../{target}/")
 
     obsolete = [
         "docker compose -f compose.yaml -f compose.prod.yaml",

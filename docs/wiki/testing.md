@@ -46,4 +46,4 @@ Architecture rules explicitly reference their target assemblies: an unloaded ass
 
 User/workflow creation is covered by the PostgreSQL CRUD theory. The two never-executed `DbSet.Any()` mock tests were retired in favor of those real database proofs; the baseline has no skipped test placeholders.
 
-Use [Learning Lab](learning-lab) to intentionally break a transaction, concurrency check, domain rule or dependency boundary, observe a failing test, and restore the implementation.
+Use [Learning Lab](../learning-lab/) to intentionally break a transaction, concurrency check, domain rule or dependency boundary, observe a failing test, and restore the implementation.
