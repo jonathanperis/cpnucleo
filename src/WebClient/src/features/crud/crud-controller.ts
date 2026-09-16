@@ -1,7 +1,7 @@
 import { findResource, formFields, tableFields } from '~/lib/api/resource-metadata';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, ResourceKey } from '~/lib/api/types';
-import { buildPaginationItems, getLastPage } from './pagination';
+import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 import { formatFormFieldValue, serializeFormValue, withSelectedRelationOption } from './crud-field-values';
 import { collectMissingRelationIds, displayEntityLabel, displayFieldValue, mergeRelationRecords } from './relation-display';
 import { watchListing } from './watch-list';
@@ -21,7 +21,7 @@ export const mountCrudPage = (root: HTMLElement): (() => void) => {
   let items: ApiEntity[] = [];
   let selected: ApiEntity | null = null;
   let page = 1;
-  let pageSize = 25;
+  let pageSize = DEFAULT_PAGE_SIZE;
   let total = 0;
   let status = 'Connecting';
   let renderedRows = '';
