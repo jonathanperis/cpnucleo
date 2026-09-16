@@ -24,6 +24,8 @@ it('uses generated Astro controls to prefill and save, without rendering API dat
   const root = document.querySelector<HTMLElement>('[data-crud]')!;
   const update = vi.spyOn(webApiClient, 'update').mockResolvedValue({ success: true });
   stop = mountCrudPage(root);
+  expect(vi.mocked(webApiClient.subscribeList).mock.calls[0][2]).toBe(10);
+  expect(root.querySelector<HTMLSelectElement>('[data-page-size]')!.value).toBe('10');
   await vi.waitFor(() => expect(root.querySelector('[data-records]')?.textContent).toContain('School'));
   expect(root.querySelector('[data-records] img')).toBeNull();
   root.querySelector<HTMLButtonElement>('[data-action="edit"]')!.click();
