@@ -15,7 +15,7 @@ RUN bun run build
 
 FROM node:22-alpine AS runtime
 WORKDIR /app
-ENV NODE_ENV=Production \
+ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=5030
 RUN npm install -g bun@1.3.11

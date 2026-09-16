@@ -1,11 +1,21 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { AuthGuard } from '../components/auth-guard';
-import Page from '../routes/api-health/index';
 ---
-
 <AppLayout path="/api-health">
-  <AuthGuard>
-    <Page />
-  </AuthGuard>
+  <section class="space-y-5"><div class="flex items-end justify-between gap-4"><div><p class="text-sm text-accent">Status</p><h2 class="text-3xl font-semibold">Service health</h2><p class="mt-2 text-sm text-muted">Liveness checks the process. Readiness also checks the database schema.</p></div><button data-run-checks class="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-canvas">Run checks</button></div><div data-checks class="grid gap-4 md:grid-cols-2" aria-live="polite">Run checks to see current API status.</div></section>
 </AppLayout>
+<script>
+  import { IDENTITY_API_BASE_URL, WEBAPI_BASE_URL, withoutApiSuffix } from '../lib/config';
+  const button = document.querySelector<HTMLButtonElement>('[data-run-checks]')!;
+  const results = document.querySelector<HTMLElement>('[data-checks]')!;
+  button.addEventListener('click', async () => {
+    button.disabled = true; results.setAttribute('aria-busy', 'true'); results.replaceChildren();
+    await Promise.all([['WebApi', WEBAPI_BASE_URL], ['IdentityApi', IDENTITY_API_BASE_URL]].flatMap(([name, base]) => ['healthz', 'readyz'].map(async path => {
+      const card = document.createElement('article'); card.className = 'rounded-xl border border-line bg-surface p-5';
+      results.append(card);
+      try { const response = await fetch(`${withoutApiSuffix(base)}/${path}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) }); card.textContent = `${name} ${path === 'readyz' ? 'readiness' : 'liveness'}: ${response.ok ? 'Healthy' : 'Unavailable'} (${response.status})`; }
+      catch { card.textContent = `${name} ${path}: Unreachable`; }
+    })));
+    button.disabled = false; results.setAttribute('aria-busy', 'false');
+  });
+</script>

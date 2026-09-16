@@ -1,7 +1,8 @@
 ---
 import '../global.css';
-import { AuthStatus } from '../components/auth-guard';
-import { ThemeToggle } from '../components/theme-toggle';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import AuthGuard from '../components/AuthGuard.astro';
+import { WEBAPI_BASE_URL } from '../lib/config';
 
 const groups = [
   { name: 'Start', items: [
@@ -84,14 +85,15 @@ const isActive = (href: string) => {
             </details>
             <div>
               <h1 class="text-lg font-semibold">Application hub</h1>
+              <p class="text-xs text-muted" title={WEBAPI_BASE_URL}>{WEBAPI_BASE_URL.startsWith('http://localhost:') ? 'Local learning sandbox' : 'Remote API workspace'}</p>
             </div>
             <div class="flex items-center gap-2 text-sm">
               <ThemeToggle />
-              <AuthStatus />
+              <button type="button" data-logout class="rounded-md border border-line px-3 py-2">Logout</button>
             </div>
           </div>
         </header>
-        <main class="px-4 py-8 sm:px-6 lg:px-8"><slot /></main>
+        <main class="px-4 py-8 sm:px-6 lg:px-8"><AuthGuard><slot /></AuthGuard></main>
       </div>
     </div>
   </body>

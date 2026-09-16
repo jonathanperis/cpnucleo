@@ -1,58 +1,28 @@
 namespace WebApi.Endpoints.Project.RemoveProject;
 
-// Dapper Repository Basic
 public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectRequest, Response>
 {
     public override void Configure()
     {
         Delete("/project");
         Description(x => x.WithTags("Projects"));
-
-        Summary(s => {
-            s.Summary = "Delete projects by Ids";
-            s.Description = "Deletes the projects specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.";
-        });   
+        Summary(s =>
+        {
+            s.Summary = "Soft-delete projects atomically";
+            s.Description = "All supplied active projects are removed in one transaction. A missing project leaves the whole batch unchanged.";
+        });
     }
 
     public override async Task HandleAsync(RemoveProjectRequest request, CancellationToken cancellationToken)
-    {        
-        Logger.LogInformation("Service started processing request.");
-
-        Logger.LogInformation("Checking if project entities exist for Ids: {ProjectIds}", string.Join(",", request.Ids));
-        var allSuccess = true;
-
-        foreach (var id in request.Ids)
+    {
+        Response.Success = await repository.RemoveManyAsync(request.Ids, cancellationToken);
+        if (!Response.Success)
         {
-            var item = await repository.GetByIdAsync(id);
-            if (item is null)
-            {
-                await Send.NotFoundAsync(cancellation: cancellationToken);
-                return;
-            }
-
-            Logger.LogInformation("Removing project entity with Id: {ProjectId}", id);
-            Domain.Entities.Project.Remove(item);
-
-            Logger.LogInformation("Updating repository for removed entity {ProjectId}.", id);
-            var result = await repository.UpdateAsync(item);
-
-            if (!result) allSuccess = false;
-        }
-
-        Response.Success = allSuccess;
-
-        if (!allSuccess)
-        {
-            Logger.LogWarning("One or more deletions failed.");
-            await Send.ErrorsAsync(cancellation: cancellationToken);
+            await Send.NotFoundAsync(cancellation: cancellationToken);
             return;
         }
 
-        Logger.LogInformation("Remove result: {Success}", Response.Success);
-        Logger.LogInformation("Service completed successfully.");
-
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
-
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
         await Send.OkAsync(Response, cancellationToken);
     }
 }

@@ -1,11 +1,23 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { AuthGuard } from '../components/auth-guard';
-import Page from '../routes/index';
+import { resourceMetadata } from '../lib/api/resource-metadata';
 ---
-
 <AppLayout path="/">
-  <AuthGuard>
-    <Page />
-  </AuthGuard>
+  <div data-home class="space-y-8">
+    <section class="rounded-[2rem] border border-line bg-surface p-6 shadow-soft lg:p-8">
+      <p class="text-sm font-semibold text-accent">Application hub</p><h2 class="mt-5 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">Choose where to start in Cpnucleo.</h2>
+      <p class="mt-4 max-w-2xl text-muted">Explore projects, people, tasks, calendars, and the architecture behind them in this hands-on learning workspace.</p>
+      <div class="mt-7 flex flex-wrap gap-3"><a class="rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas" href="/projects/">Open projects</a><a class="rounded-xl border border-line px-5 py-3 text-sm" href="/api-health/">Service health</a><a class="rounded-xl border border-line px-5 py-3 text-sm" href="https://jonathanperis.github.io/cpnucleo/docs/learning-lab/">Learning paths</a></div>
+    </section>
+    <section><h3 class="mb-2 text-2xl font-semibold">Work areas</h3><p class="mb-4 text-sm text-muted">Dark by default · light-ready</p><div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {resourceMetadata.map(resource => <a href={resource.routePath} class="rounded-2xl border border-line bg-surface p-5 shadow-soft hover:border-accent/40"><div class="flex items-center justify-between gap-3"><span class="font-semibold">{resource.pluralLabel}</span><span data-count={resource.key} aria-live="polite" class="rounded-full bg-raised px-2.5 py-1 text-xs text-muted">—</span></div><p class="mt-3 text-sm text-muted">{resource.description}</p></a>)}
+    </div></section>
+  </div>
 </AppLayout>
+<script>
+  import { loadHomeCounters } from '../features/home/counters';
+  import { getStoredToken } from '../lib/api/http-client';
+  const controller = new AbortController();
+  if (getStoredToken()) void loadHomeCounters(document.querySelector<HTMLElement>('[data-home]')!, controller.signal);
+  window.addEventListener('pagehide', () => controller.abort());
+</script>

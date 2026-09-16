@@ -9,7 +9,7 @@ public sealed class ListOrganizationsHandler(IUnitOfWork unitOfWork, ILogger<Lis
         logger.LogInformation("Fetching all organizations with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} organization records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

@@ -28,4 +28,8 @@
     <Project Path="tests\WebApi.Integration.Tests\WebApi.Integration.Tests.csproj" />
     <Project Path="tests\WebApi.Unit.Tests\WebApi.Unit.Tests.csproj" />
   </Folder>
+  <Folder Name="/labs/">
+    <Project Path="labs/PersistenceLab/PersistenceLab.csproj" />
+    <Project Path="labs/OutboxLab/OutboxLab.csproj" />
+  </Folder>
 </Solution>

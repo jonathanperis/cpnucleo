@@ -9,7 +9,7 @@ public sealed class ListUserProjectsHandler(IUnitOfWork unitOfWork, ILogger<List
         logger.LogInformation("Fetching all userProjects with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} userProject records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

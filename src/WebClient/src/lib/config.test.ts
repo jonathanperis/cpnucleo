@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const publicEnv = import.meta.env as Record<string, string | undefined>;
 
@@ -10,7 +10,8 @@ const clearPublicServiceEnv = () => {
 
 const importConfigWithPublicEnvCleared = async () => {
   clearPublicServiceEnv();
-  return import(`./config?defaults=${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  vi.resetModules();
+  return import('./config');
 };
 
 describe('public service URLs', () => {
@@ -18,18 +19,16 @@ describe('public service URLs', () => {
     clearPublicServiceEnv();
   });
 
-  it('defaults to public domains for the static demo build', async () => {
+  it('defaults to isolated local services when build configuration is absent', async () => {
     const { WEBAPI_BASE_URL, IDENTITY_API_BASE_URL } = await importConfigWithPublicEnvCleared();
 
-    expect(WEBAPI_BASE_URL).toBe('https://api-cpnucleo.jonathanperis.tech/api');
-    expect(IDENTITY_API_BASE_URL).toBe('https://identity-cpnucleo.jonathanperis.tech/api');
+    expect(WEBAPI_BASE_URL).toBe('http://localhost:5100/api');
+    expect(IDENTITY_API_BASE_URL).toBe('http://localhost:5200/api');
   });
 
-  it('does not fall back to localhost in production bundles', async () => {
-    const { WEBAPI_BASE_URL, IDENTITY_API_BASE_URL } = await importConfigWithPublicEnvCleared();
-
-    expect(WEBAPI_BASE_URL).not.toContain('localhost');
-    expect(IDENTITY_API_BASE_URL).not.toContain('localhost');
+  it('uses explicitly configured public URLs for production builds', async () => {
+    const { resolveBrowserServiceUrl } = await importConfigWithPublicEnvCleared();
+    expect(resolveBrowserServiceUrl('https://api.example.test/api', 'http://localhost:5100/api')).toBe('https://api.example.test/api');
   });
 
   it('replaces localhost service URLs when the public app is running in the browser', async () => {

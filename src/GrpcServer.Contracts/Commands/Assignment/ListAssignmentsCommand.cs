@@ -24,7 +24,7 @@ public class ListAssignmentsResult
     /// <summary>
     /// Gets or sets a message providing additional information about the result.
     /// </summary>
-    public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
     
     /// <summary>
     /// Gets or sets the paginated result of assignments.

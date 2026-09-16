@@ -5,6 +5,7 @@ import { SECTION_CATEGORIES, SECTION_ORDER } from '../../lib/sidebar.config';
 
 const SLUG_LABEL: Record<string, string> = {
   home: 'Home',
+  'learning-lab': 'Learning Lab',
   architecture: 'Architecture',
   'api-reference': 'API Reference',
   'webclient-crud': 'WebClient CRUD',
@@ -18,9 +19,10 @@ const SLUG_LABEL: Record<string, string> = {
 
 const DOC_SUMMARIES: Record<string, string> = {
   home: 'Project overview, feature map, and repository entry points.',
+  'learning-lab': 'Guided learning paths, verified examples, experiments, benchmarks and recovery.',
   architecture: 'Layer boundaries, Clean Architecture constraints, and service split.',
   'api-reference': 'REST endpoints, Identity API, and gRPC command contracts.',
-  'webclient-crud': 'Metadata-driven Qwik CRUD screens, relation labels, and response normalization.',
+  'webclient-crud': 'Astro and native TypeScript CRUD, relation search, concurrency and live updates.',
   database: 'PostgreSQL setup, EF Core, Dapper, migrations, and seed scripts.',
   'getting-started': 'Prerequisites, local build, Docker Compose, and first run path.',
   'project-structure': 'Repository tree, source projects, tests, infrastructure, and docs.',
@@ -88,7 +90,7 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
   <aside class="sidebar" id="sidebar" data-current-id={currentId}>
     <div class="sidebar-header">
       <a class="repo-title" href={docsBase + '/'}>cpnucleo</a>
-      <p class="repo-description">.NET 10 Clean Architecture reference with REST, gRPC, Blazor, PostgreSQL, and Hostinger deployment.</p>
+      <p class="repo-description">A .NET 10 learning laboratory with REST, gRPC, Astro, PostgreSQL, and Hostinger deployment.</p>
       <input type="text" id="searchInput" class="search-box" placeholder="Filter documentation" aria-label="Filter documentation" />
       <p class="search-empty" id="searchEmpty" role="status" hidden>No docs entry matches that filter.</p>
     </div>

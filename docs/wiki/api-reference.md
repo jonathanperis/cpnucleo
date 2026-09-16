@@ -238,9 +238,21 @@ All services also respond to `GET /` with `"Hello World!"`.
 
 ## Authentication Flow
 
-JWT authentication is configured but currently commented out in WebApi and GrpcServer. The IdentityApi is fully functional for token generation. When enabled:
+JWT authentication is enforced by WebApi and GrpcServer. User administration additionally requires the configured administrator claim on both transports:
 
 1. Client authenticates via `POST /api/login` on IdentityApi
 2. Receives JWT token
 3. Includes token in `Authorization: Bearer {token}` header for WebApi/GrpcServer requests
 4. Token validation checks issuer, audience, signing key, and expiration
+
+Access tokens last up to 30 minutes. `POST /api/refresh` requires an active account and an original session younger than eight hours; it recalculates admin privileges. Tokens created before the session-start claim was introduced require a fresh login when refreshing.
+
+## Query and update contracts
+
+List query fields are flat: `pageNumber`, `pageSize` (1–100), `sortColumn`, `sortOrder`, `search` (up to 128 characters), and `ids` (up to 100 comma-separated UUIDs). For example: `/api/projects?pageSize=25&search=school`. FastEndpoints binds these scalar fields into the request's `Pagination` object; dotted `pagination.*` keys are not the canonical HTTP contract.
+
+Project PATCH requests may include `expectedVersion`, using the last observed `updatedAt` or initial `createdAt`. A stale value returns HTTP 409. The corresponding gRPC command accepts `ExpectedVersion` and reports a failed result on a conflict. Omitting the field preserves legacy last-write-wins behavior.
+
+All normal removal paths soft-delete. Project batches are atomic. The database rejects conflicting normalized active logins on new/changed accounts; authentication rejects ambiguous legacy logins rather than choosing an arbitrary account.
+
+`/healthz` is liveness only. `/readyz` checks database/schema availability. SSE listings refresh periodically so writes through other instances/transports converge within a refresh cycle.

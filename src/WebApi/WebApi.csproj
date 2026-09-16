@@ -25,8 +25,6 @@
 		<DebuggerSupport>false</DebuggerSupport>
 		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
 		<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
-		<EventSourceSupport>false</EventSourceSupport>
-		<HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 		<StackTraceSupport>false</StackTraceSupport>

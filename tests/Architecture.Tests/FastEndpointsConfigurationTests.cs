@@ -104,7 +104,7 @@ public class FastEndpointsConfigurationTests
     {
         var program = File.ReadAllText(GetRepositoryPath(programPath));
         var useCorsIndex = program.IndexOf("UseCors(\"CpnucleoWebClient\")", StringComparison.Ordinal);
-        var useHealthChecksIndex = program.IndexOf("UseHealthChecks(\"/healthz\")", StringComparison.Ordinal);
+        var useHealthChecksIndex = program.IndexOf("UseHealthChecks(\"/healthz\"", StringComparison.Ordinal);
         var useAuthenticationIndex = program.IndexOf("UseAuthentication()", StringComparison.Ordinal);
 
         program.Should().Contain("AddCors(options =>");
@@ -213,7 +213,7 @@ public class FastEndpointsConfigurationTests
         loginEndpoint.Should().Contain("CpnucleoClaimTypes.Subject");
         loginEndpoint.Should().Contain("CpnucleoClaimTypes.UserId");
         loginEndpoint.Should().Contain("CpnucleoClaimTypes.TenantId");
-        refreshEndpoint.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
+        refreshEndpoint.Should().Contain("SessionLifetime.IsRefreshable");
         refreshEndpoint.Should().Contain("Post(\"/refresh\")");
         refreshEndpoint.Should().Contain("JwtBearer.CreateToken(");
         refreshEndpoint.Should().Contain("preservedClaims");
@@ -224,7 +224,7 @@ public class FastEndpointsConfigurationTests
     public void WebClient_ShouldExpireInactiveSessionsAndRefreshActiveTokens()
     {
         var httpClient = File.ReadAllText(GetRepositoryPath("src/WebClient/src/lib/api/http-client.ts"));
-        var authGuard = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/auth-guard.tsx"));
+        var authGuard = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/AuthGuard.astro"));
 
         httpClient.Should().Contain("sessionInactivityTimeoutMs = 15 * 60 * 1000");
         httpClient.Should().Contain("tokenRefreshLeadMs = 5 * 60 * 1000");
@@ -317,8 +317,8 @@ public class FastEndpointsConfigurationTests
         var appLayout = File.ReadAllText(GetRepositoryPath("src/WebClient/src/layouts/AppLayout.astro"));
         var globalCss = File.ReadAllText(GetRepositoryPath("src/WebClient/src/global.css"));
         var loginPage = File.ReadAllText(GetRepositoryPath("src/WebClient/src/pages/login.astro"));
-        var themeToggle = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/theme-toggle.tsx"));
-        var dashboard = File.ReadAllText(GetRepositoryPath("src/WebClient/src/routes/index.tsx"));
+        var themeToggle = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/ThemeToggle.astro"));
+        var dashboard = File.ReadAllText(GetRepositoryPath("src/WebClient/src/pages/index.astro"));
         var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));
         var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
 
@@ -357,7 +357,7 @@ public class FastEndpointsConfigurationTests
         appLayout.Should().NotContain("Built as a clear place to review work, people, data, and releases without reading code first.");
         loginPage.Should().Contain("<html lang=\"en\" data-theme=\"dark\" style=\"color-scheme: dark;\">");
         loginPage.Should().Contain(": 'dark';");
-        themeToggle.Should().Contain("useSignal<Theme>('dark')");
+        themeToggle.Should().Contain("dataset.theme === 'dark'");
         themeToggle.Should().Contain(": 'dark';");
         dashboard.Should().Contain("Dark by default · light-ready");
         dashboard.Should().NotContain("Light by default · dark-ready");

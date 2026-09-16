@@ -12,7 +12,8 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 | [Getting Started](getting-started) | Prerequisites, build, run with Docker Compose or locally |
 | [Project Structure](project-structure) | Full tree of `src/` and `tests/` with descriptions |
 | [API Reference](api-reference) | WebApi endpoints, IdentityApi auth, GrpcServer contracts |
-| [WebClient CRUD](webclient-crud) | Qwik CRUD screens, edit-form prefill, relation labels, response normalization |
+| [WebClient CRUD](webclient-crud) | Astro/native TypeScript CRUD, edit forms, relation search, response normalization |
+| [Learning Lab](learning-lab) | Guided paths, failure exercises, benchmarks and recovery |
 | [Database](database) | PostgreSQL setup, EF Core, Dapper, init scripts |
 | [Testing](testing) | Architecture tests, unit tests, integration tests |
 | [Deployment](deployment) | Docker Compose configs, GitHub Actions CI/CD, NGINX |
@@ -22,7 +23,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 
 ## Key Features
 
-- Clean Architecture with strict layer dependency enforcement validated by 27 architecture tests
+- Clean Architecture boundaries validated against explicitly loaded production assemblies
 - Dual data access: EF Core for the REST API, Dapper with Unit of Work for the gRPC server
 - FastEndpoints for both REST endpoints and gRPC-style remote command handling
 - JWT authentication via the dedicated Identity API with Argon2id-hashed credentials
@@ -31,7 +32,7 @@ Cpnucleo is a project management and task tracking system built with .NET 10, de
 - NGINX reverse proxy with least-connection load balancing across multiple WebApi instances
 - Docker Compose configurations for development, default, and production environments
 - AOT, Trim, and ExtraOptimize build options for production-optimized containers
-- Astro + Qwik frontend with Tailwind CSS, IdentityApi login, and CRUD screens for all WebApi resources, including prefilled edit forms and readable relation labels
+- Astro and native TypeScript frontend with Tailwind CSS, IdentityApi login, prefilled edit forms and searchable relations
 - Automated CI/CD with GitHub Actions deploying to Hostinger Docker Manager via GHCR
 
 ---

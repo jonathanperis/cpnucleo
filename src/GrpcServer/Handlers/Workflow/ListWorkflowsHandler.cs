@@ -9,7 +9,7 @@ public sealed class ListWorkflowsHandler(IUnitOfWork unitOfWork, ILogger<ListWor
         logger.LogInformation("Fetching all workflows with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} workflow records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

@@ -1,0 +1,107 @@
+name: cpnucleo-lab
+
+x-runtime: &runtime
+  ASPNETCORE_ENVIRONMENT: Development
+  DB_CONNECTION_STRING: Host=db;Database=cpnucleo_lab;Username=learner;Password=disposable-lab-only;Maximum Pool Size=20
+  Jwt__SigningKey: disposable-lab-signing-key-at-least-32-characters
+  CPNUCLEO_ADMIN_LOGINS: demo@cpnucleo.local
+  Cors__AllowedOrigins__0: http://localhost:5400
+  Cors__AllowedOrigins__1: http://localhost:5030
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-lgtm:4317
+
+x-build-args: &build-args
+  AOT: "false"
+  TRIM: "false"
+  EXTRA_OPTIMIZE: "false"
+  BUILD_CONFIGURATION: Debug
+  ASPNETCORE_ENVIRONMENT: Development
+
+services:
+  db:
+    image: postgres:16.7
+    environment:
+      POSTGRES_USER: learner
+      POSTGRES_PASSWORD: disposable-lab-only
+      POSTGRES_DB: cpnucleo_lab
+    command: [postgres, -c, track_commit_timestamp=on]
+    ports: ["127.0.0.1:15432:5432"]
+    volumes: [lab_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U learner -d cpnucleo_lab"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  migrate:
+    image: ${CPNUCLEO_WEB_API_IMAGE:-cpnucleo-lab-webapi}
+    build:
+      context: ./src
+      dockerfile: WebApi/Dockerfile
+      args: *build-args
+    environment: *runtime
+    command: ["--migrate-database"]
+    depends_on:
+      db: { condition: service_healthy }
+
+  webapi:
+    image: ${CPNUCLEO_WEB_API_IMAGE:-cpnucleo-lab-webapi}
+    build:
+      context: ./src
+      dockerfile: WebApi/Dockerfile
+      args: *build-args
+    environment: *runtime
+    ports: ["127.0.0.1:5100:5000"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  identity:
+    image: ${CPNUCLEO_IDENTITY_API_IMAGE:-cpnucleo-lab-identity}
+    build:
+      context: ./src
+      dockerfile: IdentityApi/Dockerfile
+      args: *build-args
+    environment: *runtime
+    ports: ["127.0.0.1:5200:5010"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  webclient:
+    image: ${CPNUCLEO_WEB_CLIENT_IMAGE:-cpnucleo-lab-webclient}
+    build:
+      context: ./src
+      dockerfile: WebClient/Dockerfile
+      args:
+        PUBLIC_WEBAPI_BASE_URL: http://localhost:5100/api
+        PUBLIC_IDENTITY_API_BASE_URL: http://localhost:5200/api
+        PUBLIC_IDENTITY_API_ISSUER: https://identity-cpnucleo.jonathanperis.tech
+    ports: ["127.0.0.1:5400:5030"]
+    environment:
+      OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-lgtm:4318
+
+  grpc:
+    image: ${CPNUCLEO_GRPC_SERVER_IMAGE:-cpnucleo-lab-grpc}
+    profiles: [full]
+    build:
+      context: ./src
+      dockerfile: GrpcServer/Dockerfile
+      args: *build-args
+    environment: *runtime
+    ports: ["127.0.0.1:5300:5020", "127.0.0.1:5301:5021"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  otel-lgtm:
+    profiles: [observability]
+    image: grafana/otel-lgtm:0.11.10
+    ports: ["127.0.0.1:3000:3000"]
+
+  seed:
+    profiles: [seed]
+    image: ${CPNUCLEO_WEB_API_IMAGE:-cpnucleo-lab-webapi}
+    environment: *runtime
+    command: ["--seed-lab"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+volumes:
+  lab_data:

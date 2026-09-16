@@ -1,1 +1,1 @@
-/// <reference types="@qwikdev/astro/env" />
+/// <reference types="astro/client" />

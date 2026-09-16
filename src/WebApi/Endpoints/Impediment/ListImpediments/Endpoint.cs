@@ -42,6 +42,10 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var query = dbContext.Impediments?.AsNoTracking().AsQueryable();
+        if (request.Pagination.Search is { } search)
+            query = query!.Where(x => EF.Functions.ILike(x.Name!, $"%{search}%"));
+        if (request.Pagination.GetIds() is { Length: > 0 } ids)
+            query = query!.Where(x => ids.Contains(x.Id));
 
         var validSortColumn = ValidateSortColumn(request.Pagination.SortColumn);
         var validSortOrder = request.Pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
@@ -81,6 +85,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     private static IQueryable<Domain.Entities.Impediment>? ApplySorting(IQueryable<Domain.Entities.Impediment>? query, string sortColumn, string sortOrder)
     {
-        return query?.OrderBy($"{sortColumn} {sortOrder}");
+        return query?.OrderBy($"{sortColumn} {sortOrder}, Id ASC");
     }
 }

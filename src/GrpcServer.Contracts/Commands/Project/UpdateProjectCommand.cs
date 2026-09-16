@@ -19,6 +19,7 @@ public class UpdateProjectCommand : ICommand<UpdateProjectResult>
     /// Gets or sets the unique identifier for the organization.
     /// </summary>
     public Guid OrganizationId { get; set; }
+    public DateTime? ExpectedVersion { get; set; }
 }
 
 /// <summary>
@@ -34,5 +35,5 @@ public class UpdateProjectResult
     /// <summary>
     /// Gets or sets a message providing additional information about the result.
     /// </summary>
-    public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

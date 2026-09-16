@@ -158,9 +158,15 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
 export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
   const root = normalizeBase(baseUrl);
   return {
-    async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal) {
+    async lookup(resourceKey: ResourceKey, ids: string[], signal?: AbortSignal): Promise<ApiEntity[]> {
+      if (ids.length === 0) return [];
       const resource = findResource(resourceKey);
-      const url = withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize));
+      const url = withQuery(`${root}${resource.listPath}`, { ...paginationParams(1, 100), ids: ids.join(',') });
+      return normalizeList(await requestJson<ListEnvelope<ApiEntity>>(url, { signal })).items ?? [];
+    },
+    async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal, search?: string) {
+      const resource = findResource(resourceKey);
+      const url = withQuery(`${root}${resource.listPath}`, { ...paginationParams(pageNumber, pageSize), search });
       const payload = await requestJson<ListEnvelope<T>>(url, { signal });
       return normalizeList<T>(payload);
     },

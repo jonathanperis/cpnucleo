@@ -4,25 +4,26 @@ description: Pinned versions for .NET SDK, NuGet packages, and infrastructure co
 type: reference
 ---
 
-## Core Versions (as of 2026-04)
+## Core Versions (as of 2026-09)
 
 - **.NET SDK:** 10.0.102 (global.json with `latestMinor` rollForward)
-- **FastEndpoints:** 8.1.0 core packages (Swagger/Testing still 7.2.0)
+- **FastEndpoints:** 8.1.0 across core, Swagger, security, messaging and testing
 - **Entity Framework Core:** 10.0.7
 - **Dapper:** 2.1.72 + Dapper.AOT 1.0.48
 - **Npgsql:** 10.0.1 (driver) + 10.0.0 (EF Core provider)
 - **PostgreSQL:** 16.7
 - **Riok.Mapperly:** 4.3.1
-- **MudBlazor:** 8.15.0
+- **WebClient:** Astro 7, native TypeScript, Tailwind 3, Vitest 4 and jsdom
+- **Docs:** Astro 7 and Tailwind 4
 - **OpenTelemetry:** 1.15.x packages (OTLP/hosting 1.15.3)
 
 ## Test Frameworks
 
 - **Architecture Tests:** xUnit + NetArchTest.Rules 1.3.2 + FluentAssertions 8.x
 - **Unit Tests:** NUnit 4.x + FakeItEasy 9.x + Shouldly 4.x
-- **Integration Tests:** xUnit v3 + FastEndpoints.Testing
+- **Integration Tests:** xUnit v3, HTTP/gRPC test hosts and Testcontainers.PostgreSql 4.15
 
-## Service Ports
+## Legacy development service ports
 
 | Service | Internal | External |
 |---------|----------|----------|
@@ -35,3 +36,5 @@ type: reference
 | NGINX | 9999 | 9999 |
 | PostgreSQL | 5432 | 5432 |
 | Grafana LGTM (dev) | 3000 | 3000 |
+
+The recommended `compose.lab.yaml` has one REST instance, no NGINX dependency, optional gRPC/observability profiles, and publishes PostgreSQL on loopback port 15432. Production publishes no service/database host ports.

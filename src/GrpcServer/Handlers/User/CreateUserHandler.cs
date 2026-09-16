@@ -1,10 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger, IPasswordHasher passwordHasher) : ICommandHandler<CreateUserCommand, CreateUserResult>
+public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger, IPasswordHasher passwordHasher, IHttpContextAccessor context) : ICommandHandler<CreateUserCommand, CreateUserResult>
 {
     public async Task<CreateUserResult> ExecuteAsync(CreateUserCommand command, CancellationToken cancellationToken)
     {
+        Common.Security.UserAdministration.RequireAdmin(context);
         logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", command.Name, command.Id);
 
         try

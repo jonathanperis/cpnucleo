@@ -23,6 +23,9 @@ public class Request
     [DefaultValue("006abcc9-3e72-47e7-a2cd-b4cd755393b2")]
     public Guid OrganizationId { get; set; }
 
+    /// <summary>Last observed UpdatedAt, or CreatedAt for a new project. Omit only for legacy last-write-wins clients.</summary>
+    public DateTime? ExpectedVersion { get; set; }
+
     public class Validator : Validator<Request>
     {
         public Validator()
@@ -48,4 +51,5 @@ public class Response
     /// Gets or sets a value indicating whether the update was successful.
     /// </summary>
     public bool Success { get; set; }
+    public string? Message { get; set; }
 }

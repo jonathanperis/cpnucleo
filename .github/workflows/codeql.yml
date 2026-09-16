@@ -15,8 +15,15 @@ permissions:
 
 jobs:
   analyze:
-    name: Analyze (csharp)
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - language: csharp
+            build-mode: manual
+          - language: javascript-typescript
+            build-mode: none
 
     steps:
       - name: Checkout Repository
@@ -25,6 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup .NET SDK
+        if: matrix.language == 'csharp'
         uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
@@ -32,16 +40,16 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
-          languages: csharp
-          build-mode: manual
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
           queries: security-and-quality
           config-file: .github/codeql/codeql-config.yml
 
       - name: Build for CodeQL
-        run: dotnet build ./src/WebApi/WebApi.csproj -c Release
+        if: matrix.language == 'csharp'
+        run: dotnet build cpnucleo.slnx -c Release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
         with:
-          category: "/language:csharp"
-
+          category: "/language:${{ matrix.language }}"

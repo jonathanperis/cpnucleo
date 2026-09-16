@@ -57,40 +57,6 @@ public class WorkflowEndpointsTests
     }
 
     [Test]
-    [Ignore("EF Core DbSet.Any() extension method cannot be mocked with FakeItEasy. Use integration tests for EF Core-based endpoints.")]
-    public async Task CreateWorkflow_WithValidData_ShouldCreateWorkflow()
-    {
-        // Arrange
-        var workflowId = Guid.NewGuid();
-        var workflow = Workflow.Create("New Workflow", 1, workflowId);
-        
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Workflow>>();
-        
-        A.CallTo(() => fakeDbContext.Workflows).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.Any(A<System.Linq.Expressions.Expression<Func<Workflow, bool>>>._)).Returns(false);
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Workflow?>(workflow));
-
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.CreateWorkflow.Endpoint>(fakeDbContext).WithListingServices();
-        var req = new WebApi.Endpoints.Workflow.CreateWorkflow.Request
-        {
-            Id = workflowId,
-            Name = "New Workflow",
-            Order = 1
-        };
-
-        // Act
-        await ep.HandleAsync(req, default);
-
-        // Assert
-        ep.ValidationFailed.ShouldBeFalse();
-        ep.Response.ShouldNotBeNull();
-        ep.Response.Workflow.ShouldNotBeNull();
-        ep.Response.Workflow.Name.ShouldBe("New Workflow");
-    }
-
-    [Test]
     public async Task UpdateWorkflow_WithValidData_ShouldUpdateWorkflow()
     {
         // Arrange

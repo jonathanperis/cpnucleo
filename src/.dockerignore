@@ -1,0 +1,8 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/.astro
+**/server
+**/.env
+**/.DS_Store

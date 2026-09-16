@@ -1,0 +1,19 @@
+<div data-auth-content hidden><slot /></div>
+<p data-auth-loading role="status" class="p-6 text-muted">Checking your session…</p>
+<noscript><p class="p-6 text-danger">JavaScript is required to sign in and use this learning workspace.</p></noscript>
+<script>
+  import { clearStoredToken, getStoredToken, setupSessionActivityTracking } from '../lib/api/http-client';
+  import { getLoginRedirectTarget } from '../lib/auth-navigation';
+  let stop = () => {};
+  const initialize = () => {
+    stop();
+    if (!getStoredToken()) { window.location.replace(getLoginRedirectTarget(window.location)); return; }
+    document.querySelectorAll<HTMLElement>('[data-auth-content]').forEach(element => { element.hidden = false; });
+    document.querySelectorAll<HTMLElement>('[data-auth-loading]').forEach(element => { element.hidden = true; });
+    stop = setupSessionActivityTracking();
+  };
+  document.querySelector('[data-logout]')?.addEventListener('click', () => { clearStoredToken(); window.location.assign('/login/'); });
+  window.addEventListener('pagehide', () => stop());
+  window.addEventListener('pageshow', event => { if (event.persisted) initialize(); });
+  initialize();
+</script>

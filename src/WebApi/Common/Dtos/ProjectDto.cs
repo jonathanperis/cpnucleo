@@ -4,6 +4,7 @@ public sealed record ProjectDto : BaseDto
 {
     public string? Name { get; set; }
     public Guid OrganizationId { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     // public static implicit operator ProjectDto?(Project? entity)
     // {

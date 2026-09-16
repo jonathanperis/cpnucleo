@@ -1,168 +1,133 @@
 # cpnucleo
 
-> Project management system built with .NET 10 -- Clean Architecture, DDD, and dual REST/gRPC implementation
+> A hands-on .NET 10 architecture laboratory: compare implementations, explore tradeoffs, and verify the behavior you learn.
 
-[![Build Check](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml) [![Main Release](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml) [![CodeQL](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Build Check](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml) [![Main Release](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml) [![CodeQL](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml)
 
-**[Live demo &rarr;](https://cpnucleo.jonathanperis.tech/)** | **[Documentation &rarr;](https://jonathanperis.github.io/cpnucleo/)**
+**[Learning paths](https://jonathanperis.github.io/cpnucleo/docs/learning-lab/)** · **[Pages documentation](https://jonathanperis.github.io/cpnucleo/docs/)** · **[Live demo](https://cpnucleo.jonathanperis.tech/)**
 
----
+## Purpose
 
-## About
+Cpnucleo is a project-management sandbox for learning application and platform engineering. Its breadth is intentional: REST and gRPC, EF Core and Dapper, domain modeling, authentication, real-time updates, observability, containers, and deployment share one inspectable example.
 
-Cpnucleo is a project management and task tracking system built as a .NET 10 reference implementation for Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy. The REST API uses FastEndpoints with EF Core while the gRPC server uses FastEndpoints Remote Messaging with Dapper, both operating against the same PostgreSQL database. 27 architecture tests (NetArchTest) enforce layer dependency rules at build time, ensuring the domain layer remains free of infrastructure concerns.
+The goal is a reliable learning baseline with explicit experiments, rather than a claim that every demonstrated technique is a complete production solution.
 
-## Tech Stack
+## Start locally
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| .NET | 10.0 | Runtime and SDK |
-| ASP.NET Core | 10.0 | Web framework |
-| FastEndpoints | 8.1 | REST endpoint routing and gRPC messaging |
-| Entity Framework Core | 10.0 | ORM for WebApi and IdentityApi |
-| Dapper | 2.1 | Micro-ORM for GrpcServer |
-| Dapper.AOT | 1.0 | Compile-time SQL interception |
-| Npgsql | 10.0 | PostgreSQL driver |
-| PostgreSQL | 16.7 | Primary database |
-| Astro + Qwik | Astro 5 / Qwik 1.x | Static frontend routing with resumable interactive islands |
-| Tailwind CSS | 3.x | Catalyst-inspired product UI styling |
-| Riok.Mapperly | 4.3 | Compile-time object mapping |
-| OpenTelemetry | 1.15 | Distributed tracing, metrics, logging |
-| Docker + Compose | Latest | Containerization and orchestration |
-| NGINX | Latest | Reverse proxy and load balancing |
-| GitHub Actions | -- | CI/CD pipelines |
-| Hostinger Docker Manager | -- | Production deployment target |
+Prerequisites: Docker with Compose v2. For source development and tests, also install .NET 10 SDK and Node.js 22.14+ with Bun 1.3.11+.
 
-## Features
-
-- Clean Architecture with strict layer separation enforced by 27 automated NetArchTest rules
-- Dual data access strategies: EF Core (REST API) and Dapper with Unit of Work (gRPC server) against the same database
-- JWT authentication via a dedicated Identity API with Argon2id-hashed credentials
-- Rate limiting per IP: 50 req/min on WebApi, 10 req/min on IdentityApi
-- OpenTelemetry observability with OTLP export and optional Grafana LGTM stack
-- NGINX load balancing across two WebApi instances with least-connection routing
-- Multi-platform Docker builds (linux/amd64 + linux/arm64/v8) with AOT, trimming, and extra optimization options
-- Astro + Qwik frontend with Tailwind CSS, IdentityApi login, and Catalyst-inspired CRUD screens for all WebApi resources, including prefilled edit forms and readable relation labels
-- Five test projects: architecture validation, Application and security unit tests, WebApi unit tests, and WebApi integration tests
-- Automated CI/CD with GitHub Actions deploying GHCR images to Hostinger Docker Manager
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────┐
-│                 Presentation Layer                   │
-│  WebApi (REST)  GrpcServer  IdentityApi  WebClient  │
-│  FastEndpoints  FE.Messaging  JWT Auth    Astro     │
-│  + EF Core      + Dapper               + Qwik/TW   │
-└────────────────────────┬────────────────────────────┘
-                         │
-┌────────────────────────┴────────────────────────────┐
-│                 Application Layer                   │
-│  Feature slices/use cases shared by REST and gRPC    │
-│  Pilot: Projects/CreateProject                       │
-└────────────────────────┬────────────────────────────┘
-                         │
-┌────────────────────────┴────────────────────────────┐
-│               Infrastructure Layer                   │
-│  ApplicationDbContext    DapperRepository<T>          │
-│  EF Core Migrations     Unit of Work                 │
-│                    Npgsql + PostgreSQL                │
-└────────────────────────┬────────────────────────────┘
-                         │
-┌────────────────────────┴────────────────────────────┐
-│                   Domain Layer                       │
-│  11 Entities (sealed, BaseEntity, factory methods)   │
-│  Repository interfaces    IPasswordHasher contract   │
-│              Zero external dependencies              │
-└─────────────────────────────────────────────────────┘
-```
-
-Layer dependencies enforced by 27 NetArchTest rules at build time.
-
-## Getting Started
-
-### Prerequisites
-
-- .NET 10 SDK (10.0.102+)
-- Docker
-- Docker Compose v2
-
-### Quick Start
-
-```bash
+```sh
 git clone https://github.com/jonathanperis/cpnucleo.git
 cd cpnucleo
-docker compose up
+docker compose -f compose.lab.yaml up --build -d
+docker compose -f compose.lab.yaml run --rm seed
 ```
 
-| Service | URL |
-|---------|-----|
-| WebApi (via NGINX) | http://localhost:9999 |
-| IdentityApi | http://localhost:5200 |
-| GrpcServer | http://localhost:5300 (gRPC) / http://localhost:5301 (health) |
+Open **http://localhost:5400**. The disposable lab account is `demo@cpnucleo.local` with password `LocalLearning@123`. These are local example credentials, not a production account. The login form never prefills credentials.
+
+| Local service | Address |
+|---|---|
 | WebClient | http://localhost:5400 |
+| WebApi | http://localhost:5100 |
+| IdentityApi | http://localhost:5200 |
+| PostgreSQL | localhost:15432 |
+| gRPC (`full` profile) | localhost:5300; health/readiness on 5301 |
+| Grafana (`observability` profile) | http://localhost:3000 |
 
-Development mode (build from source with Grafana LGTM observability):
+Add optional services:
 
-```bash
-docker compose -f compose.yaml -f compose.override.yaml up --build
+```sh
+docker compose -f compose.lab.yaml --profile full --profile observability up --build -d
 ```
 
-Production mode (pre-built images from GHCR):
+Seeding is explicit. `tiny` creates 3 projects and 30 tasks; `realistic` creates 50 projects and 500 tasks. To **replace only your disposable lab data**:
 
-```bash
-docker compose -f compose.yaml -f compose.prod.yaml up -d
+```sh
+docker compose -f compose.lab.yaml run --rm seed --reset-lab --Seed:Profile=realistic
 ```
 
-## Project Structure
+The existing million-row CSV importer remains an advanced, explicit load-test tool. Production deployment never invokes it automatically.
 
+## Implementation map
+
+| Surface | Implementation |
+|---|---|
+| REST | FastEndpoints; EF Core, explicit Dapper and generic Dapper/UoW examples |
+| gRPC | FastEndpoints Remote Messaging, Dapper, shared contracts |
+| Shared use case | `Application/Features/Projects/CreateProject` |
+| Domain | Entities, factory/update behavior, repository ports and password-hasher abstraction |
+| Identity | Argon2id, subject-bearing JWTs, active-account refresh with an eight-hour session boundary |
+| UI | Astro static routes, native TypeScript controllers, Tailwind CSS |
+| Database | PostgreSQL; EF migrations shared by both persistence strategies |
+| Delivery | GitHub Actions, GHCR immutable tags, Hostinger Docker Manager |
+| Observability | OpenTelemetry traces, metrics and logs; optional local Grafana LGTM |
+
+Both transports expose 55 CRUD operations across 11 resources. Normal removal is soft deletion. Project batch removal is transactional; version-aware project updates reject stale writes. List pages are bounded to 100 rows and support search and batched relation lookups.
+
+The Astro UI preserves CRUD forms, pagination, relation labels/search, native details dialogs, counters, login redirects, inactivity expiry, token refresh, themes, and service checks. Server-sent events combine immediate local notifications with a 15-second cross-instance refresh and client reconnection.
+
+## Maturity and boundaries
+
+| Status | Capability |
+|---|---|
+| Working baseline | Authenticated CRUD, soft deletion, PostgreSQL-backed tests, native Astro client, immutable deployments |
+| Verified examples | Project concurrency conflicts, transactional batches, REST/gRPC parity, duplicate-login contention, externally written SSE updates |
+| Incremental pilot | Shared Application use cases and richer domain behavior |
+| Foundation/exercise | Tenant isolation: tenant context types and informational claims exist, but shared workspace records are not tenant-isolated |
+| Experiment | Native AOT and Dapper.AOT; installation/build flags alone do not prove compatibility |
+
+User administration requires an administrator on both transports. Configure `CPNUCLEO_ADMIN_LOGINS` explicitly. Other authenticated operations demonstrate a shared learning workspace, not ownership-based authorization for a multi-tenant SaaS.
+
+## Verify
+
+Five test projects cover architecture, application behavior, security, endpoint units, and isolated PostgreSQL-backed integration scenarios:
+
+```sh
+dotnet test cpnucleo.slnx
+dotnet test tests/Architecture.Tests/
 ```
-src/
-  Domain/                      Core business logic (zero external dependencies)
-  Application/                 Feature slices/use cases shared by REST + gRPC
-  Infrastructure/              EF Core + Dapper data access implementations
-  WebApi/                      REST API (FastEndpoints + EF Core)
-  GrpcServer/                  gRPC command server (FastEndpoints.Messaging + Dapper)
-  GrpcServer.Contracts/        Shared command/result DTOs
-  IdentityApi/                 JWT authentication service
-  WebClient/                   Astro + Qwik + Tailwind frontend
 
-tests/
-  Architecture.Tests/          Clean Architecture rules (xUnit + NetArchTest)
-  WebApi.Unit.Tests/           Endpoint unit tests (NUnit + FakeItEasy)
-  WebApi.Integration.Tests/    End-to-end API tests (xUnit v3 + FastEndpoints.Testing)
+Integration tests create and dispose their own PostgreSQL container; they do not use your configured application database. Test counts come from the runner, not hardcoded documentation.
+
+From `src/WebClient`:
+
+```sh
+bun install --frozen-lockfile
+bun run typecheck
+bun run test
+bun audit
 ```
 
-## Testing
+The frontend test command builds the static pages first, then tests native DOM interactions against that generated markup. From `docs`, run `bun install --frozen-lockfile && bun run build`. Check documentation contracts with `python3 scripts/check-docs-drift.py`.
 
-```bash
-dotnet test cpnucleo.slnx                     # Run all tests
-dotnet test tests/Architecture.Tests/           # Architecture rules only
-dotnet test tests/WebApi.Unit.Tests/            # Unit tests only
+## Deployment
+
+Production is a **standalone** Compose configuration:
+
+```sh
+docker compose --env-file .env -f compose.prod.yaml up -d
 ```
 
-| Suite | Framework | Coverage |
-|-------|-----------|----------|
-| Architecture.Tests | xUnit + NetArchTest | Layer deps, naming, sealed entities |
-| Application.Unit.Tests | NUnit + FakeItEasy + Shouldly | Shared Application use cases |
-| Security.Unit.Tests | NUnit + Shouldly | Password hashing and login verification |
-| WebApi.Unit.Tests | NUnit + FakeItEasy + Shouldly | 53 endpoint unit-test cases; local compile cleanup currently needed |
-| WebApi.Integration.Tests | xUnit v3 + FastEndpoints.Testing | Full HTTP CRUD per entity |
+Use `.env.hostinger.example` to configure production secrets, hosts and immutable image tags. Do not layer the development/base file into production: Compose preserves published ports during merging.
 
-## CI/CD
+The release pipeline tests the exact amd64 image tags, applies additive database migrations before API startup, deploys through Hostinger, and verifies liveness and database readiness. `/healthz` checks the process; `/readyz` also checks database/schema availability. The legacy `TRIM` flag currently configures ReadyToRun/self-contained publishing, not IL trimming. Native AOT is disabled in the standard release.
 
-**build-check.yml** (pull requests): builds each service, runs architecture tests, performs container health check validation.
+## Repository layout
 
-**main-release.yml** (push to main): builds and runs architecture tests with `TRIM=true` and `EXTRA_OPTIMIZE=true`, pushes amd64/arm64 GHCR images plus immutable `sha-${GITHUB_SHA}` manifests, runs container health checks, deploys immutable amd64 GHCR images to Hostinger Docker Manager.
+```text
+src/Domain                 Domain behavior and ports
+src/Application            Shared use-case pilot
+src/Infrastructure         EF Core, Dapper, migrations, hashing and seed tools
+src/WebApi                 REST
+src/GrpcServer              gRPC handlers
+src/GrpcServer.Contracts    Remote commands/results
+src/IdentityApi             Authentication and refresh
+src/WebClient              Astro and native TypeScript
+tests/                     Five .NET suites; frontend tests live with source
+labs/                      Reproducible learning experiments
+docs/wiki/                 Published learning and technical documentation
+```
 
-## Documentation
+## Contributing and license
 
-See the [Pages documentation](https://jonathanperis.github.io/cpnucleo/docs/) for detailed documentation on architecture, API reference, WebClient CRUD behavior, database setup, testing, and deployment.
-
-## Contributing
-
-Contributing guidelines, security policy, and code of conduct are maintained in the [jonathanperis/.github](https://github.com/jonathanperis/.github) repository and apply to all repositories.
-
-## License
-
-MIT -- see [LICENSE](LICENSE)
+Use a branch and PR; merge through rebase after CI passes. Community guidelines are maintained in [jonathanperis/.github](https://github.com/jonathanperis/.github). Licensed under [MIT](LICENSE).

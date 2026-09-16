@@ -1,4 +1,4 @@
-export type FieldType = 'text' | 'textarea' | 'number' | 'date' | 'datetime-local' | 'guid';
+export type FieldType = 'text' | 'textarea' | 'number' | 'date' | 'datetime-local' | 'guid' | 'password';
 
 export type ResourceKey =
   | 'organizations'
@@ -18,6 +18,7 @@ export interface FieldMetadata {
   label: string;
   type: FieldType;
   required?: boolean;
+  requiredOnCreate?: boolean;
   table?: boolean;
   relation?: ResourceKey;
   readOnly?: boolean;

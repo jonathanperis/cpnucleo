@@ -1,5 +1,25 @@
 var builder = WebApplication.CreateSlimBuilder(args);
 
+if (args.Contains("--seed-lab") || args.Contains("--reset-lab"))
+{
+    if (!builder.Environment.IsDevelopment()) throw new InvalidOperationException("Lab seeding/reset is available only in Development.");
+    await using var database = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+        .UseNpgsql(builder.Configuration["DB_CONNECTION_STRING"]).Options);
+    if (args.Contains("--reset-lab")) await database.Database.EnsureDeletedAsync();
+    await database.Database.MigrateAsync();
+    await LabSeeder.SeedAsync(database, builder.Configuration["Seed:Profile"] ?? "tiny",
+        builder.Configuration["CPNUCLEO_DEMO_PASSWORD"] ?? "LocalLearning@123");
+    return;
+}
+
+if (args.Contains("--migrate-database", StringComparer.OrdinalIgnoreCase))
+{
+    await using var database = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+        .UseNpgsql(builder.Configuration["DB_CONNECTION_STRING"] ?? throw new InvalidOperationException("DB_CONNECTION_STRING is required.")).Options);
+    await database.Database.MigrateAsync();
+    return;
+}
+
 if (args.Contains("--run-fake-data-csv-import", StringComparer.OrdinalIgnoreCase))
 {
     if (builder.Environment.IsProduction() && !builder.Configuration.GetValue<bool>("FakeDataCsvImporter:AllowProduction"))
@@ -25,6 +45,7 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))),
@@ -132,7 +153,7 @@ builder.Services
                 };
                 document.Info.License = new NSwag.OpenApiLicense
                 {
-                    Name = "Proprietary",
+                    Name = "MIT",
                     Url = "https://cpnucleo.jonathanperis.tech"
                 };
                 document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
@@ -151,7 +172,9 @@ app.Use(async (context, next) =>
     context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
     context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
     context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
-    context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+    if (context.Request.Path.StartsWithSegments("/swagger"))
+        context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'");
+    else context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
 
     await next();
 
@@ -163,9 +186,8 @@ app.Use(async (context, next) =>
 
 app.UseCors("CpnucleoWebClient");
 
-app.UseHealthChecks("/healthz");
-
-app.UseInfrastructure();
+app.UseHealthChecks("/healthz", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => false });
+app.UseHealthChecks("/readyz");
 
 app.UseRateLimiter();
 
@@ -181,13 +203,26 @@ app.Use(async (context, next) =>
         return;
     }
 
+    if (context.Request.AcceptsServerSentEvents() && long.TryParse(context.User.FindFirst("exp")?.Value, out var expiresAt))
+    {
+        using var lifetime = CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
+        var remaining = DateTimeOffset.FromUnixTimeSeconds(expiresAt) - DateTimeOffset.UtcNow;
+        lifetime.CancelAfter(remaining > TimeSpan.Zero ? remaining : TimeSpan.Zero);
+        var original = context.RequestAborted;
+        context.RequestAborted = lifetime.Token;
+        try { await next(); }
+        finally { context.RequestAborted = original; }
+        return;
+    }
+
     await next();
 });
 
-app.UseAuthorization()
-    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
-    .UseMiddleware<ElapsedTimeMiddleware>()
-    .UseMiddleware<ErrorHandlingMiddleware>();
+app.UseAuthorization();
+app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseInfrastructure();
+app.UseMiddleware<ElapsedTimeMiddleware>();
+app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
 
 app.MapGet("/", () => "Hello World!");
 

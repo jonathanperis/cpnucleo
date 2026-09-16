@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatFormFieldValue, relationOptionsLoaded, withSelectedRelationOption } from './crud-field-values';
+import { formatFormFieldValue, relationOptionsLoaded, serializeFormValue, withSelectedRelationOption } from './crud-field-values';
 
 describe('CRUD edit form field values', () => {
+  it('sends UTC timestamps and never prefills a password', () => {
+    expect(serializeFormValue('2026-09-16', 'date')).toBe('2026-09-16T00:00:00.000Z');
+    expect(serializeFormValue('2026-09-16T15:30', 'datetime-local')).toBe('2026-09-16T15:30:00.000Z');
+    expect(formatFormFieldValue('must-not-be-rendered', 'password')).toBe('');
+  });
   it('formats existing date and datetime values for browser edit controls', () => {
     expect(formatFormFieldValue('2026-05-29T18:42:31.123Z', 'date')).toBe('2026-05-29');
     expect(formatFormFieldValue('2026-05-29T18:42:31.123Z', 'datetime-local')).toBe('2026-05-29T18:42');

@@ -14,11 +14,11 @@ describe('resource metadata', () => {
     expect(resourceMetadata.every((resource) => resource.routePath.startsWith('/') && resource.routePath.endsWith('/'))).toBe(true);
   });
 
-  it('keeps passwords out of user table/form metadata', () => {
+  it('keeps passwords out of tables and requires them only when creating users', () => {
     const users = resourceMetadata.find((resource) => resource.key === 'users');
     expect(users).toBeDefined();
     expect(tableFields(users!).map((field) => field.name)).toEqual(['createdAt', 'name', 'login']);
-    expect(formFields(users!).some((field) => /password/i.test(field.name))).toBe(false);
+    expect(formFields(users!).find(field => field.name === 'password')).toMatchObject({ type: 'password', requiredOnCreate: true });
   });
 
   it('marks fields required when WebApi update endpoints require them', () => {

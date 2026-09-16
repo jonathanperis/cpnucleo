@@ -19,6 +19,8 @@ public sealed class Appointment : BaseEntity
                                    Guid userId,
                                    Guid id = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(description);
+        if (amountHours <= 0) throw new ArgumentOutOfRangeException(nameof(amountHours), "Hours must be positive.");
         var appointment = new Appointment
         {
             Id = GetNewId(id),
@@ -41,6 +43,8 @@ public sealed class Appointment : BaseEntity
         Guid assignmentId,
         Guid userId)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(description);
+        if (amountHours <= 0) throw new ArgumentOutOfRangeException(nameof(amountHours), "Hours must be positive.");
         obj.Description = description;
         obj.KeepDate = keepDate;
         obj.AmountHours = amountHours;
