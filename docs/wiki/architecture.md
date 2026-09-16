@@ -44,4 +44,4 @@ SSE sends an initial snapshot, responds immediately to local notifications, and 
 
 Production runs behind Traefik and an internal NGINX load balancer. A one-shot migration service precedes API startup. Liveness and database readiness are distinct. Release checks use immutable image tags; secrets remain in deployment configuration.
 
-Read [Learning Lab](learning-lab) for persistence benchmarks, concurrency/rollback proofs, recovery and a disposable outbox experiment. See `docs/adr/0001-learning-baseline.md` for the rationale and explicit limitations.
+Read [Learning Lab](../learning-lab/) for persistence benchmarks, concurrency/rollback proofs, recovery and a disposable outbox experiment. See `docs/adr/0001-learning-baseline.md` for the rationale and explicit limitations.
