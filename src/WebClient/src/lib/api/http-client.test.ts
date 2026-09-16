@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { getStoredToken, lastActivityStorageKey, requestJson, sessionInactivityTimeoutMs, setStoredToken, tokenStorageKey } from './http-client';
+import { clearStoredToken, getStoredToken, lastActivityStorageKey, requestJson, sessionInactivityTimeoutMs, setStoredToken, tokenStorageKey } from './http-client';
 
 const tokenWithPayload = (payload: Record<string, unknown>) => {
   const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
@@ -27,6 +27,20 @@ afterEach(() => {
 });
 
 describe('http client token handling', () => {
+  it('does not resurrect a logged-out session when an in-flight refresh completes', async () => {
+    const issuer = 'https://identity-cpnucleo.jonathanperis.tech';
+    setStoredToken(tokenWithIssuer(issuer, { exp: Math.floor(Date.now() / 1000) + 60 }));
+    let complete!: (response: Response) => void;
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response('{}', { status: 200 }))
+      .mockImplementationOnce(() => new Promise<Response>(resolve => { complete = resolve; }));
+    await requestJson('http://example.test/api');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    clearStoredToken();
+    complete(new Response(JSON.stringify({ token: tokenWithIssuer(issuer, { exp: Math.floor(Date.now() / 1000) + 1800 }) }), { status: 200 }));
+    await new Promise(resolve => setImmediate(resolve));
+    expect(getStoredToken()).toBeNull();
+  });
   it('stores only tokens emitted by IdentityApi', () => {
     setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
     expect(getStoredToken()).toBeTruthy();

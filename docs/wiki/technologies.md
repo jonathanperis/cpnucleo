@@ -73,10 +73,11 @@
 
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Qwik | 1.16.0 | Resumable interactive components for the WebClient |
-| Astro | 5.9.2 | Static routing and production build for the WebClient |
-| Tailwind CSS | 3.4.18 | Utility-first styling and design tokens |
-| Vite | 6.x | Frontend development and production build tooling |
+| Astro | 7.x | Static routes and semantic HTML templates |
+| Native TypeScript | 5.x | Forms, Fetch, SSE, storage and DOM interactions |
+| Tailwind CSS | 3.x | WebClient styling and design tokens (the docs site uses 4.x) |
+| Vite | 8.x | Frontend build tooling |
+| Vitest + jsdom | See lockfile | Unit and generated-markup interaction tests |
 
 ## Testing
 

@@ -1,5 +1,5 @@
 export const SECTION_CATEGORIES = [
-  { label: "", ids: ["home"] },
+  { label: "", ids: ["home", "learning-lab"] },
   { label: "Overview", ids: ["architecture", "api-reference", "webclient-crud", "database"] },
   { label: "Develop", ids: ["getting-started", "project-structure", "technologies", "testing", "deployment"] },
 ] as const;

@@ -1,196 +1,49 @@
 # Testing
 
-Cpnucleo has five test projects covering the architecture rules plus source checks, 4 Application unit-test cases, 11 security unit-test cases, 53 WebApi unit-test cases in source, and 55 integration tests. The active GitHub Actions gates run architecture tests and container health checks; unit/integration suites are kept for local/manual validation.
+## What each suite proves
 
----
+| Suite | Scope |
+|---|---|
+| Architecture.Tests | Explicitly loaded production assemblies, forbidden dependencies, naming and selected source/configuration contracts |
+| Application.Unit.Tests | Shared project creation, pagination boundaries and domain invariants |
+| Security.Unit.Tests | Argon2 hashing, successful token issuance, password rejection, refresh lifetime/account/privilege checks |
+| WebApi.Unit.Tests | Endpoint orchestration and selected failure paths |
+| WebApi.Integration.Tests | Authenticated HTTP CRUD for every resource, serialized gRPC parity, PostgreSQL transactions, login contention, project concurrency and SSE external writes |
 
-## Test Projects Overview
+Run `dotnet test cpnucleo.slnx`. Docker must be available for the integration suite. It provisions its own PostgreSQL container with commit timestamps enabled and applies real migrations. It neither reads nor mutates your application database.
 
-| Project | Framework | Focus | Key Libraries |
-|---------|-----------|-------|--------------|
-| Architecture.Tests | xUnit | Clean Architecture rules | NetArchTest.Rules, FluentAssertions |
-| Application.Unit.Tests | NUnit | Shared Application use cases | FakeItEasy, Shouldly |
-| Security.Unit.Tests | NUnit | Password hashing and login verification | Shouldly |
-| WebApi.Unit.Tests | NUnit | Endpoint unit tests | FakeItEasy, Shouldly, FastEndpoints |
-| WebApi.Integration.Tests | xUnit v3 | 55 endpoint integration tests | FastEndpoints.Testing, Shouldly |
+The CRUD theory performs all five operations in an independent scenario for each resource. It replaces the old order-dependent suite whose later tests relied on previous classes creating records. Test totals are deliberately reported by the runner rather than frozen in this page.
 
----
+## Focused commands
 
-## Architecture Tests (`tests/Architecture.Tests/`)
-
-These tests enforce Clean Architecture dependency rules at build time using NetArchTest and FluentAssertions. They run as part of both the PR build check and the release pipeline.
-
-### Layer Dependency Tests
-
-| Test | Rule |
-|------|------|
-| `Domain_Should_Not_HaveDependencyOnOtherProjects` | Domain has no dependency on Infrastructure, WebApi, IdentityApi, GrpcServer, GrpcServer.Contracts, or WebClient |
-| `Infrastructure_Should_Not_HaveDependencyOnOtherProjects` | Infrastructure has no dependency on WebApi, IdentityApi, GrpcServer, GrpcServer.Contracts, or WebClient |
-| `Infrastructure_Repositories_Should_HaveDependencyOnDomain` | Repository implementations in Infrastructure depend on Domain |
-| `GrpcServerContracts_Should_OnlyDependOnDomain` | GrpcServer.Contracts has no dependency on Infrastructure or presentation layers |
-| `WebApi_Should_NotDependOnGrpcServer` | WebApi does not depend on GrpcServer |
-| `IdentityApi_Should_NotDependOnGrpcServer` | IdentityApi does not depend on GrpcServer |
-
-### Domain Layer Tests
-
-| Test | Rule |
-|------|------|
-| `Domain_Entities_Should_InheritFromBaseEntity` | All non-abstract entities in Domain.Entities inherit from BaseEntity |
-| `Domain_Repositories_Should_BeInterfaces` | All types starting with "I" in Domain.Repositories are interfaces |
-| `Domain_Entities_Should_BeSealed` | All non-abstract entities are sealed |
-
-### Infrastructure Layer Tests
-
-| Test | Rule |
-|------|------|
-| `Infrastructure_Repositories_Should_ImplementDomainInterfaces` | Repository classes implement `IRepository<>` |
-| `Infrastructure_DbContext_Should_BeInCorrectNamespace` | DbContext classes reside in `Infrastructure.Common.Context` |
-
-### Naming Convention Tests
-
-| Test | Rule |
-|------|------|
-| `WebApi_Dtos_Should_HaveDtoSuffix` | DTOs in WebApi.Common.Dtos end with "Dto" |
-| `GrpcServer_Handlers_Should_HaveHandlerSuffix` | Handler classes end with "Handler" |
-| `GrpcServerContracts_Commands_Should_HaveCommandSuffix` | Command classes end with "Command" |
-| `GrpcServerContracts_Dtos_Should_HaveDtoSuffix` | DTOs in GrpcServer.Contracts end with "Dto" |
-| `WebApi_Endpoints_Should_BeNamedEndpoint` | All endpoint classes are named "Endpoint" |
-| `IdentityApi_Endpoints_Should_BeNamedEndpoint` | All IdentityApi endpoint classes are named "Endpoint" |
-
-### Clean Architecture Pattern Tests
-
-| Test | Rule |
-|------|------|
-| `Domain_Should_NotDependOnEntityFramework` | Domain has no dependency on Microsoft.EntityFrameworkCore |
-| `Domain_Should_NotDependOnDapper` | Domain has no dependency on Dapper |
-| `Domain_Should_NotDependOnNpgsql` | Domain has no dependency on Npgsql |
-| `Domain_Models_Should_BeRecordsOrClasses` | Models in Domain.Models are classes or sealed |
-| `Domain_Repositories_Should_StartWithI` | Repository interfaces start with "I" |
-| `Infrastructure_Should_NotContainInterfaces` | Only IApplicationDbContext is an acceptable public interface in Infrastructure |
-| `GrpcServer_Handlers_Should_HaveDependencyOnDomain` | gRPC handlers depend on the Domain layer |
-
----
-
-## Unit Tests (`tests/WebApi.Unit.Tests/`)
-
-Unit tests for WebApi endpoints using NUnit with FakeItEasy for mocking and Shouldly for assertions. The source contains 53 test cases, but the suite is not part of the active CI gate and currently needs cleanup around several `Remove*` request-model references before it compiles end to end.
-
-### Structure
-
-```
-WebApi.Unit.Tests/
-├── Endpoints/
-│   └── ...                    # Tests organized by endpoint
-├── Usings.cs
-└── WebApi.Unit.Tests.csproj
-```
-
-### Key Libraries
-
-| Library | Purpose |
-|---------|---------|
-| NUnit | Test framework |
-| FakeItEasy | Mocking framework |
-| Shouldly | Assertion library |
-| FastEndpoints | Endpoint testing support |
-| coverlet.collector | Code coverage |
-
----
-
-## Integration Tests (`tests/WebApi.Integration.Tests/`)
-
-55 integration tests exercise the FastEndpoints request pipeline with xUnit v3 and shared host fixtures.
-
-### Structure
-
-```
-WebApi.Integration.Tests/
-├── AssemblyInfo.cs
-├── Endpoints/
-│   └── ...                    # Integration tests by endpoint
-├── Hosts/
-│   └── ...                    # Test host/server configuration
-├── Usings.cs
-└── WebApi.Integration.Tests.csproj
-```
-
-### Key Libraries
-
-| Library | Purpose |
-|---------|---------|
-| xUnit v3 | Test framework |
-| FastEndpoints.Testing | In-memory test server for FastEndpoints |
-| Shouldly | Assertion library |
-| Microsoft.NET.Test.Sdk | Test SDK |
-
-### Prerequisites
-
-Integration tests require a database-backed test environment. For manual runs, start PostgreSQL with Docker Compose first:
-
-```bash
-docker compose up db -d --build --force-recreate
-sleep 30
-```
-
-> Integration tests are present in source but are not part of the active GitHub Actions gates; PR and release workflows currently run architecture tests and container health checks.
-
----
-
-## Running Tests
-
-### Run WebClient Tests
-
-```bash
-cd src/WebClient
-bun test
-bun run typecheck
-bun run build
-```
-
-The WebClient Vitest suite covers generated CRUD behaviors including edit-field date normalization, controlled relation selects, fallback selected relation options, readable relation labels, merged relation caches, and singular WebApi item response envelopes.
-
-### Run All .NET Tests
-
-```bash
-dotnet test cpnucleo.slnx
-```
-
-### Run Architecture Tests Only
-
-```bash
+```sh
 dotnet test tests/Architecture.Tests/
+dotnet test tests/Security.Unit.Tests/
+dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~PersistenceParityTests
+dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~ConcurrencyAndStreamingTests
 ```
 
-### Run Unit Tests Only
+The SSE scenario may wait one 15-second refresh interval. The gRPC client uses an in-process HTTP/2 test handler, exercising serialization, the gRPC pipeline and authentication without opening a public listener.
 
-```bash
-dotnet test tests/WebApi.Unit.Tests/
+## WebClient Vitest suite
+
+From `src/WebClient`:
+
+```sh
+bun install --frozen-lockfile
+bun run typecheck
+bun run test
+bun audit
 ```
 
-### Run Integration Tests (requires running database)
+`bun run test` builds Astro, then runs API/session utility tests and jsdom interaction tests against the generated HTML. The tests exercise native form events, password requirements, safe text rendering, stale-page cancellation, relation search/paging and all home counters. They are DOM unit/contract tests, not a real-browser accessibility or rendering certification.
 
-```bash
-# Start the database first
-docker compose up db -d
-sleep 30
+## CI and interpretation
 
-# Run integration tests
-dotnet test tests/WebApi.Integration.Tests/
-```
+PR and release workflows run the backend behavioral suites and frontend tests. PRs also build/audit documentation. Release container checks use the exact immutable amd64 images and database readiness. CodeQL analyzes C# and JavaScript/TypeScript.
 
-### Run with Code Coverage
+Architecture rules explicitly reference their target assemblies: an unloaded assembly no longer produces a successful no-op. Source checks verify configuration structure but do not replace runtime proofs. The architecture-only Codecov upload should not be interpreted as whole-application behavioral coverage.
 
-```bash
-dotnet test --collect:"XPlat Code Coverage"
-```
+User/workflow creation is covered by the PostgreSQL CRUD theory. The two never-executed `DbSet.Any()` mock tests were retired in favor of those real database proofs; the baseline has no skipped test placeholders.
 
----
-
-## CI Pipeline Test Execution
-
-Architecture tests run automatically in both CI workflows:
-
-- **build-check.yml** (PR): runs architecture tests for each service (WebApi, GrpcServer, IdentityApi, WebClient)
-- **main-release.yml** (push to main): runs architecture tests before building Docker images
-
-Unit and integration test projects remain available for local/manual runs; the active GitHub Actions gates run architecture tests and container health checks. Latest source audit: `Architecture.Tests` contains 56 test cases including the original 27 architecture-rule tests, `Application.Unit.Tests` contains 4, `Security.Unit.Tests` contains 11, and `WebApi.Unit.Tests` contains 53 test cases with known compile drift around removed `Remove*.Request` model types.
+Use [Learning Lab](learning-lab) to intentionally break a transaction, concurrency check, domain rule or dependency boundary, observe a failing test, and restore the implementation.

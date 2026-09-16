@@ -1,10 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserByIdHandler> logger) : ICommandHandler<GetUserByIdCommand, GetUserByIdResult>
+public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserByIdHandler> logger, IHttpContextAccessor context) : ICommandHandler<GetUserByIdCommand, GetUserByIdResult>
 {
     public async Task<GetUserByIdResult> ExecuteAsync(GetUserByIdCommand command, CancellationToken cancellationToken)
     {
+        Common.Security.UserAdministration.RequireAdmin(context);
         logger.LogInformation("Service started processing request.");
 
         logger.LogInformation("Fetching user entity with Id: {UserId}", command.Id);

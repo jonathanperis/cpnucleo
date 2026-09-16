@@ -32,7 +32,15 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Domain.Entities.Project.Update(item, request.Name, request.OrganizationId);
 
         Logger.LogInformation("Updating entity in repository.");
-        Response.Success = await repository.UpdateAsync(item);
+        Response.Success = request.ExpectedVersion is { } version
+            ? await repository.UpdateIfVersionAsync(item, version, cancellationToken)
+            : await repository.UpdateAsync(item);
+        if (!Response.Success && request.ExpectedVersion is not null)
+        {
+            Response.Message = "The project changed. Reload before saving your changes.";
+            await Send.ResponseAsync(Response, StatusCodes.Status409Conflict, cancellationToken);
+            return;
+        }
 
         Logger.LogInformation("Update result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");

@@ -1,1 +1,1 @@
-[assembly: EnableAdvancedTesting]
+[assembly: CaptureConsole]

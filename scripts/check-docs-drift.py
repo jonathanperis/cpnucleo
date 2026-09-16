@@ -1,143 +1,68 @@
 #!/usr/bin/env python3
-"""Source-backed documentation drift checks for README and wiki facts."""
-from __future__ import annotations
-
+"""Check current public documentation contracts without freezing test-case totals."""
+import json
 import re
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def read(path: str) -> str:
+def read(path):
     return (ROOT / path).read_text(encoding="utf-8")
 
 
-def fail(message: str) -> None:
-    print(f"docs drift: {message}", file=sys.stderr)
-    sys.exit(1)
+def require(condition, message):
+    if not condition:
+        raise SystemExit(f"docs drift: {message}")
 
 
-def assert_contains(path: str, needle: str) -> None:
-    if needle not in read(path):
-        fail(f"{path} is missing expected text: {needle!r}")
+def main():
+    readme = read("README.md")
+    major = json.loads(read("global.json"))["sdk"]["version"].split(".")[0]
+    require(f".NET {major}" in readme, "README runtime differs from global.json")
+    counts = (
+        len(list((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs"))),
+        len(list((ROOT / "src/GrpcServer/Handlers").glob("**/*Handler.cs"))),
+        len(list((ROOT / "src/GrpcServer.Contracts/Commands").glob("**/*Command.cs"))),
+    )
+    require(counts[0] > 0 and len(set(counts)) == 1, f"transport resource counts differ: {counts}")
+    require(f"Both transports expose {counts[0]} CRUD operations" in readme, "README endpoint count is stale")
+    require("Five test projects" in readme, "README should identify the test-suite map")
+    require(len(list((ROOT / "tests").glob("*/*.csproj"))) == 5, "update the documented test-project map")
 
+    package = json.loads(read("src/WebClient/package.json"))
+    dependencies = {**package.get("dependencies", {}), **package.get("devDependencies", {})}
+    require("astro" in dependencies, "the documented Astro frontend is missing")
+    require(not any("qwik" in name for name in dependencies), "the native Astro baseline must not reintroduce its removed rendering runtime")
 
-def assert_absent(path: str, needle: str) -> None:
-    if needle in read(path):
-        fail(f"{path} still contains stale text: {needle!r}")
-
-
-def require_text(source_name: str, text: str, needle: str, *, present: bool = True) -> None:
-    found = needle in text
-    if present and not found:
-        fail(f"{source_name} is missing expected text: {needle!r}")
-    if not present and found:
-        fail(f"{source_name} still contains stale text: {needle!r}")
-
-
-def count_attrs(path: str, pattern: str) -> int:
-    total = 0
-    for file in (ROOT / path).rglob("*.cs"):
-        total += len(re.findall(pattern, file.read_text(encoding="utf-8")))
-    return total
-
-
-def main() -> None:
-    global_json = read("global.json")
-    require_text("global_json", global_json, '"version": "10.0.102"')
-
-    compose = read("compose.yaml")
-    require_text("compose", compose, "image: postgres:16.7")
-    require_text("compose", compose, '"5300:5020"')
-    require_text("compose", compose, '"5301:5021"')
-    require_text("compose", compose, "image: ghcr.io/jonathanperis/cpnucleo-web-api:latest")
-
-    grpc_program = read("src/GrpcServer/Program.cs")
-    require_text("grpc_program", grpc_program, "ListenAnyIP(5020")
-    require_text("grpc_program", grpc_program, "HttpProtocols.Http2")
-    require_text("grpc_program", grpc_program, "ListenAnyIP(5021")
-    require_text("grpc_program", grpc_program, "HttpProtocols.Http1")
-
-    main_release = read(".github/workflows/main-release.yml")
-    require_text("main_release", main_release, "${{ matrix.image }}:sha-${{ github.sha }}-amd64")
-    require_text("main_release", main_release, "${{ matrix.image }}:sha-${{ github.sha }}-arm64")
-    require_text("main_release", main_release, "--tag ${{ matrix.image }}:sha-${{ github.sha }}")
-    require_text("main_release", main_release, "Deploy to Hostinger Docker Manager")
-    require_text("main_release", main_release, "HOSTINGER_API_TOKEN")
-
-    legacy_cloud_terms = [
-        "A" + "zure",
-        "OI" + "DC",
-        "az" + "ure" + "-credential",
-        "AZ" + "URE_",
-        "az" + "ure" + "/login",
-        "az" + "ure" + "/arm-deploy",
-        "az" + "ure" + "/webapps-deploy",
-        "deploy_" + "az" + "ure",
-    ]
-    for source_name, text in (
-        ("main_release", main_release),
-        ("deployment_docs", read("docs/wiki/deployment.md")),
-    ):
-        for needle in legacy_cloud_terms:
-            require_text(source_name, text, needle, present=False)
-
-    deploy = read(".github/workflows/deploy.yml")
-    require_text("deploy", deploy, "pages-docs-deploy.yml@")
-
-    wiki_files = sorted((ROOT / "docs/wiki").glob("*.md"))
-    slugs = {p.stem for p in wiki_files}
     sidebar = read("docs/src/lib/sidebar.config.ts")
-    sidebar_slugs = set(re.findall(r'"([a-z0-9-]+)"', sidebar))
-    docs_page = read("docs/src/pages/docs/[...slug].astro")
-    required_markers = ["const SLUG_LABEL", "const DOC_SUMMARIES", "const globResult"]
-    for marker in required_markers:
-        if marker not in docs_page:
-            fail(f"docs/src/pages/docs/[...slug].astro is missing expected marker: {marker}")
-    label_block = docs_page.split("const SLUG_LABEL", 1)[1].split("const DOC_SUMMARIES", 1)[0]
-    summary_block = docs_page.split("const DOC_SUMMARIES", 1)[1].split("const globResult", 1)[0]
-    label_slugs = set(re.findall(r"(?:^|\n)\s*'?([a-z0-9-]+)'?:\s*'[^']+',?", label_block))
-    summary_slugs = set(re.findall(r"(?:^|\n)\s*'?([a-z0-9-]+)'?:\s*'[^']+',?", summary_block))
-    for slug in slugs:
-        if slug not in sidebar_slugs:
-            fail(f"docs/wiki/{slug}.md is not represented in sidebar config")
-        if slug not in label_slugs:
-            fail(f"docs/wiki/{slug}.md has no sidebar/card label in [...slug].astro")
-        if slug not in summary_slugs:
-            fail(f"docs/wiki/{slug}.md has no search/card summary in [...slug].astro")
+    page = read("docs/src/pages/docs/[...slug].astro")
+    labels = page.split("const SLUG_LABEL", 1)[1].split("const DOC_SUMMARIES", 1)[0]
+    summaries = page.split("const DOC_SUMMARIES", 1)[1].split("const globResult", 1)[0]
+    for path in (ROOT / "docs/wiki").glob("*.md"):
+        slug = path.stem
+        require(f'"{slug}"' in sidebar, f"{slug} is missing from navigation")
+        require(re.search(rf"(?:^|\n)\s*'?{re.escape(slug)}'?:", labels), f"{slug} needs a page label")
+        require(re.search(rf"(?:^|\n)\s*'?{re.escape(slug)}'?:", summaries), f"{slug} needs a page summary")
 
-    arch_tests = count_attrs("tests/Architecture.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    unit_tests = count_attrs("tests/WebApi.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    integration_tests = count_attrs("tests/WebApi.Integration.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    app_tests = count_attrs("tests/Application.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    security_tests = count_attrs("tests/Security.Unit.Tests", r"\[(?:[^\]]*,\s*)?(Fact|Theory|Test)(?:\s*[,\(\]])")
-    if (arch_tests, app_tests, security_tests, unit_tests, integration_tests) != (56, 4, 11, 53, 55):
-        fail(f"unexpected test counts: architecture={arch_tests}, application={app_tests}, security={security_tests}, webapi_unit={unit_tests}, integration={integration_tests}")
+    obsolete = [
+        "docker compose -f compose.yaml -f compose.prod.yaml",
+        "27 architecture tests",
+        "JWT authentication is configured but currently commented out",
+        "known compile drift",
+    ]
+    for path in [ROOT / "README.md", ROOT / "AGENTS.md", *(ROOT / "docs/wiki").glob("*.md")]:
+        content = path.read_text(encoding="utf-8")
+        for text in obsolete:
+            require(text not in content, f"{path.relative_to(ROOT)} contains obsolete guidance: {text}")
 
-    endpoint_count = len(list((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs")))
-    handler_count = len(list((ROOT / "src/GrpcServer/Handlers").glob("**/*Handler.cs")))
-    command_count = len(list((ROOT / "src/GrpcServer.Contracts/Commands").glob("**/*Command.cs")))
-    if (endpoint_count, handler_count, command_count) != (55, 55, 55):
-        fail(f"unexpected endpoint/handler/command counts: {endpoint_count}/{handler_count}/{command_count}")
-
-    assert_contains("README.md", "27 architecture tests")
-    assert_contains("README.md", "Five test projects")
-    assert_contains("README.md", "Pages documentation")
-    assert_absent("README.md", "github.com/jonathanperis/cpnucleo/wiki")
-    assert_absent("docs/wiki/getting-started.md", "http://localhost:5300/healthz")
-    assert_contains("docs/wiki/getting-started.md", "http://localhost:5301/healthz")
-    assert_contains("docs/wiki/api-reference.md", "gRPC transport: `http://localhost:5300` (HTTP/2)")
-    assert_contains("docs/wiki/api-reference.md", "Health check: `http://localhost:5301/healthz` (HTTP/1.1)")
-    assert_contains("docs/wiki/api-reference.md", "resource-key singular envelopes")
-    assert_contains("docs/wiki/webclient-crud.md", "prefilled edit forms")
-    assert_contains("docs/wiki/webclient-crud.md", "readable relation labels")
-    assert_contains("docs/wiki/webclient-crud.md", "singular item response normalization")
-    assert_contains("docs/wiki/testing.md", "55 integration tests")
-    assert_contains("docs/wiki/testing.md", "WebClient Vitest suite")
-    assert_contains("docs/wiki/deployment.md", "Hostinger Docker Manager")
-
-    print("README/wiki drift checks passed")
+    release = read(".github/workflows/main-release.yml")
+    for text in ["sha-${{ github.sha }}-amd64", "sha-${{ github.sha }}-arm64", "Deploy to Hostinger Docker Manager", "scripts/smoke-production.sh"]:
+        require(text in release, f"release contract missing: {text}")
+    require("--migrate-database" in read("compose.prod.yaml"), "production must run additive migrations")
+    require("--run-fake-data-csv-import" not in read("compose.prod.yaml"), "production must not automatically reseed")
+    require("/readyz" in read("scripts/smoke-production.sh"), "deployment must verify database readiness")
+    print(f"Documentation contracts passed: {counts[0]} operations per transport; test totals come from runners.")
 
 
 if __name__ == "__main__":

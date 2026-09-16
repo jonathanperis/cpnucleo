@@ -9,8 +9,8 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
     private static readonly Lazy<PropertyInfo[]> CachedProperties = new(() => 
         typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
     
-    private static readonly Lazy<HashSet<string>> CachedPropertyNames = new(() =>
-        new HashSet<string>(CachedProperties.Value.Select(p => p.Name), StringComparer.OrdinalIgnoreCase));
+    private static readonly Lazy<Dictionary<string, string>> CachedPropertyNames = new(() =>
+        CachedProperties.Value.Where(IsColumnProperty).ToDictionary(p => p.Name, p => p.Name, StringComparer.OrdinalIgnoreCase));
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
@@ -26,21 +26,29 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
     public async Task<PaginatedResult<T?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
+        var ids = pagination.GetIds();
         var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
+        var searchColumns = new[] { "Name", "Description", "Login" }.Where(CachedPropertyNames.Value.ContainsKey).ToArray();
+        var searchClause = pagination.Search is not null && searchColumns.Length > 0
+            ? " AND (" + string.Join(" OR ", searchColumns.Select(column => $"\"{column}\" ILIKE @Search")) + ")"
+            : string.Empty;
 
         var sql = $"""
                    SELECT * FROM "{tableName}" 
-                   WHERE "Active" = true
-                   ORDER BY "{validSortColumn}" {validSortOrder}
+                   WHERE "Active" = true {searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids))
+                   ORDER BY "{validSortColumn}" {validSortOrder}, "Id" ASC
                    OFFSET @Offset LIMIT @PageSize;
                    
-                   SELECT COUNT(*) FROM "{tableName}" WHERE "Active" = true;
+                   SELECT COUNT(*) FROM "{tableName}" WHERE "Active" = true {searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids));
                    """;
 
         var command = new CommandDefinition(sql, new
         {
             pagination.Offset,
-            pagination.PageSize
+            pagination.PageSize,
+            Search = $"%{pagination.Search}%",
+            FilterIds = ids.Length > 0,
+            Ids = ids
         }, transaction, cancellationToken: cancellationToken);
 
         await using var multi = await connection.QueryMultipleAsync(command);
@@ -84,12 +92,25 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
     public async Task<bool> DeleteAsync(Guid id)
     {
         var sql = $"""
-                   DELETE FROM "{tableName}"
-                   WHERE "{PrimaryKey}" = @Id
+                   UPDATE "{tableName}"
+                   SET "Active" = false, "DeletedAt" = now()
+                   WHERE "{PrimaryKey}" = @Id AND "Active" = true
                    """;        
         
         var affectedRows = await connection.ExecuteAsync(sql, new { Id = id }, transaction);
         return affectedRows > 0;
+    }
+
+    public async Task<bool> UpdateIfVersionAsync(T entity, DateTime expectedVersion, CancellationToken cancellationToken = default)
+    {
+        var values = new DynamicParameters(entity);
+        values.Add("ExpectedVersion", expectedVersion);
+        var assignments = GetUpdatePropertyNames().Replace("\"UpdatedAt\" = @UpdatedAt",
+            "\"UpdatedAt\" = GREATEST(@UpdatedAt, COALESCE(\"UpdatedAt\", \"CreatedAt\") + interval '1 microsecond')", StringComparison.Ordinal);
+        return await connection.ExecuteAsync(new CommandDefinition($"""
+            UPDATE "{tableName}" SET {assignments}
+            WHERE "Id" = @Id AND "Active" = true AND COALESCE("UpdatedAt", "CreatedAt") = @ExpectedVersion
+            """, values, transaction, cancellationToken: cancellationToken)) == 1;
     }
 
     public async Task<bool> ExistsAsync(Guid id)
@@ -104,8 +125,8 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
 
     private static string ValidateSortColumn(string? column)
     {
-        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.Contains(column)
-            ? column
+        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.TryGetValue(column, out var canonicalName)
+            ? canonicalName
             : PrimaryKey;
     }
 

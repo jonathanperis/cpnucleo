@@ -6,6 +6,7 @@ public interface IRepository<T> where T : BaseEntity
     Task<PaginatedResult<T?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default);
     Task<Guid> AddAsync(T? entity);
     Task<bool> UpdateAsync(T? entity);
+    Task<bool> UpdateIfVersionAsync(T entity, DateTime expectedVersion, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(Guid id);
     Task<bool> ExistsAsync(Guid id);
 }

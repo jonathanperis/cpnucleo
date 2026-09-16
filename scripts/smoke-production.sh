@@ -42,9 +42,11 @@ CPNUCLEO_GRPC_HEALTH_URL="${CPNUCLEO_GRPC_HEALTH_URL:-https://grpc-cpnucleo.jona
 check_url "WebClient" "${CPNUCLEO_WEB_URL:-}" "200,301,302"
 if [[ -n "${CPNUCLEO_API_URL:-}" ]]; then
   check_url "WebApi health" "${CPNUCLEO_API_URL%/}/healthz" "200"
+  check_url "WebApi readiness" "${CPNUCLEO_API_URL%/}/readyz" "200"
 fi
 if [[ -n "${CPNUCLEO_IDENTITY_URL:-}" ]]; then
   check_url "IdentityApi health" "${CPNUCLEO_IDENTITY_URL%/}/healthz" "200"
+  check_url "IdentityApi readiness" "${CPNUCLEO_IDENTITY_URL%/}/readyz" "200"
 fi
 if [[ -n "${CPNUCLEO_GRPC_HEALTH_URL:-}" ]]; then
   check_url "Grpc health" "${CPNUCLEO_GRPC_HEALTH_URL}" "200"

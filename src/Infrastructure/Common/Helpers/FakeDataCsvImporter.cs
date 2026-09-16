@@ -36,6 +36,7 @@ public static class FakeDataCsvImporter
 
         logger.LogWarning("Starting canonical FakeData CSV import {SeedVersion}; existing demo data will be replaced.", SeedVersion);
         var startedAt = DateTimeOffset.UtcNow;
+        await using var transaction = await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 
         await ResetDatabaseAsync(connection, cancellationToken).ConfigureAwait(false);
 
@@ -74,6 +75,7 @@ public static class FakeDataCsvImporter
         await ImportAssignmentImpedimentsAsync(connection, assignmentIds, impedimentIds, random, logger, cancellationToken).ConfigureAwait(false);
         await ImportAppointmentsAsync(connection, assignmentIds, assignmentOrganizationIds, userIds, userOrganizationIndexMap, random, logger, cancellationToken).ConfigureAwait(false);
         await MarkSeedAppliedAsync(connection, startedAt, cancellationToken).ConfigureAwait(false);
+        await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
 
         logger.LogWarning(
             "Finished canonical FakeData CSV import {SeedVersion}: Organizations={OrganizationCount}, Projects={ProjectCount}, Impediments={ImpedimentCount}, AssignmentTypes={AssignmentTypeCount}, Workflows={WorkflowCount}, Users={UserCount}+demo, UserProjects={UserProjectCount}, Assignments={AssignmentCount}, UserAssignments={UserAssignmentCount}, AssignmentImpediments={AssignmentImpedimentCount}, Appointments={AppointmentCount} in {ElapsedSeconds:n1}s.",
@@ -302,7 +304,7 @@ public static class FakeDataCsvImporter
         for (var i = 0; i < ids.Length; i++)
         {
             var active = true;
-            await writer.WriteLineAsync(Csv(ids[i], faker.Name.FullName(), faker.Internet.UserName(), passwordHash.Hash, passwordHash.Salt, PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
+            await writer.WriteLineAsync(Csv(ids[i], faker.Name.FullName(), $"learner-{i:D6}", passwordHash.Hash, passwordHash.Salt, PastCreatedAt(faker), PastUpdatedAt(faker), active ? null : PastDeletedAt(faker), active)).ConfigureAwait(false);
         }
 
         logger.LogInformation("Imported {Count} users via CSV COPY.", ids.Length);

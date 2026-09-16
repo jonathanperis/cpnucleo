@@ -9,7 +9,7 @@ public sealed class ListAssignmentTypesHandler(IUnitOfWork unitOfWork, ILogger<L
         logger.LogInformation("Fetching all assignmentTypes with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentType>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} assignmentType records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

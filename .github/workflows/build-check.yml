@@ -44,6 +44,12 @@ jobs:
         with:
           bun-version: 1.3.11
 
+      - name: Setup Node
+        if: matrix.service == 'WebClient'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
       - name: Restore Dependencies
         if: matrix.service != 'WebClient'
         working-directory: "./src/${{ matrix.service }}"
@@ -67,16 +73,27 @@ jobs:
       - name: Test WebClient
         if: matrix.service == 'WebClient'
         working-directory: ./src/WebClient
-        run: bun test
+        run: bun run test
 
       - name: Build WebClient
         if: matrix.service == 'WebClient'
         working-directory: ./src/WebClient
         run: bun run build
 
-      # - name: Unit Tests
-      #   working-directory: "./tests/Application.Tests"
-      #   run: dotnet test
+      - name: Backend behavioral and database tests
+        if: matrix.service == 'WebApi'
+        run: dotnet test cpnucleo.slnx --nologo
+
+      - name: Verify isolated learning experiments
+        if: matrix.service == 'WebApi'
+        run: |
+          dotnet run --project labs/OutboxLab -c Release
+          dotnet run --project labs/PersistenceLab -c Release -- --rows 200 --iterations 5
+
+      - name: Audit WebClient dependencies
+        if: matrix.service == 'WebClient'
+        working-directory: ./src/WebClient
+        run: bun audit
 
       - name: Architecture Tests
         if: matrix.service != 'WebClient'
@@ -110,16 +127,16 @@ jobs:
       matrix:
         include:
           - service: WebApi
-            compose_service: webapi1-cpnucleo
+            compose_service: webapi
             port: 5100
           - service: IdentityApi
-            compose_service: identityapi-cpnucleo
+            compose_service: identity
             port: 5200
           - service: GrpcServer
-            compose_service: grpcserver-cpnucleo
+            compose_service: grpc
             port: 5301
           - service: WebClient
-            compose_service: webclient-cpnucleo
+            compose_service: webclient
             port: 5400
 
     steps:
@@ -143,13 +160,15 @@ jobs:
 
       - name: Build and Run Docker Compose for Healthcheck Test
         run: |
-          docker compose up ${{ matrix.compose_service }} -d --build --force-recreate --no-deps
+          docker compose -f compose.lab.yaml --profile full up ${{ matrix.compose_service }} -d --build
           sleep 30
 
       - name: Test Healthcheck Endpoint
         run: |
           for i in {1..20}; do
-            STATUS=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 http://localhost:${{ matrix.port }}/healthz) || STATUS=000
+            ROUTE=readyz
+            if [ "${{ matrix.service }}" = "WebClient" ]; then ROUTE=healthz; fi
+            STATUS=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 http://localhost:${{ matrix.port }}/${ROUTE}) || STATUS=000
             echo "Attempt $i: Status $STATUS"
             if [ "$STATUS" = "200" ]; then
               echo "Healthcheck passed with status $STATUS"
@@ -161,3 +180,32 @@ jobs:
           done
           echo "Healthcheck failed after 20 attempts."
           exit 1
+
+      - name: Exercise local login and persistence
+        if: matrix.service == 'WebApi'
+        run: |
+          docker compose -f compose.lab.yaml up identity -d --build
+          docker compose -f compose.lab.yaml run --rm seed
+          for i in {1..20}; do
+            if curl -fsS http://localhost:5200/readyz >/dev/null; then break; fi
+            sleep 3
+          done
+          node scripts/smoke-lab.mjs
+          bash scripts/lab-restore.sh
+
+  documentation:
+    name: Documentation and dependency audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - run: python3 scripts/check-docs-drift.py
+      - run: bun install --frozen-lockfile && bun audit && bun run build
+        working-directory: docs

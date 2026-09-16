@@ -6,7 +6,7 @@ Cpnucleo uses Docker Compose for containerized deployment and GitHub Actions for
 
 ## Docker Compose Configurations
 
-The project provides three compose configurations that can be layered:
+Use `compose.lab.yaml` for the isolated learning stack, the base/development pair for the load-balanced development example, and `compose.prod.yaml` **alone** for production. Layering the base file into production retains its published ports.
 
 ### Base (`compose.yaml`)
 
@@ -37,13 +37,13 @@ Differences from base:
 - Adds Grafana LGTM OpenTelemetry stack (ports 3000, 4317, 4318)
 - Resource limits: 0.4 CPU, 100MB memory per service
 
-### Production Override (`compose.prod.yaml`)
+### Standalone Production (`compose.prod.yaml`)
 
 ```bash
-docker compose -f compose.yaml -f compose.prod.yaml up -d
+docker compose --env-file .env -f compose.prod.yaml up -d
 ```
 
-Differences from base:
+Production behavior:
 
 - `restart: always` on all services
 - Resource reservations: 0.25 CPU / 256MB per API, 0.50 CPU / 512MB per DB
@@ -62,7 +62,7 @@ Each service has a multi-stage Dockerfile supporting configurable build options:
 | Argument | Description | Dev Value | Prod Value |
 |----------|-------------|-----------|------------|
 | `AOT` | Enable Native AOT compilation | false | false |
-| `TRIM` | Enable assembly trimming with ReadyToRun | false | true |
+| `TRIM` | Legacy name: enable ReadyToRun/self-contained publishing, not IL trimming | false | true |
 | `EXTRA_OPTIMIZE` | Aggressive optimizations (remove symbols, disable debugger, invariant globalization) | false | true |
 | `BUILD_CONFIGURATION` | .NET build configuration | Debug | Release |
 | `ASPNETCORE_ENVIRONMENT` | Runtime environment | Development | Production |

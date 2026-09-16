@@ -30,6 +30,8 @@
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
+    <ProjectReference Include="..\..\src\IdentityApi\IdentityApi.csproj" />
+    <ProjectReference Include="..\..\src\GrpcServer\GrpcServer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -39,6 +39,8 @@ x-common-api-prod: &common-api-prod
   depends_on:
     db:
       condition: service_healthy
+    migrate-cpnucleo:
+      condition: service_completed_successfully
     otel-collector:
       condition: service_started
   env_file:
@@ -61,6 +63,15 @@ x-common-logging: &common-logging
       max-file: "3"
 
 services:
+  migrate-cpnucleo:
+    image: ${CPNUCLEO_WEB_API_IMAGE:?Set CPNUCLEO_WEB_API_IMAGE to an immutable GHCR tag}
+    env_file: [.env]
+    command: ["--migrate-database"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
   otel-lgtm:
     image: grafana/otel-lgtm:0.11.10
     container_name: otel-lgtm-cpnucleo
@@ -418,6 +429,9 @@ configs:
               listen 9999;
 
               location / {
+                  proxy_buffering off;
+                  proxy_read_timeout 60s;
+                  proxy_http_version 1.1;
                   proxy_pass http://api;
                   proxy_set_header Host $$host; # Passes the original host header to the backend
                   proxy_set_header X-Real-IP $$remote_addr; # Passes the original IP address of the client

@@ -33,12 +33,12 @@ public sealed class ListingChangeNotifier
         waiter.TrySetResult(nextVersion);
     }
 
-    public Task<long> WaitForChangeAsync(long observedVersion, CancellationToken cancellationToken)
+    public Task<long> WaitForChangeAsync(long observedVersion, CancellationToken cancellationToken, TimeSpan? timeout = null)
     {
         lock (gate)
         {
             if (version != observedVersion) return Task.FromResult(version);
-            return nextChange.Task.WaitAsync(cancellationToken);
+            return nextChange.Task.WaitAsync(timeout ?? Timeout.InfiniteTimeSpan, cancellationToken);
         }
     }
 

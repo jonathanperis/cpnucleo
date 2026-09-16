@@ -1,0 +1,63 @@
+---
+import { formFields, tableFields } from '../../lib/api/resource-metadata';
+import type { ResourceMetadata } from '../../lib/api/types';
+interface Props { resource: ResourceMetadata }
+const { resource } = Astro.props;
+const fields = formFields(resource);
+---
+<section data-crud={resource.key} class="space-y-6">
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div><p class="text-sm font-medium text-accent">{resource.pluralLabel}</p><h2 class="mt-1 text-3xl font-semibold tracking-tight">Manage {resource.pluralLabel.toLowerCase()}</h2><p class="mt-2 text-sm text-muted">{resource.description}</p></div>
+    <button data-action="create" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-canvas">New {resource.label}</button>
+  </div>
+  <p data-error role="alert" hidden class="rounded-lg border border-danger/25 bg-danger/5 px-4 py-3 text-sm text-danger"></p>
+  <form data-form hidden class="rounded-xl border border-line bg-surface p-5 shadow-soft">
+    <h3 data-form-title class="mb-5 text-lg font-semibold">Create {resource.label}</h3>
+    <div class="grid gap-4 md:grid-cols-2">
+      {fields.map(field => {
+        const id = `${resource.key}-${field.name}`;
+        return <div class={field.type === 'textarea' ? 'md:col-span-2' : ''}>
+          <label for={id} class="mb-1 block text-sm font-medium">{field.label}{field.type === 'datetime-local' ? ' (UTC)' : ''}{field.required ? ' *' : ''}</label>
+          {field.relation ? <select id={id} name={field.name} required={field.required} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm"><option value="">Select {field.label.toLowerCase()}</option></select>
+            : field.type === 'textarea' ? <textarea id={id} name={field.name} required={field.required} rows="3" class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm"></textarea>
+            : <input id={id} name={field.name} required={field.required} type={field.type === 'guid' ? 'text' : field.type} step={field.type === 'number' ? '1' : undefined} min={field.type === 'number' ? '1' : undefined} autocomplete={field.type === 'password' ? 'new-password' : undefined} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" />}
+          {field.relation && <div data-relation={field.relation} class="mt-2 space-y-2">
+            <div class="flex gap-2"><input type="search" data-query aria-label={`Search ${field.label}`} maxlength="128" class="min-w-0 flex-1 rounded-md border border-line bg-raised px-2 py-1 text-sm" /><button type="button" data-action="search" class="rounded-md border border-line px-2 text-sm">Search</button><button type="button" data-action="more" hidden class="rounded-md border border-line px-2 text-sm">More</button></div>
+            <p data-relation-error role="alert" class="text-sm text-danger"></p>
+          </div>}
+        </div>;
+      })}
+    </div>
+    <div class="mt-5 flex justify-end gap-2"><button type="button" data-action="cancel" class="rounded-lg border border-line px-4 py-2 text-sm">Cancel</button><button type="submit" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-canvas">Save</button></div>
+  </form>
+  <div class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
+      <p data-summary class="text-sm text-muted" aria-live="polite">Loading records…</p>
+      <div class="flex flex-wrap items-center gap-3">
+        <label class="text-sm text-muted">Rows <select data-page-size class="rounded-md border border-line bg-raised px-2 py-2 text-sm">{[10,25,50,100].map(size => <option value={size} selected={size === 25}>{size}</option>)}</select></label>
+        <nav data-pagination aria-label="Pagination" class="flex items-center"></nav>
+        <button data-action="refresh" class="rounded-md border border-line px-3 py-2 text-sm">Refresh</button>
+      </div>
+    </div>
+    <p data-empty class="p-6 text-sm text-muted">Loading records…</p>
+    <div class="overflow-x-auto"><table data-table hidden class="min-w-full divide-y divide-line text-sm">
+      <thead class="bg-raised text-left text-xs font-semibold uppercase tracking-wide text-muted"><tr>{tableFields(resource).map(field => <th scope="col" class="px-4 py-3">{field.label}</th>)}<th scope="col" class="px-4 py-3 text-right">Actions</th></tr></thead>
+      <tbody data-records class="divide-y divide-line"></tbody>
+    </table></div>
+  </div>
+  <dialog data-details aria-labelledby={`${resource.key}-details-title`} class="m-auto max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl bg-surface p-6 text-ink shadow-soft backdrop:bg-black/30">
+    <div class="mb-4 flex items-center justify-between"><h3 id={`${resource.key}-details-title`} class="text-lg font-semibold">{resource.label} details</h3><button data-action="close-details" class="rounded-md border border-line px-3 py-2">Close</button></div>
+    <dl data-detail-fields class="divide-y divide-line rounded-lg border border-line"></dl>
+  </dialog>
+</section>
+<script>
+  import { mountCrudPage } from './crud-controller';
+  import { getStoredToken } from '../../lib/api/http-client';
+  for (const root of document.querySelectorAll<HTMLElement>('[data-crud]')) {
+    let stop = () => {};
+    const start = () => { stop(); if (getStoredToken()) stop = mountCrudPage(root); };
+    start();
+    window.addEventListener('pagehide', () => stop());
+    window.addEventListener('pageshow', event => { if (event.persisted) start(); });
+  }
+</script>

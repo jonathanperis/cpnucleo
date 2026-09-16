@@ -34,5 +34,5 @@ public class UpdateUserAssignmentResult
     /// <summary>
     /// Gets or sets a message providing additional information about the result.
     /// </summary>
-    public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
 }

@@ -126,6 +126,7 @@ const refreshStoredToken = async (baseUrl = IDENTITY_API_BASE_URL): Promise<bool
       return false;
     }
 
+    if (sessionStorage.getItem(tokenStorageKey) !== token) return false;
     if (response.status === 401) {
       clearStoredToken();
       redirectToLoginForExpiredSession();
@@ -136,6 +137,7 @@ const refreshStoredToken = async (baseUrl = IDENTITY_API_BASE_URL): Promise<bool
 
     const body = await parseJson(response) as { token?: unknown } | undefined;
     if (typeof body?.token !== 'string') return false;
+    if (getStoredToken() !== token) return false;
     setStoredToken(body.token);
     return true;
   })().finally(() => {
@@ -224,11 +226,14 @@ const errorMessage = (status: number, body: unknown): string => {
     if (typeof candidate.message === 'string') return candidate.message;
     if (typeof candidate.title === 'string') return candidate.title;
     if (typeof candidate.detail === 'string') return candidate.detail;
-    if (candidate.errors) return 'Validation failed. Review the highlighted fields.';
+    if (candidate.errors && typeof candidate.errors === 'object') {
+      return Object.values(candidate.errors).flat().filter(value => typeof value === 'string').join(' ') || 'Validation failed.';
+    }
   }
   const defaults: Record<number, string> = {
     400: 'The request is invalid.',
     401: 'Your session is missing or expired.',
+    403: 'You do not have permission to perform this action.',
     404: 'The requested record was not found.',
     409: 'The record could not be changed because it conflicts with current data.',
     429: 'Too many requests. Please wait and try again.',
@@ -273,6 +278,6 @@ export const requestJson = async <T>(url: string, options: HttpOptions = {}): Pr
     }
     throw new ApiError(response.status, errorMessage(response.status, body), body);
   }
-  refreshTokenIfNeeded();
+  if (token) refreshTokenIfNeeded();
   return body as T;
 };

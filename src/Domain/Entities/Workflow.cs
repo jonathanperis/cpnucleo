@@ -33,11 +33,4 @@ public sealed class Workflow : BaseEntity
         obj.DeletedAt = DateTime.UtcNow;
     }
 
-    public static string GetColumnSize(int columns)
-    {
-        columns = columns == 1 ? 2 : columns;
-
-        var i = 12 / columns;
-        return i.ToString();
-    }
 }

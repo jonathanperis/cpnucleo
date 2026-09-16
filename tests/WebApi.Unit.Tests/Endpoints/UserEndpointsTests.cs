@@ -57,44 +57,6 @@ public class UserEndpointsTests
     }
 
     [Test]
-    [Ignore("EF Core DbSet.Any() extension method cannot be mocked with FakeItEasy. Use integration tests for EF Core-based endpoints.")]
-    public async Task CreateUser_WithValidData_ShouldCreateUser()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        var user = User.Create("New User", "newuser", new PasswordHash("hash-value", string.Empty), userId);
-        
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<User>>();
-        
-        A.CallTo(() => fakeDbContext.Users).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.Any(A<System.Linq.Expressions.Expression<Func<User, bool>>>._)).Returns(false);
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
-
-        var passwordHasher = A.Fake<IPasswordHasher>();
-        A.CallTo(() => passwordHasher.Hash("Password@123")).Returns(new PasswordHash("$argon2id$hash", string.Empty));
-
-        var ep = Factory.Create<WebApi.Endpoints.User.CreateUser.Endpoint>(fakeDbContext, passwordHasher).WithListingServices();
-        var req = new WebApi.Endpoints.User.CreateUser.Request
-        {
-            Id = userId,
-            Name = "New User",
-            Login = "newuser",
-            Password = "Password@123"
-        };
-
-        // Act
-        await ep.HandleAsync(req, default);
-
-        // Assert
-        ep.ValidationFailed.ShouldBeFalse();
-        ep.Response.ShouldNotBeNull();
-        ep.Response.User.ShouldNotBeNull();
-        ep.Response.User.Name.ShouldBe("New User");
-    }
-
-    [Test]
     public async Task UpdateUser_WithValidData_ShouldUpdateUser()
     {
         // Arrange

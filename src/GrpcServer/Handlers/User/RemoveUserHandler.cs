@@ -1,10 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUserHandler> logger) : ICommandHandler<RemoveUserCommand, RemoveUserResult>
+public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUserHandler> logger, IHttpContextAccessor context) : ICommandHandler<RemoveUserCommand, RemoveUserResult>
 {
     public async Task<RemoveUserResult> ExecuteAsync(RemoveUserCommand command, CancellationToken cancellationToken)
     {
+        Common.Security.UserAdministration.RequireAdmin(context);
         logger.LogInformation("Service started processing request.");
 
         try

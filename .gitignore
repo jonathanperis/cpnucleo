@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Task-owned implementation specifications
+.specs/
+
 # Local Hermes agent workspace
 .hermes/
 

@@ -4,6 +4,9 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHealthChecks().AddCheck<DatabaseReadinessCheck>("database", tags: ["ready"]);
+        // Production traffic crosses Traefik and then the internal NGINX proxy.
+        services.Configure<ForwardedHeadersOptions>(options => options.ForwardLimit = 2);
         // EF Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();

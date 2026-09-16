@@ -12,6 +12,17 @@ builder.Services
     .AddAuthenticationJwtBearer(s => s.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))
     .AddAuthorization();
 
+builder.Services.Configure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>("Bearer", options =>
+{
+    options.MapInboundClaims = false;
+    options.TokenValidationParameters.ValidateIssuer = true;
+    options.TokenValidationParameters.ValidIssuer = builder.Configuration["Jwt:Issuer"];
+    options.TokenValidationParameters.ValidateAudience = true;
+    options.TokenValidationParameters.ValidAudience = builder.Configuration["Jwt:Audience"];
+    options.TokenValidationParameters.ValidateLifetime = true;
+    options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CpnucleoWebClient", policy =>
@@ -101,7 +112,7 @@ builder.Services
                 };
                 document.Info.License = new NSwag.OpenApiLicense
                 {
-                    Name = "Proprietary",
+                    Name = "MIT",
                     Url = "https://cpnucleo.jonathanperis.tech"
                 };
                 document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
@@ -121,7 +132,9 @@ app.Use(async (context, next) =>
     context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
     context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
     context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
-    context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+    if (context.Request.Path.StartsWithSegments("/swagger"))
+        context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'");
+    else context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
 
     await next();
 
@@ -133,9 +146,8 @@ app.Use(async (context, next) =>
 
 app.UseCors("CpnucleoWebClient");
 
-app.UseHealthChecks("/healthz");
-
-app.UseInfrastructure();
+app.UseHealthChecks("/healthz", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => false });
+app.UseHealthChecks("/readyz");
 
 app.UseRateLimiter();
 
@@ -154,10 +166,11 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseAuthorization()
-    .UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api")
-        .UseMiddleware<ElapsedTimeMiddleware>()
-        .UseMiddleware<ErrorHandlingMiddleware>();
+app.UseAuthorization();
+app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseInfrastructure();
+app.UseMiddleware<ElapsedTimeMiddleware>();
+app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
 
 app.MapGet("/", () => "Hello World!");
 

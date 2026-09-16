@@ -1,4 +1,5 @@
 using LoginEndpoint = IdentityApi.Endpoints.Login.Endpoint;
+using Microsoft.Extensions.Configuration;
 using LoginRequest = IdentityApi.Endpoints.Login.Request;
 
 namespace Security.Unit.Tests;
@@ -17,10 +18,12 @@ public class LoginEndpointPasswordVerificationTests
         var passwordHasher = A.Fake<IPasswordHasher>();
         A.CallTo(() => passwordHasher.Verify("Password@123", "$argon2id$stored-hash")).Returns(true);
 
-        var endpoint = Factory.Create<LoginEndpoint>(dbContext, passwordHasher);
+        var endpoint = Factory.Create<LoginEndpoint>(dbContext, passwordHasher, TestConfiguration());
 
-        await Should.ThrowAsync<InvalidOperationException>(() =>
-            endpoint.HandleAsync(new LoginRequest { Login = "jane", Password = "Password@123" }, default));
+        await endpoint.HandleAsync(new LoginRequest { Login = "jane", Password = "Password@123" }, default);
+        endpoint.HttpContext.Response.StatusCode.ShouldBe(200);
+        var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().ReadJwtToken(endpoint.Response.Token);
+        token.Subject.ShouldBe(user.Id.ToString());
 
         A.CallTo(() => passwordHasher.Verify("Password@123", "$argon2id$stored-hash")).MustHaveHappenedOnceExactly();
     }
@@ -36,7 +39,7 @@ public class LoginEndpointPasswordVerificationTests
         var passwordHasher = A.Fake<IPasswordHasher>();
         A.CallTo(() => passwordHasher.Verify("WrongPassword@123", "$argon2id$stored-hash")).Returns(false);
 
-        var endpoint = Factory.Create<LoginEndpoint>(dbContext, passwordHasher);
+        var endpoint = Factory.Create<LoginEndpoint>(dbContext, passwordHasher, TestConfiguration());
 
         await endpoint.HandleAsync(new LoginRequest { Login = "jane", Password = "WrongPassword@123" }, default);
 
@@ -51,4 +54,11 @@ public class LoginEndpointPasswordVerificationTests
 
         return new ApplicationDbContext(options);
     }
+
+    internal static Microsoft.Extensions.Configuration.IConfiguration TestConfiguration() =>
+        new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Jwt:SigningKey"] = "unit-test-only-signing-key-at-least-32-characters",
+            ["Jwt:Issuer"] = "unit-tests", ["Jwt:Audience"] = "unit-tests"
+        }).Build();
 }
