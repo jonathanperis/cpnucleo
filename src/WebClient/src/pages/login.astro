@@ -1,7 +1,7 @@
 ---
 import '../global.css';
-import { ThemeToggle } from '../components/theme-toggle';
-import Page from '../routes/login/index';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import LoginForm from '../components/LoginForm.astro';
 ---
 
 <html lang="en" data-theme="dark" style="color-scheme: dark;">
@@ -53,7 +53,7 @@ import Page from '../routes/login/index';
         </section>
 
         <section class="flex items-center justify-center pb-8 lg:pb-0">
-          <Page />
+          <LoginForm />
         </section>
       </div>
     </main>

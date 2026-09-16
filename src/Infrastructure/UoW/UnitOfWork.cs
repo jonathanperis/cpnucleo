@@ -9,7 +9,7 @@ public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork, IDisposable,
 
     public async Task BeginTransactionAsync()
     {
-        await connection.OpenAsync();
+        if (connection.State != System.Data.ConnectionState.Open) await connection.OpenAsync();
         _transaction = await connection.BeginTransactionAsync();
     }
 
@@ -30,10 +30,8 @@ public class UnitOfWork(NpgsqlConnection connection) : IUnitOfWork, IDisposable,
 
     public async Task RollbackAsync(CancellationToken cancellationToken = default)
     {
-        if (_transaction == null)
-            throw new InvalidOperationException("No active transaction. Call BeginTransactionAsync before rolling back.");
-
-        await _transaction.RollbackAsync(cancellationToken);
+        if (_transaction?.Connection is null) return;
+        await _transaction.RollbackAsync(CancellationToken.None);
     }
 
     public void Dispose()

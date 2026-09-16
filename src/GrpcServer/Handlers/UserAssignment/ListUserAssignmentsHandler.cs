@@ -9,7 +9,7 @@ public sealed class ListUserAssignmentsHandler(IUnitOfWork unitOfWork, ILogger<L
         logger.LogInformation("Fetching all userAssignments with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.UserAssignment>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} userAssignment records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

@@ -1,0 +1,19 @@
+<button type="button" data-theme-toggle class="inline-flex items-center gap-2 rounded-full border border-line bg-raised px-3 py-2 text-sm font-semibold text-ink shadow-soft" aria-label="Switch to light mode">Dark</button>
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const update = () => {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    for (const button of buttons) {
+      button.textContent = dark ? 'Dark' : 'Light';
+      button.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} mode`);
+    }
+  };
+  for (const button of buttons) button.addEventListener('click', () => {
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    localStorage.setItem('cpnucleo-theme', theme);
+    update();
+  });
+  update();
+</script>

@@ -29,6 +29,7 @@ public sealed class Assignment : BaseEntity
                                Guid assignmentTypeId,
                                Guid id = default)
     {
+        Validate(name, startDate, endDate, amountHours);
         var assignment = new Assignment
         {
             Id = GetNewId(id),
@@ -59,6 +60,7 @@ public sealed class Assignment : BaseEntity
         Guid userId,
         Guid assignmentTypeId)
     {
+        Validate(name, startDate, endDate, amountHours);
         obj.Name = name;
         obj.Description = description;
         obj.StartDate = startDate;
@@ -69,7 +71,13 @@ public sealed class Assignment : BaseEntity
         obj.UserId = userId;
         obj.AssignmentTypeId = assignmentTypeId;
         obj.UpdatedAt = DateTime.UtcNow;
-        obj.Active = true;
+    }
+
+    private static void Validate(string? name, DateTime startDate, DateTime endDate, int amountHours)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (endDate < startDate) throw new ArgumentException("End date must be on or after start date.");
+        if (amountHours <= 0) throw new ArgumentOutOfRangeException(nameof(amountHours), "Hours must be positive.");
     }
 
     public static void Remove(Assignment obj)

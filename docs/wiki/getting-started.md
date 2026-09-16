@@ -1,139 +1,59 @@
 # Getting Started
 
-## Prerequisites
+## Minimal learning stack
 
-| Tool | Version | Notes |
-|------|---------|-------|
-| .NET SDK | 10.0.102+ | Specified in `global.json` with `latestMinor` roll-forward |
-| Docker | Latest | For running with Docker Compose |
-| Docker Compose | v2+ | Bundled with Docker Desktop |
-| PostgreSQL | 16.7 | Provided via Docker; only needed if running locally without Docker |
+Docker Compose v2 is sufficient to build and start the app:
 
----
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/jonathanperis/cpnucleo.git
-cd cpnucleo
+```sh
+docker compose -f compose.lab.yaml up --build -d
+docker compose -f compose.lab.yaml run --rm seed
 ```
 
----
+Open http://localhost:5400. The local account is `demo@cpnucleo.local` / `LocalLearning@123`. The lab is bound to loopback interfaces and uses disposable example credentials. Production has independently configured credentials and no automatic demo seeding.
 
-## Run with Docker Compose (Recommended)
+The minimal stack contains PostgreSQL, a one-shot migrator, REST, Identity and the Astro frontend. Add `--profile full` for gRPC and `--profile observability` for Grafana LGTM. The full legacy load-balanced topology remains available through `compose.yaml` plus `compose.override.yaml`; copy `.env.example` to `.env` before using it.
 
-### Default Mode (Pre-built Images)
+| Service | Local address |
+|---|---|
+| WebClient | http://localhost:5400 |
+| REST | http://localhost:5100 |
+| Identity | http://localhost:5200 |
+| gRPC | http://localhost:5300 (HTTP/2) |
+| gRPC health | http://localhost:5301/healthz |
+| PostgreSQL | localhost:15432 |
+| Grafana | http://localhost:3000 |
 
-Uses pre-built images from GHCR:
+## Data profiles
 
-```bash
-docker compose up
+The seed command requires an empty database. The default `tiny` profile creates 3 projects and 30 tasks. To replace **disposable local data** with 50 projects and 500 tasks:
+
+```sh
+docker compose -f compose.lab.yaml run --rm seed --reset-lab --Seed:Profile=realistic
 ```
 
-### Development Mode
+`--reset-lab` drops the configured database and is accepted only in Development. Do not point Development configuration at valuable data. The large CSV importer is a separate advanced exercise and remains explicitly opt-in.
 
-Builds from source with debug configuration and includes an OpenTelemetry/Grafana LGTM stack for observability:
+## Source development
 
-```bash
-docker compose -f compose.yaml -f compose.override.yaml up --build
-```
+Install .NET 10 SDK (see `global.json`), Node.js 22.14+ and Bun 1.3.11+. Set `DB_CONNECTION_STRING`, a development `Jwt__SigningKey`, and matching CORS origins in the service environment or .NET user secrets. `dotnet run` does not automatically import the repository dotenv file.
 
-### Production Mode
-
-Uses image variables, Traefik labels, resource reservations, restart policies, and structured JSON logging for production hosts:
-
-```bash
-docker compose -f compose.yaml -f compose.prod.yaml up -d
-```
-
-### Services and Ports
-
-Once running, the services are available at:
-
-| Service | URL | Description |
-|---------|-----|-------------|
-| WebApi (instance 1) | http://localhost:5100 | REST API |
-| WebApi (instance 2) | http://localhost:5111 | REST API (load-balanced pair) |
-| IdentityApi | http://localhost:5200 | JWT Authentication API |
-| GrpcServer | http://localhost:5300 (gRPC) / http://localhost:5301 (health) | gRPC command server |
-| WebClient | http://localhost:5400 | Qwik + Tailwind UI |
-| NGINX | http://localhost:9999 | Reverse proxy (load balances WebApi) |
-| PostgreSQL | localhost:5432 | Database |
-| Grafana (dev only) | http://localhost:3000 | Observability dashboard |
-| OTLP Collector (dev only) | localhost:4317 (gRPC) / :4318 (HTTP) | OpenTelemetry collector |
-
-### Health Checks
-
-All services expose a health endpoint:
-
-```bash
-curl http://localhost:5100/healthz   # WebApi
-curl http://localhost:5200/healthz   # IdentityApi
-curl http://localhost:5301/healthz   # GrpcServer (HTTP/1 health port)
-curl http://localhost:5400/healthz   # WebClient
-```
-
----
-
-## Run Locally (Without Docker)
-
-### 1. Start PostgreSQL
-
-Ensure PostgreSQL 16+ is running locally. Execute the init scripts to set up the schema:
-
-```bash
-psql -U postgres -f docker-entrypoint-initdb.d/001-track-commit-timestamp.sql
-psql -U postgres -d cpnucleo -f docker-entrypoint-initdb.d/002-database-dump-ddl.sql
-```
-
-### 2. Configure Environment
-
-The project uses environment variables loaded from the `.env` file. For local development, update the connection string to point to localhost:
-
-```env
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=cpnucleo
-DB_CONNECTION_STRING=Host=localhost;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true
-OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
-OTEL_METRIC_EXPORT_INTERVAL=5000
-```
-
-### 3. Build the Solution
-
-```bash
+```sh
 dotnet build cpnucleo.slnx
+dotnet run --project src/WebApi
 ```
 
-### 4. Run the Services
+Run the other services in separate terminals. From `src/WebClient`, use `bun install --frozen-lockfile` and `bun run dev`. Browser service URLs default to localhost; deployment supplies explicit public build-time URLs.
 
-Each service must be run in a separate terminal:
+## Readiness and tests
 
-```bash
-# Terminal 1 - REST API
-cd src/WebApi && dotnet run
-
-# Terminal 2 - Identity/Auth API
-cd src/IdentityApi && dotnet run
-
-# Terminal 3 - gRPC Server
-cd src/GrpcServer && dotnet run
-
-# Terminal 4 - Qwik Web Client (requires Node.js 22+)
-cd src/WebClient && bun install && bun run dev
+```sh
+curl --fail http://localhost:5100/healthz
+curl --fail http://localhost:5100/readyz
+dotnet test cpnucleo.slnx
 ```
 
----
+The database integration suite provisions a separate Testcontainers PostgreSQL instance. Continue with [Learning Lab](learning-lab) for guided exercises.
 
-## Swagger UI
+## Production
 
-When running in Development mode, Swagger UI is available for interactive API exploration:
-
-- **WebApi**: http://localhost:5100/swagger
-- **IdentityApi**: http://localhost:5200/swagger
-
----
-
-## Generate Fake Data
-
-Set `CreateFakeData=true` in the application configuration to generate CSV/SQL dump files using Bogus. The generated files should be placed in `docker-entrypoint-initdb.d/` for automatic database seeding on container startup.
+Use `compose.prod.yaml` alone with the variables documented in `.env.hostinger.example`. See [Deployment](deployment). Do not combine production with development files.

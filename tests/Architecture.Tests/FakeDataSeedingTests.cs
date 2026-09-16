@@ -5,10 +5,10 @@ public class FakeDataSeedingTests
     [Fact]
     public void FakeDataSeed_ShouldNotExposeDemoCredentialsOnLoginPage()
     {
-        var loginForm = File.ReadAllText(GetRepositoryPath("src/WebClient/src/routes/login/login-form.ts"));
-        var loginPage = File.ReadAllText(GetRepositoryPath("src/WebClient/src/routes/login/index.tsx"));
+        var loginForm = File.ReadAllText(GetRepositoryPath("src/WebClient/src/components/LoginForm.astro"));
+        var loginPage = File.ReadAllText(GetRepositoryPath("src/WebClient/src/pages/login.astro"));
 
-        loginForm.Should().Contain("DEFAULT_LOGIN = ''");
+        loginForm.Should().NotContain("value=", "credentials must not be prefilled");
         loginForm.Should().NotContain("demo@cpnucleo.local");
         loginForm.Should().NotContain("DEMO_PASSWORD");
         loginPage.Should().NotContain("demo@cpnucleo.local");

@@ -1,193 +1,47 @@
 # Architecture
 
-Cpnucleo follows Clean Architecture principles with strict layer separation enforced by 27 automated architecture tests (NetArchTest). The system implements a CQRS-like dual strategy where the REST API and gRPC server use different data access technologies against the same PostgreSQL database, with migrated use cases shared through feature-oriented Application slices.
+## Purpose and boundaries
 
----
+This is a learning laboratory with a shared PostgreSQL model and alternative implementations. Domain and Application define behavior/ports; Infrastructure implements persistence and hashing; transport hosts compose them. Architecture tests check each forbidden project dependency using explicitly loaded assemblies.
 
-## Layer Overview
-
-```
-+-------------------------------------------------------------+
-|                    Presentation Layer                         |
-|  WebApi (REST)  |  GrpcServer (gRPC)  |  IdentityApi (Auth) |
-|                 |                      |  WebClient (Qwik)    |
-+-------------------------------------------------------------+
-|                 Application Layer                         |
-|  Feature Slices / Use Cases (pilot: Projects/Create)      |
-+-------------------------------------------------------------+
-|                   Infrastructure Layer                        |
-|  EF Core (ApplicationDbContext)  |  Dapper (UnitOfWork)      |
-|  NpgsqlConnection  |  Mappings  |  Migrations                |
-+-------------------------------------------------------------+
-|                     Domain Layer                              |
-|  Entities  |  Repositories (Interfaces)  |  UoW (Interface)  |
-|  Models  |  Common (Security)                                 |
-+-------------------------------------------------------------+
+```text
+Astro + native TypeScript ──HTTP── WebApi       IdentityApi
+                                REST           JWT/Argon2id
+gRPC clients ────────────────── GrpcServer
+                                   │
+                        Application use-case pilot
+                                   │
+                   Infrastructure: EF Core / Dapper
+                                   │
+                         Domain ports/entities
+                                   │
+                              PostgreSQL
 ```
 
----
+The diagram shows the request path, not dependency direction: Domain does not depend on Infrastructure or PostgreSQL. WebApi and GrpcServer are independent projects; they share Domain, Application and Infrastructure contracts instead of referencing one another.
 
-## Domain Layer (`src/Domain`)
+## Persistence comparisons
 
-The innermost layer with zero external dependencies. Architecture tests verify that Domain does not depend on EF Core, Dapper, Npgsql, or any presentation project.
+REST intentionally demonstrates three approaches: EF Core, an explicit project repository, and a generic Dapper repository with Unit of Work. gRPC uses Dapper. Project creation is the shared Application-layer pilot, so a REST/gRPC comparison does not require duplicating its business rules.
 
-### Entities
+Normal removal is soft deletion. Relationships remain stored; deleting a parent does not implicitly archive every child. Project batches use one transaction. Version-aware project updates compare the observed timestamp in SQL and reject stale writes; older unversioned clients retain last-write-wins behavior.
 
-All entities inherit from `BaseEntity`, which provides:
+Entities remain a pragmatic CRUD-oriented model. Selected factories/updates enforce real invariants, including assignment date ordering and positive hours. A factory method alone is not evidence of a complete DDD aggregate design.
 
-```csharp
-public abstract class BaseEntity
-{
-    public Guid Id { get; protected init; }
-    public DateTime CreatedAt { get; protected init; }
-    public DateTime? UpdatedAt { get; protected set; }
-    public DateTime? DeletedAt { get; protected set; }
-    public bool Active { get; protected set; }
-}
-```
+## Security
 
-Each entity is `sealed` and uses static factory methods for creation, updates, and soft deletes:
+IdentityApi issues subject-bearing JWTs and uses Argon2id password hashes. WebApi/gRPC validate signature, issuer, audience and expiry. User administration requires explicit admin privileges. Refresh checks the active account, recalculates privileges and retains the original eight-hour session limit.
 
-- `Create(...)` -- initializes a new entity with `Active = true`
-- `Update(...)` -- modifies fields and sets `UpdatedAt`
-- `Remove(...)` -- sets `Active = false` and `DeletedAt` (soft delete)
+New or changed active logins are checked transactionally using normalized login keys in PostgreSQL. Legacy ambiguous accounts are preserved but cannot authenticate ambiguously. The baseline uses a shared workspace; tenant context types and informational claims do not establish data isolation.
 
-Entities are annotated with `[Table("...")]` for Dapper's advanced repository to resolve table names.
+## Browser and real-time behavior
 
-### Domain Entities
+Astro emits static HTML; native TypeScript controls forms, Fetch, pagination, relations, dialogs, session storage and themes. API data is inserted as text. The frontend framework migration preserves route paths and API contracts while removing the extra rendering runtime and integration patch.
 
-| Entity | Key Fields | Relationships |
-|--------|-----------|---------------|
-| Organization | Name, Description | Parent of Projects |
-| Project | Name | Belongs to Organization |
-| Assignment | Name, Description, StartDate, EndDate, AmountHours | Belongs to Project, Workflow, User, AssignmentType |
-| AssignmentType | Name | Referenced by Assignments |
-| Workflow | Name, Order | Referenced by Assignments |
-| User | Name, Login, Password, Salt | Argon2id PHC password hash in Password; Salt is obsolete/empty for new rows |
-| Appointment | Description, KeepDate, AmountHours | Belongs to Assignment, User |
-| Impediment | Name | Referenced by AssignmentImpediments |
-| AssignmentImpediment | Description | Links Assignment to Impediment |
-| UserAssignment | -- | Many-to-many: User to Assignment |
-| UserProject | -- | Many-to-many: User to Project |
+SSE sends an initial snapshot, responds immediately to local notifications, and refreshes every 15 seconds for writes from another process or gRPC. This is bounded convergence, not a durable event bus. Streams end when their access token expires; the client reconnects with its current session.
 
-### Repository Interfaces
+## Delivery and learning extensions
 
-- `IRepository<T>` -- generic CRUD: `GetByIdAsync`, `GetAllAsync` (paginated), `AddAsync`, `UpdateAsync`, `DeleteAsync`, `ExistsAsync`
-- `IProjectRepository` -- specialized repository for Project-specific queries
-- `IUnitOfWork` -- transaction management: `BeginTransactionAsync`, `CommitAsync`, `RollbackAsync`, `GetRepository<T>`
+Production runs behind Traefik and an internal NGINX load balancer. A one-shot migration service precedes API startup. Liveness and database readiness are distinct. Release checks use immutable image tags; secrets remain in deployment configuration.
 
----
-
-## Application Layer (`src/Application`)
-
-Application contains feature-oriented use cases shared by the REST and gRPC adapters. New migrations should move orchestration, validation that is not transport-specific, and persistence-facing ports into the relevant feature slice while keeping domain invariants in `Domain`.
-
-Current pilot slice:
-
-- `Features/Projects/CreateProject` contains the shared create-project handler and `IProjectCreateStore` port.
-- `WebApi.Endpoints.Project.CreateProject.Endpoint` and `GrpcServer.Handlers.Project.CreateProjectHandler` are thin adapters over the shared handler.
-- Infrastructure implements the port while preserving the existing EF Core + Dapper project choices.
-
----
-
-## Infrastructure Layer (`src/Infrastructure`)
-
-Implements data access with two strategies side by side:
-
-### EF Core (used by WebApi and IdentityApi)
-
-- `ApplicationDbContext` with `IApplicationDbContext` interface
-- DbSet properties for all entities
-- Migrations generated from EF Core, applied via SQL init scripts in Docker
-- Delta middleware for HTTP conditional requests based on database timestamps
-
-### Dapper (used by GrpcServer)
-
-- `DapperRepository<T>` -- generic repository using raw SQL with reflection-based column mapping
-- Caches `PropertyInfo[]` via `Lazy<>` for performance
-- Supports paginated queries with configurable sort column/order and SQL injection protection
-- `UnitOfWork` wraps `NpgsqlConnection` + `NpgsqlTransaction` for transactional operations
-- `Dapper.AOT` enabled for compile-time SQL interception
-
-### Dependency Injection
-
-`DependencyInjection.AddInfrastructure()` registers:
-
-- `IApplicationDbContext` as `ApplicationDbContext` (EF Core, scoped)
-- `NpgsqlConnection` (Dapper basic, scoped)
-- `IProjectRepository` as `ProjectRepository` (Dapper specialized, scoped)
-- `IUnitOfWork` as `UnitOfWork` (Dapper advanced with transactions, scoped)
-- `IProjectCreateStore` as `ProjectCreateStore` (Application port implemented with Dapper UnitOfWork, scoped)
-- Optional fake data generation via Bogus when `CreateFakeData` is configured
-
----
-
-## Presentation Layer
-
-### WebApi (`src/WebApi`)
-
-- FastEndpoints for REST API with Swagger/OpenAPI documentation
-- Uses EF Core via `IApplicationDbContext` for data access
-- Rate limiting: 50 requests/minute per IP with fixed-window partitioning
-- Middleware: `ElapsedTimeMiddleware`, `ErrorHandlingMiddleware`
-- Riok.Mapperly for compile-time DTO mapping
-
-### GrpcServer (`src/GrpcServer`)
-
-- FastEndpoints.Messaging.Remote for gRPC-style command/handler pattern
-- Uses Dapper via `IUnitOfWork` for data access
-- HTTP/2 on port 5020 for gRPC transport, with HTTP/1 health checks on port 5021
-- Command/Result pattern via `GrpcServer.Contracts`
-- All 11 entities have 5 handlers each: Create, GetById, List, Remove, Update (55 handlers total)
-
-### IdentityApi (`src/IdentityApi`)
-
-- JWT token generation via `FastEndpoints.Security`
-- Login endpoint authenticating against User credentials in the database
-- Output caching with 10-second base policy
-- Rate limiting: 10 requests/minute per IP
-- Swagger/OpenAPI documentation
-
-### WebClient (`src/WebClient`)
-
-- Astro static routing with Qwik interactive islands
-- Tailwind CSS with Catalyst-inspired product UI patterns implemented as resumable Qwik components
-- Static container runtime served by NGINX on port 5030
-- IdentityApi-backed login and bearer-token authorization for protected pages
-- Metadata-driven CRUD screens for all WebApi resources, with generated list/form fields, pagination, details panels, create/edit/delete actions, and relation-aware selects
-- Relation fields resolve readable labels from prefetched relation pages plus on-demand lookups for visible rows; fetched records are merged so off-page relation labels survive later prefetches
-- Edit forms prefill selected records, normalize date/datetime values for native inputs, and preserve selected relation IDs even when the related record is outside the prefetched option page
-
----
-
-## CQRS Dual Implementation
-
-The system demonstrates two parallel approaches to the same domain:
-
-| Aspect | WebApi (REST) | GrpcServer (gRPC) |
-|--------|--------------|-------------------|
-| Framework | FastEndpoints | FastEndpoints.Messaging.Remote |
-| Data Access | EF Core + ApplicationDbContext | Dapper + UnitOfWork |
-| Transport | HTTP/1.1 REST | HTTP/2 gRPC |
-| Internal Port | 5000 | 5020 (HTTP/2 gRPC) + 5021 (HTTP/1 health) |
-| Load Balanced | Yes (NGINX, 2 instances) | No |
-
-Both implementations share the same Domain entities and PostgreSQL database. Migrated slices also share Application use-case handlers so transport adapters stay thin while REST and gRPC remain separate public APIs.
-
----
-
-## Dependency Rules (Enforced by Architecture Tests)
-
-- Domain depends on nothing (no EF Core, no Dapper, no Npgsql)
-- Application depends on Domain only, plus minimal framework abstractions
-- Infrastructure depends on Application and Domain
-- GrpcServer.Contracts depends only on Domain
-- WebApi does not depend on GrpcServer
-- GrpcServer does not depend on WebApi
-- IdentityApi does not depend on GrpcServer
-- All entities must inherit from `BaseEntity` and be `sealed`
-- All repository interfaces must start with `I`
-- All endpoints must be named `Endpoint`
-- All gRPC handlers must end with `Handler`
-- All commands must end with `Command`
-- All DTOs must end with `Dto`
+Read [Learning Lab](learning-lab) for persistence benchmarks, concurrency/rollback proofs, recovery and a disposable outbox experiment. See `docs/adr/0001-learning-baseline.md` for the rationale and explicit limitations.

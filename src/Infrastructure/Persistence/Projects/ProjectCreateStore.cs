@@ -18,12 +18,11 @@ public sealed class ProjectCreateStore(IUnitOfWork unitOfWork) : IProjectCreateS
             transactionStarted = true;
 
             var repository = unitOfWork.GetRepository<Project>();
-            var createdId = await repository.AddAsync(project).ConfigureAwait(false);
+            await repository.AddAsync(project).ConfigureAwait(false);
             await unitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
             transactionStarted = false;
 
-            var createdItem = await repository.GetByIdAsync(createdId).ConfigureAwait(false);
-            return createdItem ?? throw new InvalidOperationException($"Project {createdId} was not found after creation.");
+            return project;
         }
         catch
         {

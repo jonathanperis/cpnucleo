@@ -61,6 +61,7 @@ export const resourceMetadata = [
   resource('users', 'Team member', 'Team members', 'user', '/users/', 'People who can own projects, tasks, and calendar items.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
     { name: 'login', label: 'Login', type: 'text', required: true, table: true },
+    { name: 'password', label: 'Password (leave blank to keep it when editing)', type: 'password', requiredOnCreate: true },
   ]),
   resource('userAssignments', 'Person on task', 'People on tasks', 'userAssignment', '/user-assignments/', 'Connections between people and the tasks they help with.', 'id', [
     { name: 'userId', label: 'Person', type: 'guid', required: true, table: true, relation: 'users' },

@@ -9,7 +9,7 @@ public sealed class ListImpedimentsHandler(IUnitOfWork unitOfWork, ILogger<ListI
         logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.Impediment>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} impediment records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

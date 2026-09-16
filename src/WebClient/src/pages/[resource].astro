@@ -1,0 +1,10 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import CrudPage from '../features/crud/CrudPage.astro';
+import { resourceMetadata } from '../lib/api/resource-metadata';
+export function getStaticPaths() {
+  return resourceMetadata.map(resource => ({ params: { resource: resource.routePath.replaceAll('/', '') }, props: { resource } }));
+}
+const { resource } = Astro.props;
+---
+<AppLayout path={resource.routePath}><CrudPage resource={resource} /></AppLayout>

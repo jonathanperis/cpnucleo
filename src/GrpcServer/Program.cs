@@ -6,6 +6,7 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))),
@@ -23,6 +24,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
+        .RequireClaim(CpnucleoClaimTypes.Subject)
         .Build();
 });
 
@@ -70,6 +72,8 @@ builder.WebHost.ConfigureKestrel(o =>
 });
 
 builder.AddHandlerServer();
+builder.Services.AddGrpc(options => options.Interceptors.Add<GrpcServer.Common.Security.ValidationInterceptor>());
+builder.Services.AddHttpContextAccessor();
 
 // builder.Services
 //     // .AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = WebApi.DiscoveredTypes.All)
@@ -102,11 +106,12 @@ app.Use(async (context, next) =>
     }
 });
 
-app.UseHealthChecks("/healthz");
+app.UseHealthChecks("/healthz", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => false });
+app.UseHealthChecks("/readyz");
 
-app.UseInfrastructure();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseInfrastructure();
 
 // app.
 //     UseFastEndpoints()

@@ -1,11 +1,6 @@
 ---
 import AppLayout from '../../layouts/AppLayout.astro';
-import { AuthGuard } from '../../components/auth-guard';
-import Page from '../../routes/settings/types/index';
+import CrudPage from '../../features/crud/CrudPage.astro';
+import { findResource } from '../../lib/api/resource-metadata';
 ---
-
-<AppLayout path="/settings/types">
-  <AuthGuard>
-    <Page />
-  </AuthGuard>
-</AppLayout>
+<AppLayout path="/settings/types"><div class="space-y-10"><CrudPage resource={findResource('assignmentTypes')} /><CrudPage resource={findResource('impediments')} /></div></AppLayout>

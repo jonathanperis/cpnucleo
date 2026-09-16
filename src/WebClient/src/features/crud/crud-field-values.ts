@@ -32,10 +32,18 @@ const formatDateTimeLocalInputValue = (value: unknown) => {
 };
 
 export const formatFormFieldValue = (value: unknown, fieldType: FieldMetadata['type']) => {
+  if (fieldType === 'password') return '';
   if (value == null) return '';
   if (fieldType === 'date') return formatDateInputValue(value);
   if (fieldType === 'datetime-local') return formatDateTimeLocalInputValue(value);
   return String(value);
+};
+
+export const serializeFormValue = (value: string, fieldType: FieldMetadata['type']): string | number => {
+  if (fieldType === 'number') return Number(value);
+  if (fieldType === 'date') return `${value}T00:00:00.000Z`;
+  if (fieldType === 'datetime-local') return new Date(`${value}Z`).toISOString();
+  return value;
 };
 
 export const relationOptionsLoaded = (relations: Partial<Record<ResourceKey, unknown[]>>, relation: ResourceKey | undefined) => {

@@ -1,6 +1,6 @@
 namespace IdentityApi.Endpoints.Login;
 
-public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher, IConfiguration configuration) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -21,8 +21,11 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         Logger.LogInformation("Service started processing request.");
 
         Logger.LogInformation("Fetching user entity with Login: {UserLogin}", req.Login);
-        var item = await dbContext.Users!
-            .FirstOrDefaultAsync(u => u.Login == req.Login, cancellationToken);
+        var normalizedLogin = req.Login.Trim().ToLowerInvariant();
+        var matches = await dbContext.Users!
+            .Where(u => u.Login != null && u.Login.Trim().ToLower() == normalizedLogin)
+            .Take(2).ToListAsync(cancellationToken);
+        var item = matches.Count == 1 ? matches[0] : null;
 
         if (item is null)
         {
@@ -46,13 +49,17 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
                 select project.OrganizationId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        var adminLogins = (Environment.GetEnvironmentVariable("CPNUCLEO_ADMIN_LOGINS") ?? string.Empty)
+        var adminLogins = (configuration["CPNUCLEO_ADMIN_LOGINS"] ?? string.Empty)
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var isAdmin = adminLogins.Any(login => string.Equals(login, item.Login, StringComparison.OrdinalIgnoreCase));
 
         var jwtToken = JwtBearer.CreateToken(o =>
         {
+            o.SigningKey = configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey is required.");
+            o.Issuer = configuration["Jwt:Issuer"];
+            o.Audience = configuration["Jwt:Audience"];
             o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
+            o.User.Claims.Add((CpnucleoClaimTypes.SessionStartedAt, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture)));
             o.User.Claims.Add((CpnucleoClaimTypes.Subject, item.Id.ToString()));
             o.User.Claims.Add((CpnucleoClaimTypes.UserId, item.Id.ToString()));
             o.User.Claims.Add((ClaimTypes.NameIdentifier, item.Id.ToString()));

@@ -42,14 +42,18 @@ public static class ListingSseExtensions
             yield break;
         }
 
-        var lastSnapshotJson = JsonSerializer.Serialize(lastSnapshot);
         yield return lastSnapshot;
 
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                observedVersion = await listingChanges.WaitForChangeAsync(observedVersion, cancellationToken);
+                observedVersion = await listingChanges.WaitForChangeAsync(observedVersion, cancellationToken, TimeSpan.FromSeconds(15));
+            }
+            catch (TimeoutException)
+            {
+                // Other API instances and gRPC writers do not share this process's notifier.
+                // A periodic snapshot also keeps idle proxy connections alive.
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -68,12 +72,7 @@ public static class ListingSseExtensions
                 yield break;
             }
 
-            var nextSnapshotJson = JsonSerializer.Serialize(nextSnapshot);
-            if (nextSnapshotJson == lastSnapshotJson) continue;
-
-            lastSnapshot = nextSnapshot;
-            lastSnapshotJson = nextSnapshotJson;
-            yield return lastSnapshot;
+            yield return nextSnapshot;
         }
     }
 }

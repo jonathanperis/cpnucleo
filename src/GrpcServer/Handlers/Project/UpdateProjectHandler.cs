@@ -30,7 +30,9 @@ public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateP
             await unitOfWork.BeginTransactionAsync();
             
             logger.LogInformation("Updating entity in repository.");
-            var success = await repository.UpdateAsync(item);
+            var success = command.ExpectedVersion is { } version
+                ? await repository.UpdateIfVersionAsync(item, version, cancellationToken)
+                : await repository.UpdateAsync(item);
 
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
@@ -41,7 +43,7 @@ public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateP
             return new UpdateProjectResult 
             { 
                 Success = success,
-                Message = success ? "Project updated successfully." : "Failed to update Project."
+                Message = success ? "Project updated successfully." : "The project changed. Reload before saving your changes."
             };
         }
         catch (Exception ex)

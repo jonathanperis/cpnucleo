@@ -1,10 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUserHandler> logger, IPasswordHasher passwordHasher) : ICommandHandler<UpdateUserCommand, UpdateUserResult>
+public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUserHandler> logger, IPasswordHasher passwordHasher, IHttpContextAccessor context) : ICommandHandler<UpdateUserCommand, UpdateUserResult>
 {
     public async Task<UpdateUserResult> ExecuteAsync(UpdateUserCommand command, CancellationToken cancellationToken)
     {
+        Common.Security.UserAdministration.RequireAdmin(context);
         logger.LogInformation("Service started processing request.");
 
         try

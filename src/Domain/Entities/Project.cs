@@ -10,6 +10,7 @@ public sealed class Project : BaseEntity
 
     public static Project Create(string? name, Guid organizationId, Guid id = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
         var project = new Project
         {
             Id = GetNewId(id),
@@ -24,6 +25,7 @@ public sealed class Project : BaseEntity
 
     public static void Update(Project obj, string? name, Guid organizationId)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
         obj.Name = name;
         obj.OrganizationId = organizationId;
         obj.UpdatedAt = DateTime.UtcNow;

@@ -1,15 +1,16 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHandler> logger) : ICommandHandler<ListUsersCommand, ListUsersResult>
+public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHandler> logger, IHttpContextAccessor context) : ICommandHandler<ListUsersCommand, ListUsersResult>
 {
     public async Task<ListUsersResult> ExecuteAsync(ListUsersCommand command, CancellationToken cancellationToken)
     {
+        Common.Security.UserAdministration.RequireAdmin(context);
         logger.LogInformation("Service started processing request.");
         logger.LogInformation("Fetching all users with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.User>();
-        var response = await repository.GetAllAsync(command.Pagination);
+        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} user records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");
