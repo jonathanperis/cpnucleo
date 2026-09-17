@@ -10,12 +10,12 @@ The WebApi uses [FastEndpoints](https://fast-endpoints.com/) to define REST endp
 
 ### Base URL
 
-- Direct: `http://localhost:5100`
-- Via NGINX load balancer: `http://localhost:9999`
+- Learning lab: `http://localhost:5100`
+- Legacy load-balanced development stack: `http://localhost:9999`
 
 ### Swagger
 
-Available in Development mode at `/swagger`.
+Available at `/swagger`; `UseSwaggerGen()` is currently enabled in all environments. Request/response schemas are generated from the endpoint models.
 
 ### Endpoint Pattern
 
@@ -23,54 +23,57 @@ Every entity follows this consistent pattern:
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `POST` | `/api/{entity}` | Create a new record |
-| `GET` | `/api/{entity}/{id}` | Get a single record by ID |
+| `POST` | `/api/{entity}` | Create a new record from a JSON body |
+| `GET` | `/api/{entity}?id={uuid}` | Get a single record by query-string ID |
 | `GET` | `/api/{entities}` | List records (paginated; plural route such as `/api/projects`) |
-| `PUT` | `/api/{entity}/{id}` | Update an existing record |
-| `DELETE` | `/api/{entity}/{id}` | Remove a record (soft delete) |
+| `PATCH` | `/api/{entity}` | Update from a JSON body containing `id` and the required resource fields |
+| `DELETE` | `/api/{entity}` | Soft-delete IDs supplied as a JSON body: `{"ids":["uuid"]}` |
+
+These routes do not contain an `/{id}` path segment. PATCH uses each resource's request DTO, not JSON Patch operations. Include `Authorization: Bearer <token>` on CRUD requests. All user-resource operations additionally require the administrator claim.
 
 ### Available Entities
 
-| Entity | Route Prefix | Tag |
-|--------|-------------|-----|
-| Appointment | `/api/appointment` / `/api/appointments` | Appointments |
-| Assignment | `/api/assignment` / `/api/assignments` | Assignments |
-| AssignmentImpediment | `/api/assignmentImpediment` / `/api/assignmentImpediments` | AssignmentImpediments |
-| AssignmentType | `/api/assignmentType` / `/api/assignmentTypes` | AssignmentTypes |
-| Impediment | `/api/impediment` / `/api/impediments` | Impediments |
-| Organization | `/api/organization` / `/api/organizations` | Organizations |
-| Project | `/api/project` / `/api/projects` | Projects |
-| User | `/api/user` / `/api/users` | Users |
-| UserAssignment | `/api/userAssignment` / `/api/userAssignments` | UserAssignments |
-| UserProject | `/api/userProject` / `/api/userProjects` | UserProjects |
-| Workflow | `/api/workflow` / `/api/workflows` | Workflows |
+| Entity | Singular route | List route |
+|--------|----------------|------------|
+| Appointment | `/api/appointment` | `/api/appointments` |
+| Assignment | `/api/assignment` | `/api/assignments` |
+| AssignmentImpediment | `/api/assignmentImpediment` | `/api/assignmentImpediments` |
+| AssignmentType | `/api/assignmentType` | `/api/assignmentTypes` |
+| Impediment | `/api/impediment` | `/api/impediments` |
+| Organization | `/api/organization` | `/api/organizations` |
+| Project | `/api/project` | `/api/projects` |
+| User | `/api/user` | `/api/users` |
+| UserAssignment | `/api/userAssignment` | `/api/userAssignments` |
+| UserProject | `/api/userProject` | `/api/userProjects` |
+| Workflow | `/api/workflow` | `/api/workflows` |
 
 ### Example: Create Appointment
 
-**Request:**
+**Request:** replace the example `assignmentId` and `userId` with existing related IDs. A supplied nonempty `id` is preserved; omitting it lets the entity factory generate one.
 
 ```http
 POST /api/appointment
+Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "id": "00000000-0000-0000-0000-000000000000",
+  "id": "67d29a03-9200-4d6e-9030-009f4b060ce9",
   "description": "Sprint planning meeting",
-  "keepDate": "2025-03-01T10:00:00Z",
+  "keepDate": "2026-09-18T10:00:00Z",
   "amountHours": 2,
-  "assignmentId": "...",
-  "userId": "..."
+  "assignmentId": "35f1a233-e070-4205-909d-0eaabf89aec4",
+  "userId": "35b9c5c1-6abf-4d50-aee8-00abe2f09560"
 }
 ```
 
-**Response (200 OK):**
+**Response (200 OK, abbreviated):**
 
 ```json
 {
   "appointment": {
     "id": "...",
     "description": "Sprint planning meeting",
-    "keepDate": "2025-03-01T10:00:00Z",
+    "keepDate": "2026-09-18T10:00:00Z",
     "amountHours": 2,
     "assignmentId": "...",
     "userId": "...",
@@ -82,11 +85,7 @@ Content-Type: application/json
 
 ### Data Access
 
-All WebApi endpoints use EF Core via `IApplicationDbContext` for database operations. Endpoints inject the context directly:
-
-```csharp
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
-```
+REST deliberately mixes persistence examples. Many writes use EF Core through `IApplicationDbContext`; most reads use generic Dapper through `IUnitOfWork`. Organizations use generic Dapper, projects use `IProjectRepository`, and project creation shares an Application handler with gRPC. Impediments remain an EF-backed CRUD example. Inspect the endpoint constructor for the specific dependency.
 
 ### WebClient response expectations
 
@@ -97,14 +96,16 @@ The WebClient CRUD screens consume the REST endpoints through `src/WebClient/src
 - `{ result: item }` singular envelopes
 - resource-key singular envelopes such as `{ organization: { ... } }`
 
-Relation lookups rely on that singular normalization before resolving table labels. When a visible row references a related record outside the first prefetched relation page, the client fetches the specific related item and merges it into the relation cache instead of overwriting previously fetched labels.
+Singular normalization supports edit/detail loads. Missing relation labels use batched list requests with comma-separated `ids`, then merge into the existing cache. Selected relations remain available across search pages.
 
 ### Rate Limiting
 
 - 50 requests per minute per IP address
 - Fixed-window partitioning
 - Queue limit: 10 additional requests
-- Returns `429 Too Many Requests` with `Retry-After: 60` header when exceeded
+- Returns `429 Too Many Requests` with a `Retry-After` value derived from the limiter lease (60 seconds if metadata is unavailable)
+
+The partition key is `HttpContext.Connection.RemoteIpAddress`; this is per process, not a distributed quota. A reverse proxy may affect which address the application sees.
 
 ---
 
@@ -116,7 +117,7 @@ Relation lookups rely on that singular normalization before resolving table labe
 
 ### Swagger
 
-Available in Development mode at `/swagger`.
+Available at `/swagger`, currently enabled in all environments.
 
 ### Login Endpoint
 
@@ -154,19 +155,24 @@ Returned when credentials are invalid.
 |-----------|-------|
 | Issuer | `https://identity-cpnucleo.jonathanperis.tech` |
 | Audience | `https://api-cpnucleo.jonathanperis.tech` |
-| Expiration | 1 day |
+| Access-token lifetime | 30 minutes; refresh is capped by the original eight-hour session |
 | Algorithm | HMAC-SHA (via FastEndpoints.Security) |
+
+Issuer and audience above are the checked-in defaults. All API hosts must use matching `Jwt__Issuer`, `Jwt__Audience`, and `Jwt__SigningKey` configuration. Raw `sub` claims are retained during validation.
+
+### Refresh Endpoint
+
+`POST /api/refresh` accepts a valid bearer token and no request body, returning the same `{ "token": "..." }` envelope. It returns 401 for an inactive/missing account or a session outside the eight-hour boundary. It recalculates admin privileges from `CPNUCLEO_ADMIN_LOGINS`; legacy tokens without the session-start claim require a new login. There is no separate long-lived refresh token.
 
 ### Rate Limiting
 
 - 10 requests per minute per IP address
-- Queue limit: 3 additional requests
+- Queue limit: 5 additional requests
 - Stricter than WebApi to protect against brute-force attacks
 
 ### Output Caching
 
-- Base policy: 10-second cache expiration
-- All responses are cached by default
+The host registers a 10-second base output-cache policy. ASP.NET Core's default eligibility rules still apply; this is not a promise to cache every response, and POST login/refresh responses are not cached by that default policy.
 
 ---
 
@@ -203,7 +209,7 @@ Total: 55 registered command handlers.
 
 ### Data Access
 
-All gRPC handlers use Dapper via `IUnitOfWork` for database operations, providing transactional support with explicit `BeginTransactionAsync`, `CommitAsync`, and `RollbackAsync`.
+gRPC persistence uses Dapper. Most handlers use `IUnitOfWork` with explicit transaction operations; project creation delegates to the shared Application handler and its `IProjectCreateStore` port. The transport uses typed .NET commands/results rather than a hand-maintained public `.proto` API.
 
 ### Handler Registration
 
@@ -222,17 +228,17 @@ app.MapHandlers(h =>
 
 ## Health Checks
 
-All three APIs expose health check endpoints:
+All three APIs expose separate liveness and readiness endpoints:
 
 | Service | URL | Protocol |
 |---------|-----|----------|
-| WebApi | `/healthz` | HTTP |
-| IdentityApi | `/healthz` | HTTP |
-| GrpcServer | `/healthz` | HTTP |
+| WebApi | `/healthz`, `/readyz` | HTTP; lab port 5100 |
+| IdentityApi | `/healthz`, `/readyz` | HTTP; lab port 5200 |
+| GrpcServer | `/healthz`, `/readyz` | HTTP/1.1 diagnostics; lab port 5301 |
 
 ### Root Endpoint
 
-All services also respond to `GET /` with `"Hello World!"`.
+The API hosts map `GET /` to `"Hello World!"`; the gRPC host's fallback authorization policy applies to that root route. The WebClient root serves the application HTML.
 
 ---
 
@@ -256,3 +262,10 @@ Project PATCH requests may include `expectedVersion`, using the last observed `u
 All normal removal paths soft-delete. Project batches are atomic. The database rejects conflicting normalized active logins on new/changed accounts; authentication rejects ambiguous legacy logins rather than choosing an arbitrary account.
 
 `/healthz` is liveness only. `/readyz` checks database/schema availability. SSE listings refresh periodically so writes through other instances/transports converge within a refresh cycle.
+
+## Source of truth
+
+- [REST endpoints and request DTOs](https://github.com/jonathanperis/cpnucleo/tree/main/src/WebApi/Endpoints)
+- [Identity endpoints](https://github.com/jonathanperis/cpnucleo/tree/main/src/IdentityApi/Endpoints)
+- [gRPC command contracts](https://github.com/jonathanperis/cpnucleo/tree/main/src/GrpcServer.Contracts/Commands)
+- [HTTP CRUD contract tests](https://github.com/jonathanperis/cpnucleo/blob/main/tests/WebApi.Integration.Tests/CrudContractTests.cs)

@@ -4,7 +4,7 @@ import '../../styles/docs.css';
 import { SECTION_CATEGORIES, SECTION_ORDER } from '../../lib/sidebar.config';
 
 const SLUG_LABEL: Record<string, string> = {
-  home: 'Home',
+  home: 'Project Overview',
   'learning-lab': 'Learning Lab',
   architecture: 'Architecture',
   'api-reference': 'API Reference',
@@ -60,7 +60,7 @@ const sectionsToRender = !isRoot && selectedPage ? [{ slug: requestedKey, page: 
 export function getStaticPaths() {
   return [
     { params: { slug: undefined } },
-    ...SECTION_ORDER.filter(s => s !== 'home').map(slug => ({ params: { slug } })),
+    ...SECTION_ORDER.map(slug => ({ params: { slug } })),
   ];
 }
 
@@ -68,14 +68,14 @@ const pageTitle = isRoot ? 'cpnucleo - Documentation' : `${SLUG_LABEL[requestedK
 const base = import.meta.env.BASE_URL;
 const docsBase = base.replace(/\/$/, '') + '/docs';
 const backHomeUrl = base.replace(/\/$/, '') + '/';
-const currentId = isRoot ? 'home' : requestedKey;
+const currentId = isRoot ? '' : requestedKey;
 const docsGroups = SECTION_CATEGORIES.map((cat) => ({
   label: cat.label || 'Start',
   ids: cat.ids,
 }));
 ---
 
-<BaseLayout title={pageTitle}>
+<BaseLayout title={pageTitle} description={isRoot ? 'Learning paths and technical documentation for the Cpnucleo .NET laboratory.' : DOC_SUMMARIES[requestedKey]}>
   <div class="mobile-header">
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-controls="sidebar" aria-expanded="false">
       <span></span>
@@ -100,7 +100,7 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
           {cat.label && <div class="sidebar-category">{cat.label}</div>}
           <ul>
             {cat.ids.map((id) => {
-              const href = id === 'home' ? `${docsBase}/` : `${docsBase}/${id}/`;
+              const href = `${docsBase}/${id}/`;
               return (
                 <li>
                   <a class:list={["nav-item", currentId === id && "active"]} href={href} data-nav-id={id} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
@@ -134,7 +134,7 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
                 <h2>{group.label}</h2>
                 <div class="docs-link-list">
                   {group.ids.map((id) => {
-                    const href = id === 'home' ? `${docsBase}/` : `${docsBase}/${id}/`;
+                    const href = `${docsBase}/${id}/`;
                     return (
                       <a class="docs-link-card" href={href} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
                         <span>{SLUG_LABEL[id]}</span>

@@ -1,6 +1,6 @@
-FROM node:22-alpine AS build
+FROM node:26.9.0-alpine AS build
 WORKDIR /app
-RUN npm install -g bun@1.3.11
+RUN npm install -g bun@1.4.2
 COPY WebClient/package.json WebClient/bun.lock ./
 COPY WebClient/scripts ./scripts
 RUN bun install --frozen-lockfile
@@ -13,12 +13,12 @@ ENV PUBLIC_WEBAPI_BASE_URL=$PUBLIC_WEBAPI_BASE_URL \
     PUBLIC_IDENTITY_API_ISSUER=$PUBLIC_IDENTITY_API_ISSUER
 RUN bun run build
 
-FROM node:22-alpine AS runtime
+FROM node:26.9.0-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=5030
-RUN npm install -g bun@1.3.11
+RUN npm install -g bun@1.4.2
 COPY WebClient/package.json WebClient/bun.lock ./
 COPY WebClient/scripts ./scripts
 RUN bun install --frozen-lockfile --production

@@ -1,3 +1,3 @@
-- [Architecture Decisions](architecture.md) — Dual data access (EF Core + Dapper), 25+ NetArchTest rules, entity lifecycle pattern
+- [Architecture Decisions](architecture.md) — EF Core/Dapper comparisons, real-assembly architecture checks, entity lifecycle
 - [Technology Versions](tech_stack.md) — Pinned versions: .NET 10, FastEndpoints 8.1, EF Core 10, service ports
 - [Deployment & CI/CD](deployment.md) — Hostinger Docker Manager, GHCR images, GitHub secrets, Docker compose configs

@@ -1,42 +1,29 @@
-# cpnucleo
+# Project Overview
 
-Cpnucleo is a project management and task tracking system built with .NET 10, demonstrating Clean Architecture, Domain-Driven Design, and a CQRS-like dual data access strategy with REST (FastEndpoints + EF Core) and gRPC (FastEndpoints Remote Messaging + Dapper) against the same PostgreSQL database.
+Cpnucleo is a .NET project-management learning laboratory. Compare REST and gRPC, EF Core and Dapper, domain behavior, authentication, Astro/native TypeScript, observability and deployment against one inspectable PostgreSQL model.
 
----
+## Start here
 
-## Quick Links
+| Path | What to inspect |
+|---|---|
+| [Getting Started](../getting-started/) | Minimal Docker stack, explicit seed and source development |
+| [Learning Lab](../learning-lab/) | Guided exercises, failure cases, measurements and recovery |
+| [Architecture](../architecture/) | Project boundaries, persistence comparisons and maturity limits |
+| [API Reference](../api-reference/) | Actual REST routes, identity/session behavior and gRPC contracts |
+| [WebClient CRUD](../webclient-crud/) | Native forms, relations, concurrency and real-time lists |
+| [Database](../database/) | Migrations, durability, lifecycle and data tools |
+| [Testing](../testing/) | What each suite proves and how to run it |
+| [Deployment](../deployment/) | Lab versus production, release gates and Pages publication |
+| [Project Structure](../project-structure/) | Source, tests, labs and documentation map |
+| [Technologies](../technologies/) | Stack roles and authoritative version manifests |
 
-| Page | Description |
-|------|-------------|
-| [Architecture](architecture) | Clean Architecture layers, CQRS dual implementation, DDD patterns |
-| [Getting Started](getting-started) | Prerequisites, build, run with Docker Compose or locally |
-| [Project Structure](project-structure) | Full tree of `src/` and `tests/` with descriptions |
-| [API Reference](api-reference) | WebApi endpoints, IdentityApi auth, GrpcServer contracts |
-| [WebClient CRUD](webclient-crud) | Astro/native TypeScript CRUD, edit forms, relation search, response normalization |
-| [Learning Lab](learning-lab) | Guided paths, failure exercises, benchmarks and recovery |
-| [Database](database) | PostgreSQL setup, EF Core, Dapper, init scripts |
-| [Testing](testing) | Architecture tests, unit tests, integration tests |
-| [Deployment](deployment) | Docker Compose configs, GitHub Actions CI/CD, NGINX |
-| [Technologies](technologies) | Full tech stack table with versions |
+## Maturity
 
----
+- **Baseline:** authenticated CRUD, soft deletion, bounded lists, password hashing, static Astro client and additive schema migrations.
+- **Verified examples:** project concurrency and transactional batches, HTTP/gRPC parity, normalized-login contention and cross-instance SSE convergence.
+- **Incremental pilot:** shared Application use cases and richer domain behavior.
+- **Foundations/experiments:** tenant context without data isolation; Native AOT and Dapper.AOT compatibility; isolated outbox delivery.
 
-## Key Features
+The hosts share a database and workspace. This is not a claim of independently owned microservice data, complete CQRS/DDD or comprehensive production coverage. User administration requires an admin claim on both transports.
 
-- Clean Architecture boundaries validated against explicitly loaded production assemblies
-- Dual data access: EF Core for the REST API, Dapper with Unit of Work for the gRPC server
-- FastEndpoints for both REST endpoints and gRPC-style remote command handling
-- JWT authentication via the dedicated Identity API with Argon2id-hashed credentials
-- Rate limiting with fixed-window partitioning per IP (50/min WebApi, 10/min IdentityApi)
-- OpenTelemetry observability with OTLP export and optional Grafana LGTM stack
-- NGINX reverse proxy with least-connection load balancing across multiple WebApi instances
-- Docker Compose configurations for development, default, and production environments
-- AOT, Trim, and ExtraOptimize build options for production-optimized containers
-- Astro and native TypeScript frontend with Tailwind CSS, IdentityApi login, prefilled edit forms and searchable relations
-- Automated CI/CD with GitHub Actions deploying to Hostinger Docker Manager via GHCR
-
----
-
-## Repository
-
-[github.com/jonathanperis/cpnucleo](https://github.com/jonathanperis/cpnucleo)
+[Inspect the repository](https://github.com/jonathanperis/cpnucleo) or return to the [documentation index](../).

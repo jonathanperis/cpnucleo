@@ -18,7 +18,7 @@ x-build-args: &build-args
 
 services:
   db:
-    image: postgres:16.7
+    image: postgres:16.15
     environment:
       POSTGRES_USER: learner
       POSTGRES_PASSWORD: disposable-lab-only
@@ -92,7 +92,7 @@ services:
 
   otel-lgtm:
     profiles: [observability]
-    image: grafana/otel-lgtm:0.11.10
+    image: grafana/otel-lgtm:0.33.0
     ports: ["127.0.0.1:3000:3000"]
 
   seed:

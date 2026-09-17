@@ -1,117 +1,40 @@
 # Technologies
 
-## Runtime & Framework
+This page maps technology to purpose. Exact package versions belong in executable manifests and lockfiles rather than a second manually maintained version inventory.
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| .NET | 10.0 | Runtime and SDK |
-| ASP.NET Core | 10.0 | Web framework |
-| C# | Latest (via LangVersion) | Programming language |
+## Backend
 
-## Web Frameworks & API
+| Technology | Role | Version source |
+|---|---|---|
+| .NET / ASP.NET Core / C# | Service hosts, shared application/domain code | [global.json](https://github.com/jonathanperis/cpnucleo/blob/main/global.json), project target frameworks |
+| FastEndpoints / Swagger / Security | REST endpoints, OpenAPI and token issuance | [WebApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/WebApi/WebApi.csproj), [IdentityApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/IdentityApi/IdentityApi.csproj) |
+| FastEndpoints Remote Messaging / MessagePack | HTTP/2 remote commands and serialization | [GrpcServer](https://github.com/jonathanperis/cpnucleo/blob/main/src/GrpcServer/GrpcServer.csproj), [contracts](https://github.com/jonathanperis/cpnucleo/blob/main/src/GrpcServer.Contracts/GrpcServer.Contracts.csproj) |
+| EF Core / Npgsql / Dapper | Shared PostgreSQL schema, ORM and SQL comparisons | [Infrastructure](https://github.com/jonathanperis/cpnucleo/blob/main/src/Infrastructure/Infrastructure.csproj) |
+| Argon2id | Password hashing | Infrastructure's `Konscious.Security.Cryptography.Argon2` reference |
+| Delta | Timestamp-based conditional HTTP requests | Infrastructure |
+| Mapperly / Dynamic LINQ | Generated DTO mapping and selected EF queries | WebApi / GrpcServer project files |
+| OpenTelemetry | Traces, metrics and logs; ASP.NET Core, HTTP, SQL and runtime instrumentation | Service project files and telemetry extensions |
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| FastEndpoints | 8.1.0 | REST endpoint framework (WebApi, IdentityApi) |
-| FastEndpoints.Swagger | 7.2.0 | OpenAPI/Swagger documentation |
-| FastEndpoints.Security | 8.1.0 | JWT token generation and validation (IdentityApi) |
-| FastEndpoints.Messaging.Remote | 8.1.0 | gRPC-style remote command handling (GrpcServer) |
-| FastEndpoints.Messaging.Core | 8.1.0 | Shared command/result contracts (GrpcServer.Contracts) |
-| FastEndpoints.Generator | 8.1.0 | Source generator for endpoint discovery |
-| FastEndpoints.Testing | 7.2.0 | Integration test support |
+The Domain project has no external package references. The shared Application pilot begins with project creation. Dapper.AOT is an experiment dependency, not a claim that every repository is source-generated or Native AOT-compatible.
 
-## Data Access
+## Two static frontend projects
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Entity Framework Core | 10.0.7 | ORM for WebApi and IdentityApi |
-| EF Core Design | 10.0.7 | Migration tooling |
-| Npgsql | 10.0.1 | PostgreSQL .NET driver |
-| Npgsql.EntityFrameworkCore.PostgreSQL | 10.0.0 | EF Core PostgreSQL provider |
-| Dapper | 2.1.72 | Micro-ORM for GrpcServer |
-| Dapper.AOT | 1.0.48 | Compile-time SQL interception |
-| Delta | 9.0.1 | HTTP conditional requests via DB timestamps |
+| Project | Stack | Authoritative versions |
+|---|---|---|
+| WebClient | Astro, native TypeScript, Tailwind CSS; Vitest/jsdom tests; Node static server and telemetry | [package.json](https://github.com/jonathanperis/cpnucleo/blob/main/src/WebClient/package.json), [bun.lock](https://github.com/jonathanperis/cpnucleo/blob/main/src/WebClient/bun.lock) |
+| Documentation | Astro, TypeScript, Tailwind's Vite plugin, sitemap integration | [package.json](https://github.com/jonathanperis/cpnucleo/blob/main/docs/package.json), [bun.lock](https://github.com/jonathanperis/cpnucleo/blob/main/docs/bun.lock) |
 
-## Database
+The projects have independent dependency graphs. Use a real supported Node runtime for Astro and Bun for package installation/scripts. A manifest range states allowed versions; the lockfile records the resolved installation. See [Getting Started](../getting-started/) and the [docs contributor guide](https://github.com/jonathanperis/cpnucleo/blob/main/docs/README.md).
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| PostgreSQL | 16.7 | Primary database |
+## Tests and infrastructure
 
-## Authentication
+- xUnit + NetArchTest + FluentAssertions: assembly architecture checks.
+- NUnit + FakeItEasy + Shouldly: application, endpoint and security unit tests.
+- xUnit v3 + FastEndpoints.Testing + Testcontainers.PostgreSql: isolated HTTP/gRPC/PostgreSQL contracts.
+- Docker Compose: minimal lab, legacy load-balanced development example and standalone production.
+- PostgreSQL, NGINX, Grafana LGTM and OpenTelemetry Collector: image tags live in the [Compose files](https://github.com/jonathanperis/cpnucleo/blob/main/compose.prod.yaml).
+- GitHub Actions, GHCR and Hostinger Docker Manager: build, immutable image publication and deployment. Pages uses its own pinned reusable workflow.
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Microsoft.AspNetCore.Authentication.JwtBearer | 10.0.7 | JWT Bearer authentication middleware |
+## Publishing options
 
-## Mapping
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Riok.Mapperly | 4.3.1 | Compile-time object mapping (source generator) |
-
-## Querying
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| System.Linq.Dynamic.Core | 1.7.1 | Dynamic LINQ queries |
-
-## Observability & Monitoring
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| OpenTelemetry.Exporter.Console | 1.15.3 | Console telemetry export |
-| OpenTelemetry.Exporter.OpenTelemetryProtocol | 1.15.3 | OTLP telemetry export |
-| OpenTelemetry.Extensions.Hosting | 1.15.3 | Host integration |
-| OpenTelemetry.Instrumentation.AspNetCore | 1.15.2 | ASP.NET Core instrumentation |
-| OpenTelemetry.Instrumentation.Http | 1.15.1 | HTTP client instrumentation |
-| OpenTelemetry.Instrumentation.Process | 1.12.0-beta.1 | Process metrics |
-| OpenTelemetry.Instrumentation.Runtime | 1.15.1 | .NET runtime metrics |
-| Grafana LGTM | Latest | Observability stack (dev only, via Docker) |
-
-## Frontend
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Astro | 7.x | Static routes and semantic HTML templates |
-| Native TypeScript | 5.x | Forms, Fetch, SSE, storage and DOM interactions |
-| Tailwind CSS | 3.x | WebClient styling and design tokens (the docs site uses 4.x) |
-| Vite | 8.x | Frontend build tooling |
-| Vitest + jsdom | See lockfile | Unit and generated-markup interaction tests |
-
-## Testing
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| xUnit | 2.9.3 | Test framework (Architecture.Tests) |
-| xUnit v3 | 3.2.2 | Test framework (Integration.Tests) |
-| NUnit | 4.4.0 | Test framework (Unit.Tests) |
-| NetArchTest.Rules | 1.3.2 | Architecture rule validation |
-| FluentAssertions | 8.8.0 | Fluent assertion library |
-| FakeItEasy | 9.0.1 | Mocking framework |
-| Shouldly | 4.3.0 | Assertion library |
-| Bogus | 35.6.5 | Fake data generation |
-| coverlet.collector | 10.0.0 | Code coverage collection |
-| Microsoft.NET.Test.Sdk | 18.5.1 | .NET test infrastructure |
-
-## Infrastructure & DevOps
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Docker | Latest | Containerization |
-| Docker Compose | v2 | Multi-container orchestration |
-| NGINX | Latest | Reverse proxy and load balancer |
-| GitHub Actions | -- | CI/CD pipelines |
-| Hostinger Docker Manager | -- | Cloud hosting (production deployment target) |
-| GHCR | -- | Container image registry |
-
-## Build Optimization
-
-| Feature | Description |
-|---------|-------------|
-| PublishAot | Native AOT compilation (optional) |
-| PublishReadyToRun | ReadyToRun pre-compilation |
-| PublishReadyToRunComposite | Composite R2R for better startup |
-| InvariantGlobalization | Reduce binary size by removing culture data |
-| TrimmerRemoveSymbols | Strip debug symbols |
-| Multi-platform | linux/amd64 and linux/arm64/v8 |
+`AOT` enables an experimental Native AOT path; normal releases disable it. The legacy `TRIM` switch enables ReadyToRun/composite/self-contained output, not IL trimming. `EXTRA_OPTIMIZE` changes selected runtime switches and symbol settings while preserving EventSource and HTTP propagation. See [Deployment](../deployment/) for the current release gates and multi-architecture limitations.

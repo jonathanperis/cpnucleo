@@ -2,7 +2,10 @@
 """Check current public documentation contracts without freezing test-case totals."""
 import json
 import re
+import argparse
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import unquote, urljoin, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,7 +19,47 @@ def require(condition, message):
         raise SystemExit(f"docs drift: {message}")
 
 
-def main():
+class PageLinks(HTMLParser):
+    def __init__(self, content):
+        super().__init__()
+        self.links = []
+        self.ids = set()
+        self.feed(content)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if attrs.get("id"):
+            self.ids.add(attrs["id"])
+        for name in ("href", "src"):
+            if attrs.get(name):
+                self.links.append(attrs[name])
+
+
+def check_built_site(output, site_url="https://jonathanperis.github.io/cpnucleo/"):
+    pages = {path: PageLinks(path.read_text(encoding="utf-8")) for path in output.rglob("*.html")}
+    require(output / "index.html" in pages, "build docs before checking generated links")
+    site = urlsplit(site_url)
+    for path, page in pages.items():
+        relative = path.relative_to(output).as_posix()
+        page_url = urljoin(site_url, relative.removesuffix("index.html"))
+        for link in page.links:
+            target = urlsplit(urljoin(page_url, link))
+            if target.netloc != site.netloc or target.scheme not in ("http", "https"):
+                continue
+            if target.path != site.path.rstrip("/") and not target.path.startswith(site.path):
+                require(bool(urlsplit(link).netloc), f"{relative}: link escapes the Pages base: {link}")
+                continue  # Absolute links to the author's other GitHub Pages sites.
+            destination = output / unquote(target.path[len(site.path):])
+            if destination.is_dir():
+                destination /= "index.html"
+            require(destination.is_file(), f"{relative}: missing local target: {link}")
+            if target.fragment and destination in pages:
+                require(unquote(target.fragment) in pages[destination].ids,
+                        f"{relative}: missing fragment: {link}")
+    print(f"Generated documentation links/assets passed: {len(pages)} HTML pages.")
+
+
+def main(built_site=False):
     readme = read("README.md")
     major = json.loads(read("global.json"))["sdk"]["version"].split(".")[0]
     require(f".NET {major}" in readme, "README runtime differs from global.json")
@@ -46,9 +89,22 @@ def main():
         require(re.search(rf"(?:^|\n)\s*'?{re.escape(slug)}'?:", labels), f"{slug} needs a page label")
         require(re.search(rf"(?:^|\n)\s*'?{re.escape(slug)}'?:", summaries), f"{slug} needs a page summary")
         # Individual pages are served at /docs/<slug>/, unlike the home index.
-        if slug != "home":
-            for target in re.findall(r"\]\(([a-z0-9-]+)\)", path.read_text(encoding="utf-8")):
-                require(target not in slugs, f"{slug}: link to {target} must use ../{target}/")
+        for target in re.findall(r"\]\(([a-z0-9-]+)\)", path.read_text(encoding="utf-8")):
+            require(target not in slugs, f"{slug}: link to {target} must use ../{target}/")
+
+    api = read("docs/wiki/api-reference.md")
+    rows = re.findall(r"\| (\w+) \| `(/api/\w+)` \| `(/api/\w+)` \|", api)
+    resources = ROOT / "src/WebApi/Endpoints"
+    require({row[0] for row in rows} == {path.name for path in resources.iterdir() if path.is_dir()},
+            "API resource table differs from endpoint resources")
+    for entity, singular, plural in rows:
+        routes = set()
+        for endpoint in (resources / entity).glob("**/Endpoint.cs"):
+            routes.update((method.upper(), "/api" + route) for method, route in
+                          re.findall(r'\b(Get|Post|Patch|Put|Delete)\("([^"]+)"\)', endpoint.read_text()))
+        expected = {("POST", singular), ("GET", singular), ("GET", plural),
+                    ("PATCH", singular), ("DELETE", singular)}
+        require(routes == expected, f"{entity}: documented CRUD verbs/routes differ: {routes}")
 
     obsolete = [
         "docker compose -f compose.yaml -f compose.prod.yaml",
@@ -68,7 +124,14 @@ def main():
     require("--run-fake-data-csv-import" not in read("compose.prod.yaml"), "production must not automatically reseed")
     require("/readyz" in read("scripts/smoke-production.sh"), "deployment must verify database readiness")
     print(f"Documentation contracts passed: {counts[0]} operations per transport; test totals come from runners.")
+    if built_site:
+        output = ROOT / "docs/out"
+        for slug in slugs:
+            require((output / "docs" / slug / "index.html").is_file(), f"{slug} is not published")
+        check_built_site(output)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--built-site", action="store_true", help="also validate docs/out links after building")
+    main(parser.parse_args().built_site)

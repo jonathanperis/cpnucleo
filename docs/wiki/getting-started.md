@@ -35,14 +35,17 @@ docker compose -f compose.lab.yaml run --rm seed --reset-lab --Seed:Profile=real
 
 ## Source development
 
-Install .NET 10 SDK (see `global.json`), Node.js 22.14+ and Bun 1.3.11+. Set `DB_CONNECTION_STRING`, a development `Jwt__SigningKey`, and matching CORS origins in the service environment or .NET user secrets. `dotnet run` does not automatically import the repository dotenv file.
+Install the .NET SDK in `global.json`, Node.js in `.nvmrc`, and Bun 1.4.2. Set `DB_CONNECTION_STRING`, a development `Jwt__SigningKey`, and matching CORS origins in each service's environment. `dotnet run` does not automatically import the repository dotenv file. Checked-in launch profiles use legacy ports/database settings; `--no-launch-profile` avoids overriding your chosen configuration.
 
 ```sh
 dotnet build cpnucleo.slnx
-dotnet run --project src/WebApi
+dotnet run --project src/WebApi --no-launch-profile -- --migrate-database
+dotnet run --project src/WebApi --no-launch-profile --urls http://localhost:5100
 ```
 
-Run the other services in separate terminals. From `src/WebClient`, use `bun install --frozen-lockfile` and `bun run dev`. Browser service URLs default to localhost; deployment supplies explicit public build-time URLs.
+The configured database must already be running; for the lab database use host `localhost`, port `15432` and the disposable credentials in `compose.lab.yaml`. Set `ASPNETCORE_ENVIRONMENT=Development` for source development and explicit lab seed commands. Run Identity in a separate configured terminal with `dotnet run --project src/IdentityApi --no-launch-profile --urls http://localhost:5200`.
+
+From `src/WebClient`, use `bun install --frozen-lockfile` and `bun run dev` (port 5030). CORS must allow that origin. Browser service URLs default to localhost ports 5100/5200; deployment supplies explicit public build-time URLs.
 
 ## Readiness and tests
 

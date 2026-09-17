@@ -4,24 +4,19 @@ description: Pinned versions for .NET SDK, NuGet packages, and infrastructure co
 type: reference
 ---
 
-## Core Versions (as of 2026-09)
+## Authoritative versions
 
-- **.NET SDK:** 10.0.102 (global.json with `latestMinor` rollForward)
-- **FastEndpoints:** 8.1.0 across core, Swagger, security, messaging and testing
-- **Entity Framework Core:** 10.0.7
-- **Dapper:** 2.1.72 + Dapper.AOT 1.0.48
-- **Npgsql:** 10.0.1 (driver) + 10.0.0 (EF Core provider)
-- **PostgreSQL:** 16.7
-- **Riok.Mapperly:** 4.3.1
-- **WebClient:** Astro 7, native TypeScript, Tailwind 3, Vitest 4 and jsdom
-- **Docs:** Astro 7 and Tailwind 4
-- **OpenTelemetry:** 1.15.x packages (OTLP/hosting 1.15.3)
+- SDK: `global.json`; Node: `.nvmrc`; Bun: frontend `packageManager` fields and CI/Dockerfiles.
+- Backend: project `PackageReference` entries. FastEndpoints packages must remain aligned; EF/Npgsql versions must remain compatible.
+- Frontends: `docs/package.json`, `src/WebClient/package.json` and their independent Bun lockfiles. Both use Astro and Tailwind's Vite integration.
+- Containers: Compose files and Dockerfiles. PostgreSQL stays on the newest compatible 16.x patch until a separate major data migration is planned.
+- See `docs/audit-2026-09.md` for update evidence and compatibility limits. Do not duplicate mutable patch-version inventories here.
 
 ## Test Frameworks
 
-- **Architecture Tests:** xUnit + NetArchTest.Rules 1.3.2 + FluentAssertions 8.x
-- **Unit Tests:** NUnit 4.x + FakeItEasy 9.x + Shouldly 4.x
-- **Integration Tests:** xUnit v3, HTTP/gRPC test hosts and Testcontainers.PostgreSql 4.15
+- **Architecture Tests:** xUnit + NetArchTest.Rules + FluentAssertions
+- **Unit Tests:** NUnit + FakeItEasy + Shouldly
+- **Integration Tests:** xUnit v3's `mtp-off` package with VSTest, HTTP/gRPC test hosts and Testcontainers.PostgreSql
 
 ## Legacy development service ports
 

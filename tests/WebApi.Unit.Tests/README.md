@@ -1,70 +1,17 @@
-# WebApi Unit Tests
+# WebApi unit tests
 
-This directory contains unit tests for the WebApi endpoints using FastEndpoints testing framework.
+NUnit tests exercise endpoint orchestration using FastEndpoints `Factory`, FakeItEasy repository/use-case doubles, and EF Core InMemory where appropriate. `ListingChangeNotifierTests` covers local subscriber notifications.
 
-## Test Coverage
+Run from the repository root:
 
-### Fully Tested Endpoints (Repository-based - UnitOfWork)
-- **Project** - 9 tests (GetById, Create, Update, Delete, List) ✅
-- **Organization** - 6 tests (GetById, Create, Update, Delete, List) ✅
-- **Assignment** - 3 tests (GetById, GetById-NotFound, List) ✅
-- **AssignmentType** - 3 tests (GetById, GetById-NotFound, List) ✅
-- **Appointment** - 3 tests (GetById, GetById-NotFound, List) ✅
-- **UserProject** - 3 tests (GetById, GetById-NotFound, List) ✅
-- **UserAssignment** - 3 tests (GetById, GetById-NotFound, List) ✅
-- **AssignmentImpediment** - 3 tests (GetById, GetById-NotFound, List) ✅
-
-### Tested Endpoints (EF Core-based)
-- **User** - 5 tests (GetById, Update, Delete, List work; Create skipped) ✅
-- **Workflow** - 5 tests (GetById, Update, Delete, List work; Create skipped) ✅
-- **Impediment** - 4 tests (GetById, GetById-NotFound, Update, Delete) ✅
-
-## Testing Patterns
-
-### Repository-Based Endpoints
-These endpoints use either `IProjectRepository` or `IUnitOfWork` with `IRepository<T>`. They're straightforward to test with FakeItEasy mocks.
-
-Example:
-```csharp
-var fakeRepository = A.Fake<IProjectRepository>();
-A.CallTo(() => fakeRepository.GetByIdAsync(id)).Returns(Task.FromResult<Project?>(project));
-var ep = Factory.Create<Endpoint>(fakeRepository);
+```sh
+dotnet test tests/WebApi.Unit.Tests/
 ```
 
-### EF Core-Based Endpoints
-These endpoints use `IApplicationDbContext` directly. Mocking DbSet<T> requires more complex setup and is prone to issues with FakeItEasy due to how EF Core DbSet works.
+These tests cover selected reads, lists, writes and failure paths. They do not prove PostgreSQL constraints, transactions, HTTP binding or gRPC serialization. Test totals and pass/fail status come from the runner.
 
-Example (partial - needs refinement):
-```csharp
-var fakeDbContext = A.Fake<IApplicationDbContext>();
-var fakeDbSet = A.Fake<DbSet<Entity>>();
-A.CallTo(() => fakeDbContext.Entities).Returns(fakeDbSet);
-// Additional setup needed for DbSet operations
-```
+User and workflow creation are covered by the independent PostgreSQL CRUD theory in `WebApi.Integration.Tests/CrudContractTests.cs`; obsolete skipped `DbSet.Any()` mock tests have been removed. Do not mock LINQ extension methods to prove database behavior.
 
-## Test Statistics
+Read `Endpoints/ProjectEndpointsTests.cs` for repository/shared-use-case orchestration, `Endpoints/ImpedimentEndpointsTests.cs` for EF InMemory and `Common/Services/ListingChangeNotifierTests.cs` for notifications. Versions live in `WebApi.Unit.Tests.csproj`.
 
-- **Total Test Files**: 11
-- **Total Tests Written**: 49
-- **Current local status**: compile cleanup needed around several `Remove*.Request` model references before the suite can run end to end
-- **Known skipped cases in source**: 2 EF Core Create operations with `DbSet.Any()` extension-method mocking limitations
-
-## Dependencies
-
-- FastEndpoints 8.1.0
-- FakeItEasy 9.0.1
-- Shouldly 4.3.0
-- NUnit 4.4.0
-
-## Running Tests
-
-```bash
-dotnet test tests/WebApi.Unit.Tests/WebApi.Unit.Tests.csproj
-```
-
-## Notes
-
-- Two Create tests for User and Workflow endpoints are skipped because DbSet.Any() is a LINQ extension method that cannot be mocked with FakeItEasy
-- These scenarios are better tested with integration tests that use an in-memory database
-- Repository-based endpoint coverage exists, but latest source drift means the suite should be repaired before treating it as a passing gate
-- EF Core-based endpoints have Read/Update/Delete coverage in source, with the same caveat that the suite currently needs compile cleanup
+See the [testing guide](../../docs/wiki/testing.md) for all suites.

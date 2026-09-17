@@ -12,6 +12,8 @@
 
 Run `dotnet test cpnucleo.slnx`. Docker must be available for the integration suite. It provisions its own PostgreSQL container with commit timestamps enabled and applies real migrations. It neither reads nor mutates your application database.
 
+The solution uses the VSTest `dotnet test` experience across NUnit and xUnit projects. Integration tests select `xunit.v3.mtp-off` with the Visual Studio adapter: this is the supported xUnit package variant for keeping VSTest when upgrading the xUnit v3 package family. Enabling Microsoft.Testing.Platform requires a coordinated runner/workflow migration.
+
 The CRUD theory performs all five operations in an independent scenario for each resource. It replaces the old order-dependent suite whose later tests relied on previous classes creating records. Test totals are deliberately reported by the runner rather than frozen in this page.
 
 ## Focused commands
@@ -40,7 +42,7 @@ bun audit
 
 ## CI and interpretation
 
-PR and release workflows run the backend behavioral suites and frontend tests. PRs also build/audit documentation. Release container checks use the exact immutable amd64 images and database readiness. CodeQL analyzes C# and JavaScript/TypeScript.
+PR and release workflows run backend behavioral suites and frontend tests. PRs also build/audit documentation and validate generated links/assets with `python3 scripts/check-docs-drift.py --built-site`. The checker regression fixture runs with `python3 scripts/test_docs_drift.py`. Release container checks use exact immutable amd64 images and database readiness. CodeQL analyzes C#, JavaScript/TypeScript and GitHub Actions.
 
 Architecture rules explicitly reference their target assemblies: an unloaded assembly no longer produces a successful no-op. Source checks verify configuration structure but do not replace runtime proofs. The architecture-only Codecov upload should not be interpreted as whole-application behavioral coverage.
 

@@ -100,7 +100,7 @@ def draw_node(draw: ImageDraw.ImageDraw, xy, label: str, sub: str | None = None,
     x1, y1, x2, y2 = xy
     rounded(draw, xy, 18, fill=(8, 24, 42, 245), outline=alpha(accent, 175), width=2)
     draw.ellipse((x1 + 18, y1 + 22, x1 + 30, y1 + 34), fill=accent)
-    draw.text((x1 + 42, y1 + 17), label, font=font(FONT_BODY_BOLD, 22), fill=TEXT)
+    draw.text((x1 + 42, y1 + 17), label, font=font(FONT_BODY_BOLD, 20), fill=TEXT)
     if sub:
         draw.text((x1 + 42, y1 + 47), sub, font=font(FONT_MONO, 14), fill=MUTED)
 
@@ -109,7 +109,7 @@ def draw_topology(draw: ImageDraw.ImageDraw) -> None:
     """Draw the right-side service topology motif from the live Pages design."""
     panel = (728, 94, 1116, 542)
     rounded(draw, panel, 28, fill=PANEL, outline=(36, 97, 128, 170), width=1)
-    draw.text((758, 122), "LIVE TOPOLOGY", font=font(FONT_MONO_BOLD, 18), fill=CYAN)
+    draw.text((758, 122), "LEARNING LAB", font=font(FONT_MONO_BOLD, 18), fill=CYAN)
     draw.text((758, 150), "4 SERVICES · 2 TRANSPORTS", font=font(FONT_MONO, 13), fill=MUTED)
 
     cx = 922
@@ -122,14 +122,14 @@ def draw_topology(draw: ImageDraw.ImageDraw) -> None:
     ]:
         draw.line(line, fill=alpha(CYAN, 95), width=2)
 
-    draw_node(draw, (758, 190, 922, 262), "WebClient", "Blazor", CYAN)
+    draw_node(draw, (758, 190, 922, 262), "WebClient", "Astro", CYAN)
     draw_node(draw, (944, 190, 1086, 262), "WebApi", "REST", CYAN)
     draw_node(draw, (758, 407, 922, 479), "Identity", "JWT", VIOLET)
-    draw_node(draw, (944, 407, 1086, 479), "GrpcServer", "Dapper", VIOLET)
+    draw_node(draw, (944, 407, 1086, 479), "gRPC", "Dapper", VIOLET)
 
     rounded(draw, (792, 296, 1052, 370), 24, fill=(16, 54, 74, 255), outline=alpha(CYAN, 210), width=2)
     draw.text((838, 315), "Domain core", font=font(FONT_BODY_BOLD, 28), fill=TEXT)
-    draw.text((839, 347), "CQRS · DDD · tests", font=font(FONT_MONO, 15), fill=TEXT_BODY)
+    draw.text((839, 347), "rules · contracts", font=font(FONT_MONO, 15), fill=TEXT_BODY)
 
     draw.text((771, 502), "PostgreSQL · NGINX · OpenTelemetry", font=font(FONT_MONO, 14), fill=TEXT_BODY)
 
@@ -157,10 +157,10 @@ def draw_social(path: Path, size=(1200, 630), scale: float = 1.0) -> None:
     draw.text((186, 105), ".NET ARCHITECTURE WORKBENCH", font=font(FONT_MONO_BOLD, 17), fill=CYAN)
 
     # eyebrow and headline
-    draw.text((66, 205), "CLEAN ARCHITECTURE · REST · GRPC · BLAZOR", font=font(FONT_MONO_BOLD, 19), fill=CYAN)
+    draw.text((66, 205), "REST · GRPC · EF CORE · DAPPER · ASTRO", font=font(FONT_MONO_BOLD, 19), fill=CYAN)
     head = font(FONT_DISPLAY, 58)
     y = 244
-    for line in ["CLEAN ARCHITECTURE", "REFERENCE", "SYSTEM FOR .NET 10"]:
+    for line in ["HANDS-ON", "ARCHITECTURE LAB", "FOR .NET 10"]:
         draw.text((64, y), line, font=head, fill=TEXT)
         y += 68
     draw.text((68, 478), "Source-backed docs for service boundaries,", font=font(FONT_BODY, 23), fill=TEXT_BODY)

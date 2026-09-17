@@ -25,7 +25,7 @@ namespace WebApi.Integration.Tests.Hosts;
 public sealed class WebAppFixture : IAsyncLifetime
 {
     private const string SigningKey = "disposable-integration-signing-key-at-least-32-characters";
-    private readonly PostgreSqlContainer database = new PostgreSqlBuilder("postgres:16.7")
+    private readonly PostgreSqlContainer database = new PostgreSqlBuilder("postgres:16.15")
         .WithCommand("-c", "track_commit_timestamp=on").Build();
     private WebApplicationFactory<WebApiHost::Program> factory = null!;
     private WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler> grpcFactory = null!;

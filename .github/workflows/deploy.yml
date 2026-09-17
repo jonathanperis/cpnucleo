@@ -12,4 +12,6 @@ permissions:
 
 jobs:
   deploy:
-    uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@3a6707da1d9f043bc3fa760bc08525db96d34c9d
+    uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@d7e3c753530db86cb01b9510ab045c99b172ba03
+    with:
+      node-version: '26.9.0'

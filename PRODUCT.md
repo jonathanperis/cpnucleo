@@ -14,7 +14,7 @@ brand
 
 - Senior .NET engineers evaluating architecture patterns, data access tradeoffs, and service boundaries.
 - Backend and platform engineers checking Docker, NGINX, CI/CD, telemetry, and container deployment practice.
-- Technical reviewers and recruiters who need proof that the project is complete, current, and inspectable.
+- Technical reviewers and recruiters who need current, inspectable evidence and explicit maturity boundaries.
 - Maintainers returning to the docs to find commands, topology, tests, API contracts, and deployment notes.
 
 Users usually arrive in evaluation mode. They are skeptical, time constrained, and want proof trails more than marketing claims.
@@ -23,7 +23,7 @@ Users usually arrive in evaluation mode. They are skeptical, time constrained, a
 
 - Clean Architecture enforced by automated architecture tests.
 - Dual transport implementation: REST through FastEndpoints and gRPC style messaging through FastEndpoints Remote Messaging.
-- Dual persistence strategies against the same PostgreSQL database: EF Core for REST paths, Dapper and Unit of Work for gRPC paths.
+- Persistence comparisons against shared PostgreSQL: EF Core and Dapper examples in REST, Dapper in gRPC.
 - Four-service presentation layer: WebApi, GrpcServer, IdentityApi, and WebClient.
 - Production path through Docker, NGINX, GHCR, GitHub Actions, Hostinger Docker Manager, and OpenTelemetry.
 - Documentation that maps architecture, API reference, database, tests, project structure, technologies, and deployment.
@@ -34,10 +34,10 @@ Use these facts only when the source remains true in README, AGENTS.md, solution
 
 - Runtime: .NET 10.
 - UI: Astro static templates plus native TypeScript and Tailwind CSS, using Catalyst-inspired product patterns.
-- REST: FastEndpoints with EF Core through WebApi.
+- REST: FastEndpoints with EF Core, explicit Dapper and generic Dapper/UoW examples.
 - gRPC style messaging: FastEndpoints Remote Messaging with Dapper through GrpcServer.
 - Authentication: dedicated IdentityApi with JWT and Argon2id-hashed credentials.
-- Database: PostgreSQL 16.7 with Npgsql.
+- Database: PostgreSQL with Npgsql; exact versions live in Compose/project files.
 - Reverse proxy: NGINX with least-connection load balancing.
 - Observability: OpenTelemetry with OTLP export and optional Grafana LGTM stack.
 - CI/CD: GitHub Actions, GHCR, CodeQL, Hostinger Docker Manager.
@@ -75,14 +75,9 @@ Copy principles:
 - Compact proof chips.
 - A sense of an engineering console or architecture workbench.
 
-## Current-site opportunities
+## Current-site maintenance
 
-- Shift from cyber template cues to architecture workbench cues.
-- Make proof inspectable above the fold.
-- Put Documentation before Live Demo on the GitHub Pages surface.
-- Turn `/docs/` into a command center with links to individual pages.
-- Improve docs readability, active navigation state, and empty search feedback.
-- Remove the accidental Astro route emitted by helper files under `src/pages`.
+The site has a proof ledger, docs-first CTAs, a grouped documentation index, individual article routes and empty search feedback. Keep the learning-laboratory identity, runnable quick start and source-backed claims consistent with the repository. See `docs/audit-2026-09.md` for the current enhancement plan.
 
 ## A/B testing hypotheses
 

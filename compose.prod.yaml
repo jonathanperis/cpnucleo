@@ -73,7 +73,7 @@ services:
     restart: "no"
 
   otel-lgtm:
-    image: grafana/otel-lgtm:0.11.10
+    image: grafana/otel-lgtm:0.33.0
     container_name: otel-lgtm-cpnucleo
     volumes:
       - otel_lgtm_data:/data
@@ -111,7 +111,7 @@ services:
     <<: *common-logging
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.126.0
+    image: otel/opentelemetry-collector-contrib:0.161.0
     container_name: otel-collector-cpnucleo
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     configs:
@@ -235,7 +235,7 @@ services:
           memory: "256M"
 
   db:
-    image: postgres:16.7
+    image: postgres:16.15
     container_name: db-cpnucleo
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -272,7 +272,7 @@ services:
   # Kept in production as the internal API load balancer, matching local dev topology.
   # Traefik owns public TLS/host routing; NGINX only balances webapi1/webapi2.
   nginx:
-    image: nginx:1.27-alpine
+    image: nginx:1.30.5-alpine
     container_name: nginx-cpnucleo
     configs:
       - source: nginx_config

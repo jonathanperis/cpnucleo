@@ -44,7 +44,7 @@ public class FastEndpointsConfigurationTests
             .Distinct()
             .Should()
             .ContainSingle("all FastEndpoints packages should use the same reviewed version: {0}", string.Join(", ", fastEndpointsPackageVersions.Select(x => $"{x.ProjectPath}: {x.Version}")))
-            .Which.Should().Be("8.1.0");
+            .Which.Should().Be("8.3.0");
     }
 
     [Fact]
@@ -362,7 +362,7 @@ public class FastEndpointsConfigurationTests
         dashboard.Should().Contain("Dark by default · light-ready");
         dashboard.Should().NotContain("Light by default · dark-ready");
 
-        dockerfile.Should().Contain("FROM node:22-alpine AS runtime");
+        dockerfile.Should().Contain("FROM node:26.9.0-alpine AS runtime");
         dockerfile.Should().Contain("CMD [\"bun\", \"run\", \"preview\"]");
 
         compose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
@@ -456,7 +456,7 @@ public class FastEndpointsConfigurationTests
         var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
 
         File.Exists(GetRepositoryPath(".env")).Should().BeFalse("dotenv files with credentials must not be tracked");
-        deployWorkflow.Should().Contain("pages-docs-deploy.yml@3a6707da1d9f043bc3fa760bc08525db96d34c9d");
+        deployWorkflow.Should().Contain("pages-docs-deploy.yml@d7e3c753530db86cb01b9510ab045c99b172ba03");
         deployWorkflow.Should().NotContain("secrets: inherit");
         prodCompose.Should().NotContain("seed-csv-cpnucleo:");
         prodCompose.Should().Contain("cpnucleo-security-headers");

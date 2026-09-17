@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.12 AS base
 
 LABEL maintainer="Jonathan Peris"
 
@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgssapi-krb5-
 USER app
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.401 AS build
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
