@@ -456,7 +456,7 @@ public class FastEndpointsConfigurationTests
         var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
 
         File.Exists(GetRepositoryPath(".env")).Should().BeFalse("dotenv files with credentials must not be tracked");
-        deployWorkflow.Should().Contain("pages-docs-deploy.yml@fd64028bd04e861ed173c15fdb9766d787ee4d0d");
+        deployWorkflow.Should().Contain("pages-docs-deploy.yml@3a6707da1d9f043bc3fa760bc08525db96d34c9d");
         deployWorkflow.Should().NotContain("secrets: inherit");
         prodCompose.Should().NotContain("seed-csv-cpnucleo:");
         prodCompose.Should().Contain("cpnucleo-security-headers");
