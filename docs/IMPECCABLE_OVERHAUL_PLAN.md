@@ -1,5 +1,7 @@
 # CPnucleo GitHub Pages design overhaul plan
 
+> Historical proposal from 2026-05-16. The documentation index, sidebar helper relocation, empty search state, proof ledger and variant controls are now implemented in source. Scores and detector line numbers below describe the earlier design, not a current audit. See [the September 2026 audit](audit-2026-09.md) for current findings; no measured A/B winner or current browser certification is implied.
+
 Target surface: `docs/` Astro GitHub Pages site at `https://jonathanperis.github.io/cpnucleo/`.
 
 Source synced before review: `main` from `origin/main`, reviewed on 2026-05-16.

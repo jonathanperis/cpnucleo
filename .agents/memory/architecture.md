@@ -7,18 +7,18 @@ type: project
 ## Dual Data Access Strategy
 
 The project intentionally implements two data access approaches against the same PostgreSQL database:
-- **EF Core** (used by WebApi REST endpoints) — full ORM with migrations, ApplicationDbContext
-- **Dapper + Dapper.AOT** (used by GrpcServer handlers) — micro-ORM with compile-time SQL, DapperRepository<T>, UnitOfWork
+- **EF Core** — selected REST operations, Identity and shared migrations via ApplicationDbContext
+- **Dapper** — REST repository/UoW examples and gRPC handlers; Dapper.AOT compatibility remains experimental
 
 **Why:** Demonstrates that Clean Architecture allows swapping infrastructure without touching domain or presentation. Also compares ORM vs micro-ORM trade-offs in a real system.
 
-**How to apply:** When adding new entities or endpoints, follow the existing pattern — REST endpoints use EF Core, gRPC handlers use Dapper. Never mix them within the same presentation project.
+**How to apply:** Preserve useful comparisons. Inspect the endpoint's existing strategy and share domain/use-case rules where appropriate; REST intentionally mixes EF Core and Dapper.
 
 ## Architecture Enforcement
 
-25+ NetArchTest rules run at build time to enforce:
+Architecture tests run explicitly through `dotnet test` and inspect real target assemblies:
 - Domain layer has zero external dependencies (no EF Core, Dapper, Npgsql)
-- Infrastructure depends only on Domain
+- Infrastructure depends on Application and Domain, not transport hosts
 - Presentation projects cannot cross-reference each other (WebApi cannot depend on GrpcServer)
 - Naming conventions are enforced (DTOs end with `Dto`, handlers end with `Handler`, etc.)
 

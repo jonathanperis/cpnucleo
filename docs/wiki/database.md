@@ -1,199 +1,76 @@
 # Database
 
-Cpnucleo uses PostgreSQL 16.7 as its primary database, accessed via two parallel data access strategies: EF Core (for the REST API) and Dapper (for the gRPC server).
+PostgreSQL stores one shared model. REST compares EF Core, an explicit Dapper project repository and a generic Dapper Unit of Work; gRPC uses Dapper. Both use the schema maintained by EF Core migrations.
 
----
+## Startup and durability
 
-## Database Setup
+| Configuration | Initialization | Data |
+|---|---|---|
+| `compose.lab.yaml` | PostgreSQL with commit timestamps enabled; one-shot `migrate` applies migrations | Explicit `seed` command; loopback port 15432 |
+| `compose.prod.yaml` | Initial DDL for a fresh volume, then `migrate-cpnucleo` applies pending migrations before APIs start | Persistent volume; no host database port or automatic seed |
+| `compose.yaml` + `compose.override.yaml` | Legacy init-directory mount, including the CSV import script, on a fresh volume | Legacy load-test dataset; no one-shot migration service |
 
-### Docker (Automatic)
+Use the lab for a new local environment. The legacy topology requires an explicit migration step for an existing database; PostgreSQL entrypoint scripts run only when initializing an empty data directory. They do not upgrade an existing volume.
 
-The database is automatically provisioned when running with Docker Compose. The `db` service:
+Lab, default and production configurations keep PostgreSQL durability enabled. Checkpoint/WAL tuning in the Compose files does not disable `fsync`, `synchronous_commit` or `full_page_writes`.
 
-1. Starts PostgreSQL 16.7
-2. Creates the database using credentials from `.env`
-3. Runs SQL scripts from `docker-entrypoint-initdb.d/` in alphabetical order
+## Schema and lifecycle
 
-### Docker Configuration
+| Table | Main fields | Relationships |
+|---|---|---|
+| Organizations | Name, Description | — |
+| Projects | Name | Organization |
+| Assignments | Name, Description, StartDate, EndDate, AmountHours | Project, Workflow, User, AssignmentType |
+| AssignmentTypes | Name | — |
+| Workflows | Name, Order | — |
+| Users | Name, Login, Password (hash), Salt (legacy column) | — |
+| Appointments | Description, KeepDate, AmountHours | Assignment, User |
+| Impediments | Name | — |
+| AssignmentImpediments | Description | Assignment, Impediment |
+| UserAssignments | — | User, Assignment |
+| UserProjects | — | User, Project |
 
-```yaml
-db:
-  image: postgres:16.7
-  environment:
-    POSTGRES_USER: ${POSTGRES_USER}
-    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    POSTGRES_DB: ${POSTGRES_DB}
-  volumes:
-    - db_data:/var/lib/postgresql/data
-    - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-  command: >
-    postgres
-    -c checkpoint_timeout=600
-    -c max_wal_size=4096
-    -c synchronous_commit=0
-    -c fsync=0
-    -c full_page_writes=0
+Entities share `Id`, `CreatedAt`, nullable `UpdatedAt`/`DeletedAt`, and `Active`. Factories generate UUIDv7 IDs when none is supplied. EF query filters and Dapper reads exclude inactive rows. Normal removal sets `Active=false` and `DeletedAt`; it preserves rows and relationships rather than physically deleting them or automatically archiving children.
+
+The initial migration creates `CreatedAt` and foreign-key indexes. `LoginIntegrity` adds a normalized-active-login index and a trigger that serializes new/changed active logins. It preserves legacy duplicates rather than rewriting accounts; ambiguous logins cannot authenticate. See the [migration sources](https://github.com/jonathanperis/cpnucleo/tree/main/src/Infrastructure/Migrations) for the authoritative schema.
+
+## Connection configuration
+
+`DB_CONNECTION_STRING` is consumed by both EF Core and Dapper. A host process using the disposable lab database can use:
+
+```text
+Host=localhost;Port=15432;Database=cpnucleo_lab;Username=learner;Password=disposable-lab-only;Maximum Pool Size=20
 ```
 
-Performance flags (optimized for development speed over durability):
+Containers use `Host=db` and internal port 5432. Pool sizes and multiplexing are configuration choices, not guarantees required by the application. Production credentials belong in deployment configuration.
 
-- `checkpoint_timeout=600` -- less frequent checkpoints
-- `max_wal_size=4096` -- larger WAL before checkpoint
-- `synchronous_commit=0` -- async commits
-- `fsync=0` -- skip fsync (data loss risk, faster writes)
-- `full_page_writes=0` -- skip full-page writes
+## Migrations
 
-### Manual Setup
+Run from the repository root with the intended database configured:
 
-```bash
-psql -U postgres -f docker-entrypoint-initdb.d/001-track-commit-timestamp.sql
-psql -U postgres -d cpnucleo -f docker-entrypoint-initdb.d/002-database-dump-ddl.sql
+```sh
+dotnet ef migrations add DescriptiveName -p ./src/Infrastructure -s ./src/WebApi -c ApplicationDbContext
+dotnet ef database update -p ./src/Infrastructure -s ./src/WebApi -c ApplicationDbContext
 ```
 
----
+The one-shot deployment command is `WebApi --migrate-database`; it calls `MigrateAsync` and exits. Exporting an idempotent SQL script is a separate operation and does not apply it. See the [Infrastructure README](https://github.com/jonathanperis/cpnucleo/blob/main/src/Infrastructure/readme.md) for tooling and export commands.
 
-## Initialization Scripts
+## EF Core, Dapper and concurrency
 
-### `001-track-commit-timestamp.sql`
+`ApplicationDbContext` exposes eleven entity sets and active-row filters. The generic `DapperRepository<T>` provides parameterized reads/writes, bounded search/ID queries, canonical persisted-column sorting and soft deletion. Reflection metadata is cached; navigation properties are excluded from SQL column lists.
 
-Enables commit timestamp tracking for the Delta middleware:
+`ProjectRepository` handles project-specific operations. Project batch removal is transactional. Version-aware updates compare `COALESCE(UpdatedAt, CreatedAt)` with the client's observed timestamp; stale writes fail. Unversioned clients retain last-write-wins behavior.
 
-```sql
-ALTER SYSTEM SET track_commit_timestamp = on;
-```
+`UnitOfWork` binds repositories to a connection and optional transaction with explicit begin/commit/rollback. The Dapper.AOT package is present, but generic reflection-based repositories are not proof of complete AOT compatibility.
 
-This allows the Delta library to implement HTTP conditional requests based on when data was last modified.
+## Conditional requests and streams
 
-### `002-database-dump-ddl.sql`
+Delta middleware uses PostgreSQL commit timestamps for conditional HTTP requests. The lab starts PostgreSQL with `track_commit_timestamp=on`; the legacy/production bootstrap includes `001-track-commit-timestamp.sql`.
 
-Contains the full DDL schema generated from EF Core migrations. Creates all tables, constraints, and indexes idempotently (using `IF NOT EXISTS` checks).
+SSE listings additionally combine local notifications with a 15-second refresh for external writes. `/readyz` checks a PostgreSQL connection and a query against `Users`; it is not a full schema diff or business-workflow verification.
 
----
+## Seed and recovery tools
 
-## Schema
+Use the explicit tiny/realistic [lab profiles](../getting-started/#data-profiles). `--reset-lab` is Development-only and drops the configured database. The advanced `--run-fake-data-csv-import` command replaces demo data and is not part of production startup. The legacy `CreateFakeData=true` option generates dump files; it is not the normal lab seed path and has no environment guard of its own.
 
-### Tables
-
-| Table | Primary Key | Key Columns | Foreign Keys |
-|-------|------------|-------------|--------------|
-| Organizations | Id (uuid) | Name, Description | -- |
-| Projects | Id (uuid) | Name | OrganizationId -> Organizations |
-| Assignments | Id (uuid) | Name, Description, StartDate, EndDate, AmountHours | ProjectId -> Projects, WorkflowId -> Workflows, UserId -> Users, AssignmentTypeId -> AssignmentTypes |
-| AssignmentTypes | Id (uuid) | Name | -- |
-| Workflows | Id (uuid) | Name, Order | -- |
-| Users | Id (uuid) | Name, Login, Password, Salt | -- |
-| Appointments | Id (uuid) | Description, KeepDate, AmountHours | AssignmentId -> Assignments, UserId -> Users |
-| Impediments | Id (uuid) | Name | -- |
-| AssignmentImpediments | Id (uuid) | Description | AssignmentId -> Assignments, ImpedimentId -> Impediments |
-| UserAssignments | Id (uuid) | -- | UserId -> Users, AssignmentId -> Assignments |
-| UserProjects | Id (uuid) | -- | UserId -> Users, ProjectId -> Projects |
-
-### Common Columns (all tables)
-
-| Column | Type | Description |
-|--------|------|-------------|
-| Id | uuid | Primary key (generated via `Guid.CreateVersion7()`) |
-| CreatedAt | timestamp with time zone | Record creation time |
-| UpdatedAt | timestamp with time zone (nullable) | Last update time |
-| DeletedAt | timestamp with time zone (nullable) | Soft delete time |
-| Active | boolean | Soft delete flag (`true` = active) |
-
-### Indexes
-
-All tables have indexes on:
-
-- `CreatedAt` -- for Delta middleware timestamp queries
-- Foreign key columns -- for join performance
-
----
-
-## Connection Configuration
-
-### Connection String
-
-Configured via the `DB_CONNECTION_STRING` environment variable:
-
-```
-Host=db;Username=postgres;Password=postgres;Database=cpnucleo;Minimum Pool Size=10;Maximum Pool Size=10;Multiplexing=true
-```
-
-| Parameter | Value | Purpose |
-|-----------|-------|---------|
-| Host | `db` (Docker) / `localhost` (local) | Database server |
-| Minimum Pool Size | 10 | Pre-allocated connections |
-| Maximum Pool Size | 10 | Connection limit |
-| Multiplexing | true | Npgsql multiplexing for better throughput |
-
----
-
-## EF Core (WebApi + IdentityApi)
-
-### ApplicationDbContext
-
-The `ApplicationDbContext` implements `IApplicationDbContext` and provides DbSet properties for all 11 entities. It is registered as a scoped service.
-
-### Migrations
-
-EF Core migrations are maintained in `src/Infrastructure/Migrations/`. The initial migration `20250219224724_InitiaDblMigration` creates the full schema.
-
-For production, migrations are exported as SQL and placed in `docker-entrypoint-initdb.d/` rather than running EF Core migrations at startup.
-
-### Delta Middleware
-
-The [Delta](https://github.com/SimonCropp/Delta) library is integrated for HTTP conditional requests:
-
-```csharp
-app.UseDelta(
-    getConnection: httpContext => httpContext.RequestServices.GetRequiredService<NpgsqlConnection>());
-```
-
-This enables `If-Modified-Since` / `304 Not Modified` responses using PostgreSQL's commit timestamps.
-
----
-
-## Dapper (GrpcServer)
-
-### Generic Repository
-
-`DapperRepository<T>` provides CRUD operations via raw SQL:
-
-- `GetByIdAsync` -- `SELECT * FROM "Table" WHERE "Id" = @Id AND "Active" = true`
-- `GetAllAsync` -- Paginated query with `OFFSET/LIMIT`, configurable sort column with SQL injection protection
-- `AddAsync` -- `INSERT INTO ... RETURNING "Id"` with reflection-based column mapping
-- `UpdateAsync` -- `UPDATE ... SET ... WHERE "Id" = @Id`
-- `DeleteAsync` -- Hard delete (for gRPC operations)
-- `ExistsAsync` -- `SELECT EXISTS(...)` check
-
-### Performance Optimizations
-
-- `PropertyInfo[]` cached via `Lazy<>` to avoid repeated reflection
-- `HashSet<string>` for O(1) sort column validation
-- `Dapper.AOT` for compile-time SQL interception
-
-### Unit of Work
-
-`UnitOfWork` wraps `NpgsqlConnection` and `NpgsqlTransaction`:
-
-```csharp
-public interface IUnitOfWork
-{
-    IRepository<T> GetRepository<T>() where T : BaseEntity;
-    Task BeginTransactionAsync();
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
-}
-```
-
-### Specialized Repository
-
-`ProjectRepository` implements `IProjectRepository` for project-specific queries that go beyond the generic CRUD operations.
-
----
-
-## Fake Data Generation
-
-The Infrastructure layer includes a `FakeDataHelper` that uses the Bogus library to generate realistic test data. When `CreateFakeData=true` is set in configuration:
-
-1. Bogus generates fake data for all entities
-2. Outputs SQL/CSV dump files
-3. Files should be placed in `docker-entrypoint-initdb.d/` for seeding
+The [Learning Lab](../learning-lab/) describes disposable persistence measurements, backup/restore and outbox experiments.

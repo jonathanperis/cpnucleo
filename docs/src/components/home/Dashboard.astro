@@ -5,7 +5,7 @@ const proofRows = [
   {
     label: 'Transport parity',
     value: 'REST and gRPC',
-    body: 'WebApi exposes REST endpoints through FastEndpoints and EF Core. GrpcServer uses FastEndpoints Remote Messaging with Dapper against the same PostgreSQL model.',
+    body: 'WebApi compares EF Core and Dapper through FastEndpoints REST. GrpcServer uses FastEndpoints Remote Messaging with Dapper against the same PostgreSQL model.',
     href: `${docsBase}/api-reference/`
   },
   {
@@ -17,18 +17,19 @@ const proofRows = [
   {
     label: 'Runtime topology',
     value: '4 services',
-    body: 'WebApi, IdentityApi, GrpcServer, and WebClient run behind Docker and NGINX with PostgreSQL as the primary database.',
+    body: 'WebApi, IdentityApi, GrpcServer, and WebClient share PostgreSQL. Production uses Traefik for public routing and NGINX to balance the two REST instances.',
     href: `${docsBase}/architecture/`
   },
   {
     label: 'Release path',
     value: 'GHCR to Hostinger',
-    body: 'GitHub Actions builds container images, publishes to GHCR, runs security analysis, and deploys the application to Hostinger Docker Manager.',
+    body: 'GitHub Actions tests immutable amd64 images before Hostinger deployment. CodeQL runs separately; multi-arch manifests also wait for the arm64 build.',
     href: `${docsBase}/deployment/`
   }
 ];
 
 const docsPaths = [
+  ['Learning Lab', 'Start small, change one variable, and verify the result.', `${docsBase}/learning-lab/`],
   ['Architecture', 'Layer boundaries, transport split, and domain rules.', `${docsBase}/architecture/`],
   ['API Reference', 'REST endpoints, Identity API, and gRPC contracts.', `${docsBase}/api-reference/`],
   ['Database', 'PostgreSQL, EF Core, Dapper, migrations, and seed scripts.', `${docsBase}/database/`],
@@ -78,8 +79,10 @@ const docsPaths = [
     <pre><code><span class="comment"># Clone the repository</span>
 <span class="command">git clone</span> <span class="arg">https://github.com/jonathanperis/cpnucleo</span>
 
-<span class="comment"># Start the Docker topology</span>
+<span class="comment"># Build the minimal lab and seed disposable example data</span>
 <span class="command">cd</span> <span class="arg">cpnucleo</span>
-<span class="command">docker compose up</span> <span class="arg">-d</span></code></pre>
+<span class="command">docker compose</span> <span class="arg">-f compose.lab.yaml up --build -d</span>
+<span class="command">docker compose</span> <span class="arg">-f compose.lab.yaml run --rm seed</span></code></pre>
   </div>
+  <p>Open http://localhost:5400. See <a href={`${docsBase}/getting-started/`}>Getting Started</a> for the local account, profiles and source-development settings.</p>
 </section>

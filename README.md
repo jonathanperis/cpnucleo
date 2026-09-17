@@ -14,7 +14,7 @@ The goal is a reliable learning baseline with explicit experiments, rather than 
 
 ## Start locally
 
-Prerequisites: Docker with Compose v2. For source development and tests, also install .NET 10 SDK and Node.js 22.14+ with Bun 1.3.11+.
+Prerequisites: Docker with Compose v2. For source development and tests, use the .NET SDK in `global.json`, Node.js in `.nvmrc`, and Bun 1.4.2. The package manifests declare the minimum supported Node version.
 
 ```sh
 git clone https://github.com/jonathanperis/cpnucleo.git
@@ -98,7 +98,7 @@ bun run test
 bun audit
 ```
 
-The frontend test command builds the static pages first, then tests native DOM interactions against that generated markup. From `docs`, run `bun install --frozen-lockfile && bun run build`. Check documentation contracts with `python3 scripts/check-docs-drift.py`.
+The frontend test command builds static pages, then tests native DOM interactions against generated markup. From `docs`, run `bun install --frozen-lockfile && bun run build && bun audit`. From the root, run `python3 scripts/check-docs-drift.py --built-site` to check documentation contracts, generated links, fragments and assets. See the [docs contributor guide](docs/README.md) and [audit/enhancement record](docs/audit-2026-09.md).
 
 ## Deployment
 
