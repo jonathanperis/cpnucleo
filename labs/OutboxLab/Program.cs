@@ -2,7 +2,7 @@ using Dapper;
 using Npgsql;
 using Testcontainers.PostgreSql;
 
-await using var database = new PostgreSqlBuilder("postgres:16.7").Build();
+await using var database = new PostgreSqlBuilder("postgres:16.15").Build();
 await database.StartAsync();
 await using var connection = new NpgsqlConnection(database.GetConnectionString());
 await connection.OpenAsync();

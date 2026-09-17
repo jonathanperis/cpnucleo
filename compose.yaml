@@ -57,7 +57,7 @@ x-common-logging: &common-logging
 
 services:
   otel-lgtm:
-    image: grafana/otel-lgtm:0.11.10
+    image: grafana/otel-lgtm:0.33.0
     container_name: otel-lgtm-cpnucleo
     volumes:
       - otel_lgtm_data:/data
@@ -71,7 +71,7 @@ services:
     <<: *common-logging
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.126.0
+    image: otel/opentelemetry-collector-contrib:0.161.0
     container_name: otel-collector-cpnucleo
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     volumes:
@@ -137,7 +137,7 @@ services:
     healthcheck: *healthcheck-webclient
 
   db:
-    image: postgres:16.7
+    image: postgres:16.15
     container_name: db-cpnucleo
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -166,7 +166,7 @@ services:
     <<: *common-logging
 
   nginx:
-    image: nginx:1.27-alpine
+    image: nginx:1.30.5-alpine
     container_name: nginx-cpnucleo
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro

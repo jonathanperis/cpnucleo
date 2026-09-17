@@ -20,7 +20,7 @@ int Option(string key, int fallback, int maximum)
 
 var rows = Option("--rows", 2000, 100000);
 var iterations = Option("--iterations", 50, 1000);
-await using var database = new PostgreSqlBuilder("postgres:16.7").Build();
+await using var database = new PostgreSqlBuilder("postgres:16.15").Build();
 await database.StartAsync();
 await using var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
     .UseNpgsql(database.GetConnectionString()).Options);

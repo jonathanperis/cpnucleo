@@ -80,7 +80,7 @@ Hierarchy:
 
 ### Hero
 
-- Headline: `Clean Architecture reference system for .NET 10`.
+- Headline: `A hands-on architecture laboratory for .NET 10`.
 - Subcopy should name REST, gRPC, Astro, PostgreSQL, Docker, Hostinger, and tests without overclaiming.
 - CTA hierarchy: Documentation, GitHub, Live Demo.
 - Include visible A/B variant controls when testing.
@@ -133,12 +133,12 @@ No side-stripe accents. Use full borders, subtle background tint, or inline labe
 - Avoid claiming complete test coverage unless verified by reports.
 - Prefer action labels: Read docs, Inspect GitHub, Open live demo.
 
-## Known issues to address
+## Current implementation and review boundaries
 
-- `docs/src/pages/docs/sidebar.config.ts` must not live under `src/pages` because Astro emits it as `/docs/sidebar.config`.
-- Existing detector findings include gradient text, pure black code background, layout width transition, and side-tab callout styling.
-- The docs root currently behaves like a long compiled page rather than an index.
-- Sidebar and docs typography are too mono-heavy for sustained reading.
+- Navigation configuration lives in `docs/src/lib/sidebar.config.ts`, outside Astro's route tree.
+- The documentation root is a grouped index; articles have independent routes and summaries.
+- Source includes readable body fonts, an empty search state and an accessible menu-state attribute.
+- Historical detector findings and A/B hypotheses live in `docs/IMPECCABLE_OVERHAUL_PLAN.md`. Validate visual/accessibility outcomes in an explicitly requested browser review; source inspection alone does not prove them.
 
 ## Quality bar
 
