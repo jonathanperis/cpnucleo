@@ -12,4 +12,4 @@ permissions:
 
 jobs:
   deploy:
-    uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@fd64028bd04e861ed173c15fdb9766d787ee4d0d
+    uses: jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@3a6707da1d9f043bc3fa760bc08525db96d34c9d

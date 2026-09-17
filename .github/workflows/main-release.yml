@@ -1,8 +1,7 @@
 name: Main Release
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 on:
   push:
@@ -39,25 +38,26 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Setup .NET SDK
         if: matrix.service != 'WebClient'
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           global-json-file: global.json
 
       - name: Setup Bun
         if: matrix.service == 'WebClient'
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version: 1.3.11
 
       - name: Setup Node
         if: matrix.service == 'WebClient'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: '22'
 
@@ -102,6 +102,9 @@ jobs:
 
   build-push-amd64:
     name: Build & Push amd64 (${{ matrix.service }})
+    permissions:
+      contents: read
+      packages: write
     needs: setup-build-test
     runs-on: ubuntu-latest
     env:
@@ -124,22 +127,23 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push amd64 Image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: ./src/
           file: ${{ matrix.dockerfile }}
@@ -159,6 +163,9 @@ jobs:
 
   build-push-arm64:
     name: Build & Push arm64 (${{ matrix.service }})
+    permissions:
+      contents: read
+      packages: write
     needs: build-push-amd64
     runs-on: ubuntu-latest
     env:
@@ -181,25 +188,26 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push arm64 Image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: ./src/
           file: ${{ matrix.dockerfile }}
@@ -220,6 +228,9 @@ jobs:
 
   container-test:
     name: Container Healthcheck Test (${{ matrix.service }})
+    permissions:
+      contents: read
+      packages: read
     needs: build-push-amd64
     runs-on: ubuntu-latest
     env:
@@ -246,8 +257,9 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Create CI compose environment
@@ -299,6 +311,9 @@ jobs:
 
   merge-manifest:
     name: Merge Multi-arch Manifest (${{ matrix.service }})
+    permissions:
+      contents: read
+      packages: write
     needs: [build-push-amd64, build-push-arm64, container-test]
     runs-on: ubuntu-latest
     strategy:
@@ -315,7 +330,7 @@ jobs:
 
     steps:
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -331,12 +346,15 @@ jobs:
 
   deploy-hostinger:
     name: Deploy to Hostinger Docker Manager
-    if: ${{ github.event_name == 'push' || inputs.deploy_hostinger }}
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.deploy_hostinger)
     # Hostinger runs on amd64; deploy as soon as amd64 images and container
     # healthchecks pass instead of waiting for slow arm64 multi-arch manifests.
     needs: [container-test, build-push-amd64]
     runs-on: ubuntu-latest
     environment: production-hostinger
+    permissions:
+      contents: read
+      packages: read
     env:
       HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
       HOSTINGER_VPS_ID: ${{ secrets.HOSTINGER_VPS_ID }}
@@ -348,12 +366,13 @@ jobs:
       CPNUCLEO_GRPC_HEALTH_URL: ${{ secrets.CPNUCLEO_GRPC_HEALTH_URL }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
