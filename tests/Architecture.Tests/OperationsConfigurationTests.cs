@@ -60,7 +60,7 @@ public class OperationsConfigurationTests
         runtimeEnv.Should().NotContain("GRAFANA");
         runtimeEnv.Should().NotContain("POSTGRES_PASSWORD");
         identity.Should().Contain("Jwt__SigningPrivateKey: ${Jwt__SigningPrivateKey:-}");
-        identity.Should().Contain("CPNUCLEO_ADMIN_LOGINS");
+        runtimeEnv.Should().Contain("CPNUCLEO_ADMIN_LOGINS", "API hosts re-check admin claims against the configured logins");
         database.Should().NotContain("DB_CONNECTION_STRING");
         database.Should().NotContain("Jwt__");
 

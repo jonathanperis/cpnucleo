@@ -45,6 +45,9 @@ x-dotnet-runtime-env: &dotnet-runtime-env
   Jwt__SigningKey: ${Jwt__SigningKey:?Set Jwt__SigningKey}
   # Optional RS256 verification key. Empty means "not configured" (HS256 via Jwt__SigningKey).
   Jwt__SigningPublicKey: ${Jwt__SigningPublicKey:-}
+  # IdentityApi grants admin claims from this list; WebApi and GrpcServer re-check it on every
+  # session validation so removing a login revokes admin access within 30 seconds.
+  CPNUCLEO_ADMIN_LOGINS: ${CPNUCLEO_ADMIN_LOGINS:-}
   Cors__AllowedOrigins__0: ${Cors__AllowedOrigins__0:-https://cpnucleo.jonathanperis.tech}
   OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
   OTEL_METRIC_EXPORT_INTERVAL: ${OTEL_METRIC_EXPORT_INTERVAL:-30000}
@@ -180,8 +183,6 @@ services:
     container_name: identityapi-cpnucleo
     environment:
       <<: *dotnet-runtime-env
-      # Only IdentityApi decides admin claims at login/refresh.
-      CPNUCLEO_ADMIN_LOGINS: ${CPNUCLEO_ADMIN_LOGINS:-}
       # Optional RS256 signing key, held only by the token issuer.
       Jwt__SigningPrivateKey: ${Jwt__SigningPrivateKey:-}
     expose:

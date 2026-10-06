@@ -79,8 +79,8 @@ There is no shared `env_file`. Compose still reads `.env` (or `--env-file`) to i
 
 | Container | Variables |
 |-----------|-----------|
-| WebApi ×2, GrpcServer | `ASPNETCORE_ENVIRONMENT`, `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` (set in Compose), `DB_CONNECTION_STRING`, `Jwt__SigningKey`, optional `Jwt__SigningPublicKey`, `Cors__AllowedOrigins__0`, `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_METRIC_EXPORT_INTERVAL`, `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` |
-| IdentityApi | The API set above plus `CPNUCLEO_ADMIN_LOGINS` and optional `Jwt__SigningPrivateKey` (only the token issuer holds a private key) |
+| WebApi ×2, GrpcServer | `ASPNETCORE_ENVIRONMENT`, `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` (set in Compose), `DB_CONNECTION_STRING`, `Jwt__SigningKey`, optional `Jwt__SigningPublicKey`, `CPNUCLEO_ADMIN_LOGINS`, `Cors__AllowedOrigins__0`, `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_METRIC_EXPORT_INTERVAL`, `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` |
+| IdentityApi | The API set above plus optional `Jwt__SigningPrivateKey` (only the token issuer holds a private key) |
 | migrate-cpnucleo | `ASPNETCORE_ENVIRONMENT`, `DB_CONNECTION_STRING` |
 | WebClient | `OTEL_EXPORTER_OTLP_HTTP_ENDPOINT`, `OTEL_SERVICE_NAME`, `OTEL_METRIC_EXPORT_INTERVAL` |
 | db | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` |
@@ -315,7 +315,7 @@ Rollback lines are prefixed with `[rollback]` and raised as GitHub error annotat
 | `OTEL_TRACES_SAMPLER` / `OTEL_TRACES_SAMPLER_ARG` | Standard OpenTelemetry sampler selection, honored by the .NET hosts | `parentbased_always_on` / `1.0` |
 | `OTEL_METRIC_EXPORT_INTERVAL` | Metric export interval (ms) | 30000 |
 | `Cors__AllowedOrigins__0` | Browser origin allowed by WebApi/IdentityApi | `https://cpnucleo.jonathanperis.tech` |
-| `CPNUCLEO_ADMIN_LOGINS` | Comma-separated admin logins (IdentityApi) | empty |
+| `CPNUCLEO_ADMIN_LOGINS` | Comma-separated admin logins. IdentityApi issues admin claims from it; WebApi and GrpcServer re-check it during session validation | empty |
 | `BACKUP_DIR` / `BACKUP_RETENTION_DAYS` / `BACKUP_REMOTE` | Backup location, local retention and optional rsync target | `/opt/backups/cpnucleo` / 14 / empty |
 
 The .NET hosts sample with `ParentBased(AlwaysOn)` unless `OTEL_TRACES_SAMPLER` is set, and `/healthz` and `/readyz` are excluded from ASP.NET Core traces.
