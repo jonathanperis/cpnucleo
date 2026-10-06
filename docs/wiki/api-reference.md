@@ -96,7 +96,7 @@ The WebClient CRUD screens consume the REST endpoints through `src/WebClient/src
 - `{ result: item }` singular envelopes
 - resource-key singular envelopes such as `{ organization: { ... } }`
 
-Singular normalization supports edit/detail loads. Missing relation labels use batched list requests with comma-separated `ids`, then merge into the existing cache. Selected relations remain available across search pages.
+Singular normalization supports edit/detail loads. List requests use flat query keys only (`pageNumber`, `pageSize`, `search`, `ids`) plus `sortColumn=CreatedAt&sortOrder=ASC`. Missing relation labels use batched list requests with comma-separated `ids` (at most 100 per request), then merge into the existing cache. Selected relations keep their cached labels across search pages. Listings open the SSE stream directly and use its first event as the initial snapshot. See [WebClient CRUD](../webclient-crud/) for error, authorization and reconnect handling.
 
 ### Rate Limiting
 

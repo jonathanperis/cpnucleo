@@ -38,7 +38,21 @@ bun run test
 bun audit
 ```
 
-`bun run test` builds Astro, then runs API/session utility tests and jsdom interaction tests against the generated HTML. The tests exercise native form events, password requirements, safe text rendering, stale-page cancellation, relation search/paging and all home counters. They are DOM unit/contract tests, not a real-browser accessibility or rendering certification.
+`bun run test` builds Astro, then runs Vitest. jsdom needs a real Node runtime: use the version in `.nvmrc` and make sure `node` on `PATH` is not a Bun shim (some Bun installs link `node` to Bun, which breaks jsdom). For example, put an official Node build first on `PATH` for that command only:
+
+```sh
+PATH="/path/to/node-v26/bin:$PATH" bun run test
+```
+
+What the suite covers:
+
+- **Session and HTTP:** the unified error envelope (field errors and `generalErrors` preferred over the summary), 403 without sign-out, 409 messages, 429 with `Retry-After`, 401 handling for JSON requests, live streams and refreshes (including a refresh rejected after a password change), background calls and refreshes not counting as activity, the inactivity timer re-checking activity, and cross-tab logout through `BroadcastChannel` and the `storage` fallback.
+- **Lists:** the SSE parser (chunk splits, CRLF, comments, multi-line data), stream-first snapshots without an extra JSON request, flat parameters with a stable sort, reconnect backoff that resets only after a live snapshot, the cap, jitter and `Retry-After`.
+- **CRUD pages (jsdom against generated HTML):** field-error marking and clearing, task date ordering, required workflow order, relation labels outside the loaded page, explicit clears, per-relation abort and "More" query consistency, admin/non-admin gating (including no `/api/users` request for non-admins), distinct row action names, focus return, status versus alert semantics, safe text rendering, stale-page cancellation and home counters.
+- **Server scripts:** CSP manifest generation from build-time URLs and the built HTML, header generation, manifest validation, and the static server destroying a response when a read fails after headers were sent.
+- **Astro-only pages:** `src/guarantees/astro-pages.test.ts` fails if either site gains a non-`.astro` page, a client UI framework dependency/integration or an HTML file in `public/`, or if any built WebClient HTML lacks Astro's generator marker. `scripts/check-docs-drift.py` (with `--built-site` for `docs/out`) and `tests/Architecture.Tests/AstroPagesTests.cs` enforce the same rule.
+
+These are DOM unit/contract tests, not a real-browser accessibility or rendering certification. Treat jsdom evidence as jsdom evidence; check behavior that depends on layout, CSP enforcement or assistive technology in a real browser.
 
 ## CI and interpretation
 
