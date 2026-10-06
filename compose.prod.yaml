@@ -8,34 +8,63 @@ name: "cpnucleo-prod"
 x-common-healthcheck:
   x-healthcheck-api: &healthcheck-api
     test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5000; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
-    interval: 10m
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-identity: &healthcheck-identity
     test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5010; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
-    interval: 10m
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-grpcserver: &healthcheck-grpcserver
     test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5021; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
-    interval: 10m
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-webclient: &healthcheck-webclient
     test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5030/healthz"]
-    interval: 10m
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
 
+# Each container receives only the variables it needs; there is no shared
+# env_file. Compose still reads .env (or --env-file) for the ${...} values.
+x-dotnet-runtime-env: &dotnet-runtime-env
+  ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+  # Traefik -> NGINX -> API: per-IP rate limiting needs the forwarded client IP.
+  ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+  DB_CONNECTION_STRING: ${DB_CONNECTION_STRING:?Set DB_CONNECTION_STRING}
+  Jwt__SigningKey: ${Jwt__SigningKey:?Set Jwt__SigningKey}
+  # Optional RS256 verification key. Empty means "not configured" (HS256 via Jwt__SigningKey).
+  Jwt__SigningPublicKey: ${Jwt__SigningPublicKey:-}
+  Cors__AllowedOrigins__0: ${Cors__AllowedOrigins__0:-https://cpnucleo.jonathanperis.tech}
+  OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
+  OTEL_METRIC_EXPORT_INTERVAL: ${OTEL_METRIC_EXPORT_INTERVAL:-30000}
+  # parentbased_always_on matches the in-code default; set e.g. parentbased_traceidratio + ARG to sample less.
+  OTEL_TRACES_SAMPLER: ${OTEL_TRACES_SAMPLER:-parentbased_always_on}
+  OTEL_TRACES_SAMPLER_ARG: ${OTEL_TRACES_SAMPLER_ARG:-1.0}
+
+# Application containers run unprivileged with an immutable root filesystem;
+# /tmp is the only writable path.
+x-app-hardening: &app-hardening
+  security_opt:
+    - "no-new-privileges:true"
+  cap_drop:
+    - ALL
+  read_only: true
+  tmpfs:
+    - /tmp
+
 x-common-api-prod: &common-api-prod
+  <<: *app-hardening
   depends_on:
     db:
       condition: service_healthy
@@ -43,8 +72,8 @@ x-common-api-prod: &common-api-prod
       condition: service_completed_successfully
     otel-collector:
       condition: service_started
-  env_file:
-    - .env
+  environment:
+    <<: *dotnet-runtime-env
   restart: always
   deploy:
     resources:
@@ -64,14 +93,20 @@ x-common-logging: &common-logging
 
 services:
   migrate-cpnucleo:
+    <<: *app-hardening
     image: ${CPNUCLEO_WEB_API_IMAGE:?Set CPNUCLEO_WEB_API_IMAGE to an immutable GHCR tag}
-    env_file: [.env]
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      DB_CONNECTION_STRING: ${DB_CONNECTION_STRING:?Set DB_CONNECTION_STRING}
     command: ["--migrate-database"]
     depends_on:
       db:
         condition: service_healthy
     restart: "no"
 
+  # Grafana UI is published through the nginx gateway (port 3000), not directly:
+  # this container stays off the shared Traefik network so its OTLP receivers
+  # (4317/4318) are reachable only on the private Compose network.
   otel-lgtm:
     image: grafana/otel-lgtm:0.33.0
     container_name: otel-lgtm-cpnucleo
@@ -88,17 +123,6 @@ services:
       - "4318"
     networks:
       - default
-      - traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
-      - "traefik.http.routers.cpnucleo-grafana.rule=Host(`${CPNUCLEO_GRAFANA_HOST:?Set CPNUCLEO_GRAFANA_HOST}`)"
-      - "traefik.http.routers.cpnucleo-grafana.entrypoints=websecure"
-      - "traefik.http.routers.cpnucleo-grafana.tls=true"
-      - "traefik.http.routers.cpnucleo-grafana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
-      - "traefik.http.routers.cpnucleo-grafana.middlewares=cpnucleo-grafana-auth"
-      - "traefik.http.middlewares.cpnucleo-grafana-auth.basicauth.users=${CPNUCLEO_GRAFANA_BASIC_AUTH_USERS:?Set CPNUCLEO_GRAFANA_BASIC_AUTH_USERS}"
-      - "traefik.http.services.cpnucleo-grafana.loadbalancer.server.port=3000"
     restart: always
     deploy:
       resources:
@@ -117,6 +141,9 @@ services:
     configs:
       - source: otel_collector_config
         target: /etc/otelcol-contrib/config.yaml
+    environment:
+      CPNUCLEO_DEPLOYMENT_ENVIRONMENT: production
+      CPNUCLEO_HOST_PROVIDER: hostinger
     depends_on:
       - otel-lgtm
     expose:
@@ -151,6 +178,12 @@ services:
     <<: [*common-api-prod, *common-logging]
     image: ${CPNUCLEO_IDENTITY_API_IMAGE:?Set CPNUCLEO_IDENTITY_API_IMAGE to an immutable GHCR tag, not latest}
     container_name: identityapi-cpnucleo
+    environment:
+      <<: *dotnet-runtime-env
+      # Only IdentityApi decides admin claims at login/refresh.
+      CPNUCLEO_ADMIN_LOGINS: ${CPNUCLEO_ADMIN_LOGINS:-}
+      # Optional RS256 signing key, held only by the token issuer.
+      Jwt__SigningPrivateKey: ${Jwt__SigningPrivateKey:-}
     expose:
       - "5010"
     networks:
@@ -195,20 +228,19 @@ services:
     healthcheck: *healthcheck-grpcserver
 
   webclient-cpnucleo:
-    <<: [*common-logging]
+    <<: [*app-hardening, *common-logging]
     image: ${CPNUCLEO_WEB_CLIENT_IMAGE:?Set CPNUCLEO_WEB_CLIENT_IMAGE to an immutable GHCR tag, not latest}
     container_name: webclient-cpnucleo
     expose:
       - "5030"
     healthcheck: *healthcheck-webclient
-    env_file:
-      - .env
+    # WebClient URLs are compiled into the static assets by the release build
+    # (PUBLIC_* build args); runtime variables cannot retarget them, so the
+    # container receives only its server-side telemetry settings.
     environment:
-      OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318
+      OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: ${OTEL_EXPORTER_OTLP_HTTP_ENDPOINT:-http://otel-collector:4318}
       OTEL_SERVICE_NAME: WebClient-Cpnucleo
-      PUBLIC_WEBAPI_BASE_URL: https://${CPNUCLEO_API_HOST:?Set CPNUCLEO_API_HOST}/api
-      PUBLIC_IDENTITY_API_BASE_URL: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}/api
-      PUBLIC_IDENTITY_API_ISSUER: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}
+      OTEL_METRIC_EXPORT_INTERVAL: ${OTEL_METRIC_EXPORT_INTERVAL:-30000}
     depends_on:
       otel-collector:
         condition: service_started
@@ -270,7 +302,8 @@ services:
     <<: *common-logging
 
   # Kept in production as the internal API load balancer, matching local dev topology.
-  # Traefik owns public TLS/host routing; NGINX only balances webapi1/webapi2.
+  # Traefik owns public TLS/host routing; NGINX balances webapi1/webapi2 on 9999
+  # and is the only route to the Grafana UI on 3000 (see otel-lgtm).
   nginx:
     image: nginx:1.30.5-alpine
     container_name: nginx-cpnucleo
@@ -278,11 +311,17 @@ services:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
     depends_on:
-      - webapi1-cpnucleo
-      - webapi2-cpnucleo
-      - identityapi-cpnucleo
+      webapi1-cpnucleo:
+        condition: service_healthy
+      webapi2-cpnucleo:
+        condition: service_healthy
+      identityapi-cpnucleo:
+        condition: service_healthy
+      otel-lgtm:
+        condition: service_started
     expose:
       - "9999"
+      - "3000"
     networks:
       - default
       - traefik
@@ -294,7 +333,16 @@ services:
       - "traefik.http.routers.cpnucleo-api.tls=true"
       - "traefik.http.routers.cpnucleo-api.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
       - "traefik.http.routers.cpnucleo-api.middlewares=cpnucleo-security-headers"
+      - "traefik.http.routers.cpnucleo-api.service=cpnucleo-api"
       - "traefik.http.services.cpnucleo-api.loadbalancer.server.port=9999"
+      - "traefik.http.routers.cpnucleo-grafana.rule=Host(`${CPNUCLEO_GRAFANA_HOST:?Set CPNUCLEO_GRAFANA_HOST}`)"
+      - "traefik.http.routers.cpnucleo-grafana.entrypoints=websecure"
+      - "traefik.http.routers.cpnucleo-grafana.tls=true"
+      - "traefik.http.routers.cpnucleo-grafana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
+      - "traefik.http.routers.cpnucleo-grafana.middlewares=cpnucleo-grafana-auth"
+      - "traefik.http.routers.cpnucleo-grafana.service=cpnucleo-grafana"
+      - "traefik.http.middlewares.cpnucleo-grafana-auth.basicauth.users=${CPNUCLEO_GRAFANA_BASIC_AUTH_USERS:?Set CPNUCLEO_GRAFANA_BASIC_AUTH_USERS}"
+      - "traefik.http.services.cpnucleo-grafana.loadbalancer.server.port=3000"
     restart: always
     deploy:
       resources:
@@ -319,9 +367,12 @@ volumes:
 configs:
   otel_collector_config:
     content: |
-      # Production OpenTelemetry Collector gateway for the single-VPS Hostinger stack.
-      # cpnucleo services send OTLP to otel-collector:4317; the collector forwards
-      # traces, metrics, and logs to the local Grafana LGTM stack.
+      # OpenTelemetry Collector gateway shared by the local Compose stack and the
+      # single-VPS Hostinger stack (compose.prod.yaml inlines this file verbatim, with
+      # dollar signs doubled for Compose). cpnucleo services send OTLP to otel-collector:4317;
+      # the collector forwards traces, metrics, and logs to the Grafana LGTM stack.
+      # Deployment labels come from the collector container environment, so local
+      # telemetry is never labelled as production by accident.
 
       receivers:
         otlp:
@@ -340,13 +391,13 @@ configs:
         resource:
           attributes:
             - key: deployment.environment
-              value: production
+              value: $${env:CPNUCLEO_DEPLOYMENT_ENVIRONMENT:-development}
               action: upsert
             - key: service.namespace
               value: cpnucleo
               action: upsert
             - key: host.provider
-              value: hostinger
+              value: $${env:CPNUCLEO_HOST_PROVIDER:-local}
               action: upsert
 
         batch:
@@ -407,16 +458,36 @@ configs:
           sendfile on; # Allows Nginx to use the sendfile system call to serve static files
           tcp_nopush on; # Optimizes the amount of data sent at once
           tcp_nodelay on; # Disables Nagle's algorithm to improve network efficiency
-          keepalive_timeout 0; # Allows persistent connections, which reduces latency for subsequent requests
+          keepalive_timeout 65s; # Keeps idle client connections (for example from Traefik) open for reuse
           types_hash_max_size 2048; # Increases the maximum size of the types hash tables
           server_tokens off; # Hides Nginx version information from error pages and Server response header field
 
           access_log off;
 
+          # Docker's embedded DNS. Upstream names are re-resolved at runtime, so a
+          # recreated container with a new IP is picked up without restarting NGINX.
+          resolver 127.0.0.11 valid=10s ipv6=off;
+          resolver_timeout 5s;
+
+          # WebSocket upgrades (Grafana Live) pass through; everything else reuses
+          # pooled upstream keepalive connections with an empty Connection header.
+          map $$http_upgrade $$connection_upgrade {
+              default upgrade;
+              '' '';
+          }
+
           upstream api {
+              zone api 64k; # Shared memory is required for runtime re-resolution
               least_conn; # Sends new requests to the server with the least number of active connections
-              server webapi1-cpnucleo:5000;
-              server webapi2-cpnucleo:5000;
+              server webapi1-cpnucleo:5000 resolve;
+              server webapi2-cpnucleo:5000 resolve;
+              keepalive 16; # Idle keepalive connections cached per worker
+          }
+
+          upstream grafana {
+              zone grafana 64k;
+              server otel-lgtm:3000 resolve;
+              keepalive 4;
           }
 
           gzip on; # Enables gzip compression to reduce the size of the HTTP response
@@ -431,12 +502,32 @@ configs:
               location / {
                   proxy_buffering off;
                   proxy_read_timeout 60s;
-                  proxy_http_version 1.1;
+                  proxy_http_version 1.1; # Required for upstream keepalive
+                  proxy_set_header Connection ""; # Lets NGINX reuse upstream connections
                   proxy_pass http://api;
                   proxy_set_header Host $$host; # Passes the original host header to the backend
                   proxy_set_header X-Real-IP $$remote_addr; # Passes the original IP address of the client
                   proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for; # Passes the original "X-Forwarded-For" header
                   proxy_set_header X-Forwarded-Proto $$scheme; # Passes the original scheme of the client
+              }
+          }
+
+          # Grafana UI gateway. Only this HTTP port is routed by Traefik; the LGTM
+          # container stays off the shared Traefik network, so its OTLP receivers
+          # (4317/4318) are reachable only on the private Compose network.
+          server {
+              listen 3000;
+
+              location / {
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $$http_upgrade;
+                  proxy_set_header Connection $$connection_upgrade;
+                  proxy_read_timeout 60s;
+                  proxy_pass http://grafana;
+                  proxy_set_header Host $$host;
+                  proxy_set_header X-Real-IP $$remote_addr;
+                  proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $$scheme;
               }
           }
       }

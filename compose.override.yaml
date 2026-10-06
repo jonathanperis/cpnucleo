@@ -8,6 +8,8 @@ x-common-api-dev: &common-api-dev
   depends_on:
     db:
       condition: service_healthy
+    migrate-cpnucleo:
+      condition: service_completed_successfully
     otel-collector:
       condition: service_started
   env_file:
@@ -29,6 +31,20 @@ services:
       # Optional local OTLP endpoints for host tools and SDKs during development.
       - "4317:4317"
       - "4318:4318"
+
+  # Builds the same WebApi image as webapi1/webapi2 (shared layer cache) so the
+  # migrator never pulls a stale GHCR image during development.
+  migrate-cpnucleo:
+    build:
+      context: ./src/
+      dockerfile: ./WebApi/Dockerfile
+      args:
+        CACHE: "true"
+        AOT: false
+        TRIM: false
+        EXTRA_OPTIMIZE: false
+        BUILD_CONFIGURATION: Debug
+        ASPNETCORE_ENVIRONMENT: Development
 
   webapi1-cpnucleo:
     <<: *common-api-dev
@@ -98,6 +114,9 @@ services:
 
   webclient-cpnucleo:
     <<: *common-api-dev
+    depends_on:
+      otel-collector:
+        condition: service_started
     build:
       context: ./src/
       dockerfile: ./WebClient/Dockerfile
