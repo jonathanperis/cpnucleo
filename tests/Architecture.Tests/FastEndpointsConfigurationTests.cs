@@ -22,27 +22,26 @@ public class FastEndpointsConfigurationTests
     [Fact]
     public void FastEndpointsPackageVersions_ShouldBeAligned()
     {
+        // Versions are managed centrally; projects must not pin their own.
         var repositoryRoot = GetRepositoryPath(".");
-        var fastEndpointsPackageVersions = Directory
+        var pinnedInProjects = Directory
             .EnumerateFiles(repositoryRoot, "*.csproj", SearchOption.AllDirectories)
             .Where(path => IsSourceProject(repositoryRoot, path))
-            .SelectMany(projectPath => XDocument
-                .Load(projectPath)
-                .Descendants("PackageReference")
-                .Where(x => x.Attribute("Include")?.Value.StartsWith("FastEndpoints", StringComparison.Ordinal) == true)
-                .Select(x => new
-                {
-                    ProjectPath = Path.GetRelativePath(repositoryRoot, projectPath),
-                    Version = x.Attribute("Version")?.Value
-                }))
+            .SelectMany(projectPath => XDocument.Load(projectPath).Descendants("PackageReference")
+                .Where(x => x.Attribute("Version") is not null)
+                .Select(x => $"{Path.GetRelativePath(repositoryRoot, projectPath)}: {x.Attribute("Include")?.Value}"))
+            .ToArray();
+        pinnedInProjects.Should().BeEmpty("package versions belong in Directory.Packages.props");
+
+        var fastEndpointsVersions = XDocument.Load(GetRepositoryPath("src/Directory.Packages.props"))
+            .Descendants("PackageVersion")
+            .Concat(XDocument.Load(GetRepositoryPath("Directory.Packages.props")).Descendants("PackageVersion"))
+            .Where(x => x.Attribute("Include")?.Value.StartsWith("FastEndpoints", StringComparison.Ordinal) == true)
+            .Select(x => x.Attribute("Version")?.Value)
             .ToArray();
 
-        fastEndpointsPackageVersions.Should().NotBeEmpty();
-        fastEndpointsPackageVersions
-            .Select(x => x.Version)
-            .Distinct()
-            .Should()
-            .ContainSingle("all FastEndpoints packages should use the same reviewed version: {0}", string.Join(", ", fastEndpointsPackageVersions.Select(x => $"{x.ProjectPath}: {x.Version}")))
+        fastEndpointsVersions.Should().NotBeEmpty();
+        fastEndpointsVersions.Distinct().Should().ContainSingle("all FastEndpoints packages should use the same reviewed version")
             .Which.Should().Be("8.3.0");
     }
 

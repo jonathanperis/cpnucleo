@@ -30,6 +30,7 @@ RUN if [ "${AOT}" = "true" ]; then \
 
 WORKDIR /src
 
+COPY ["Directory.Packages.props", "./"]
 COPY ["IdentityApi/IdentityApi.csproj", "IdentityApi/"]
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]

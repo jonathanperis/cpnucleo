@@ -30,6 +30,7 @@ RUN if [ "${AOT}" = "true" ]; then \
 
 WORKDIR /src
 
+COPY ["Directory.Packages.props", "./"]
 COPY ["GrpcServer/GrpcServer.csproj", "GrpcServer/"]
 COPY ["GrpcServer.Contracts/GrpcServer.Contracts.csproj", "GrpcServer.Contracts/"]
 COPY ["Application/Application.csproj", "Application/"]
