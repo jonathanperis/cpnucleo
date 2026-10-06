@@ -35,4 +35,16 @@ describe('resource metadata', () => {
     const assignments = resourceMetadata.find((resource) => resource.key === 'assignments')!;
     expect(assignments.fields.filter((field) => field.relation).map((field) => field.relation)).toEqual(['projects', 'workflows', 'users', 'assignmentTypes']);
   });
+
+  it('mirrors the API authorization model for UI gating', () => {
+    const adminWrites = resourceMetadata.filter(resource => resource.access.adminWrite).map(resource => resource.key);
+    expect(adminWrites).toEqual(['organizations', 'assignmentTypes', 'impediments', 'workflows', 'users']);
+    expect(resourceMetadata.filter(resource => resource.access.adminRead).map(resource => resource.key)).toEqual(['users']);
+  });
+
+  it('requires a positive workflow order and validates task date ordering', () => {
+    const workflows = resourceMetadata.find((resource) => resource.key === 'workflows')!;
+    expect(formFields(workflows).find(field => field.name === 'order')).toMatchObject({ type: 'number', required: true, min: 1 });
+    expect(resourceMetadata.find((resource) => resource.key === 'assignments')!.dateRange).toEqual({ start: 'startDate', end: 'endDate' });
+  });
 });

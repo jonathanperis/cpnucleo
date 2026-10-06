@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buildPageOptions, buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
+import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 
 describe('CRUD pagination helpers', () => {
-  it('builds server-side page options from total count and page size', () => {
+  it('derives the last server-side page from total count and page size', () => {
     expect(getLastPage(52, 25)).toBe(3);
-    expect(buildPageOptions(52, 25)).toEqual([1, 2, 3]);
+    expect(getLastPage(50, 25)).toBe(2);
   });
 
   it('builds a compact cohesive pagination range with boundary pages and ellipses', () => {
@@ -21,6 +21,6 @@ describe('CRUD pagination helpers', () => {
 
   it('keeps pagination stable for empty totals and invalid page sizes', () => {
     expect(getLastPage(0, 25)).toBe(1);
-    expect(buildPageOptions(3, 0)).toEqual([1, 2, 3]);
+    expect(getLastPage(3, 0)).toBe(3);
   });
 });

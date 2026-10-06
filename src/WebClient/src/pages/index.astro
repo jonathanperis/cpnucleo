@@ -9,8 +9,8 @@ import { resourceMetadata } from '../lib/api/resource-metadata';
       <p class="mt-4 max-w-2xl text-muted">Explore projects, people, tasks, calendars, and the architecture behind them in this hands-on learning workspace.</p>
       <div class="mt-7 flex flex-wrap gap-3"><a class="rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas" href="/projects/">Open projects</a><a class="rounded-xl border border-line px-5 py-3 text-sm" href="/api-health/">Service health</a><a class="rounded-xl border border-line px-5 py-3 text-sm" href="https://jonathanperis.github.io/cpnucleo/docs/learning-lab/">Learning paths</a></div>
     </section>
-    <section><h3 class="mb-2 text-2xl font-semibold">Work areas</h3><p class="mb-4 text-sm text-muted">Dark by default · light-ready</p><div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {resourceMetadata.map(resource => <a href={resource.routePath} class="rounded-2xl border border-line bg-surface p-5 shadow-soft hover:border-accent/40"><div class="flex items-center justify-between gap-3"><span class="font-semibold">{resource.pluralLabel}</span><span data-count={resource.key} aria-live="polite" class="rounded-full bg-raised px-2.5 py-1 text-xs text-muted">—</span></div><p class="mt-3 text-sm text-muted">{resource.description}</p></a>)}
+    <section aria-labelledby="work-areas-heading" aria-busy="true" data-work-areas><h3 id="work-areas-heading" class="mb-2 text-2xl font-semibold">Work areas</h3><p class="mb-4 text-sm text-muted">Dark by default · light-ready</p><p data-home-summary role="status" class="sr-only"></p><div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {resourceMetadata.map(resource => <a href={resource.routePath} class="rounded-2xl border border-line bg-surface p-5 shadow-soft hover:border-accent/40"><div class="flex items-center justify-between gap-3"><span class="font-semibold">{resource.pluralLabel}</span><span data-count={resource.key} class="rounded-full bg-raised px-2.5 py-1 text-xs text-muted">—</span></div><p class="mt-3 text-sm text-muted">{resource.description}</p></a>)}
     </div></section>
   </div>
 </AppLayout>

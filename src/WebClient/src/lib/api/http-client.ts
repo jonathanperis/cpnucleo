@@ -2,40 +2,62 @@ import type { ApiErrorShape } from './types';
 import { IDENTITY_API_BASE_URL, IDENTITY_API_ISSUER } from '../config';
 import { getLoginRedirectTarget } from '../auth-navigation';
 
+export type FieldErrors = Record<string, string[]>;
+
+interface ApiErrorDetails {
+  fieldErrors?: FieldErrors;
+  generalErrors?: string[];
+  retryAfterSeconds?: number;
+}
+
 export class ApiError extends Error implements ApiErrorShape {
   status: number;
   details?: unknown;
+  /** Field messages keyed by camelCase request property name. */
+  fieldErrors: FieldErrors;
+  /** Messages that do not belong to a single field (`errors.generalErrors`). */
+  generalErrors: string[];
+  /** Parsed `Retry-After` for 429 responses. */
+  retryAfterSeconds?: number;
 
-  constructor(status: number, message: string, details?: unknown) {
+  constructor(status: number, message: string, details?: unknown, { fieldErrors = {}, generalErrors = [], retryAfterSeconds }: ApiErrorDetails = {}) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
     this.details = details;
+    this.fieldErrors = fieldErrors;
+    this.generalErrors = generalErrors;
+    this.retryAfterSeconds = retryAfterSeconds;
   }
 }
 
 export const tokenStorageKey = 'cpnucleo.jwt';
 export const lastActivityStorageKey = 'cpnucleo.lastActivityAt';
+export const logoutStorageKey = 'cpnucleo.logout';
+export const sessionChannelName = 'cpnucleo.session';
 export const sessionInactivityTimeoutMs = 15 * 60 * 1000;
 export const tokenRefreshLeadMs = 5 * 60 * 1000;
 const tokenRefreshCooldownMs = 60 * 1000;
 const activityThrottleMs = 250;
 
-let inactivityTimer: number | undefined;
-let refreshTimer: number | undefined;
+let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
+let refreshTimer: ReturnType<typeof setTimeout> | undefined;
 let refreshInFlight: Promise<boolean> | undefined;
 let lastRefreshAttemptAt = 0;
 
 const now = () => Date.now();
 
-const decodeJwtPayload = (token: string): { iss?: unknown; exp?: unknown } | null => {
+type JwtPayload = Record<string, unknown>;
+
+const decodeJwtPayload = (token: string): JwtPayload | null => {
   const payload = token.split('.')[1];
   if (!payload) return null;
 
   try {
     const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
     const padded = normalized.padEnd(normalized.length + ((4 - normalized.length % 4) % 4), '=');
-    return JSON.parse(atob(padded)) as { iss?: unknown; exp?: unknown };
+    const decoded = JSON.parse(atob(padded)) as unknown;
+    return decoded && typeof decoded === 'object' ? decoded as JwtPayload : null;
   } catch {
     return null;
   }
@@ -54,7 +76,7 @@ const tokenHasExpired = (token: string, currentTime = now()) => {
   return expiresAt !== null && expiresAt <= currentTime;
 };
 
-const getLastActivityAt = (): number | null => {
+export const getLastActivityAt = (): number | null => {
   if (typeof sessionStorage === 'undefined') return null;
   const stored = Number(sessionStorage.getItem(lastActivityStorageKey));
   return Number.isFinite(stored) && stored > 0 ? stored : null;
@@ -65,6 +87,7 @@ const sessionIsInactive = (currentTime = now()) => {
   return lastActivityAt !== null && currentTime - lastActivityAt >= sessionInactivityTimeoutMs;
 };
 
+/** Records real user activity. API calls, refreshes and stream reconnects must not call this. */
 const markSessionActivity = (currentTime = now()): void => {
   if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(lastActivityStorageKey, String(currentTime));
 };
@@ -78,15 +101,21 @@ export const getStoredToken = (): string | null => {
   return null;
 };
 
-export const setStoredToken = (token: string): void => {
-  if (typeof sessionStorage === 'undefined') return;
+const storeToken = (token: string, markActivity: boolean): boolean => {
+  if (typeof sessionStorage === 'undefined') return false;
   if (tokenWasIssuedByIdentityApi(token) && !tokenHasExpired(token)) {
     sessionStorage.setItem(tokenStorageKey, token);
-    markSessionActivity();
+    if (markActivity || getLastActivityAt() === null) markSessionActivity();
     scheduleSessionTimers();
-    return;
+    return true;
   }
   clearStoredToken();
+  return false;
+};
+
+/** Stores a token obtained by an explicit sign-in, which counts as user activity. */
+export const setStoredToken = (token: string): void => {
+  storeToken(token, true);
 };
 
 export const clearStoredToken = (): void => {
@@ -100,10 +129,85 @@ export const clearStoredToken = (): void => {
   refreshTimer = undefined;
 };
 
+export interface SessionClaims {
+  /** Raw JWT `sub`: the signed-in user's id. */
+  sub: string;
+  /** `cpnucleo:login`, falling back to `sub`. */
+  login: string;
+  /** `cpnucleo:admin` == "true". UI gating only: the APIs enforce authorization. */
+  isAdmin: boolean;
+}
+
+export const getSessionClaims = (token: string | null = getStoredToken()): SessionClaims | null => {
+  if (!token) return null;
+  const payload = decodeJwtPayload(token);
+  const sub = typeof payload?.sub === 'string' ? payload.sub : '';
+  if (!sub) return null;
+  const login = typeof payload?.['cpnucleo:login'] === 'string' && payload['cpnucleo:login'] ? payload['cpnucleo:login'] : sub;
+  const admin = payload?.['cpnucleo:admin'];
+  return { sub, login, isAdmin: admin === true || (typeof admin === 'string' && admin.toLowerCase() === 'true') };
+};
+
 const redirectToLoginForExpiredSession = () => {
   if (typeof window === 'undefined') return;
   if (window.location.pathname === '/login' || window.location.pathname === '/login/') return;
   window.location.assign(getLoginRedirectTarget(window.location));
+};
+
+const expireSession = () => {
+  clearStoredToken();
+  redirectToLoginForExpiredSession();
+};
+
+// One channel object per tab: BroadcastChannel never delivers a message back to the object that
+// posted it, so the tab that logs out does not process its own logout notification.
+let sessionChannel: BroadcastChannel | null | undefined;
+const getSessionChannel = (): BroadcastChannel | null => {
+  if (sessionChannel !== undefined) return sessionChannel;
+  sessionChannel = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel(sessionChannelName);
+  return sessionChannel;
+};
+
+const broadcastLogout = () => {
+  const channel = getSessionChannel();
+  if (channel) {
+    channel.postMessage({ type: 'logout' });
+    return;
+  }
+  try {
+    // `storage` events fire in the other tabs of this origin, never in the writing tab.
+    localStorage.setItem(logoutStorageKey, String(now()));
+    localStorage.removeItem(logoutStorageKey);
+  } catch {
+    // Storage can be unavailable (privacy mode); the local logout still applies.
+  }
+};
+
+/** Explicit sign-out: clears this tab and asks every other tab of the origin to sign out too. */
+export const logout = (): void => {
+  clearStoredToken();
+  broadcastLogout();
+};
+
+export const subscribeToCrossTabLogout = (onLogout: () => void): (() => void) => {
+  if (typeof window === 'undefined') return () => undefined;
+  const handle = () => {
+    clearStoredToken();
+    onLogout();
+  };
+  const channel = getSessionChannel();
+  if (channel) {
+    const onMessage = (event: MessageEvent) => {
+      if ((event.data as { type?: unknown } | null)?.type === 'logout') handle();
+    };
+    channel.addEventListener('message', onMessage);
+    return () => channel.removeEventListener('message', onMessage);
+  }
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === logoutStorageKey && event.newValue) handle();
+  };
+  window.addEventListener('storage', onStorage);
+  return () => window.removeEventListener('storage', onStorage);
 };
 
 const refreshStoredToken = async (baseUrl = IDENTITY_API_BASE_URL): Promise<boolean> => {
@@ -128,6 +232,8 @@ const refreshStoredToken = async (baseUrl = IDENTITY_API_BASE_URL): Promise<bool
 
     if (sessionStorage.getItem(tokenStorageKey) !== token) return false;
     if (response.status === 401) {
+      // Expired session, eight-hour boundary, inactive account or changed password/login
+      // (security stamp): all end the session the same way.
       clearStoredToken();
       redirectToLoginForExpiredSession();
       return false;
@@ -138,8 +244,8 @@ const refreshStoredToken = async (baseUrl = IDENTITY_API_BASE_URL): Promise<bool
     const body = await parseJson(response) as { token?: unknown } | undefined;
     if (typeof body?.token !== 'string') return false;
     if (getStoredToken() !== token) return false;
-    setStoredToken(body.token);
-    return true;
+    // A background refresh keeps the existing last-activity time.
+    return storeToken(body.token, false);
   })().finally(() => {
     refreshInFlight = undefined;
   });
@@ -161,6 +267,17 @@ const refreshTokenIfNeeded = () => {
   void refreshStoredToken();
 };
 
+const onInactivityTimeout = () => {
+  // Re-check the recorded user activity: the timer may be stale (throttled background tab,
+  // activity recorded after it was scheduled), and only real user input extends the session.
+  const lastActivityAt = getLastActivityAt();
+  if (lastActivityAt !== null && now() - lastActivityAt < sessionInactivityTimeoutMs && getStoredToken()) {
+    scheduleSessionTimers();
+    return;
+  }
+  expireSession();
+};
+
 const scheduleSessionTimers = () => {
   if (typeof window === 'undefined') return;
 
@@ -173,15 +290,12 @@ const scheduleSessionTimers = () => {
   const currentTime = now();
   const lastActivityAt = getLastActivityAt() ?? currentTime;
   const inactivityRemaining = Math.max(lastActivityAt + sessionInactivityTimeoutMs - currentTime, 0);
-  inactivityTimer = window.setTimeout(() => {
-    clearStoredToken();
-    redirectToLoginForExpiredSession();
-  }, inactivityRemaining);
+  inactivityTimer = setTimeout(onInactivityTimeout, inactivityRemaining);
 
   const expiresAt = getTokenExpiresAt(token);
   if (expiresAt === null) return;
   const refreshIn = Math.max(expiresAt - tokenRefreshLeadMs - currentTime, 0);
-  refreshTimer = window.setTimeout(refreshTokenIfNeeded, refreshIn);
+  refreshTimer = setTimeout(refreshTokenIfNeeded, refreshIn);
 };
 
 const throttleLeading = (callback: () => void, waitMs: number): (() => void) => {
@@ -211,35 +325,77 @@ export const setupSessionActivityTracking = (): (() => void) => {
   scheduleSessionTimers();
   highFrequencyActivityEvents.forEach(event => window.addEventListener(event, onHighFrequencyActivity, { passive: true }));
   lowFrequencyActivityEvents.forEach(event => window.addEventListener(event, onActivity, { passive: true }));
+  const stopCrossTabLogout = subscribeToCrossTabLogout(redirectToLoginForExpiredSession);
 
   return () => {
     highFrequencyActivityEvents.forEach(event => window.removeEventListener(event, onHighFrequencyActivity));
     lowFrequencyActivityEvents.forEach(event => window.removeEventListener(event, onActivity));
+    stopCrossTabLogout();
     if (inactivityTimer) clearTimeout(inactivityTimer);
     if (refreshTimer) clearTimeout(refreshTimer);
   };
 };
 
-const errorMessage = (status: number, body: unknown): string => {
-  if (body && typeof body === 'object') {
-    const candidate = body as { message?: unknown; title?: unknown; detail?: unknown; errors?: unknown };
-    if (typeof candidate.message === 'string') return candidate.message;
-    if (typeof candidate.title === 'string') return candidate.title;
-    if (typeof candidate.detail === 'string') return candidate.detail;
-    if (candidate.errors && typeof candidate.errors === 'object') {
-      return Object.values(candidate.errors).flat().filter(value => typeof value === 'string').join(' ') || 'Validation failed.';
+const defaultErrorMessages: Record<number, string> = {
+  400: 'The request is invalid.',
+  401: 'Your session is missing or expired.',
+  403: 'You do not have permission to perform this action.',
+  404: 'The requested record was not found.',
+  409: 'The record could not be changed because it conflicts with current data.',
+  429: 'Too many requests. Please wait and try again.',
+  500: 'The server returned an unexpected error.',
+};
+
+const generalErrorKeys = new Set(['generalErrors', 'GeneralErrors', '']);
+
+const nonEmptyStrings = (value: unknown): string[] =>
+  (Array.isArray(value) ? value : [value]).filter((item): item is string => typeof item === 'string' && item.trim() !== '');
+
+const toFieldKey = (key: string) => key.charAt(0).toLowerCase() + key.slice(1);
+
+/** Parses `Retry-After` as delay-seconds or an HTTP date. */
+export const parseRetryAfter = (value: string | null | undefined, currentTime = now()): number | undefined => {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (/^\d+$/.test(trimmed)) return Number(trimmed);
+  const date = Date.parse(trimmed);
+  return Number.isNaN(date) ? undefined : Math.max(0, Math.ceil((date - currentTime) / 1000));
+};
+
+const formatRetryAfter = (seconds: number) => {
+  if (seconds < 60) return `${seconds} second${seconds === 1 ? '' : 's'}`;
+  const minutes = Math.ceil(seconds / 60);
+  return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+};
+
+/**
+ * Builds an ApiError from the unified envelope `{ statusCode, message, errors? }`.
+ * Field messages and `generalErrors` win over the generic summary `message`.
+ */
+export const createApiError = (status: number, body: unknown, headers?: Headers | null): ApiError => {
+  const record = body && typeof body === 'object' ? body as { message?: unknown; title?: unknown; detail?: unknown; errors?: unknown } : undefined;
+  const fieldErrors: FieldErrors = {};
+  const generalErrors: string[] = [];
+
+  if (Array.isArray(record?.errors)) {
+    generalErrors.push(...nonEmptyStrings(record.errors));
+  } else if (record?.errors && typeof record.errors === 'object') {
+    for (const [key, value] of Object.entries(record.errors)) {
+      const messages = nonEmptyStrings(value);
+      if (messages.length === 0) continue;
+      if (generalErrorKeys.has(key)) generalErrors.push(...messages);
+      else (fieldErrors[toFieldKey(key)] ??= []).push(...messages);
     }
   }
-  const defaults: Record<number, string> = {
-    400: 'The request is invalid.',
-    401: 'Your session is missing or expired.',
-    403: 'You do not have permission to perform this action.',
-    404: 'The requested record was not found.',
-    409: 'The record could not be changed because it conflicts with current data.',
-    429: 'Too many requests. Please wait and try again.',
-    500: 'The server returned an unexpected error.',
-  };
-  return defaults[status] || `Request failed with status ${status}.`;
+
+  const summary = [record?.message, record?.title, record?.detail].find((value): value is string => typeof value === 'string' && value.trim() !== '');
+  const detailed = [...generalErrors, ...Object.values(fieldErrors).flat()].join(' ');
+  let message = detailed || summary || defaultErrorMessages[status] || `Request failed with status ${status}.`;
+
+  const retryAfterSeconds = status === 429 ? parseRetryAfter(headers?.get('Retry-After')) : undefined;
+  if (retryAfterSeconds !== undefined) message = `${message.replace(/\s*$/, '')} Try again in ${formatRetryAfter(retryAfterSeconds)}.`;
+
+  return new ApiError(status, message, body, { fieldErrors, generalErrors, retryAfterSeconds });
 };
 
 const parseJson = async (response: Response): Promise<unknown> => {
@@ -252,13 +408,22 @@ const parseJson = async (response: Response): Promise<unknown> => {
   }
 };
 
+/**
+ * Converts a non-2xx response into an ApiError. A 401 ends the session (clear + redirect to
+ * login); 403/409/429 never sign the user out.
+ */
+export const readErrorResponse = async (response: Response): Promise<ApiError> => {
+  const body = await parseJson(response).catch(() => undefined);
+  if (response.status === 401) expireSession();
+  return createApiError(response.status, body, response.headers);
+};
+
 export interface HttpOptions extends RequestInit {
   token?: string | null;
 }
 
 export const requestJson = async <T>(url: string, options: HttpOptions = {}): Promise<T> => {
   const token = options.token === undefined ? getStoredToken() : options.token;
-  if (token) markSessionActivity();
   const headers = new Headers(options.headers);
   if (!headers.has('Accept')) headers.set('Accept', 'application/json');
   if (options.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
@@ -268,16 +433,11 @@ export const requestJson = async <T>(url: string, options: HttpOptions = {}): Pr
   try {
     response = await fetch(url, { ...options, headers });
   } catch (error) {
+    if (options.signal?.aborted) throw error;
     throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
   }
+  if (!response.ok) throw await readErrorResponse(response);
   const body = await parseJson(response);
-  if (!response.ok) {
-    if (response.status === 401) {
-      clearStoredToken();
-      redirectToLoginForExpiredSession();
-    }
-    throw new ApiError(response.status, errorMessage(response.status, body), body);
-  }
   if (token) refreshTokenIfNeeded();
   return body as T;
 };

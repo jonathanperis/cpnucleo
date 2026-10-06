@@ -221,7 +221,11 @@ public class FastEndpointsConfigurationTests
         httpClient.Should().Contain("lastActivityStorageKey");
         httpClient.Should().Contain("setupSessionActivityTracking");
         httpClient.Should().Contain("redirectToLoginForExpiredSession()");
+        httpClient.Should().Contain("BroadcastChannel", "logging out in one tab must sign out the other tabs");
+        httpClient.Should().Contain("subscribeToCrossTabLogout(redirectToLoginForExpiredSession)");
+        httpClient.Should().Contain("const onInactivityTimeout", "the inactivity timer must re-check the last real user activity");
         authGuard.Should().Contain("setupSessionActivityTracking()");
+        authGuard.Should().Contain("logout();");
     }
 
     [Theory]

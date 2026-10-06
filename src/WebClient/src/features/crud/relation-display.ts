@@ -1,4 +1,4 @@
-import type { ApiEntity, FieldMetadata, ResourceKey } from '~/lib/api/types';
+import type { ApiEntity, FieldMetadata, ResourceKey, ResourceMetadata } from '~/lib/api/types';
 
 export type RelationRecords = Partial<Record<ResourceKey, ApiEntity[]>>;
 
@@ -50,4 +50,20 @@ export const collectMissingRelationIds = (items: ApiEntity[], fields: FieldMetad
   }
 
   return missing;
+};
+
+const MAX_RECORD_LABEL_LENGTH = 80;
+
+/**
+ * Human label for a record, used for distinct accessible names on per-row actions. Link records
+ * without their own display field are described by their related labels.
+ */
+export const recordLabel = (resource: ResourceMetadata, item: ApiEntity, relations: RelationRecords): string => {
+  const own = resource.displayField !== 'id' ? nonEmptyString(item[resource.displayField]) : '';
+  const related = resource.fields
+    .filter((field) => field.relation && field.table)
+    .map((field) => displayFieldValue(item[field.name], field.relation, relations))
+    .filter((value) => value !== '—');
+  const label = own || related.join(' / ') || String(item.id ?? resource.label);
+  return label.length > MAX_RECORD_LABEL_LENGTH ? `${label.slice(0, MAX_RECORD_LABEL_LENGTH - 1)}…` : label;
 };
