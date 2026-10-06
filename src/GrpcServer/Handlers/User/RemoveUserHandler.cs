@@ -7,65 +7,40 @@ public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUser
     {
         Common.Security.UserAdministration.RequireAdmin(context);
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if user entities exist for Ids: {UserIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} user entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.User>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("User not found with Id: {UserId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveUserResult 
-                    { 
-                        Success = false,
-                        Message = "User not found."
-                    };
-                }
-
-                logger.LogInformation("Removing user entity with Id: {UserId}", id);
-                Domain.Entities.User.Remove(item);
-
-                logger.LogInformation("Deleting user entity from repository with Id: {UserId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one user to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveUserResult 
-                { 
+                return new RemoveUserResult
+                {
                     Success = false,
                     Message = "User not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveUserResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "User removed successfully." : "Failed to remove User."
+            return new RemoveUserResult
+            {
+                Success = true,
+                Message = "User removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

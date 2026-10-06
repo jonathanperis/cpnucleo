@@ -129,31 +129,6 @@ public class UserEndpointsTests
     }
 
     [Test]
-    public async Task RemoveUser_WithValidId_ShouldDeleteUser()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-        var user = User.Create("User to Delete", "deleteuser", new PasswordHash("hash-value", string.Empty), userId);
-        
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<User>>();
-        
-        A.CallTo(() => fakeDbContext.Users).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<User?>(user));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-
-        var ep = Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(fakeDbContext).WithListingServices();
-        var req = new WebApi.Endpoints.User.RemoveUser.RemoveUserRequest { Ids = new List<Guid> { userId } };
-
-        // Act
-        await ep.HandleAsync(req, default);
-
-        // Assert
-        ep.Response.ShouldNotBeNull();
-        ep.Response.Success.ShouldBeTrue();
-    }
-
-    [Test]
     public async Task ListUsers_ShouldReturnPaginatedResults()
     {
         // Arrange

@@ -1,6 +1,11 @@
 namespace Infrastructure.Common.Helpers;
 
-internal static class FakeDataHelper
+/// <summary>
+/// Legacy load-test dataset generator: writes CSV files plus a COPY script for the legacy
+/// <c>compose.yaml</c> init directory. Run it explicitly with <c>--generate-legacy-fake-data</c>;
+/// the normal lab path is <c>--seed-lab</c>.
+/// </summary>
+public static class FakeDataHelper
 {
     private const string DefaultDemoLogin = "demo@cpnucleo.local";
     private const string DemoPasswordEnvironmentVariable = "CPNUCLEO_DEMO_PASSWORD";
@@ -19,291 +24,7 @@ internal static class FakeDataHelper
     private static List<UserProject>? UserProjects { get; set; }
     private static List<Workflow>? Workflows { get; set; }
     
-    internal static void CreateSqlDumpFile()
-    {
-        var random = new Random();
-        var sb = new StringBuilder();
-        var fakeUserPasswordHash = new Argon2PasswordHasher().Hash(Guid.NewGuid().ToString("N"));
-        var defaultDemoPasswordHash = new Argon2PasswordHasher().Hash(GetDefaultDemoPassword());
-        AppendDatabaseResetAndDefaultUserSql(sb, defaultDemoPasswordHash);
-        
-        var organizationFaker = new Faker<Organization>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(x => x.Description, f => f.Hacker.Phrase())
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-
-        Organizations = organizationFaker.Generate(686);
-        var lastIndex = Organizations.Count - 1;
-        var currentIndex = 0;
-        
-        sb.AppendLine("""
-                        INSERT INTO "Organizations" ("Id", "Name", "Description", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES 
-                        """);
-
-        foreach (var item in Organizations)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var projectFaker = new Faker<Project>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        Projects = projectFaker.Generate(1258);
-        lastIndex = Projects.Count - 1;
-        currentIndex = 0;
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);   
-        
-        foreach (var item in Projects)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{Organizations[random.Next(Organizations.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var impedimentFaker = new Faker<Impediment>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        Impediments = impedimentFaker.Generate(114);
-        lastIndex = Impediments.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "Impediments" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);   
-        
-        foreach (var item in Impediments)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var assignmentTypeFaker = new Faker<AssignmentType>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        AssignmentTypes = assignmentTypeFaker.Generate(3);
-        lastIndex = AssignmentTypes.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "AssignmentTypes" ("Id", "Name", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);   
-        
-        foreach (var item in AssignmentTypes)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var workflowFaker = new Faker<Workflow>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(x => x.Order, f => f.IndexGlobal + 1)
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        Workflows = workflowFaker.Generate(6);        
-        lastIndex = Workflows.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "Workflows" ("Id", "Name", "Order", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
-
-        foreach (var item in Workflows)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', {item.Order}, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var userFaker = new Faker<User>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => f.Name.FullName())
-            .RuleFor(x => x.Login, f => $"learner-{f.UniqueIndex:D8}")
-            .RuleFor(x => x.Password, _ => fakeUserPasswordHash.Hash)
-            .RuleFor(x => x.Salt, _ => fakeUserPasswordHash.Salt)
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        Users = userFaker.Generate(11154);         
-        lastIndex = Users.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
-
-        foreach (var item in Users)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Login}', '{item.Password}', '{item.Salt}', '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var userProjectFaker = new Faker<UserProject>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        UserProjects = userProjectFaker.Generate(24400);
-        lastIndex = UserProjects.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);       
-        
-        foreach (var item in UserProjects)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var assignmentFaker = new Faker<Assignment>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Name, f => $"{f.Hacker.Noun()} {f.Hacker.IngVerb()} {f.Hacker.Adjective()}")
-            .RuleFor(x => x.Description, f => f.Hacker.Phrase())
-            .RuleFor(o => o.StartDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.EndDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(x => x.AmountHours, f => f.Random.Number(12, 60))
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-
-        Assignments = assignmentFaker.Generate(464587);    
-        lastIndex = Assignments.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "Assignments" ("Id", "Name", "Description", "StartDate", "EndDate", "AmountHours", "ProjectId", "WorkflowId", "UserId", "AssignmentTypeId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
-
-        foreach (var item in Assignments)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Name?.Replace("'", "''")}', '{item.Description?.Replace("'", "''")}', '{item.StartDate.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.EndDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Projects[random.Next(Projects.Count)].Id}'::UUID, '{Workflows[random.Next(Workflows.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{AssignmentTypes[random.Next(AssignmentTypes.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var userAssignmentFaker = new Faker<UserAssignment>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        UserAssignments = userAssignmentFaker.Generate(363554);    
-        lastIndex = UserAssignments.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "UserAssignments" ("Id", "UserId", "AssignmentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
-
-        foreach (var item in UserAssignments)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var assignmentImpedimentFaker = new Faker<AssignmentImpediment>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-            
-        AssignmentImpediments = assignmentImpedimentFaker.Generate(11369);     
-        lastIndex = AssignmentImpediments.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "AssignmentImpediments" ("Id", "Description", "AssignmentId", "ImpedimentId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);     
-        
-        foreach (var item in AssignmentImpediments)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Impediments[random.Next(Impediments.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }
-
-        var appointmentFaker = new Faker<Appointment>()
-            .RuleFor(c => c.Id, f => BaseEntity.GetNewId())
-            .RuleFor(x => x.Description, f => f.Hacker.Phrase())
-            .RuleFor(o => o.KeepDate, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -9)), DateTime.UtcNow.AddMonths(f.Random.Number(-8, -6))))            
-            .RuleFor(x => x.AmountHours, f => f.Random.Number(01, 06))
-            .RuleFor(o => o.CreatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-36, -24)), DateTime.UtcNow.AddMonths(f.Random.Number(-24, -12))))
-            .RuleFor(o => o.UpdatedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-12, -8)), DateTime.UtcNow.AddMonths(f.Random.Number(-6, -2))))
-            .RuleFor(o => o.DeletedAt, f => f.Date.Between(DateTime.UtcNow.AddMonths(f.Random.Number(-11, -7)), DateTime.UtcNow.AddMonths(f.Random.Number(-7, -6))))
-            .RuleFor(x => x.Active, f => f.Random.Bool());
-
-        Appointments = appointmentFaker.Generate(489571);      
-        lastIndex = Appointments.Count - 1;
-        currentIndex = 0;  
-
-        sb.AppendLine();
-        sb.AppendLine("""
-                        INSERT INTO "Appointments" ("Id", "Description", "KeepDate", "AmountHours", "AssignmentId", "UserId", "CreatedAt", "UpdatedAt", "DeletedAt", "Active") VALUES  
-                        """);        
-
-        foreach (var item in Appointments)
-        {
-            var isLast = currentIndex == lastIndex;
-            sb.AppendLine($"('{item.Id}'::UUID, '{item.Description?.Replace("'", "''")}', '{item.KeepDate.ToString("yyyy-MM-dd HH:mm:ss")}', {item.AmountHours}, '{Assignments[random.Next(Assignments.Count)].Id}'::UUID, '{Users[random.Next(Users.Count)].Id}'::UUID, '{item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")}', '{item.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss")}', '{(!item.Active ? item.DeletedAt?.ToString("yyyy-MM-dd HH:mm:ss") : null)}', {item.Active.ToString().ToLower()}){(isLast ? ";" : ",")}");
-            currentIndex++;
-        }     
-
-        const string filePath = "003-database-dump-dml.sql";
-        File.WriteAllText(filePath, sb.ToString());             
-    }
-
-    internal static void CreateSqlCsvDumpFile()
+    public static void CreateSqlCsvDumpFile()
     {
         var sb = new StringBuilder();
         var random = new Random();
@@ -347,9 +68,9 @@ internal static class FakeDataHelper
         Projects = projectFaker.Generate(1258);
         for (var i = 0; i < Projects.Count; i++)
         {
-            Projects[i].OrganizationId = i < Organizations.Count
+            Assign(Projects[i], "OrganizationId", i < Organizations.Count
                 ? Organizations[i].Id
-                : PickRandom(Organizations, random).Id;
+                : PickRandom(Organizations, random).Id);
         }
 
         WriteCsv("Projects.csv", Projects, x =>
@@ -504,8 +225,8 @@ internal static class FakeDataHelper
         {
             var project = PickRandom(Projects, random);
             var organizationId = project.OrganizationId;
-            assignment.ProjectId = project.Id;
-            assignment.UserId = PickUserForOrganization(Users, userOrganizationIds, organizationId, random).Id;
+            Assign(assignment, "ProjectId", project.Id);
+            Assign(assignment, "UserId", PickUserForOrganization(Users, userOrganizationIds, organizationId, random).Id);
             assignmentOrganizationIds[assignment.Id] = organizationId;
         }
 
@@ -540,8 +261,8 @@ internal static class FakeDataHelper
         foreach (var userAssignment in UserAssignments)
         {
             var assignment = PickRandom(Assignments, random);
-            userAssignment.AssignmentId = assignment.Id;
-            userAssignment.UserId = PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random).Id;
+            Assign(userAssignment, "AssignmentId", assignment.Id);
+            Assign(userAssignment, "UserId", PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random).Id);
         }
 
         WriteCsv("UserAssignments.csv", UserAssignments, x =>
@@ -595,8 +316,8 @@ internal static class FakeDataHelper
         foreach (var appointment in Appointments)
         {
             var assignment = PickRandom(Assignments, random);
-            appointment.AssignmentId = assignment.Id;
-            appointment.UserId = PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random).Id;
+            Assign(appointment, "AssignmentId", assignment.Id);
+            Assign(appointment, "UserId", PickUserForOrganization(Users, userOrganizationIds, assignmentOrganizationIds[assignment.Id], random).Id);
         }
 
         WriteCsv("Appointments.csv", Appointments, x =>
@@ -715,4 +436,9 @@ internal static class FakeDataHelper
             writer.WriteLine(line);
         }
     }
+
+    // Entities expose relations through private setters; this legacy dump generator fills them
+    // directly because it writes CSV rows instead of persisting through the domain factories.
+    private static void Assign(BaseEntity entity, string property, Guid value) =>
+        entity.GetType().GetProperty(property)!.SetValue(entity, value);
 }

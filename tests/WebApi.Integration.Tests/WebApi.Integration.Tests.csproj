@@ -7,11 +7,17 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <!-- Dapper.AOT's analyzer flows in from Infrastructure; test SQL helpers are not AOT targets. -->
+    <NoWarn>$(NoWarn);DAP005</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
       <PackageReference Include="FastEndpoints.Testing" Version="8.3.0" />
       <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
+      <PackageReference Include="coverlet.collector" Version="10.0.1">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
       <PackageReference Include="Shouldly" Version="4.3.0" />
       <PackageReference Include="xunit.v3.mtp-off" Version="4.0.1" />
@@ -21,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" Aliases="global,WebApiHost" />
     <ProjectReference Include="..\..\src\GrpcServer\GrpcServer.csproj" />
+    <ProjectReference Include="..\..\src\IdentityApi\IdentityApi.csproj" />
   </ItemGroup>
 
 </Project>

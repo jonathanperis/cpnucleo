@@ -6,65 +6,40 @@ public sealed class RemoveImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Remo
     public async Task<RemoveImpedimentResult> ExecuteAsync(RemoveImpedimentCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if impediment entities exist for Ids: {ImpedimentIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} impediment entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.Impediment>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("Impediment not found with Id: {ImpedimentId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveImpedimentResult 
-                    { 
-                        Success = false,
-                        Message = "Impediment not found."
-                    };
-                }
-
-                logger.LogInformation("Removing impediment entity with Id: {ImpedimentId}", id);
-                Domain.Entities.Impediment.Remove(item);
-
-                logger.LogInformation("Deleting impediment entity from repository with Id: {ImpedimentId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one impediment to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveImpedimentResult 
-                { 
+                return new RemoveImpedimentResult
+                {
                     Success = false,
                     Message = "Impediment not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveImpedimentResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "Impediment removed successfully." : "Failed to remove Impediment."
+            return new RemoveImpedimentResult
+            {
+                Success = true,
+                Message = "Impediment removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

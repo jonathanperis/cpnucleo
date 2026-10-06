@@ -3,12 +3,16 @@ namespace Infrastructure.Common.Context;
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     private readonly IConfiguration? _configuration;
+    private readonly AccessGuardInterceptor? _accessGuard;
 
-    public ApplicationDbContext(IConfiguration configuration)
+    /// <summary>Request-scoped context: every save is authorized by <see cref="AccessGuardInterceptor"/>.</summary>
+    public ApplicationDbContext(IConfiguration configuration, AccessGuardInterceptor accessGuard)
     {
         _configuration = configuration;
+        _accessGuard = accessGuard;
     }
 
+    /// <summary>Trusted tooling context (migrations, seeding, tests) configured explicitly.</summary>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
@@ -63,6 +67,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             optionsBuilder
                 .UseNpgsql(_configuration?.GetValue<string>("DB_CONNECTION_STRING"));
         }
+
+        if (_accessGuard is not null) optionsBuilder.AddInterceptors(_accessGuard);
     }
 
     public new async Task<bool> SaveChangesAsync(CancellationToken cancellationToken)

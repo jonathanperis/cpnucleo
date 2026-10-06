@@ -4,6 +4,7 @@ public class PaginationParams
 {
     public const int MaximumPageSize = 100;
     public const int MaximumPageNumber = int.MaxValue / MaximumPageSize;
+    public const int MaximumSearchLength = 128;
     private int? _pageNumber;
     private int? _pageSize;
     private string? _sortColumn;
@@ -18,30 +19,40 @@ public class PaginationParams
         {
             var values = value?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
             if (values.Length > MaximumPageSize || values.Any(id => !Guid.TryParse(id, out _)))
-                throw new ArgumentException("Ids must contain at most 100 comma-separated UUIDs.", nameof(Ids));
+                throw new DomainException($"Ids must contain at most {MaximumPageSize} comma-separated UUIDs.", nameof(Ids));
             _ids = value;
         }
     }
 
     public Guid[] GetIds() => _ids?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-        .Select(Guid.Parse).ToArray() ?? [];
+        .Select(Guid.Parse).Distinct().ToArray() ?? [];
 
     public string? Search
     {
         get => _search;
         set
         {
-            if (value?.Length > 128) throw new ArgumentOutOfRangeException(nameof(Search));
+            if (value?.Length > MaximumSearchLength)
+                throw new DomainException($"Search must be at most {MaximumSearchLength} characters.", nameof(Search));
             _search = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         }
     }
+
+    /// <summary>
+    /// The search text as a case-insensitive "contains" LIKE pattern, with LIKE wildcards escaped
+    /// so <c>%</c>, <c>_</c> and <c>\</c> match literally. Use with <c>ESCAPE '\'</c>.
+    /// </summary>
+    public string? GetSearchPattern() => _search is null
+        ? null
+        : "%" + _search.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_") + "%";
 
     public int? PageNumber
     {
         get => _pageNumber ?? 1;
         set
         {
-            if (value is < 1 or > MaximumPageNumber) throw new ArgumentOutOfRangeException(nameof(PageNumber));
+            if (value is < 1 or > MaximumPageNumber)
+                throw new DomainException($"PageNumber must be between 1 and {MaximumPageNumber}.", nameof(PageNumber));
             _pageNumber = value;
         }
     }
@@ -51,7 +62,8 @@ public class PaginationParams
         get => _pageSize ?? 10;
         set
         {
-            if (value is < 1 or > MaximumPageSize) throw new ArgumentOutOfRangeException(nameof(PageSize));
+            if (value is < 1 or > MaximumPageSize)
+                throw new DomainException($"PageSize must be between 1 and {MaximumPageSize}.", nameof(PageSize));
             _pageSize = value;
         }
     }
@@ -64,7 +76,7 @@ public class PaginationParams
 
     public string? SortOrder
     {
-        get => (_sortOrder?.ToUpper() == "DESC") ? "DESC" : "ASC";
+        get => (_sortOrder?.ToUpperInvariant() == "DESC") ? "DESC" : "ASC";
         set => _sortOrder = value;
     }
 

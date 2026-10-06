@@ -15,7 +15,9 @@ public class RemoveRequest
         public Validator()
         {
             RuleFor(x => x.Ids)
-                .NotEmpty().WithMessage("Ids are required.");
+                .NotEmpty().WithMessage("Ids are required.")
+                .Must(ids => ids.Distinct().Count() <= BatchIds.MaximumCount)
+                .WithMessage($"At most {BatchIds.MaximumCount} ids can be removed at once.");
             RuleForEach(x => x.Ids)
                 .NotEmpty().WithMessage("Each Id is required.");
         }

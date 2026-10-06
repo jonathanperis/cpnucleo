@@ -9,19 +9,13 @@ var allowedCorsOrigins = builder.Configuration
         : ["https://cpnucleo.jonathanperis.tech"];
 
 builder.Services
-    .AddAuthenticationJwtBearer(s => s.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))
-    .AddAuthorization();
-
-builder.Services.Configure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>("Bearer", options =>
-{
-    options.MapInboundClaims = false;
-    options.TokenValidationParameters.ValidateIssuer = true;
-    options.TokenValidationParameters.ValidIssuer = builder.Configuration["Jwt:Issuer"];
-    options.TokenValidationParameters.ValidateAudience = true;
-    options.TokenValidationParameters.ValidAudience = builder.Configuration["Jwt:Audience"];
-    options.TokenValidationParameters.ValidateLifetime = true;
-    options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
-});
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration);
+    });
+builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
@@ -30,17 +24,18 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(allowedCorsOrigins)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            // Lets the browser client read how long to wait after a 429.
+            .WithExposedHeaders("Retry-After");
     });
 });
 
-builder.Services
-    .Configure<JwtCreationOptions>(o =>
-    {
-        o.SigningKey = builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing.");
-        o.Issuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing.");
-        o.Audience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing.");
-    });
+// IdentityApi reads accounts on behalf of the system (login, refresh); it exposes no resource CRUD.
+builder.Services.AddSingleton<Application.Common.Security.ICurrentUser>(Application.Common.Security.StaticCurrentUser.System);
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<TokenIssuer>();
+builder.Services.AddSingleton<LoginThrottle>();
+builder.Services.AddSingleton<TimingSafePasswordCheck>();
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -56,24 +51,19 @@ builder.Services.AddRateLimiter(options =>
                 AutoReplenishment = true // Default: automatically replenish permits
             }));
 
-    options.OnRejected = async (context, cancellationToken) =>
+    // Global cap on concurrent password verifications, independent of client addresses.
+    options.AddConcurrencyLimiter(IdentityApi.Endpoints.Login.Endpoint.ConcurrencyPolicy, limiter =>
     {
-        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-        context.HttpContext.Response.ContentType = "text/plain";
+        limiter.PermitLimit = 4;
+        limiter.QueueLimit = 16;
+        limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
 
-        var retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
-            ? Math.Ceiling(retryAfter.TotalSeconds).ToString()
-            : "60";
-        context.HttpContext.Response.Headers.RetryAfter = retryAfterSeconds;
-
-        await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken);
-
-        var logger = context.HttpContext.RequestServices
-            .GetRequiredService<ILoggerFactory>()
-            .CreateLogger("IdentityApi.RateLimiting");
-        logger.LogWarning("Rate limit exceeded for IP: {IpAddress}",
-            context.HttpContext.Connection.RemoteIpAddress);
-    };
+    options.OnRejected = (context, cancellationToken) => ApiErrorEnvelopeExtensions.WriteRateLimitRejectionAsync(
+        context.HttpContext,
+        context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter) ? retryAfter : null,
+        "IdentityApi.RateLimiting",
+        cancellationToken);
 });
 
 builder.Services.AddOutputCache(options =>
@@ -85,7 +75,12 @@ builder.Services.AddOutputCache(options =>
 builder.Services.AddHealthChecks();
 
 builder.Services
-    .AddFastEndpoints()
+    // Only this host's endpoints: other API assemblies loaded in the same process must not be mapped.
+    .AddFastEndpoints(o =>
+    {
+        o.DisableAutoDiscovery = true;
+        o.Assemblies = [typeof(IdentityApi.Endpoints.Login.Endpoint).Assembly];
+    })
     .SwaggerDocument(o =>
     {
         o.EnableJWTBearerAuth = true;
@@ -145,6 +140,7 @@ app.Use(async (context, next) =>
 });
 
 app.UseCors("CpnucleoWebClient");
+app.UseApiErrorEnvelope();
 
 app.UseHealthChecks("/healthz", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => false });
 app.UseHealthChecks("/readyz");
@@ -158,8 +154,7 @@ app.Use(async (context, next) =>
     if (context.User.Identity?.IsAuthenticated == true &&
         !context.User.HasClaim(claim => claim.Type == CpnucleoClaimTypes.Subject && !string.IsNullOrWhiteSpace(claim.Value)))
     {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        await context.Response.WriteAsync("Authenticated tokens must include a subject claim.");
+        await ApiErrors.WriteAsync(context, StatusCodes.Status401Unauthorized, "Authenticated tokens must include a subject claim.");
         return;
     }
 
@@ -167,7 +162,6 @@ app.Use(async (context, next) =>
 });
 
 app.UseAuthorization();
-app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseInfrastructure();
 app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");

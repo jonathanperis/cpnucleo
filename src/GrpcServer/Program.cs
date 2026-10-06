@@ -7,16 +7,17 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.MapInboundClaims = false;
-        options.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration);
+        options.Events = new JwtBearerEvents
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))),
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing."),
-            ValidAudience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing."),
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ClockSkew = TimeSpan.FromMinutes(1)
+            // Same session rules as WebApi: deactivated accounts, changed credentials and revoked
+            // admin claims stop working within the validator's cache window.
+            OnTokenValidated = async context =>
+            {
+                var failure = await context.HttpContext.RequestServices.GetRequiredService<TokenSessionValidator>()
+                    .ValidateAsync(context.Principal!, context.HttpContext.RequestAborted);
+                if (failure is not null) context.Fail(failure);
+            }
         };
     });
 
@@ -42,24 +43,11 @@ builder.Services.AddRateLimiter(options =>
                 AutoReplenishment = true
             }));
 
-    options.OnRejected = async (context, cancellationToken) =>
-    {
-        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-        context.HttpContext.Response.ContentType = "text/plain";
-
-        var retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
-            ? Math.Ceiling(retryAfter.TotalSeconds).ToString()
-            : "60";
-        context.HttpContext.Response.Headers.RetryAfter = retryAfterSeconds;
-
-        await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken);
-
-        var logger = context.HttpContext.RequestServices
-            .GetRequiredService<ILoggerFactory>()
-            .CreateLogger("GrpcServer.RateLimiting");
-        logger.LogWarning("Rate limit exceeded for IP: {IpAddress}",
-            context.HttpContext.Connection.RemoteIpAddress);
-    };
+    options.OnRejected = (context, cancellationToken) => ApiErrorEnvelopeExtensions.WriteRateLimitRejectionAsync(
+        context.HttpContext,
+        context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter) ? retryAfter : null,
+        "GrpcServer.RateLimiting",
+        cancellationToken);
 });
 
 builder.Services.AddHealthChecks();
@@ -74,20 +62,6 @@ builder.WebHost.ConfigureKestrel(o =>
 builder.AddHandlerServer();
 builder.Services.AddGrpc(options => options.Interceptors.Add<GrpcServer.Common.Security.ValidationInterceptor>());
 builder.Services.AddHttpContextAccessor();
-
-// builder.Services
-//     // .AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = WebApi.DiscoveredTypes.All)
-//     .AddFastEndpoints()
-//     .SwaggerDocument(o =>
-//     {
-//         o.DocumentSettings = s =>
-//         {
-//             s.Title = "Cpnucleo Web API";
-//             s.Description = "A sample project that implements best practices when building modern .NET projects";
-//             s.Version = "v1";
-//         };
-//         o.AutoTagPathSegmentIndex = 0; // Disable the auto-tagging by setting the AutoTagPathSegmentIndex property to 0
-//     });
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -112,11 +86,6 @@ app.UseHealthChecks("/readyz");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseInfrastructure();
-
-// app.
-//     UseFastEndpoints()
-//     .UseMiddleware<ElapsedTimeMiddleware>()
-//     .UseMiddleware<ErrorHandlingMiddleware>();
 
 app.MapHandlers(h =>
 {
@@ -188,10 +157,5 @@ app.MapHandlers(h =>
 });
 
 app.MapGet("/", () => "Hello World!");
-
-if (app.Environment.IsDevelopment())
-{
-    // app.UseSwaggerGen();
-}
 
 app.Run();

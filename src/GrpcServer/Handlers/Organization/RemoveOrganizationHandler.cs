@@ -6,65 +6,40 @@ public sealed class RemoveOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Re
     public async Task<RemoveOrganizationResult> ExecuteAsync(RemoveOrganizationCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if organization entities exist for Ids: {OrganizationIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} organization entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("Organization not found with Id: {OrganizationId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveOrganizationResult 
-                    { 
-                        Success = false,
-                        Message = "Organization not found."
-                    };
-                }
-
-                logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
-                Domain.Entities.Organization.Remove(item);
-
-                logger.LogInformation("Deleting organization entity from repository with Id: {OrganizationId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one organization to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveOrganizationResult 
-                { 
+                return new RemoveOrganizationResult
+                {
                     Success = false,
                     Message = "Organization not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveOrganizationResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "Organization removed successfully." : "Failed to remove Organization."
+            return new RemoveOrganizationResult
+            {
+                Success = true,
+                Message = "Organization removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

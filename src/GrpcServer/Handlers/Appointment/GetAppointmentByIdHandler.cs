@@ -9,7 +9,7 @@ public sealed class GetAppointmentByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
 
         logger.LogInformation("Fetching appointment entity with Id: {AppointmentId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

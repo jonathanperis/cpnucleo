@@ -72,8 +72,8 @@ public class PersistenceParityTests(WebAppFixture app)
             Content = JsonContent.Create(new { ids = new[] { project.Id, Guid.NewGuid() } })
         };
         (await app.Client.SendAsync(request, Cancellation)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
-        var repository = new ProjectRepository(connection);
-        (await repository.GetByIdAsync(project.Id)).ShouldNotBeNull();
+        var repository = new ProjectRepository(connection, Application.Common.Security.StaticCurrentUser.System, Infrastructure.Security.TrustedAccessGuard.Instance);
+        (await repository.GetByIdAsync(project.Id, Cancellation)).ShouldNotBeNull();
         foreach (var sort in new[] { "name", "Organization", "Name\"; DELETE" })
             (await repository.GetAllAsync(new PaginationParams { SortColumn = sort }, Cancellation)).Data.ShouldNotBeEmpty();
         var filteredResponse = await app.Client.GetAsync($"/api/projects?ids={project.Id},{Guid.NewGuid()}&search=Batch&pageSize=100", Cancellation);

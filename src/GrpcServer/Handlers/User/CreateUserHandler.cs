@@ -12,7 +12,7 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUser
         {
             logger.LogInformation("Checking if an user entity exists with Id: {UserId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.User>();
-            var itemExists = await repository.ExistsAsync(command.Id);
+            var itemExists = await repository.ExistsAsync(command.Id, cancellationToken);
 
             if (itemExists)
             {
@@ -25,21 +25,22 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUser
             }
 
             logger.LogInformation("Validation passed, proceeding to create new user entity.");
+            PasswordPolicy.Validate(command.Password);
             var passwordHash = passwordHasher.Hash(command.Password);
             var newItem = Domain.Entities.User.Create(command.Name, command.Login, passwordHash, command.Id);
             logger.LogInformation("Created new user entity with Id: {UserId}", newItem.Id);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             logger.LogInformation("Adding user to repository.");
-            var createdId = await repository.AddAsync(newItem);
+            var createdId = await repository.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Fetching user by Id: {UserId}", createdId);
-            var createdItem = await repository.GetByIdAsync(createdId);
+            var createdItem = await repository.GetByIdAsync(createdId, cancellationToken);
 
             var result = new CreateUserResult
             {
@@ -52,9 +53,9 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUser
 
             return result;
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

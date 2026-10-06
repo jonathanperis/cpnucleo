@@ -20,7 +20,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {WorkflowId}", request.Name, request.Id);
 
         Logger.LogInformation("Checking if an workflow entity exists with Id: {WorkflowId}", request.Id);
-        var itemExists = dbContext.Workflows!.Any(x => x.Id == request.Id);
+        var itemExists = await dbContext.Workflows!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
         if (itemExists)
         {
@@ -47,7 +47,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Service completed successfully.");
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Workflow));
 
         await Send.OkAsync(Response, cancellationToken);
     }

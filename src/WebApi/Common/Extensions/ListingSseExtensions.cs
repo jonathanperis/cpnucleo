@@ -18,19 +18,21 @@ public static class ListingSseExtensions
         MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType) ? mediaType : null;
 
     public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
+        string resource,
         Func<CancellationToken, Task<TResponse>> getSnapshot,
         ListingChangeNotifier listingChanges,
         ILogger logger,
         CancellationToken cancellationToken) =>
-        ReadListingSnapshots(getSnapshot, listingChanges, logger, cancellationToken);
+        ReadListingSnapshots(resource, getSnapshot, listingChanges, logger, cancellationToken);
 
     private static async IAsyncEnumerable<TResponse> ReadListingSnapshots<TResponse>(
+        string resource,
         Func<CancellationToken, Task<TResponse>> getSnapshot,
         ListingChangeNotifier listingChanges,
         ILogger logger,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var observedVersion = listingChanges.CurrentVersion;
+        var observedVersion = listingChanges.CurrentVersion(resource);
         TResponse lastSnapshot;
         try
         {
@@ -48,7 +50,7 @@ public static class ListingSseExtensions
         {
             try
             {
-                observedVersion = await listingChanges.WaitForChangeAsync(observedVersion, cancellationToken, TimeSpan.FromSeconds(15));
+                observedVersion = await listingChanges.WaitForChangeAsync(resource, observedVersion, cancellationToken, TimeSpan.FromSeconds(15));
             }
             catch (TimeoutException)
             {

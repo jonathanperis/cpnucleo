@@ -9,7 +9,7 @@ public sealed class GetAssignmentImpedimentByIdHandler(IUnitOfWork unitOfWork, I
 
         logger.LogInformation("Fetching assignmentImpediment entity with Id: {AssignmentImpedimentId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

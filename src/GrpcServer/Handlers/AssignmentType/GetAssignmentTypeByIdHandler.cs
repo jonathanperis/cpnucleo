@@ -9,7 +9,7 @@ public sealed class GetAssignmentTypeByIdHandler(IUnitOfWork unitOfWork, ILogger
 
         logger.LogInformation("Fetching assignmentType entity with Id: {AssignmentTypeId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentType>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

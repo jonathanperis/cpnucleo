@@ -22,14 +22,23 @@ if (args.Contains("--migrate-database", StringComparer.OrdinalIgnoreCase))
 
 if (args.Contains("--run-fake-data-csv-import", StringComparer.OrdinalIgnoreCase))
 {
-    if (builder.Environment.IsProduction() && !builder.Configuration.GetValue<bool>("FakeDataCsvImporter:AllowProduction"))
+    // The importer truncates every table before loading the demo dataset. It never runs in Production.
+    if (builder.Environment.IsProduction())
     {
-        throw new InvalidOperationException("FakeData CSV import is disabled in Production unless FakeDataCsvImporter:AllowProduction is explicitly true.");
+        throw new InvalidOperationException("The FakeData CSV import truncates all data and is disabled in Production.");
     }
 
     await FakeDataCsvImporter.RunAsync(
         builder.Configuration.GetValue<string>("DB_CONNECTION_STRING") ?? throw new InvalidOperationException("DB_CONNECTION_STRING configuration is missing."),
         new ConsoleSeedLogger("FakeDataCsvImporter"));
+    return;
+}
+
+if (args.Contains("--generate-legacy-fake-data", StringComparer.OrdinalIgnoreCase))
+{
+    if (!builder.Environment.IsDevelopment()) throw new InvalidOperationException("Legacy fake data generation is available only in Development.");
+    FakeDataHelper.CreateSqlCsvDumpFile();
+    Console.WriteLine("Generated dml-data/*.csv and the COPY script. Move them into docker-entrypoint-initdb.d for the legacy compose.yaml dataset.");
     return;
 }
 
@@ -46,16 +55,17 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.MapInboundClaims = false;
-        options.TokenValidationParameters = new TokenValidationParameters
+        options.TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration);
+        options.Events = new JwtBearerEvents
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing."))),
-            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing."),
-            ValidAudience = builder.Configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing."),
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ClockSkew = TimeSpan.FromMinutes(1)
+            // Signature and lifetime are not enough: reject tokens whose account was deactivated,
+            // whose credentials changed, or whose admin claim is no longer configured.
+            OnTokenValidated = async context =>
+            {
+                var failure = await context.HttpContext.RequestServices.GetRequiredService<TokenSessionValidator>()
+                    .ValidateAsync(context.Principal!, context.HttpContext.RequestAborted);
+                if (failure is not null) context.Fail(failure);
+            }
         };
     });
 
@@ -74,7 +84,9 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(allowedCorsOrigins)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            // Lets the browser client read how long to wait after a 429.
+            .WithExposedHeaders("Retry-After");
     });
 });
 
@@ -92,32 +104,23 @@ builder.Services.AddRateLimiter(options =>
                 AutoReplenishment = true // Default: automatically replenish permits
             }));
 
-    options.OnRejected = async (context, cancellationToken) =>
-    {
-        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-        context.HttpContext.Response.ContentType = "text/plain";
-
-        var retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
-            ? Math.Ceiling(retryAfter.TotalSeconds).ToString()
-            : "60";
-        context.HttpContext.Response.Headers.RetryAfter = retryAfterSeconds;
-
-        await context.HttpContext.Response.WriteAsync("Rate limit exceeded. Please try again later.", cancellationToken);
-
-        var logger = context.HttpContext.RequestServices
-            .GetRequiredService<ILoggerFactory>()
-            .CreateLogger("WebApi.RateLimiting");
-        logger.LogWarning("Rate limit exceeded for IP: {IpAddress}",
-            context.HttpContext.Connection.RemoteIpAddress);
-    };
+    options.OnRejected = (context, cancellationToken) => ApiErrorEnvelopeExtensions.WriteRateLimitRejectionAsync(
+        context.HttpContext,
+        context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter) ? retryAfter : null,
+        "WebApi.RateLimiting",
+        cancellationToken);
 });
 
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<ListingChangeNotifier>();
 
 builder.Services
-    // .AddFastEndpoints(o => o.SourceGeneratorDiscoveredTypes = WebApi.DiscoveredTypes.All)
-    .AddFastEndpoints()
+    // Only this host's endpoints: other API assemblies loaded in the same process must not be mapped.
+    .AddFastEndpoints(o =>
+    {
+        o.DisableAutoDiscovery = true;
+        o.Assemblies = [typeof(WebApi.Endpoints.Project.CreateProject.Endpoint).Assembly];
+    })
     .SwaggerDocument(o =>
     {
         o.EnableJWTBearerAuth = true;
@@ -185,6 +188,7 @@ app.Use(async (context, next) =>
 });
 
 app.UseCors("CpnucleoWebClient");
+app.UseApiErrorEnvelope();
 
 app.UseHealthChecks("/healthz", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => false });
 app.UseHealthChecks("/readyz");
@@ -198,8 +202,7 @@ app.Use(async (context, next) =>
     if (context.User.Identity?.IsAuthenticated == true &&
         !context.User.HasClaim(claim => claim.Type == CpnucleoClaimTypes.Subject && !string.IsNullOrWhiteSpace(claim.Value)))
     {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        await context.Response.WriteAsync("Authenticated tokens must include a subject claim.");
+        await ApiErrors.WriteAsync(context, StatusCodes.Status401Unauthorized, "Authenticated tokens must include a subject claim.");
         return;
     }
 
@@ -219,7 +222,6 @@ app.Use(async (context, next) =>
 });
 
 app.UseAuthorization();
-app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseInfrastructure();
 app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");

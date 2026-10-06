@@ -20,7 +20,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", request.UserId, request.AssignmentId, request.Id);
 
         Logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", request.Id);
-        var itemExists = dbContext.UserAssignments!.Any(x => x.Id == request.Id);
+        var itemExists = await dbContext.UserAssignments!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
         if (itemExists)
         {
@@ -47,7 +47,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Service completed successfully.");
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.UserAssignment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

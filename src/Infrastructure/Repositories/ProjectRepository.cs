@@ -1,8 +1,16 @@
 namespace Infrastructure.Repositories;
 
-//[DapperAot]
-public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
+/// <summary>
+/// Hand-written Dapper repository ("Dapper Repository Basic") for projects. It applies the same
+/// visibility and write rules as <see cref="DapperRepository{T}"/> with explicit SQL.
+/// </summary>
+public class ProjectRepository(NpgsqlConnection connection, ICurrentUser currentUser, IAccessGuard accessGuard) : IProjectRepository
 {
+    private const string Visibility = """
+        AND (@AccessAll OR "Id" IN (SELECT up."ProjectId" FROM "UserProjects" up
+                                    WHERE up."UserId" = @AccessUserId AND up."Active"))
+        """;
+
     // Cache reflection results to avoid repeated GetProperties calls
     private static readonly Lazy<Dictionary<string, string>> CachedPropertyNames = new(() =>
     {
@@ -10,39 +18,40 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         return properties.Where(p => p.PropertyType == typeof(string) || p.PropertyType.IsValueType)
             .ToDictionary(p => p.Name, p => p.Name, StringComparer.OrdinalIgnoreCase);
     });
-    
-    public async Task<Project?> GetByIdAsync(Guid id)
+
+    public async Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await connection.QueryFirstOrDefaultAsync<Project>(
-            $"""
-                SELECT * FROM "Projects" WHERE "Id" = @Id AND "Active" = true
-                """,
-            new { Id = id });
+        return await connection.QueryFirstOrDefaultAsync<Project>(new CommandDefinition($"""
+            SELECT * FROM "Projects" WHERE "Id" = @Id AND "Active" = true {Visibility}
+            """, WithAccess(new { Id = id }), cancellationToken: cancellationToken));
     }
 
     public async Task<PaginatedResult<Project?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var ids = pagination.GetIds();
-        var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
+        var validSortOrder = pagination.SortOrder == "DESC" ? "DESC" : "ASC";
+        const string filter = $"""
+            WHERE "Active" = true AND (@Search IS NULL OR "Name" ILIKE @Search ESCAPE '\')
+              AND (NOT @FilterIds OR "Id" = ANY(@Ids)) {Visibility}
+            """;
 
         var sql = $"""
-                   SELECT * FROM "Projects" 
-                   WHERE "Active" = true AND (@Search IS NULL OR "Name" ILIKE @Search) AND (NOT @FilterIds OR "Id" = ANY(@Ids))
+                   SELECT * FROM "Projects" {filter}
                    ORDER BY "{validSortColumn}" {validSortOrder}, "Id" ASC
                    OFFSET @Offset LIMIT @PageSize;
-                   
-                   SELECT COUNT(*) FROM "Projects" WHERE "Active" = true AND (@Search IS NULL OR "Name" ILIKE @Search) AND (NOT @FilterIds OR "Id" = ANY(@Ids));
+
+                   SELECT COUNT(*) FROM "Projects" {filter};
                    """;
 
-        var command = new CommandDefinition(sql, new
+        var command = new CommandDefinition(sql, WithAccess(new
         {
             pagination.Offset,
             pagination.PageSize,
-            Search = pagination.Search is null ? null : $"%{pagination.Search}%",
+            Search = pagination.GetSearchPattern(),
             FilterIds = ids.Length > 0,
             Ids = ids
-        }, cancellationToken: cancellationToken);
+        }), cancellationToken: cancellationToken);
 
         await using var multi = await connection.QueryMultipleAsync(command);
 
@@ -55,75 +64,81 @@ public class ProjectRepository(NpgsqlConnection connection) : IProjectRepository
         };
     }
 
-    public async Task<Guid> AddAsync(Project? entity)
+    public async Task<Guid> AddAsync(Project? entity, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
+        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(entity), AccessOperation.Create, cancellationToken);
+
         const string query = """
                              INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
                              VALUES (@Id, @Name, @OrganizationId, @CreatedAt, @Active) RETURNING "Id";
                              """;
 
-        return await connection.ExecuteScalarAsync<Guid>(query, entity);
+        return await connection.ExecuteScalarAsync<Guid>(new CommandDefinition(query, entity, cancellationToken: cancellationToken));
     }
 
-    public async Task<bool> UpdateAsync(Project? entity)
+    public async Task<bool> UpdateAsync(Project? entity, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
+        if (!await AuthorizeModificationAsync(entity.Id, cancellationToken)) return false;
+
+        // Lifecycle columns are not written here, so an update can't undo a concurrent removal.
         const string query = """
                              UPDATE "Projects"
                              SET "Name" = @Name,
                                  "OrganizationId" = @OrganizationId,
-                                 "UpdatedAt" = @UpdatedAt,
-                                 "DeletedAt" = @DeletedAt,
-                                 "Active" = @Active
-                             WHERE "Id" = @Id;
+                                 "UpdatedAt" = GREATEST(@UpdatedAt, COALESCE("UpdatedAt", "CreatedAt") + interval '1 microsecond')
+                             WHERE "Id" = @Id AND "Active" = true;
                              """;
 
-        var affectedRows = await connection.ExecuteAsync(query, entity).ConfigureAwait(false);
+        var affectedRows = await connection.ExecuteAsync(new CommandDefinition(query, entity, cancellationToken: cancellationToken)).ConfigureAwait(false);
         return affectedRows > 0;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        if (!await AuthorizeModificationAsync(id, cancellationToken)) return false;
+
         const string query = """
                              UPDATE "Projects" SET "Active" = false, "DeletedAt" = now()
                              WHERE "Id" = @Id AND "Active" = true;
                              """;
-        
-        var affectedRows = await connection.ExecuteAsync(query, new { Id = id });
+
+        var affectedRows = await connection.ExecuteAsync(new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken));
         return affectedRows > 0;
     }
 
     public Task<bool> UpdateIfVersionAsync(Project entity, DateTime expectedVersion, CancellationToken cancellationToken = default) =>
-        new DapperRepository<Project>(connection, null, "Projects").UpdateIfVersionAsync(entity, expectedVersion, cancellationToken);
+        CreateGenericRepository().UpdateIfVersionAsync(entity, expectedVersion, cancellationToken);
 
-    public async Task<bool> RemoveManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+    public Task<bool> RemoveManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default) =>
+        CreateGenericRepository().RemoveManyAsync(ids.ToArray(), cancellationToken);
+
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var distinctIds = ids.Distinct().ToArray();
-        if (distinctIds.Length == 0) return false;
+        const string sql = """
+                           SELECT EXISTS(SELECT 1 FROM "Projects"
+                           WHERE "Id" = @Id AND "Active" = true)
+                           """;
 
-        await connection.OpenAsync(cancellationToken);
-        await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
-        var affected = await connection.ExecuteAsync(new CommandDefinition("""
-            UPDATE "Projects" SET "Active" = false, "DeletedAt" = now()
-            WHERE "Id" = ANY(@Ids) AND "Active" = true
-            """, new { Ids = distinctIds }, transaction, cancellationToken: cancellationToken));
-        if (affected != distinctIds.Length)
-        {
-            await transaction.RollbackAsync(CancellationToken.None);
-            return false;
-        }
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken));
+    }
 
-        await transaction.CommitAsync(cancellationToken);
+    private DapperRepository<Project> CreateGenericRepository() =>
+        new(connection, () => null, "Projects", currentUser, accessGuard);
+
+    private async Task<bool> AuthorizeModificationAsync(Guid id, CancellationToken cancellationToken)
+    {
+        if (await GetByIdAsync(id, cancellationToken) is null) return false;
+        await accessGuard.EnsureCanWriteAsync(new AccessTarget(typeof(Project), ProjectId: id), AccessOperation.Modify, cancellationToken);
         return true;
     }
 
-    public async Task<bool> ExistsAsync(Guid id)
+    private DynamicParameters WithAccess(object values)
     {
-        var sql = $"""
-                   SELECT EXISTS(SELECT 1 FROM "Projects"
-                   WHERE "Id" = @Id AND "Active" = true)
-                   """;
-        
-        return await connection.ExecuteScalarAsync<bool>(sql, new { Id = id });
+        var parameters = new DynamicParameters(values);
+        parameters.AddDynamicParams(AccessSql.Parameters(currentUser));
+        return parameters;
     }
 
     private static string ValidateSortColumn(string? column)

@@ -20,12 +20,12 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         
         Logger.LogInformation("Fetching organization entity with Id: {OrganizationId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-        var item = await repository.GetByIdAsync(request.Id);        
+        var item = await repository.GetByIdAsync(request.Id, cancellationToken);        
         
         if (item is null)
         {
             Logger.LogWarning("Organization not found with Id: {OrganizationId}", request.Id);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 

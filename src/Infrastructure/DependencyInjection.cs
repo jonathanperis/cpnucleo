@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace Infrastructure;
 
 public static class DependencyInjection
@@ -7,38 +9,45 @@ public static class DependencyInjection
         services.AddHealthChecks().AddCheck<DatabaseReadinessCheck>("database", tags: ["ready"]);
         // Production traffic crosses Traefik and then the internal NGINX proxy.
         services.Configure<ForwardedHeadersOptions>(options => options.ForwardLimit = 2);
+
+        // Caller identity and access rules shared by both transports. Hosts that act on behalf of
+        // the system (IdentityApi) register their own ICurrentUser before calling this method.
+        services.AddHttpContextAccessor();
+        services.TryAddScoped<ICurrentUser, HttpContextCurrentUser>();
+        services.AddScoped<IAccessGuard, AccessGuard>();
+        services.AddScoped<AccessGuardInterceptor>();
+        services.AddMemoryCache();
+        services.AddSingleton<TokenSessionValidator>();
+
+        services.AddSingleton(_ => NpgsqlDataSource.Create(
+            configuration.GetValue<string>("DB_CONNECTION_STRING")
+            ?? throw new InvalidOperationException("DB_CONNECTION_STRING configuration is missing.")));
+
         // EF Core
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
         services.AddSingleton<IPasswordHasher, Argon2PasswordHasher>();
 
         // Dapper Repository Basic
-        services.AddScoped(_ => new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING")));
+        services.AddScoped(provider => provider.GetRequiredService<NpgsqlDataSource>().CreateConnection());
         services.AddScoped<IProjectRepository, ProjectRepository>();
 
         services.AddScoped<IProjectCreateStore, ProjectCreateStore>();
 
-        // Dapper Repository Advanced        
-        services.AddScoped<IUnitOfWork>(_ => 
-            new UnitOfWork(new NpgsqlConnection(configuration.GetValue<string>("DB_CONNECTION_STRING"))));
-        
-        var fakeDataRequested = configuration.GetValue<bool>("CreateFakeData");
-
-        if (!fakeDataRequested) return;
-        
-        var serviceProvider = services.BuildServiceProvider();
-        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-
-        var logger = loggerFactory.CreateLogger<Type>();
-        
-        logger.LogInformation("Fake data creation requested. Starting to create fake data.");
-        FakeDataHelper.CreateSqlCsvDumpFile();    
-        logger.LogInformation("Finished creating fake data. Please move the generated dump-dml.sql file and the dml-data in the root WebApi project folder to the docker-entrypoint-initdb.d folder.");    
+        // Dapper Repository Advanced
+        services.AddScoped(provider => new UnitOfWork(
+            provider.GetRequiredService<NpgsqlDataSource>().CreateConnection(),
+            provider.GetRequiredService<ICurrentUser>(),
+            provider.GetRequiredService<IAccessGuard>()));
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<UnitOfWork>());
     }
-    
+
     public static void UseInfrastructure(this IApplicationBuilder app)
     {
         app.UseDelta(
-            getConnection: httpContext => httpContext.RequestServices.GetRequiredService<NpgsqlConnection>());
+            getConnection: httpContext => httpContext.RequestServices.GetRequiredService<NpgsqlConnection>(),
+            // Live listing streams outlive any single snapshot; ETags only make sense for plain GETs.
+            shouldExecute: httpContext => !httpContext.Request.Headers.Accept.Any(value =>
+                value?.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase) == true));
     }
 }

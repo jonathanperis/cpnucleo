@@ -3,34 +3,27 @@ namespace Domain.Entities;
 [Table("Workflows")] // Used for Dapper Repository Advanced
 public sealed class Workflow : BaseEntity
 {
-    public string? Name { get; set; }
-    public int Order { get; set; }
+    public string? Name { get; private set; }
+    public int Order { get; private set; }
 
     public static Workflow Create(string? name, int order, Guid id = default)
     {
-        var workflow = new Workflow
+        return new Workflow
         {
             Id = GetNewId(id),
             CreatedAt = DateTime.UtcNow,
-            Name = name,
-            Order = order,
+            Name = Guard.Required(name, nameof(Name)),
+            Order = Guard.Positive(order, nameof(Order)),
             Active = true
         };
-        
-        return workflow;
     }
 
     public static void Update(Workflow obj, string? name, int order)
     {
-        obj.Name = name;
-        obj.Order = order;
-        obj.UpdatedAt = DateTime.UtcNow;
+        obj.Name = Guard.Required(name, nameof(Name));
+        obj.Order = Guard.Positive(order, nameof(Order));
+        obj.Touch();
     }
 
-    public static void Remove(Workflow obj)
-    {
-        obj.Active = false;
-        obj.DeletedAt = DateTime.UtcNow;
-    }
-
+    public static void Remove(Workflow obj) => obj.MarkRemoved();
 }

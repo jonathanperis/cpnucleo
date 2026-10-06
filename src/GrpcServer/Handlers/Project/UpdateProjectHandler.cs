@@ -11,7 +11,7 @@ public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateP
         {
             logger.LogInformation("Checking if an project entity exists with Id: {ProjectId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.Project>();
-            var item = await repository.GetByIdAsync(command.Id);
+            var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (item is null)
             {
@@ -27,12 +27,12 @@ public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateP
             Domain.Entities.Project.Update(item, command.Name, command.OrganizationId);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
             
             logger.LogInformation("Updating entity in repository.");
             var success = command.ExpectedVersion is { } version
                 ? await repository.UpdateIfVersionAsync(item, version, cancellationToken)
-                : await repository.UpdateAsync(item);
+                : await repository.UpdateAsync(item, cancellationToken);
 
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
@@ -46,9 +46,9 @@ public sealed class UpdateProjectHandler(IUnitOfWork unitOfWork, ILogger<UpdateP
                 Message = success ? "Project updated successfully." : "The project changed. Reload before saving your changes."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

@@ -12,4 +12,16 @@ public abstract class BaseEntity
     {
         return id == Guid.Empty ? Guid.CreateVersion7() : id;
     }
+
+    protected void Touch() => UpdatedAt = DateTime.UtcNow;
+
+    /// <summary>
+    /// Soft-deletes the entity. Removing an already removed entity keeps the original deletion time.
+    /// </summary>
+    protected void MarkRemoved()
+    {
+        if (!Active) return;
+        Active = false;
+        DeletedAt ??= DateTime.UtcNow;
+    }
 }

@@ -12,7 +12,7 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
         {
             logger.LogInformation("Checking if an user entity exists with Id: {UserId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.User>();
-            var item = await repository.GetByIdAsync(command.Id);
+            var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (item is null)
             {
@@ -25,14 +25,21 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
             }
 
             logger.LogInformation("Updating user entity with Id: {UserId}", command.Id);
-            var passwordHash = passwordHasher.Hash(command.Password);
-            Domain.Entities.User.Update(item, command.Name, item.Login, passwordHash);
+            // Same semantics as REST: a missing password or login keeps the current value.
+            PasswordHash? passwordHash = null;
+            if (!string.IsNullOrWhiteSpace(command.Password))
+            {
+                PasswordPolicy.Validate(command.Password);
+                passwordHash = passwordHasher.Hash(command.Password);
+            }
+
+            Domain.Entities.User.Update(item, command.Name, command.Login, passwordHash);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
             
             logger.LogInformation("Updating entity in repository.");
-            var success = await repository.UpdateAsync(item);
+            var success = await repository.UpdateAsync(item, cancellationToken);
 
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
@@ -46,9 +53,9 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
                 Message = success ? "User updated successfully." : "Failed to update User."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

@@ -16,9 +16,14 @@ public class UpdateUserCommand : ICommand<UpdateUserResult>
     public required string Name { get; set; }
 
     /// <summary>
-    /// Gets or sets the password of the user.
+    /// Gets or sets the new login of the user. Null keeps the current login.
     /// </summary>
-    public required string Password { get; set; }
+    public string? Login { get; set; }
+
+    /// <summary>
+    /// Gets or sets the new password of the user. Null or empty keeps the current password.
+    /// </summary>
+    public string? Password { get; set; }
 }
 
 /// <summary>

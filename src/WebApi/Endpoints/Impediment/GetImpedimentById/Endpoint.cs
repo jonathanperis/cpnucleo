@@ -27,7 +27,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (item is null)
         {
             Logger.LogWarning("Impediment not found with Id: {ImpedimentId}", request.Id);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 

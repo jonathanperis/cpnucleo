@@ -6,65 +6,40 @@ public sealed class RemoveProjectHandler(IUnitOfWork unitOfWork, ILogger<RemoveP
     public async Task<RemoveProjectResult> ExecuteAsync(RemoveProjectCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if project entities exist for Ids: {ProjectIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} project entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.Project>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("Project not found with Id: {ProjectId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveProjectResult 
-                    { 
-                        Success = false,
-                        Message = "Project not found."
-                    };
-                }
-
-                logger.LogInformation("Removing project entity with Id: {ProjectId}", id);
-                Domain.Entities.Project.Remove(item);
-
-                logger.LogInformation("Deleting project entity from repository with Id: {ProjectId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one project to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveProjectResult 
-                { 
+                return new RemoveProjectResult
+                {
                     Success = false,
                     Message = "Project not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveProjectResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "Project removed successfully." : "Failed to remove Project."
+            return new RemoveProjectResult
+            {
+                Success = true,
+                Message = "Project removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

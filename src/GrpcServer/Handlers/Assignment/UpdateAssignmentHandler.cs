@@ -11,7 +11,7 @@ public sealed class UpdateAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Upda
         {
             logger.LogInformation("Checking if an assignment entity exists with Id: {AssignmentId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.Assignment>();
-            var item = await repository.GetByIdAsync(command.Id);
+            var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (item is null)
             {
@@ -36,10 +36,10 @@ public sealed class UpdateAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Upda
                                              command.AssignmentTypeId);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
             
             logger.LogInformation("Updating entity in repository.");
-            var success = await repository.UpdateAsync(item);
+            var success = await repository.UpdateAsync(item, cancellationToken);
 
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
@@ -53,9 +53,9 @@ public sealed class UpdateAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Upda
                 Message = success ? "Assignment updated successfully." : "Failed to update Assignment."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

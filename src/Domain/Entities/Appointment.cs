@@ -3,14 +3,14 @@ namespace Domain.Entities;
 [Table("Appointments")] // Used for Dapper Repository Advanced
 public sealed class Appointment : BaseEntity
 {
-    public string? Description { get; set; }
-    public DateTime KeepDate { get; set; }
-    public int AmountHours { get; set; }
+    public string? Description { get; private set; }
+    public DateTime KeepDate { get; private set; }
+    public int AmountHours { get; private set; }
 
-    public Guid AssignmentId { get; set; }
-    public Assignment? Assignment { get; set; }
-    public Guid UserId { get; set; }
-    public User? User { get; set; }
+    public Guid AssignmentId { get; private set; }
+    public Assignment? Assignment { get; private set; }
+    public Guid UserId { get; private set; }
+    public User? User { get; private set; }
 
     public static Appointment Create(string? description,
                                    DateTime keepDate,
@@ -19,20 +19,14 @@ public sealed class Appointment : BaseEntity
                                    Guid userId,
                                    Guid id = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(description);
-        if (amountHours <= 0) throw new ArgumentOutOfRangeException(nameof(amountHours), "Hours must be positive.");
         var appointment = new Appointment
         {
             Id = GetNewId(id),
             CreatedAt = DateTime.UtcNow,
-            Description = description,
-            KeepDate = keepDate,
-            AmountHours = amountHours,
-            AssignmentId = assignmentId,
-            UserId = userId,
             Active = true
         };
-        
+        appointment.Apply(description, keepDate, amountHours, assignmentId, userId);
+
         return appointment;
     }
 
@@ -43,19 +37,18 @@ public sealed class Appointment : BaseEntity
         Guid assignmentId,
         Guid userId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(description);
-        if (amountHours <= 0) throw new ArgumentOutOfRangeException(nameof(amountHours), "Hours must be positive.");
-        obj.Description = description;
-        obj.KeepDate = keepDate;
-        obj.AmountHours = amountHours;
-        obj.AssignmentId = assignmentId;
-        obj.UserId = userId;
-        obj.UpdatedAt = DateTime.UtcNow;
+        obj.Apply(description, keepDate, amountHours, assignmentId, userId);
+        obj.Touch();
     }
 
-    public static void Remove(Appointment obj)
+    public static void Remove(Appointment obj) => obj.MarkRemoved();
+
+    private void Apply(string? description, DateTime keepDate, int amountHours, Guid assignmentId, Guid userId)
     {
-        obj.Active = false;
-        obj.DeletedAt = DateTime.UtcNow;
+        Description = Guard.Required(description, nameof(Description), Guard.DescriptionMaxLength);
+        KeepDate = Guard.RequiredUtc(keepDate, nameof(KeepDate));
+        AmountHours = Guard.Positive(amountHours, nameof(AmountHours));
+        AssignmentId = Guard.Reference(assignmentId, nameof(AssignmentId));
+        UserId = Guard.Reference(userId, nameof(UserId));
     }
 }

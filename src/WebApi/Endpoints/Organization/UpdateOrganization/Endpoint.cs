@@ -21,11 +21,11 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-        var item = await repository.GetByIdAsync(request.Id);
+        var item = await repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (item is null)
         {
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 
@@ -33,10 +33,10 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Domain.Entities.Organization.Update(item, request.Name, request.Description);
 
         Logger.LogInformation("Beginning transaction.");
-        await unitOfWork.BeginTransactionAsync();
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
         Logger.LogInformation("Updating entity in repository.");
-        Response.Success = await repository.UpdateAsync(item);
+        Response.Success = await repository.UpdateAsync(item, cancellationToken);
 
         Logger.LogInformation("Update result: {Success}", Response.Success);
         Logger.LogInformation("Committing transaction.");
@@ -44,7 +44,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Organization));
 
         await Send.OkAsync(Response, cancellationToken);
     }
