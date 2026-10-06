@@ -39,7 +39,7 @@ Non-2xx responses use `{ "statusCode", "message", "errors"? }`. Field messages u
 
 - **401** ends the session (cleared storage, redirect to login with a return URL) for JSON requests, live streams and refreshes alike. A refresh rejected after a password or login change is handled the same way.
 - **403** shows the permission message and keeps the session.
-- **404 / 409** show the server message, for example an optimistic-concurrency conflict on a project or a removal blocked by active related records. Conflicts are detected by status, not by a `success` flag.
+- **404 / 409** show the server message, for example an optimistic-concurrency conflict on a project or a removal blocked by active related records. Conflicts are detected by status, not by a `success` flag. After a project conflict the form keeps your edits and loads the current version, so the next save is a deliberate overwrite instead of failing until the dialog is reopened.
 - **429** shows the message plus the `Retry-After` delay (for example a sign-in lockout). Browsers can only read that header cross-origin when the API lists it in `Access-Control-Expose-Headers`.
 
 Removal sends `{ "ids": [...] }` with 1–100 distinct IDs; the server applies it atomically.
