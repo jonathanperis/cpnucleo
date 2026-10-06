@@ -8,9 +8,9 @@ PostgreSQL stores one shared model. REST compares EF Core, an explicit Dapper pr
 |---|---|---|
 | `compose.lab.yaml` | PostgreSQL with commit timestamps enabled; one-shot `migrate` applies migrations | Explicit `seed` command; loopback port 15432 |
 | `compose.prod.yaml` | Initial DDL for a fresh volume, then `migrate-cpnucleo` applies pending migrations before APIs start | Persistent volume; no host database port or automatic seed |
-| `compose.yaml` + `compose.override.yaml` | Legacy init-directory mount, including the CSV import script, on a fresh volume | Legacy load-test dataset; no one-shot migration service |
+| `compose.yaml` + `compose.override.yaml` | Legacy init-directory mount, including the CSV import script, on a fresh volume, then `migrate-cpnucleo` applies pending migrations before APIs start | Legacy load-test dataset; no automatic seed |
 
-Use the lab for a new local environment. The legacy topology requires an explicit migration step for an existing database; PostgreSQL entrypoint scripts run only when initializing an empty data directory. They do not upgrade an existing volume.
+Use the lab for a new local environment. PostgreSQL entrypoint scripts run only when initializing an empty data directory and do not upgrade an existing volume; every Compose topology therefore runs the one-shot `--migrate-database` service before the APIs start.
 
 Lab, default and production configurations keep PostgreSQL durability enabled. Checkpoint/WAL tuning in the Compose files does not disable `fsync`, `synchronous_commit` or `full_page_writes`.
 
