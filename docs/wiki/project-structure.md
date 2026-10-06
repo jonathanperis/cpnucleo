@@ -21,7 +21,8 @@ src/
     src/components/            Native login/auth/theme templates
     src/features/crud/         CRUD template, controller and DOM tests
     src/lib/api/               Typed HTTP contracts and session helpers
-    scripts/                   Static server and server telemetry
+    src/guarantees/            Astro-only page guard (sources and built output)
+    scripts/                   Static server, CSP manifest and server telemetry
 tests/
   Architecture.Tests/          Real assembly boundaries and selected source checks
   Application.Unit.Tests/     Use cases and domain contracts

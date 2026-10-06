@@ -64,7 +64,7 @@ The existing million-row CSV importer remains an advanced, explicit load-test to
 
 Both transports expose 55 CRUD operations across 11 resources. Normal removal is soft deletion. Project batch removal is transactional; version-aware project updates reject stale writes. List pages are bounded to 100 rows and support search and batched relation lookups.
 
-The Astro UI preserves CRUD forms, pagination, relation labels/search, native details dialogs, counters, login redirects, inactivity expiry, token refresh, themes, and service checks. Server-sent events combine immediate local notifications with a 15-second cross-instance refresh and client reconnection.
+The Astro UI preserves CRUD forms, pagination, relation labels/search, native details dialogs, counters, login redirects, inactivity expiry, token refresh, cross-tab logout, themes, and service checks. It shows field-level API errors, hides administrator-only actions from non-admin sessions, and serves a CSP derived from its build-time API URLs. Every page of the WebClient and the documentation site is an Astro page; tests enforce it. Server-sent events combine immediate local notifications with a 15-second cross-instance refresh and client reconnection.
 
 ## Maturity and boundaries
 
@@ -89,7 +89,7 @@ dotnet test tests/Architecture.Tests/
 
 Integration tests create and dispose their own PostgreSQL container; they do not use your configured application database. Test counts come from the runner, not hardcoded documentation.
 
-From `src/WebClient`:
+From `src/WebClient` (jsdom tests need a real Node from `.nvmrc`, not a Bun `node` shim):
 
 ```sh
 bun install --frozen-lockfile
