@@ -15,10 +15,18 @@ public static class ConfigureOpenTelemetryOptions
             .ConfigureResource(resource => ConfigureResource(builder, resource))
             .WithTracing(tracing =>
             {
+                // The SDK honors OTEL_TRACES_SAMPLER/OTEL_TRACES_SAMPLER_ARG only when no
+                // sampler is set in code, so set the default only when it is absent.
+                if (string.IsNullOrWhiteSpace(builder.Configuration["OTEL_TRACES_SAMPLER"]))
+                {
+                    tracing.SetSampler(new ParentBasedSampler(new AlwaysOnSampler()));
+                }
+
                 tracing
-                    .SetSampler(new AlwaysOnSampler())
                     .AddAspNetCoreInstrumentation(options =>
                     {
+                        // Liveness/readiness probes run every minute per container; keep them out of traces.
+                        options.Filter = context => !IsHealthProbe(context.Request.Path);
                         options.RecordException = true;
                         options.EnrichWithHttpRequest = (activity, request) =>
                         {
@@ -107,6 +115,10 @@ public static class ConfigureOpenTelemetryOptions
 
         return builder;
     }
+
+    private static bool IsHealthProbe(PathString path) =>
+        path.StartsWithSegments("/healthz", StringComparison.OrdinalIgnoreCase)
+        || path.StartsWithSegments("/readyz", StringComparison.OrdinalIgnoreCase);
 
     private static void ConfigureResource(IHostApplicationBuilder builder, ResourceBuilder resource)
     {

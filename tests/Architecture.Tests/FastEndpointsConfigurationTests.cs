@@ -250,7 +250,11 @@ public class FastEndpointsConfigurationTests
             "OpenTelemetry:IncludeExceptionDetails",
             "http.request.method",
             ".AddHttpClientInstrumentation(options =>",
-            "SetSampler(new AlwaysOnSampler())",
+            "builder.Configuration[\"OTEL_TRACES_SAMPLER\"]",
+            "SetSampler(new ParentBasedSampler(new AlwaysOnSampler()))",
+            "options.Filter = context => !IsHealthProbe(context.Request.Path)",
+            "path.StartsWithSegments(\"/healthz\", StringComparison.OrdinalIgnoreCase)",
+            "path.StartsWithSegments(\"/readyz\", StringComparison.OrdinalIgnoreCase)",
             ".AddRuntimeInstrumentation()",
             ".AddProcessInstrumentation()",
             "Microsoft.AspNetCore.RateLimiting",
@@ -281,6 +285,8 @@ public class FastEndpointsConfigurationTests
         {
             telemetry.Should().Contain(snippet);
         }
+
+        telemetry.Should().NotContain("SetSampler(new AlwaysOnSampler())", "a hard-coded sampler would override OTEL_TRACES_SAMPLER");
 
         if (shouldIncludeEfCore)
         {
