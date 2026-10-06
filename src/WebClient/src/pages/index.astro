@@ -17,7 +17,13 @@ import { resourceMetadata } from '../lib/api/resource-metadata';
 <script>
   import { loadHomeCounters } from '../features/home/counters';
   import { getStoredToken } from '../lib/api/http-client';
-  const controller = new AbortController();
-  if (getStoredToken()) void loadHomeCounters(document.querySelector<HTMLElement>('[data-home]')!, controller.signal);
+  let controller = new AbortController();
+  const start = () => {
+    controller = new AbortController();
+    if (getStoredToken()) void loadHomeCounters(document.querySelector<HTMLElement>('[data-home]')!, controller.signal);
+  };
+  start();
   window.addEventListener('pagehide', () => controller.abort());
+  // Back/forward cache restores the page with aborted counters: load them again.
+  window.addEventListener('pageshow', event => { if (event.persisted) start(); });
 </script>
