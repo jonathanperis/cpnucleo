@@ -29,7 +29,43 @@ Every entity follows this consistent pattern:
 | `PATCH` | `/api/{entity}` | Update from a JSON body containing `id` and the required resource fields |
 | `DELETE` | `/api/{entity}` | Soft-delete IDs supplied as a JSON body: `{"ids":["uuid"]}` |
 
-These routes do not contain an `/{id}` path segment. PATCH uses each resource's request DTO, not JSON Patch operations. Include `Authorization: Bearer <token>` on CRUD requests. All user-resource operations additionally require the administrator claim.
+These routes do not contain an `/{id}` path segment. PATCH uses each resource's request DTO, not JSON Patch operations. Include `Authorization: Bearer <token>` on CRUD requests.
+
+### Authorization
+
+The same rules apply to REST and gRPC and to every persistence style:
+
+| Resources | Read | Create, update, remove |
+|-----------|------|------------------------|
+| Organizations, Workflows, AssignmentTypes, Impediments (catalog) | Any authenticated user | Administrators |
+| Users | Administrators | Administrators |
+| Projects | Members of the project | Members; any authenticated user may create one and becomes a member |
+| Assignments, UserProjects | Members of the row's project | Members of the project (both the old and the new project when moving a row) |
+| Appointments, AssignmentImpediments, UserAssignments | Members of the assignment's project | Members; non-administrators may only record or change their own appointments |
+
+Administrators (`cpnucleo:admin` claim backed by `CPNUCLEO_ADMIN_LOGINS`) see and change everything. Rows the caller can't see behave like missing rows (404 on GET, excluded from lists); writes the caller isn't allowed to make return 403 (gRPC `PermissionDenied`).
+
+### Removal
+
+`DELETE` bodies contain 1–100 ids; duplicates are ignored. Every resource removes its batch atomically: if any id is missing or invisible, nothing changes and the response is 404. A record that still has active dependent data (an organization with projects, a project with assignments, an assignment with appointments, ...) returns 409 with the dependent kind in the message. Project and user memberships and user assignments are removed together with their project, assignment or user.
+
+### Error responses
+
+Every non-2xx JSON response from WebApi and IdentityApi uses one envelope:
+
+```json
+{
+  "statusCode": 400,
+  "message": "One or more errors occurred!",
+  "errors": { "endDate": ["End date must be on or after start date."] }
+}
+```
+
+`errors` is present for validation and domain-rule failures; keys are camelCase request property names, and `generalErrors` holds messages not tied to one field. Statuses: 400 validation/domain rule or a reference to a missing or removed record, 401 missing/invalid/revoked token, 403 not allowed, 404 not found or not visible, 409 duplicate id or login, stale project version, or active dependents, 429 rate limited (with `Retry-After`), 500 unexpected error (details are only logged). gRPC maps the same cases to `InvalidArgument`, `Unauthenticated`, `PermissionDenied`, `AlreadyExists` and `FailedPrecondition`, or to `Success=false` results for missing rows and stale versions.
+
+### Dates, search and sorting
+
+Timestamps are stored as UTC. Values with an offset are converted; values without one (for example `"2064-06-09"`) are treated as UTC. `search` matches literally: `%`, `_` and `\` are not wildcards. `sortColumn` accepts persisted column names case-insensitively (credential columns are never sort keys) and falls back to `Id`; `sortOrder` is `ASC` or `DESC`.
 
 ### Available Entities
 
@@ -103,9 +139,9 @@ Singular normalization supports edit/detail loads. List requests use flat query 
 - 50 requests per minute per IP address
 - Fixed-window partitioning
 - Queue limit: 10 additional requests
-- Returns `429 Too Many Requests` with a `Retry-After` value derived from the limiter lease (60 seconds if metadata is unavailable)
+- Returns `429 Too Many Requests` with the error envelope and a `Retry-After` value derived from the limiter lease (60 seconds if metadata is unavailable); CORS exposes `Retry-After` to the browser client
 
-The partition key is `HttpContext.Connection.RemoteIpAddress`; this is per process, not a distributed quota. A reverse proxy may affect which address the application sees.
+The partition key is `HttpContext.Connection.RemoteIpAddress`; this is per process, not a distributed quota. Production sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` on the API containers so the address is the client behind Traefik and NGINX.
 
 ---
 
@@ -147,7 +183,11 @@ Content-Type: application/json
 
 **Response (404 Not Found):**
 
-Returned when credentials are invalid.
+Returned with the error envelope when the login is unknown, ambiguous (legacy duplicates) or the password is wrong. All three cases take the same Argon2id time and return the same body.
+
+**Response (429 Too Many Requests):**
+
+Returned after five failed attempts for the same login within 15 minutes, for 15 minutes, regardless of client address, and by the per-address limiter. At most four password verifications run at once; further attempts queue. `Login` is limited to 256 characters and `Password` to 128.
 
 ### JWT Configuration
 
@@ -156,19 +196,21 @@ Returned when credentials are invalid.
 | Issuer | `https://identity-cpnucleo.jonathanperis.tech` |
 | Audience | `https://api-cpnucleo.jonathanperis.tech` |
 | Access-token lifetime | 30 minutes; refresh is capped by the original eight-hour session |
-| Algorithm | HMAC-SHA (via FastEndpoints.Security) |
+| Algorithm | HS256 with `Jwt__SigningKey` (at least 32 bytes) by default; RS256 when `Jwt__SigningPublicKey` (all hosts) and `Jwt__SigningPrivateKey` (IdentityApi only) are configured as PEM. Hosts accept only the configured algorithm |
 
-Issuer and audience above are the checked-in defaults. All API hosts must use matching `Jwt__Issuer`, `Jwt__Audience`, and `Jwt__SigningKey` configuration. Raw `sub` claims are retained during validation.
+Issuer and audience above are the checked-in defaults. All hosts must use matching `Jwt__Issuer`, `Jwt__Audience` and signing configuration. Raw `sub` claims are retained during validation. PEM values may encode line breaks as `\n` to fit one environment variable.
+
+Tokens carry a `cpnucleo:security_stamp` claim derived from the account's password hash and login. After signature validation, WebApi and GrpcServer confirm that the account is active, the stamp still matches and an admin claim is still listed in `CPNUCLEO_ADMIN_LOGINS`. Results are cached for 30 seconds, so a password change, deactivation or admin removal takes effect within that window. Tokens issued before this check existed are rejected; sign in again.
 
 ### Refresh Endpoint
 
-`POST /api/refresh` accepts a valid bearer token and no request body, returning the same `{ "token": "..." }` envelope. It returns 401 for an inactive/missing account or a session outside the eight-hour boundary. It recalculates admin privileges from `CPNUCLEO_ADMIN_LOGINS`; legacy tokens without the session-start claim require a new login. There is no separate long-lived refresh token.
+`POST /api/refresh` accepts a valid bearer token and no request body, returning the same `{ "token": "..." }` envelope. It returns 401 (error envelope) for an inactive/missing account, changed credentials (security stamp mismatch), or a session outside the eight-hour boundary. It recalculates admin privileges from `CPNUCLEO_ADMIN_LOGINS`; legacy tokens without the session-start or security-stamp claim require a new login. There is no separate long-lived refresh token.
 
 ### Rate Limiting
 
 - 10 requests per minute per IP address
 - Queue limit: 5 additional requests
-- Stricter than WebApi to protect against brute-force attacks
+- Stricter than WebApi to protect against brute-force attacks; complemented by the per-login lockout and the login concurrency cap described above
 
 ### Output Caching
 

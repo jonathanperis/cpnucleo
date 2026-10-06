@@ -41,7 +41,9 @@ Temporarily remove the transaction or expected-version predicate on a learning b
 
 ## 3. Distinguish authentication from authorization
 
-Run `Security.Unit.Tests` and the `UserAdministration` integration scenario. A valid identity is sufficient for shared-workspace operations, but user administration needs an admin claim. Refresh checks an active account, recalculates admin privileges and preserves an eight-hour original-session boundary.
+Run `Security.Unit.Tests`, `AuthenticationTests` and `AuthorizationTests`. A valid identity proves who is calling; `ResourceAccess` decides what they may touch. Members see and change only their projects' data, catalog writes need an admin claim, and the same answers come back over REST and gRPC whether EF Core or Dapper serves the request. Tokens stop working within 30 seconds of a password change, deactivation or admin removal. Refresh preserves an eight-hour original-session boundary.
+
+Exercise: move the membership rule for assignments from `ResourceAccess` into one endpoint only, run `AuthorizationTests`, and watch the other transport fail. Restore the shared rule.
 
 Tenant claims are informational today. A genuine tenant-isolation exercise must carry tenant identity through EF filters, Dapper predicates, foreign-key ownership and authorization tests. Merely adding a claim is not isolation.
 
