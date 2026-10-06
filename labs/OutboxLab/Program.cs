@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Dapper;
 using Npgsql;
 using Testcontainers.PostgreSql;
@@ -26,16 +27,21 @@ async Task ScheduleAsync(bool commit)
 await ScheduleAsync(commit: false);
 if (await connection.ExecuteScalarAsync<int>("SELECT (SELECT count(*) FROM appointments) + (SELECT count(*) FROM outbox)") != 0)
     throw new InvalidOperationException("The failed schedule was not atomic.");
-await ScheduleAsync(commit: true);
+const int Messages = 50;
+const int Workers = 4;
+for (var i = 0; i < Messages; i++) await ScheduleAsync(commit: true);
 
-async Task DeliverAsync(bool crashAfterDelivery)
+var acknowledgements = new ConcurrentDictionary<Guid, int>();
+var deliveriesByWorker = new ConcurrentDictionary<int, int>();
+
+async Task<bool> DeliverAsync(bool crashAfterDelivery, int workerId = 0)
 {
     await using var worker = new NpgsqlConnection(database.GetConnectionString());
     await worker.OpenAsync();
     await using var transaction = await worker.BeginTransactionAsync();
     var id = await worker.QuerySingleOrDefaultAsync<Guid?>(
         "SELECT id FROM outbox WHERE NOT processed ORDER BY id LIMIT 1 FOR UPDATE SKIP LOCKED", transaction: transaction);
-    if (id is null) return;
+    if (id is null) return false;
 
     // A separate committed transaction simulates an external provider supporting
     // an idempotency key. No real notification or external HTTP call is sent.
@@ -45,15 +51,26 @@ async Task DeliverAsync(bool crashAfterDelivery)
 
     await worker.ExecuteAsync("UPDATE outbox SET processed = true WHERE id = @id", new { id }, transaction);
     await transaction.CommitAsync();
+    acknowledgements.AddOrUpdate(id.Value, 1, (_, count) => count + 1);
+    deliveriesByWorker.AddOrUpdate(workerId, 1, (_, count) => count + 1);
+    return true;
 }
 
 try { await DeliverAsync(crashAfterDelivery: true); }
 catch (SimulatedCrash) { Console.WriteLine("Injected crash after delivery, before acknowledging the outbox row."); }
-await Task.WhenAll(DeliverAsync(false), DeliverAsync(false));
+
+// Competing workers drain the outbox. FOR UPDATE SKIP LOCKED hands each row to one worker at a
+// time; the crashed row is simply claimed again because its acknowledgement never committed.
+await Task.WhenAll(Enumerable.Range(1, Workers).Select(async workerId =>
+{
+    while (await DeliverAsync(crashAfterDelivery: false, workerId)) { }
+}));
 var deliveries = await connection.ExecuteScalarAsync<int>("SELECT count(*) FROM simulated_delivery_receipts");
 var pending = await connection.ExecuteScalarAsync<int>("SELECT count(*) FROM outbox WHERE NOT processed");
-if (deliveries != 1 || pending != 0) throw new InvalidOperationException("Delivery/retry contract failed.");
-Console.WriteLine("Verified: atomic scheduling, competing workers, crash recovery and idempotent simulated delivery.");
+if (deliveries != Messages || pending != 0 || acknowledgements.Count != Messages || acknowledgements.Values.Any(count => count != 1))
+    throw new InvalidOperationException("Delivery/retry contract failed.");
+Console.WriteLine($"Workers acknowledged {string.Join(", ", deliveriesByWorker.OrderBy(pair => pair.Key).Select(pair => $"#{pair.Key}: {pair.Value}"))} of {Messages} messages.");
+Console.WriteLine("Verified: atomic scheduling, competing workers each acknowledging a message exactly once, crash recovery and idempotent simulated delivery.");
 Console.WriteLine("Delivery remains at-least-once; the simulated provider's idempotency key prevents duplicate effects.");
 
 sealed class SimulatedCrash : Exception;
