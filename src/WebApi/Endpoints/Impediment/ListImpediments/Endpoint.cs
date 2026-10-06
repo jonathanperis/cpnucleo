@@ -28,7 +28,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (HttpContext.Request.AcceptsServerSentEvents())
         {
             await TypedResults
-                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.Impediment), ct => BuildResponseAsync(request, ct), HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>(), Logger, cancellationToken), "listing")
+                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.Impediment), ct => BuildResponseAsync(request, ct), HttpContext, Logger, cancellationToken), "listing")
                 .ExecuteAsync(HttpContext);
             return;
         }

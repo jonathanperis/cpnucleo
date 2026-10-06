@@ -5,7 +5,7 @@ namespace WebApi.Endpoints.Appointment.RemoveAppointment;
 /// </summary>
 public class RemoveAppointmentRequest : RemoveRequest
 {
-    public new class Validator : RemoveRequest.Validator
+    public class Validator : RemoveRequestValidator<RemoveAppointmentRequest>
     {
     }
 }

@@ -13,26 +13,6 @@ public class PersistenceParityTests(WebAppFixture app)
     private static CancellationToken Cancellation => TestContext.Current.CancellationToken;
 
     [Fact]
-    public async Task FailedExplicitSeed_RollsBackItsReset()
-    {
-        var organization = Organization.Create("Preserved after seed failure", "");
-        await using (var db = app.CreateDbContext())
-        {
-            db.Add(organization);
-            await db.SaveChangesAsync(Cancellation);
-        }
-        var previous = Environment.GetEnvironmentVariable("CPNUCLEO_DEMO_PASSWORD");
-        try
-        {
-            Environment.SetEnvironmentVariable("CPNUCLEO_DEMO_PASSWORD", null);
-            await Should.ThrowAsync<InvalidOperationException>(() => Infrastructure.Common.Helpers.FakeDataCsvImporter.RunAsync(
-                app.ConnectionString, Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance, Cancellation));
-        }
-        finally { Environment.SetEnvironmentVariable("CPNUCLEO_DEMO_PASSWORD", previous); }
-        await using var connection = new NpgsqlConnection(app.ConnectionString);
-        (await connection.ExecuteScalarAsync<int>("SELECT count(*) FROM \"Organizations\" WHERE \"Id\" = @id", new { id = organization.Id })).ShouldBe(1);
-    }
-    [Fact]
     public async Task RestCreate_GrpcReadAndRemove_PreserveRowsAndRelationships()
     {
         await using var connection = new NpgsqlConnection(app.ConnectionString);

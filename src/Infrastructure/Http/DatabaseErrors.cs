@@ -5,7 +5,8 @@ public enum DatabaseErrorKind
     Duplicate,
     InactiveReference,
     ActiveDependents,
-    InvalidValue
+    InvalidValue,
+    ConcurrentChange
 }
 
 public sealed record DatabaseError(DatabaseErrorKind Kind, string Message, string? Field);
@@ -30,6 +31,8 @@ public static class DatabaseErrors
                 $"This record still has active {Describe(postgres.TableName)}. Remove them first.", null),
             PostgresErrorCodes.CheckViolation or PostgresErrorCodes.NotNullViolation => new(DatabaseErrorKind.InvalidValue,
                 "A value is missing or invalid.", postgres.ColumnName),
+            PostgresErrorCodes.DeadlockDetected or PostgresErrorCodes.SerializationFailure => new(DatabaseErrorKind.ConcurrentChange,
+                "The records changed concurrently. Retry the request.", null),
             _ => null
         };
     }

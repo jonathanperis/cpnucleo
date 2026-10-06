@@ -22,6 +22,10 @@ public sealed class ValidationInterceptor(ILogger<ValidationInterceptor> logger)
         {
             throw new RpcException(new Status(StatusCode.PermissionDenied, ex.Message));
         }
+        catch (RecordNotFoundException ex)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, ex.Message));
+        }
         catch (ArgumentException)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "The command contains an invalid value."));
@@ -33,6 +37,7 @@ public sealed class ValidationInterceptor(ILogger<ValidationInterceptor> logger)
             {
                 DatabaseErrorKind.Duplicate => StatusCode.AlreadyExists,
                 DatabaseErrorKind.ActiveDependents => StatusCode.FailedPrecondition,
+                DatabaseErrorKind.ConcurrentChange => StatusCode.Aborted,
                 _ => StatusCode.InvalidArgument
             }, error.Message));
         }

@@ -24,8 +24,12 @@ public class PaginationParams
         }
     }
 
+    // Values reaching this point were validated by the setter; TryParse also keeps a payload that
+    // bypassed the setter (e.g. a hand-crafted gRPC message) from failing as an unexpected error.
     public Guid[] GetIds() => _ids?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-        .Select(Guid.Parse).Distinct().ToArray() ?? [];
+        .Select(value => Guid.TryParse(value, out var id) ? id : Guid.Empty)
+        .Where(id => id != Guid.Empty)
+        .Distinct().ToArray() ?? [];
 
     public string? Search
     {

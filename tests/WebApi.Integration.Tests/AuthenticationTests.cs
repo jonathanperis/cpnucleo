@@ -67,4 +67,55 @@ public class AuthenticationTests(WebAppFixture app)
         using var client = app.CreateClient(account);
         (await client.GetAsync("/api/organizations", Cancellation)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
+
+    [Fact]
+    public async Task ChangingCredentials_RevokesCachedSessionsWithinTheCacheWindow()
+    {
+        var account = await CreateActiveAccountAsync("mover");
+        using var client = app.CreateClient(account);
+        (await client.GetAsync("/api/organizations?pageSize=1", Cancellation)).StatusCode.ShouldBe(HttpStatusCode.OK, "the session is now cached");
+
+        await using (var connection = app.CreateConnection())
+            await connection.ExecuteAsync("""UPDATE "Users" SET "Password" = 'changed-' || "Password" WHERE "Id" = @Id""", account);
+
+        // The fixture's cache window is one second (production: 30).
+        await Task.Delay(TimeSpan.FromSeconds(1.5), Cancellation);
+        (await client.GetAsync("/api/organizations?pageSize=1", Cancellation)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task LiveListings_CloseWhenTheSessionIsRevoked()
+    {
+        var account = await CreateActiveAccountAsync("streamer");
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(Cancellation);
+        timeout.CancelAfter(TimeSpan.FromSeconds(30));
+        using var client = app.CreateClient(account);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/organizations?pageSize=1");
+        request.Headers.Accept.ParseAdd("text/event-stream");
+        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        using var reader = new StreamReader(await response.Content.ReadAsStreamAsync(timeout.Token));
+        while (await reader.ReadLineAsync(timeout.Token) is { } line && !line.StartsWith("data:", StringComparison.Ordinal)) { }
+
+        await using (var connection = app.CreateConnection())
+            await connection.ExecuteAsync("""UPDATE "Users" SET "Active" = false, "DeletedAt" = now() WHERE "Id" = @Id""", account);
+        await Task.Delay(TimeSpan.FromSeconds(1.5), Cancellation);
+        // Any write wakes the organization stream, which revalidates before sending the next snapshot.
+        (await app.Client.PostAsJsonAsync("/api/organization", new { id = Guid.NewGuid(), name = "Wake streams", description = "x" }, Cancellation))
+            .StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var remaining = await reader.ReadToEndAsync(timeout.Token);
+        remaining.ShouldNotContain("Wake streams", Case.Sensitive, "a revoked session must not receive further snapshots");
+    }
+
+    private async Task<TestAccount> CreateActiveAccountAsync(string name)
+    {
+        var account = TestAccount.Create(name);
+        await using var connection = app.CreateConnection();
+        await connection.ExecuteAsync("""
+            INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
+            VALUES (@Id, @Login, @Login, @PasswordHash, '', now(), true)
+            """, account);
+        return account;
+    }
 }

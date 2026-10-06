@@ -7,11 +7,15 @@ namespace Infrastructure.Security;
 /// Confirms that a validated JWT still describes a live session: the account is active, its
 /// credentials have not changed since the token was issued (security stamp) and an admin claim is
 /// still backed by configuration. Results are cached briefly so revocation takes effect within
-/// <see cref="CacheDuration"/> without a database round trip per request.
+/// <see cref="CacheDuration"/> (<c>Auth:SessionValidationCacheSeconds</c>, 30 by default) without a
+/// database round trip per request.
 /// </summary>
 public sealed class TokenSessionValidator(NpgsqlDataSource dataSource, IConfiguration configuration, IMemoryCache cache)
 {
-    public static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(30);
+    public const int DefaultCacheSeconds = 30;
+
+    public TimeSpan CacheDuration { get; } = TimeSpan.FromSeconds(
+        configuration.GetValue("Auth:SessionValidationCacheSeconds", DefaultCacheSeconds));
 
     /// <returns>Null when the session is valid, otherwise the reason it is not.</returns>
     public async Task<string?> ValidateAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default)

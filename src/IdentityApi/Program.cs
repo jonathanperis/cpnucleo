@@ -116,6 +116,8 @@ builder.Services
     });
 
 builder.Services.AddInfrastructure(builder.Configuration);
+// Traefik routes this host directly (one proxy hop); WebApi sits behind Traefik and NGINX (two).
+builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options => options.ForwardLimit = 1);
 
 var app = builder.Build();
 
@@ -123,13 +125,18 @@ app.UseOutputCache();
 
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
-    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
-    if (context.Request.Path.StartsWithSegments("/swagger"))
-        context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'");
-    else context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+    // Added when the response starts, so error responses written after a Response.Clear() keep them.
+    context.Response.OnStarting(() =>
+    {
+        context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
+        context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+        context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+        if (context.Request.Path.StartsWithSegments("/swagger"))
+            context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'");
+        else context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+        return Task.CompletedTask;
+    });
 
     await next();
 
