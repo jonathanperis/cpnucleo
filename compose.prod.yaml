@@ -316,8 +316,6 @@ services:
         condition: service_healthy
       webapi2-cpnucleo:
         condition: service_healthy
-      identityapi-cpnucleo:
-        condition: service_healthy
       otel-lgtm:
         condition: service_started
     expose:
@@ -340,9 +338,11 @@ services:
       - "traefik.http.routers.cpnucleo-grafana.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-grafana.tls=true"
       - "traefik.http.routers.cpnucleo-grafana.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
-      - "traefik.http.routers.cpnucleo-grafana.middlewares=cpnucleo-grafana-auth"
+      - "traefik.http.routers.cpnucleo-grafana.middlewares=cpnucleo-grafana-auth,cpnucleo-security-headers"
       - "traefik.http.routers.cpnucleo-grafana.service=cpnucleo-grafana"
       - "traefik.http.middlewares.cpnucleo-grafana-auth.basicauth.users=${CPNUCLEO_GRAFANA_BASIC_AUTH_USERS:?Set CPNUCLEO_GRAFANA_BASIC_AUTH_USERS}"
+      # The edge credential stays at the edge; Grafana's own login is a separate second factor.
+      - "traefik.http.middlewares.cpnucleo-grafana-auth.basicauth.removeheader=true"
       - "traefik.http.services.cpnucleo-grafana.loadbalancer.server.port=3000"
     restart: always
     deploy:

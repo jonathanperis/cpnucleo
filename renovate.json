@@ -1,11 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>jonathanperis/.github"],
+  "extends": [
+    "github>jonathanperis/.github"
+  ],
   "packageRules": [
     {
       "description": "Pin Docker images (Dockerfile FROM and Compose image tags) to immutable digests; the tag stays readable next to the digest",
-      "matchDatasources": ["docker"],
+      "matchDatasources": [
+        "docker"
+      ],
       "pinDigests": true
+    },
+    {
+      "description": "This repository's own images move with every release; Compose references them by mutable tag on purpose and production pins exact sha tags",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "ghcr.io/jonathanperis/**"
+      ],
+      "pinDigests": false,
+      "enabled": false
     }
   ]
 }

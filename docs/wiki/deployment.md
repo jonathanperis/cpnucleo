@@ -275,13 +275,22 @@ The Trivy gate is intentionally narrow (fixable CRITICAL only) so base-image noi
 3. **Verify** -- polls containers until every expected container is running, healthy, and the application containers run exactly the `sha-${GITHUB_SHA}-amd64` images (so smoke tests cannot pass against old containers), then scans logs for startup failure markers.
 4. **Roll back** -- if the action fails or times out, health polling times out, an image does not match, or the log check fails, the captured project is redeployed, its containers are verified against the previous images, and the script exits non-zero. If the subsequent production smoke tests fail, the workflow runs `--rollback`, which replays the same captured state.
 
-Rollback lines are prefixed with `[rollback]` and raised as GitHub error annotations ("Deployment rolled back" or "Rollback failed"), and a successful rollback is added to the job summary. Rollback restores images and configuration only: additive migrations already applied by the new migrator stay in the database, which is why production migrations must remain backward compatible.
+Rollback lines are prefixed with `[rollback]` and raised as GitHub error annotations ("Deployment rolled back" or "Rollback failed"), and a successful rollback is added to the job summary. Rollback restores images and configuration only: additive migrations already applied by the new migrator stay in the database, which is why production migrations must remain backward compatible. A database-level undo needs the latest backup, so take one before every deploy (see below); the pipeline cannot run commands on the VPS itself.
+
+Before deploying, the workflow verifies the keyless cosign signature of every `sha-<commit>-amd64` image (signed by the build jobs of this workflow on `main`). The `latest` and `sha-<commit>` multi-arch manifests are published only from `main` and only after the deploy succeeded (or was intentionally skipped), so `latest` never points at a release production rejected.
 
 ---
 
 ## Backups and restore verification
 
-`scripts/backup-hostinger.sh` runs on the VPS from the project directory (for Docker Manager: `COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=<project>`):
+`scripts/backup-hostinger.sh` runs on the VPS from the project directory (for Docker Manager: `COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=<project>`). Nothing schedules it automatically; install a cron entry on the VPS, for example a nightly run plus one right before planned releases:
+
+```cron
+15 3 * * * cd /docker/cpnucleo && COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=cpnucleo /opt/cpnucleo/scripts/backup-hostinger.sh >> /var/log/cpnucleo-backup.log 2>&1
+45 3 * * 0 /opt/cpnucleo/scripts/verify-backup.sh /opt/backups/cpnucleo >> /var/log/cpnucleo-backup.log 2>&1
+```
+
+The script:
 
 1. Fails unless a running `db` container is found for the configured Compose project (`--env-file "$ENV_FILE"` is passed to every Compose call).
 2. Dumps PostgreSQL in custom format and verifies the archive with `pg_restore --list` (the TOC must include `__EFMigrationsHistory`) before anything is checksummed.

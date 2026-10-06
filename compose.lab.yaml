@@ -9,6 +9,14 @@ x-runtime: &runtime
   Cors__AllowedOrigins__1: http://localhost:5030
   OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-lgtm:4317
 
+# Same runtime hardening as production, so container checks catch read-only filesystem or
+# capability regressions before an image reaches Hostinger.
+x-app-hardening: &app-hardening
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  read_only: true
+  tmpfs: [/tmp]
+
 x-build-args: &build-args
   AOT: "false"
   TRIM: "false"
@@ -33,6 +41,7 @@ services:
       retries: 30
 
   migrate:
+    <<: *app-hardening
     image: ${CPNUCLEO_WEB_API_IMAGE:-cpnucleo-lab-webapi}
     build:
       context: ./src
@@ -44,6 +53,7 @@ services:
       db: { condition: service_healthy }
 
   webapi:
+    <<: *app-hardening
     image: ${CPNUCLEO_WEB_API_IMAGE:-cpnucleo-lab-webapi}
     build:
       context: ./src
@@ -55,6 +65,7 @@ services:
       migrate: { condition: service_completed_successfully }
 
   identity:
+    <<: *app-hardening
     image: ${CPNUCLEO_IDENTITY_API_IMAGE:-cpnucleo-lab-identity}
     build:
       context: ./src
@@ -66,6 +77,7 @@ services:
       migrate: { condition: service_completed_successfully }
 
   webclient:
+    <<: *app-hardening
     image: ${CPNUCLEO_WEB_CLIENT_IMAGE:-cpnucleo-lab-webclient}
     build:
       context: ./src
@@ -79,6 +91,7 @@ services:
       OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-lgtm:4318
 
   grpc:
+    <<: *app-hardening
     image: ${CPNUCLEO_GRPC_SERVER_IMAGE:-cpnucleo-lab-grpc}
     profiles: [full]
     build:
@@ -96,6 +109,7 @@ services:
     ports: ["127.0.0.1:3000:3000"]
 
   seed:
+    <<: *app-hardening
     profiles: [seed]
     image: ${CPNUCLEO_WEB_API_IMAGE:-cpnucleo-lab-webapi}
     environment: *runtime
