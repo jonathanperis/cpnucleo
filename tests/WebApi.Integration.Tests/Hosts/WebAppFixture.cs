@@ -1,13 +1,14 @@
 extern alias WebApiHost;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
+using Dapper;
 using Domain.Common.Security;
+using Domain.Entities;
 using Grpc.Core;
-using GrpcServer.Contracts.Commands.Project;
-using GrpcServer.Contracts.Commands.User;
 using Infrastructure.Common.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -18,17 +19,31 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using Testcontainers.PostgreSql;
 
 namespace WebApi.Integration.Tests.Hosts;
 
+/// <summary>
+/// Real WebApi, GrpcServer and IdentityApi hosts over one disposable PostgreSQL container with all
+/// migrations applied. Seeded accounts cover the three access levels: administrator, project
+/// member and outsider (an active user with no memberships).
+/// </summary>
 public sealed class WebAppFixture : IAsyncLifetime
 {
-    private const string SigningKey = "disposable-integration-signing-key-at-least-32-characters";
+    public const string SigningKey = "disposable-integration-signing-key-at-least-32-characters";
+    public const string Issuer = "cpnucleo-integration";
+    public const string Audience = "cpnucleo-integration";
+
+    public static readonly TestAccount Admin = TestAccount.Create("admin", isAdmin: true);
+    public static readonly TestAccount Member = TestAccount.Create("member");
+    public static readonly TestAccount Outsider = TestAccount.Create("outsider");
+
     private readonly PostgreSqlContainer database = new PostgreSqlBuilder("postgres:16.15")
         .WithCommand("-c", "track_commit_timestamp=on").Build();
     private WebApplicationFactory<WebApiHost::Program> factory = null!;
     private WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler> grpcFactory = null!;
+    private WebApplicationFactory<IdentityApi.Security.TokenIssuer> identityFactory = null!;
     public HttpClient Client { get; private set; } = null!;
     private readonly System.Collections.Concurrent.ConcurrentQueue<string> failures = new();
     public string FailureDetails => string.Join("\n", failures);
@@ -37,32 +52,59 @@ public sealed class WebAppFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         await database.StartAsync();
-        await using var context = CreateDbContext();
-        await context.Database.MigrateAsync();
+        await using (var context = CreateDbContext())
+        {
+            await context.Database.MigrateAsync();
+        }
+
+        await using (var connection = new NpgsqlConnection(ConnectionString))
+        {
+            foreach (var account in new[] { Admin, Member, Outsider })
+            {
+                await connection.ExecuteAsync("""
+                    INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
+                    VALUES (@Id, @Login, @Login, @PasswordHash, '', now(), true)
+                    """, account);
+            }
+        }
+
         factory = new WebApplicationFactory<WebApiHost::Program>().WithWebHostBuilder(builder =>
         {
             ConfigureApp(builder);
-            builder.ConfigureServices(ConfigureServices);
+            builder.ConfigureServices(DisableRateLimiting);
         });
         Client = factory.CreateClient();
         Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateToken());
+
         grpcFactory = new WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler>().WithWebHostBuilder(builder =>
         {
             ConfigureApp(builder);
-            builder.ConfigureServices(ConfigureServices);
+            builder.ConfigureServices(DisableRateLimiting);
         });
         grpcFactory.Services.MapRemoteCore("http://localhost", connection =>
         {
             connection.ChannelOptions.HttpHandler = grpcFactory.Server.CreateHandler();
-            connection.Register<GetProjectByIdCommand, GetProjectByIdResult>();
-            connection.Register<RemoveProjectCommand, RemoveProjectResult>();
-            connection.Register<ListUsersCommand, ListUsersResult>();
-            connection.Register<GrpcServer.Contracts.Commands.Assignment.CreateAssignmentCommand, GrpcServer.Contracts.Commands.Assignment.CreateAssignmentResult>();
+            RegisterAllCommands(connection);
         });
+
+        identityFactory = CreateIdentityFactory(disableRateLimiting: true);
     }
 
     public ApplicationDbContext CreateDbContext() => new(new DbContextOptionsBuilder<ApplicationDbContext>()
         .UseNpgsql(ConnectionString).Options);
+
+    public NpgsqlConnection CreateConnection() => new(ConnectionString);
+
+    /// <summary>An IdentityApi host on the same database. Tests that exercise quotas get their own instance.</summary>
+    public WebApplicationFactory<IdentityApi.Security.TokenIssuer> CreateIdentityFactory(bool disableRateLimiting) =>
+        new WebApplicationFactory<IdentityApi.Security.TokenIssuer>().WithWebHostBuilder(builder =>
+        {
+            ConfigureApp(builder);
+            if (disableRateLimiting) builder.ConfigureServices(DisableRateLimiting);
+            else builder.ConfigureServices(CaptureFailures);
+        });
+
+    public HttpClient CreateIdentityClient() => identityFactory.CreateClient();
 
     private void ConfigureApp(IWebHostBuilder builder)
     {
@@ -71,38 +113,76 @@ public sealed class WebAppFixture : IAsyncLifetime
         {
             ["DB_CONNECTION_STRING"] = ConnectionString,
             ["Jwt:SigningKey"] = SigningKey,
-            ["Jwt:Issuer"] = "cpnucleo-integration",
-            ["Jwt:Audience"] = "cpnucleo-integration"
+            ["Jwt:Issuer"] = Issuer,
+            ["Jwt:Audience"] = Audience,
+            ["CPNUCLEO_ADMIN_LOGINS"] = Admin.Login
         }));
     }
 
-    private void ConfigureServices(IServiceCollection services)
-    {
+    private void CaptureFailures(IServiceCollection services) =>
         services.AddLogging(logging => logging.AddProvider(new FailureLoggerProvider(failures))
             .AddFilter<FailureLoggerProvider>((_, level) => level >= LogLevel.Error));
-        // CRUD tests exercise auth and real persistence, independently of quota tests.
+
+    private void DisableRateLimiting(IServiceCollection services)
+    {
+        CaptureFailures(services);
+        // CRUD tests exercise auth and real persistence; quota behavior has its own tests and hosts.
         services.PostConfigure<RateLimiterOptions>(options => options.GlobalLimiter =
             PartitionedRateLimiter.Create<HttpContext, string>(_ => RateLimitPartition.GetNoLimiter("integration")));
     }
 
-    public static string CreateToken(bool admin = true, DateTime? expiresAt = null)
+    private static void RegisterAllCommands(object connection)
     {
-        var claims = new List<Claim> { new(CpnucleoClaimTypes.Subject, Guid.NewGuid().ToString()) };
-        if (admin) claims.Add(new(CpnucleoClaimTypes.Admin, "true"));
+        var register = connection.GetType().GetMethods()
+            .Single(method => method.Name == "Register" && method.IsGenericMethodDefinition && method.GetGenericArguments().Length == 2 && method.GetParameters().Length == 0);
+        var commands = typeof(GrpcServer.Contracts.Commands.Project.CreateProjectCommand).Assembly.GetTypes()
+            .Select(type => (Command: type, Result: type.GetInterfaces()
+                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(FastEndpoints.ICommand<>))?.GetGenericArguments()[0]))
+            .Where(pair => pair.Result is not null);
+        foreach (var (command, result) in commands)
+            register.MakeGenericMethod(command, result!).Invoke(connection, null);
+    }
+
+    /// <summary>A token for the seeded admin (default) or member account.</summary>
+    public static string CreateToken(bool admin = true, DateTime? expiresAt = null) =>
+        CreateToken(admin ? Admin : Member, expiresAt);
+
+    public static string CreateToken(TestAccount account, DateTime? expiresAt = null, string? stamp = null,
+        bool? adminClaim = null, string issuer = Issuer, string audience = Audience, string signingKey = SigningKey)
+    {
+        var claims = new List<Claim>
+        {
+            new(CpnucleoClaimTypes.Subject, account.Id.ToString()),
+            new(CpnucleoClaimTypes.SecurityStamp, stamp ?? account.Stamp),
+            new(CpnucleoClaimTypes.Login, account.Login)
+        };
+        if (adminClaim ?? account.IsAdmin) claims.Add(new(CpnucleoClaimTypes.Admin, "true"));
         return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
-            "cpnucleo-integration", "cpnucleo-integration", claims, expires: expiresAt ?? DateTime.UtcNow.AddMinutes(10),
-            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SigningKey)), SecurityAlgorithms.HmacSha256)));
+            issuer, audience, claims, expires: expiresAt ?? DateTime.UtcNow.AddMinutes(10),
+            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)), SecurityAlgorithms.HmacSha256)));
     }
 
     public HttpClient CreateClient() => factory.CreateClient();
 
-    public static CallOptions GrpcOptions(bool admin = true) => new(
-        headers: new Metadata { { "Authorization", $"Bearer {CreateToken(admin)}" } },
+    public HttpClient CreateClient(TestAccount account)
+    {
+        var client = factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateToken(account));
+        return client;
+    }
+
+    public static CallOptions GrpcOptions(bool admin = true) => GrpcOptions(admin ? Admin : Member);
+
+    public static CallOptions GrpcOptions(TestAccount account) => GrpcOptions(CreateToken(account));
+
+    public static CallOptions GrpcOptions(string? token) => new(
+        headers: token is null ? [] : new Metadata { { "Authorization", $"Bearer {token}" } },
         cancellationToken: TestContext.Current.CancellationToken);
 
     public async ValueTask DisposeAsync()
     {
         Client.Dispose();
+        await identityFactory.DisposeAsync();
         await grpcFactory.DisposeAsync();
         await factory.DisposeAsync();
         await database.DisposeAsync();

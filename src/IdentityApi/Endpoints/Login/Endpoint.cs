@@ -1,12 +1,20 @@
 namespace IdentityApi.Endpoints.Login;
 
-public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher, IConfiguration configuration) : Endpoint<Request, Response>
+public class Endpoint(
+    IApplicationDbContext dbContext,
+    TimingSafePasswordCheck passwordCheck,
+    LoginThrottle throttle,
+    TokenIssuer tokenIssuer) : Endpoint<Request, Response>
 {
+    public const string ConcurrencyPolicy = "login-concurrency";
+
     public override void Configure()
     {
         Post("/login");
         Description(x => x.WithTags("Authentication"));
         AllowAnonymous();
+        // Each attempt costs an Argon2id hash (64 MiB); cap how many run at once.
+        Options(x => x.RequireRateLimiting(ConcurrencyPolicy));
 
         Summary(s =>
         {
@@ -18,75 +26,59 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
-        Logger.LogInformation("Fetching user entity with Login: {UserLogin}", req.Login);
+        // Login names are personal data (and sometimes mistyped passwords): they are never logged.
         var normalizedLogin = req.Login.Trim().ToLowerInvariant();
+        if (throttle.RetryAfter(normalizedLogin) is { } retryAfter)
+        {
+            Logger.LogWarning("Login rejected: too many failed attempts for this login.");
+            var seconds = Math.Max(1, (int)Math.Ceiling(retryAfter.TotalSeconds));
+            HttpContext.Response.Headers.RetryAfter = seconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            await ApiErrors.WriteAsync(HttpContext, StatusCodes.Status429TooManyRequests,
+                $"Too many failed sign-in attempts. Try again in {seconds} seconds.", cancellationToken: cancellationToken);
+            return;
+        }
+
         var matches = await dbContext.Users!
             .Where(u => u.Login != null && u.Login.Trim().ToLower() == normalizedLogin)
             .Take(2).ToListAsync(cancellationToken);
+        // Ambiguous legacy logins never authenticate an arbitrary account.
         var item = matches.Count == 1 ? matches[0] : null;
 
-        if (item is null)
+        if (!passwordCheck.Verify(req.Password, item?.Password) || item is null)
         {
-            Logger.LogWarning("User not found with Login: {UserLogin}", req.Login);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            throttle.RecordFailure(normalizedLogin);
+            Logger.LogWarning("Login failed: unknown, ambiguous or wrong credentials.");
+            await Send.NotFoundEnvelopeAsync("Invalid login or password.", cancellationToken);
             return;
         }
 
-        if (!passwordHasher.Verify(req.Password, item.Password))
-        {
-            Logger.LogWarning("Invalid password for Login: {UserLogin}", req.Login);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
-            return;
-        }
+        throttle.RecordSuccess(normalizedLogin);
 
-        Logger.LogInformation("Creating JWT token for user with Login: {UserLogin}", req.Login);
-
+        // Deterministic tenant hint: the user's earliest active membership.
         var tenantId = await (from userProject in dbContext.UserProjects!
                 join project in dbContext.Projects! on userProject.ProjectId equals project.Id
                 where userProject.UserId == item.Id
+                orderby userProject.CreatedAt, userProject.Id
                 select project.OrganizationId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        var adminLogins = (configuration["CPNUCLEO_ADMIN_LOGINS"] ?? string.Empty)
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var isAdmin = adminLogins.Any(login => string.Equals(login, item.Login, StringComparison.OrdinalIgnoreCase));
-
-        var jwtToken = JwtBearer.CreateToken(o =>
+        var now = tokenIssuer.Now;
+        var sessionClaims = new List<(string, string)>
         {
-            o.SigningKey = configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey is required.");
-            o.Issuer = configuration["Jwt:Issuer"];
-            o.Audience = configuration["Jwt:Audience"];
-            o.ExpireAt = DateTime.UtcNow.AddMinutes(30);
-            o.User.Claims.Add((CpnucleoClaimTypes.SessionStartedAt, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture)));
-            o.User.Claims.Add((CpnucleoClaimTypes.Subject, item.Id.ToString()));
-            o.User.Claims.Add((CpnucleoClaimTypes.UserId, item.Id.ToString()));
-            o.User.Claims.Add((ClaimTypes.NameIdentifier, item.Id.ToString()));
+            (CpnucleoClaimTypes.SessionStartedAt, now.ToUnixTimeSeconds().ToString(System.Globalization.CultureInfo.InvariantCulture)),
+            (CpnucleoClaimTypes.Subject, item.Id.ToString()),
+            (CpnucleoClaimTypes.UserId, item.Id.ToString()),
+            (ClaimTypes.NameIdentifier, item.Id.ToString())
+        };
+        if (tenantId != Guid.Empty)
+        {
+            sessionClaims.Add((CpnucleoClaimTypes.TenantId, tenantId.ToString()));
+            sessionClaims.Add((CpnucleoClaimTypes.TenantSlug, tenantId.ToString()));
+        }
 
-            if (!string.IsNullOrWhiteSpace(item.Login))
-            {
-                o.User.Claims.Add((CpnucleoClaimTypes.Login, item.Login));
-                o.User.Claims.Add((ClaimTypes.Name, item.Login));
-            }
+        Response.Token = tokenIssuer.Issue(item, sessionClaims, now + TokenIssuer.AccessTokenLifetime);
 
-            if (tenantId != Guid.Empty)
-            {
-                var tenantValue = tenantId.ToString();
-                o.User.Claims.Add((CpnucleoClaimTypes.TenantId, tenantValue));
-                o.User.Claims.Add((CpnucleoClaimTypes.TenantSlug, tenantValue));
-            }
-
-            if (isAdmin)
-            {
-                o.User.Claims.Add((CpnucleoClaimTypes.Admin, "true"));
-            }
-        });
-
-        Response.Token = jwtToken;
-        
-        Logger.LogInformation("Service completed successfully.");
-
-        await Send.OkAsync(Response, cancellationToken);        
+        Logger.LogInformation("Issued an access token for user {UserId}.", item.Id);
+        await Send.OkAsync(Response, cancellationToken);
     }
 }

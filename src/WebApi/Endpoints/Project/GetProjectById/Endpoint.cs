@@ -19,12 +19,12 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Logger.LogInformation("Service started processing request.");
         
         Logger.LogInformation("Fetching project entity with Id: {ProjectId}", request.Id);
-        var item = await repository.GetByIdAsync(request.Id);        
+        var item = await repository.GetByIdAsync(request.Id, cancellationToken);        
         
         if (item is null)
         {
             Logger.LogWarning("Project not found with Id: {ProjectId}", request.Id);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 

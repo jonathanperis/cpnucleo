@@ -1,5 +1,6 @@
 global using Application;
 global using System.Diagnostics.CodeAnalysis;
+global using Domain.Common;
 global using Domain.Common.Security;
 global using Domain.Entities;
 global using Domain.Models;
@@ -31,6 +32,8 @@ global using GrpcServer.Handlers.UserProject;
 global using GrpcServer.Handlers.Workflow;
 global using GrpcServer.ServiceExtensions;
 global using Infrastructure;
+global using Infrastructure.Http;
+global using Infrastructure.Security;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Server.Kestrel.Core;

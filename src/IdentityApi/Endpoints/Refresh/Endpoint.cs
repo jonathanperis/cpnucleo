@@ -1,7 +1,17 @@
 namespace IdentityApi.Endpoints.Refresh;
 
-public class Endpoint(IApplicationDbContext dbContext, IConfiguration configuration) : EndpointWithoutRequest<Response>
+public class Endpoint(IApplicationDbContext dbContext, TokenIssuer tokenIssuer) : EndpointWithoutRequest<Response>
 {
+    private static readonly string[] PreservedClaimTypes =
+    [
+        CpnucleoClaimTypes.Subject,
+        CpnucleoClaimTypes.UserId,
+        CpnucleoClaimTypes.SessionStartedAt,
+        CpnucleoClaimTypes.TenantId,
+        CpnucleoClaimTypes.TenantSlug,
+        ClaimTypes.NameIdentifier
+    ];
+
     public override void Configure()
     {
         Post("/refresh");
@@ -10,63 +20,38 @@ public class Endpoint(IApplicationDbContext dbContext, IConfiguration configurat
         Summary(s =>
         {
             s.Summary = "Refresh authenticated user session";
-            s.Description = "Issues a new 30-minute JWT for an already authenticated session.";
+            s.Description = "Issues a new 30-minute JWT for an already authenticated session, never beyond its eight-hour boundary. Fails when the account is inactive or its credentials changed since the session started.";
         });
     }
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Refreshing JWT token for an active session.");
-
+        var now = tokenIssuer.Now;
         if (!Guid.TryParse(User.FindFirst(CpnucleoClaimTypes.Subject)?.Value, out var userId) ||
-            !IdentityApi.Security.SessionLifetime.IsRefreshable(User, DateTimeOffset.UtcNow))
+            !SessionLifetime.IsRefreshable(User, now))
         {
-            await Send.UnauthorizedAsync(cancellationToken);
+            await Send.UnauthorizedEnvelopeAsync("The session has ended. Sign in again.", cancellationToken);
             return;
         }
 
+        // The global query filter excludes inactive accounts.
         var account = await dbContext.Users!.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
-        if (account is null)
+        if (account is null ||
+            !string.Equals(User.FindFirst(CpnucleoClaimTypes.SecurityStamp)?.Value, SecurityStamp.Compute(account), StringComparison.Ordinal))
         {
-            await Send.UnauthorizedAsync(cancellationToken);
+            Logger.LogInformation("Refresh rejected for user {UserId}: inactive account or changed credentials.", userId);
+            await Send.UnauthorizedEnvelopeAsync("The session is no longer valid. Sign in again.", cancellationToken);
             return;
         }
-
-        var isAdmin = (configuration["CPNUCLEO_ADMIN_LOGINS"] ?? string.Empty)
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Contains(account.Login, StringComparer.OrdinalIgnoreCase);
 
         var preservedClaims = User.Claims
-            .Where(claim => !string.IsNullOrWhiteSpace(claim.Value) &&
-                (claim.Type == CpnucleoClaimTypes.Subject ||
-                 claim.Type == CpnucleoClaimTypes.UserId ||
-                 claim.Type == CpnucleoClaimTypes.SessionStartedAt ||
-                 claim.Type == CpnucleoClaimTypes.TenantId ||
-                 claim.Type == CpnucleoClaimTypes.TenantSlug ||
-                 claim.Type == ClaimTypes.NameIdentifier))
+            .Where(claim => !string.IsNullOrWhiteSpace(claim.Value) && PreservedClaimTypes.Contains(claim.Type))
             .Select(claim => (claim.Type, claim.Value))
-            .Distinct()
             .ToArray();
 
-        Response.Token = JwtBearer.CreateToken(o =>
-        {
-            o.SigningKey = configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey is required.");
-            o.Issuer = configuration["Jwt:Issuer"];
-            o.Audience = configuration["Jwt:Audience"];
-            var sessionEnd = DateTimeOffset.FromUnixTimeSeconds(long.Parse(User.FindFirst(CpnucleoClaimTypes.SessionStartedAt)!.Value)).AddHours(8).UtcDateTime;
-            var accessEnd = DateTime.UtcNow.AddMinutes(30);
-            o.ExpireAt = accessEnd < sessionEnd ? accessEnd : sessionEnd;
-            foreach (var claim in preservedClaims)
-            {
-                o.User.Claims.Add(claim);
-            }
-            if (!string.IsNullOrWhiteSpace(account.Login))
-            {
-                o.User.Claims.Add((CpnucleoClaimTypes.Login, account.Login));
-                o.User.Claims.Add((ClaimTypes.Name, account.Login));
-            }
-            if (isAdmin) o.User.Claims.Add((CpnucleoClaimTypes.Admin, "true"));
-        });
+        var accessEnd = now + TokenIssuer.AccessTokenLifetime;
+        var sessionEnd = SessionLifetime.EndsAt(User);
+        Response.Token = tokenIssuer.Issue(account, preservedClaims, accessEnd < sessionEnd ? accessEnd : sessionEnd);
 
         await Send.OkAsync(Response, cancellationToken);
     }

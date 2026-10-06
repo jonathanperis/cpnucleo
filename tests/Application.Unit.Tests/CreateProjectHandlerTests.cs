@@ -6,7 +6,7 @@ public class CreateProjectHandlerTests
     public async Task ExecuteAsync_ShouldReturnValidationFailure_WhenNameIsEmpty()
     {
         var store = A.Fake<IProjectCreateStore>();
-        var handler = new CreateProjectHandler(store, NullLogger<CreateProjectHandler>.Instance);
+        var handler = new CreateProjectHandler(store, StaticCurrentUser.System, NullLogger<CreateProjectHandler>.Instance);
 
         var result = await handler.ExecuteAsync(new CreateProjectRequest(Guid.CreateVersion7(), " ", Guid.CreateVersion7()));
 
@@ -14,14 +14,14 @@ public class CreateProjectHandlerTests
         result.Message.ShouldBe("Name is required.");
         result.Project.ShouldBeNull();
         A.CallTo(() => store.ExistsAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => store.AddAsync(A<Project>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => store.AddAsync(A<Project>._, A<Guid?>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Test]
     public async Task ExecuteAsync_ShouldReturnValidationFailure_WhenOrganizationIdIsEmpty()
     {
         var store = A.Fake<IProjectCreateStore>();
-        var handler = new CreateProjectHandler(store, NullLogger<CreateProjectHandler>.Instance);
+        var handler = new CreateProjectHandler(store, StaticCurrentUser.System, NullLogger<CreateProjectHandler>.Instance);
 
         var result = await handler.ExecuteAsync(new CreateProjectRequest(Guid.CreateVersion7(), "New Project", Guid.Empty));
 
@@ -29,7 +29,7 @@ public class CreateProjectHandlerTests
         result.Message.ShouldBe("OrganizationId is required.");
         result.Project.ShouldBeNull();
         A.CallTo(() => store.ExistsAsync(A<Guid>._, A<CancellationToken>._)).MustNotHaveHappened();
-        A.CallTo(() => store.AddAsync(A<Project>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => store.AddAsync(A<Project>._, A<Guid?>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Test]
@@ -38,14 +38,14 @@ public class CreateProjectHandlerTests
         var projectId = Guid.CreateVersion7();
         var store = A.Fake<IProjectCreateStore>();
         A.CallTo(() => store.ExistsAsync(projectId, A<CancellationToken>._)).Returns(true);
-        var handler = new CreateProjectHandler(store, NullLogger<CreateProjectHandler>.Instance);
+        var handler = new CreateProjectHandler(store, StaticCurrentUser.System, NullLogger<CreateProjectHandler>.Instance);
 
         var result = await handler.ExecuteAsync(new CreateProjectRequest(projectId, "Existing Project", Guid.CreateVersion7()));
 
         result.Success.ShouldBeFalse();
         result.Message.ShouldBe("this Id is already in use!");
         result.Project.ShouldBeNull();
-        A.CallTo(() => store.AddAsync(A<Project>._, A<CancellationToken>._)).MustNotHaveHappened();
+        A.CallTo(() => store.AddAsync(A<Project>._, A<Guid?>._, A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Test]
@@ -60,8 +60,9 @@ public class CreateProjectHandlerTests
                 project.Id == projectId &&
                 project.Name == "New Project" &&
                 project.OrganizationId == organizationId),
+            null,
             A<CancellationToken>._)).Returns(createdProject);
-        var handler = new CreateProjectHandler(store, NullLogger<CreateProjectHandler>.Instance);
+        var handler = new CreateProjectHandler(store, StaticCurrentUser.System, NullLogger<CreateProjectHandler>.Instance);
 
         var result = await handler.ExecuteAsync(new CreateProjectRequest(projectId, "New Project", organizationId));
 
@@ -71,5 +72,20 @@ public class CreateProjectHandlerTests
         result.Project.Id.ShouldBe(projectId);
         result.Project.Name.ShouldBe("New Project");
         result.Project.OrganizationId.ShouldBe(organizationId);
+    }
+
+    [Test]
+    public async Task ExecuteAsync_ShouldMakeTheCallingUserAMember_WhenARealUserCreatesTheProject()
+    {
+        var userId = Guid.CreateVersion7();
+        var store = A.Fake<IProjectCreateStore>();
+        A.CallTo(() => store.AddAsync(A<Project>._, A<Guid?>._, A<CancellationToken>._))
+            .ReturnsLazily((Project project, Guid? _, CancellationToken _) => project);
+        var handler = new CreateProjectHandler(store, StaticCurrentUser.Member(userId), NullLogger<CreateProjectHandler>.Instance);
+
+        var result = await handler.ExecuteAsync(new CreateProjectRequest(Guid.CreateVersion7(), "Member project", Guid.CreateVersion7()));
+
+        result.Success.ShouldBeTrue();
+        A.CallTo(() => store.AddAsync(A<Project>._, userId, A<CancellationToken>._)).MustHaveHappenedOnceExactly();
     }
 }

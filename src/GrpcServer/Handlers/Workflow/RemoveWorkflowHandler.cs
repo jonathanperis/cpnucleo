@@ -6,65 +6,40 @@ public sealed class RemoveWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Remove
     public async Task<RemoveWorkflowResult> ExecuteAsync(RemoveWorkflowCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if workflow entities exist for Ids: {WorkflowIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} workflow entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("Workflow not found with Id: {WorkflowId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveWorkflowResult 
-                    { 
-                        Success = false,
-                        Message = "Workflow not found."
-                    };
-                }
-
-                logger.LogInformation("Removing workflow entity with Id: {WorkflowId}", id);
-                Domain.Entities.Workflow.Remove(item);
-
-                logger.LogInformation("Deleting workflow entity from repository with Id: {WorkflowId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one workflow to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveWorkflowResult 
-                { 
+                return new RemoveWorkflowResult
+                {
                     Success = false,
                     Message = "Workflow not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveWorkflowResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "Workflow removed successfully." : "Failed to remove Workflow."
+            return new RemoveWorkflowResult
+            {
+                Success = true,
+                Message = "Workflow removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

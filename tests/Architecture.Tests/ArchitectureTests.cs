@@ -18,7 +18,7 @@ public class ArchitectureTests
     public static TheoryData<string, string[]> DependencyBoundaries => new()
     {
         { "Domain", ["Application", "Infrastructure", "WebApi", "IdentityApi", "GrpcServer", "GrpcServer.Contracts", "Microsoft.EntityFrameworkCore", "Dapper", "Npgsql"] },
-        { "Application", ["Infrastructure", "WebApi", "IdentityApi", "GrpcServer", "GrpcServer.Contracts"] },
+        { "Application", ["Infrastructure", "WebApi", "IdentityApi", "GrpcServer", "GrpcServer.Contracts", "Microsoft.EntityFrameworkCore", "Dapper", "Npgsql"] },
         { "Infrastructure", ["WebApi", "IdentityApi", "GrpcServer", "GrpcServer.Contracts"] },
         { "WebApi", ["IdentityApi", "GrpcServer", "GrpcServer.Contracts"] },
         { "IdentityApi", ["WebApi", "GrpcServer", "GrpcServer.Contracts"] },
@@ -36,6 +36,18 @@ public class ArchitectureTests
             var result = Types.InAssembly(assembly).ShouldNot().HaveDependencyOn(dependency).GetResult();
             result.IsSuccessful.Should().BeTrue($"{name} must not reference {dependency}");
         }
+    }
+
+    [Fact]
+    public void Domain_ShouldOnlyReferenceTheBaseClassLibrary()
+    {
+        var references = typeof(Domain.Entities.BaseEntity).Assembly.GetReferencedAssemblies()
+            .Select(reference => reference.Name!)
+            .ToArray();
+
+        references.Should().NotBeEmpty();
+        references.Should().OnlyContain(name => name == "netstandard" || name == "mscorlib" || name.StartsWith("System"),
+            "the domain must stay free of external packages");
     }
 
     [Fact]
@@ -68,12 +80,23 @@ public class ArchitectureTests
     }
 
     [Fact]
-    public void GrpcHandlers_ShouldUseApplicationOrDomainContracts()
+    public void GrpcHandlers_ShouldBeSealedAndConventionallyNamed()
     {
         var handlers = typeof(GrpcServer.Handlers.Project.CreateProjectHandler).Assembly.GetTypes()
             .Where(t => t.Namespace?.StartsWith("GrpcServer.Handlers.") == true && !t.IsNested && t.IsClass).ToArray();
         handlers.Should().HaveCount(55);
         handlers.Should().OnlyContain(t => t.IsSealed && t.Name.EndsWith("Handler"));
+    }
+
+    [Fact]
+    public void GrpcCommands_ShouldUseCommandNames()
+    {
+        var commands = typeof(GrpcServer.Contracts.Commands.Project.CreateProjectCommand).Assembly.GetTypes()
+            .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(FastEndpoints.ICommand<>)))
+            .ToArray();
+
+        commands.Should().HaveCount(55);
+        commands.Should().OnlyContain(t => t.Name.EndsWith("Command") && t.Namespace!.StartsWith("GrpcServer.Contracts.Commands."));
     }
 
     [Fact]

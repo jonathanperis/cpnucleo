@@ -71,7 +71,8 @@ public class FakeDataSeedingTests
         importer.Should().Contain("PickUserForOrganization(userIds, userOrganizationIndexMap, assignmentOrganizationId");
 
         program.Should().Contain("--run-fake-data-csv-import");
-        program.Should().Contain("FakeDataCsvImporter:AllowProduction");
+        program.Should().Contain("disabled in Production");
+        program.Should().NotContain("FakeDataCsvImporter:AllowProduction", "the destructive importer has no production override");
         program.Should().Contain("FakeDataCsvImporter.RunAsync");
 
         compose.Should().NotContain("seed-csv-cpnucleo:");

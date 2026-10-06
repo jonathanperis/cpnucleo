@@ -6,65 +6,40 @@ public sealed class RemoveAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Remo
     public async Task<RemoveAssignmentResult> ExecuteAsync(RemoveAssignmentCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if assignment entities exist for Ids: {AssignmentIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} assignment entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.Assignment>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("Assignment not found with Id: {AssignmentId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveAssignmentResult 
-                    { 
-                        Success = false,
-                        Message = "Assignment not found."
-                    };
-                }
-
-                logger.LogInformation("Removing assignment entity with Id: {AssignmentId}", id);
-                Domain.Entities.Assignment.Remove(item);
-
-                logger.LogInformation("Deleting assignment entity from repository with Id: {AssignmentId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one assignment to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveAssignmentResult 
-                { 
+                return new RemoveAssignmentResult
+                {
                     Success = false,
-                    Message = "One or more assignments could not be deleted."
+                    Message = "Assignment not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveAssignmentResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "Assignment removed successfully." : "Failed to remove Assignment."
+            return new RemoveAssignmentResult
+            {
+                Success = true,
+                Message = "Assignment removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

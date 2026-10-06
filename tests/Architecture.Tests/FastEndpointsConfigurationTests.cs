@@ -8,15 +8,15 @@ public class FastEndpointsConfigurationTests
 {
     private static readonly string[] HttpVerbRouteMethods = ["Get", "Post", "Put", "Delete", "Patch"];
     private static readonly string[] AuthenticationPackageNames = ["FastEndpoints.Security", "Microsoft.AspNetCore.Authentication.JwtBearer"];
+    // The validation parameters themselves are covered behaviorally (Security.Unit.Tests and the
+    // integration suite); this only pins that both API hosts use the shared configuration.
     private static readonly string[] JwtValidationSnippets =
     [
         "AddAuthentication(JwtBearerDefaults.AuthenticationScheme)",
-        "ValidateIssuerSigningKey = true",
-        "ValidateLifetime = true",
-        "ValidateIssuer = true",
-        "ValidateAudience = true",
-        "ValidIssuer = builder.Configuration[\"Jwt:Issuer\"]",
-        "ValidAudience = builder.Configuration[\"Jwt:Audience\"]"
+        "options.MapInboundClaims = false",
+        "TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration)",
+        "OnTokenValidated",
+        "GetRequiredService<TokenSessionValidator>()"
     ];
 
     [Fact]
@@ -25,8 +25,7 @@ public class FastEndpointsConfigurationTests
         var repositoryRoot = GetRepositoryPath(".");
         var fastEndpointsPackageVersions = Directory
             .EnumerateFiles(repositoryRoot, "*.csproj", SearchOption.AllDirectories)
-            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
-                && !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(path => IsSourceProject(repositoryRoot, path))
             .SelectMany(projectPath => XDocument
                 .Load(projectPath)
                 .Descendants("PackageReference")
@@ -53,8 +52,7 @@ public class FastEndpointsConfigurationTests
         var repositoryRoot = GetRepositoryPath(".");
         var projectsWithAuthenticationPackages = Directory
             .EnumerateFiles(repositoryRoot, "*.csproj", SearchOption.AllDirectories)
-            .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
-                && !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(path => IsSourceProject(repositoryRoot, path))
             .SelectMany(projectPath => XDocument
                 .Load(projectPath)
                 .Descendants("PackageReference")
@@ -138,13 +136,8 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("PermitLimit");
         program.Should().Contain("Window = TimeSpan.FromMinutes(1)");
         program.Should().Contain("QueueLimit");
-        program.Should().Contain("Status429TooManyRequests");
-        program.Should().Contain("Response.ContentType = \"text/plain\"");
         program.Should().Contain("context.Lease.TryGetMetadata(MetadataName.RetryAfter");
-        program.Should().Contain("Headers.RetryAfter");
-        program.Should().Contain("RequestServices");
-        program.Should().Contain("GetRequiredService<ILoggerFactory>()");
-        program.Should().Contain("LogWarning");
+        program.Should().Contain("ApiErrorEnvelopeExtensions.WriteRateLimitRejectionAsync(");
         program.Should().NotContain("LoggerFactory.Create(logging =>", "rate-limit rejection logs must use the host logging pipeline so OpenTelemetry receives them");
         useRateLimiterIndex.Should().BeGreaterThanOrEqualTo(0);
         protectedPipelineIndex.Should().BeGreaterThan(useRateLimiterIndex, "global rate limiting must run before authenticated API endpoints/handlers");
@@ -204,19 +197,15 @@ public class FastEndpointsConfigurationTests
     [Fact]
     public void IdentityApi_ShouldIssueThirtyMinuteTokensAndRefreshAuthenticatedSessions()
     {
-        var program = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
         var loginEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Login/Endpoint.cs"));
         var refreshEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Refresh/Endpoint.cs"));
 
-        program.Should().NotContain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)", "JWT expiry must be computed when each token is created, not once at startup");
-        loginEndpoint.Should().Contain("o.ExpireAt = DateTime.UtcNow.AddMinutes(30)");
-        loginEndpoint.Should().Contain("CpnucleoClaimTypes.Subject");
-        loginEndpoint.Should().Contain("CpnucleoClaimTypes.UserId");
-        loginEndpoint.Should().Contain("CpnucleoClaimTypes.TenantId");
+        IdentityApi.Security.TokenIssuer.AccessTokenLifetime.Should().Be(TimeSpan.FromMinutes(30));
+        IdentityApi.Security.SessionLifetime.MaximumSessionLength.Should().Be(TimeSpan.FromHours(8));
+        loginEndpoint.Should().Contain("now + TokenIssuer.AccessTokenLifetime");
         refreshEndpoint.Should().Contain("SessionLifetime.IsRefreshable");
+        refreshEndpoint.Should().Contain("SecurityStamp.Compute(account)");
         refreshEndpoint.Should().Contain("Post(\"/refresh\")");
-        refreshEndpoint.Should().Contain("JwtBearer.CreateToken(");
-        refreshEndpoint.Should().Contain("preservedClaims");
         refreshEndpoint.Should().NotContain("AllowAnonymous();", "refresh must require an authenticated bearer token");
     }
 
@@ -508,6 +497,11 @@ public class FastEndpointsConfigurationTests
 
         filesWithHardCodedPrefix.Should().BeEmpty();
     }
+
+    private static bool IsSourceProject(string repositoryRoot, string path) =>
+        !Path.GetRelativePath(repositoryRoot, path)
+            .Split(Path.DirectorySeparatorChar)
+            .Any(segment => segment is "bin" or "obj" || segment.StartsWith('.'));
 
     private static string GetRepositoryPath(string relativePath)
     {

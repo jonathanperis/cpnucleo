@@ -11,7 +11,7 @@ public sealed class CreateUserAssignmentHandler(IUnitOfWork unitOfWork, ILogger<
         {
             logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.UserAssignment>();
-            var itemExists = await repository.ExistsAsync(command.Id);
+            var itemExists = await repository.ExistsAsync(command.Id, cancellationToken);
 
             if (itemExists)
             {
@@ -28,16 +28,16 @@ public sealed class CreateUserAssignmentHandler(IUnitOfWork unitOfWork, ILogger<
             logger.LogInformation("Created new userAssignment entity with Id: {UserAssignmentId}", newItem.Id);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             logger.LogInformation("Adding userAssignment to repository.");
-            var createdId = await repository.AddAsync(newItem);
+            var createdId = await repository.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Fetching userAssignment by Id: {UserAssignmentId}", createdId);
-            var createdItem = await repository.GetByIdAsync(createdId);
+            var createdItem = await repository.GetByIdAsync(createdId, cancellationToken);
 
             var result = new CreateUserAssignmentResult
             {
@@ -50,9 +50,9 @@ public sealed class CreateUserAssignmentHandler(IUnitOfWork unitOfWork, ILogger<
 
             return result;
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

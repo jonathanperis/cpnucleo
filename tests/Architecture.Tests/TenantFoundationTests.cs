@@ -1,3 +1,8 @@
+using Domain.Tenancy;
+using Microsoft.Extensions.Configuration;
+using Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Architecture.Tests;
 
 public class TenantFoundationTests
@@ -14,82 +19,61 @@ public class TenantFoundationTests
 
         tenantType.Should().NotBeNull();
         tenantType!.BaseType.Should().Be(typeof(Domain.Entities.BaseEntity));
-        var slugProperty = tenantType.GetProperty("Slug");
-        slugProperty.Should().NotBeNull();
-        slugProperty!.PropertyType.Should().Be(typeof(string));
-
-        var nameProperty = tenantType.GetProperty("Name");
-        nameProperty.Should().NotBeNull();
-        nameProperty!.PropertyType.Should().Be(typeof(string));
+        tenantType.GetProperty("Slug")!.PropertyType.Should().Be(typeof(string));
+        tenantType.GetProperty("Name")!.PropertyType.Should().Be(typeof(string));
 
         tenantScopedType.Should().NotBeNull();
-        var tenantIdProperty = tenantScopedType!.GetProperty("TenantId");
-        tenantIdProperty.Should().NotBeNull();
-        tenantIdProperty!.PropertyType.Should().Be(typeof(Guid));
+        tenantScopedType!.GetProperty("TenantId")!.PropertyType.Should().Be(typeof(Guid));
 
         tenantContextType.Should().NotBeNull();
-        var contextTenantIdProperty = tenantContextType!.GetProperty("TenantId");
-        contextTenantIdProperty.Should().NotBeNull();
-        contextTenantIdProperty!.PropertyType.Should().Be(typeof(Guid));
-
-        var tenantSlugProperty = tenantContextType.GetProperty("TenantSlug");
-        tenantSlugProperty.Should().NotBeNull();
-        tenantSlugProperty!.PropertyType.Should().Be(typeof(string));
-
-        var userIdProperty = tenantContextType.GetProperty("UserId");
-        userIdProperty.Should().NotBeNull();
-        userIdProperty!.PropertyType.Should().Be(typeof(Guid?));
+        tenantContextType!.GetProperty("TenantId")!.PropertyType.Should().Be(typeof(Guid));
+        tenantContextType.GetProperty("TenantSlug")!.PropertyType.Should().Be(typeof(string));
+        tenantContextType.GetProperty("UserId")!.PropertyType.Should().Be(typeof(Guid?));
 
         tenantContextAccessorType.Should().NotBeNull();
-        var currentProperty = tenantContextAccessorType!.GetProperty("Current");
-        currentProperty.Should().NotBeNull();
-        currentProperty!.PropertyType.Should().Be(tenantContextType);
+        tenantContextAccessorType!.GetProperty("Current")!.PropertyType.Should().Be(tenantContextType);
     }
 
     [Fact]
     public void Infrastructure_ShouldRegisterScopedTenantContextAccessor()
     {
-        var dependencyInjection = File.ReadAllText(GetRepositoryPath("src/Infrastructure/DependencyInjection.cs"));
-        var accessor = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Tenancy/TenantContextAccessor.cs"));
+        var services = new ServiceCollection();
+        services.AddInfrastructure(new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["DB_CONNECTION_STRING"] = "Host=unused" })
+            .Build());
 
-        dependencyInjection.Should().Contain("AddScoped<ITenantContextAccessor, TenantContextAccessor>()");
-        accessor.Should().Contain("class TenantContextAccessor");
-        accessor.Should().Contain("ITenantContextAccessor");
-        accessor.Should().Contain("TenantContext.Empty");
-        accessor.Should().Contain("AsyncLocal<TenantContext?>");
-        accessor.Should().Contain("ArgumentNullException.ThrowIfNull(context)");
+        var registration = services.Single(descriptor => descriptor.ServiceType == typeof(ITenantContextAccessor));
+        registration.Lifetime.Should().Be(ServiceLifetime.Scoped);
+        registration.ImplementationType.Should().Be(typeof(Infrastructure.Tenancy.TenantContextAccessor));
+
+        var accessor = new Infrastructure.Tenancy.TenantContextAccessor();
+        accessor.Current.Should().Be(TenantContext.Empty);
+        var context = new TenantContext(Guid.CreateVersion7(), "school", Guid.CreateVersion7());
+        accessor.Set(context);
+        accessor.Current.Should().Be(context);
+        accessor.Clear();
+        accessor.Current.Should().Be(TenantContext.Empty);
+        ((Action)(() => accessor.Set(null!))).Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
     public void TenantEntity_ShouldEnforceInvariantsAndIdempotentSoftDelete()
     {
-        var tenantSource = File.ReadAllText(GetRepositoryPath("src/Domain/Entities/Tenant.cs"));
+        var tenant = Domain.Entities.Tenant.Create("  learning-school ", " Learning school ");
+        tenant.Slug.Should().Be("learning-school");
+        tenant.Name.Should().Be("Learning school");
+        tenant.Active.Should().BeTrue();
 
-        tenantSource.Should().Contain("string.IsNullOrWhiteSpace(slug)");
-        tenantSource.Should().Contain("string.IsNullOrWhiteSpace(name)");
-        tenantSource.Should().Contain("slug.Trim()");
-        tenantSource.Should().Contain("name.Trim()");
-        tenantSource.Should().Contain("ArgumentNullException.ThrowIfNull(obj)");
-        tenantSource.Should().Contain("if (!obj.Active)");
-        tenantSource.Should().Contain("obj.DeletedAt ??= DateTime.UtcNow");
-    }
+        ((Action)(() => Domain.Entities.Tenant.Create(" ", "Name"))).Should().Throw<Domain.Common.DomainException>();
+        ((Action)(() => Domain.Entities.Tenant.Create("slug", ""))).Should().Throw<Domain.Common.DomainException>();
+        ((Action)(() => Domain.Entities.Tenant.Remove(null!))).Should().Throw<ArgumentNullException>();
 
-    private static string GetRepositoryPath(string relativePath)
-    {
-        var current = new DirectoryInfo(AppContext.BaseDirectory);
+        Domain.Entities.Tenant.Remove(tenant);
+        var deletedAt = tenant.DeletedAt;
+        deletedAt.Should().NotBeNull();
+        tenant.Active.Should().BeFalse();
 
-        while (current is not null)
-        {
-            var candidate = Path.GetFullPath(Path.Combine(current.FullName, relativePath));
-            if (File.Exists(Path.Combine(current.FullName, "cpnucleo.slnx")) ||
-                Directory.Exists(Path.Combine(current.FullName, ".git")))
-            {
-                return candidate;
-            }
-
-            current = current.Parent;
-        }
-
-        return Path.GetFullPath(relativePath);
+        Domain.Entities.Tenant.Remove(tenant);
+        tenant.DeletedAt.Should().Be(deletedAt, "removing twice keeps the original deletion time");
     }
 }

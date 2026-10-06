@@ -126,14 +126,13 @@ public class OrganizationEndpointsTests
         var organization = Organization.Create("Organization to Delete", "Description", organizationId);
         
         var fakeRepository = A.Fake<IRepository<Organization>>();
-        A.CallTo(() => fakeRepository.GetByIdAsync(organizationId)).Returns(Task.FromResult<Organization?>(organization));
-        A.CallTo(() => fakeRepository.UpdateAsync(A<Organization>._)).Returns(Task.FromResult(true));
+        A.CallTo(() => fakeRepository.RemoveManyAsync(A<IReadOnlyCollection<Guid>>._, A<CancellationToken>._)).Returns(true);
 
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
 
         var ep = Factory.Create<WebApi.Endpoints.Organization.RemoveOrganization.Endpoint>(fakeUnitOfWork).WithListingServices();
-        var req = new WebApi.Endpoints.Organization.RemoveOrganization.RemoveOrganizationRequest { Ids = new List<Guid> { organizationId } };
+        var req = new WebApi.Endpoints.Organization.RemoveOrganization.RemoveOrganizationRequest { Ids = new List<Guid> { organizationId, organizationId } };
 
         // Act
         await ep.HandleAsync(req, default);
@@ -141,6 +140,25 @@ public class OrganizationEndpointsTests
         // Assert
         ep.Response.ShouldNotBeNull();
         ep.Response.Success.ShouldBeTrue();
+        A.CallTo(() => fakeRepository.RemoveManyAsync(A<IReadOnlyCollection<Guid>>.That.IsSameSequenceAs(new[] { organizationId }), A<CancellationToken>._))
+            .MustHaveHappenedOnceExactly();
+        A.CallTo(() => fakeUnitOfWork.CommitAsync(A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+    }
+
+    [Test]
+    public async Task RemoveOrganization_WhenAnyIdIsMissing_RollsBackAndReturnsNotFound()
+    {
+        var fakeRepository = A.Fake<IRepository<Organization>>();
+        A.CallTo(() => fakeRepository.RemoveManyAsync(A<IReadOnlyCollection<Guid>>._, A<CancellationToken>._)).Returns(false);
+        var fakeUnitOfWork = A.Fake<IUnitOfWork>();
+        A.CallTo(() => fakeUnitOfWork.GetRepository<Organization>()).Returns(fakeRepository);
+
+        var ep = Factory.Create<WebApi.Endpoints.Organization.RemoveOrganization.Endpoint>(fakeUnitOfWork).WithListingServices();
+        await ep.HandleAsync(new WebApi.Endpoints.Organization.RemoveOrganization.RemoveOrganizationRequest { Ids = [Guid.NewGuid()] }, default);
+
+        ep.HttpContext.Response.StatusCode.ShouldBe(404);
+        A.CallTo(() => fakeUnitOfWork.RollbackAsync(A<CancellationToken>._)).MustHaveHappenedOnceExactly();
+        A.CallTo(() => fakeUnitOfWork.CommitAsync(A<CancellationToken>._)).MustNotHaveHappened();
     }
 
     [Test]

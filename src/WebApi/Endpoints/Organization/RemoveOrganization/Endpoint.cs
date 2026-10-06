@@ -18,48 +18,28 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
     {        
         Logger.LogInformation("Service started processing request.");
 
+        var ids = BatchIds.Normalize(request.Ids);
+
         Logger.LogInformation("Beginning transaction.");
-        await unitOfWork.BeginTransactionAsync();
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        Logger.LogInformation("Checking if organization entities exist for Ids: {OrganizationIds}", string.Join(",", request.Ids));
+        Logger.LogInformation("Removing {Count} organization entities atomically.", ids.Length);
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-        var allSuccess = true;
+        Response.Success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-        foreach (var id in request.Ids)
+        if (!Response.Success)
         {
-            var item = await repository.GetByIdAsync(id);
-            if (item is null)
-            {
-                await Send.NotFoundAsync(cancellation: cancellationToken);
-                return;
-            }
-
-            Logger.LogInformation("Removing organization entity with Id: {OrganizationId}", id);
-            Domain.Entities.Organization.Remove(item);
-
-            Logger.LogInformation("Updating repository for removed entity {OrganizationId}.", id);
-            var result = await repository.UpdateAsync(item);
-
-            if (!result) allSuccess = false;
-        }
-
-        Response.Success = allSuccess;
-
-        if (!allSuccess)
-        {
-            Logger.LogWarning("One or more deletions failed, rolling back transaction.");
+            Logger.LogWarning("At least one organization to remove was not found; rolling back.");
             await unitOfWork.RollbackAsync(cancellationToken);
-            await Send.ErrorsAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 
-        Logger.LogInformation("Remove result: {Success}", Response.Success);
         Logger.LogInformation("Committing transaction.");
         await unitOfWork.CommitAsync(cancellationToken);
-
         Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Organization));
 
         await Send.OkAsync(Response, cancellationToken);
     }

@@ -25,7 +25,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
 
         if (item is null)
         {
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 
@@ -35,7 +35,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         {
             passwordHash = passwordHasher.Hash(request.Password);
         }
-        Domain.Entities.User.Update(item, request.Name, request.Login ?? item.Login, passwordHash);
+        Domain.Entities.User.Update(item, request.Name, request.Login, passwordHash);
 
         Logger.LogInformation("Updating entity in repository.");
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);
@@ -43,7 +43,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         Logger.LogInformation("Update result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.User));
 
         await Send.OkAsync(Response, cancellationToken);
     }

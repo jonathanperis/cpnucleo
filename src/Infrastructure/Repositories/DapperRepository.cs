@@ -1,55 +1,78 @@
 namespace Infrastructure.Repositories;
 
-public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction? transaction, string tableName) : IRepository<T>
+/// <summary>
+/// Generic Dapper repository ("Dapper Repository Advanced"). Reads are restricted to rows the
+/// current user may see (<see cref="AccessSql"/>), writes are authorized by <see cref="IAccessGuard"/>,
+/// and updates never touch identity or soft-delete columns, so an update racing a removal cannot
+/// bring the removed row back.
+/// </summary>
+public class DapperRepository<T>(
+    NpgsqlConnection connection,
+    Func<NpgsqlTransaction?> transaction,
+    string tableName,
+    ICurrentUser currentUser,
+    IAccessGuard accessGuard) : IRepository<T>
     where T : BaseEntity
 {
     private const string PrimaryKey = "Id";
-    
+
+    // Identity and lifecycle columns are written by INSERT and soft-delete statements only.
+    private static readonly HashSet<string> ImmutableColumns = new(StringComparer.OrdinalIgnoreCase)
+        { "Id", "CreatedAt", "Active", "DeletedAt" };
+
+    // Credential columns are never exposed as sort keys.
+    private static readonly HashSet<string> UnsortableColumns = new(StringComparer.OrdinalIgnoreCase)
+        { "Password", "Salt" };
+
     // Cache reflection results to avoid repeated GetProperties calls
-    private static readonly Lazy<PropertyInfo[]> CachedProperties = new(() => 
+    private static readonly Lazy<PropertyInfo[]> CachedProperties = new(() =>
         typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
-    
+
     private static readonly Lazy<Dictionary<string, string>> CachedPropertyNames = new(() =>
         CachedProperties.Value.Where(IsColumnProperty).ToDictionary(p => p.Name, p => p.Name, StringComparer.OrdinalIgnoreCase));
 
-    public async Task<T?> GetByIdAsync(Guid id)
+    private static readonly string Visibility = AccessSql.ReadPredicate(typeof(T));
+
+    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var sql = $"""
-                   SELECT * FROM "{tableName}" 
-                   WHERE "{PrimaryKey}" = @Id AND "Active" = true
-                   """;       
-        
-        return await connection.QueryFirstOrDefaultAsync<T>(sql,
-            new { Id = id }, transaction);
+                   SELECT * FROM "{tableName}"
+                   WHERE "{PrimaryKey}" = @Id AND "Active" = true{Visibility}
+                   """;
+
+        return await connection.QueryFirstOrDefaultAsync<T>(new CommandDefinition(sql,
+            WithAccess(new { Id = id }), transaction(), cancellationToken: cancellationToken));
     }
 
     public async Task<PaginatedResult<T?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var ids = pagination.GetIds();
-        var validSortOrder = pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
+        var validSortOrder = pagination.SortOrder == "DESC" ? "DESC" : "ASC";
+        var searchPattern = pagination.GetSearchPattern();
         var searchColumns = new[] { "Name", "Description", "Login" }.Where(CachedPropertyNames.Value.ContainsKey).ToArray();
-        var searchClause = pagination.Search is not null && searchColumns.Length > 0
-            ? " AND (" + string.Join(" OR ", searchColumns.Select(column => $"\"{column}\" ILIKE @Search")) + ")"
+        var searchClause = searchPattern is not null && searchColumns.Length > 0
+            ? " AND (" + string.Join(" OR ", searchColumns.Select(column => $"\"{column}\" ILIKE @Search ESCAPE '\\'")) + ")"
             : string.Empty;
+        var filter = $"""WHERE "Active" = true{searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids)){Visibility}""";
 
         var sql = $"""
-                   SELECT * FROM "{tableName}" 
-                   WHERE "Active" = true {searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids))
+                   SELECT * FROM "{tableName}"
+                   {filter}
                    ORDER BY "{validSortColumn}" {validSortOrder}, "Id" ASC
                    OFFSET @Offset LIMIT @PageSize;
-                   
-                   SELECT COUNT(*) FROM "{tableName}" WHERE "Active" = true {searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids));
+
+                   SELECT COUNT(*) FROM "{tableName}" {filter};
                    """;
 
-        var command = new CommandDefinition(sql, new
+        var command = new CommandDefinition(sql, WithAccess(new
         {
             pagination.Offset,
             pagination.PageSize,
-            Search = $"%{pagination.Search}%",
+            Search = searchPattern,
             FilterIds = ids.Length > 0,
             Ids = ids
-        }, transaction, cancellationToken: cancellationToken);
+        }), transaction(), cancellationToken: cancellationToken);
 
         await using var multi = await connection.QueryMultipleAsync(command);
 
@@ -62,70 +85,143 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
         };
     }
 
-    public async Task<Guid> AddAsync(T? entity)
+    public async Task<Guid> AddAsync(T? entity, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
+        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(entity), AccessOperation.Create, cancellationToken);
+
         var columns = GetColumns(excludeKey: false);
         var properties = GetPropertyNames(excludeKey: false);
-            
+
         var sql = $"""
                    INSERT INTO "{tableName}" ({columns})
                    VALUES ({properties}) RETURNING "Id"
-                   """;              
-        
-        return await connection.ExecuteScalarAsync<Guid>(sql, entity, transaction);
-    }
-
-    public async Task<bool> UpdateAsync(T? entity)
-    {
-        var properties = GetUpdatePropertyNames();
-
-        var sql = $"""
-                   UPDATE "{tableName}"
-                   SET {properties}
-                   WHERE "{PrimaryKey}" = @Id
                    """;
 
-        var affectedRows = await connection.ExecuteAsync(sql, entity, transaction);
-        return affectedRows > 0;
+        return await connection.ExecuteScalarAsync<Guid>(new CommandDefinition(sql, entity, transaction(), cancellationToken: cancellationToken));
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> UpdateAsync(T? entity, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(entity);
+        if (!await AuthorizeModificationAsync(entity, cancellationToken)) return false;
+
         var sql = $"""
                    UPDATE "{tableName}"
-                   SET "Active" = false, "DeletedAt" = now()
+                   SET {GetUpdateAssignments()}
                    WHERE "{PrimaryKey}" = @Id AND "Active" = true
-                   """;        
-        
-        var affectedRows = await connection.ExecuteAsync(sql, new { Id = id }, transaction);
+                   """;
+
+        var affectedRows = await connection.ExecuteAsync(new CommandDefinition(sql, entity, transaction(), cancellationToken: cancellationToken));
         return affectedRows > 0;
     }
 
     public async Task<bool> UpdateIfVersionAsync(T entity, DateTime expectedVersion, CancellationToken cancellationToken = default)
     {
+        if (!await AuthorizeModificationAsync(entity, cancellationToken)) return false;
+
         var values = new DynamicParameters(entity);
-        values.Add("ExpectedVersion", expectedVersion);
-        var assignments = GetUpdatePropertyNames().Replace("\"UpdatedAt\" = @UpdatedAt",
-            "\"UpdatedAt\" = GREATEST(@UpdatedAt, COALESCE(\"UpdatedAt\", \"CreatedAt\") + interval '1 microsecond')", StringComparison.Ordinal);
+        values.Add("ExpectedVersion", Guard.Utc(expectedVersion));
         return await connection.ExecuteAsync(new CommandDefinition($"""
-            UPDATE "{tableName}" SET {assignments}
+            UPDATE "{tableName}" SET {GetUpdateAssignments()}
             WHERE "Id" = @Id AND "Active" = true AND COALESCE("UpdatedAt", "CreatedAt") = @ExpectedVersion
-            """, values, transaction, cancellationToken: cancellationToken)) == 1;
+            """, values, transaction(), cancellationToken: cancellationToken)) == 1;
     }
 
-    public async Task<bool> ExistsAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        var original = await GetByIdAsync(id, cancellationToken);
+        if (original is null) return false;
+        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(original), AccessOperation.Modify, cancellationToken);
+
+        var sql = $"""
+                   UPDATE "{tableName}"
+                   SET "Active" = false, "DeletedAt" = now()
+                   WHERE "{PrimaryKey}" = @Id AND "Active" = true
+                   """;
+
+        var affectedRows = await connection.ExecuteAsync(new CommandDefinition(sql, new { Id = id }, transaction(), cancellationToken: cancellationToken));
+        return affectedRows > 0;
+    }
+
+    public async Task<bool> RemoveManyAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        var distinctIds = ids.Distinct().ToArray();
+        if (distinctIds.Length == 0) return false;
+
+        var ambient = transaction();
+        await using var local = ambient is null ? await BeginLocalTransactionAsync(cancellationToken) : null;
+        var current = ambient ?? local;
+
+        var rows = (await connection.QueryAsync<T>(new CommandDefinition($"""
+            SELECT * FROM "{tableName}" WHERE "Id" = ANY(@Ids) AND "Active" = true{Visibility}
+            """, WithAccess(new { Ids = distinctIds }), current, cancellationToken: cancellationToken))).ToArray();
+        if (rows.Length != distinctIds.Length) return false;
+
+        foreach (var row in rows)
+            await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(row), AccessOperation.Modify, cancellationToken);
+
+        var affected = await connection.ExecuteAsync(new CommandDefinition($"""
+            UPDATE "{tableName}" SET "Active" = false, "DeletedAt" = now()
+            WHERE "Id" = ANY(@Ids) AND "Active" = true
+            """, new { Ids = distinctIds }, current, cancellationToken: cancellationToken));
+        if (affected != distinctIds.Length)
+        {
+            // A concurrent removal won the race; undo our partial work when we own the transaction.
+            if (local is not null) await local.RollbackAsync(CancellationToken.None);
+            return false;
+        }
+
+        if (local is not null) await local.CommitAsync(cancellationToken);
+        return true;
+    }
+
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        // Identity checks deliberately ignore visibility: an id is taken even if the caller can't see it.
         var sql = $"""
                    SELECT EXISTS(SELECT 1 FROM "{tableName}"
                    WHERE "{PrimaryKey}" = @Id AND "Active" = true)
-                   """;   
-        
-        return await connection.ExecuteScalarAsync<bool>(sql, new { Id = id }, transaction);
+                   """;
+
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(sql, new { Id = id }, transaction(), cancellationToken: cancellationToken));
+    }
+
+    /// <summary>
+    /// Checks the caller may modify the stored row (and move it to the new values). Returns false
+    /// when the row is missing or invisible, so callers report "not found".
+    /// </summary>
+    private async Task<bool> AuthorizeModificationAsync(T entity, CancellationToken cancellationToken)
+    {
+        var original = await GetByIdAsync(entity.Id, cancellationToken);
+        if (original is null) return false;
+
+        var originalTarget = ResourceAccess.TargetOf(original);
+        var newTarget = ResourceAccess.TargetOf(entity);
+        await accessGuard.EnsureCanWriteAsync(originalTarget, AccessOperation.Modify, cancellationToken);
+        if (newTarget != originalTarget)
+            await accessGuard.EnsureCanWriteAsync(newTarget, AccessOperation.Modify, cancellationToken);
+        return true;
+    }
+
+    private async Task<NpgsqlTransaction> BeginLocalTransactionAsync(CancellationToken cancellationToken)
+    {
+        if (connection.State != System.Data.ConnectionState.Open) await connection.OpenAsync(cancellationToken);
+        return await connection.BeginTransactionAsync(cancellationToken);
+    }
+
+    private DynamicParameters WithAccess(object values)
+    {
+        var parameters = new DynamicParameters(values);
+        parameters.AddDynamicParams(AccessSql.Parameters(currentUser));
+        return parameters;
     }
 
     private static string ValidateSortColumn(string? column)
     {
-        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.TryGetValue(column, out var canonicalName)
+        return !string.IsNullOrWhiteSpace(column)
+            && !UnsortableColumns.Contains(column)
+            && CachedPropertyNames.Value.TryGetValue(column, out var canonicalName)
             ? canonicalName
             : PrimaryKey;
     }
@@ -158,10 +254,17 @@ public class DapperRepository<T>(NpgsqlConnection connection, NpgsqlTransaction?
             .Select(p => $"\"{p.Name}\""));
     }
 
-    private static string GetUpdatePropertyNames()
+    /// <summary>
+    /// SET list for updates: mutable columns only. <c>UpdatedAt</c> always moves forward from the
+    /// stored version, so versions stay monotonic even if application clocks disagree.
+    /// </summary>
+    internal static string GetUpdateAssignments()
     {
         return string.Join(", ", GetProperties(excludeKey: true)
-            .Select(p => $"\"{p.Name}\" = @{p.Name}"));
+            .Where(p => !ImmutableColumns.Contains(p.Name))
+            .Select(p => p.Name == "UpdatedAt"
+                ? "\"UpdatedAt\" = GREATEST(@UpdatedAt, COALESCE(\"UpdatedAt\", \"CreatedAt\") + interval '1 microsecond')"
+                : $"\"{p.Name}\" = @{p.Name}"));
     }
 
     private static string GetPropertyNames(bool excludeKey = false)

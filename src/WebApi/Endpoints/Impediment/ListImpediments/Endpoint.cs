@@ -4,10 +4,11 @@ namespace WebApi.Endpoints.Impediment.ListImpediments;
 public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
 {
     // Cache reflection results to avoid repeated GetProperties calls
-    private static readonly Lazy<HashSet<string>> CachedPropertyNames = new(() =>
+    private static readonly Lazy<Dictionary<string, string>> CachedPropertyNames = new(() =>
     {
         var properties = typeof(Domain.Entities.Impediment).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        return new HashSet<string>(properties.Select(p => p.Name), StringComparer.OrdinalIgnoreCase);
+        return properties.Where(p => p.PropertyType == typeof(string) || p.PropertyType.IsValueType)
+            .ToDictionary(p => p.Name, p => p.Name, StringComparer.OrdinalIgnoreCase);
     });
     
     public override void Configure()
@@ -27,7 +28,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (HttpContext.Request.AcceptsServerSentEvents())
         {
             await TypedResults
-                .ServerSentEvents(ListingSseExtensions.CreateListingStream(ct => BuildResponseAsync(request, ct), HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>(), Logger, cancellationToken), "listing")
+                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.Impediment), ct => BuildResponseAsync(request, ct), HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>(), Logger, cancellationToken), "listing")
                 .ExecuteAsync(HttpContext);
             return;
         }
@@ -42,13 +43,13 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var query = dbContext.Impediments?.AsNoTracking().AsQueryable();
-        if (request.Pagination.Search is { } search)
-            query = query!.Where(x => EF.Functions.ILike(x.Name!, $"%{search}%"));
+        if (request.Pagination.GetSearchPattern() is { } pattern)
+            query = query!.Where(x => EF.Functions.ILike(x.Name!, pattern, "\\"));
         if (request.Pagination.GetIds() is { Length: > 0 } ids)
             query = query!.Where(x => ids.Contains(x.Id));
 
         var validSortColumn = ValidateSortColumn(request.Pagination.SortColumn);
-        var validSortOrder = request.Pagination.SortOrder?.ToUpper() == "DESC" ? "DESC" : "ASC";
+        var validSortOrder = request.Pagination.SortOrder == "DESC" ? "DESC" : "ASC";
 
         query = ApplySorting(query, validSortColumn, validSortOrder);
 
@@ -78,8 +79,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     private static string ValidateSortColumn(string? column)
     {
-        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.Contains(column)
-            ? column
+        return !string.IsNullOrWhiteSpace(column) && CachedPropertyNames.Value.TryGetValue(column, out var canonicalName)
+            ? canonicalName
             : "Id";
     }
 

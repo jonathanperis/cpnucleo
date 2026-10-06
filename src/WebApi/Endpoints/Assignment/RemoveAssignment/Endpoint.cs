@@ -20,39 +20,26 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignme
         Logger.LogInformation("Service started processing request.");
 
         Logger.LogInformation("Checking if assignment entities exist for Ids: {AssignmentIds}", string.Join(",", request.Ids));
-        var allSuccess = true;
+        var ids = BatchIds.Normalize(request.Ids);
+        var items = await dbContext.Assignments!.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
 
-        foreach (var id in request.Ids)
+        if (items.Count != ids.Length)
         {
-            var item = await dbContext.Assignments!.FindAsync([id], cancellationToken: cancellationToken);
-            if (item is null)
-            {
-                await Send.NotFoundAsync(cancellation: cancellationToken);
-                return;
-            }
-
-            Logger.LogInformation("Removing assignment entity with Id: {AssignmentId}", id);
-            Domain.Entities.Assignment.Remove(item);
-
-            Logger.LogInformation("Updating repository for removed entity {AssignmentId}.", id);
-            var result = await dbContext.SaveChangesAsync(cancellationToken);
-
-            if (!result) allSuccess = false;
-        }
-
-        Response.Success = allSuccess;
-
-        if (!allSuccess)
-        {
-            Logger.LogWarning("One or more deletions failed.");
-            await Send.ErrorsAsync(cancellation: cancellationToken);
+            Logger.LogWarning("At least one assignment to remove was not found; nothing was removed.");
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
+
+        Logger.LogInformation("Removing {Count} assignment entities in one transaction.", items.Count);
+        foreach (var item in items) Domain.Entities.Assignment.Remove(item);
+
+        // A single SaveChanges is one transaction: every removal succeeds or none does.
+        Response.Success = await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Remove result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Assignment), nameof(Domain.Entities.UserAssignment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

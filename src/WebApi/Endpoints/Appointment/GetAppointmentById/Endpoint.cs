@@ -21,12 +21,12 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Fetching appointment entity with Id: {AppointmentId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
-        var item = await repository.GetByIdAsync(request.Id);
+        var item = await repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (item is null)
         {
             Logger.LogWarning("Appointment not found with Id: {AppointmentId}", request.Id);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 

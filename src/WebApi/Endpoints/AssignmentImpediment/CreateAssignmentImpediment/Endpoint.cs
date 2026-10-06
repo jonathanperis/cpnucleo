@@ -20,7 +20,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Service started processing request with payload Description: {Description}, Id: {AssignmentImpedimentId}", request.Description, request.Id);
 
         Logger.LogInformation("Checking if an assignmentImpediment entity exists with Id: {AssignmentImpedimentId}", request.Id);
-        var itemExists = dbContext.AssignmentImpediments!.Any(x => x.Id == request.Id);
+        var itemExists = await dbContext.AssignmentImpediments!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
         if (itemExists)
         {
@@ -47,7 +47,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Service completed successfully.");
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.AssignmentImpediment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

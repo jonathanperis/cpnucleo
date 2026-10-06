@@ -6,65 +6,40 @@ public sealed class RemoveAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Rem
     public async Task<RemoveAppointmentResult> ExecuteAsync(RemoveAppointmentCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Service started processing request.");
+        var ids = BatchIds.Normalize(command.Ids);
 
         try
         {
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
 
-            logger.LogInformation("Checking if appointment entities exist for Ids: {AppointmentIds}", string.Join(",", command.Ids));
+            logger.LogInformation("Removing {Count} appointment entities atomically.", ids.Length);
             var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
-            var allSuccess = true;
+            var success = await repository.RemoveManyAsync(ids, cancellationToken);
 
-            foreach (var id in command.Ids)
+            if (!success)
             {
-                var item = await repository.GetByIdAsync(id);
-                if (item is null)
-                {
-                    logger.LogWarning("Appointment not found with Id: {AppointmentId}", id);
-                    await unitOfWork.RollbackAsync(cancellationToken);
-                    return new RemoveAppointmentResult 
-                    { 
-                        Success = false,
-                        Message = "Appointment not found."
-                    };
-                }
-
-                logger.LogInformation("Removing appointment entity with Id: {AppointmentId}", id);
-                Domain.Entities.Appointment.Remove(item);
-
-                logger.LogInformation("Deleting appointment entity from repository with Id: {AppointmentId}.", id);
-                var result = await repository.DeleteAsync(id);
-
-                if (!result) allSuccess = false;
-            }
-
-            if (!allSuccess)
-            {
-                logger.LogWarning("One or more deletions failed, rolling back transaction.");
+                logger.LogWarning("At least one appointment to remove was not found; rolling back.");
                 await unitOfWork.RollbackAsync(cancellationToken);
-                return new RemoveAppointmentResult 
-                { 
+                return new RemoveAppointmentResult
+                {
                     Success = false,
-                    Message = "One or more appointments could not be deleted."
+                    Message = "Appointment not found."
                 };
             }
 
-            logger.LogInformation("Remove result: {Success}", allSuccess);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Service completed successfully.");
-
-            return new RemoveAppointmentResult 
-            { 
-                Success = allSuccess,
-                Message = allSuccess ? "Appointment removed successfully." : "Failed to remove Appointment."
+            return new RemoveAppointmentResult
+            {
+                Success = true,
+                Message = "Appointment removed successfully."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

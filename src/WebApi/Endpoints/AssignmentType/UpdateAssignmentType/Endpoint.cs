@@ -24,7 +24,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         if (item is null)
         {
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 
@@ -37,7 +37,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Logger.LogInformation("Update result: {Success}", Response.Success);
         Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.AssignmentType));
 
         await Send.OkAsync(Response, cancellationToken);
     }

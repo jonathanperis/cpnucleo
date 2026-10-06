@@ -11,7 +11,7 @@ public sealed class UpdateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
         {
             logger.LogInformation("Checking if an assignmentImpediment entity exists with Id: {AssignmentImpedimentId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
-            var item = await repository.GetByIdAsync(command.Id);
+            var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (item is null)
             {
@@ -27,10 +27,10 @@ public sealed class UpdateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
             Domain.Entities.AssignmentImpediment.Update(item, command.Description, command.AssignmentId, command.ImpedimentId);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
             
             logger.LogInformation("Updating entity in repository.");
-            var success = await repository.UpdateAsync(item);
+            var success = await repository.UpdateAsync(item, cancellationToken);
 
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
@@ -44,9 +44,9 @@ public sealed class UpdateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
                 Message = success ? "AssignmentImpediment updated successfully." : "Failed to update AssignmentImpediment."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

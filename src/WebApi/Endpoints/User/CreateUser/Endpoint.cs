@@ -21,7 +21,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", request.Name, request.Id);
 
         Logger.LogInformation("Checking if an user entity exists with Id: {UserId}", request.Id);
-        var itemExists = dbContext.Users!.Any(x => x.Id == request.Id);
+        var itemExists = await dbContext.Users!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
         if (itemExists)
         {
@@ -49,7 +49,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
 
         Logger.LogInformation("Service completed successfully.");
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.User));
 
         await Send.OkAsync(Response, cancellationToken);
     }
