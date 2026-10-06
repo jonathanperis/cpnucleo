@@ -9,21 +9,6 @@ const sseResponse = (payload: unknown) => new Response(
 
 afterEach(() => vi.restoreAllMocks());
 
-const waitForExpectation = async (assertion: () => void) => {
-  const startedAt = Date.now();
-  let lastError: unknown;
-  while (Date.now() - startedAt < 1000) {
-    try {
-      assertion();
-      return;
-    } catch (error) {
-      lastError = error;
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-  }
-  throw lastError;
-};
-
 describe('webapi client', () => {
   it('normalizes array and paginated list payloads', () => {
     expect(normalizeList([{ id: '1' }]).totalCount).toBe(1);
@@ -34,21 +19,41 @@ describe('webapi client', () => {
     expect(parseServerSentEventData('event: listing\ndata: {"ok":true}\n\n')).toEqual(['{"ok":true}']);
   });
 
-  it('uses paginated JSON lists and singular item endpoints', async () => {
+  it('sends each pagination parameter once with flat keys and an explicit stable sort', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     const client = createWebApiClient('http://example.test/api');
-    await client.list('projects', 2, 10);
+    await client.list('projects', 2, 10, undefined, '  core  ');
     const listUrl = new URL(fetchMock.mock.calls[0][0]?.toString() ?? '');
     expect(`${listUrl.origin}${listUrl.pathname}`).toBe('http://example.test/api/projects');
-    expect(listUrl.searchParams.get('pageNumber')).toBe('2');
-    expect(listUrl.searchParams.get('pageSize')).toBe('10');
-    expect(listUrl.searchParams.get('pagination.pageNumber')).toBe('2');
-    expect(listUrl.searchParams.get('pagination.pageSize')).toBe('10');
+    expect([...listUrl.searchParams.keys()].sort()).toEqual(['pageNumber', 'pageSize', 'search', 'sortColumn', 'sortOrder']);
+    expect(Object.fromEntries(listUrl.searchParams)).toEqual({ pageNumber: '2', pageSize: '10', search: 'core', sortColumn: 'CreatedAt', sortOrder: 'ASC' });
     expect(new Headers((fetchMock.mock.calls[0][1] as RequestInit).headers).get('Accept')).toBe('application/json');
     fetchMock.mockResolvedValue(new Response(JSON.stringify({ id: 'abc' }), { status: 200 }));
     await client.update('projects', 'abc', { name: 'Demo' });
     expect(fetchMock.mock.calls[1][0]?.toString()).toBe('http://example.test/api/project?id=abc');
     expect((fetchMock.mock.calls[1][1] as RequestInit).method).toBe('PATCH');
+  });
+
+  it('looks up relation labels through the flat ids filter in batches of at most 100', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ items: [{ id: 'x' }], totalCount: 1 }), { status: 200 }));
+    const client = createWebApiClient('http://example.test/api');
+    const ids = Array.from({ length: 150 }, (_, index) => `00000000-0000-0000-0000-${String(index).padStart(12, '0')}`);
+    await client.lookup('organizations', [...ids, ids[0]]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const first = new URL(String(fetchMock.mock.calls[0][0]));
+    expect(first.searchParams.get('ids')?.split(',')).toHaveLength(100);
+    expect(first.searchParams.has('pagination.pageSize')).toBe(false);
+    expect(new URL(String(fetchMock.mock.calls[1][0])).searchParams.get('ids')?.split(',')).toHaveLength(50);
+  });
+
+  it('sends 1-100 distinct ids in atomic removal requests', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 204 }));
+    const client = createWebApiClient('http://example.test/api');
+    await client.delete('organizations', ['a', 'a', 'b']);
+    expect(JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)).toEqual({ ids: ['a', 'b'] });
+    await expect(client.delete('organizations', [])).rejects.toMatchObject({ status: 400 });
+    await expect(client.delete('organizations', Array.from({ length: 101 }, (_, index) => `id-${index}`))).rejects.toMatchObject({ status: 400 });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('unwraps singular item response envelopes for relation lookups', async () => {
@@ -84,39 +89,48 @@ describe('webapi client', () => {
     });
   });
 
-  it('notifies subscribers for streamed list pages', async () => {
-    vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [], totalCount: 0, pageNumber: 1, pageSize: 1 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
+  it("uses the stream's own first snapshot without a separate JSON request", async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(sseResponse({ result: { data: [{ id: '1' }], totalCount: 3, pageNumber: 1, pageSize: 1 } }));
     const client = createWebApiClient('http://example.test/api');
     const onPage = vi.fn();
     await client.subscribeList('projects', 1, 1, onPage);
-    expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 3, items: [{ id: '1' }] }));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(new Headers((fetchMock.mock.calls[0][1] as RequestInit).headers).get('Accept')).toBe('text/event-stream');
+    expect(Object.fromEntries(new URL(String(fetchMock.mock.calls[0][0])).searchParams)).toEqual({ pageNumber: '1', pageSize: '1', sortColumn: 'CreatedAt', sortOrder: 'ASC' });
+    expect(onPage).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ totalCount: 3, items: [{ id: '1' }] }), { live: true });
   });
 
-  it('seeds subscribers from the paged JSON endpoint before waiting for live SSE updates', async () => {
-    vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [{ id: 'seed' }], totalCount: 7, pageNumber: 1, pageSize: 5 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
-      .mockReturnValueOnce(new Promise(() => undefined));
-    const client = createWebApiClient('http://example.test/api');
+  it('delivers snapshots split across chunks, CRLF events, heartbeats and multi-line data', async () => {
+    const encoder = new TextEncoder();
+    const chunks = [
+      ': heartbeat\r\n\r\nevent: listing\r\ndata: {"items":[{"id":"a"}],',
+      '"totalCount":1}\r\n\r\nid: 2\ndata: {"items":[],\ndata: "totalCount":0}\n\n',
+    ];
+    const body = new ReadableStream<Uint8Array>({ start(controller) { chunks.forEach(chunk => controller.enqueue(encoder.encode(chunk))); controller.close(); } });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(body, { status: 200, headers: { 'Content-Type': 'text/event-stream; charset=utf-8' } }));
     const onPage = vi.fn();
-    void client.subscribeList('projects', 1, 5, onPage).catch(() => undefined);
-    await waitForExpectation(() => expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 7, items: [{ id: 'seed' }] })));
+    await createWebApiClient('http://example.test/api').subscribeList('projects', 1, 10, onPage);
+    expect(onPage.mock.calls.map(([page, info]) => [page.totalCount, page.items.map((item: { id: string }) => item.id), info.live])).toEqual([
+      [1, ['a'], true],
+      [0, [], true],
+    ]);
+    expect(parseServerSentEventData('data: one\ndata:two\ndata:  three')).toEqual(['one\ntwo\n three']);
+    expect(parseServerSentEventData(': comment only')).toEqual([]);
   });
 
-  it('keeps the seeded page when the server does not open an SSE stream', async () => {
-    vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [{ id: 'seed' }], totalCount: 1, pageNumber: 1, pageSize: 25 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }))
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+  it('treats a non-SSE response as one non-live snapshot', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({ result: { data: [{ id: 'seed' }], totalCount: 1, pageNumber: 1, pageSize: 25 } }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
     const client = createWebApiClient('http://example.test/api');
     const onPage = vi.fn();
     await expect(client.subscribeList('projects', 1, 25, onPage)).resolves.toBeUndefined();
-    expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 1, items: [{ id: 'seed' }] }));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(onPage).toHaveBeenCalledWith(expect.objectContaining({ totalCount: 1, items: [{ id: 'seed' }] }), { live: false });
   });
 
   it('fails closed when the SSE stream ends before data arrives', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }))
       .mockResolvedValueOnce(new Response('', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
     const client = createWebApiClient('http://example.test/api');
     await expect(client.subscribeList('projects', 1, 25, () => undefined)).rejects.toMatchObject({ name: 'ApiError', message: 'The listing stream ended before sending data.' });
@@ -124,10 +138,35 @@ describe('webapi client', () => {
 
   it('normalizes malformed SSE payloads as API errors', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } }))
       .mockResolvedValueOnce(new Response('event: listing\ndata: {nope}\n\n', { status: 200, headers: { 'Content-Type': 'text/event-stream' } }));
     const client = createWebApiClient('http://example.test/api');
     await expect(client.subscribeList('projects', 1, 25, () => undefined)).rejects.toMatchObject({ name: 'ApiError', status: 0 });
+  });
+
+  it('ends the session on a 401 stream response, like JSON requests do', async () => {
+    const assign = vi.fn();
+    Object.defineProperty(globalThis, 'window', { value: { location: { pathname: '/projects/', search: '', hash: '', assign } }, configurable: true });
+    const storage = new Map<string, string>([['cpnucleo.jwt', 'stale']]);
+    Object.defineProperty(globalThis, 'sessionStorage', {
+      value: { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => storage.set(key, value), removeItem: (key: string) => storage.delete(key) },
+      configurable: true,
+    });
+    try {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify({ statusCode: 401, message: 'Your session expired.' }), { status: 401, headers: { 'Content-Type': 'application/json' } }));
+      await expect(createWebApiClient('http://example.test/api').subscribeList('projects', 1, 10, () => undefined))
+        .rejects.toMatchObject({ name: 'ApiError', status: 401, message: 'Your session expired.' });
+      expect(assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F');
+      expect(storage.has('cpnucleo.jwt')).toBe(false);
+    } finally {
+      Reflect.deleteProperty(globalThis, 'window');
+      Reflect.deleteProperty(globalThis, 'sessionStorage');
+    }
+  });
+
+  it('uses server error messages for other stream failures without signing out', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify({ statusCode: 403, message: 'Administrator access is required.' }), { status: 403 }));
+    await expect(createWebApiClient('http://example.test/api').subscribeList('users', 1, 10, () => undefined))
+      .rejects.toMatchObject({ status: 403, message: 'Administrator access is required.' });
   });
 
   it('normalizes API errors', async () => {

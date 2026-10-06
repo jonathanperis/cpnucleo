@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatFormFieldValue, relationOptionsLoaded, serializeFormValue, withSelectedRelationOption } from './crud-field-values';
+import { formatFormFieldValue, serializeFormValue, withSelectedRelationOption } from './crud-field-values';
 
 describe('CRUD edit form field values', () => {
   it('sends UTC timestamps and never prefills a password', () => {
@@ -20,10 +20,13 @@ describe('CRUD edit form field values', () => {
     expect(formatFormFieldValue(null, 'text')).toBe('');
   });
 
-  it('includes the selected relation id when it is outside the prefetched option page', () => {
-    expect(relationOptionsLoaded({}, 'organizations')).toBe(false);
-    expect(relationOptionsLoaded({ organizations: [] }, 'organizations')).toBe(true);
+  it('labels a selected relation outside the loaded page from cached records before the raw id', () => {
+    const cached = [{ id: 'org-9', name: 'Cached organization' }];
+    expect(withSelectedRelationOption([{ id: 'other' }], 'org-9', cached)[0]).toEqual({ id: 'org-9', name: 'Cached organization' });
+    expect(withSelectedRelationOption([], '', cached)).toEqual([]);
+  });
 
+  it('includes the selected relation id when it is outside the prefetched option page', () => {
     const selected = '019e6fc4-5cf1-7252-b14c-979447ccda20';
     const options = withSelectedRelationOption([{ id: 'other' }], selected);
 

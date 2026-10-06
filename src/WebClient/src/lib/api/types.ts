@@ -22,6 +22,15 @@ export interface FieldMetadata {
   table?: boolean;
   relation?: ResourceKey;
   readOnly?: boolean;
+  /** Minimum for number inputs (whole numbers). */
+  min?: number;
+}
+
+export interface ResourceAccess {
+  /** Listing/reading requires the `cpnucleo:admin` claim (team members). */
+  adminRead?: boolean;
+  /** Create, update and delete require the `cpnucleo:admin` claim (reference data and users). */
+  adminWrite?: boolean;
 }
 
 export interface ResourceMetadata {
@@ -34,6 +43,9 @@ export interface ResourceMetadata {
   description: string;
   displayField: string;
   fields: FieldMetadata[];
+  access: ResourceAccess;
+  /** Client-side check that `end` is on or after `start` (same rule as the domain factories). */
+  dateRange?: { start: string; end: string };
 }
 
 export interface ApiEntity {

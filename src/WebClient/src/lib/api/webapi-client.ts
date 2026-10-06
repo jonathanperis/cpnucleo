@@ -1,6 +1,6 @@
 import { WEBAPI_BASE_URL } from '../config';
 import { findResource } from './resource-metadata';
-import { ApiError, getStoredToken, requestJson } from './http-client';
+import { ApiError, getStoredToken, readErrorResponse, requestJson } from './http-client';
 import type { ApiEntity, PaginatedResult, ResourceKey } from './types';
 
 const normalizeBase = (baseUrl: string) => baseUrl.replace(/\/$/, '');
@@ -14,7 +14,11 @@ const withQuery = (url: string, params?: Record<string, string | number | undefi
 
 type ListEnvelope<T extends ApiEntity> = T[] | PaginatedResult<T> | { result?: PaginatedResult<T> };
 type ItemEnvelope<T extends ApiEntity> = T | { result?: T } | Record<string, unknown>;
-type ListSubscriber<T extends ApiEntity> = (page: PaginatedResult<T>) => void;
+export interface ListSnapshotInfo {
+  /** True for snapshots delivered by the SSE stream; false for a plain JSON fallback. */
+  live: boolean;
+}
+export type ListSubscriber<T extends ApiEntity> = (page: PaginatedResult<T>, info: ListSnapshotInfo) => void;
 
 export const normalizeList = <T extends ApiEntity>(payload: ListEnvelope<T>): PaginatedResult<T> => {
   if (Array.isArray(payload)) return { items: payload, totalCount: payload.length, pageNumber: 1, pageSize: payload.length };
@@ -42,15 +46,20 @@ export const parseServerSentEventData = (event: string): string[] => {
   const dataLines = event
     .split(/\r?\n/)
     .filter((line) => line.startsWith('data:'))
-    .map((line) => line.slice(5).trimStart());
+    .map((line) => line.slice(5).replace(/^ /, ''));
   return dataLines.length > 0 ? [dataLines.join('\n')] : [];
 };
 
-const paginationParams = (pageNumber: number, pageSize: number) => ({
+/** Stable default order for every list request: canonical persisted column + direction. */
+export const DEFAULT_SORT = { sortColumn: 'CreatedAt', sortOrder: 'ASC' } as const;
+export const MAX_PAGE_SIZE = 100;
+
+// Flat scalar query keys only (nested `pagination.*` keys break FastEndpoints query binding).
+const listParams = (pageNumber: number, pageSize: number, extra: Record<string, string | undefined> = {}) => ({
   pageNumber,
   pageSize,
-  'pagination.pageNumber': pageNumber,
-  'pagination.pageSize': pageSize,
+  ...DEFAULT_SORT,
+  ...extra,
 });
 
 const createAbortError = () => new DOMException('The operation was aborted.', 'AbortError');
@@ -59,9 +68,11 @@ const throwIfAborted = (signal?: AbortSignal) => {
   if (signal?.aborted) throw createAbortError();
 };
 
+const isAbortError = (error: unknown) => error instanceof DOMException && error.name === 'AbortError';
+
 const toApiError = (error: unknown) => {
   if (error instanceof ApiError) return error;
-  if (error instanceof DOMException && error.name === 'AbortError') return error;
+  if (isAbortError(error)) return error;
   return new ApiError(0, error instanceof Error ? error.message : 'Unable to read the listing stream.', error);
 };
 
@@ -73,7 +84,13 @@ const prepareWriteBody = (resourceKey: ResourceKey, body: Record<string, unknown
   return { ...body, name: body.description };
 };
 
-const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal, stopAfterFirst = false): Promise<PaginatedResult<T> | undefined> => {
+/**
+ * Opens the listing stream. The server sends a snapshot immediately and then one per change (or
+ * every 15 seconds), so no separate JSON request is made. A server that answers without SSE is
+ * treated as a single non-live snapshot. Non-2xx responses go through the shared error handling
+ * (a 401 ends the session).
+ */
+const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscriber<T>, signal?: AbortSignal): Promise<void> => {
   throwIfAborted(signal);
 
   const headers = new Headers({ Accept: 'text/event-stream' });
@@ -88,93 +105,79 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
     throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
   }
 
-  if (!response.ok) throw new ApiError(response.status, `Request failed with status ${response.status}.`);
-  if (!response.headers.get('Content-Type')?.toLowerCase().includes('text/event-stream')) return undefined;
-  if (!response.body) return undefined;
+  if (!response.ok) throw await readErrorResponse(response);
+  throwIfAborted(signal);
+
+  if (!response.headers.get('Content-Type')?.toLowerCase().includes('text/event-stream')) {
+    let page: PaginatedResult<T>;
+    try {
+      page = normalizeList<T>(await response.json() as ListEnvelope<T>);
+    } catch (error) {
+      throw toApiError(isAbortError(error) ? error : new Error('The listing response was not valid JSON.'));
+    }
+    throwIfAborted(signal);
+    onPage(page, { live: false });
+    return;
+  }
+  if (!response.body) throw new ApiError(0, 'The listing stream ended before sending data.');
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
-  let lastPage: PaginatedResult<T> | undefined;
   let receivedData = false;
 
-  const handleEvent = async (event: string): Promise<PaginatedResult<T> | undefined> => {
+  const handleEvent = (event: string) => {
     for (const data of parseServerSentEventData(event)) {
       throwIfAborted(signal);
-      receivedData = true;
       const page = parseListPage<T>(data);
-      lastPage = page;
-      throwIfAborted(signal);
-      onPage(page);
-      if (stopAfterFirst) {
-        throwIfAborted(signal);
-        await reader.cancel();
-        throwIfAborted(signal);
-        return page;
-      }
+      receivedData = true;
+      onPage(page, { live: true });
     }
-    return undefined;
   };
 
   try {
     while (true) {
       throwIfAborted(signal);
-      let chunk: ReadableStreamReadResult<Uint8Array>;
-      try {
-        chunk = await reader.read();
-        throwIfAborted(signal);
-        buffer += decoder.decode(chunk.value, { stream: !chunk.done });
-        const events = buffer.split(/\r?\n\r?\n/);
-        buffer = events.pop() ?? '';
-
-        for (const event of events) {
-          const page = await handleEvent(event);
-          if (page) return page;
-        }
-      } catch (error) {
-        throw toApiError(error);
-      }
-
+      const chunk = await reader.read();
+      throwIfAborted(signal);
+      buffer += decoder.decode(chunk.value, { stream: !chunk.done });
+      const events = buffer.split(/\r?\n\r?\n/);
+      buffer = events.pop() ?? '';
+      events.forEach(handleEvent);
       if (chunk.done) break;
     }
+    if (buffer.trim()) handleEvent(buffer);
+  } catch (error) {
+    throw toApiError(error);
   } finally {
     reader.releaseLock();
   }
 
-  if (buffer.trim()) {
-    throwIfAborted(signal);
-    try {
-      const page = await handleEvent(buffer);
-      if (page) return page;
-    } catch (error) {
-      throw toApiError(error);
-    }
-  }
-
   if (!receivedData) throw new ApiError(0, 'The listing stream ended before sending data.');
-  return lastPage!;
 };
+
+const uniqueIds = (ids: string[]) => [...new Set(ids.map(id => id.trim()).filter(Boolean))];
 
 export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
   const root = normalizeBase(baseUrl);
+  const listUrl = (resourceKey: ResourceKey, pageNumber: number, pageSize: number, extra?: Record<string, string | undefined>) =>
+    withQuery(`${root}${findResource(resourceKey).listPath}`, listParams(pageNumber, pageSize, extra));
   return {
+    /** Batched label lookup through the flat `ids` filter, at most 100 ids per request. */
     async lookup(resourceKey: ResourceKey, ids: string[], signal?: AbortSignal): Promise<ApiEntity[]> {
-      if (ids.length === 0) return [];
-      const resource = findResource(resourceKey);
-      const url = withQuery(`${root}${resource.listPath}`, { ...paginationParams(1, 100), ids: ids.join(',') });
-      return normalizeList(await requestJson<ListEnvelope<ApiEntity>>(url, { signal })).items ?? [];
+      const distinct = uniqueIds(ids);
+      const batches: string[][] = [];
+      for (let index = 0; index < distinct.length; index += MAX_PAGE_SIZE) batches.push(distinct.slice(index, index + MAX_PAGE_SIZE));
+      const pages = await Promise.all(batches.map(async batch =>
+        normalizeList(await requestJson<ListEnvelope<ApiEntity>>(listUrl(resourceKey, 1, MAX_PAGE_SIZE, { ids: batch.join(',') }), { signal })).items ?? []));
+      return pages.flat();
     },
     async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal, search?: string) {
-      const resource = findResource(resourceKey);
-      const url = withQuery(`${root}${resource.listPath}`, { ...paginationParams(pageNumber, pageSize), search });
-      const payload = await requestJson<ListEnvelope<T>>(url, { signal });
+      const payload = await requestJson<ListEnvelope<T>>(listUrl(resourceKey, pageNumber, pageSize, { search: search?.trim() || undefined }), { signal });
       return normalizeList<T>(payload);
     },
     async subscribeList<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber: number, pageSize: number, onPage: ListSubscriber<T>, signal?: AbortSignal) {
-      const resource = findResource(resourceKey);
-      const url = withQuery(`${root}${resource.listPath}`, paginationParams(pageNumber, pageSize));
-      onPage(normalizeList<T>(await requestJson<ListEnvelope<T>>(url, { signal })));
-      await streamList<T>(url, onPage, signal);
+      await streamList<T>(listUrl(resourceKey, pageNumber, pageSize), onPage, signal);
     },
     async get<T extends ApiEntity>(resourceKey: ResourceKey, id: string, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
@@ -189,9 +192,12 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
       const resource = findResource(resourceKey);
       return requestJson<T>(withQuery(`${root}${resource.itemPath}`, { id }), { method: 'PATCH', body: JSON.stringify(prepareWriteBody(resourceKey, { ...body, id })) });
     },
-    async delete(resourceKey: ResourceKey, id: string) {
+    /** Atomic removal: 1–100 distinct ids; the server rejects the whole batch on 404/409. */
+    async delete(resourceKey: ResourceKey, ids: string | string[]) {
+      const distinct = uniqueIds(Array.isArray(ids) ? ids : [ids]);
+      if (distinct.length < 1 || distinct.length > MAX_PAGE_SIZE) throw new ApiError(400, `Select between 1 and ${MAX_PAGE_SIZE} records to delete.`);
       const resource = findResource(resourceKey);
-      await requestJson<unknown>(`${root}${resource.itemPath}`, { method: 'DELETE', body: JSON.stringify({ ids: [id] }) });
+      await requestJson<unknown>(`${root}${resource.itemPath}`, { method: 'DELETE', body: JSON.stringify({ ids: distinct }) });
     },
   };
 };
