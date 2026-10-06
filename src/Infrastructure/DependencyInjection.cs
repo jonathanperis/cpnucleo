@@ -7,7 +7,8 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHealthChecks().AddCheck<DatabaseReadinessCheck>("database", tags: ["ready"]);
-        // Production traffic crosses Traefik and then the internal NGINX proxy.
+        // WebApi traffic crosses Traefik and then the internal NGINX proxy; hosts routed by Traefik
+        // alone override this with one hop.
         services.Configure<ForwardedHeadersOptions>(options => options.ForwardLimit = 2);
 
         // Caller identity and access rules shared by both transports. Hosts that act on behalf of
@@ -46,6 +47,11 @@ public static class DependencyInjection
     {
         app.UseDelta(
             getConnection: httpContext => httpContext.RequestServices.GetRequiredService<NpgsqlConnection>(),
+            // Responses are filtered per caller, so validators must be too: otherwise a browser shared
+            // by two accounts could revalidate one account's cached list for the other.
+            suffix: httpContext => httpContext.User.FindFirst(CpnucleoClaimTypes.Subject)?.Value
+                + "|" + httpContext.User.FindFirst(CpnucleoClaimTypes.Admin)?.Value
+                + "|" + httpContext.User.FindFirst(CpnucleoClaimTypes.SecurityStamp)?.Value,
             // Live listing streams outlive any single snapshot; ETags only make sense for plain GETs.
             shouldExecute: httpContext => !httpContext.Request.Headers.Accept.Any(value =>
                 value?.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase) == true));

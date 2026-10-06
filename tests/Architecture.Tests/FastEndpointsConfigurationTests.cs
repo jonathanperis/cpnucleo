@@ -457,7 +457,7 @@ public class FastEndpointsConfigurationTests
         var identityProgram = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
         var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
 
-        File.Exists(GetRepositoryPath(".env")).Should().BeFalse("dotenv files with credentials must not be tracked");
+        TrackedFiles(".env").Should().BeEmpty("dotenv files with credentials must not be tracked (a local untracked .env is fine)");
         deployWorkflow.Should().Contain("pages-docs-deploy.yml@d7e3c753530db86cb01b9510ab045c99b172ba03");
         deployWorkflow.Should().NotContain("secrets: inherit");
         prodCompose.Should().NotContain("seed-csv-cpnucleo:");
@@ -509,6 +509,20 @@ public class FastEndpointsConfigurationTests
             .ToArray();
 
         filesWithHardCodedPrefix.Should().BeEmpty();
+    }
+
+    private static string[] TrackedFiles(string pathSpec)
+    {
+        using var git = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("git", ["ls-files", "--", pathSpec])
+        {
+            WorkingDirectory = GetRepositoryPath("."),
+            RedirectStandardOutput = true,
+            UseShellExecute = false
+        })!;
+        var output = git.StandardOutput.ReadToEnd();
+        git.WaitForExit();
+        git.ExitCode.Should().Be(0, "the architecture tests run inside the git checkout");
+        return output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
     }
 
     private static bool IsSourceProject(string repositoryRoot, string path) =>

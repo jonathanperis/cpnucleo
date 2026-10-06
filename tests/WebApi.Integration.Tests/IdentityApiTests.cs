@@ -110,8 +110,9 @@ public class IdentityApiTests(WebAppFixture app)
         timeout.CancelAfter(TimeSpan.FromSeconds(20));
 
         // 10 permits per window plus a queue of 5: the 16th concurrent request is rejected immediately.
+        // Every attempt uses a different login so the per-login lockout can't be what answers 429.
         var requests = Enumerable.Range(0, 16)
-            .Select(_ => client.PostAsJsonAsync("/api/login", new { login = "nobody", password = "x" }, timeout.Token))
+            .Select(_ => client.PostAsJsonAsync("/api/login", new { login = $"nobody-{Guid.NewGuid():N}", password = "x" }, timeout.Token))
             .ToArray();
         var pending = requests.ToList();
         HttpResponseMessage? rejected = null;

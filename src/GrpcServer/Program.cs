@@ -65,6 +65,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+// Traefik routes this host directly (one proxy hop); WebApi sits behind Traefik and NGINX (two).
+builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options => options.ForwardLimit = 1);
 
 var app = builder.Build();
 

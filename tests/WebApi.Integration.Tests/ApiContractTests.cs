@@ -121,17 +121,116 @@ public class ApiContractTests(WebAppFixture app)
     [Fact]
     public async Task Users_CannotBeSortedByCredentials()
     {
-        var response = await app.Client.GetAsync("/api/users?sortColumn=Password&pageSize=5", Cancellation);
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var ids = string.Join(',', new[] { WebAppFixture.Admin, WebAppFixture.Member, WebAppFixture.Outsider }.Select(a => a.Id));
+        var byPassword = await app.Client.GetFromJsonAsync<JsonElement>($"/api/users?ids={ids}&sortColumn=Password&sortOrder=DESC", Cancellation);
+        var byId = await app.Client.GetFromJsonAsync<JsonElement>($"/api/users?ids={ids}&sortColumn=Id&sortOrder=DESC", Cancellation);
+
+        Ids(byPassword).ShouldBe(Ids(byId), "an unsortable column falls back to Id instead of ordering by password hashes");
+        static Guid[] Ids(JsonElement page) => page.GetProperty("result").GetProperty("data").EnumerateArray().Select(u => u.GetProperty("id").GetGuid()).ToArray();
+    }
+
+    [Theory]
+    [InlineData("impediments")]
+    [InlineData("workflows")]
+    public async Task Search_TreatsUnderscoreLiterally_OnEfAndGenericDapperLists(string plural)
+    {
+        var marker = Guid.NewGuid().ToString("N")[..8];
+        BaseEntity literal = plural == "impediments" ? Impediment.Create($"{marker} a_b") : Workflow.Create($"{marker} a_b", 1);
+        BaseEntity lookalike = plural == "impediments" ? Impediment.Create($"{marker} axb") : Workflow.Create($"{marker} axb", 2);
+        await using (var db = app.CreateDbContext())
+        {
+            db.AddRange(literal, lookalike);
+            await db.SaveChangesAsync(Cancellation);
+        }
+
+        var result = await app.Client.GetFromJsonAsync<JsonElement>($"/api/{plural}?search={Uri.EscapeDataString(marker + " a_b")}", Cancellation);
+
+        result.GetProperty("result").GetProperty("totalCount").GetInt32().ShouldBe(1);
+        result.GetProperty("result").GetProperty("data")[0].GetProperty("id").GetGuid().ShouldBe(literal.Id);
     }
 
     [Fact]
-    public async Task BatchRemoval_IsBoundedToOneHundredIds()
+    public async Task ConditionalRequests_AreValidatedPerCaller()
     {
-        using var remove = new HttpRequestMessage(HttpMethod.Delete, "/api/workflow")
+        var first = await app.Client.GetAsync("/api/organizations?pageSize=1", Cancellation);
+        var etag = first.Headers.ETag;
+        etag.ShouldNotBeNull();
+
+        using var member = app.CreateClient(WebAppFixture.Member);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/api/organizations?pageSize=1");
+        request.Headers.IfNoneMatch.Add(etag);
+        (await member.SendAsync(request, Cancellation)).StatusCode.ShouldBe(HttpStatusCode.OK,
+            "another account's validator must not turn into a 304 for this caller's (differently filtered) data");
+
+        using var same = new HttpRequestMessage(HttpMethod.Get, "/api/organizations?pageSize=1");
+        same.Headers.IfNoneMatch.Add(etag);
+        (await app.Client.SendAsync(same, Cancellation)).StatusCode.ShouldBe(HttpStatusCode.NotModified);
+    }
+
+    [Fact]
+    public async Task ErrorResponses_KeepSecurityHeaders()
+    {
+        using var member = app.CreateClient(WebAppFixture.Member);
+        var forbidden = await member.PostAsJsonAsync("/api/organization", new { id = Guid.NewGuid(), name = "x", description = "x" }, Cancellation);
+        forbidden.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        forbidden.Headers.GetValues("X-Content-Type-Options").Single().ShouldBe("nosniff");
+        forbidden.Headers.GetValues("Content-Security-Policy").Single().ShouldContain("default-src 'none'");
+
+        using var identity = app.CreateIdentityClient();
+        var refused = await identity.PostAsync("/api/refresh", null, Cancellation);
+        refused.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        refused.Headers.GetValues("X-Frame-Options").Single().ShouldBe("DENY");
+        refused.Headers.GetValues("Strict-Transport-Security").Single().ShouldContain("max-age=");
+    }
+
+    [Fact]
+    public async Task WebApiRateLimit_RejectsWithRetryAfterAndTheErrorEnvelope()
+    {
+        await using var limited = app.CreateRateLimitedWebApiFactory();
+        using var client = limited.CreateClient();
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(Cancellation);
+        timeout.CancelAfter(TimeSpan.FromSeconds(30));
+
+        // Health probes are exempt, but every other request counts against the per-address window
+        // (300 permits plus a queue of 20), including anonymous ones.
+        var requests = Enumerable.Range(0, 330).Select(_ => client.GetAsync("/", timeout.Token)).ToList();
+        HttpResponseMessage? rejected = null;
+        while (requests.Count > 0 && rejected is null)
         {
-            Content = JsonContent.Create(new { ids = Enumerable.Range(0, 101).Select(_ => Guid.NewGuid()).ToArray() })
+            var completed = await Task.WhenAny(requests);
+            requests.Remove(completed);
+            var response = await completed;
+            if (response.StatusCode == HttpStatusCode.TooManyRequests) rejected = response;
+        }
+
+        rejected.ShouldNotBeNull();
+        rejected.Headers.RetryAfter.ShouldNotBeNull();
+        (await rejected.Content.ReadFromJsonAsync<JsonElement>(Cancellation)).GetProperty("statusCode").GetInt32().ShouldBe(429);
+        await timeout.CancelAsync();
+    }
+
+    [Theory]
+    [InlineData("workflow", 101)]
+    [InlineData("project", 101)]
+    [InlineData("project", 0)]
+    [InlineData("organization", 0)]
+    public async Task BatchRemoval_RequiresOneToOneHundredIds(string singular, int count)
+    {
+        using var remove = new HttpRequestMessage(HttpMethod.Delete, $"/api/{singular}")
+        {
+            Content = JsonContent.Create(new { ids = Enumerable.Range(0, count).Select(_ => Guid.NewGuid()).ToArray() })
         };
-        (await app.Client.SendAsync(remove, Cancellation)).StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        var response = await app.Client.SendAsync(remove, Cancellation);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await response.Content.ReadFromJsonAsync<JsonElement>(Cancellation)).GetProperty("errors").TryGetProperty("ids", out _).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GrpcBatchRemoval_IsBoundedToOneHundredIds()
+    {
+        var command = new GrpcServer.Contracts.Commands.Workflow.RemoveWorkflowCommand { Ids = Enumerable.Range(0, 101).Select(_ => Guid.NewGuid()).ToList() };
+        (await Should.ThrowAsync<Grpc.Core.RpcException>(() => command.RemoteExecuteAsync(WebAppFixture.GrpcOptions())))
+            .StatusCode.ShouldBe(Grpc.Core.StatusCode.InvalidArgument);
     }
 }

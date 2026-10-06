@@ -7,7 +7,6 @@ public interface IRepository<T> where T : BaseEntity
     Task<Guid> AddAsync(T? entity, CancellationToken cancellationToken = default);
     Task<bool> UpdateAsync(T? entity, CancellationToken cancellationToken = default);
     Task<bool> UpdateIfVersionAsync(T entity, DateTime expectedVersion, CancellationToken cancellationToken = default);
-    Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     /// <summary>Soft-deletes every id or none: returns false (and changes nothing) when any id is missing.</summary>
     Task<bool> RemoveManyAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);

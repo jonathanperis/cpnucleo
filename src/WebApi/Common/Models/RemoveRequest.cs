@@ -1,25 +1,23 @@
 namespace WebApi.Common.Models;
 
-/// <summary>
-/// Shared request model for removing entities.
-/// </summary>
 public class RemoveRequest
 {
-    /// <summary>
-    /// Gets or sets the unique identifiers for the entities to be removed.
-    /// </summary>
     public required List<Guid> Ids { get; set; }
+}
 
-    public class Validator : Validator<RemoveRequest>
+/// <summary>
+/// Shared rules for batch removals. FastEndpoints binds validators by the exact request type, so
+/// every removal request declares <c>Validator : RemoveRequestValidator&lt;ItsRequest&gt;</c>.
+/// </summary>
+public abstract class RemoveRequestValidator<TRequest> : Validator<TRequest> where TRequest : RemoveRequest
+{
+    protected RemoveRequestValidator()
     {
-        public Validator()
-        {
-            RuleFor(x => x.Ids)
-                .NotEmpty().WithMessage("Ids are required.")
-                .Must(ids => ids.Distinct().Count() <= BatchIds.MaximumCount)
-                .WithMessage($"At most {BatchIds.MaximumCount} ids can be removed at once.");
-            RuleForEach(x => x.Ids)
-                .NotEmpty().WithMessage("Each Id is required.");
-        }
+        RuleFor(x => x.Ids)
+            .NotEmpty().WithMessage("Ids are required.")
+            .Must(ids => ids.Distinct().Count() <= BatchIds.MaximumCount)
+            .WithMessage($"At most {BatchIds.MaximumCount} ids can be removed at once.");
+        RuleForEach(x => x.Ids)
+            .NotEmpty().WithMessage("Each Id is required.");
     }
 }

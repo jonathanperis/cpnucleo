@@ -88,7 +88,7 @@ public class DapperRepository<T>(
     public async Task<Guid> AddAsync(T? entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(entity), AccessOperation.Create, cancellationToken);
+        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(entity), AccessOperation.Create, Session(), cancellationToken);
 
         var columns = GetColumns(excludeKey: false);
         var properties = GetPropertyNames(excludeKey: false);
@@ -128,38 +128,29 @@ public class DapperRepository<T>(
             """, values, transaction(), cancellationToken: cancellationToken)) == 1;
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var original = await GetByIdAsync(id, cancellationToken);
-        if (original is null) return false;
-        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(original), AccessOperation.Modify, cancellationToken);
-
-        var sql = $"""
-                   UPDATE "{tableName}"
-                   SET "Active" = false, "DeletedAt" = now()
-                   WHERE "{PrimaryKey}" = @Id AND "Active" = true
-                   """;
-
-        var affectedRows = await connection.ExecuteAsync(new CommandDefinition(sql, new { Id = id }, transaction(), cancellationToken: cancellationToken));
-        return affectedRows > 0;
-    }
-
     public async Task<bool> RemoveManyAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
     {
-        var distinctIds = ids.Distinct().ToArray();
-        if (distinctIds.Length == 0) return false;
+        var distinctIds = BatchIds.Normalize(ids);
 
         var ambient = transaction();
         await using var local = ambient is null ? await BeginLocalTransactionAsync(cancellationToken) : null;
         var current = ambient ?? local;
 
+        // Lock the batch in a stable order: concurrent overlapping batches queue instead of
+        // deadlocking, and nothing can move or remove these rows between the check and the write.
         var rows = (await connection.QueryAsync<T>(new CommandDefinition($"""
             SELECT * FROM "{tableName}" WHERE "Id" = ANY(@Ids) AND "Active" = true{Visibility}
+            ORDER BY "Id" FOR UPDATE
             """, WithAccess(new { Ids = distinctIds }), current, cancellationToken: cancellationToken))).ToArray();
-        if (rows.Length != distinctIds.Length) return false;
+        if (rows.Length != distinctIds.Length)
+        {
+            if (local is not null) await local.RollbackAsync(CancellationToken.None);
+            return false;
+        }
 
-        foreach (var row in rows)
-            await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(row), AccessOperation.Modify, cancellationToken);
+        var session = new DatabaseSession(connection, current);
+        foreach (var target in rows.Select(ResourceAccess.TargetOf).Distinct())
+            await accessGuard.EnsureCanWriteAsync(target, AccessOperation.Modify, session, cancellationToken);
 
         var affected = await connection.ExecuteAsync(new CommandDefinition($"""
             UPDATE "{tableName}" SET "Active" = false, "DeletedAt" = now()
@@ -167,7 +158,6 @@ public class DapperRepository<T>(
             """, new { Ids = distinctIds }, current, cancellationToken: cancellationToken));
         if (affected != distinctIds.Length)
         {
-            // A concurrent removal won the race; undo our partial work when we own the transaction.
             if (local is not null) await local.RollbackAsync(CancellationToken.None);
             return false;
         }
@@ -198,11 +188,13 @@ public class DapperRepository<T>(
 
         var originalTarget = ResourceAccess.TargetOf(original);
         var newTarget = ResourceAccess.TargetOf(entity);
-        await accessGuard.EnsureCanWriteAsync(originalTarget, AccessOperation.Modify, cancellationToken);
+        await accessGuard.EnsureCanWriteAsync(originalTarget, AccessOperation.Modify, Session(), cancellationToken);
         if (newTarget != originalTarget)
-            await accessGuard.EnsureCanWriteAsync(newTarget, AccessOperation.Modify, cancellationToken);
+            await accessGuard.EnsureCanWriteAsync(newTarget, AccessOperation.Reassign, Session(), cancellationToken);
         return true;
     }
+
+    private DatabaseSession Session() => new(connection, transaction());
 
     private async Task<NpgsqlTransaction> BeginLocalTransactionAsync(CancellationToken cancellationToken)
     {

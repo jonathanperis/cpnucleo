@@ -17,10 +17,13 @@ public class ConcurrencyAndStreamingTests(WebAppFixture app)
         using var request = new HttpRequestMessage(HttpMethod.Get, "/api/projects?pageSize=1");
         request.Headers.Accept.ParseAdd("text/event-stream");
         request.Headers.Authorization = new("Bearer", WebAppFixture.CreateToken(expiresAt: DateTime.UtcNow.AddSeconds(2)));
+        var started = System.Diagnostics.Stopwatch.StartNew();
         using var response = await app.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var body = await response.Content.ReadAsStringAsync(timeout.Token);
         body.ShouldContain("data:");
+        // It stayed open until expiry instead of ending after the first snapshot.
+        started.Elapsed.ShouldBeGreaterThan(TimeSpan.FromSeconds(1.5));
     }
 
     private async Task<Project> CreateProjectAsync()

@@ -5,7 +5,7 @@ namespace WebApi.Endpoints.Workflow.RemoveWorkflow;
 /// </summary>
 public class RemoveWorkflowRequest : RemoveRequest
 {
-    public new class Validator : RemoveRequest.Validator
+    public class Validator : RemoveRequestValidator<RemoveWorkflowRequest>
     {
     }
 }

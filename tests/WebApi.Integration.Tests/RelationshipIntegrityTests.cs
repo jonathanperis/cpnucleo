@@ -84,7 +84,7 @@ public class RelationshipIntegrityTests(WebAppFixture app)
 
         // The parent removal waits for the inserter's FOR SHARE lock, then sees the committed child.
         var removal = RemoveDirectlyAsync("Projects", graph.Project.Id);
-        await Task.Delay(300, Cancellation);
+        await WaitUntilBlockedOnALockAsync();
         removal.IsCompleted.ShouldBeFalse("the removal must wait for the in-flight child insert");
         await transaction.CommitAsync(Cancellation);
 
@@ -110,11 +110,26 @@ public class RelationshipIntegrityTests(WebAppFixture app)
                 INSERT INTO "UserProjects" ("Id", "UserId", "ProjectId", "CreatedAt", "Active") VALUES (@Id, @UserId, @ProjectId, now(), true)
                 """, new { Id = Guid.NewGuid(), UserId = graph.User.Id, ProjectId = graph.Project.Id });
         }, Cancellation);
-        await Task.Delay(300, Cancellation);
+        await WaitUntilBlockedOnALockAsync();
         insert.IsCompleted.ShouldBeFalse("the child insert must wait for the in-flight removal");
         await transaction.CommitAsync(Cancellation);
 
         (await Should.ThrowAsync<PostgresException>(() => insert)).SqlState.ShouldBe(PostgresErrorCodes.ForeignKeyViolation);
+    }
+
+    /// <summary>Waits until another session is genuinely blocked on a row lock, instead of sleeping.</summary>
+    private async Task WaitUntilBlockedOnALockAsync()
+    {
+        await using var monitor = app.CreateConnection();
+        for (var attempt = 0; attempt < 100; attempt++)
+        {
+            if (await monitor.ExecuteScalarAsync<bool>("""
+                SELECT EXISTS (SELECT 1 FROM pg_stat_activity WHERE wait_event_type = 'Lock' AND datname = current_database())
+                """)) return;
+            await Task.Delay(50, Cancellation);
+        }
+
+        throw new TimeoutException("No session ever waited on a lock: the operations did not contend.");
     }
 
     private async Task RemoveDirectlyAsync(string table, Guid id, bool cascadeProjects = false)

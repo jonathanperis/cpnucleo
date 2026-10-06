@@ -5,7 +5,7 @@ namespace WebApi.Endpoints.Impediment.RemoveImpediment;
 /// </summary>
 public class RemoveImpedimentRequest : RemoveRequest
 {
-    public new class Validator : RemoveRequest.Validator
+    public class Validator : RemoveRequestValidator<RemoveImpedimentRequest>
     {
     }
 }

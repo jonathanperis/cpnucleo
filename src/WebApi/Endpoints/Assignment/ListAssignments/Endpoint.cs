@@ -20,7 +20,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         if (HttpContext.Request.AcceptsServerSentEvents())
         {
             await TypedResults
-                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.Assignment), ct => BuildResponseAsync(request, ct), HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>(), Logger, cancellationToken), "listing")
+                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.Assignment), ct => BuildResponseAsync(request, ct), HttpContext, Logger, cancellationToken), "listing")
                 .ExecuteAsync(HttpContext);
             return;
         }

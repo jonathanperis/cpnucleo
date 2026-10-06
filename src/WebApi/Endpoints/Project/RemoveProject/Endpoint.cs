@@ -15,7 +15,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
 
     public override async Task HandleAsync(RemoveProjectRequest request, CancellationToken cancellationToken)
     {
-        Response.Success = await repository.RemoveManyAsync(request.Ids, cancellationToken);
+        Response.Success = await repository.RemoveManyAsync(BatchIds.Normalize(request.Ids), cancellationToken);
         if (!Response.Success)
         {
             await Send.NotFoundEnvelopeAsync(cancellationToken);

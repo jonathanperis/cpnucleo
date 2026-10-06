@@ -5,7 +5,7 @@ namespace WebApi.Endpoints.Assignment.RemoveAssignment;
 /// </summary>
 public class RemoveAssignmentRequest : RemoveRequest
 {
-    public new class Validator : RemoveRequest.Validator
+    public class Validator : RemoveRequestValidator<RemoveAssignmentRequest>
     {
     }
 }

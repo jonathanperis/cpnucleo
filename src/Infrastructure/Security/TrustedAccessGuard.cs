@@ -12,6 +12,6 @@ public sealed class TrustedAccessGuard : IAccessGuard
     {
     }
 
-    public Task EnsureCanWriteAsync(AccessTarget target, AccessOperation operation, CancellationToken cancellationToken = default) =>
+    public Task EnsureCanWriteAsync(AccessTarget target, AccessOperation operation, DatabaseSession? session = null, CancellationToken cancellationToken = default) =>
         Task.CompletedTask;
 }

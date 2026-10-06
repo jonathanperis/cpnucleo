@@ -6,7 +6,7 @@ namespace Infrastructure.Security;
 /// </summary>
 public sealed class AccessGuard(ICurrentUser currentUser, NpgsqlDataSource dataSource) : IAccessGuard
 {
-    public async Task EnsureCanWriteAsync(AccessTarget target, AccessOperation operation, CancellationToken cancellationToken = default)
+    public async Task EnsureCanWriteAsync(AccessTarget target, AccessOperation operation, DatabaseSession? session = null, CancellationToken cancellationToken = default)
     {
         if (currentUser.HasFullAccess) return;
         var userId = currentUser.UserId ?? throw new AccessDeniedException("Authentication is required.");
@@ -21,10 +21,10 @@ public sealed class AccessGuard(ICurrentUser currentUser, NpgsqlDataSource dataS
                 break;
             case ResourceAccessKind.Project:
             case ResourceAccessKind.ProjectScoped:
-                await RequireAsync(IsProjectMemberSql, userId, target.ProjectId, cancellationToken).ConfigureAwait(false);
+                await RequireAsync(IsProjectMemberSql, userId, target.ProjectId, operation, session, cancellationToken).ConfigureAwait(false);
                 break;
             case ResourceAccessKind.AssignmentScoped:
-                await RequireAsync(IsAssignmentMemberSql, userId, target.AssignmentId, cancellationToken).ConfigureAwait(false);
+                await RequireAsync(IsAssignmentMemberSql, userId, target.AssignmentId, operation, session, cancellationToken).ConfigureAwait(false);
                 break;
         }
 
@@ -43,14 +43,30 @@ public sealed class AccessGuard(ICurrentUser currentUser, NpgsqlDataSource dataS
                        WHERE a."Id" = @Id AND up."UserId" = @UserId)
         """;
 
-    private async Task RequireAsync(string sql, Guid userId, Guid? id, CancellationToken cancellationToken)
+    private async Task RequireAsync(string sql, Guid userId, Guid? id, AccessOperation operation, DatabaseSession? session, CancellationToken cancellationToken)
     {
-        if (id is not { } value || value == Guid.Empty)
-            throw new AccessDeniedException("You are not a member of the project.");
+        if (id is { } value && value != Guid.Empty && await IsMemberAsync(sql, userId, value, session, cancellationToken).ConfigureAwait(false))
+            return;
+
+        // An existing row of a project the caller doesn't belong to is invisible to them: report it
+        // as missing, exactly like the read paths do. Targeting a foreign project is a denial.
+        if (operation == AccessOperation.Modify) throw new RecordNotFoundException();
+        throw new AccessDeniedException("You are not a member of the project.");
+    }
+
+    private async Task<bool> IsMemberAsync(string sql, Guid userId, Guid id, DatabaseSession? session, CancellationToken cancellationToken)
+    {
+        var parameters = new { UserId = userId, Id = id };
+        if (session is not null)
+        {
+            // Same connection and transaction as the write: no second pooled connection, and rows the
+            // caller's transaction already wrote are visible.
+            return await session.Connection.ExecuteScalarAsync<bool>(new CommandDefinition(
+                sql, parameters, session.Transaction, cancellationToken: cancellationToken)).ConfigureAwait(false);
+        }
 
         await using var connection = await dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
-        var isMember = await connection.ExecuteScalarAsync<bool>(new CommandDefinition(
-            sql, new { UserId = userId, Id = value }, cancellationToken: cancellationToken)).ConfigureAwait(false);
-        if (!isMember) throw new AccessDeniedException("You are not a member of the project.");
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(
+            sql, parameters, cancellationToken: cancellationToken)).ConfigureAwait(false);
     }
 }
