@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>jonathanperis/.github"]
+  "extends": ["github>jonathanperis/.github"],
+  "packageRules": [
+    {
+      "description": "Pin Docker images (Dockerfile FROM and Compose image tags) to immutable digests; the tag stays readable next to the digest",
+      "matchDatasources": ["docker"],
+      "pinDigests": true
+    }
+  ]
 }
