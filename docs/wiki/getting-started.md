@@ -35,7 +35,7 @@ docker compose -f compose.lab.yaml run --rm seed --reset-lab --Seed:Profile=real
 
 ## Source development
 
-Install the .NET SDK in `global.json`, Node.js in `.nvmrc`, and Bun 1.4.2. Set `DB_CONNECTION_STRING`, a development `Jwt__SigningKey`, and matching CORS origins in each service's environment. `dotnet run` does not automatically import the repository dotenv file. Checked-in launch profiles use legacy ports/database settings; `--no-launch-profile` avoids overriding your chosen configuration.
+Install the .NET SDK in `global.json`: 10.0.401 or newer (feature band 4xx or later; `rollForward: latestMinor` never rolls back, so a 10.0.1xx SDK cannot satisfy it). Also install Node.js in `.nvmrc` and Bun 1.4.2. Set `DB_CONNECTION_STRING`, a development `Jwt__SigningKey`, and matching CORS origins in each service's environment. `dotnet run` does not automatically import the repository dotenv file. Checked-in launch profiles use legacy ports/database settings; `--no-launch-profile` avoids overriding your chosen configuration.
 
 ```sh
 dotnet build cpnucleo.slnx
