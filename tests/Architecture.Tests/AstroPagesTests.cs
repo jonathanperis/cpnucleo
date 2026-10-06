@@ -13,10 +13,11 @@ public class AstroPagesTests
 {
     private static readonly string[] ForbiddenFrameworkPackages =
     [
-        "react", "react-dom", "preact", "vue", "svelte", "solid-js", "lit", "alpinejs",
-        "@builder.io/qwik", "@builder.io/qwik-city", "@qwik.dev/core", "@qwik.dev/router",
-        "@astrojs/react", "@astrojs/vue", "@astrojs/svelte", "@astrojs/solid-js",
-        "@astrojs/preact", "@astrojs/lit", "@astrojs/alpinejs",
+        "react", "react-dom", "preact", "vue", "petite-vue", "svelte",
+        "solid-js", "lit", "lit-html", "alpinejs", "htmx.org", "@angular/core",
+        "@stencil/core", "@builder.io/qwik", "@builder.io/qwik-city", "@qwik.dev/core", "@qwik.dev/router", "@qwikdev/astro",
+        "@astrojs/react", "@astrojs/vue", "@astrojs/svelte", "@astrojs/solid-js", "@astrojs/preact", "@astrojs/lit",
+        "@astrojs/alpinejs", "@analogjs/astro-angular",
     ];
 
     private static readonly string[] DependencySections =
@@ -66,6 +67,20 @@ public class AstroPagesTests
         packageNames.Should().Contain("astro", $"{site} is an Astro site");
         packageNames.Intersect(ForbiddenFrameworkPackages).Should().BeEmpty($"{site} must not add a client rendering framework");
 
+        // npm aliases ("ui": "npm:react@19") hide the real package behind another name.
+        var aliasTargets = DependencySections
+            .Where(section => manifest.RootElement.TryGetProperty(section, out _))
+            .SelectMany(section => manifest.RootElement.GetProperty(section).EnumerateObject())
+            .Select(property => property.Value.ValueKind == JsonValueKind.String ? property.Value.GetString()! : string.Empty)
+            .Where(value => value.StartsWith("npm:", StringComparison.Ordinal))
+            .Select(value => Regex.Match(value, @"^npm:((?:@[^/@]+/)?[^@]+)").Groups[1].Value);
+        aliasTargets.Intersect(ForbiddenFrameworkPackages).Should().BeEmpty($"{site} must not alias a client rendering framework");
+
+        // Transitive installs count too: the lockfile lists every resolved package.
+        var lockfile = File.ReadAllText(GetRepositoryPath(Path.Combine(site, "bun.lock")));
+        ForbiddenFrameworkPackages.Where(name => lockfile.Contains($"\"{name}@", StringComparison.Ordinal))
+            .Should().BeEmpty($"{site} must not install a client rendering framework transitively");
+
         var astroConfig = File.ReadAllText(GetRepositoryPath(Path.Combine(site, "astro.config.mjs")));
         ForbiddenFrameworkPackages
             .Where(name => astroConfig.Contains($"'{name}'", StringComparison.Ordinal) || astroConfig.Contains($"\"{name}\"", StringComparison.Ordinal))
@@ -97,6 +112,8 @@ public class AstroPagesTests
 
         vitestGuard.Should().Contain("WebClient build output");
         vitestGuard.Should().Contain("content=\"Astro v");
+        vitestGuard.Should().Contain("<astro-island");
+        driftCheck.Should().Contain("<astro-island");
         driftCheck.Should().Contain("check_astro_output(output, 'docs')");
         driftCheck.Should().Contain("check_astro_site(ROOT / path, label)");
     }

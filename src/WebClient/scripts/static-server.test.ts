@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer, get, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -17,6 +17,8 @@ const start = async (options: Omit<Partial<StaticHandlerOptions>, 'root' | 'secu
   root = mkdtempSync(join(tmpdir(), 'cpnucleo-static-'));
   writeFileSync(join(root, 'index.html'), '<!doctype html><title>home</title>');
   writeFileSync(join(root, 'app.js'), 'console.log(1)');
+  mkdirSync(join(root, '_astro'));
+  writeFileSync(join(root, '_astro', 'bundle.abc123.js'), 'console.log(2)');
   server = createServer(createStaticHandler({ root, securityHeaders, ...options }));
   await new Promise<void>(resolve => server!.listen(0, '127.0.0.1', resolve));
   return `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
@@ -45,10 +47,16 @@ describe('preview static handler', () => {
     const health = await request(`${base}/healthz`);
     expect(health).toMatchObject({ status: 200, body: 'ok' });
     expect(health.headers['content-security-policy']).toBe("default-src 'self'");
-    const asset = await request(`${base}/app.js`);
-    expect(asset.status).toBe(200);
-    expect(asset.headers['cache-control']).toContain('immutable');
-    expect((await request(`${base}/projects/`)).body).toContain('home');
+    // Only content-hashed Astro bundles are immutable; stable names must revalidate.
+    const bundle = await request(`${base}/_astro/bundle.abc123.js`);
+    expect(bundle.status).toBe(200);
+    expect(bundle.headers['cache-control']).toContain('immutable');
+    const publicFile = await request(`${base}/app.js`);
+    expect(publicFile.status).toBe(200);
+    expect(publicFile.headers['cache-control']).toBe('no-cache');
+    expect((await request(`${base}/`)).body).toContain('home');
+    // Unknown routes are 404s, not the home page served with 200.
+    expect((await request(`${base}/projects/`)).status).toBe(404);
   });
 
   it('destroys the response instead of rewriting headers when the file stream fails mid-response', async () => {
@@ -74,6 +82,7 @@ describe('preview static handler', () => {
   it('rejects malformed escapes and keeps paths inside the build output', async () => {
     const base = await start();
     expect((await request(`${base}/%E0%A4%A`)).status).toBe(400);
-    expect(resolveStaticPath(root, '/../../etc/passwd')).toBe(join(root, 'index.html'));
+    expect(resolveStaticPath(root, '/../../etc/passwd').startsWith(root)).toBe(true);
+    expect((await request(`${base}/..%2F..%2Fetc%2Fpasswd`)).status).toBe(404);
   });
 });

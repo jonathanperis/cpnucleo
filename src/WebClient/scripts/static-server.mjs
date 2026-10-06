@@ -27,8 +27,8 @@ export const resolveStaticPath = (root, urlPath) => {
   const requested = join(root, safe);
   if (requested !== root && !requested.startsWith(`${root}${sep}`)) return join(root, 'index.html');
   if (existsSync(requested) && statSync(requested).isDirectory()) return join(requested, 'index.html');
-  if (existsSync(requested)) return requested;
-  return join(root, 'index.html');
+  // Unknown paths stay unknown (the handler answers 404) instead of masquerading as the home page.
+  return requested;
 };
 
 /**
@@ -103,7 +103,9 @@ export const createStaticHandler = ({ root, securityHeaders, telemetry = noopTel
     response.writeHead(200, {
       ...securityHeaders,
       'Content-Type': contentTypes[extension] ?? 'application/octet-stream',
-      ...(extension && extension !== '.html' ? { 'Cache-Control': 'public, max-age=31536000, immutable' } : {}),
+      // Only Astro's content-hashed bundles are immutable; HTML, the CSP manifest and public files
+      // keep their names across releases and must revalidate.
+      'Cache-Control': filePath.startsWith(`${root}${sep}_astro${sep}`) ? 'public, max-age=31536000, immutable' : 'no-cache',
     });
     openFile(filePath)
       .on('error', (error) => fail(error))

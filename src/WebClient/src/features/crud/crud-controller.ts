@@ -372,7 +372,20 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
       else await webApiClient.create(resource.key, payload);
       if (lifetime.signal.aborted) return;
       closeForm(); refresh();
-    } catch (error) { if (!lifetime.signal.aborted) failForm(error); }
+    } catch (error) {
+      if (lifetime.signal.aborted) return;
+      if (resource.key === 'projects' && selected?.id && error instanceof ApiError && error.status === 409) {
+        // Keep the user's edits but adopt the stored version, so the conflict is visible once and an
+        // intentional second save replaces the other change instead of failing forever.
+        try {
+          const latest = await webApiClient.get<ApiEntity>(resource.key, String(selected.id), lifetime.signal);
+          selected = { ...selected, updatedAt: latest.updatedAt, createdAt: latest.createdAt };
+          failForm(new ApiError(409, `${error.message} The latest version was loaded: your edits are kept, and saving again replaces the other change.`));
+          return;
+        } catch { /* fall back to the original conflict message */ }
+      }
+      failForm(error);
+    }
     finally { submit.disabled = false; submit.textContent = 'Save'; }
   }, { signal: lifetime.signal });
 
