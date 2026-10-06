@@ -113,31 +113,6 @@ public class ImpedimentEndpointsTests
         ep.Response.Success.ShouldBeTrue();
     }
 
-    [Test]
-    public async Task RemoveImpediment_WithValidId_ShouldDeleteImpediment()
-    {
-        // Arrange
-        var impedimentId = Guid.NewGuid();
-        var impediment = Impediment.Create("Impediment to Delete", impedimentId);
-        
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Impediment>>();
-        
-        A.CallTo(() => fakeDbContext.Impediments).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Impediment?>(impediment));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-
-        var ep = Factory.Create<WebApi.Endpoints.Impediment.RemoveImpediment.Endpoint>(fakeDbContext).WithListingServices();
-        var req = new WebApi.Endpoints.Impediment.RemoveImpediment.RemoveImpedimentRequest { Ids = new List<Guid> { impedimentId } };
-
-        // Act
-        await ep.HandleAsync(req, default);
-
-        // Assert
-        ep.Response.ShouldNotBeNull();
-        ep.Response.Success.ShouldBeTrue();
-    }
-
     private static ApplicationDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()

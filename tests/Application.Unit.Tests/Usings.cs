@@ -3,3 +3,4 @@ global using Domain.Entities;
 global using FakeItEasy;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Shouldly;
+global using Application.Common.Security;

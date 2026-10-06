@@ -11,7 +11,7 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
 
             logger.LogInformation("Checking if an userProject entity exists with Id: {UserProjectId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
-            var itemExists = await repository.ExistsAsync(command.Id);
+            var itemExists = await repository.ExistsAsync(command.Id, cancellationToken);
 
             if (itemExists)
             {
@@ -27,14 +27,17 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
             var newItem = Domain.Entities.UserProject.Create(command.UserId, command.ProjectId, command.Id);
             logger.LogInformation("Created new userProject entity with Id: {UserProjectId}", newItem.Id);
 
+            logger.LogInformation("Beginning transaction.");
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
+
             logger.LogInformation("Adding userProject to repository.");
-            var createdId = await repository.AddAsync(newItem);
+            var createdId = await repository.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
             logger.LogInformation("Fetching userProject by Id: {UserProjectId}", newItem.Id);
-            var createdItem = await repository.GetByIdAsync(newItem.Id);
+            var createdItem = await repository.GetByIdAsync(newItem.Id, cancellationToken);
 
             var result = new CreateUserProjectResult
             {
@@ -47,9 +50,9 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
 
             return result;
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

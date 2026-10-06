@@ -58,9 +58,10 @@ public class ProjectEndpointsTests
         
         var fakeStore = A.Fake<IProjectCreateStore>();
         A.CallTo(() => fakeStore.ExistsAsync(projectId, A<CancellationToken>._)).Returns(false);
-        A.CallTo(() => fakeStore.AddAsync(A<Project>._, A<CancellationToken>._)).Returns(project);
+        A.CallTo(() => fakeStore.AddAsync(A<Project>._, A<Guid?>._, A<CancellationToken>._)).Returns(project);
         var handler = new Application.Features.Projects.CreateProject.CreateProjectHandler(
             fakeStore,
+            Application.Common.Security.StaticCurrentUser.System,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<Application.Features.Projects.CreateProject.CreateProjectHandler>.Instance);
 
         var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler).WithListingServices();
@@ -92,6 +93,7 @@ public class ProjectEndpointsTests
         A.CallTo(() => fakeStore.ExistsAsync(projectId, A<CancellationToken>._)).Returns(true);
         var handler = new Application.Features.Projects.CreateProject.CreateProjectHandler(
             fakeStore,
+            Application.Common.Security.StaticCurrentUser.System,
             Microsoft.Extensions.Logging.Abstractions.NullLogger<Application.Features.Projects.CreateProject.CreateProjectHandler>.Instance);
 
         var ep = Factory.Create<WebApi.Endpoints.Project.CreateProject.Endpoint>(handler).WithListingServices();
@@ -168,7 +170,6 @@ public class ProjectEndpointsTests
         var project = Project.Create("Project to Delete", organizationId, projectId);
         
         var fakeRepository = A.Fake<IProjectRepository>();
-        A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(project));
         A.CallTo(() => fakeRepository.RemoveManyAsync(A<IEnumerable<Guid>>._, A<CancellationToken>._)).Returns(true);
 
         var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository).WithListingServices();
@@ -180,6 +181,8 @@ public class ProjectEndpointsTests
         // Assert
         ep.Response.ShouldNotBeNull();
         ep.Response.Success.ShouldBeTrue();
+        A.CallTo(() => fakeRepository.RemoveManyAsync(A<IEnumerable<Guid>>.That.IsSameSequenceAs(new[] { projectId }), A<CancellationToken>._))
+            .MustHaveHappenedOnceExactly();
     }
 
     [Test]
@@ -187,9 +190,10 @@ public class ProjectEndpointsTests
     {
         // Arrange
         var projectId = Guid.NewGuid();
-        
+
+        // The batch removal reports false when any id is missing; nothing is removed.
         var fakeRepository = A.Fake<IProjectRepository>();
-        A.CallTo(() => fakeRepository.GetByIdAsync(projectId)).Returns(Task.FromResult<Project?>(null));
+        A.CallTo(() => fakeRepository.RemoveManyAsync(A<IEnumerable<Guid>>._, A<CancellationToken>._)).Returns(false);
 
         var ep = Factory.Create<WebApi.Endpoints.Project.RemoveProject.Endpoint>(fakeRepository).WithListingServices();
         var req = new WebApi.Endpoints.Project.RemoveProject.RemoveProjectRequest { Ids = new List<Guid> { projectId } };
@@ -224,19 +228,7 @@ public class ProjectEndpointsTests
             .Returns(Task.FromResult(paginatedResult));
 
         var ep = Factory.Create<WebApi.Endpoints.Project.ListProjects.Endpoint>(fakeRepository).WithListingServices();
-        
-        // Initialize response manually due to required property
-        ep.Response = new WebApi.Endpoints.Project.ListProjects.Response 
-        { 
-            Result = new PaginatedResult<WebApi.Common.Dtos.ProjectDto?> 
-            { 
-                Data = new List<WebApi.Common.Dtos.ProjectDto?>(), 
-                TotalCount = 0, 
-                PageNumber = 1, 
-                PageSize = 10 
-            } 
-        };
-        
+
         var req = new WebApi.Endpoints.Project.ListProjects.Request
         {
             Pagination = new PaginationParams { PageNumber = 1, PageSize = 10, SortColumn = "Id", SortOrder = "ASC" }

@@ -3,20 +3,20 @@ namespace Domain.Entities;
 [Table("Assignments")] // Used for Dapper Repository Advanced
 public sealed class Assignment : BaseEntity
 {
-    public string? Name { get; set; }
-    public string? Description { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public int AmountHours { get; set; }
+    public string? Name { get; private set; }
+    public string? Description { get; private set; }
+    public DateTime StartDate { get; private set; }
+    public DateTime EndDate { get; private set; }
+    public int AmountHours { get; private set; }
 
-    public Guid ProjectId { get; set; }
-    public Project? Project { get; set; }
-    public Guid WorkflowId { get; set; }
-    public Workflow? Workflow { get; set; }
-    public Guid UserId { get; set; }
-    public User? User { get; set; }
-    public Guid AssignmentTypeId { get; set; }
-    public AssignmentType? AssignmentType { get; set; }
+    public Guid ProjectId { get; private set; }
+    public Project? Project { get; private set; }
+    public Guid WorkflowId { get; private set; }
+    public Workflow? Workflow { get; private set; }
+    public Guid UserId { get; private set; }
+    public User? User { get; private set; }
+    public Guid AssignmentTypeId { get; private set; }
+    public AssignmentType? AssignmentType { get; private set; }
 
     public static Assignment Create(string? name,
                                string? description,
@@ -29,23 +29,14 @@ public sealed class Assignment : BaseEntity
                                Guid assignmentTypeId,
                                Guid id = default)
     {
-        Validate(name, startDate, endDate, amountHours);
         var assignment = new Assignment
         {
             Id = GetNewId(id),
             CreatedAt = DateTime.UtcNow,
-            Name = name,
-            Description = description,
-            StartDate = startDate,
-            EndDate = endDate,
-            AmountHours = amountHours,
-            ProjectId = projectId,
-            WorkflowId = workflowId,
-            UserId = userId,
-            AssignmentTypeId = assignmentTypeId,
             Active = true
         };
-        
+        assignment.Apply(name, description, startDate, endDate, amountHours, projectId, workflowId, userId, assignmentTypeId);
+
         return assignment;
     }
 
@@ -60,29 +51,27 @@ public sealed class Assignment : BaseEntity
         Guid userId,
         Guid assignmentTypeId)
     {
-        Validate(name, startDate, endDate, amountHours);
-        obj.Name = name;
-        obj.Description = description;
-        obj.StartDate = startDate;
-        obj.EndDate = endDate;
-        obj.AmountHours = amountHours;
-        obj.ProjectId = projectId;
-        obj.WorkflowId = workflowId;
-        obj.UserId = userId;
-        obj.AssignmentTypeId = assignmentTypeId;
-        obj.UpdatedAt = DateTime.UtcNow;
+        obj.Apply(name, description, startDate, endDate, amountHours, projectId, workflowId, userId, assignmentTypeId);
+        obj.Touch();
     }
 
-    private static void Validate(string? name, DateTime startDate, DateTime endDate, int amountHours)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        if (endDate < startDate) throw new ArgumentException("End date must be on or after start date.");
-        if (amountHours <= 0) throw new ArgumentOutOfRangeException(nameof(amountHours), "Hours must be positive.");
-    }
+    public static void Remove(Assignment obj) => obj.MarkRemoved();
 
-    public static void Remove(Assignment obj)
+    private void Apply(string? name, string? description, DateTime startDate, DateTime endDate, int amountHours,
+        Guid projectId, Guid workflowId, Guid userId, Guid assignmentTypeId)
     {
-        obj.Active = false;
-        obj.DeletedAt = DateTime.UtcNow;
+        var start = Guard.RequiredUtc(startDate, nameof(StartDate));
+        var end = Guard.RequiredUtc(endDate, nameof(EndDate));
+        if (end < start) throw new DomainException("End date must be on or after start date.", nameof(EndDate));
+
+        Name = Guard.Required(name, nameof(Name));
+        Description = Guard.Required(description, nameof(Description), Guard.DescriptionMaxLength);
+        StartDate = start;
+        EndDate = end;
+        AmountHours = Guard.Positive(amountHours, nameof(AmountHours));
+        ProjectId = Guard.Reference(projectId, nameof(ProjectId));
+        WorkflowId = Guard.Reference(workflowId, nameof(WorkflowId));
+        UserId = Guard.Reference(userId, nameof(UserId));
+        AssignmentTypeId = Guard.Reference(assignmentTypeId, nameof(AssignmentTypeId));
     }
 }

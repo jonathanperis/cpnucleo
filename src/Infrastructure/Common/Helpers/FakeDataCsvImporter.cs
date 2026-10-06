@@ -39,6 +39,9 @@ public static class FakeDataCsvImporter
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 
         await ResetDatabaseAsync(connection, cancellationToken).ConfigureAwait(false);
+        // The generated dataset is consistent by construction; per-row relationship checks would
+        // only slow down ~1.3M COPY rows. They are re-enabled before this transaction commits.
+        await SetRelationshipTriggersAsync(connection, enabled: false, cancellationToken).ConfigureAwait(false);
 
         var random = new Random(20260528);
         Randomizer.Seed = new Random(20260528);
@@ -74,6 +77,7 @@ public static class FakeDataCsvImporter
         await ImportUserAssignmentsAsync(connection, userIds, userOrganizationIndexMap, assignmentIds, assignmentOrganizationIds, random, logger, cancellationToken).ConfigureAwait(false);
         await ImportAssignmentImpedimentsAsync(connection, assignmentIds, impedimentIds, random, logger, cancellationToken).ConfigureAwait(false);
         await ImportAppointmentsAsync(connection, assignmentIds, assignmentOrganizationIds, userIds, userOrganizationIndexMap, random, logger, cancellationToken).ConfigureAwait(false);
+        await SetRelationshipTriggersAsync(connection, enabled: true, cancellationToken).ConfigureAwait(false);
         await MarkSeedAppliedAsync(connection, startedAt, cancellationToken).ConfigureAwait(false);
         await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
 
@@ -131,6 +135,17 @@ public static class FakeDataCsvImporter
                                "Users"
                            RESTART IDENTITY CASCADE;
                            """;
+        await using var command = new NpgsqlCommand(sql, connection);
+        await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private static async Task SetRelationshipTriggersAsync(NpgsqlConnection connection, bool enabled, CancellationToken cancellationToken)
+    {
+        var action = enabled ? "ENABLE" : "DISABLE";
+        var sql = string.Join('\n', Migrations.RelationshipIntegrity.References
+            .Select(reference => reference.Child)
+            .Distinct()
+            .Select(table => $"ALTER TABLE \"{table}\" {action} TRIGGER \"{Migrations.RelationshipIntegrity.ChildTriggerName(table)}\";"));
         await using var command = new NpgsqlCommand(sql, connection);
         await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
     }

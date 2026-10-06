@@ -18,11 +18,11 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
         Response.Success = await repository.RemoveManyAsync(request.Ids, cancellationToken);
         if (!Response.Success)
         {
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged();
+        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
         await Send.OkAsync(Response, cancellationToken);
     }
 }

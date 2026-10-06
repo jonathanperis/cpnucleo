@@ -31,7 +31,7 @@ public class ConcurrencyAndStreamingTests(WebAppFixture app)
         context.AddRange(organization, project);
         await context.SaveChangesAsync(TestContext.Current.CancellationToken);
         await using var connection = new NpgsqlConnection(app.ConnectionString);
-        return (await new ProjectRepository(connection).GetByIdAsync(project.Id))!;
+        return (await new ProjectRepository(connection, Application.Common.Security.StaticCurrentUser.System, Infrastructure.Security.TrustedAccessGuard.Instance).GetByIdAsync(project.Id, TestContext.Current.CancellationToken))!;
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class ConcurrencyAndStreamingTests(WebAppFixture app)
         var second = new { project.Id, name = "Stale writer", project.OrganizationId, expectedVersion = project.CreatedAt };
         (await app.Client.PatchAsJsonAsync("/api/project", second, ct)).StatusCode.ShouldBe(HttpStatusCode.Conflict);
         await using var connection = new NpgsqlConnection(app.ConnectionString);
-        (await new ProjectRepository(connection).GetByIdAsync(project.Id))!.Name.ShouldBe("First writer");
+        (await new ProjectRepository(connection, Application.Common.Security.StaticCurrentUser.System, Infrastructure.Security.TrustedAccessGuard.Instance).GetByIdAsync(project.Id, TestContext.Current.CancellationToken))!.Name.ShouldBe("First writer");
     }
 
     [Fact]
@@ -68,5 +68,73 @@ public class ConcurrencyAndStreamingTests(WebAppFixture app)
         await using var connection = new NpgsqlConnection(app.ConnectionString);
         await connection.ExecuteAsync("UPDATE \"Projects\" SET \"Name\" = 'External writer' WHERE \"Id\" = @id", new { id = project.Id });
         (await NextData()).ShouldContain("External writer");
+    }
+
+    [Fact]
+    public async Task DapperUpdate_RacingARemoval_CannotResurrectTheRow()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var graph = await app.CreateGraphAsync();
+        await using var connection = new NpgsqlConnection(app.ConnectionString);
+        using var unitOfWork = new Infrastructure.UoW.UnitOfWork(connection, Application.Common.Security.StaticCurrentUser.System,
+            Infrastructure.Security.TrustedAccessGuard.Instance);
+        var repository = unitOfWork.GetRepository<Organization>();
+
+        // A handler read the row, then another request removed it before the update ran.
+        var stale = (await repository.GetByIdAsync(graph.Organization.Id, ct))!;
+        await using (var remover = new NpgsqlConnection(app.ConnectionString))
+        {
+            await remover.ExecuteAsync("""UPDATE "Assignments" SET "Active" = false, "DeletedAt" = now() WHERE "Id" = @id""", new { id = graph.Assignment.Id });
+            await remover.ExecuteAsync("""UPDATE "Projects" SET "Active" = false, "DeletedAt" = now() WHERE "OrganizationId" = @id""", new { id = graph.Organization.Id });
+            await remover.ExecuteAsync("""UPDATE "Organizations" SET "Active" = false, "DeletedAt" = now() WHERE "Id" = @id""", new { id = graph.Organization.Id });
+        }
+
+        Organization.Update(stale, "Late edit", "x");
+        (await repository.UpdateAsync(stale, ct)).ShouldBeFalse();
+        (await app.RowStateAsync("Organizations", graph.Organization.Id)).ShouldBe((false, true), "the removal wins; the stale update must not reactivate it");
+    }
+
+    [Fact]
+    public async Task ProjectVersions_BehaveTheSameOverGrpc()
+    {
+        var project = await CreateProjectAsync();
+        var options = WebAppFixture.GrpcOptions();
+
+        var first = await new GrpcServer.Contracts.Commands.Project.UpdateProjectCommand
+        {
+            Id = project.Id, Name = "First writer", OrganizationId = project.OrganizationId, ExpectedVersion = project.CreatedAt
+        }.RemoteExecuteAsync(options);
+        first.Success.ShouldBeTrue();
+
+        var stale = await new GrpcServer.Contracts.Commands.Project.UpdateProjectCommand
+        {
+            Id = project.Id, Name = "Stale writer", OrganizationId = project.OrganizationId, ExpectedVersion = project.CreatedAt
+        }.RemoteExecuteAsync(options);
+        stale.Success.ShouldBeFalse();
+        stale.Message.ShouldContain("changed");
+
+        // The next version is the stored UpdatedAt, read back exactly as the API returns it.
+        var current = (await new GrpcServer.Contracts.Commands.Project.GetProjectByIdCommand { Id = project.Id }.RemoteExecuteAsync(options)).Project!;
+        current.UpdatedAt.ShouldNotBeNull();
+        (await new GrpcServer.Contracts.Commands.Project.UpdateProjectCommand
+        {
+            Id = project.Id, Name = "Second writer", OrganizationId = project.OrganizationId, ExpectedVersion = current.UpdatedAt
+        }.RemoteExecuteAsync(options)).Success.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ProjectEdits_WithoutAVersion_KeepLastWriteWins()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var project = await CreateProjectAsync();
+
+        (await app.Client.PatchAsJsonAsync("/api/project", new { project.Id, name = "First", project.OrganizationId }, ct)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await app.Client.PatchAsJsonAsync("/api/project", new { project.Id, name = "Second", project.OrganizationId }, ct)).StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var current = await app.Client.GetFromJsonAsync<System.Text.Json.JsonElement>($"/api/project?id={project.Id}", ct);
+        current.GetProperty("project").GetProperty("name").GetString().ShouldBe("Second");
+        var updatedAt = current.GetProperty("project").GetProperty("updatedAt").GetDateTime();
+        (await app.Client.PatchAsJsonAsync("/api/project", new { project.Id, name = "Versioned", project.OrganizationId, expectedVersion = updatedAt }, ct))
+            .StatusCode.ShouldBe(HttpStatusCode.OK, "the UpdatedAt returned by the API is a valid version");
     }
 }

@@ -3,27 +3,25 @@ namespace Domain.Entities;
 [Table("AssignmentImpediments")] // Used for Dapper Repository Advanced
 public sealed class AssignmentImpediment : BaseEntity
 {
-    public string? Description { get; set; }
+    public string? Description { get; private set; }
 
-    public Guid AssignmentId { get; set; }
-    public Assignment? Assignment { get; set; }
-    public Guid ImpedimentId { get; set; }
-    public Impediment? Impediment { get; set; }
+    public Guid AssignmentId { get; private set; }
+    public Assignment? Assignment { get; private set; }
+    public Guid ImpedimentId { get; private set; }
+    public Impediment? Impediment { get; private set; }
 
-    public static AssignmentImpediment Create(string? description, 
-                                            Guid assignmentId, 
+    public static AssignmentImpediment Create(string? description,
+                                            Guid assignmentId,
                                             Guid impedimentId, Guid id = default)
     {
         var impediment = new AssignmentImpediment
         {
             Id = GetNewId(id),
             CreatedAt = DateTime.UtcNow,
-            Description = description,
-            AssignmentId = assignmentId,
-            ImpedimentId = impedimentId,
             Active = true
         };
-        
+        impediment.Apply(description, assignmentId, impedimentId);
+
         return impediment;
     }
 
@@ -31,15 +29,16 @@ public sealed class AssignmentImpediment : BaseEntity
         string? description,
         Guid assignmentId, Guid impedimentId)
     {
-        obj.Description = description;
-        obj.AssignmentId = assignmentId;
-        obj.ImpedimentId = impedimentId;
-        obj.UpdatedAt = DateTime.UtcNow;
+        obj.Apply(description, assignmentId, impedimentId);
+        obj.Touch();
     }
 
-    public static void Remove(AssignmentImpediment obj)
+    public static void Remove(AssignmentImpediment obj) => obj.MarkRemoved();
+
+    private void Apply(string? description, Guid assignmentId, Guid impedimentId)
     {
-        obj.Active = false;
-        obj.DeletedAt = DateTime.UtcNow;
+        Description = Guard.Required(description, nameof(Description), Guard.DescriptionMaxLength);
+        AssignmentId = Guard.Reference(assignmentId, nameof(AssignmentId));
+        ImpedimentId = Guard.Reference(impedimentId, nameof(ImpedimentId));
     }
 }

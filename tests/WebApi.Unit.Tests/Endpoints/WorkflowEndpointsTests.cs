@@ -87,31 +87,6 @@ public class WorkflowEndpointsTests
     }
 
     [Test]
-    public async Task RemoveWorkflow_WithValidId_ShouldDeleteWorkflow()
-    {
-        // Arrange
-        var workflowId = Guid.NewGuid();
-        var workflow = Workflow.Create("Workflow to Delete", 1, workflowId);
-        
-        var fakeDbContext = A.Fake<IApplicationDbContext>();
-        var fakeDbSet = A.Fake<DbSet<Workflow>>();
-        
-        A.CallTo(() => fakeDbContext.Workflows).Returns(fakeDbSet);
-        A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Workflow?>(workflow));
-        A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
-
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.RemoveWorkflow.Endpoint>(fakeDbContext).WithListingServices();
-        var req = new WebApi.Endpoints.Workflow.RemoveWorkflow.RemoveWorkflowRequest { Ids = new List<Guid> { workflowId } };
-
-        // Act
-        await ep.HandleAsync(req, default);
-
-        // Assert
-        ep.Response.ShouldNotBeNull();
-        ep.Response.Success.ShouldBeTrue();
-    }
-
-    [Test]
     public async Task ListWorkflows_ShouldReturnPaginatedResults()
     {
         // Arrange

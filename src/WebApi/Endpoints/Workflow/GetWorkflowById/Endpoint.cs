@@ -21,12 +21,12 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Fetching workflow entity with Id: {WorkflowId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
-        var item = await repository.GetByIdAsync(request.Id);
+        var item = await repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (item is null)
         {
             Logger.LogWarning("Workflow not found with Id: {WorkflowId}", request.Id);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 

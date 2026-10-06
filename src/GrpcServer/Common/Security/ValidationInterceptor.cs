@@ -5,22 +5,36 @@ using StatusCode = Grpc.Core.StatusCode;
 
 namespace GrpcServer.Common.Security;
 
-public sealed class ValidationInterceptor : Interceptor
+/// <summary>
+/// Translates the shared domain, access and database errors into gRPC statuses with the same
+/// client-safe messages the REST API returns.
+/// </summary>
+public sealed class ValidationInterceptor(ILogger<ValidationInterceptor> logger) : Interceptor
 {
     public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(TRequest request, ServerCallContext context, UnaryServerMethod<TRequest, TResponse> continuation)
     {
         try { return await continuation(request, context); }
+        catch (DomainException ex)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, ex.Message));
+        }
+        catch (AccessDeniedException ex)
+        {
+            throw new RpcException(new Status(StatusCode.PermissionDenied, ex.Message));
+        }
         catch (ArgumentException)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "The command contains an invalid value."));
         }
-        catch (Npgsql.PostgresException ex) when (ex.SqlState == "23505")
+        catch (Exception ex) when (DatabaseErrors.Classify(ex) is { } error)
         {
-            throw new RpcException(new Status(StatusCode.AlreadyExists, "A record with this identity already exists."));
-        }
-        catch (Npgsql.PostgresException ex) when (ex.SqlState is "23503" or "23514")
-        {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, "The relationship or value is invalid."));
+            logger.LogInformation("Command rejected by the database: {Kind}", error.Kind);
+            throw new RpcException(new Status(error.Kind switch
+            {
+                DatabaseErrorKind.Duplicate => StatusCode.AlreadyExists,
+                DatabaseErrorKind.ActiveDependents => StatusCode.FailedPrecondition,
+                _ => StatusCode.InvalidArgument
+            }, error.Message));
         }
     }
 }

@@ -21,12 +21,12 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Fetching assignmentImpediment entity with Id: {AssignmentImpedimentId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
-        var item = await repository.GetByIdAsync(request.Id);
+        var item = await repository.GetByIdAsync(request.Id, cancellationToken);
 
         if (item is null)
         {
             Logger.LogWarning("AssignmentImpediment not found with Id: {AssignmentImpedimentId}", request.Id);
-            await Send.NotFoundAsync(cancellation: cancellationToken);
+            await Send.NotFoundEnvelopeAsync(cancellationToken);
             return;
         }
 

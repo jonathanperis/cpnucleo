@@ -10,7 +10,7 @@ public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserBy
 
         logger.LogInformation("Fetching user entity with Id: {UserId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.User>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

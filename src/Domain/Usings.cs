@@ -1,4 +1,5 @@
 global using System.ComponentModel.DataAnnotations.Schema;
+global using Domain.Common;
 global using Domain.Common.Security;
 global using Domain.Entities;
 global using Domain.Models;

@@ -9,7 +9,7 @@ public sealed class GetWorkflowByIdHandler(IUnitOfWork unitOfWork, ILogger<GetWo
 
         logger.LogInformation("Fetching workflow entity with Id: {WorkflowId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

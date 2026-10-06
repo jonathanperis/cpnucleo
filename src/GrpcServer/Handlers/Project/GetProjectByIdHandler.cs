@@ -9,7 +9,7 @@ public sealed class GetProjectByIdHandler(IUnitOfWork unitOfWork, ILogger<GetPro
 
         logger.LogInformation("Fetching project entity with Id: {ProjectId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Project>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

@@ -9,7 +9,7 @@ public sealed class GetOrganizationByIdHandler(IUnitOfWork unitOfWork, ILogger<G
 
         logger.LogInformation("Fetching organization entity with Id: {OrganizationId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
-        var item = await repository.GetByIdAsync(command.Id);
+        var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
         if (item is null)
         {

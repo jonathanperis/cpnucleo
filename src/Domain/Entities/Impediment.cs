@@ -3,30 +3,24 @@ namespace Domain.Entities;
 [Table("Impediments")] // Used for Dapper Repository Advanced
 public sealed class Impediment : BaseEntity
 {
-    public string? Name { get; set; }
+    public string? Name { get; private set; }
 
     public static Impediment Create(string? name, Guid id = default)
     {
-        var impediment = new Impediment
+        return new Impediment
         {
             Id = GetNewId(id),
             CreatedAt = DateTime.UtcNow,
-            Name = name,
+            Name = Guard.Required(name, nameof(Name)),
             Active = true
         };
-        
-        return impediment;
     }
 
     public static void Update(Impediment obj, string? name)
     {
-        obj.Name = name;
-        obj.UpdatedAt = DateTime.UtcNow;
+        obj.Name = Guard.Required(name, nameof(Name));
+        obj.Touch();
     }
 
-    public static void Remove(Impediment obj)
-    {
-        obj.Active = false;
-        obj.DeletedAt = DateTime.UtcNow;
-    }
+    public static void Remove(Impediment obj) => obj.MarkRemoved();
 }

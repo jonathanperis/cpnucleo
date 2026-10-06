@@ -11,7 +11,7 @@ public sealed class UpdateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Upd
         {
             logger.LogInformation("Checking if an userProject entity exists with Id: {UserProjectId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
-            var item = await repository.GetByIdAsync(command.Id);
+            var item = await repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (item is null)
             {
@@ -27,10 +27,10 @@ public sealed class UpdateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Upd
             Domain.Entities.UserProject.Update(item, command.UserId, command.ProjectId);
 
             logger.LogInformation("Beginning transaction.");
-            await unitOfWork.BeginTransactionAsync();
+            await unitOfWork.BeginTransactionAsync(cancellationToken);
             
             logger.LogInformation("Updating entity in repository.");
-            var success = await repository.UpdateAsync(item);
+            var success = await repository.UpdateAsync(item, cancellationToken);
 
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
@@ -44,9 +44,9 @@ public sealed class UpdateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Upd
                 Message = success ? "UserProject updated successfully." : "Failed to update UserProject."
             };
         }
-        catch (Exception ex)
+        catch
         {
-            logger.LogError(ex, "An error occurred while processing the command. Rolling back transaction.");
+            // Rejections and failures are translated (and unexpected ones logged) by the gRPC pipeline.
             await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }

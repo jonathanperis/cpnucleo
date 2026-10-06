@@ -4,7 +4,9 @@ using System.Text.Json;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Common.Context;
+using Application.Common.Security;
 using Infrastructure.Repositories;
+using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Testcontainers.PostgreSql;
@@ -31,7 +33,8 @@ context.Projects!.AddRange(Enumerable.Range(1, rows).Select(i => Project.Create(
 await context.SaveChangesAsync(default);
 context.ChangeTracker.Clear();
 await using var connection = new NpgsqlConnection(database.GetConnectionString());
-var repository = new ProjectRepository(connection);
+// The lab measures persistence styles, not authorization: run as trusted system code.
+var repository = new ProjectRepository(connection, StaticCurrentUser.System, TrustedAccessGuard.Instance);
 
 async Task EfRead()
 {
