@@ -61,7 +61,9 @@ Every non-2xx JSON response from WebApi and IdentityApi uses one envelope:
 }
 ```
 
-`errors` is present for validation and domain-rule failures; keys are camelCase request property names, and `generalErrors` holds messages not tied to one field. Statuses: 400 validation/domain rule or a reference to a missing or removed record, 401 missing/invalid/revoked token, 403 not allowed, 404 not found or not visible, 409 duplicate id or login, stale project version, or active dependents, 429 rate limited (with `Retry-After`), 500 unexpected error (details are only logged). gRPC maps the same cases to `InvalidArgument`, `Unauthenticated`, `PermissionDenied`, `AlreadyExists` and `FailedPrecondition`, or to `Success=false` results for missing rows and stale versions.
+Error responses keep the security headers. Conditional requests (ETag / `If-None-Match`) are validated per caller: the ETag includes the caller's identity, so one account's cached list is never revalidated for another. Live listings revalidate the caller's session before every snapshot and close when it is no longer valid.
+
+`errors` is present for validation and domain-rule failures; keys are camelCase request property names, and `generalErrors` holds messages not tied to one field. Statuses: 400 validation/domain rule or a reference to a missing or removed record, 401 missing/invalid/revoked token, 403 not allowed (for example changing catalog data, someone else's appointment, or moving a row into a project you don't belong to), 404 not found or not visible (also for writes to rows you can't see, on every persistence path), 409 duplicate id or login, stale project version, active dependents, or a concurrent change to the same rows (retry), 429 rate limited (with `Retry-After`), 500 unexpected error (details are only logged). gRPC maps the same cases to `InvalidArgument`, `Unauthenticated`, `PermissionDenied`, `AlreadyExists` and `FailedPrecondition`, or to `Success=false` results for missing rows and stale versions.
 
 ### Dates, search and sorting
 
@@ -132,13 +134,13 @@ The WebClient CRUD screens consume the REST endpoints through `src/WebClient/src
 - `{ result: item }` singular envelopes
 - resource-key singular envelopes such as `{ organization: { ... } }`
 
-Singular normalization supports edit/detail loads. List requests use flat query keys only (`pageNumber`, `pageSize`, `search`, `ids`) plus `sortColumn=CreatedAt&sortOrder=ASC`. Missing relation labels use batched list requests with comma-separated `ids` (at most 100 per request), then merge into the existing cache. Selected relations keep their cached labels across search pages. Listings open the SSE stream directly and use its first event as the initial snapshot. See [WebClient CRUD](../webclient-crud/) for error, authorization and reconnect handling.
+Singular normalization is used to reload a project's current version after an edit conflict. List requests use flat query keys only (`pageNumber`, `pageSize`, `search`, `ids`) plus `sortColumn=CreatedAt&sortOrder=ASC`. Missing relation labels use batched list requests with comma-separated `ids` (at most 100 per request), then merge into the existing cache. Selected relations keep their cached labels across search pages. Listings open the SSE stream directly and use its first event as the initial snapshot. See [WebClient CRUD](../webclient-crud/) for error, authorization and reconnect handling.
 
 ### Rate Limiting
 
-- 50 requests per minute per IP address
+- 300 requests per minute per IP address (a dashboard and CRUD forms issue several requests per screen); `/healthz` and `/readyz` are exempt
 - Fixed-window partitioning
-- Queue limit: 10 additional requests
+- Queue limit: 20 additional requests
 - Returns `429 Too Many Requests` with the error envelope and a `Retry-After` value derived from the limiter lease (60 seconds if metadata is unavailable); CORS exposes `Retry-After` to the browser client
 
 The partition key is `HttpContext.Connection.RemoteIpAddress`; this is per process, not a distributed quota. Production sets `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` on the API containers so the address is the client behind Traefik and NGINX.
