@@ -8,6 +8,7 @@ The xUnit suite combines NetArchTest/reflection checks against explicitly refere
 | `WebApiEndpointSourceTests.cs` | Endpoint implementation conventions |
 | `DapperRepositorySourceTests.cs` | SQL construction, canonical sorting and repository structure |
 | `FastEndpointsConfigurationTests.cs` | Host, frontend, deployment and workflow contracts |
+| `OperationsConfigurationTests.cs` | Inlined production configs vs. source files, per-service environments, container hardening, Dockerfile rules, release supply-chain gates and backup tooling |
 | `TenantFoundationTests.cs` | Tenant types/claims as a foundation, not isolated data |
 | `FakeDataSeedingTests.cs` | Explicit seed/import structure and generation contracts |
 
