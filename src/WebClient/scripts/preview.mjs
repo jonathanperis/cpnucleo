@@ -1,96 +1,23 @@
-import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
+import { join } from 'node:path';
 import { recordHttpError, recordHttpRequest, startHttpRequestSpan } from './otel.mjs';
-import { extname, join, normalize } from 'node:path';
+import { buildSecurityHeaders, readCspManifest } from './csp.mjs';
+import { createStaticHandler } from './static-server.mjs';
 
 const root = join(process.cwd(), 'dist');
 const port = Number(process.env.PORT ?? '5030');
 const host = process.env.HOST ?? '0.0.0.0';
 
-const securityHeaders = {
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api-cpnucleo.jonathanperis.tech https://identity-cpnucleo.jonathanperis.tech; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
-};
+// Content-Security-Policy connect-src and inline script hashes come from dist/csp-manifest.json,
+// which `astro build` derives from PUBLIC_WEBAPI_BASE_URL / PUBLIC_IDENTITY_API_BASE_URL and the
+// generated HTML. Changing runtime environment variables does not change a static build.
+const securityHeaders = buildSecurityHeaders(readCspManifest(root));
 
-const contentTypes = {
-  '.css': 'text/css; charset=utf-8',
-  '.html': 'text/html; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.webp': 'image/webp',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2',
-};
-
-const resolvePath = (urlPath) => {
-  const decoded = decodeURIComponent(urlPath.split('?')[0] ?? '/');
-  const safe = normalize(decoded).replace(/^(\.\.[/\\])+/, '');
-  const requested = join(root, safe);
-  if (existsSync(requested) && statSync(requested).isDirectory()) return join(requested, 'index.html');
-  if (existsSync(requested)) return requested;
-  return join(root, 'index.html');
-};
-
-createServer((request, response) => {
-  const startTime = process.hrtime.bigint();
-  const span = startHttpRequestSpan(request);
-  let finalized = false;
-  const finalize = (record) => {
-    if (finalized) return;
-    finalized = true;
-    record();
-  };
-
-  response.on('finish', () => finalize(() => recordHttpRequest(request, response, startTime, span)));
-  response.on('error', (error) => finalize(() => recordHttpError(request, error, span)));
-  response.on('close', () => finalize(() => {
-    if (response.writableFinished) {
-      recordHttpRequest(request, response, startTime, span);
-      return;
-    }
-
-    recordHttpError(request, new Error('response closed before finish'), span);
-  }));
-
-  try {
-    if (request.url === '/healthz') {
-      response.writeHead(200, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
-      response.end('ok');
-      return;
-    }
-
-    const filePath = resolvePath(request.url ?? '/');
-    if (!existsSync(filePath)) {
-      response.writeHead(404, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
-      response.end('not found');
-      return;
-    }
-
-    const extension = extname(filePath);
-    response.writeHead(200, {
-      ...securityHeaders,
-      'Content-Type': contentTypes[extension] ?? 'application/octet-stream',
-      ...(extension && extension !== '.html' ? { 'Cache-Control': 'public, max-age=31536000, immutable' } : {}),
-    });
-    createReadStream(filePath)
-      .on('error', (error) => {
-        finalize(() => recordHttpError(request, error, span));
-        response.writeHead(500, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
-        response.end('internal server error');
-      })
-      .pipe(response);
-  } catch (error) {
-    finalize(() => recordHttpError(request, error, span));
-    response.writeHead(500, { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8' });
-    response.end('internal server error');
-  }
-}).listen(port, host, () => {
+createServer(createStaticHandler({
+  root,
+  securityHeaders,
+  telemetry: { startHttpRequestSpan, recordHttpRequest, recordHttpError },
+})).listen(port, host, () => {
   console.log(`Preview server listening on http://${host}:${port}`);
+  console.log(`Content-Security-Policy: ${securityHeaders['Content-Security-Policy']}`);
 });
