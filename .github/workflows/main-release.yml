@@ -25,9 +25,11 @@ env:
   BUILD_CONFIGURATION: Release
 
 # Image flow: every image is pushed only under immutable sha-<full sha>-<arch>
-# tags, tested on a native runner of that architecture (and scanned for amd64),
-# and only then merged into the sha-<full sha> and latest manifests, which are
-# signed keylessly with cosign.
+# tags and signed keylessly with cosign, tested on a native runner of that
+# architecture (and scanned for amd64). Production deploys the signature-verified
+# amd64 images; only after a successful deploy on main are the sha-<full sha> and
+# latest manifests merged and signed. Trivy scans amd64 only: both architectures
+# are built from the same sources and base image tags.
 
 jobs:
   setup-build-test:
@@ -106,6 +108,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      # Keyless cosign signing of the per-architecture image that is tested and deployed.
+      id-token: write
     needs: setup-build-test
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -148,6 +152,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push amd64 Image
+        id: build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./src/
@@ -171,11 +176,28 @@ jobs:
             PUBLIC_IDENTITY_API_BASE_URL=https://identity-cpnucleo.jonathanperis.tech/api
             PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.tech
 
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign amd64 image (keyless)
+        env:
+          IMAGE: ${{ matrix.image }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          if [[ ! "${DIGEST}" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "The build did not report an image digest." >&2
+            exit 1
+          fi
+          cosign sign --yes "${IMAGE}@${DIGEST}"
+          echo "Signed ${IMAGE}@${DIGEST} (sha-${GITHUB_SHA}-amd64)" >> "${GITHUB_STEP_SUMMARY}"
+
   build-push-arm64:
     name: Build & Push arm64 (${{ matrix.service }})
     permissions:
       contents: read
       packages: write
+      # Keyless cosign signing of the per-architecture image that is tested and deployed.
+      id-token: write
     needs: setup-build-test
     # Native arm64 runner: no QEMU emulation for ReadyToRun or npm builds.
     runs-on: ubuntu-24.04-arm
@@ -219,6 +241,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push arm64 Image
+        id: build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./src/
@@ -241,6 +264,21 @@ jobs:
             PUBLIC_WEBAPI_BASE_URL=https://api-cpnucleo.jonathanperis.tech/api
             PUBLIC_IDENTITY_API_BASE_URL=https://identity-cpnucleo.jonathanperis.tech/api
             PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.tech
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign arm64 image (keyless)
+        env:
+          IMAGE: ${{ matrix.image }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          if [[ ! "${DIGEST}" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "The build did not report an image digest." >&2
+            exit 1
+          fi
+          cosign sign --yes "${IMAGE}@${DIGEST}"
+          echo "Signed ${IMAGE}@${DIGEST} (sha-${GITHUB_SHA}-arm64)" >> "${GITHUB_STEP_SUMMARY}"
 
   container-test:
     name: Container Healthcheck Test (${{ matrix.service }})
@@ -394,7 +432,13 @@ jobs:
       packages: write
       # Keyless cosign signing: the OIDC token proves this workflow run.
       id-token: write
-    needs: [build-push-amd64, build-push-arm64, container-test, container-test-arm64, scan-amd64]
+    needs: [build-push-amd64, build-push-arm64, container-test, container-test-arm64, scan-amd64, deploy-hostinger]
+    # Mutable tags (latest) move only from main, and never to a release production rejected.
+    # A main run that intentionally skips the deploy (workflow_dispatch without it) still publishes.
+    if: >-
+      github.ref == 'refs/heads/main' && !cancelled() &&
+      needs.container-test-arm64.result == 'success' && needs.scan-amd64.result == 'success' &&
+      (needs.deploy-hostinger.result == 'success' || needs.deploy-hostinger.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -479,6 +523,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      # Only images signed by this release workflow on main are deployed.
+      - name: Verify image signatures
+        run: |
+          for image in cpnucleo-web-api cpnucleo-identity-api cpnucleo-grpc-server cpnucleo-web-client; do
+            cosign verify "ghcr.io/jonathanperis/${image}:sha-${GITHUB_SHA}-amd64" \
+              --certificate-identity "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/main-release.yml@refs/heads/main" \
+              --certificate-oidc-issuer https://token.actions.githubusercontent.com > /dev/null
+            echo "Verified signature: ${image}:sha-${GITHUB_SHA}-amd64" >> "${GITHUB_STEP_SUMMARY}"
+          done
 
       # Captures the running project first and redeploys it automatically if the
       # deploy action, health polling, image verification or log check fails.
