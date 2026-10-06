@@ -6,6 +6,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
+# A new push to a PR supersedes the previous run.
+concurrency:
+  group: build-check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   AOT: false
   TRIM: false
@@ -16,6 +24,7 @@ jobs:
   setup-build-test:
     name: Setup, Build & Test (${{ matrix.service }})
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     strategy:
@@ -30,7 +39,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 1
           persist-credentials: false
 
       - name: Setup .NET SDK
@@ -81,9 +89,53 @@ jobs:
         working-directory: ./src/WebClient
         run: bun run build
 
+      # Every .NET suite (Architecture, unit, security and Docker-backed
+      # integration tests) runs exactly once, here, with coverage collected.
       - name: Backend behavioral and database tests
         if: matrix.service == 'WebApi'
-        run: dotnet test cpnucleo.slnx -p:AOT=false -p:Trim=false -p:ExtraOptimize=false -p:SelfContained=false --nologo
+        run: >-
+          dotnet test cpnucleo.slnx
+          -p:AOT=false -p:Trim=false -p:ExtraOptimize=false -p:SelfContained=false
+          --nologo
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
+
+      - name: Merge coverage reports
+        if: matrix.service == 'WebApi'
+        uses: danielpalme/ReportGenerator-GitHub-Action@d3ebf1f760f7d8ab92cc44d9bcfee7ad73722a31 # 5.5.11
+        with:
+          reports: coverage/**/coverage.cobertura.xml
+          targetdir: coverage-report
+          reporttypes: Cobertura;MarkdownSummaryGithub
+          title: Cpnucleo .NET coverage
+
+      - name: Publish coverage summary
+        if: matrix.service == 'WebApi'
+        run: |
+          files=$(find coverage -name coverage.cobertura.xml | wc -l | tr -d ' ')
+          {
+            echo "### Coverage inputs"
+            echo
+            echo "Merged ${files} Cobertura file(s). Only projects referencing \`coverlet.collector\` emit one."
+            echo
+            echo "| Test project | Coverage collector |"
+            echo "|---|---|"
+            for project in tests/*/*.csproj; do
+              if grep -q 'coverlet.collector' "${project}"; then state=yes; else state="missing (no coverage)"; fi
+              echo "| $(basename "${project}" .csproj) | ${state} |"
+            done
+            echo
+            cat coverage-report/SummaryGithub.md
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload merged coverage
+        if: matrix.service == 'WebApi'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-cobertura
+          path: coverage-report/Cobertura.xml
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Verify isolated learning experiments
         if: matrix.service == 'WebApi'
@@ -96,108 +148,126 @@ jobs:
         working-directory: ./src/WebClient
         run: bun audit
 
-      - name: Architecture Tests
-        if: matrix.service != 'WebClient'
-        working-directory: "./tests/Architecture.Tests"
-        run: dotnet test --collect:"XPlat Code Coverage" --results-directory ../../coverage
+  coverage-upload:
+    name: Upload coverage to Codecov
+    needs: setup-build-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # Tokenless Codecov upload through GitHub OIDC; scoped to this job only.
+      id-token: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
+      - name: Download merged coverage
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: coverage-cobertura
+          path: coverage-report
+
+      # Non-blocking by design (continue-on-error), but the action is told to
+      # report upload errors so this step's outcome is visible below.
       - name: Upload coverage to Codecov
-        if: matrix.service != 'WebClient'
+        id: codecov
+        continue-on-error: true
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
-          directory: ./coverage
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage-report/Cobertura.xml
+          use_oidc: true
+          fail_ci_if_error: true
 
-      # - name: Build and Run Docker Compose for Integration Tests
-      #   run: |
-      #     docker compose up db -d --build --force-recreate
-      #     sleep 30
-
-      # - name: Integration Tests
-      #   working-directory: "./tests/WebApi.Integration.Tests"
-      #   run: dotnet test
+      - name: Report Codecov upload outcome
+        if: always()
+        env:
+          OUTCOME: ${{ steps.codecov.outcome }}
+        run: |
+          if [[ "${OUTCOME}" == success ]]; then
+            echo "Codecov upload succeeded." >> "${GITHUB_STEP_SUMMARY}"
+          else
+            echo "::warning title=Codecov upload ${OUTCOME}::Coverage was not uploaded to Codecov. The repository may still need activation on codecov.io, or OIDC is unavailable (fork PRs)."
+            {
+              echo "### Codecov upload: ${OUTCOME}"
+              echo
+              echo "Coverage was merged and summarized above, but the Codecov upload did not succeed."
+              echo "This does not fail CI. Check that the repository is activated on codecov.io (OIDC uploads need no token)."
+            } >> "${GITHUB_STEP_SUMMARY}"
+          fi
 
   container-test:
     name: Container Healthcheck Test (${{ matrix.service }})
     needs: setup-build-test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     strategy:
       matrix:
-        include:
-          - service: WebApi
-            compose_service: webapi
-            port: 5100
-          - service: IdentityApi
-            compose_service: identity
-            port: 5200
-          - service: GrpcServer
-            compose_service: grpc
-            port: 5301
-          - service: WebClient
-            compose_service: webclient
-            port: 5400
+        service: [WebApi, IdentityApi, GrpcServer, WebClient]
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 1
           persist-credentials: false
 
-      - name: Create CI compose environment
+      - name: Build lab images and exercise containers
         run: |
-          cat > .env <<'ENV'
-          POSTGRES_USER=cpnucleo_ci
-          POSTGRES_PASSWORD=cpnucleo_ci_password
-          POSTGRES_DB=cpnucleo_ci
-          DB_CONNECTION_STRING=Host=db;Username=cpnucleo_ci;Password=cpnucleo_ci_password;Database=cpnucleo_ci;Minimum Pool Size=1;Maximum Pool Size=5;Multiplexing=true;
-          Jwt__SigningKey=ci-healthcheck-signing-key-with-at-least-32-chars
-          Cors__AllowedOrigins__0=http://localhost:5400
-          OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-          OTEL_EXPORTER_OTLP_HTTP_ENDPOINT=http://otel-collector:4318
-          ENV
+          args=()
+          if [[ "${{ matrix.service }}" == WebApi ]]; then args+=(--restore-check); fi
+          scripts/ci-container-test.sh "${{ matrix.service }}" "${args[@]}"
 
-      - name: Build and Run Docker Compose for Healthcheck Test
-        run: |
-          docker compose -f compose.lab.yaml --profile full up ${{ matrix.compose_service }} -d --build
-          sleep 30
+  # Catches ReadyToRun/self-contained (TRIM=true) and ExtraOptimize regressions
+  # in the exact release Dockerfile configuration before they reach main.
+  release-image-build:
+    name: Release Image Build (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: WebApi
+            cache: web-api
+          - service: IdentityApi
+            cache: identity-api
+          - service: GrpcServer
+            cache: grpc-server
 
-      - name: Test Healthcheck Endpoint
-        run: |
-          for i in {1..20}; do
-            ROUTE=readyz
-            if [ "${{ matrix.service }}" = "WebClient" ]; then ROUTE=healthz; fi
-            STATUS=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 http://localhost:${{ matrix.port }}/${ROUTE}) || STATUS=000
-            echo "Attempt $i: Status $STATUS"
-            if [ "$STATUS" = "200" ]; then
-              echo "Healthcheck passed with status $STATUS"
-              exit 0
-            else
-              echo "Healthcheck attempt $i failed with status $STATUS. Retrying in 5 seconds..."
-              sleep 5
-            fi
-          done
-          echo "Healthcheck failed after 20 attempts."
-          exit 1
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Exercise local login and persistence
-        if: matrix.service == 'WebApi'
-        run: |
-          docker compose -f compose.lab.yaml up identity -d --build
-          docker compose -f compose.lab.yaml run --rm seed
-          for i in {1..20}; do
-            if curl -fsS http://localhost:5200/readyz >/dev/null; then break; fi
-            sleep 3
-          done
-          node scripts/smoke-lab.mjs
-          bash scripts/lab-restore.sh
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build release image (no push)
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./src/
+          file: ./src/${{ matrix.service }}/Dockerfile
+          push: false
+          platforms: linux/amd64
+          # Reuse layers cached by main-release; PR builds do not write cache.
+          cache-from: type=gha,scope=${{ matrix.cache }}-amd64
+          build-args: |
+            AOT=false
+            TRIM=true
+            EXTRA_OPTIMIZE=true
+            BUILD_CONFIGURATION=Release
+            ASPNETCORE_ENVIRONMENT=Production
 
   documentation:
     name: Documentation and dependency audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
