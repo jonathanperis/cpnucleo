@@ -351,15 +351,17 @@ public class FastEndpointsConfigurationTests
         dashboard.Should().Contain("Dark by default · light-ready");
         dashboard.Should().NotContain("Light by default · dark-ready");
 
-        dockerfile.Should().Contain("FROM node:26.9.0-alpine AS runtime");
-        dockerfile.Should().Contain("CMD [\"bun\", \"run\", \"preview\"]");
+        // Renovate may pin the base image digest (node:26.9.0-alpine@sha256:...).
+        dockerfile.Should().MatchRegex(@"FROM node:26\.9\.0-alpine(@sha256:[0-9a-f]{64})? AS runtime");
+        dockerfile.Should().Contain("CMD [\"node\", \"scripts/preview.mjs\"]");
 
         compose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
-        prodCompose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318");
-        prodCompose.Should().Contain("PUBLIC_WEBAPI_BASE_URL: https://${CPNUCLEO_API_HOST:?Set CPNUCLEO_API_HOST}/api");
-        prodCompose.Should().Contain("PUBLIC_IDENTITY_API_BASE_URL: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}/api");
-        prodCompose.Should().Contain("PUBLIC_IDENTITY_API_ISSUER: https://${CPNUCLEO_IDENTITY_HOST:?Set CPNUCLEO_IDENTITY_HOST}");
-        prodCompose.Should().NotContain("PUBLIC_IDENTITY_API_BASE_URL: http://localhost:5200");
+        prodCompose.Should().Contain("OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: ${OTEL_EXPORTER_OTLP_HTTP_ENDPOINT:-http://otel-collector:4318}");
+        // PUBLIC_* URLs are compiled into the static assets by the release build;
+        // runtime variables in production Compose would have no effect.
+        prodCompose.Should().NotContain("PUBLIC_WEBAPI_BASE_URL:");
+        prodCompose.Should().NotContain("PUBLIC_IDENTITY_API_BASE_URL:");
+        prodCompose.Should().NotContain("PUBLIC_IDENTITY_API_ISSUER:");
 
         var releaseWorkflow = File.ReadAllText(GetRepositoryPath(".github/workflows/main-release.yml"));
         releaseWorkflow.Should().Contain("PUBLIC_WEBAPI_BASE_URL=https://api-cpnucleo.jonathanperis.tech/api");
@@ -397,7 +399,7 @@ public class FastEndpointsConfigurationTests
     }
 
     [Fact]
-    public void ApplicationContainers_ShouldCheckHealthzEveryTenMinutes()
+    public void ApplicationContainers_ShouldCheckHealthzEveryMinute()
     {
         var compose = File.ReadAllText(GetRepositoryPath("compose.yaml"));
         var prodCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
@@ -409,8 +411,10 @@ public class FastEndpointsConfigurationTests
         var grpcDockerfile = File.ReadAllText(GetRepositoryPath("src/GrpcServer/Dockerfile"));
         var webClientDockerfile = File.ReadAllText(GetRepositoryPath("src/WebClient/Dockerfile"));
 
-        compose.Should().Contain("interval: 10m");
-        prodCompose.Should().Contain("interval: 10m");
+        compose.Should().Contain("interval: 1m");
+        prodCompose.Should().Contain("interval: 1m");
+        compose.Should().NotContain("interval: 10m");
+        prodCompose.Should().NotContain("interval: 10m");
         compose.Should().Contain("start_period: 1m");
         prodCompose.Should().Contain("start_period: 1m");
         compose.Should().Contain("start_interval: 10s");
@@ -424,13 +428,13 @@ public class FastEndpointsConfigurationTests
             program.Should().Contain("app.Logger.LogInformation(\"GET /healthz {StatusCode}\", context.Response.StatusCode)");
         }
 
-        apiDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        apiDockerfile.Should().Contain("HEALTHCHECK --interval=1m");
         apiDockerfile.Should().Contain("GET /healthz HTTP/1.1");
-        identityDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        identityDockerfile.Should().Contain("HEALTHCHECK --interval=1m");
         identityDockerfile.Should().Contain("GET /healthz HTTP/1.1");
-        grpcDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        grpcDockerfile.Should().Contain("HEALTHCHECK --interval=1m");
         grpcDockerfile.Should().Contain("GET /healthz HTTP/1.1");
-        webClientDockerfile.Should().Contain("HEALTHCHECK --interval=10m");
+        webClientDockerfile.Should().Contain("HEALTHCHECK --interval=1m");
         webClientDockerfile.Should().Contain("http://localhost:5030/healthz");
     }
 
