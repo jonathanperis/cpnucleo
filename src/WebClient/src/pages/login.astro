@@ -2,12 +2,14 @@
 import '../global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import LoginForm from '../components/LoginForm.astro';
+import { resourceMetadata } from '../lib/api/resource-metadata';
 ---
 
 <html lang="en" data-theme="dark" style="color-scheme: dark;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
     <title>Sign in · Cpnucleo</title>
     <script is:inline>
       (() => {
@@ -43,7 +45,7 @@ import LoginForm from '../components/LoginForm.astro';
             <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">Sign in before entering the dashboard.</h1>
             <p class="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg">A standalone login keeps the dashboard private. Sign in first, then choose what you want to review or update.</p>
             <div class="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
-              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">12</p><p class="mt-1 text-sm text-muted">Work areas</p></div>
+              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p data-work-area-count class="text-2xl font-semibold">{resourceMetadata.length}</p><p class="mt-1 text-sm text-muted">Work areas</p></div>
               <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">Secure</p><p class="mt-1 text-sm text-muted">Private session</p></div>
               <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">Live</p><p class="mt-1 text-sm text-muted">Service access</p></div>
             </div>

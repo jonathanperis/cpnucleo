@@ -5,9 +5,6 @@ export const normalizePageSize = (pageSize: number) => Math.max(1, Math.trunc(pa
 export const getLastPage = (totalCount: number, pageSize: number) =>
   Math.max(1, Math.ceil(Math.max(0, totalCount) / normalizePageSize(pageSize)));
 
-export const buildPageOptions = (totalCount: number, pageSize: number) =>
-  Array.from({ length: getLastPage(totalCount, pageSize) }, (_, index) => index + 1);
-
 export type PaginationItem = number | 'start-ellipsis' | 'end-ellipsis';
 
 const COMPACT_EDGE_COUNT = 7;

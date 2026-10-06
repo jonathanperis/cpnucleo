@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { clearStoredToken, getStoredToken, lastActivityStorageKey, requestJson, sessionInactivityTimeoutMs, setStoredToken, tokenStorageKey } from './http-client';
+import { ApiError, clearStoredToken, createApiError, getStoredToken, lastActivityStorageKey, parseRetryAfter, requestJson, sessionInactivityTimeoutMs, setStoredToken, tokenStorageKey } from './http-client';
 
 const tokenWithPayload = (payload: Record<string, unknown>) => {
   const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
@@ -110,5 +110,62 @@ describe('http client token handling', () => {
     expect(assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F%3Fpage%3D2');
     expect(assign.mock.calls[0][0]).not.toContain('5030');
     expect(assign.mock.calls[0][0]).not.toContain('cpnucleo.jonathanperis.tech');
+  });
+});
+
+const json = (status: number, body: unknown, headers: Record<string, string> = {}) =>
+  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...headers } });
+
+describe('unified error envelope', () => {
+  it('prefers field errors and general errors over the generic summary', () => {
+    const error = createApiError(400, {
+      statusCode: 400,
+      message: 'One or more errors occurred.',
+      errors: { Name: ['Name is required.'], endDate: ['End date must be after start date.'], generalErrors: ['The project is archived.'] },
+    });
+    expect(error.fieldErrors).toEqual({ name: ['Name is required.'], endDate: ['End date must be after start date.'] });
+    expect(error.generalErrors).toEqual(['The project is archived.']);
+    expect(error.message).toBe('The project is archived. Name is required. End date must be after start date.');
+  });
+
+  it('falls back to the server message, then to a status default', () => {
+    expect(createApiError(404, { statusCode: 404, message: 'Organization not found.' }).message).toBe('Organization not found.');
+    expect(createApiError(500, { statusCode: 500, message: 'An unexpected error occurred.' }).message).toBe('An unexpected error occurred.');
+    expect(createApiError(404, undefined).message).toBe('The requested record was not found.');
+    expect(createApiError(418, undefined).message).toBe('Request failed with status 418.');
+  });
+
+  it('shows the permission message on 403 without ending the session', async () => {
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech', { exp: Math.floor(Date.now() / 1000) + 1800 }));
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(403, { statusCode: 403, message: 'Administrator access is required.' }));
+    await expect(requestJson('http://example.test/api/organization', { method: 'POST', body: '{}' }))
+      .rejects.toMatchObject({ status: 403, message: 'Administrator access is required.' });
+    expect(getStoredToken()).not.toBeNull();
+  });
+
+  it('surfaces the server message for conflicts, including active related records', async () => {
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(json(409, { statusCode: 409, message: 'The project changed. Reload before saving your changes.' }))
+      .mockResolvedValueOnce(json(409, { statusCode: 409, message: 'The organization still has active projects.' }));
+    await expect(requestJson('http://example.test/api/project', { method: 'PATCH', body: '{}' }))
+      .rejects.toMatchObject({ status: 409, message: 'The project changed. Reload before saving your changes.' });
+    await expect(requestJson('http://example.test/api/organization', { method: 'DELETE', body: '{}' }))
+      .rejects.toMatchObject({ status: 409, message: 'The organization still has active projects.' });
+  });
+
+  it('includes the Retry-After delay in rate-limit messages', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(429, { statusCode: 429, message: 'Too many failed sign-in attempts.' }, { 'Retry-After': '90' }));
+    const error = await requestJson('http://example.test/api/login', { method: 'POST', token: null, body: '{}' }).catch(failure => failure as ApiError);
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status: 429, retryAfterSeconds: 90, message: 'Too many failed sign-in attempts. Try again in 2 minutes.' });
+    expect(createApiError(429, undefined, new Headers({ 'Retry-After': '1' })).message).toBe('Too many requests. Please wait and try again. Try again in 1 second.');
+  });
+
+  it('parses Retry-After as seconds or an HTTP date', () => {
+    const now = Date.parse('2026-10-06T12:00:00Z');
+    expect(parseRetryAfter('30', now)).toBe(30);
+    expect(parseRetryAfter('Tue, 06 Oct 2026 12:00:45 GMT', now)).toBe(45);
+    expect(parseRetryAfter('soon', now)).toBeUndefined();
+    expect(parseRetryAfter(null, now)).toBeUndefined();
   });
 });

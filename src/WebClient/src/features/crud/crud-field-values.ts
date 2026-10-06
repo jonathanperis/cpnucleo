@@ -1,4 +1,4 @@
-import type { ApiEntity, FieldMetadata, ResourceKey } from '~/lib/api/types';
+import type { ApiEntity, FieldMetadata } from '~/lib/api/types';
 
 const toDate = (value: unknown) => {
   if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
@@ -46,12 +46,12 @@ export const serializeFormValue = (value: string, fieldType: FieldMetadata['type
   return value;
 };
 
-export const relationOptionsLoaded = (relations: Partial<Record<ResourceKey, unknown[]>>, relation: ResourceKey | undefined) => {
-  if (!relation) return true;
-  return Object.prototype.hasOwnProperty.call(relations, relation);
-};
-
-export const withSelectedRelationOption = (options: ApiEntity[], selectedValue: string): ApiEntity[] => {
+/**
+ * Keeps the selected relation in the option list when it is outside the loaded search page,
+ * labelled from cached records (table lookups, earlier searches) before falling back to the id.
+ */
+export const withSelectedRelationOption = (options: ApiEntity[], selectedValue: string, cached: ApiEntity[] = []): ApiEntity[] => {
   if (!selectedValue || options.some((option) => String(option.id ?? '') === selectedValue)) return options;
-  return [{ id: selectedValue }, ...options];
+  const known = cached.find((record) => String(record.id ?? '') === selectedValue);
+  return [known ?? { id: selectedValue }, ...options];
 };
