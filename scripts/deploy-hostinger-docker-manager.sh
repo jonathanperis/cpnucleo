@@ -305,7 +305,11 @@ capture_previous_project() {
     "${PROJECT_OWNER_REPO}" "${HOSTINGER_CONTENT_LIMIT}" <<'PY'
 import json, re, sys
 source, target, project, repo, limit = sys.argv[1:]
-data = json.load(open(source, encoding="utf-8"))
+try:
+    data = json.load(open(source, encoding="utf-8"))
+except (OSError, ValueError) as error:
+    print(f"::warning title=Rollback unavailable::The deployed project response could not be parsed ({type(error).__name__}); continuing without automatic rollback.")
+    raise SystemExit(0)
 data = data.get("data", data) if isinstance(data, dict) else {}
 content = data.get("content") or ""
 environment = data.get("environment") or ""
@@ -469,6 +473,10 @@ for line in lines:
 missing = sorted(required - active.keys())
 if missing:
     raise SystemExit("Missing required env keys: " + ", ".join(missing))
+
+# An empty admin list is valid (nobody administers users or catalog data), but rarely intended.
+if not active.get("CPNUCLEO_ADMIN_LOGINS", "").strip():
+    print("::warning title=No administrators::CPNUCLEO_ADMIN_LOGINS is empty; no account can administer users or catalog data.")
 
 text = "\n".join(lines).rstrip() + "\n"
 if len(text) > 8192:

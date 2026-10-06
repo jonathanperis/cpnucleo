@@ -116,10 +116,13 @@ public class OperationsConfigurationTests
     {
         var nginx = ServiceBlock(Read("compose.prod.yaml"), "nginx");
 
-        foreach (var api in new[] { "webapi1-cpnucleo", "webapi2-cpnucleo", "identityapi-cpnucleo" })
+        foreach (var api in new[] { "webapi1-cpnucleo", "webapi2-cpnucleo" })
         {
             nginx.Should().MatchRegex($@"{Regex.Escape(api)}:\s*\n\s*condition: service_healthy");
         }
+
+        // NGINX never proxies IdentityApi, so an IdentityApi failure must not block the API gateway.
+        nginx.Should().NotContain("identityapi-cpnucleo:");
     }
 
     [Fact]
@@ -275,10 +278,18 @@ public class OperationsConfigurationTests
         jobs["merge-manifest"].Should().Contain("sigstore/cosign-installer@");
         jobs["merge-manifest"].Should().Contain("cosign sign --yes");
         jobs["merge-manifest"].Should().Contain("id-token: write");
+        jobs["merge-manifest"].Should().Contain("github.ref == 'refs/heads/main'", "only main may move mutable tags");
+        jobs["merge-manifest"].Should().MatchRegex(@"needs: \[[^\]]*deploy-hostinger[^\]]*\]", "latest must not point at a release production rejected");
+        foreach (var build in new[] { "build-push-amd64", "build-push-arm64" })
+        {
+            jobs[build].Should().Contain("cosign sign --yes", "the per-architecture images that are tested and deployed are signed");
+            jobs[build].Should().Contain("id-token: write");
+        }
+        jobs["deploy-hostinger"].Should().Contain("cosign verify", "only signed images are deployed");
         jobs["deploy-hostinger"].Should().MatchRegex(@"needs: \[[^\]]*scan-amd64[^\]]*\]");
         jobs["deploy-hostinger"].Should().Contain("scripts/deploy-hostinger-docker-manager.sh --rollback");
 
-        foreach (var (job, body) in jobs.Where(job => job.Key is not ("merge-manifest")))
+        foreach (var (job, body) in jobs.Where(job => job.Key is not ("merge-manifest" or "build-push-amd64" or "build-push-arm64")))
         {
             body.Should().NotContain("id-token: write", $"{job} must not mint OIDC tokens");
         }
