@@ -42,9 +42,9 @@ bun audit
 
 ## CI and interpretation
 
-PR and release workflows run backend behavioral suites and frontend tests. PRs also build/audit documentation and validate generated links/assets with `python3 scripts/check-docs-drift.py --built-site`. The checker regression fixture runs with `python3 scripts/test_docs_drift.py`. Release container checks use exact immutable amd64 images and database readiness. CodeQL analyzes C#, JavaScript/TypeScript and GitHub Actions.
+PR and release workflows run backend behavioral suites and frontend tests. PRs also build/audit documentation and validate generated links/assets with `python3 scripts/check-docs-drift.py --built-site`. The checker regression fixture runs with `python3 scripts/test_docs_drift.py`. Release container checks run the exact immutable amd64 and arm64 images on native runners of each architecture, including database readiness. PRs also build the release Dockerfile configuration (`TRIM=true`, `EXTRA_OPTIMIZE=true`) without pushing. CodeQL analyzes C#, JavaScript/TypeScript and GitHub Actions.
 
-Architecture rules explicitly reference their target assemblies: an unloaded assembly no longer produces a successful no-op. Source checks verify configuration structure but do not replace runtime proofs. The architecture-only Codecov upload should not be interpreted as whole-application behavioral coverage.
+Architecture rules explicitly reference their target assemblies: an unloaded assembly no longer produces a successful no-op. Source checks verify configuration structure but do not replace runtime proofs. PR coverage is collected once from the single solution test run, merged with ReportGenerator and summarized in the job summary; test projects without `coverlet.collector` are listed as missing rather than silently counted. Line coverage is a signal, not proof of behavioral completeness.
 
 User/workflow creation is covered by the PostgreSQL CRUD theory. The two never-executed `DbSet.Any()` mock tests were retired in favor of those real database proofs; the baseline has no skipped test placeholders.
 
