@@ -27,7 +27,11 @@
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 		<StackTraceSupport>false</StackTraceSupport>
-		<UseSystemResourceKeys>true</UseSystemResourceKeys>
+		<!-- Keep real exception messages: resource keys alone make production diagnostics unreadable. -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
+		<!-- Telemetry depends on EventSource and W3C HTTP activity propagation. -->
+		<EventSourceSupport>true</EventSourceSupport>
+		<HttpActivityPropagationSupport>true</HttpActivityPropagationSupport>
 		<DefineConstants>$(DefineConstants);EXTRAOPTIMIZE</DefineConstants>
 	</PropertyGroup>
 

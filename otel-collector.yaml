@@ -1,6 +1,9 @@
-# Production OpenTelemetry Collector gateway for the single-VPS Hostinger stack.
-# cpnucleo services send OTLP to otel-collector:4317; the collector forwards
-# traces, metrics, and logs to the local Grafana LGTM stack.
+# OpenTelemetry Collector gateway shared by the local Compose stack and the
+# single-VPS Hostinger stack (compose.prod.yaml inlines this file verbatim, with
+# dollar signs doubled for Compose). cpnucleo services send OTLP to otel-collector:4317;
+# the collector forwards traces, metrics, and logs to the Grafana LGTM stack.
+# Deployment labels come from the collector container environment, so local
+# telemetry is never labelled as production by accident.
 
 receivers:
   otlp:
@@ -19,13 +22,13 @@ processors:
   resource:
     attributes:
       - key: deployment.environment
-        value: production
+        value: ${env:CPNUCLEO_DEPLOYMENT_ENVIRONMENT:-development}
         action: upsert
       - key: service.namespace
         value: cpnucleo
         action: upsert
       - key: host.provider
-        value: hostinger
+        value: ${env:CPNUCLEO_HOST_PROVIDER:-local}
         action: upsert
 
   batch:

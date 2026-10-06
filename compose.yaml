@@ -4,31 +4,34 @@ name: "cpnucleo-default"
 # (apps -> otel-collector -> LGTM) while compose.override.yaml decides which
 # ports are convenient to publish during development.
 
+# Healthchecks use tools that exist in the runtime images: bash's /dev/tcp for
+# the .NET apps (no curl in mcr.microsoft.com/dotnet/aspnet) and BusyBox wget
+# for the Alpine-based WebClient.
 x-common-healthcheck:
   x-healthcheck-api: &healthcheck-api
-    test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
-    interval: 10m
+    test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5000; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-identity: &healthcheck-identity
-    test: ["CMD", "curl", "-f", "http://localhost:5010/healthz"]
-    interval: 10m
+    test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5010; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-grpcserver: &healthcheck-grpcserver
-    test: ["CMD", "curl", "-f", "http://localhost:5021/healthz"]
-    interval: 10m
+    test: ["CMD-SHELL", "timeout 5 bash -ec \"exec 3<>/dev/tcp/127.0.0.1/5021; printf 'GET /healthz HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; head -n 1 <&3 | grep -q ' 200 '\""]
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
     retries: 3
   x-healthcheck-webclient: &healthcheck-webclient
-    test: ["CMD", "curl", "-f", "http://localhost:5030/healthz"]
-    interval: 10m
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5030/healthz"]
+    interval: 1m
     start_period: 1m
     start_interval: 10s
     timeout: 10s
@@ -38,6 +41,8 @@ x-common-api: &common-api
   depends_on:
     db:
       condition: service_healthy
+    migrate-cpnucleo:
+      condition: service_completed_successfully
     otel-collector:
       condition: service_started
   env_file:
@@ -56,6 +61,19 @@ x-common-logging: &common-logging
       max-file: "3"
 
 services:
+  # One-shot additive migrations, mirroring compose.prod.yaml. APIs start only
+  # after it exits successfully; it never seeds data.
+  migrate-cpnucleo:
+    image: ghcr.io/jonathanperis/cpnucleo-web-api:latest
+    env_file:
+      - .env
+    command: ["--migrate-database"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    <<: *common-logging
+
   otel-lgtm:
     image: grafana/otel-lgtm:0.33.0
     container_name: otel-lgtm-cpnucleo
@@ -128,6 +146,10 @@ services:
     <<: [*common-api, *common-logging]
     image: ghcr.io/jonathanperis/cpnucleo-web-client:latest
     container_name: webclient-cpnucleo
+    # Static WebClient: no database or migration dependency.
+    depends_on:
+      otel-collector:
+        condition: service_started
     environment:
       OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-collector:4318
       OTEL_SERVICE_NAME: WebClient-Cpnucleo
@@ -171,8 +193,12 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - webapi1-cpnucleo
-      - webapi2-cpnucleo
+      webapi1-cpnucleo:
+        condition: service_healthy
+      webapi2-cpnucleo:
+        condition: service_healthy
+      otel-lgtm:
+        condition: service_started
     ports:
       # Mapping external port 9999 to internal port 9999 for NGINX reverse proxy.
       - "9999:9999"

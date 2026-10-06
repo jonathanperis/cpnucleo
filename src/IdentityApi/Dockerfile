@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.12 AS base
 
 LABEL maintainer="Jonathan Peris"
@@ -7,48 +9,54 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgssapi-krb5-
 USER app
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0.401 AS build
+# The SDK stage runs on the build machine's architecture and cross-publishes for
+# TARGETARCH with an explicit runtime identifier. ReadyToRun (TRIM=true) supports
+# this through the host Crossgen2 package, so local multi-arch builds avoid
+# emulating the whole SDK. Native AOT (AOT=true) is an experiment that needs a
+# native builder for the target architecture; the release runs native runners.
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0.401 AS build
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    clang zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+ARG AOT=false
+ARG TRIM=false
+ARG EXTRA_OPTIMIZE=false
+ARG BUILD_CONFIGURATION=Release
+ARG TARGETARCH
 
-ARG AOT
-ARG TRIM
-ARG EXTRA_OPTIMIZE
-ARG BUILD_CONFIGURATION
+RUN if [ "${AOT}" = "true" ]; then \
+      apt-get update \
+      && apt-get install -y --no-install-recommends clang zlib1g-dev \
+      && rm -rf /var/lib/apt/lists/*; \
+    fi
 
 WORKDIR /src
 
 COPY ["IdentityApi/IdentityApi.csproj", "IdentityApi/"]
+COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 
-RUN dotnet restore "./IdentityApi/IdentityApi.csproj" -p:Configuration=${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM}
+RUN case "${TARGETARCH}" in \
+      amd64) rid=linux-x64 ;; \
+      arm64) rid=linux-arm64 ;; \
+      *) echo "Unsupported TARGETARCH '${TARGETARCH}'" >&2; exit 1 ;; \
+    esac \
+    && echo "${rid}" > /tmp/rid \
+    && dotnet restore "./IdentityApi/IdentityApi.csproj" -r "${rid}" -p:Configuration=${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM}
 
 COPY . .
 
-WORKDIR "/src/IdentityApi"
-
-RUN dotnet build "IdentityApi.csproj" -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/publish
-
-FROM build AS publish
-
-RUN dotnet publish "IdentityApi.csproj" --no-restore -c $BUILD_CONFIGURATION -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/publish
+# A single publish compiles once; there is no separate build pass.
+RUN dotnet publish "./IdentityApi/IdentityApi.csproj" --no-restore -r "$(cat /tmp/rid)" -c ${BUILD_CONFIGURATION} -p:AOT=${AOT} -p:Trim=${TRIM} -p:ExtraOptimize=${EXTRA_OPTIMIZE} -o /app/publish
 
 FROM base AS final
 
-ARG ASPNETCORE_ENVIRONMENT
-ARG DB_CONNECTION_STRING
+ARG ASPNETCORE_ENVIRONMENT=Production
 
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:5010
 ENV ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-ENV DB_CONNECTION_STRING=${DB_CONNECTION_STRING}
 EXPOSE 5010
-HEALTHCHECK --interval=10m --timeout=5s --retries=3 CMD bash -ec "exec 3<>/dev/tcp/127.0.0.1/5010; printf 'GET /healthz HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3; head -n 1 <&3 | grep -q ' 200 '" || exit 1
+HEALTHCHECK --interval=1m --timeout=5s --start-period=1m --start-interval=10s --retries=3 CMD bash -ec "exec 3<>/dev/tcp/127.0.0.1/5010; printf 'GET /healthz HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3; head -n 1 <&3 | grep -q ' 200 '" || exit 1
 
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["./IdentityApi"]
