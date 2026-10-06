@@ -12,16 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="FastEndpoints.Testing" Version="8.3.0" />
-      <PackageReference Include="Testcontainers.PostgreSql" Version="4.15.0" />
-      <PackageReference Include="coverlet.collector" Version="10.0.1">
+      <PackageReference Include="FastEndpoints.Testing" />
+      <PackageReference Include="Testcontainers.PostgreSql" />
+      <PackageReference Include="coverlet.collector">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
-      <PackageReference Include="Shouldly" Version="4.3.0" />
-      <PackageReference Include="xunit.v3.mtp-off" Version="4.0.1" />
-      <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" />
+      <PackageReference Include="Shouldly" />
+      <PackageReference Include="xunit.v3.mtp-off" />
+      <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
 
   <ItemGroup>
