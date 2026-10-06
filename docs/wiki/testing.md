@@ -4,11 +4,11 @@
 
 | Suite | Scope |
 |---|---|
-| Architecture.Tests | Explicitly loaded production assemblies, forbidden dependencies, naming and selected source/configuration contracts |
-| Application.Unit.Tests | Shared project creation, pagination boundaries and domain invariants |
-| Security.Unit.Tests | Argon2 hashing, successful token issuance, password rejection, refresh lifetime/account/privilege checks |
-| WebApi.Unit.Tests | Endpoint orchestration and selected failure paths |
-| WebApi.Integration.Tests | Authenticated HTTP CRUD for every resource, serialized gRPC parity, PostgreSQL transactions, login contention, project concurrency and SSE external writes |
+| Architecture.Tests | Explicitly loaded production assemblies, forbidden dependencies (including the domain's references), naming, access rules for every entity, update statements that never touch lifecycle columns, and selected source/configuration contracts |
+| Application.Unit.Tests | Shared project creation (including creator membership), pagination and search escaping, domain invariants on every factory, UTC normalization, password policy, security stamps and batch ids |
+| Security.Unit.Tests | Argon2 hashing, timing-safe login, ambiguous logins, per-login lockout, input bounds, HS256/RS256 signing and validation, refresh lifetime/stamp/privilege checks |
+| WebApi.Unit.Tests | Endpoint orchestration, atomic EF batch removal for every resource, per-resource listing notifications and SSE `Accept` parsing |
+| WebApi.Integration.Tests | Real WebApi, GrpcServer and IdentityApi hosts on PostgreSQL: CRUD on both transports for every resource with soft-delete checks, authorization (admin, member, outsider), relationship triggers and their races, JWT negatives and session revocation, login/refresh end to end, rate limiting, the error envelope, security headers, readiness, dates, search, sorting, project concurrency and SSE external writes |
 
 Run `dotnet test cpnucleo.slnx`. Docker must be available for the integration suite. It provisions its own PostgreSQL container with commit timestamps enabled and applies real migrations. It neither reads nor mutates your application database.
 
@@ -23,7 +23,11 @@ dotnet test tests/Architecture.Tests/
 dotnet test tests/Security.Unit.Tests/
 dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~PersistenceParityTests
 dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~ConcurrencyAndStreamingTests
+dotnet test tests/WebApi.Integration.Tests/ --filter "FullyQualifiedName~AuthorizationTests|FullyQualifiedName~AuthenticationTests"
+dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~RelationshipIntegrityTests
 ```
+
+The fixture seeds three accounts: an administrator (listed in `CPNUCLEO_ADMIN_LOGINS`), a member and an outsider. Test tokens carry the accounts' real security stamps, so they pass the same session validation as production tokens.
 
 The SSE scenario may wait one 15-second refresh interval. The gRPC client uses an in-process HTTP/2 test handler, exercising serialization, the gRPC pipeline and authentication without opening a public listener.
 

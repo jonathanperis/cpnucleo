@@ -56,13 +56,13 @@ The existing million-row CSV importer remains an advanced, explicit load-test to
 | gRPC | FastEndpoints Remote Messaging, Dapper, shared contracts |
 | Shared use case | `Application/Features/Projects/CreateProject` |
 | Domain | Entities, factory/update behavior, repository ports and password-hasher abstraction |
-| Identity | Argon2id, subject-bearing JWTs, active-account refresh with an eight-hour session boundary |
+| Identity | Argon2id, HS256 or RS256 JWTs, per-login lockout, session validation and refresh with an eight-hour boundary |
 | UI | Astro static routes, native TypeScript controllers, Tailwind CSS |
 | Database | PostgreSQL; EF migrations shared by both persistence strategies |
 | Delivery | GitHub Actions, GHCR immutable tags, Hostinger Docker Manager |
 | Observability | OpenTelemetry traces, metrics and logs; optional local Grafana LGTM |
 
-Both transports expose 55 CRUD operations across 11 resources. Normal removal is soft deletion. Project batch removal is transactional; version-aware project updates reject stale writes. List pages are bounded to 100 rows and support search and batched relation lookups.
+Both transports expose 55 CRUD operations across 11 resources. Normal removal is soft deletion, guarded by relationship triggers. Every batch removal is atomic; version-aware project updates reject stale writes. Errors share one JSON envelope (`statusCode`, `message`, `errors`). List pages are bounded to 100 rows and support search and batched relation lookups.
 
 The Astro UI preserves CRUD forms, pagination, relation labels/search, native details dialogs, counters, login redirects, inactivity expiry, token refresh, cross-tab logout, themes, and service checks. It shows field-level API errors, hides administrator-only actions from non-admin sessions, and serves a CSP derived from its build-time API URLs. Every page of the WebClient and the documentation site is an Astro page; tests enforce it. Server-sent events combine immediate local notifications with a 15-second cross-instance refresh and client reconnection.
 
@@ -76,7 +76,7 @@ The Astro UI preserves CRUD forms, pagination, relation labels/search, native de
 | Foundation/exercise | Tenant isolation: tenant context types and informational claims exist, but shared workspace records are not tenant-isolated |
 | Experiment | Native AOT and Dapper.AOT; installation/build flags alone do not prove compatibility |
 
-User administration requires an administrator on both transports. Configure `CPNUCLEO_ADMIN_LOGINS` explicitly. Other authenticated operations demonstrate a shared learning workspace, not ownership-based authorization for a multi-tenant SaaS.
+Authorization is shared by both transports and both persistence styles. Catalog data is readable by everyone and writable by administrators. Projects and their work are visible and writable to project members only, and members record only their own hours. User administration requires an administrator; configure `CPNUCLEO_ADMIN_LOGINS` explicitly (the public demo login is not an administrator unless you list it). Membership is not tenant isolation.
 
 ## Verify
 
@@ -110,7 +110,7 @@ docker compose --env-file .env -f compose.prod.yaml up -d
 
 Use `.env.hostinger.example` to configure production secrets, hosts and immutable image tags. Do not layer the development/base file into production: Compose preserves published ports during merging.
 
-The release pipeline tests the exact amd64 image tags, applies additive database migrations before API startup, deploys through Hostinger, and verifies liveness and database readiness. `/healthz` checks the process; `/readyz` also checks database/schema availability. The legacy `TRIM` flag currently configures ReadyToRun/self-contained publishing, not IL trimming. Native AOT is disabled in the standard release.
+The release pipeline tests the exact amd64 image tags, applies additive database migrations before API startup, deploys through Hostinger, and verifies liveness and database readiness. `/healthz` checks the process; `/readyz` also checks that the database has the newest migration. The legacy `TRIM` flag currently configures ReadyToRun/self-contained publishing, not IL trimming. Native AOT is disabled in the standard release.
 
 ## Repository layout
 
