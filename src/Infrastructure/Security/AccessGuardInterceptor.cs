@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Security;
 
@@ -27,20 +28,22 @@ public sealed class AccessGuardInterceptor(IAccessGuard accessGuard) : SaveChang
         var entries = context.ChangeTracker.Entries<BaseEntity>()
             .Where(entry => entry.State is EntityState.Added or EntityState.Modified or EntityState.Deleted)
             .ToArray();
+        if (entries.Length == 0) return;
 
+        var session = new DatabaseSession(context.Database.GetDbConnection(), context.Database.CurrentTransaction?.GetDbTransaction());
         foreach (var entry in entries)
         {
             var current = ResourceAccess.TargetOf(entry.Entity);
             if (entry.State == EntityState.Added)
             {
-                await accessGuard.EnsureCanWriteAsync(current, AccessOperation.Create, cancellationToken).ConfigureAwait(false);
+                await accessGuard.EnsureCanWriteAsync(current, AccessOperation.Create, session, cancellationToken).ConfigureAwait(false);
                 continue;
             }
 
             var original = ResourceAccess.TargetOf((BaseEntity)entry.OriginalValues.ToObject());
-            await accessGuard.EnsureCanWriteAsync(original, AccessOperation.Modify, cancellationToken).ConfigureAwait(false);
+            await accessGuard.EnsureCanWriteAsync(original, AccessOperation.Modify, session, cancellationToken).ConfigureAwait(false);
             if (current != original)
-                await accessGuard.EnsureCanWriteAsync(current, AccessOperation.Modify, cancellationToken).ConfigureAwait(false);
+                await accessGuard.EnsureCanWriteAsync(current, AccessOperation.Reassign, session, cancellationToken).ConfigureAwait(false);
         }
     }
 }

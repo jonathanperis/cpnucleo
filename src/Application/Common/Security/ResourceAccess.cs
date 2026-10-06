@@ -66,15 +66,28 @@ public sealed record AccessTarget(Type EntityType, Guid? ProjectId = null, Guid?
 
 public enum AccessOperation
 {
+    /// <summary>Writing a new row with these values.</summary>
     Create,
-    Modify
+
+    /// <summary>Changing or removing an existing row, described by its stored values.</summary>
+    Modify,
+
+    /// <summary>The new values of a changed row (for example moving it to another project).</summary>
+    Reassign
 }
 
 /// <summary>
+/// The connection (and transaction) a write is running on, so access checks see the same data and
+/// don't take a second pooled connection while a transaction holds the first.
+/// </summary>
+public sealed record DatabaseSession(System.Data.Common.DbConnection Connection, System.Data.Common.DbTransaction? Transaction);
+
+/// <summary>
 /// Enforces <see cref="ResourceAccess"/> for writes. Throws <see cref="AccessDeniedException"/> when the
-/// current user may not write the target.
+/// caller may not make the change, and <see cref="Domain.Common.RecordNotFoundException"/> when an
+/// existing row isn't visible to them (hidden rows look missing).
 /// </summary>
 public interface IAccessGuard
 {
-    Task EnsureCanWriteAsync(AccessTarget target, AccessOperation operation, CancellationToken cancellationToken = default);
+    Task EnsureCanWriteAsync(AccessTarget target, AccessOperation operation, DatabaseSession? session = null, CancellationToken cancellationToken = default);
 }

@@ -67,7 +67,7 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
     public async Task<Guid> AddAsync(Project? entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity);
-        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(entity), AccessOperation.Create, cancellationToken);
+        await accessGuard.EnsureCanWriteAsync(ResourceAccess.TargetOf(entity), AccessOperation.Create, new DatabaseSession(connection, null), cancellationToken);
 
         const string query = """
                              INSERT INTO "Projects" ("Id", "Name", "OrganizationId", "CreatedAt", "Active")
@@ -95,19 +95,6 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
         return affectedRows > 0;
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        if (!await AuthorizeModificationAsync(id, cancellationToken)) return false;
-
-        const string query = """
-                             UPDATE "Projects" SET "Active" = false, "DeletedAt" = now()
-                             WHERE "Id" = @Id AND "Active" = true;
-                             """;
-
-        var affectedRows = await connection.ExecuteAsync(new CommandDefinition(query, new { Id = id }, cancellationToken: cancellationToken));
-        return affectedRows > 0;
-    }
-
     public Task<bool> UpdateIfVersionAsync(Project entity, DateTime expectedVersion, CancellationToken cancellationToken = default) =>
         CreateGenericRepository().UpdateIfVersionAsync(entity, expectedVersion, cancellationToken);
 
@@ -130,7 +117,8 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
     private async Task<bool> AuthorizeModificationAsync(Guid id, CancellationToken cancellationToken)
     {
         if (await GetByIdAsync(id, cancellationToken) is null) return false;
-        await accessGuard.EnsureCanWriteAsync(new AccessTarget(typeof(Project), ProjectId: id), AccessOperation.Modify, cancellationToken);
+        await accessGuard.EnsureCanWriteAsync(new AccessTarget(typeof(Project), ProjectId: id), AccessOperation.Modify,
+            new DatabaseSession(connection, null), cancellationToken);
         return true;
     }
 

@@ -46,6 +46,8 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
             return new(StatusCodes.Status400BadRequest, domain.Message, ApiErrors.FieldError(domain.Field, domain.Message), "domain rule");
         if (exception is AccessDeniedException denied)
             return new(StatusCodes.Status403Forbidden, denied.Message, null, "access denied");
+        if (exception is RecordNotFoundException missing)
+            return new(StatusCodes.Status404NotFound, missing.Message, null, "not found or not visible");
         if (exception is ArgumentException)
             return new(StatusCodes.Status400BadRequest, "The request contains an invalid value.", null, "invalid argument");
 
@@ -56,6 +58,7 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
                 ApiErrors.FieldError(e.Field, e.Message), "inactive reference"),
             { Kind: DatabaseErrorKind.ActiveDependents } e => new(StatusCodes.Status409Conflict, e.Message, null, "active dependents"),
             { Kind: DatabaseErrorKind.InvalidValue } e => new(StatusCodes.Status400BadRequest, e.Message, null, "invalid value"),
+            { Kind: DatabaseErrorKind.ConcurrentChange } e => new(StatusCodes.Status409Conflict, e.Message, null, "concurrent change"),
             _ => null
         };
     }

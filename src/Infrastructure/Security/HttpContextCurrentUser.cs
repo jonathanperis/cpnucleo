@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Http;
 namespace Infrastructure.Security;
 
 /// <summary>
-/// Resolves the caller from the current request's validated JWT. Code running without any request
-/// (CLI tools, seeding, migrations) is trusted system work.
+/// Resolves the caller from the current request's validated JWT. Without a request there is no
+/// caller and nothing is allowed: trusted tools must opt in explicitly with
+/// <see cref="StaticCurrentUser.System"/> instead of inheriting access by accident (for example from
+/// background work that outlives a request).
 /// </summary>
 public sealed class HttpContextCurrentUser(IHttpContextAccessor accessor) : ICurrentUser
 {
@@ -16,5 +18,5 @@ public sealed class HttpContextCurrentUser(IHttpContextAccessor accessor) : ICur
     public bool IsAdmin => accessor.HttpContext?.User is { Identity.IsAuthenticated: true } user
         && user.HasClaim(CpnucleoClaimTypes.Admin, "true");
 
-    public bool IsSystem => accessor.HttpContext is null;
+    public bool IsSystem => false;
 }

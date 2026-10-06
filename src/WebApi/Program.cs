@@ -97,9 +97,9 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 50, // Allow 50 requests
+                PermitLimit = 300, // A dashboard and CRUD forms issue several requests per screen
                 Window = TimeSpan.FromMinutes(1), // Per 1-minute window
-                QueueLimit = 10, // Queue up to 10 additional requests
+                QueueLimit = 20, // Queue up to 20 additional requests
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst, // Process oldest requests first
                 AutoReplenishment = true // Default: automatically replenish permits
             }));
@@ -171,13 +171,18 @@ var app = builder.Build();
 
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
-    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
-    if (context.Request.Path.StartsWithSegments("/swagger"))
-        context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'");
-    else context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+    // Added when the response starts, so error responses written after a Response.Clear() keep them.
+    context.Response.OnStarting(() =>
+    {
+        context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
+        context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+        context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+        if (context.Request.Path.StartsWithSegments("/swagger"))
+            context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'");
+        else context.Response.Headers.TryAdd("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
+        return Task.CompletedTask;
+    });
 
     await next();
 

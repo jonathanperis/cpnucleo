@@ -17,19 +17,37 @@ public static class ListingSseExtensions
     private static MediaTypeWithQualityHeaderValue? ParseMediaType(string part) =>
         MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType) ? mediaType : null;
 
+    /// <summary>
+    /// A live listing for the current request. Before every refresh the caller's session is validated
+    /// again, so a deactivated account or revoked admin stops receiving data within one refresh.
+    /// </summary>
+    public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
+        string resource,
+        Func<CancellationToken, Task<TResponse>> getSnapshot,
+        HttpContext context,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var sessions = context.RequestServices.GetRequiredService<TokenSessionValidator>();
+        return CreateListingStream(resource, getSnapshot, context.RequestServices.GetRequiredService<ListingChangeNotifier>(),
+            logger, cancellationToken, async token => await sessions.ValidateAsync(context.User, token) is null);
+    }
+
     public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
         string resource,
         Func<CancellationToken, Task<TResponse>> getSnapshot,
         ListingChangeNotifier listingChanges,
         ILogger logger,
-        CancellationToken cancellationToken) =>
-        ReadListingSnapshots(resource, getSnapshot, listingChanges, logger, cancellationToken);
+        CancellationToken cancellationToken,
+        Func<CancellationToken, Task<bool>>? sessionIsValid = null) =>
+        ReadListingSnapshots(resource, getSnapshot, listingChanges, logger, sessionIsValid, cancellationToken);
 
     private static async IAsyncEnumerable<TResponse> ReadListingSnapshots<TResponse>(
         string resource,
         Func<CancellationToken, Task<TResponse>> getSnapshot,
         ListingChangeNotifier listingChanges,
         ILogger logger,
+        Func<CancellationToken, Task<bool>>? sessionIsValid,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var observedVersion = listingChanges.CurrentVersion(resource);
@@ -66,6 +84,12 @@ public static class ListingSseExtensions
             TResponse nextSnapshot;
             try
             {
+                if (sessionIsValid is not null && !await sessionIsValid(cancellationToken))
+                {
+                    logger.LogInformation("Listing SSE stream closed: the session is no longer valid.");
+                    yield break;
+                }
+
                 nextSnapshot = await getSnapshot(cancellationToken);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

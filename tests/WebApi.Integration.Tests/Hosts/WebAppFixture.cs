@@ -95,6 +95,14 @@ public sealed class WebAppFixture : IAsyncLifetime
 
     public NpgsqlConnection CreateConnection() => new(ConnectionString);
 
+    /// <summary>A WebApi host with production rate limiting, for quota tests.</summary>
+    public WebApplicationFactory<WebApiHost::Program> CreateRateLimitedWebApiFactory() =>
+        new WebApplicationFactory<WebApiHost::Program>().WithWebHostBuilder(builder =>
+        {
+            ConfigureApp(builder);
+            builder.ConfigureServices(CaptureFailures);
+        });
+
     /// <summary>An IdentityApi host on the same database. Tests that exercise quotas get their own instance.</summary>
     public WebApplicationFactory<IdentityApi.Security.TokenIssuer> CreateIdentityFactory(bool disableRateLimiting) =>
         new WebApplicationFactory<IdentityApi.Security.TokenIssuer>().WithWebHostBuilder(builder =>
@@ -115,7 +123,9 @@ public sealed class WebAppFixture : IAsyncLifetime
             ["Jwt:SigningKey"] = SigningKey,
             ["Jwt:Issuer"] = Issuer,
             ["Jwt:Audience"] = Audience,
-            ["CPNUCLEO_ADMIN_LOGINS"] = Admin.Login
+            ["CPNUCLEO_ADMIN_LOGINS"] = Admin.Login,
+            // Short window so revocation tests don't wait the production 30 seconds.
+            ["Auth:SessionValidationCacheSeconds"] = "1"
         }));
     }
 

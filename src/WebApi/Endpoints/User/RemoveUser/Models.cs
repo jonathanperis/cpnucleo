@@ -5,7 +5,7 @@ namespace WebApi.Endpoints.User.RemoveUser;
 /// </summary>
 public class RemoveUserRequest : RemoveRequest
 {
-    public new class Validator : RemoveRequest.Validator
+    public class Validator : RemoveRequestValidator<RemoveUserRequest>
     {
     }
 }
