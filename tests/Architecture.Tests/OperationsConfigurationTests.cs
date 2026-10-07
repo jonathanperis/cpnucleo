@@ -478,13 +478,13 @@ public class OperationsConfigurationTests
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
 
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "cpnucleo.slnx")))
+        while (directory is not null && !File.Exists(Path.Join(directory.FullName, "cpnucleo.slnx")))
         {
             directory = directory.Parent;
         }
 
         directory.Should().NotBeNull("the test should run from inside the cpnucleo repository output tree");
 
-        return Path.Combine(directory!.FullName, relativePath);
+        return Path.Join(directory!.FullName, relativePath);
     }
 }

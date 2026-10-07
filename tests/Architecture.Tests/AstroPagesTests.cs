@@ -29,7 +29,7 @@ public class AstroPagesTests
     [MemberData(nameof(AstroSites))]
     public void EveryPage_ShouldBeAnAstroFile(string site)
     {
-        var pagesDirectory = GetRepositoryPath(Path.Combine(site, "src", "pages"));
+        var pagesDirectory = GetRepositoryPath(Path.Join(site, "src", "pages"));
         Directory.Exists(pagesDirectory).Should().BeTrue($"{site} must keep its Astro pages directory");
 
         var pages = Directory.EnumerateFiles(pagesDirectory, "*", SearchOption.AllDirectories).ToList();
@@ -44,7 +44,7 @@ public class AstroPagesTests
     [MemberData(nameof(AstroSites))]
     public void PublicAssets_ShouldNotContainHandWrittenHtmlPages(string site)
     {
-        var publicDirectory = GetRepositoryPath(Path.Combine(site, "public"));
+        var publicDirectory = GetRepositoryPath(Path.Join(site, "public"));
         var htmlPages = Directory.Exists(publicDirectory)
             ? Directory.EnumerateFiles(publicDirectory, "*", SearchOption.AllDirectories)
                 .Where(path => path.EndsWith(".html", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".htm", StringComparison.OrdinalIgnoreCase))
@@ -58,7 +58,7 @@ public class AstroPagesTests
     [MemberData(nameof(AstroSites))]
     public void Packages_ShouldNotDependOnClientUiFrameworks(string site)
     {
-        using var manifest = JsonDocument.Parse(File.ReadAllText(GetRepositoryPath(Path.Combine(site, "package.json"))));
+        using var manifest = JsonDocument.Parse(File.ReadAllText(GetRepositoryPath(Path.Join(site, "package.json"))));
         var packageNames = DependencySections
             .Where(section => manifest.RootElement.TryGetProperty(section, out _))
             .SelectMany(section => manifest.RootElement.GetProperty(section).EnumerateObject().Select(property => property.Name))
@@ -77,11 +77,11 @@ public class AstroPagesTests
         aliasTargets.Intersect(ForbiddenFrameworkPackages).Should().BeEmpty($"{site} must not alias a client rendering framework");
 
         // Transitive installs count too: the lockfile lists every resolved package.
-        var lockfile = File.ReadAllText(GetRepositoryPath(Path.Combine(site, "bun.lock")));
+        var lockfile = File.ReadAllText(GetRepositoryPath(Path.Join(site, "bun.lock")));
         ForbiddenFrameworkPackages.Where(name => lockfile.Contains($"\"{name}@", StringComparison.Ordinal))
             .Should().BeEmpty($"{site} must not install a client rendering framework transitively");
 
-        var astroConfig = File.ReadAllText(GetRepositoryPath(Path.Combine(site, "astro.config.mjs")));
+        var astroConfig = File.ReadAllText(GetRepositoryPath(Path.Join(site, "astro.config.mjs")));
         ForbiddenFrameworkPackages
             .Where(name => astroConfig.Contains($"'{name}'", StringComparison.Ordinal) || astroConfig.Contains($"\"{name}\"", StringComparison.Ordinal))
             .Should().BeEmpty($"{site} must not register a client framework integration");
@@ -92,7 +92,7 @@ public class AstroPagesTests
     public void DocumentLayouts_ShouldEmitTheAstroGeneratorMarker(string site)
     {
         // The generator meta tag is how the build-output checks prove each HTML file came from Astro.
-        var documentTemplates = Directory.EnumerateFiles(GetRepositoryPath(Path.Combine(site, "src")), "*.astro", SearchOption.AllDirectories)
+        var documentTemplates = Directory.EnumerateFiles(GetRepositoryPath(Path.Join(site, "src")), "*.astro", SearchOption.AllDirectories)
             .Where(path => Regex.IsMatch(File.ReadAllText(path), @"<html[\s>]"))
             .ToList();
 
@@ -121,12 +121,12 @@ public class AstroPagesTests
     private static string GetRepositoryPath(string relativePath)
     {
         var currentDirectory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (currentDirectory is not null && !File.Exists(Path.Combine(currentDirectory.FullName, "cpnucleo.slnx")))
+        while (currentDirectory is not null && !File.Exists(Path.Join(currentDirectory.FullName, "cpnucleo.slnx")))
         {
             currentDirectory = currentDirectory.Parent;
         }
 
         currentDirectory.Should().NotBeNull("tests should run inside the repository checkout");
-        return Path.Combine(currentDirectory!.FullName, relativePath);
+        return Path.Join(currentDirectory!.FullName, relativePath);
     }
 }

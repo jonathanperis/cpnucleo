@@ -7,7 +7,7 @@ public class WebApiEndpointSourceTests
     {
         var repoRoot = LocateRepositoryRoot();
         var modelFiles = Directory.GetFiles(
-            Path.Combine(repoRoot, "src", "WebApi", "Endpoints"),
+            Path.Join(repoRoot, "src", "WebApi", "Endpoints"),
             "Models.cs",
             SearchOption.AllDirectories);
 
@@ -37,7 +37,7 @@ public class WebApiEndpointSourceTests
     {
         var repoRoot = LocateRepositoryRoot();
         var endpointFiles = Directory.GetFiles(
-            Path.Combine(repoRoot, "src", "WebApi", "Endpoints"),
+            Path.Join(repoRoot, "src", "WebApi", "Endpoints"),
             "*.cs",
             SearchOption.AllDirectories);
 
@@ -59,7 +59,7 @@ public class WebApiEndpointSourceTests
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
 
-        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "cpnucleo.slnx")))
+        while (directory is not null && !File.Exists(Path.Join(directory.FullName, "cpnucleo.slnx")))
         {
             directory = directory.Parent;
         }
