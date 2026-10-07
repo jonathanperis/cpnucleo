@@ -76,7 +76,7 @@ The Astro UI preserves CRUD forms, pagination, relation labels/search, native de
 | Foundation/exercise | Tenant isolation: tenant context types and informational claims exist, but shared workspace records are not tenant-isolated |
 | Experiment | Native AOT and Dapper.AOT; installation/build flags alone do not prove compatibility |
 
-Authorization is shared by both transports and both persistence styles. Catalog data is readable by everyone and writable by administrators. Projects and their work are visible and writable to project members only, and members record only their own hours. User administration requires an administrator; configure `CPNUCLEO_ADMIN_LOGINS` explicitly (the public demo login is not an administrator unless you list it). Membership is not tenant isolation.
+Authorization is shared by both transports and both persistence styles. Catalog data is readable by everyone and writable by administrators. Projects and their work are visible and writable to project members only, and members record only their own hours. User administration requires an administrator. By default the seeded demo account (`demo@cpnucleo.local`) is the administrator; set `CPNUCLEO_ADMIN_LOGINS` to a comma-separated list to choose others instead (the list replaces the default). In production the demo password is `CPNUCLEO_DEMO_PASSWORD` from the demo import, so keep it private. Membership is not tenant isolation.
 
 ## Verify
 

@@ -3,7 +3,7 @@ namespace Infrastructure.Common.Helpers;
 public static class FakeDataCsvImporter
 {
     private const string SeedVersion = "fake-data-csv-v3-20260528-tenant-scoped";
-    private const string DefaultDemoLogin = "demo@cpnucleo.local";
+    private const string DefaultDemoLogin = AdminLogins.DefaultLogin;
     private const string DemoPasswordEnvironmentVariable = "CPNUCLEO_DEMO_PASSWORD";
     private const string DefaultDemoName = "Cpnucleo Demo";
     private static readonly Guid DefaultDemoUserId = Guid.Parse("0198a4a8-6d1f-7a54-9b1c-c9c430f2d001");
