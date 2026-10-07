@@ -452,8 +452,11 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
         if (!item?.id || !canWrite) break;
         const label = recordLabel(resource, item, relations);
         const confirmed = await confirmAction(`“${label}” will be removed from ${resource.pluralLabel.toLowerCase()}. It stays in the database as a soft-deleted record.`);
-        // Not every browser returns focus to the trigger when a modal dialog closes.
-        target.focus();
+        // Not every browser returns focus to the trigger when a modal dialog closes, and a live
+        // snapshot may have replaced the row meanwhile: focus its current Delete button, or the
+        // stable fallback when the row is gone.
+        focusReturn = { action: 'delete', id: target.dataset.id };
+        restoreFocus();
         if (!confirmed) break;
         target.disabled = true;
         alert.hidden = true;

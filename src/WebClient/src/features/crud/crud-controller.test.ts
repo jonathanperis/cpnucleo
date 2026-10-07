@@ -174,6 +174,26 @@ describe('server errors in forms', () => {
     expect(remove).not.toHaveBeenCalled();
   });
 
+  it('returns focus to the replacement Delete button when a live snapshot re-renders the row during confirmation', async () => {
+    let push: (result: PaginatedResult<ApiEntity>) => void = () => {};
+    vi.mocked(webApiClient.subscribeList).mockImplementation(async (_key, _page, _size, onPage, signal) => {
+      push = result => onPage(result, { live: true });
+      push({ items: rows, totalCount: 1 });
+      await new Promise<void>(done => signal?.addEventListener('abort', () => done(), { once: true }));
+    });
+    const root = mount('projects');
+    await vi.waitFor(() => expect(root.querySelector('[data-action="delete"]')).not.toBeNull());
+    const original = root.querySelector<HTMLButtonElement>('[data-action="delete"]')!;
+    original.click();
+    await vi.waitFor(() => expect(root.querySelector<HTMLDialogElement>('[data-confirm]')!.open).toBe(true));
+    push({ items: [{ ...rows[0], name: 'Renamed live' }], totalCount: 1 });
+    await vi.waitFor(() => expect(root.querySelector('[data-records]')?.textContent).toContain('Renamed live'));
+    root.querySelector<HTMLButtonElement>('[data-confirm-cancel]')!.click();
+    const replacement = root.querySelector<HTMLButtonElement>('[data-action="delete"][data-id="one"]')!;
+    expect(replacement).not.toBe(original);
+    await vi.waitFor(() => expect(document.activeElement).toBe(replacement));
+  });
+
   it('shows why a removal was rejected', async () => {
     const root = mount('projects');
     const remove = vi.spyOn(webApiClient, 'delete').mockRejectedValue(new ApiError(409, 'The project still has active tasks.'));
