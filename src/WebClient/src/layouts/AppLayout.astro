@@ -3,7 +3,10 @@ import '../global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import AuthGuard from '../components/AuthGuard.astro';
 import BrandMark from '../components/BrandMark.astro';
+import CommandPalette from '../components/CommandPalette.astro';
 import Icon from '../components/Icon.astro';
+import RequestInspector from '../components/RequestInspector.astro';
+import SessionWarning from '../components/SessionWarning.astro';
 import SidebarNav from '../components/SidebarNav.astro';
 import { locate } from '../lib/navigation';
 import { WEBAPI_BASE_URL } from '../lib/config';
@@ -26,9 +29,10 @@ const apiHost = new URL(WEBAPI_BASE_URL).host;
       (() => {
         try {
           const stored = localStorage.getItem('cpnucleo-theme');
+          // Dark unless the person chose light, or chose to follow the operating system.
           const theme = stored === 'dark' || stored === 'light'
             ? stored
-            : 'dark';
+            : stored === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {}
@@ -56,7 +60,7 @@ const apiHost = new URL(WEBAPI_BASE_URL).host;
       </aside>
       <div class="lg:pl-64">
         <header class="sticky top-0 z-30 border-b border-line bg-canvas/95">
-          <div class="flex h-14 items-center gap-3 px-4 sm:px-6 lg:px-10">
+          <div class="flex h-14 items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-10">
             <details data-mobile-menu class="lg:hidden">
               <summary class="btn btn-ghost btn-icon list-none [&::-webkit-details-marker]:hidden" aria-label="Navigation menu"><Icon name="menu" class="size-5" /></summary>
               <div class="fixed inset-x-0 bottom-0 top-14 z-50 overflow-y-auto border-t border-line bg-surface px-3 py-5">
@@ -69,39 +73,57 @@ const apiHost = new URL(WEBAPI_BASE_URL).host;
               <ol class="flex min-w-0 items-center gap-2 text-sm">
                 {location && location.item.href !== '/' && <li class="hidden text-subtle sm:block">{location.group.name}</li>}
                 {location && location.item.href !== '/' && <li aria-hidden="true" class="hidden text-line-strong sm:block">/</li>}
-                <li class="truncate font-medium" aria-current="page">{pageTitle ?? 'Home'}</li>
+                <li class="truncate font-medium" aria-current="page" data-breadcrumb-current>{pageTitle ?? 'Home'}</li>
               </ol>
             </nav>
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-1">
+              <button type="button" data-open-palette class="search-trigger" aria-keyshortcuts="Control+K Meta+K">
+                <Icon name="search" class="size-4" /><span class="hidden md:inline">Search</span><kbd class="kbd hidden md:inline-flex" data-shortcut-hint>Ctrl K</kbd>
+              </button>
+              <button type="button" data-toggle-inspector aria-expanded="false" class="btn btn-ghost btn-icon" title="API requests" aria-label="API requests"><Icon name="network" /></button>
               <ThemeToggle />
-              <span class="mx-1.5 hidden h-6 w-px bg-line sm:block" aria-hidden="true"></span>
-              <div data-session hidden class="hidden items-center gap-2.5 sm:flex">
-                <span data-session-initial aria-hidden="true" class="flex size-8 items-center justify-center rounded-full bg-raised text-xs font-semibold uppercase text-muted ring-1 ring-line-strong"></span>
-                <span class="hidden leading-tight md:block">
-                  <span data-session-login class="block max-w-48 truncate text-[0.8125rem] font-medium"></span>
-                  <span data-session-role class="block text-[0.6875rem] text-subtle"></span>
-                </span>
-              </div>
-              <button type="button" data-logout class="btn btn-ghost btn-sm" title="Sign out"><Icon name="logOut" /><span class="hidden sm:inline">Sign out</span><span class="sr-only sm:hidden">Sign out</span></button>
+              <span class="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden="true"></span>
+              <details data-session hidden class="menu relative">
+                <summary class="flex cursor-pointer list-none items-center gap-2.5 rounded-lg p-1 hover:bg-raised [&::-webkit-details-marker]:hidden" aria-label="Your account">
+                  <span data-session-initial aria-hidden="true" class="flex size-8 items-center justify-center rounded-full bg-raised text-xs font-semibold uppercase text-muted ring-1 ring-line-strong"></span>
+                  <span class="hidden pr-1 leading-tight md:block">
+                    <span data-session-login class="block max-w-48 truncate text-[0.8125rem] font-medium"></span>
+                    <span data-session-role class="block text-[0.6875rem] text-subtle"></span>
+                  </span>
+                </summary>
+                <div class="menu-panel right-0 w-56">
+                  <p class="truncate px-3 pb-2 pt-1.5 text-xs text-subtle md:hidden" data-session-login-menu></p>
+                  <a href="/account/" class="menu-item"><Icon name="user" />Your account</a>
+                  <button type="button" data-logout class="menu-item"><Icon name="logOut" />Sign out</button>
+                </div>
+              </details>
             </div>
           </div>
         </header>
         <main id="main" class="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-10"><AuthGuard><slot /></AuthGuard></main>
       </div>
     </div>
+    <div data-toasts role="region" aria-label="Notifications" aria-live="polite" class="toasts"></div>
+    <RequestInspector />
+    <CommandPalette />
+    <SessionWarning />
   </body>
 </html>
 <script>
   import { getSessionClaims } from '../lib/api/http-client';
+  import { installMenuBehavior } from '../lib/ui/menus';
+  installMenuBehavior();
   const session = getSessionClaims();
   const container = document.querySelector<HTMLElement>('[data-session]');
   if (session && container) {
     container.querySelector<HTMLElement>('[data-session-initial]')!.textContent = session.login.trim().charAt(0) || '?';
     container.querySelector<HTMLElement>('[data-session-login]')!.textContent = session.login;
+    container.querySelector<HTMLElement>('[data-session-login-menu]')!.textContent = session.login;
     container.querySelector<HTMLElement>('[data-session-role]')!.textContent = session.isAdmin ? 'Administrator' : 'Member';
     container.title = session.login;
     container.hidden = false;
   }
+  if (/Mac|iPhone|iPad/.test(navigator.platform)) document.querySelectorAll('[data-shortcut-hint]').forEach(hint => { hint.textContent = '⌘ K'; });
   const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && menu?.open) { menu.open = false; menu.querySelector('summary')?.focus(); }

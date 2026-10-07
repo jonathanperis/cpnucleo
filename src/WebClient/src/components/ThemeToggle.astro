@@ -1,28 +1,51 @@
 ---
 import Icon from './Icon.astro';
+const options = [
+  { value: 'light', label: 'Light', icon: 'sun' },
+  { value: 'dark', label: 'Dark', icon: 'moon' },
+  { value: 'system', label: 'System', icon: 'monitor' },
+] as const;
 ---
-<button type="button" data-theme-toggle class="btn btn-ghost btn-icon" aria-label="Switch to light mode" title="Switch to light mode">
-  <span data-theme-icon="light"><Icon name="sun" /></span>
-  <span data-theme-icon="dark" hidden><Icon name="moon" /></span>
-</button>
+<details data-theme-menu class="menu relative">
+  <summary class="btn btn-ghost btn-icon list-none [&::-webkit-details-marker]:hidden" aria-label="Theme" title="Theme">
+    <span data-theme-icon="light" hidden><Icon name="sun" /></span>
+    <span data-theme-icon="dark"><Icon name="moon" /></span>
+  </summary>
+  <div class="menu-panel right-0 w-40" role="group" aria-label="Theme">
+    {options.map(option => (
+      <button type="button" data-theme-choice={option.value} aria-pressed="false" class="menu-item"><Icon name={option.icon} />{option.label}</button>
+    ))}
+  </div>
+</details>
 <script>
-  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  import { applyThemePreference, readThemePreference, type ThemePreference } from '../lib/ui/theme';
+  import { installMenuBehavior } from '../lib/ui/menus';
+  installMenuBehavior();
+  const menus = document.querySelectorAll<HTMLDetailsElement>('[data-theme-menu]');
   const update = () => {
-    const dark = document.documentElement.dataset.theme === 'dark';
-    const label = `Switch to ${dark ? 'light' : 'dark'} mode`;
-    for (const button of buttons) {
-      button.setAttribute('aria-label', label);
-      button.title = label;
-      // Show the theme the button switches to.
-      button.querySelector<HTMLElement>('[data-theme-icon="light"]')!.hidden = !dark;
-      button.querySelector<HTMLElement>('[data-theme-icon="dark"]')!.hidden = dark;
+    const preference = readThemePreference();
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    for (const menu of menus) {
+      menu.querySelector<HTMLElement>('[data-theme-icon="light"]')!.hidden = theme !== 'light';
+      menu.querySelector<HTMLElement>('[data-theme-icon="dark"]')!.hidden = theme !== 'dark';
+      const label = preference === 'system' ? `system (${theme})` : theme === 'light' ? 'light' : 'dark';
+      menu.querySelector('summary')!.setAttribute('aria-label', `Theme: ${label}`);
+      for (const choice of menu.querySelectorAll<HTMLButtonElement>('[data-theme-choice]')) choice.setAttribute('aria-pressed', String(choice.dataset.themeChoice === preference));
     }
   };
-  for (const button of buttons) button.addEventListener('click', () => {
-    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme;
-    localStorage.setItem('cpnucleo-theme', theme);
+  for (const menu of menus) {
+    menu.addEventListener('click', event => {
+      const choice = (event.target as Element).closest<HTMLButtonElement>('[data-theme-choice]');
+      if (!choice) return;
+      applyThemePreference(choice.dataset.themeChoice as ThemePreference);
+      update();
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    });
+  }
+  // "System" follows the operating system while the page is open.
+  window.matchMedia?.('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (readThemePreference() === 'system') applyThemePreference('system');
     update();
   });
   update();

@@ -1,0 +1,18 @@
+---
+import Icon from './Icon.astro';
+---
+<dialog data-palette aria-label="Search the workspace" class="modal palette mx-auto mb-auto mt-[12vh] w-[calc(100%-2rem)] max-w-xl">
+  <div class="flex items-center gap-3 border-b border-line px-4">
+    <Icon name="search" class="size-4 flex-none text-subtle" />
+    <input data-palette-input type="search" role="combobox" aria-expanded="true" aria-controls="palette-results" aria-autocomplete="list" aria-label="Search pages and records" placeholder="Search pages and records…" maxlength="128" autocomplete="off" class="h-12 min-w-0 flex-1 bg-transparent text-[0.9375rem] outline-none placeholder:text-subtle" />
+    <kbd class="kbd">Esc</kbd>
+  </div>
+  <ul id="palette-results" data-palette-results role="listbox" aria-label="Results" class="quiet-scroll max-h-[55vh] overflow-y-auto px-1.5 pb-2"></ul>
+  <p data-palette-status role="status" class="border-t border-line px-4 py-2 text-xs text-subtle empty:hidden"></p>
+</dialog>
+<script>
+  import { mountCommandPalette } from '../features/search/command-palette';
+  import { getStoredToken } from '../lib/api/http-client';
+  const dialog = document.querySelector<HTMLDialogElement>('[data-palette]');
+  if (dialog && getStoredToken()) mountCommandPalette(dialog);
+</script>

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createWebApiClient, normalizeList, parseServerSentEventData } from './webapi-client';
 import { requestJson } from './http-client';
+import { clearRequestLog, getRequestLog } from './request-log';
 
 const sseResponse = (payload: unknown) => new Response(
   `event: listing\ndata: ${JSON.stringify(payload)}\n\n`,
@@ -44,6 +45,67 @@ describe('webapi client', () => {
     expect(first.searchParams.get('ids')?.split(',')).toHaveLength(100);
     expect(first.searchParams.has('pagination.pageSize')).toBe(false);
     expect(new URL(String(fetchMock.mock.calls[1][0])).searchParams.get('ids')?.split(',')).toHaveLength(50);
+  });
+
+  it('sends sort, relation filters and date ranges as flat keys', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }));
+    const client = createWebApiClient('http://example.test/api');
+    await client.list('appointments', 1, 100, undefined, undefined, {
+      sort: { column: 'KeepDate', order: 'DESC' }, filters: { userId: 'u-1', assignmentId: undefined },
+      dateFrom: '2026-10-05T00:00:00.000Z', dateTo: '2026-10-12T00:00:00.000Z',
+    });
+    const url = new URL(String(fetchMock.mock.calls[0][0]));
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      pageNumber: '1', pageSize: '100', sortColumn: 'KeepDate', sortOrder: 'DESC', userId: 'u-1',
+      dateFrom: '2026-10-05T00:00:00.000Z', dateTo: '2026-10-12T00:00:00.000Z',
+    });
+  });
+
+  it('streams listings with the search, ids and filters of the current view', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseResponse({ items: [], totalCount: 0 }));
+    const client = createWebApiClient('http://example.test/api');
+    await client.subscribeList('assignments', 2, 25, () => undefined, undefined, {
+      search: ' plan ', ids: ['b', 'a', 'b'], sort: { column: 'Name', order: 'ASC' }, filters: { projectId: 'p-1' },
+    });
+    const url = new URL(String(fetchMock.mock.calls[0][0]));
+    expect(url.searchParams.get('search')).toBe('plan');
+    expect(url.searchParams.get('ids')).toBe('b,a');
+    expect(url.searchParams.get('projectId')).toBe('p-1');
+    expect(url.searchParams.get('sortColumn')).toBe('Name');
+    expect(url.searchParams.get('pageNumber')).toBe('2');
+  });
+
+  it('collects every page for listAll and stops at the limit', async () => {
+    const page = (count: number, total: number) => new Response(JSON.stringify({ items: Array.from({ length: count }, (_, index) => ({ id: String(index) })), totalCount: total }), { status: 200 });
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(page(100, 230)).mockResolvedValueOnce(page(100, 230)).mockResolvedValueOnce(page(30, 230));
+    const client = createWebApiClient('http://example.test/api');
+    expect(await client.listAll('assignments')).toHaveLength(230);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    fetchMock.mockReset().mockImplementation(async () => page(100, 900));
+    expect(await client.listAll('assignments', {}, undefined, 150)).toHaveLength(150);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('restores soft-deleted records with the same 1-100 distinct id rule', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ success: true }), { status: 200 }));
+    const client = createWebApiClient('http://example.test/api');
+    await client.restore('assignments', ['a', 'a', 'b']);
+    expect(fetchMock.mock.calls[0][0]).toBe('http://example.test/api/assignment/restore');
+    expect((fetchMock.mock.calls[0][1] as RequestInit).method).toBe('POST');
+    expect(JSON.parse((fetchMock.mock.calls[0][1] as RequestInit).body as string)).toEqual({ ids: ['a', 'b'] });
+    await expect(client.restore('assignments', [])).rejects.toMatchObject({ status: 400 });
+  });
+
+  it('records requests and listing streams for the request inspector, without headers or bodies', async () => {
+    clearRequestLog();
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(JSON.stringify({ id: 'abc' }), { status: 200 })).mockResolvedValueOnce(sseResponse({ items: [], totalCount: 0 }));
+    const client = createWebApiClient('http://example.test/api');
+    await client.update('projects', 'abc', { name: 'Secret name' });
+    await client.subscribeList('projects', 1, 10, () => undefined);
+    const [stream, update] = getRequestLog();
+    expect(update).toMatchObject({ method: 'PATCH', url: 'http://example.test/api/project?id=abc', status: 200, kind: 'json', open: false });
+    expect(stream).toMatchObject({ method: 'GET', kind: 'stream', status: 200, events: 1, open: false });
+    expect(JSON.stringify(getRequestLog())).not.toContain('Secret name');
   });
 
   it('sends 1-100 distinct ids in atomic removal requests', async () => {

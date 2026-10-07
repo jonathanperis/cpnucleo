@@ -23,11 +23,20 @@ const resourceItem = (key: ResourceKey, label?: string): NavigationItem => {
 export const navigation: NavigationGroup[] = [
   { name: 'Start', items: [
     { label: 'Home', href: '/', icon: 'home' },
-    resourceItem('organizations'), resourceItem('projects'), resourceItem('assignments'), resourceItem('workflows'), resourceItem('appointments', 'Calendar'),
+    { label: 'Board', href: '/board/', icon: 'board' },
+    { label: 'Calendar', href: '/calendar/', icon: 'calendar' },
+  ] },
+  { name: 'Work', items: [
+    resourceItem('organizations'), resourceItem('projects'), resourceItem('assignments'), resourceItem('appointments'), resourceItem('workflows'),
   ] },
   { name: 'People', items: [resourceItem('users'), resourceItem('userAssignments'), resourceItem('userProjects')] },
   { name: 'Setup', items: [resourceItem('assignmentTypes'), resourceItem('impediments'), resourceItem('assignmentImpediments')] },
   { name: 'Status', items: [{ label: 'Service health', href: '/api-health/', icon: 'activity' }] },
+];
+
+/** Pages outside the sidebar that still belong to a group for the breadcrumb. */
+const extraLocations: { href: string; group: string; label: string }[] = [
+  { href: '/account/', group: 'Account', label: 'Your account' },
 ];
 
 const normalizePath = (href: string) => href.replace(/\/$/, '') || '/';
@@ -39,10 +48,11 @@ export const isActivePath = (path: string, href: string) => {
 };
 
 /** The group and item for a route, used for the header breadcrumb. */
-export const locate = (path: string) => {
+export const locate = (path: string): { group: NavigationGroup; item: NavigationItem } | undefined => {
   for (const group of navigation) {
     const item = group.items.find(candidate => isActivePath(path, candidate.href));
     if (item) return { group, item };
   }
-  return undefined;
+  const extra = extraLocations.find(candidate => isActivePath(path, candidate.href));
+  return extra ? { group: { name: extra.group, items: [] }, item: { label: extra.label, href: extra.href, icon: 'user' } } : undefined;
 };

@@ -17,6 +17,11 @@ const canonicalStaticRoutes = new Set([
   '/user-assignments',
   '/user-projects',
   '/api-health',
+  '/board',
+  '/calendar',
+  '/account',
+  '/projects/view',
+  '/assignments/view',
 ]);
 
 export const canonicalizeStaticRoute = (pathname: string): string => {

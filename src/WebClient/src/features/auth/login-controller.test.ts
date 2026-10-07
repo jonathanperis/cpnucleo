@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { resourceMetadata } from '~/lib/api/resource-metadata';
 import { pendingSignInStorageKey } from '~/lib/api/oidc';
-import { mountLoginPage } from './login-controller';
+import { mountLoginPage, signInNoticeStorageKey } from './login-controller';
 
 const authRequest = 'http://localhost:5200/connect/authorize/callback?client_id=cpnucleo-webclient&state=s';
 
@@ -105,4 +105,11 @@ it('explains a rejected authorization request from its error id', async () => {
 it('derives the advertised number of work areas from resource metadata', () => {
   expect(document.querySelector('[data-work-area-count]')?.textContent).toBe(String(resourceMetadata.length));
   expect(resourceMetadata).toHaveLength(11);
+});
+
+it('explains once why sign-in is needed again after a password change', async () => {
+  sessionStorage.setItem(signInNoticeStorageKey, 'Your password was changed.');
+  await mountLoginPage(section(), at(`?authRequest=${encodeURIComponent(authRequest)}`), vi.fn());
+  expect(document.querySelector('[data-login-status]')?.textContent).toBe('Your password was changed.');
+  expect(sessionStorage.getItem(signInNoticeStorageKey)).toBeNull();
 });
