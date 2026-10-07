@@ -8,8 +8,10 @@ import {
   buildContentSecurityPolicy,
   buildCspManifest,
   buildSecurityHeaders,
+  DEFAULT_IDENTITY_API_BASE_URL,
   connectSourcesFromEnv,
   extractInlineScripts,
+  formActionsFromEnv,
   hashInlineScript,
   listHtmlFiles,
   readCspManifest,
@@ -110,6 +112,14 @@ describe('preview security headers', () => {
     expect(directive(policy, 'connect-src')).toBe("connect-src 'self' https://api-cpnucleo.jonathanperis.tech https://identity-cpnucleo.jonathanperis.tech");
   });
 
+  it('lets forms post only to this origin and the identity server', () => {
+    const env = { PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.tech/api' };
+    const policy = buildContentSecurityPolicy({ connectSrc: connectSourcesFromEnv(env), formAction: formActionsFromEnv(env), scriptHashes: [] });
+    expect(directive(policy, 'form-action')).toBe("form-action 'self' https://identity-cpnucleo.jonathanperis.tech");
+    expect(directive(buildContentSecurityPolicy({ connectSrc: [], scriptHashes: [] }), 'form-action')).toBe("form-action 'self'");
+    expect(() => validateCspManifest({ connectSrc: [], formAction: ["https://ok.test; script-src *"], scriptHashes: [] })).toThrow(/form-action/);
+  });
+
   it('covers every inline script in the generated Astro pages', () => {
     const outDir = resolve('dist');
     const built = readCspManifest(outDir);
@@ -117,5 +127,6 @@ describe('preview security headers', () => {
     expect(inlineHashes.size).toBeGreaterThan(0);
     expect(new Set(built.scriptHashes)).toEqual(inlineHashes);
     expect(built.connectSrc.length).toBeGreaterThan(0);
+    expect(built.formAction).toEqual([new URL(DEFAULT_IDENTITY_API_BASE_URL).origin]);
   });
 });

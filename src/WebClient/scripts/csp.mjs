@@ -31,6 +31,10 @@ export const connectSourcesFromEnv = (env = {}) => [...new Set([
   env.PUBLIC_IDENTITY_API_BASE_URL || DEFAULT_IDENTITY_API_BASE_URL,
 ].map(serviceOrigin))];
 
+// The sign-in form posts to the identity server (a browser form post, so its cookie is
+// first-party there); no other cross-origin form target is allowed.
+export const formActionsFromEnv = (env = {}) => [serviceOrigin(env.PUBLIC_IDENTITY_API_BASE_URL || DEFAULT_IDENTITY_API_BASE_URL)];
+
 // Browsers end a script at "</script" followed by whitespace, "/" or ">", even with junk before
 // the ">" (e.g. "</script \t\n bar>"), so the end-tag pattern accepts any attributes.
 const scriptElementPattern = /<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi;
@@ -55,6 +59,7 @@ export const listHtmlFiles = (directory) => readdirSync(directory, { withFileTyp
 
 export const buildCspManifest = ({ htmlDocuments, env }) => ({
   connectSrc: connectSourcesFromEnv(env),
+  formAction: formActionsFromEnv(env),
   scriptHashes: [...new Set(htmlDocuments.flatMap(extractInlineScripts).map(hashInlineScript))].sort(),
 });
 
@@ -70,8 +75,15 @@ export const validateCspManifest = (manifest) => {
   if (!manifest || !Array.isArray(manifest.connectSrc) || !Array.isArray(manifest.scriptHashes)) {
     throw new Error('CSP manifest must contain connectSrc and scriptHashes arrays.');
   }
-  for (const origin of manifest.connectSrc) {
-    if (typeof origin !== 'string' || serviceOrigin(origin) !== origin) throw new Error(`Invalid connect-src origin: ${origin}`);
+  if (manifest.formAction !== undefined && !Array.isArray(manifest.formAction)) {
+    throw new Error('CSP manifest formAction must be an array.');
+  }
+  for (const [directive, origins] of [['connect-src', manifest.connectSrc], ['form-action', manifest.formAction ?? []]]) {
+    for (const origin of origins) {
+      let valid = false;
+      try { valid = typeof origin === 'string' && serviceOrigin(origin) === origin; } catch { valid = false; }
+      if (!valid) throw new Error(`Invalid ${directive} origin: ${origin}`);
+    }
   }
   for (const hash of manifest.scriptHashes) {
     if (typeof hash !== 'string' || !scriptHashPattern.test(hash)) throw new Error(`Invalid script hash: ${hash}`);
@@ -90,7 +102,8 @@ export const readCspManifest = (root) => {
   return validateCspManifest(JSON.parse(content));
 };
 
-export const buildContentSecurityPolicy = ({ connectSrc, scriptHashes }) => [
+/** @param {{ connectSrc: string[], formAction?: string[], scriptHashes: string[] }} sources */
+export const buildContentSecurityPolicy = ({ connectSrc, formAction = [], scriptHashes }) => [
   "default-src 'self'",
   ['script-src', "'self'", ...scriptHashes].join(' '),
   "style-src 'self' 'unsafe-inline'",
@@ -99,7 +112,7 @@ export const buildContentSecurityPolicy = ({ connectSrc, scriptHashes }) => [
   "object-src 'none'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  ['form-action', "'self'", ...formAction].join(' '),
 ].join('; ');
 
 export const buildSecurityHeaders = (manifest) => ({
@@ -116,7 +129,7 @@ export const cspManifestIntegration = ({ env }) => ({
   hooks: {
     'astro:build:done': ({ dir, logger }) => {
       const manifest = writeCspManifest(fileURLToPath(dir), env);
-      logger.info(`CSP manifest: connect-src ${manifest.connectSrc.join(' ')}; ${manifest.scriptHashes.length} inline script hash(es).`);
+      logger.info(`CSP manifest: connect-src ${manifest.connectSrc.join(' ')}; form-action ${manifest.formAction.join(' ')}; ${manifest.scriptHashes.length} inline script hash(es).`);
     },
   },
 });

@@ -42,9 +42,9 @@ x-dotnet-runtime-env: &dotnet-runtime-env
   # Traefik -> NGINX -> API: per-IP rate limiting needs the forwarded client IP.
   ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
   DB_CONNECTION_STRING: ${DB_CONNECTION_STRING:?Set DB_CONNECTION_STRING}
-  Jwt__SigningKey: ${Jwt__SigningKey:?Set Jwt__SigningKey}
-  # Optional RS256 verification key. Empty means "not configured" (HS256 via Jwt__SigningKey).
-  Jwt__SigningPublicKey: ${Jwt__SigningPublicKey:-}
+  # API hosts validate IdentityApi's RS256 access tokens with the keys its discovery document
+  # publishes (JWKS), fetched over the internal network; they hold no key material.
+  Jwt__MetadataAddress: http://identityapi-cpnucleo:5010/.well-known/openid-configuration
   # IdentityApi grants admin claims from this list; WebApi and GrpcServer re-check it on every
   # session validation so removing a login revokes admin access within 30 seconds. Unset, the
   # seeded demo account is the administrator.
@@ -184,7 +184,9 @@ services:
     container_name: identityapi-cpnucleo
     environment:
       <<: *dotnet-runtime-env
-      # Optional RS256 signing key, held only by the token issuer.
+      # Encrypts the rotating signing keys and Data Protection keys stored in PostgreSQL.
+      Jwt__SigningKey: ${Jwt__SigningKey:?Set Jwt__SigningKey}
+      # Optional: pins one externally managed RS256 signing key instead of the rotating key ring.
       Jwt__SigningPrivateKey: ${Jwt__SigningPrivateKey:-}
     expose:
       - "5010"

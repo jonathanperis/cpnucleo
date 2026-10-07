@@ -8,6 +8,5 @@ public static class CpnucleoClaimTypes
     public const string TenantId = "cpnucleo:tenant_id";
     public const string TenantSlug = "cpnucleo:tenant_slug";
     public const string Admin = "cpnucleo:admin";
-    public const string SessionStartedAt = "cpnucleo:session_started_at";
     public const string SecurityStamp = "cpnucleo:security_stamp";
 }

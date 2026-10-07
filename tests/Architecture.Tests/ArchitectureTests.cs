@@ -10,7 +10,7 @@ public class ArchitectureTests
         typeof(Application.Features.Projects.CreateProject.CreateProjectHandler).Assembly,
         typeof(Infrastructure.DependencyInjection).Assembly,
         typeof(WebApi.Endpoints.Project.CreateProject.Endpoint).Assembly,
-        typeof(IdentityApi.Endpoints.Login.Endpoint).Assembly,
+        typeof(IdentityApi.Endpoints.Account.Login.Endpoint).Assembly,
         typeof(GrpcServer.Handlers.Project.CreateProjectHandler).Assembly,
         typeof(GrpcServer.Contracts.Commands.Project.CreateProjectCommand).Assembly
     ];

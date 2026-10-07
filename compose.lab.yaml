@@ -3,7 +3,9 @@ name: cpnucleo-lab
 x-runtime: &runtime
   ASPNETCORE_ENVIRONMENT: Development
   DB_CONNECTION_STRING: Host=db;Database=cpnucleo_lab;Username=learner;Password=disposable-lab-only;Maximum Pool Size=20
+  # IdentityApi: key-encryption secret for its stored keys. API hosts: where to read the signing keys.
   Jwt__SigningKey: disposable-lab-signing-key-at-least-32-characters
+  Jwt__MetadataAddress: http://identity:5010/.well-known/openid-configuration
   CPNUCLEO_ADMIN_LOGINS: demo@cpnucleo.local
   Cors__AllowedOrigins__0: http://localhost:5400
   Cors__AllowedOrigins__1: http://localhost:5030

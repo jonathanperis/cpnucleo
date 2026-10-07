@@ -36,7 +36,7 @@ Use these facts only when the source remains true in README, AGENTS.md, solution
 - UI: Astro static templates plus native TypeScript and Tailwind CSS, using Catalyst-inspired product patterns.
 - REST: FastEndpoints with EF Core, explicit Dapper and generic Dapper/UoW examples.
 - gRPC style messaging: FastEndpoints Remote Messaging with Dapper through GrpcServer.
-- Authentication: dedicated IdentityApi with JWT and Argon2id-hashed credentials.
+- Authentication: dedicated IdentityApi as an OpenID Connect provider (authorization code with PKCE, client credentials) with Argon2id-hashed credentials.
 - Database: PostgreSQL with Npgsql; exact versions live in Compose/project files.
 - Reverse proxy: NGINX with least-connection load balancing.
 - Observability: OpenTelemetry with OTLP export and optional Grafana LGTM stack.

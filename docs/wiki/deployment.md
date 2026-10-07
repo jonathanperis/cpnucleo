@@ -79,8 +79,8 @@ There is no shared `env_file`. Compose still reads `.env` (or `--env-file`) to i
 
 | Container | Variables |
 |-----------|-----------|
-| WebApi ×2, GrpcServer | `ASPNETCORE_ENVIRONMENT`, `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` (set in Compose), `DB_CONNECTION_STRING`, `Jwt__SigningKey`, optional `Jwt__SigningPublicKey`, `CPNUCLEO_ADMIN_LOGINS`, `Cors__AllowedOrigins__0`, `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_METRIC_EXPORT_INTERVAL`, `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` |
-| IdentityApi | The API set above plus optional `Jwt__SigningPrivateKey` (only the token issuer holds a private key) |
+| WebApi ×2, GrpcServer | `ASPNETCORE_ENVIRONMENT`, `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true` (set in Compose), `DB_CONNECTION_STRING`, `Jwt__MetadataAddress` (IdentityApi's internal discovery URL, set in Compose), `CPNUCLEO_ADMIN_LOGINS`, `Cors__AllowedOrigins__0`, `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_METRIC_EXPORT_INTERVAL`, `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` |
+| IdentityApi | The API set above plus `Jwt__SigningKey` (encrypts its stored signing and Data Protection keys) and optional `Jwt__SigningPrivateKey` (pins one RS256 key instead of the rotating ring) |
 | migrate-cpnucleo | `ASPNETCORE_ENVIRONMENT`, `DB_CONNECTION_STRING` |
 | WebClient | `OTEL_EXPORTER_OTLP_HTTP_ENDPOINT`, `OTEL_SERVICE_NAME`, `OTEL_METRIC_EXPORT_INTERVAL` |
 | db | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` |
@@ -231,7 +231,7 @@ Triggered on push to main and manual dispatch. Every job has a timeout; permissi
 5. **Deploy to Hostinger Docker Manager** (depends on amd64 images, amd64 container checks and the scan)
    - Deploy the production Compose project through `scripts/deploy-hostinger-docker-manager.sh` with automatic rollback (below)
    - Uses Hostinger project secrets plus immutable `sha-${GITHUB_SHA}-amd64` GHCR image tags
-   - Verifies the public WebClient, WebApi, IdentityApi, and gRPC health routes after deployment; a smoke failure triggers `deploy-hostinger-docker-manager.sh --rollback`
+   - Verifies the public WebClient, WebApi, IdentityApi (health plus OpenID discovery and JWKS), and gRPC health routes after deployment; a smoke failure triggers `deploy-hostinger-docker-manager.sh --rollback`
 
 6. **Merge Multi-arch Manifest** (depends on both builds, both container checks and the scan)
    - Publish `sha-${GITHUB_SHA}` and `latest` manifests, then sign the manifest digest keylessly with cosign (`id-token: write` on this job only). This lane runs independently of Hostinger deployment
@@ -315,14 +315,15 @@ The script:
 | `POSTGRES_PASSWORD` | PostgreSQL password | postgres |
 | `POSTGRES_DB` | Database name | cpnucleo |
 | `DB_CONNECTION_STRING` | Full Npgsql connection string | Host=db;Username=postgres;... |
-| `Jwt__SigningKey` | HS256 signing key (at least 32 characters) | openssl rand -base64 64 |
+| `Jwt__SigningKey` | IdentityApi key-encryption secret for its stored keys (at least 32 bytes). Changing it makes the stored keys unreadable: new ones are created and everyone signs in again | openssl rand -base64 64 |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OpenTelemetry collector endpoint | http://otel-collector:4317 |
 
 ### Optional
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `Jwt__SigningPrivateKey` / `Jwt__SigningPublicKey` | Optional RS256 key pair; private key only reaches IdentityApi | empty (HS256) |
+| `Jwt__SigningPrivateKey` | Optional PEM RS256 key that IdentityApi signs with instead of its rotating key ring | empty (key ring) |
+| `Identity__ServiceClients__{id}__Secret` / `__Login` / `__Scopes` | Optional client-credentials clients acting as a service account | none |
 | `OTEL_TRACES_SAMPLER` / `OTEL_TRACES_SAMPLER_ARG` | Standard OpenTelemetry sampler selection, honored by the .NET hosts | `parentbased_always_on` / `1.0` |
 | `OTEL_METRIC_EXPORT_INTERVAL` | Metric export interval (ms) | 30000 |
 | `Cors__AllowedOrigins__0` | Browser origin allowed by WebApi/IdentityApi | `https://cpnucleo.jonathanperis.tech` |

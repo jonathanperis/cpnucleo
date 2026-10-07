@@ -7,9 +7,11 @@ The WebClient uses Astro static routes, native TypeScript and Tailwind CSS. Ther
 - `features/crud/CrudPage.astro`: semantic HTML, labels, per-field error slots, forms, table, pagination landmark and native details and delete-confirmation dialogs.
 - `features/crud/crud-controller.ts`: form events, loading, safe DOM rendering, pagination, cancellation, relation selection, authorization gating and focus management.
 - `lib/api/webapi-client.ts`: HTTP/SSE contracts, flat list parameters and singular item response normalization.
-- `lib/api/http-client.ts`: bearer handling, the error envelope, inactivity expiry, refresh, session claims and cross-tab logout.
+- `lib/api/http-client.ts`: bearer handling, the error envelope, inactivity expiry, refresh token rotation, sign-out (revocation and end session), session claims and cross-tab logout.
+- `lib/api/oidc.ts`: the OpenID Connect client: authorize URL with PKCE (S256), state and nonce; code redemption and identity token checks on the callback page.
 - `components/AuthGuard.astro`: authenticated workspace visibility and session lifecycle.
-- `components/LoginForm.astro`: native login form, with empty credentials.
+- `components/LoginForm.astro`, `features/auth/login-controller.ts`: the sign-in page. Opened by IdentityApi with a pending request, its native form posts the credentials to IdentityApi; opened directly, it starts a sign-in.
+- `pages/signin-callback.astro`, `features/auth/signin-callback.ts`: the redirect URI. Removes the code from the address bar, redeems it and opens the page the sign-in started from.
 - `lib/navigation.ts`, `components/SidebarNav.astro`: one navigation model for the sidebar, mobile menu, breadcrumb and home overview.
 - `global.css`, `lib/icons.ts`, `components/Icon.astro`: design tokens, shared component classes and the stroke icon set used by templates and controllers.
 - `scripts/csp.mjs`, `scripts/static-server.mjs`, `scripts/preview.mjs`: build-time CSP manifest and the Node static server.
@@ -58,9 +60,21 @@ List requests send each parameter once with flat keys (`pageNumber`, `pageSize`,
 
 Each listing opens one SSE request. The server's first event is the initial snapshot, so no separate JSON request is made on load or on reconnect; later events arrive on changes or at least every 15 seconds, including writes received by another instance or gRPC. A server that answers without SSE is treated as one non-live snapshot. Backoff resets only after a live snapshot arrives; a stream that ends immediately, a non-SSE response or a transport error backs off exponentially (1 s doubling to a 15 s cap, with jitter, and never sooner than a `Retry-After`). 400/401/403/404 are not retried. Navigation/disposal aborts the active request, and old page responses cannot replace a newer page.
 
+## Sign-in
+
+The WebClient is the public OpenID Connect client `cpnucleo-webclient` of IdentityApi (see [API reference](../api-reference/)):
+
+1. A protected page without a session goes to `/login/?returnUrl=…`, which starts the authorization code flow: it stores PKCE, state and nonce in this tab and opens IdentityApi's `/connect/authorize`.
+2. Without an identity session, IdentityApi returns the browser to `/login/?authRequest=…`. The native form posts to IdentityApi (CSP `form-action` allows only that origin), so the identity cookie is first-party there. Errors come back as `error=invalid` or `error=locked&retryAfter=N`.
+3. IdentityApi redirects to `/signin-callback/` with a code. The page checks the state, redeems the code with the PKCE verifier, checks the identity token's issuer, audience and nonce, stores the tokens and opens the original page.
+
+With an identity session (another tab already signed in), step 2 is skipped. Tokens never appear in URLs.
+
 ## Session
 
-Only real input (pointer, keyboard, touch, scroll) counts as activity. API calls, stream reconnects and background token refreshes do not extend the 15-minute inactivity window, and the inactivity timer re-checks the last recorded user activity before signing out. Logging out in one tab signs out the other tabs of the origin through `BroadcastChannel`, with a `storage`-event fallback. Tokens live in `sessionStorage`, so each tab signs in separately.
+Only real input (pointer, keyboard, touch, scroll) counts as activity. API calls, stream reconnects and background token refreshes do not extend the 15-minute inactivity window, and the inactivity timer re-checks the last recorded user activity before signing out. Refreshes use the one-time refresh token at the token endpoint; a rejected refresh (eight-hour limit, sign-out, credential change, replay) ends the session.
+
+An expired session, an API 401 and an explicit sign-out all end the identity session through `/connect/endsession`, otherwise its cookie would sign the browser straight back in. Signing out also revokes the refresh token. Another tab that receives the sign-out shows `/login/?signedOut=1` and waits instead of signing in again automatically. Logging out in one tab signs out the other tabs of the origin through `BroadcastChannel`, with a `storage`-event fallback. Tokens live in `sessionStorage`, so each tab keeps its own; a new tab gets them through the existing identity session without asking for the password again.
 
 ## Accessibility
 
@@ -72,10 +86,11 @@ Errors use `role="alert"`. Routine progress such as "Loading options…" uses `r
 
 `astro build` runs a small integration (`scripts/csp.mjs`) that writes `dist/csp-manifest.json`:
 
+- `formAction`: the IdentityApi origin, the only cross-origin form target.
 - `connectSrc`: the origins of the build-time `PUBLIC_WEBAPI_BASE_URL` and `PUBLIC_IDENTITY_API_BASE_URL` (defaults `http://localhost:5100` and `http://localhost:5200`, the same defaults as `lib/config.ts`). The lab stack and production hosts therefore get the policy that matches their bundle.
 - `scriptHashes`: SHA-256 hashes of every inline script in the generated HTML (the theme bootstrap and the small scripts Astro inlines).
 
-`scripts/preview.mjs` refuses to start without the manifest, validates it and sends `script-src 'self' <hashes>` (no `'unsafe-inline'` for scripts), `connect-src 'self' <origins>`, `object-src 'none'`, `frame-ancestors 'none'` plus HSTS, `nosniff`, `X-Frame-Options` and `Referrer-Policy`. Styles still allow inline attributes. Because the manifest is generated into `dist/`, the existing image copies it with the build output. If a file read fails after the response headers were sent, the server destroys the response instead of writing headers twice.
+`scripts/preview.mjs` refuses to start without the manifest, validates it and sends `script-src 'self' <hashes>` (no `'unsafe-inline'` for scripts), `connect-src 'self' <origins>`, `form-action 'self' <identity origin>` (the sign-in form posts to IdentityApi), `object-src 'none'`, `frame-ancestors 'none'` plus HSTS, `nosniff`, `X-Frame-Options` and `Referrer-Policy`. Styles still allow inline attributes. Because the manifest is generated into `dist/`, the existing image copies it with the build output. If a file read fails after the response headers were sent, the server destroys the response instead of writing headers twice.
 
 ## Astro-only pages
 

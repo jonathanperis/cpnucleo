@@ -14,6 +14,7 @@ public class FastEndpointsConfigurationTests
     [
         "AddAuthentication(JwtBearerDefaults.AuthenticationScheme)",
         "options.MapInboundClaims = false",
+        "options.MetadataAddress = JwtKeys.MetadataAddress(builder.Configuration)",
         "TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration)",
         "OnTokenValidated",
         "GetRequiredService<TokenSessionValidator>()"
@@ -63,9 +64,17 @@ public class FastEndpointsConfigurationTests
         projectsWithAuthenticationPackages.Should().BeEquivalentTo(
         [
             "src/GrpcServer/GrpcServer.csproj",
-            "src/IdentityApi/IdentityApi.csproj",
             "src/WebApi/WebApi.csproj"
-        ]);
+        ], "API hosts validate bearer tokens; IdentityApi issues them as an OpenID Connect server");
+
+        var projectsWithIdentityServer = Directory
+            .EnumerateFiles(repositoryRoot, "*.csproj", SearchOption.AllDirectories)
+            .Where(path => IsSourceProject(repositoryRoot, path))
+            .Where(projectPath => XDocument.Load(projectPath).Descendants("PackageReference")
+                .Any(x => x.Attribute("Include")?.Value == "Open.IdentityServer"))
+            .Select(projectPath => Path.GetRelativePath(repositoryRoot, projectPath))
+            .ToArray();
+        projectsWithIdentityServer.Should().BeEquivalentTo(["src/IdentityApi/IdentityApi.csproj"]);
     }
 
     [Theory]
@@ -102,7 +111,8 @@ public class FastEndpointsConfigurationTests
         var program = File.ReadAllText(GetRepositoryPath(programPath));
         var useCorsIndex = program.IndexOf("UseCors(\"CpnucleoWebClient\")", StringComparison.Ordinal);
         var useHealthChecksIndex = program.IndexOf("UseHealthChecks(\"/healthz\"", StringComparison.Ordinal);
-        var useAuthenticationIndex = program.IndexOf("UseAuthentication()", StringComparison.Ordinal);
+        // IdentityApi authenticates inside UseIdentityServer() (identity cookie and protocol endpoints).
+        var useAuthenticationIndex = program.IndexOf(programPath.Contains("IdentityApi", StringComparison.Ordinal) ? "UseIdentityServer()" : "UseAuthentication()", StringComparison.Ordinal);
 
         program.Should().Contain("AddCors(options =>");
         program.Should().Contain("CpnucleoWebClient");
@@ -126,7 +136,7 @@ public class FastEndpointsConfigurationTests
         var useRateLimiterIndex = program.IndexOf("UseRateLimiter()", StringComparison.Ordinal);
         var protectedPipelineIndex = programPath.Contains("GrpcServer", StringComparison.Ordinal)
             ? program.IndexOf("MapHandlers(h =>", StringComparison.Ordinal)
-            : program.IndexOf("UseAuthentication()", StringComparison.Ordinal);
+            : program.IndexOf(programPath.Contains("IdentityApi", StringComparison.Ordinal) ? "UseIdentityServer()" : "UseAuthentication()", StringComparison.Ordinal);
 
         program.Should().Contain("AddRateLimiter(options =>");
         program.Should().Contain("options.GlobalLimiter");
@@ -150,7 +160,8 @@ public class FastEndpointsConfigurationTests
         var program = File.ReadAllText(GetRepositoryPath(programPath));
 
         program.Should().Contain(".SwaggerDocument(o =>");
-        program.Should().Contain("o.EnableJWTBearerAuth = true");
+        // WebApi takes bearer tokens; IdentityApi's own endpoints are the anonymous sign-in steps.
+        program.Should().Contain(programPath.Contains("IdentityApi", StringComparison.Ordinal) ? "o.EnableJWTBearerAuth = false" : "o.EnableJWTBearerAuth = true");
         program.Should().Contain("o.ShortSchemaNames = true");
         program.Should().Contain("o.TagDescriptions");
         program.Should().Contain($"s.Title = \"{title}\"");
@@ -165,19 +176,20 @@ public class FastEndpointsConfigurationTests
     }
 
     [Theory]
-    [InlineData("src/IdentityApi/appsettings.json")]
-    [InlineData("src/IdentityApi/appsettings.Development.json")]
-    [InlineData("src/WebApi/appsettings.json")]
-    [InlineData("src/WebApi/appsettings.Development.json")]
-    [InlineData("src/WebApi/appsettings.Testing.json")]
-    [InlineData("src/GrpcServer/appsettings.json")]
-    [InlineData("src/GrpcServer/appsettings.Development.json")]
-    public void AuthConfiguration_ShouldUseCpnucleoJonathanPerisTechDomains(string appSettingsPath)
+    [InlineData("src/IdentityApi/appsettings.json", "api")]
+    [InlineData("src/IdentityApi/appsettings.Development.json", "api")]
+    [InlineData("src/WebApi/appsettings.json", "api")]
+    [InlineData("src/WebApi/appsettings.Development.json", "api")]
+    [InlineData("src/WebApi/appsettings.Testing.json", "api")]
+    [InlineData("src/GrpcServer/appsettings.json", "grpc")]
+    [InlineData("src/GrpcServer/appsettings.Development.json", "grpc")]
+    public void AuthConfiguration_ShouldUseCpnucleoJonathanPerisTechDomains(string appSettingsPath, string audienceHost)
     {
         var appSettings = File.ReadAllText(GetRepositoryPath(appSettingsPath));
 
         appSettings.Should().Contain("\"Issuer\": \"https://identity-cpnucleo.jonathanperis.tech\"");
-        appSettings.Should().Contain("\"Audience\": \"https://api-cpnucleo.jonathanperis.tech\"");
+        // Each API host accepts only tokens issued for its own audience.
+        appSettings.Should().Contain($"\"Audience\": \"https://{audienceHost}-cpnucleo.jonathanperis.tech\"");
         appSettings.Should().NotContain("peris-studio.dev");
     }
 
@@ -194,18 +206,21 @@ public class FastEndpointsConfigurationTests
     }
 
     [Fact]
-    public void IdentityApi_ShouldIssueThirtyMinuteTokensAndRefreshAuthenticatedSessions()
+    public void IdentityApi_ShouldBeAStandardOpenIdConnectServer()
     {
-        var loginEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Login/Endpoint.cs"));
-        var refreshEndpoint = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Endpoints/Refresh/Endpoint.cs"));
+        var program = File.ReadAllText(GetRepositoryPath("src/IdentityApi/Program.cs"));
 
-        IdentityApi.Security.TokenIssuer.AccessTokenLifetime.Should().Be(TimeSpan.FromMinutes(30));
-        IdentityApi.Security.SessionLifetime.MaximumSessionLength.Should().Be(TimeSpan.FromHours(8));
-        loginEndpoint.Should().Contain("now + TokenIssuer.AccessTokenLifetime");
-        refreshEndpoint.Should().Contain("SessionLifetime.IsRefreshable");
-        refreshEndpoint.Should().Contain("SecurityStamp.Compute(account)");
-        refreshEndpoint.Should().Contain("Post(\"/refresh\")");
-        refreshEndpoint.Should().NotContain("AllowAnonymous();", "refresh must require an authenticated bearer token");
+        // Lifetimes and client rules are covered behaviorally (Security.Unit.Tests, integration suite).
+        IdentityApi.Oidc.OidcSettings.AccessTokenLifetime.Should().Be(TimeSpan.FromMinutes(30));
+        IdentityApi.Oidc.OidcSettings.MaximumSessionLength.Should().Be(TimeSpan.FromHours(8));
+        program.Should().Contain(".AddIdentityServer(options =>");
+        program.Should().Contain("app.UseIdentityServer();");
+        program.Should().Contain(".AddPersistedGrantStore<PersistedGrantStore>()");
+        program.Should().Contain("AddTransient<IRefreshTokenService, ReuseDetectingRefreshTokenService>()");
+        program.Should().Contain("AddSingleton<ISigningCredentialStore>");
+        program.Should().Contain("options.Authentication.CookieSlidingExpiration = false");
+        program.Should().NotContain("AddDeveloperSigningCredential", "keys come from the encrypted key ring or a pinned PEM");
+        Directory.Exists(GetRepositoryPath("src/IdentityApi/Endpoints/Refresh")).Should().BeFalse("refresh is the standard token endpoint grant");
     }
 
     [Fact]
@@ -216,15 +231,18 @@ public class FastEndpointsConfigurationTests
 
         httpClient.Should().Contain("sessionInactivityTimeoutMs = 15 * 60 * 1000");
         httpClient.Should().Contain("tokenRefreshLeadMs = 5 * 60 * 1000");
-        httpClient.Should().Contain("/refresh");
+        httpClient.Should().Contain("grant_type: 'refresh_token'");
+        httpClient.Should().Contain("/connect/endsession");
+        httpClient.Should().Contain("/connect/revocation");
         httpClient.Should().Contain("lastActivityStorageKey");
         httpClient.Should().Contain("setupSessionActivityTracking");
         httpClient.Should().Contain("redirectToLoginForExpiredSession()");
         httpClient.Should().Contain("BroadcastChannel", "logging out in one tab must sign out the other tabs");
-        httpClient.Should().Contain("subscribeToCrossTabLogout(redirectToLoginForExpiredSession)");
+        httpClient.Should().Contain("subscribeToCrossTabLogout(showSignedOut)", "a tab signed out elsewhere must not silently sign back in");
         httpClient.Should().Contain("const onInactivityTimeout", "the inactivity timer must re-check the last real user activity");
         authGuard.Should().Contain("setupSessionActivityTracking()");
-        authGuard.Should().Contain("logout();");
+        authGuard.Should().Contain("signOut()");
+        authGuard.Should().Contain("redirectToLoginForExpiredSession()", "expired sessions also end the identity session");
     }
 
     [Theory]

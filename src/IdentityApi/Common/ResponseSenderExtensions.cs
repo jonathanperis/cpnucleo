@@ -8,7 +8,4 @@ public static class ResponseSenderExtensions
 {
     public static Task NotFoundEnvelopeAsync(this IResponseSender sender, string message, CancellationToken cancellationToken) =>
         ApiErrors.WriteAsync(sender.HttpContext, StatusCodes.Status404NotFound, message, cancellationToken: cancellationToken);
-
-    public static Task UnauthorizedEnvelopeAsync(this IResponseSender sender, string message, CancellationToken cancellationToken) =>
-        ApiErrors.WriteAsync(sender.HttpContext, StatusCodes.Status401Unauthorized, message, cancellationToken: cancellationToken);
 }

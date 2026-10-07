@@ -55,11 +55,14 @@ public class OperationsConfigurationTests
         webClient.Should().NotContain("DB_CONNECTION_STRING");
         webClient.Should().NotContain("Jwt__");
         runtimeEnv.Should().Contain("ASPNETCORE_FORWARDEDHEADERS_ENABLED: \"true\"");
-        runtimeEnv.Should().Contain("Jwt__SigningPublicKey: ${Jwt__SigningPublicKey:-}");
+        runtimeEnv.Should().Contain("Jwt__MetadataAddress: http://identityapi-cpnucleo:5010/.well-known/openid-configuration",
+            "API hosts read IdentityApi's published signing keys over the internal network");
         runtimeEnv.Should().NotContain("Jwt__SigningPrivateKey", "only the token issuer may hold the private key");
+        runtimeEnv.Should().NotContain("Jwt__SigningKey", "API hosts hold no key material");
         runtimeEnv.Should().NotContain("GRAFANA");
         runtimeEnv.Should().NotContain("POSTGRES_PASSWORD");
         identity.Should().Contain("Jwt__SigningPrivateKey: ${Jwt__SigningPrivateKey:-}");
+        identity.Should().Contain("Jwt__SigningKey: ${Jwt__SigningKey:?Set Jwt__SigningKey}", "IdentityApi encrypts its stored keys with it");
         runtimeEnv.Should().Contain("CPNUCLEO_ADMIN_LOGINS", "API hosts re-check admin claims against the configured logins");
         database.Should().NotContain("DB_CONNECTION_STRING");
         database.Should().NotContain("Jwt__");

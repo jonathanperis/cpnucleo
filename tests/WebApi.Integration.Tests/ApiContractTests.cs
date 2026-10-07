@@ -178,8 +178,9 @@ public class ApiContractTests(WebAppFixture app)
         forbidden.Headers.GetValues("Content-Security-Policy").Single().ShouldContain("default-src 'none'");
 
         using var identity = app.CreateIdentityClient();
-        var refused = await identity.PostAsync("/api/refresh", null, Cancellation);
-        refused.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        // A sign-in form post without the WebClient origin is refused with the error envelope.
+        var refused = await identity.PostAsync("/api/account/login", new FormUrlEncodedContent(new Dictionary<string, string> { ["login"] = "x" }), Cancellation);
+        refused.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
         refused.Headers.GetValues("X-Frame-Options").Single().ShouldBe("DENY");
         refused.Headers.GetValues("Strict-Transport-Security").Single().ShouldContain("max-age=");
     }

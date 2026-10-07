@@ -55,6 +55,9 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.MapInboundClaims = false;
+        // Signing keys come from IdentityApi's discovery document (JWKS); none are configured here.
+        options.MetadataAddress = JwtKeys.MetadataAddress(builder.Configuration);
+        options.RequireHttpsMetadata = JwtKeys.RequireHttpsMetadata(builder.Configuration);
         options.TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration);
         options.Events = new JwtBearerEvents
         {

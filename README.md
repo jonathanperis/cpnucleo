@@ -56,7 +56,7 @@ The existing million-row CSV importer remains an advanced, explicit load-test to
 | gRPC | FastEndpoints Remote Messaging, Dapper, shared contracts |
 | Shared use case | `Application/Features/Projects/CreateProject` |
 | Domain | Entities, factory/update behavior, repository ports and password-hasher abstraction |
-| Identity | Argon2id, HS256 or RS256 JWTs, per-login lockout, session validation and refresh with an eight-hour boundary |
+| Identity | OpenID Connect provider (Open.IdentityServer): authorization code with PKCE, client credentials, one-time refresh tokens with replay detection, revocation and server-side sign-out; rotating RS256 keys published as JWKS; Argon2id and per-login lockout |
 | UI | Astro static routes, native TypeScript controllers, Tailwind CSS |
 | Database | PostgreSQL; EF migrations shared by both persistence strategies |
 | Delivery | GitHub Actions, GHCR immutable tags, Hostinger Docker Manager |
@@ -64,7 +64,7 @@ The existing million-row CSV importer remains an advanced, explicit load-test to
 
 Both transports expose 55 CRUD operations across 11 resources. Normal removal is soft deletion, guarded by relationship triggers. Every batch removal is atomic; version-aware project updates reject stale writes. Errors share one JSON envelope (`statusCode`, `message`, `errors`). List pages are bounded to 100 rows and support search and batched relation lookups.
 
-The Astro UI preserves CRUD forms, pagination, relation labels/search, native details dialogs, counters, login redirects, inactivity expiry, token refresh, cross-tab logout, themes, and service checks. It shows field-level API errors, hides administrator-only actions from non-admin sessions, and serves a CSP derived from its build-time API URLs. Every page of the WebClient and the documentation site is an Astro page; tests enforce it. Server-sent events combine immediate local notifications with a 15-second cross-instance refresh and client reconnection.
+The Astro UI preserves CRUD forms, pagination, relation labels/search, native details dialogs, counters, OpenID Connect sign-in (authorization code with PKCE), inactivity expiry, refresh token rotation, server-side sign-out, cross-tab logout, themes, and service checks. It shows field-level API errors, hides administrator-only actions from non-admin sessions, and serves a CSP derived from its build-time API URLs. Every page of the WebClient and the documentation site is an Astro page; tests enforce it. Server-sent events combine immediate local notifications with a 15-second cross-instance refresh and client reconnection.
 
 ## Maturity and boundaries
 
@@ -121,7 +121,7 @@ src/Infrastructure         EF Core, Dapper, migrations, hashing and seed tools
 src/WebApi                 REST
 src/GrpcServer              gRPC handlers
 src/GrpcServer.Contracts    Remote commands/results
-src/IdentityApi             Authentication and refresh
+src/IdentityApi             OpenID Connect provider
 src/WebClient              Astro and native TypeScript
 tests/                     Five .NET suites; frontend tests live with source
 labs/                      Reproducible learning experiments

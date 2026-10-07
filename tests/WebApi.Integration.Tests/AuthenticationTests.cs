@@ -4,6 +4,7 @@ using System.Text.Json;
 using Dapper;
 using Grpc.Core;
 using GrpcServer.Contracts.Commands.Organization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebApi.Integration.Tests;
 
@@ -16,31 +17,58 @@ public class AuthenticationTests(WebAppFixture app)
 {
     private static CancellationToken Cancellation => TestContext.Current.CancellationToken;
 
-    public static TheoryData<string, string> InvalidTokens => new()
+    private static readonly System.Security.Cryptography.RSA Attacker = System.Security.Cryptography.RSA.Create(2048);
+
+    public static TheoryData<string> InvalidTokenReasons =>
+    [
+        "wrong issuer", "wrong audience", "wrong signature", "HS256 with a shared secret", "not an access token", "expired",
+        "stale security stamp", "admin claim without configuration", "no security stamp", "unknown or ended session"
+    ];
+
+    /// <summary>A token that fails for <paramref name="reason"/>, minted for the API it is sent to.</summary>
+    private static string InvalidToken(string reason, string audience) => reason switch
     {
-        { "wrong issuer", WebAppFixture.CreateToken(WebAppFixture.Admin, issuer: "someone-else") },
-        { "wrong audience", WebAppFixture.CreateToken(WebAppFixture.Admin, audience: "someone-else") },
-        { "wrong signature", WebAppFixture.CreateToken(WebAppFixture.Admin, signingKey: "an-attacker-key-that-is-at-least-32-characters") },
-        { "expired", WebAppFixture.CreateToken(WebAppFixture.Admin, expiresAt: DateTime.UtcNow.AddMinutes(-5)) },
-        { "stale security stamp", WebAppFixture.CreateToken(WebAppFixture.Admin, stamp: "issued-before-a-password-change") },
-        { "admin claim without configuration", WebAppFixture.CreateToken(WebAppFixture.Member, adminClaim: true) },
-        { "no security stamp", WebAppFixture.CreateToken(WebAppFixture.Admin, stamp: "") }
+        "wrong issuer" => WebAppFixture.CreateToken(WebAppFixture.Admin, issuer: "https://someone-else.test", audience: audience),
+        "wrong audience" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: "https://someone-else.test"),
+        // Same key id as the real key, so validation can't succeed by picking another key.
+        "wrong signature" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience,
+            signingKey: new RsaSecurityKey(Attacker) { KeyId = WebAppFixture.SigningKeyId }),
+        "HS256 with a shared secret" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience,
+            signingKey: new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("an-attacker-secret-that-is-at-least-32-bytes")),
+            algorithm: SecurityAlgorithms.HmacSha256),
+        "not an access token" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience, tokenType: "JWT"),
+        "expired" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience, expiresAt: DateTime.UtcNow.AddMinutes(-5)),
+        "stale security stamp" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience, stamp: "issued-before-a-password-change"),
+        "admin claim without configuration" => WebAppFixture.CreateToken(WebAppFixture.Member, audience: audience, adminClaim: true),
+        "no security stamp" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience, stamp: ""),
+        "unknown or ended session" => WebAppFixture.CreateToken(WebAppFixture.Admin, audience: audience, sessionId: "no-such-session"),
+        _ => throw new ArgumentOutOfRangeException(nameof(reason))
     };
 
     [Theory]
-    [MemberData(nameof(InvalidTokens))]
-    public async Task InvalidTokens_AreRejectedOnBothTransports(string reason, string token)
+    [MemberData(nameof(InvalidTokenReasons))]
+    public async Task InvalidTokens_AreRejectedOnBothTransports(string reason)
     {
         using var client = app.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", InvalidToken(reason, WebAppFixture.Audience));
 
         var response = await client.GetAsync("/api/organizations?pageSize=1", Cancellation);
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized, reason);
         (await response.Content.ReadFromJsonAsync<JsonElement>(Cancellation)).GetProperty("statusCode").GetInt32().ShouldBe(401);
 
         var command = new ListOrganizationsCommand { Pagination = new PaginationParams() };
-        (await Should.ThrowAsync<RpcException>(() => command.RemoteExecuteAsync(WebAppFixture.GrpcOptions(token))))
+        (await Should.ThrowAsync<RpcException>(() => command.RemoteExecuteAsync(WebAppFixture.GrpcOptions(InvalidToken(reason, WebAppFixture.GrpcAudience)))))
             .StatusCode.ShouldBe(StatusCode.Unauthenticated, reason);
+    }
+
+    [Fact]
+    public async Task ValidTokens_AreAcceptedOnBothTransports()
+    {
+        using var client = app.CreateClient(WebAppFixture.Admin);
+        (await client.GetAsync("/api/organizations?pageSize=1", Cancellation)).StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var command = new ListOrganizationsCommand { Pagination = new PaginationParams() };
+        (await command.RemoteExecuteAsync(WebAppFixture.GrpcOptions(WebAppFixture.Admin))).ShouldNotBeNull();
     }
 
     [Fact]

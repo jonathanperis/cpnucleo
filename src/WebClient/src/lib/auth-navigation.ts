@@ -4,6 +4,7 @@ type LocationLike = Pick<Location, 'pathname' | 'search'> & { hash?: string; ori
 
 const canonicalStaticRoutes = new Set([
   '/login',
+  '/signin-callback',
   '/organizations',
   '/projects',
   '/assignments',
@@ -40,5 +41,8 @@ export const getPostLoginRedirectTarget = (returnUrl: string | null): string => 
   }
 
   const parsed = new URL(returnUrl, 'https://cpnucleo.local');
-  return `${canonicalizeStaticRoute(parsed.pathname)}${parsed.search}${parsed.hash}`;
+  const path = canonicalizeStaticRoute(parsed.pathname);
+  // Never return into the sign-in pages themselves.
+  if (path === '/login/' || path === '/signin-callback/') return '/';
+  return `${path}${parsed.search}${parsed.hash}`;
 };
