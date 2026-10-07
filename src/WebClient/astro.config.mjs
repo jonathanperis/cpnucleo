@@ -10,7 +10,11 @@ const publicEnv = loadEnv(process.env.NODE_ENV === 'development' ? 'development'
 export default defineConfig({
   output: 'static',
   integrations: [cspManifestIntegration({ env: publicEnv })],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    // Fonts stay same-origin files: inlined data: URLs would be blocked by the CSP (no font-src data:).
+    build: { assetsInlineLimit: file => (file.endsWith('.woff2') ? false : undefined) },
+  },
   markdown: {
     processor: satteri(),
   },

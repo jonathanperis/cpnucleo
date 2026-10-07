@@ -32,7 +32,24 @@ const deferred = <T,>() => {
   return { promise, resolve };
 };
 
+// jsdom implements neither showModal() nor close(); mirror the browser behavior the controller relies on.
+const polyfillDialogs = () => {
+  HTMLDialogElement.prototype.showModal ??= function (this: HTMLDialogElement) { this.open = true; };
+  HTMLDialogElement.prototype.close ??= function (this: HTMLDialogElement, value?: string) {
+    if (value !== undefined) this.returnValue = value;
+    this.open = false;
+    this.dispatchEvent(new Event('close'));
+  };
+};
+/** Clicks a row's Delete button and answers the confirmation dialog. */
+const deleteRow = async (root: HTMLElement, button: HTMLButtonElement, answer: 'accept' | 'cancel' = 'accept') => {
+  button.click();
+  await vi.waitFor(() => expect(root.querySelector<HTMLDialogElement>('[data-confirm]')!.open).toBe(true));
+  root.querySelector<HTMLButtonElement>(`[data-confirm-${answer}]`)!.click();
+};
+
 beforeEach(() => {
+  polyfillDialogs();
   rows = [{ id: 'one', createdAt: '2026-09-16T10:00:00Z', name: '<img src=x onerror=alert(1)>', login: 'learner', organizationId: 'org' }];
   vi.spyOn(webApiClient, 'list').mockResolvedValue({ items: [{ id: 'org', name: 'School' }], totalCount: 1 });
   vi.spyOn(webApiClient, 'lookup').mockResolvedValue([{ id: 'org', name: 'School' }]);
@@ -143,12 +160,25 @@ describe('server errors in forms', () => {
     expect(root.querySelector<HTMLFormElement>('[data-form]')!.hidden).toBe(false);
   });
 
+  it('asks for confirmation in a dialog and keeps the record when the user cancels', async () => {
+    const root = mount('projects');
+    const remove = vi.spyOn(webApiClient, 'delete').mockResolvedValue(undefined);
+    await vi.waitFor(() => expect(root.querySelector('[data-action="delete"]')).not.toBeNull());
+    const button = root.querySelector<HTMLButtonElement>('[data-action="delete"]')!;
+    await deleteRow(root, button, 'cancel');
+    const message = root.querySelector('[data-confirm-message]')!;
+    expect(message.textContent).toContain('“<img src=x onerror=alert(1)>”');
+    expect(message.querySelector('img')).toBeNull();
+    await vi.waitFor(() => expect(document.activeElement).toBe(button));
+    expect(root.querySelector<HTMLDialogElement>('[data-confirm]')!.open).toBe(false);
+    expect(remove).not.toHaveBeenCalled();
+  });
+
   it('shows why a removal was rejected', async () => {
     const root = mount('projects');
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     const remove = vi.spyOn(webApiClient, 'delete').mockRejectedValue(new ApiError(409, 'The project still has active tasks.'));
     await vi.waitFor(() => expect(root.querySelector('[data-action="delete"]')).not.toBeNull());
-    root.querySelector<HTMLButtonElement>('[data-action="delete"]')!.click();
+    await deleteRow(root, root.querySelector<HTMLButtonElement>('[data-action="delete"]')!);
     await vi.waitFor(() => expect(root.querySelector('[data-error]')?.textContent).toBe('The project still has active tasks.'));
     expect(remove).toHaveBeenCalledWith('projects', 'one');
   });
@@ -369,11 +399,11 @@ describe('accessibility', () => {
 
   it('moves focus to a stable control after the deleted row disappears', async () => {
     const root = mount('projects');
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     vi.spyOn(webApiClient, 'delete').mockImplementation(async () => { rows = []; });
     await vi.waitFor(() => expect(root.querySelector('[data-action="delete"]')).not.toBeNull());
     const remove = root.querySelector<HTMLButtonElement>('[data-action="delete"]')!;
-    remove.focus(); remove.click();
+    remove.focus();
+    await deleteRow(root, remove);
     await vi.waitFor(() => expect(root.querySelectorAll('[data-records] tr')).toHaveLength(0));
     expect(document.activeElement).toBe(root.querySelector('[data-action="create"]'));
   });

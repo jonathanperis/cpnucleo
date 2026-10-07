@@ -1,21 +1,96 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const services = [
+  { name: 'WebApi', icon: 'server' },
+  { name: 'IdentityApi', icon: 'key' },
+] as const;
+const probes = [
+  { path: 'healthz', label: 'Liveness', detail: 'The process is up and answering.' },
+  { path: 'readyz', label: 'Readiness', detail: 'PostgreSQL is reachable and the newest migration is applied.' },
+] as const;
 ---
-<AppLayout path="/api-health">
-  <section class="space-y-5"><div class="flex items-end justify-between gap-4"><div><p class="text-sm text-accent">Status</p><h2 class="text-3xl font-semibold">Service health</h2><p class="mt-2 text-sm text-muted">Liveness checks the process. Readiness also checks the database schema.</p></div><button data-run-checks class="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-canvas">Run checks</button></div><div data-checks class="grid gap-4 md:grid-cols-2" aria-live="polite">Run checks to see current API status.</div></section>
+<AppLayout path="/api-health" title="Service health">
+  <section class="space-y-6">
+    <header class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <div>
+        <p class="eyebrow">Status</p>
+        <h1 class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Service health</h1>
+        <p class="mt-1.5 text-[0.9375rem] text-muted">Liveness checks the process. Readiness also checks the database schema.</p>
+      </div>
+      <button type="button" data-run-checks class="btn btn-secondary self-start sm:self-auto"><Icon name="refresh" />Run checks</button>
+    </header>
+    <p data-checks-summary role="status" class="text-[0.8125rem] text-subtle">Checking services…</p>
+    <div data-checks class="grid gap-5 lg:grid-cols-2">
+      {services.map(service => (
+        <article class="panel overflow-hidden">
+          <div class="flex items-center gap-3.5 border-b border-line px-5 py-4">
+            <span class="flex size-9 flex-none items-center justify-center rounded-lg bg-raised text-muted ring-1 ring-line"><Icon name={service.icon} class="size-[1.125rem]" /></span>
+            <div class="min-w-0">
+              <h2 class="text-sm font-semibold">{service.name}</h2>
+              <p data-service-origin={service.name} class="truncate font-mono text-xs text-subtle"></p>
+            </div>
+          </div>
+          <ul class="divide-y divide-line/70">
+            {probes.map(probe => (
+              <li data-check={`${service.name}:${probe.path}`} data-service={service.name} data-path={probe.path} class="flex items-center gap-4 px-5 py-4">
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium">{probe.label} <span class="font-mono text-xs font-normal text-subtle">/{probe.path}</span></p>
+                  <p class="mt-0.5 text-xs text-subtle">{probe.detail}</p>
+                </div>
+                <div class="text-right">
+                  <p data-check-state class="inline-flex items-center gap-2 text-[0.8125rem] font-medium text-muted"><span class="status-dot text-subtle"></span><span data-check-label>Waiting</span></p>
+                  <p data-check-meta class="mt-0.5 font-mono text-[0.6875rem] tabular-nums text-subtle"></p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
 </AppLayout>
 <script>
   import { IDENTITY_API_BASE_URL, WEBAPI_BASE_URL, withoutApiSuffix } from '../lib/config';
+  // Resolved in the browser: config swaps local URLs for the public ones on the deployed origin.
+  const origins: Record<string, string> = { WebApi: withoutApiSuffix(WEBAPI_BASE_URL), IdentityApi: withoutApiSuffix(IDENTITY_API_BASE_URL) };
+  for (const element of document.querySelectorAll<HTMLElement>('[data-service-origin]')) element.textContent = origins[element.dataset.serviceOrigin!];
   const button = document.querySelector<HTMLButtonElement>('[data-run-checks]')!;
   const results = document.querySelector<HTMLElement>('[data-checks]')!;
-  button.addEventListener('click', async () => {
-    button.disabled = true; results.setAttribute('aria-busy', 'true'); results.replaceChildren();
-    await Promise.all([['WebApi', WEBAPI_BASE_URL], ['IdentityApi', IDENTITY_API_BASE_URL]].flatMap(([name, base]) => ['healthz', 'readyz'].map(async path => {
-      const card = document.createElement('article'); card.className = 'rounded-xl border border-line bg-surface p-5';
-      results.append(card);
-      try { const response = await fetch(`${withoutApiSuffix(base)}/${path}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) }); card.textContent = `${name} ${path === 'readyz' ? 'readiness' : 'liveness'}: ${response.ok ? 'Healthy' : 'Unavailable'} (${response.status})`; }
-      catch { card.textContent = `${name} ${path}: Unreachable`; }
-    })));
+  const summary = document.querySelector<HTMLElement>('[data-checks-summary]')!;
+  const rows = [...document.querySelectorAll<HTMLElement>('[data-check]')];
+  const tones = { checking: 'text-subtle', healthy: 'text-success', unavailable: 'text-warning', unreachable: 'text-danger' } as const;
+
+  const show = (row: HTMLElement, tone: keyof typeof tones, label: string, meta: string) => {
+    row.querySelector('.status-dot')!.className = `status-dot ${tones[tone]}`;
+    row.querySelector<HTMLElement>('[data-check-label]')!.textContent = label;
+    row.querySelector<HTMLElement>('[data-check-meta]')!.textContent = meta;
+  };
+
+  const probe = async (row: HTMLElement) => {
+    show(row, 'checking', 'Checking…', '');
+    const started = performance.now();
+    try {
+      const response = await fetch(`${origins[row.dataset.service!]}/${row.dataset.path}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+      const elapsed = Math.round(performance.now() - started);
+      show(row, response.ok ? 'healthy' : 'unavailable', response.ok ? 'Healthy' : 'Unavailable', `HTTP ${response.status} · ${elapsed} ms`);
+      return response.ok;
+    } catch {
+      show(row, 'unreachable', 'Unreachable', 'No response');
+      return false;
+    }
+  };
+
+  const run = async () => {
+    button.disabled = true; results.setAttribute('aria-busy', 'true');
+    summary.textContent = 'Checking services…';
+    const outcomes = await Promise.all(rows.map(probe));
+    const healthy = outcomes.filter(Boolean).length;
+    summary.textContent = `${healthy} of ${outcomes.length} checks healthy · last run ${new Date().toLocaleTimeString()}`;
     button.disabled = false; results.setAttribute('aria-busy', 'false');
-  });
+  };
+
+  button.addEventListener('click', () => void run());
+  void run();
 </script>

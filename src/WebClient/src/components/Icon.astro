@@ -1,0 +1,6 @@
+---
+import { icons, type IconName } from '../lib/icons';
+interface Props { name: IconName; class?: string }
+const { name, class: className = 'size-4' } = Astro.props;
+---
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class={className}>{icons[name].map(d => <path d={d} />)}</svg>

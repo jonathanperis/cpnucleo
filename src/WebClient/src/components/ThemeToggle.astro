@@ -1,11 +1,21 @@
-<button type="button" data-theme-toggle class="inline-flex items-center gap-2 rounded-full border border-line bg-raised px-3 py-2 text-sm font-semibold text-ink shadow-soft" aria-label="Switch to light mode">Dark</button>
+---
+import Icon from './Icon.astro';
+---
+<button type="button" data-theme-toggle class="btn btn-ghost btn-icon" aria-label="Switch to light mode" title="Switch to light mode">
+  <span data-theme-icon="light"><Icon name="sun" /></span>
+  <span data-theme-icon="dark" hidden><Icon name="moon" /></span>
+</button>
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
   const update = () => {
     const dark = document.documentElement.dataset.theme === 'dark';
+    const label = `Switch to ${dark ? 'light' : 'dark'} mode`;
     for (const button of buttons) {
-      button.textContent = dark ? 'Dark' : 'Light';
-      button.setAttribute('aria-label', `Switch to ${dark ? 'light' : 'dark'} mode`);
+      button.setAttribute('aria-label', label);
+      button.title = label;
+      // Show the theme the button switches to.
+      button.querySelector<HTMLElement>('[data-theme-icon="light"]')!.hidden = !dark;
+      button.querySelector<HTMLElement>('[data-theme-icon="dark"]')!.hidden = dark;
     }
   };
   for (const button of buttons) button.addEventListener('click', () => {
