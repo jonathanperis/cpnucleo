@@ -26,7 +26,8 @@ it('loads every generated home card with minimal pages and distinguishes failure
 
 it('announces one summary instead of eleven live counters', async () => {
   expect(document.querySelectorAll('[data-count][aria-live]')).toHaveLength(0);
-  expect(document.querySelectorAll('[aria-live], [role="status"], [role="alert"]').length).toBeLessThanOrEqual(2);
+  // The layout's shared regions (notifications, dialogs) are outside the home content.
+  expect(document.querySelector('[data-home]')!.querySelectorAll('[aria-live], [role="status"], [role="alert"]').length).toBeLessThanOrEqual(2);
   const summary = document.querySelector('[data-home-summary]')!;
   expect(summary.getAttribute('role')).toBe('status');
   vi.spyOn(webApiClient, 'list').mockResolvedValue({ items: [], totalCount: 3 });

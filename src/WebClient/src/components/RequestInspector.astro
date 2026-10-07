@@ -1,0 +1,19 @@
+---
+import Icon from './Icon.astro';
+---
+<aside data-inspector hidden aria-labelledby="inspector-title" class="inspector">
+  <div class="flex items-center gap-2 border-b border-line px-4 py-3">
+    <Icon name="network" class="size-4 text-accent-text" />
+    <h2 id="inspector-title" class="flex-1 text-sm font-semibold">API requests</h2>
+    <button type="button" data-inspector-clear class="btn btn-ghost btn-sm">Clear</button>
+    <button type="button" data-inspector-close class="btn btn-ghost btn-icon" aria-label="Close the request inspector"><Icon name="close" /></button>
+  </div>
+  <p class="border-b border-line px-4 py-2 text-xs leading-relaxed text-subtle">Calls this tab made to the WebApi, newest first. Headers and bodies are never recorded.</p>
+  <p data-inspector-empty class="px-4 py-6 text-center text-sm text-muted">No requests yet.</p>
+  <ul data-inspector-list class="quiet-scroll flex-1 divide-y divide-line/70 overflow-y-auto"></ul>
+</aside>
+<script>
+  import { mountRequestInspector } from '../features/inspector/request-inspector';
+  const panel = document.querySelector<HTMLElement>('[data-inspector]');
+  if (panel) mountRequestInspector(panel, [...document.querySelectorAll<HTMLButtonElement>('[data-toggle-inspector]')]);
+</script>

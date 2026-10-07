@@ -1,0 +1,41 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+<AppLayout path="/board/" title="Board">
+  <section data-board aria-labelledby="board-heading" class="space-y-6">
+    <header class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <div class="flex items-start gap-4">
+        <span class="mt-1 hidden size-11 flex-none items-center justify-center rounded-xl bg-raised text-accent-text ring-1 ring-line-strong sm:flex"><Icon name="board" class="size-5" /></span>
+        <div>
+          <p class="eyebrow">Start</p>
+          <h1 id="board-heading" class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">Board</h1>
+          <p class="mt-1.5 text-[0.9375rem] text-muted">A project's tasks by progress step.</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a data-board-project-link href="/projects/" class="btn btn-secondary"><Icon name="folder" />Project page</a>
+        <a data-board-new-task href="/assignments/?new=1" class="btn btn-primary"><Icon name="plus" />New task</a>
+      </div>
+    </header>
+
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+      <label class="flex items-center gap-2 text-sm">Project <select data-board-project class="field field-sm w-64 max-w-full"><option value="">Loading projects…</option></select></label>
+      <label class="flex items-center gap-2 text-sm text-muted"><input type="checkbox" data-board-mine class="checkbox" />Only my tasks</label>
+      <p data-board-status role="status" class="text-[0.8125rem] text-subtle sm:ml-auto">Loading…</p>
+    </div>
+    <p data-board-error role="alert" hidden class="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"></p>
+    <p data-board-note hidden class="rounded-lg border border-line bg-raised/50 px-4 py-3 text-sm text-muted"></p>
+    <div data-board-columns class="board quiet-scroll"></div>
+    <p data-board-legend class="flex items-center gap-1.5 text-xs text-subtle"></p>
+  </section>
+</AppLayout>
+<script>
+  import { mountBoard } from '../features/board/board-controller';
+  import { getStoredToken } from '../lib/api/http-client';
+  let stop = () => {};
+  const start = () => { stop(); if (getStoredToken()) stop = mountBoard(document.querySelector<HTMLElement>('[data-board]')!); };
+  start();
+  window.addEventListener('pagehide', () => stop());
+  window.addEventListener('pageshow', event => { if (event.persisted) start(); });
+</script>

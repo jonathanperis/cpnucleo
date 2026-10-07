@@ -1,0 +1,68 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+<AppLayout path="/account/" title="Your account">
+  <section data-account aria-labelledby="account-heading" class="max-w-3xl space-y-6">
+    <header class="flex items-center gap-4">
+      <span data-profile-initial aria-hidden="true" class="flex size-14 flex-none items-center justify-center rounded-full bg-raised text-xl font-semibold uppercase text-muted ring-1 ring-line-strong"></span>
+      <div class="min-w-0">
+        <p class="eyebrow">Account</p>
+        <h1 id="account-heading" class="mt-1 truncate text-2xl font-semibold tracking-tight"><span data-profile-name>Your account</span></h1>
+      </div>
+    </header>
+    <p data-account-error role="alert" hidden class="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"></p>
+
+    <dl class="panel grid gap-px overflow-hidden bg-line sm:grid-cols-3">
+      <div class="bg-surface px-5 py-4"><dt class="text-xs text-subtle">Login</dt><dd data-profile-login class="mt-1 truncate text-sm font-medium">—</dd></div>
+      <div class="bg-surface px-5 py-4"><dt class="text-xs text-subtle">Access</dt><dd data-profile-role class="mt-1 text-sm font-medium">—</dd></div>
+      <div class="bg-surface px-5 py-4"><dt class="text-xs text-subtle">Member since</dt><dd data-profile-since class="mt-1 text-sm font-medium">—</dd></div>
+    </dl>
+
+    <form data-name-form class="panel overflow-hidden" aria-labelledby="name-heading">
+      <div class="border-b border-line px-5 py-4 sm:px-6">
+        <h2 id="name-heading" class="text-base font-semibold tracking-tight">Display name</h2>
+        <p class="mt-1 text-sm text-muted">Shown on tasks, calendar items and project member lists. Your login does not change.</p>
+      </div>
+      <div class="space-y-4 px-5 py-5 sm:px-6">
+        <p data-form-error role="alert" hidden class="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"></p>
+        <div>
+          <label for="account-name" class="mb-1.5 block text-[0.8125rem] font-medium">Name</label>
+          <input id="account-name" name="name" required maxlength="256" autocomplete="name" aria-describedby="account-name-error" class="field max-w-md" />
+          <p id="account-name-error" data-field-error="name" hidden class="mt-1.5 text-[0.8125rem] text-danger"></p>
+        </div>
+      </div>
+      <div class="flex justify-end border-t border-line bg-raised/30 px-5 py-3.5 sm:px-6"><button type="submit" class="btn btn-primary">Save name</button></div>
+    </form>
+
+    <form data-password-form class="panel overflow-hidden" aria-labelledby="password-heading">
+      <div class="border-b border-line px-5 py-4 sm:px-6">
+        <h2 id="password-heading" class="text-base font-semibold tracking-tight">Password</h2>
+        <p class="mt-1 text-sm text-muted">Changing it signs you out everywhere, including this tab. Repeated wrong current passwords lock this form for a while.</p>
+      </div>
+      <div class="grid gap-5 px-5 py-5 sm:grid-cols-2 sm:px-6">
+        <p data-form-error role="alert" hidden class="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger sm:col-span-2"></p>
+        <div class="sm:col-span-2">
+          <label for="account-current-password" class="mb-1.5 block text-[0.8125rem] font-medium">Current password</label>
+          <input id="account-current-password" name="currentPassword" type="password" required autocomplete="current-password" aria-describedby="account-current-password-error" class="field max-w-md" />
+          <p id="account-current-password-error" data-field-error="currentPassword" hidden class="mt-1.5 text-[0.8125rem] text-danger"></p>
+        </div>
+        <div>
+          <label for="account-new-password" class="mb-1.5 block text-[0.8125rem] font-medium">New password</label>
+          <input id="account-new-password" name="newPassword" type="password" required autocomplete="new-password" aria-describedby="account-new-password-error" class="field" />
+          <p id="account-new-password-error" data-field-error="newPassword" hidden class="mt-1.5 text-[0.8125rem] text-danger"></p>
+        </div>
+        <div>
+          <label for="account-confirm-password" class="mb-1.5 block text-[0.8125rem] font-medium">Repeat the new password</label>
+          <input id="account-confirm-password" name="confirmPassword" type="password" required autocomplete="new-password" class="field" />
+        </div>
+      </div>
+      <div class="flex justify-end border-t border-line bg-raised/30 px-5 py-3.5 sm:px-6"><button type="submit" class="btn btn-primary"><Icon name="key" />Change password</button></div>
+    </form>
+  </section>
+</AppLayout>
+<script>
+  import { mountAccountPage } from '../features/account/account-controller';
+  import { getStoredToken } from '../lib/api/http-client';
+  if (getStoredToken()) mountAccountPage(document.querySelector<HTMLElement>('[data-account]')!);
+</script>

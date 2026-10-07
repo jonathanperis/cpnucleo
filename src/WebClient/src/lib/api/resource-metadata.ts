@@ -1,4 +1,4 @@
-import type { FieldMetadata, ResourceAccess, ResourceKey, ResourceMetadata } from './types';
+import { relationFilterKeys, type FieldMetadata, type RelationFilterKey, type ResourceAccess, type ResourceKey, type ResourceMetadata } from './types';
 
 const baseFields: FieldMetadata[] = [
   { name: 'id', label: 'ID', type: 'guid', table: false, readOnly: true },
@@ -31,14 +31,14 @@ export const resourceMetadata = [
   ]),
   resource('assignments', 'Task', 'Tasks', 'assignment', '/assignments/', 'Work items with dates, hours, progress, and owner links.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
-    { name: 'description', label: 'Description', type: 'textarea', required: true, table: true },
+    { name: 'description', label: 'Description', type: 'textarea', required: true, table: true, hiddenByDefault: true },
     { name: 'startDate', label: 'Start date', type: 'date', required: true, table: true },
     { name: 'endDate', label: 'End date', type: 'date', required: true, table: true },
     { name: 'amountHours', label: 'Hours', type: 'number', required: true, min: 1, table: true },
     { name: 'projectId', label: 'Project', type: 'guid', required: true, table: true, relation: 'projects' },
     { name: 'workflowId', label: 'Progress step', type: 'guid', required: true, table: true, relation: 'workflows' },
     { name: 'userId', label: 'Owner', type: 'guid', required: true, table: true, relation: 'users' },
-    { name: 'assignmentTypeId', label: 'Task type', type: 'guid', required: true, table: true, relation: 'assignmentTypes' },
+    { name: 'assignmentTypeId', label: 'Task type', type: 'guid', required: true, table: true, relation: 'assignmentTypes', hiddenByDefault: true },
   ], { dateRange: { start: 'startDate', end: 'endDate' } }),
   resource('assignmentTypes', 'Task type', 'Task types', 'assignmentType', '/assignment-types/', 'Reusable labels for different kinds of work.', 'name', [
     { name: 'name', label: 'Name', type: 'text', required: true, table: true },
@@ -87,3 +87,17 @@ export const tableFields = (resource: ResourceMetadata) => {
   return [...listed.filter((field) => field.name !== 'createdAt'), ...listed.filter((field) => field.name === 'createdAt')];
 };
 export const formFields = (resource: ResourceMetadata) => resource.fields.filter((field) => !field.readOnly);
+
+/** Relation fields this resource's list can be narrowed by (`/assignments/?projectId=…`). */
+export const filterFields = (resource: ResourceMetadata) =>
+  resource.fields.filter((field): field is FieldMetadata & { name: RelationFilterKey } =>
+    Boolean(field.relation) && (relationFilterKeys as readonly string[]).includes(field.name));
+
+/** Resources with their own detail page. */
+const detailRoutes: Partial<Record<ResourceKey, string>> = { projects: '/projects/view/', assignments: '/assignments/view/' };
+
+/** The page that shows one record: its detail page, or its list narrowed to that record. */
+export const recordHref = (key: ResourceKey, id: string) => {
+  const detail = detailRoutes[key];
+  return detail ? `${detail}?id=${encodeURIComponent(id)}` : `${findResource(key).routePath}?ids=${encodeURIComponent(id)}`;
+};

@@ -1,6 +1,7 @@
 import type { ApiErrorShape } from './types';
 import { IDENTITY_API_BASE_URL, IDENTITY_API_ISSUER, withoutApiSuffix } from '../config';
 import { getLoginRedirectTarget } from '../auth-navigation';
+import { beginRequest } from './request-log';
 
 export type FieldErrors = Record<string, string[]>;
 
@@ -43,12 +44,19 @@ export const logoutStorageKey = 'cpnucleo.logout';
 export const sessionChannelName = 'cpnucleo.session';
 export const sessionInactivityTimeoutMs = 15 * 60 * 1000;
 export const tokenRefreshLeadMs = 5 * 60 * 1000;
+/** How long before the inactivity sign-out the page asks whether the person is still there. */
+export const sessionWarningLeadMs = 60 * 1000;
+/** Window events for the inactivity warning (`detail.expiresAt` is a timestamp in ms). */
+export const sessionExpiringEvent = 'cpnucleo:session-expiring';
+export const sessionExtendedEvent = 'cpnucleo:session-extended';
 const tokenRefreshCooldownMs = 60 * 1000;
 const activityThrottleMs = 250;
 
 const storedValue = (key: string): string | null => (typeof sessionStorage === 'undefined' ? null : sessionStorage.getItem(key));
 
 let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
+let warningTimer: ReturnType<typeof setTimeout> | undefined;
+let warningShown = false;
 let refreshTimer: ReturnType<typeof setTimeout> | undefined;
 let refreshInFlight: Promise<boolean> | undefined;
 let lastRefreshAttemptAt = 0;
@@ -165,8 +173,10 @@ export const clearStoredToken = (): void => {
   }
   if (inactivityTimer) clearTimeout(inactivityTimer);
   if (refreshTimer) clearTimeout(refreshTimer);
+  if (warningTimer) clearTimeout(warningTimer);
   inactivityTimer = undefined;
   refreshTimer = undefined;
+  warningTimer = undefined;
 };
 
 export interface SessionClaims {
@@ -423,11 +433,24 @@ const onInactivityTimeout = () => {
   expireSession();
 };
 
+const onInactivityWarning = () => {
+  const lastActivityAt = getLastActivityAt();
+  if (!getStoredToken() || lastActivityAt === null) return;
+  const expiresAt = lastActivityAt + sessionInactivityTimeoutMs;
+  if (expiresAt - now() > sessionWarningLeadMs) {
+    scheduleSessionTimers();
+    return;
+  }
+  warningShown = true;
+  window.dispatchEvent(new CustomEvent(sessionExpiringEvent, { detail: { expiresAt } }));
+};
+
 const scheduleSessionTimers = () => {
   if (typeof window === 'undefined') return;
 
   if (inactivityTimer) clearTimeout(inactivityTimer);
   if (refreshTimer) clearTimeout(refreshTimer);
+  if (warningTimer) clearTimeout(warningTimer);
 
   const token = getStoredToken();
   if (!token) return;
@@ -436,6 +459,7 @@ const scheduleSessionTimers = () => {
   const lastActivityAt = getLastActivityAt() ?? currentTime;
   const inactivityRemaining = Math.max(lastActivityAt + sessionInactivityTimeoutMs - currentTime, 0);
   inactivityTimer = setTimeout(onInactivityTimeout, inactivityRemaining);
+  warningTimer = setTimeout(onInactivityWarning, Math.max(inactivityRemaining - sessionWarningLeadMs, 0));
 
   const expiresAt = getTokenExpiresAt(token);
   if (expiresAt === null) return;
@@ -463,6 +487,10 @@ export const setupSessionActivityTracking = (): (() => void) => {
     markSessionActivity();
     scheduleSessionTimers();
     refreshTokenIfNeeded();
+    if (warningShown) {
+      warningShown = false;
+      window.dispatchEvent(new Event(sessionExtendedEvent));
+    }
   };
   const onHighFrequencyActivity = throttleLeading(onActivity, activityThrottleMs);
 
@@ -478,6 +506,7 @@ export const setupSessionActivityTracking = (): (() => void) => {
     stopCrossTabLogout();
     if (inactivityTimer) clearTimeout(inactivityTimer);
     if (refreshTimer) clearTimeout(refreshTimer);
+    if (warningTimer) clearTimeout(warningTimer);
   };
 };
 
@@ -574,13 +603,17 @@ export const requestJson = async <T>(url: string, options: HttpOptions = {}): Pr
   if (options.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
   if (token) headers.set('Authorization', `Bearer ${token}`);
 
+  const log = beginRequest(options.method ?? 'GET', url, 'json');
   let response: Response;
   try {
     response = await fetch(url, { ...options, headers });
   } catch (error) {
+    log.finish(options.signal?.aborted ? 'Aborted' : 'Network error');
     if (options.signal?.aborted) throw error;
     throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
   }
+  log.respond(response.status);
+  log.finish();
   if (!response.ok) throw await readErrorResponse(response);
   const body = await parseJson(response);
   if (token) refreshTokenIfNeeded();

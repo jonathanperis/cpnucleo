@@ -14,9 +14,10 @@ import BrandMark from '../components/BrandMark.astro';
       (() => {
         try {
           const stored = localStorage.getItem('cpnucleo-theme');
+          // Dark unless the person chose light, or chose to follow the operating system.
           const theme = stored === 'dark' || stored === 'light'
             ? stored
-            : 'dark';
+            : stored === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {}
