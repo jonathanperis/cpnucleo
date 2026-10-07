@@ -57,6 +57,8 @@ public sealed class Assignment : BaseEntity
 
     public static void Remove(Assignment obj) => obj.MarkRemoved();
 
+    public static void Restore(Assignment obj) => obj.MarkRestored();
+
     private void Apply(string? name, string? description, DateTime startDate, DateTime endDate, int amountHours,
         Guid projectId, Guid workflowId, Guid userId, Guid assignmentTypeId)
     {

@@ -70,6 +70,8 @@ FORBIDDEN_FRAMEWORK_PACKAGES = {
     "@astrojs/react", "@astrojs/vue", "@astrojs/svelte", "@astrojs/solid-js", "@astrojs/preact", "@astrojs/lit",
     "@astrojs/alpinejs", "@analogjs/astro-angular",
 }
+# WebApi resources outside the CRUD table and the REST/gRPC parity count.
+REST_ONLY_RESOURCES = {"Account"}
 ASTRO_GENERATOR = re.compile(r'<meta name="generator" content="Astro v\d')
 
 
@@ -122,8 +124,11 @@ def main(built_site=False):
     readme = read("README.md")
     major = json.loads(read("global.json"))["sdk"]["version"].split(".")[0]
     require(f".NET {major}" in readme, "README runtime differs from global.json")
+    # REST-only additions (restore and the self-service account) are not part of the transport parity.
+    rest_only = {path for path in (ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs")
+                 if path.parent.parent.name in REST_ONLY_RESOURCES or path.parent.name.startswith("Restore")}
     counts = (
-        len(list((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs"))),
+        len(set((ROOT / "src/WebApi/Endpoints").glob("**/Endpoint.cs")) - rest_only),
         len(list((ROOT / "src/GrpcServer/Handlers").glob("**/*Handler.cs"))),
         len(list((ROOT / "src/GrpcServer.Contracts/Commands").glob("**/*Command.cs"))),
     )
@@ -155,7 +160,8 @@ def main(built_site=False):
     api = read("docs/wiki/api-reference.md")
     rows = re.findall(r"\| (\w+) \| `(/api/\w+)` \| `(/api/\w+)` \|", api)
     resources = ROOT / "src/WebApi/Endpoints"
-    require({row[0] for row in rows} == {path.name for path in resources.iterdir() if path.is_dir()},
+    require({row[0] for row in rows} == {path.name for path in resources.iterdir()
+                                         if path.is_dir() and path.name not in REST_ONLY_RESOURCES},
             "API resource table differs from endpoint resources")
     for entity, singular, plural in rows:
         routes = set()
@@ -163,8 +169,12 @@ def main(built_site=False):
             routes.update((method.upper(), "/api" + route) for method, route in
                           re.findall(r'\b(Get|Post|Patch|Put|Delete)\("([^"]+)"\)', endpoint.read_text()))
         expected = {("POST", singular), ("GET", singular), ("GET", plural),
-                    ("PATCH", singular), ("DELETE", singular)}
+                    ("PATCH", singular), ("DELETE", singular), ("POST", singular + "/restore")}
         require(routes == expected, f"{entity}: documented CRUD verbs/routes differ: {routes}")
+    for resource in REST_ONLY_RESOURCES:
+        for endpoint in (resources / resource).glob("**/Endpoint.cs"):
+            for method, route in re.findall(r'\b(Get|Post|Patch|Put|Delete)\("([^"]+)"\)', endpoint.read_text()):
+                require(f"`{method.upper()}` | `/api{route}`" in api, f"{resource}: {method.upper()} /api{route} is undocumented")
 
     obsolete = [
         "docker compose -f compose.yaml -f compose.prod.yaml",

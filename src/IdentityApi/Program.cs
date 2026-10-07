@@ -40,8 +40,9 @@ builder.Services
     .AddIdentityServer(options =>
     {
         options.IssuerUri = JwtKeys.Issuer(builder.Configuration);
-        // The sign-in UI is the WebClient's Astro page; errors are explained there too.
-        options.UserInteraction.LoginUrl = OidcSettings.LoginPageUrl(builder.Configuration);
+        // The sign-in UI is the WebClient's Astro page; errors are explained there too. Sign-in goes
+        // through a local step that picks the page of the WebClient origin that started the request.
+        options.UserInteraction.LoginUrl = IdentityApi.Endpoints.Account.LoginPage.Endpoint.Route;
         options.UserInteraction.LoginReturnUrlParameter = "authRequest";
         options.UserInteraction.ErrorUrl = OidcSettings.LoginPageUrl(builder.Configuration);
         options.UserInteraction.ErrorIdParameter = "errorId";

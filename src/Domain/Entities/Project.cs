@@ -28,4 +28,6 @@ public sealed class Project : BaseEntity
     }
 
     public static void Remove(Project obj) => obj.MarkRemoved();
+
+    public static void Restore(Project obj) => obj.MarkRestored();
 }

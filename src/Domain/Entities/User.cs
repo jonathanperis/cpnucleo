@@ -40,4 +40,6 @@ public sealed class User : BaseEntity
     }
 
     public static void Remove(User obj) => obj.MarkRemoved();
+
+    public static void Restore(User obj) => obj.MarkRestored();
 }

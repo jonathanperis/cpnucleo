@@ -24,4 +24,15 @@ public abstract class BaseEntity
         Active = false;
         DeletedAt ??= DateTime.UtcNow;
     }
+
+    /// <summary>
+    /// Undoes a soft delete. Restoring an active entity changes nothing; nothing but the lifecycle
+    /// columns changes, so the row's version (<see cref="UpdatedAt"/>) stays as it was.
+    /// </summary>
+    protected void MarkRestored()
+    {
+        if (Active) return;
+        Active = true;
+        DeletedAt = null;
+    }
 }

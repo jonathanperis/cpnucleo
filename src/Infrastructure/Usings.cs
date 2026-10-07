@@ -18,6 +18,7 @@ global using Domain.UoW;
 global using Infrastructure.Common.Context;
 global using Infrastructure.Common.Helpers;
 global using Infrastructure.Common.Mappings;
+global using Infrastructure.Persistence.Account;
 global using Infrastructure.Persistence.Projects;
 global using Infrastructure.Repositories;
 global using Infrastructure.Common.Security;

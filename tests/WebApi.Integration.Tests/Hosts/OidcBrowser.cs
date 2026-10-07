@@ -49,12 +49,20 @@ public static class OidcBrowser
         return QueryHelpers.AddQueryString("/connect/authorize", query);
     }
 
-    /// <summary>Starts an authorization request; without a session the server sends the browser to the sign-in page.</summary>
-    public static async Task<Uri> AuthorizeAsync(HttpClient browser, Pkce pkce)
+    /// <summary>
+    /// Starts an authorization request; without a session the server sends the browser to the sign-in
+    /// page, through its login step that picks the page of the WebClient origin that asked.
+    /// </summary>
+    public static async Task<Uri> AuthorizeAsync(HttpClient browser, Pkce pkce, string redirectUri = "")
     {
-        var response = await browser.GetAsync(AuthorizeUrl(pkce), Cancellation);
+        var response = await browser.GetAsync(AuthorizeUrl(pkce, redirectUri), Cancellation);
         response.StatusCode.ShouldBe(HttpStatusCode.Found);
-        return response.Headers.Location!;
+        var location = response.Headers.Location!;
+        if (!location.OriginalString.Contains("/api/account/login-page", StringComparison.Ordinal)) return location;
+
+        var loginStep = await browser.GetAsync(location, Cancellation);
+        loginStep.StatusCode.ShouldBe(HttpStatusCode.Found, await loginStep.Content.ReadAsStringAsync(Cancellation));
+        return loginStep.Headers.Location!;
     }
 
     public static string Query(Uri uri, string name) => QueryHelpers.ParseQuery(uri.Query).TryGetValue(name, out var value) ? value.ToString() : "";

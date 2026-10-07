@@ -6,7 +6,7 @@ Cpnucleo exposes three API services: the WebApi (REST), the IdentityApi (authent
 
 ## WebApi -- REST Endpoints
 
-The WebApi uses [FastEndpoints](https://fast-endpoints.com/) to define REST endpoints with Swagger/OpenAPI documentation. Each entity has 5 standard CRUD endpoints.
+The WebApi uses [FastEndpoints](https://fast-endpoints.com/) to define REST endpoints with Swagger/OpenAPI documentation. Each entity has 5 standard CRUD endpoints plus a REST-only restore endpoint; the signed-in user's own account has three self-service endpoints.
 
 ### Base URL
 
@@ -28,6 +28,7 @@ Every entity follows this consistent pattern:
 | `GET` | `/api/{entities}` | List records (paginated; plural route such as `/api/projects`) |
 | `PATCH` | `/api/{entity}` | Update from a JSON body containing `id` and the required resource fields |
 | `DELETE` | `/api/{entity}` | Soft-delete IDs supplied as a JSON body: `{"ids":["uuid"]}` |
+| `POST` | `/api/{entity}/restore` | Undo the soft delete of IDs supplied as a JSON body: `{"ids":["uuid"]}` (REST only) |
 
 These routes do not contain an `/{id}` path segment. PATCH uses each resource's request DTO, not JSON Patch operations. Include `Authorization: Bearer <token>` on CRUD requests.
 
@@ -48,6 +49,32 @@ Administrators (`cpnucleo:admin` claim backed by `CPNUCLEO_ADMIN_LOGINS`; when t
 ### Removal
 
 `DELETE` bodies contain 1–100 ids; duplicates are ignored. Every resource removes its batch atomically: if any id is missing or invisible, nothing changes and the response is 404. A record that still has active dependent data (an organization with projects, a project with assignments, an assignment with appointments, ...) returns 409 with the dependent kind in the message. Project and user memberships and user assignments are removed together with their project, assignment or user.
+
+### Restore (undo a removal)
+
+`POST /api/{entity}/restore` with `{"ids":["uuid"]}` undoes soft deletes for all eleven resources (for example `/api/organization/restore`, `/api/assignmentImpediment/restore`). It is REST-only; gRPC has no restore command. The body follows the removal rules: 1–100 distinct ids, applied atomically with the persistence style of the resource's removal. A restore sets `Active = true` and clears `DeletedAt`; nothing else changes, including `updatedAt`, so a project's `expectedVersion` stays valid.
+
+| Status | When |
+|--------|------|
+| 200 `{"success":true}` | Every id was a removed row the caller may see and change |
+| 400 | Invalid body (`errors.ids`), or a restored row references a parent that is still removed (`errors.<column>`, for example `errors.organizationId`); restore the parent first |
+| 403 | Catalog data or users restored by a non-administrator (same rule as removal) |
+| 404 | Any id is unknown, still active, or not visible to the caller; nothing is restored |
+| 409 | The restored user's login is now used by another active account |
+
+Access is checked exactly as for removal (members restore their project data, non-administrators only their own appointments). Restoring a user, project or assignment also restores the membership links (`UserProjects`, `UserAssignments`) that were removed together with it, as long as their other parent is active; links removed on their own stay removed. A member who removed a project can therefore restore it and keeps access to it.
+
+### Self-service account
+
+Any signed-in user (including a service client, which acts as its service account) manages their own account; the account always comes from the token's `sub`, never from the request body.
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| `GET` | `/api/me` | `{ "id", "name", "login", "createdAt", "updatedAt" }`; credentials are never returned |
+| `PATCH` | `/api/me` | Body `{ "name" }`: changes only the display name (domain name rules, 400 `errors.name`). Returns `{ "success": true }` |
+| `POST` | `/api/me/password` | Body `{ "currentPassword", "newPassword" }`. Returns `{ "success": true }` |
+
+A wrong current password is 400 with `errors.currentPassword` (`"The current password is incorrect."`); the new password follows the same policy as user administration (`errors.newPassword`) and must differ from the current one. Five wrong current passwords for one account within 15 minutes lock password changes for that account for 15 minutes: 429 with `Retry-After` and the error envelope, even for the right password. At most four password changes are verified at once. A successful change replaces the Argon2id hash, so the security stamp changes: every existing access token, refresh token and identity cookie of the account stops working (within the 30-second session cache) and the client signs in again with the new password. A token whose subject has no active account is rejected with 401 by session validation; without a subject the API answers 401 as well.
 
 ### Error responses
 
@@ -185,15 +212,16 @@ A service client's token carries its service account's subject, login, admin cla
 
 #### Sign-in and sign-out steps
 
-The sign-in page is the WebClient's Astro page; IdentityApi only adds three anonymous endpoints:
+The sign-in page is the WebClient's Astro page; IdentityApi only adds four anonymous endpoints:
 
 | Method | Route | Description |
 |--------|-------|-------------|
+| `GET` | `/api/account/login-page?authRequest=` | The server's login URL. Re-validates the pending authorization request and redirects to `{origin}/login/?authRequest=<absolute request URL>` on the WebClient origin of its `redirect_uri`, when that origin is one of `Cors__AllowedOrigins__N`. Any other origin gets the first configured origin's page (or `Identity__LoginPageUrl` when set); a missing or invalid request goes there with `error=request` |
 | `POST` | `/api/account/login` | Form post (`login`, `password`, `authRequest`) from the WebClient sign-in page. Redirects to the pending authorization request, or back to the sign-in page with `error=invalid`, `error=locked&retryAfter=N` or `error=request` |
 | `GET` | `/api/account/logout?logoutId=` | The end-session endpoint's logout step: ends the server-side session, removes the identity cookie, redirects to the post-logout URL |
 | `GET` | `/api/account/error?errorId=` | `{ "error", "errorDescription" }` for an authorization request the server rejected |
 
-The sign-in post must come from a WebClient origin (`Origin`, or `Referer`); others get 403 with the error envelope. It only returns to a pending authorization request on this host. Unknown, ambiguous (legacy duplicates) and wrong credentials take the same Argon2id time and redirect identically. Five failures for one login within 15 minutes lock it for 15 minutes regardless of client address; at most four password verifications run at once. `Login` is limited to 256 characters and `Password` to 128.
+The sign-in post must come from a WebClient origin (`Origin`, or `Referer`); others get 403 with the error envelope, and sign-in errors return to the sign-in page of the origin that posted. It only returns to a pending authorization request on this host. Unknown, ambiguous (legacy duplicates) and wrong credentials take the same Argon2id time and redirect identically. Five failures for one login within 15 minutes lock it for 15 minutes regardless of client address; at most four password verifications run at once. `Login` is limited to 256 characters and `Password` to 128.
 
 ### Tokens
 
@@ -224,7 +252,7 @@ After signature validation they confirm, with a 30-second cache, that the accoun
 | Sign-out (end session) | Session ended, its refresh tokens deleted, identity cookie removed, its access tokens rejected by the APIs |
 | Refresh token replayed | Treated as theft: the whole session ends as above |
 | Revocation endpoint | The given refresh token stops working |
-| Password or login change | The identity cookie and refresh tokens stop working (security stamp); access tokens are rejected |
+| Password or login change (administrator or `POST /api/me/password`) | The identity cookie and refresh tokens stop working (security stamp); access tokens are rejected |
 | Eight hours after sign-in | Refresh tokens and the identity cookie expire |
 
 ### Rate Limiting
@@ -263,7 +291,7 @@ Each of the 11 entities has these 5 commands:
 | `Remove{Entity}Command` | Soft delete |
 | `Update{Entity}Command` | Update fields |
 
-Total: 55 registered command handlers.
+Total: 55 registered command handlers. Restore (`POST /api/{entity}/restore`) and the self-service account endpoints are REST-only; list commands accept the same relation and date filters as REST.
 
 ### Data Access
 
@@ -316,9 +344,22 @@ Refreshes use the `refresh_token` grant; signing out uses `/connect/revocation` 
 
 List query fields are flat: `pageNumber`, `pageSize` (1–100), `sortColumn`, `sortOrder`, `search` (up to 128 characters), and `ids` (up to 100 comma-separated UUIDs). For example: `/api/projects?pageSize=25&search=school`. FastEndpoints binds these scalar fields into the request's `Pagination` object; dotted `pagination.*` keys are not the canonical HTTP contract. Out-of-bound values are a 400 with the offending field (`errors.pageSize`, `errors.ids`, ...). gRPC list commands apply the same rules and answer `InvalidArgument` with the same message, including for hand-crafted messages that bypass the typed contracts or omit `Pagination`.
 
+Lists also accept optional relation and date filters, combined with `AND` on top of visibility, `search` and `ids` (they only ever narrow what the caller may see):
+
+| Field | Value | Applies to |
+|-------|-------|------------|
+| `organizationId` | One UUID | Projects |
+| `projectId` | One UUID | Assignments, UserProjects |
+| `assignmentId` | One UUID | Appointments, AssignmentImpediments, UserAssignments |
+| `userId` | One UUID | Assignments, Appointments, UserAssignments, UserProjects |
+| `workflowId` | One UUID | Assignments |
+| `dateFrom`, `dateTo` | ISO-8601 date or date-time (`2031-01-20`, `2031-01-20T10:00:00Z`, `2031-01-20T10:00:00%2B02:00`); values without an offset are UTC | Appointments: `keepDate` in `[dateFrom, dateTo)`. Assignments: the `startDate`..`endDate` period overlaps the range (`endDate >= dateFrom` and `startDate < dateTo`) |
+
+Each bound is optional. A malformed UUID is 400 `errors.<field>` (`"ProjectId must be a UUID."`), a malformed date `"DateFrom must be an ISO-8601 date and time."`, and `dateFrom` after `dateTo` is reported on `errors.dateTo`. A filter the resource does not support is rejected rather than ignored: 400 with the field (`"Projects cannot be filtered by userId."`), and gRPC `InvalidArgument` with the same message. Live listings (`Accept: text/event-stream`) apply the same filters to every snapshot and reject the same requests with 400 before the stream starts. Encode `+` in offsets as `%2B`.
+
 Project PATCH requests may include `expectedVersion`, using the last observed `updatedAt` or initial `createdAt`. A stale value returns HTTP 409. The corresponding gRPC command accepts `ExpectedVersion` and reports a failed result on a conflict. Omitting the field preserves legacy last-write-wins behavior.
 
-All normal removal paths soft-delete. Project batches are atomic. The database rejects conflicting normalized active logins on new/changed accounts; authentication rejects ambiguous legacy logins rather than choosing an arbitrary account.
+All normal removal paths soft-delete, and `POST /api/{entity}/restore` undoes them. Project batches are atomic. The database rejects conflicting normalized active logins on new/changed accounts; authentication rejects ambiguous legacy logins rather than choosing an arbitrary account.
 
 `/healthz` is liveness only. `/readyz` checks database/schema availability. SSE listings refresh periodically so writes through other instances/transports converge within a refresh cycle.
 

@@ -46,8 +46,9 @@ public class DapperRepository<T>(
 
     public async Task<PaginatedResult<T?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
-        // Both transports reach here; invalid or missing paging is a domain rule violation (400 / InvalidArgument).
-        pagination = PaginationParams.Require(pagination);
+        // Both transports reach here; invalid or missing paging, or a filter these rows can't apply,
+        // is a domain rule violation (400 / InvalidArgument).
+        pagination = PaginationParams.Require(pagination, typeof(T));
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var ids = pagination.GetIds();
         var validSortOrder = pagination.SortOrder == "DESC" ? "DESC" : "ASC";
@@ -56,7 +57,8 @@ public class DapperRepository<T>(
         var searchClause = searchPattern is not null && searchColumns.Length > 0
             ? " AND (" + string.Join(" OR ", searchColumns.Select(column => $"\"{column}\" ILIKE @Search ESCAPE '\\'")) + ")"
             : string.Empty;
-        var filter = $"""WHERE "Active" = true{searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids)){Visibility}""";
+        var (filterClause, filterValues) = FilterClause(pagination);
+        var filter = $"""WHERE "Active" = true{searchClause} AND (NOT @FilterIds OR "Id" = ANY(@Ids)){filterClause}{Visibility}""";
 
         var sql = $"""
                    SELECT * FROM "{tableName}"
@@ -67,14 +69,16 @@ public class DapperRepository<T>(
                    SELECT COUNT(*) FROM "{tableName}" {filter};
                    """;
 
-        var command = new CommandDefinition(sql, WithAccess(new
+        var parameters = WithAccess(new
         {
             pagination.Offset,
             pagination.PageSize,
             Search = searchPattern,
             FilterIds = ids.Length > 0,
             Ids = ids
-        }), transaction(), cancellationToken: cancellationToken);
+        });
+        parameters.AddDynamicParams(filterValues);
+        var command = new CommandDefinition(sql, parameters, transaction(), cancellationToken: cancellationToken);
 
         await using var multi = await connection.QueryMultipleAsync(command);
 
@@ -168,6 +172,48 @@ public class DapperRepository<T>(
         return true;
     }
 
+    public async Task<bool> RestoreManyAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default)
+    {
+        var distinctIds = BatchIds.Normalize(ids, "restored");
+
+        var ambient = transaction();
+        await using var local = ambient is null ? await BeginLocalTransactionAsync(cancellationToken) : null;
+        var current = ambient ?? local;
+
+        // Same locking as removal: only removed rows the caller may see, in a stable order.
+        var rows = (await connection.QueryAsync<T>(new CommandDefinition($"""
+            SELECT * FROM "{tableName}" WHERE "Id" = ANY(@Ids) AND NOT "Active"{AccessSql.RestorePredicate(typeof(T), tableName)}
+            ORDER BY "Id" FOR UPDATE
+            """, WithAccess(new { Ids = distinctIds }), current, cancellationToken: cancellationToken))).ToArray();
+        if (rows.Length != distinctIds.Length)
+        {
+            if (local is not null) await local.RollbackAsync(CancellationToken.None);
+            return false;
+        }
+
+        // The relationship triggers still apply: a row whose parent is removed can't come back (23503),
+        // and rows removed together with this one (membership links) come back with it.
+        var affected = await connection.ExecuteAsync(new CommandDefinition($"""
+            UPDATE "{tableName}" SET "Active" = true, "DeletedAt" = NULL
+            WHERE "Id" = ANY(@Ids) AND NOT "Active"
+            """, new { Ids = distinctIds }, current, cancellationToken: cancellationToken));
+        if (affected != distinctIds.Length)
+        {
+            if (local is not null) await local.RollbackAsync(CancellationToken.None);
+            return false;
+        }
+
+        // Authorized against the restored state, inside the same transaction: a restored project's
+        // memberships are back, so its members pass while everyone else is denied (and the whole
+        // batch rolls back with the exception).
+        var session = new DatabaseSession(connection, current);
+        foreach (var target in rows.Select(ResourceAccess.TargetOf).Distinct())
+            await accessGuard.EnsureCanWriteAsync(target, AccessOperation.Modify, session, cancellationToken);
+
+        if (local is not null) await local.CommitAsync(cancellationToken);
+        return true;
+    }
+
     public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
     {
         // Identity checks deliberately ignore visibility: an id is taken even if the caller can't see it.
@@ -194,6 +240,41 @@ public class DapperRepository<T>(
         if (newTarget != originalTarget)
             await accessGuard.EnsureCanWriteAsync(newTarget, AccessOperation.Reassign, Session(), cancellationToken);
         return true;
+    }
+
+    /// <summary>
+    /// The relation and date filters as extra <c>AND</c> predicates. They only narrow the visible rows;
+    /// column names come from the entity's own properties and values are always parameters.
+    /// </summary>
+    private static (string Clause, DynamicParameters Values) FilterClause(PaginationParams pagination)
+    {
+        var clause = new StringBuilder();
+        var values = new DynamicParameters();
+        foreach (var (column, value) in pagination.GetRelationFilters())
+        {
+            var canonical = CachedPropertyNames.Value[column];
+            clause.Append($" AND \"{canonical}\" = @Filter{canonical}");
+            values.Add("Filter" + canonical, value);
+        }
+
+        // A single date (KeepDate) falls inside [from, to); a period (StartDate..EndDate) overlaps it.
+        var (from, to) = pagination.GetDateRange();
+        if (PaginationParams.DateColumnsOf(typeof(T)) is var (start, end))
+        {
+            if (from is not null)
+            {
+                clause.Append($" AND \"{end}\" >= @DateFrom");
+                values.Add("DateFrom", from);
+            }
+
+            if (to is not null)
+            {
+                clause.Append($" AND \"{start}\" < @DateTo");
+                values.Add("DateTo", to);
+            }
+        }
+
+        return (clause.ToString(), values);
     }
 
     private DatabaseSession Session() => new(connection, transaction());
