@@ -2,18 +2,24 @@
 <p data-auth-loading role="status" class="p-6 text-muted">Checking your session…</p>
 <noscript><p class="p-6 text-danger">JavaScript is required to sign in and use this learning workspace.</p></noscript>
 <script>
-  import { getStoredToken, logout, setupSessionActivityTracking } from '../lib/api/http-client';
+  import { getStoredToken, hasExpiredSession, redirectToLoginForExpiredSession, setupSessionActivityTracking, signOut } from '../lib/api/http-client';
   import { getLoginRedirectTarget } from '../lib/auth-navigation';
   let stop = () => {};
   const initialize = () => {
     stop();
-    if (!getStoredToken()) { window.location.replace(getLoginRedirectTarget(window.location)); return; }
+    if (!getStoredToken()) {
+      // An expired session also ends the identity session; otherwise its cookie would sign straight back in.
+      if (hasExpiredSession()) redirectToLoginForExpiredSession();
+      else window.location.replace(getLoginRedirectTarget(window.location));
+      return;
+    }
     document.querySelectorAll<HTMLElement>('[data-auth-content]').forEach(element => { element.hidden = false; });
     document.querySelectorAll<HTMLElement>('[data-auth-loading]').forEach(element => { element.hidden = true; });
     stop = setupSessionActivityTracking();
   };
-  // logout() also signs out the other tabs of this origin (BroadcastChannel, storage-event fallback).
-  document.querySelector('[data-logout]')?.addEventListener('click', () => { logout(); window.location.assign('/login/'); });
+  // signOut() revokes the refresh token, signs out the other tabs (BroadcastChannel, storage-event
+  // fallback) and ends the identity session through the end-session endpoint.
+  document.querySelector('[data-logout]')?.addEventListener('click', () => { void signOut(); });
   window.addEventListener('pagehide', () => stop());
   window.addEventListener('pageshow', event => { if (event.persisted) initialize(); });
   initialize();

@@ -1,46 +1,20 @@
-using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Security;
 
 /// <summary>
-/// Token signing configuration. When <c>Jwt:SigningPublicKey</c> (and, on IdentityApi only,
-/// <c>Jwt:SigningPrivateKey</c>) are configured as PEM, tokens use RS256 so API hosts can validate
-/// without being able to mint tokens. Otherwise the shared HS256 <c>Jwt:SigningKey</c> is used.
-/// PEM values may encode line breaks as <c>\n</c> so they fit in a single environment variable.
+/// Access token validation for the API hosts. IdentityApi is an OpenID Connect provider: it signs
+/// RS256 access tokens (<c>typ: at+jwt</c>) with a rotating key ring and publishes the public keys in
+/// its discovery document. API hosts download them from <see cref="MetadataAddress"/> (refreshed on
+/// an unknown <c>kid</c>), so no host holds key material and rotation needs no redeploy.
+/// <para>
+/// Issuer, audience, algorithm, token type and lifetime are pinned. Each API host has its own
+/// audience (<c>Jwt:Audience</c>): a token requested for WebApi is not accepted by GrpcServer.
+/// </para>
 /// </summary>
 public static class JwtKeys
 {
-    public const int MinimumSymmetricKeyBytes = 32;
-
-    public static bool UsesAsymmetricSigning(IConfiguration configuration) =>
-        !string.IsNullOrWhiteSpace(configuration["Jwt:SigningPublicKey"]);
-
-    public static string Algorithm(IConfiguration configuration) =>
-        UsesAsymmetricSigning(configuration) ? SecurityAlgorithms.RsaSha256 : SecurityAlgorithms.HmacSha256;
-
-    public static SecurityKey ValidationKey(IConfiguration configuration)
-    {
-        if (UsesAsymmetricSigning(configuration))
-        {
-            // Keep only the public parameters; the temporary RSA object is disposed right away.
-            using var rsa = RSA.Create();
-            rsa.ImportFromPem(Pem(configuration["Jwt:SigningPublicKey"]!));
-            return new RsaSecurityKey(rsa.ExportParameters(includePrivateParameters: false));
-        }
-
-        return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SymmetricKey(configuration)));
-    }
-
-    /// <summary>The PEM private key (RS256) or shared secret (HS256) used to sign tokens.</summary>
-    public static string SigningKey(IConfiguration configuration)
-    {
-        if (!UsesAsymmetricSigning(configuration)) return SymmetricKey(configuration);
-        var privateKey = configuration["Jwt:SigningPrivateKey"];
-        if (string.IsNullOrWhiteSpace(privateKey))
-            throw new InvalidOperationException("Jwt:SigningPrivateKey is required when Jwt:SigningPublicKey is configured.");
-        return Pem(privateKey);
-    }
+    public const string AccessTokenType = "at+jwt";
 
     public static string Issuer(IConfiguration configuration) =>
         configuration["Jwt:Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer configuration is missing.");
@@ -48,27 +22,29 @@ public static class JwtKeys
     public static string Audience(IConfiguration configuration) =>
         configuration["Jwt:Audience"] ?? throw new InvalidOperationException("Jwt:Audience configuration is missing.");
 
+    /// <summary>
+    /// The OpenID Connect discovery document. Defaults to the issuer's public address; containers set
+    /// <c>Jwt:MetadataAddress</c> to IdentityApi's internal address instead.
+    /// </summary>
+    public static string MetadataAddress(IConfiguration configuration) =>
+        configuration["Jwt:MetadataAddress"] ?? $"{Issuer(configuration).TrimEnd('/')}/.well-known/openid-configuration";
+
+    /// <summary>Plain HTTP is accepted only for an explicitly configured (internal network) metadata address.</summary>
+    public static bool RequireHttpsMetadata(IConfiguration configuration) =>
+        MetadataAddress(configuration).StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+
     public static TokenValidationParameters ValidationParameters(IConfiguration configuration) => new()
     {
-        IssuerSigningKey = ValidationKey(configuration),
-        ValidAlgorithms = [Algorithm(configuration)],
+        ValidAlgorithms = [SecurityAlgorithms.RsaSha256],
+        ValidTypes = [AccessTokenType],
         ValidIssuer = Issuer(configuration),
         ValidAudience = Audience(configuration),
         ValidateIssuerSigningKey = true,
+        RequireSignedTokens = true,
         ValidateLifetime = true,
         ValidateIssuer = true,
         ValidateAudience = true,
         RequireExpirationTime = true,
         ClockSkew = TimeSpan.FromMinutes(1)
     };
-
-    private static string SymmetricKey(IConfiguration configuration)
-    {
-        var key = configuration["Jwt:SigningKey"] ?? throw new InvalidOperationException("Jwt:SigningKey configuration is missing.");
-        if (Encoding.UTF8.GetByteCount(key) < MinimumSymmetricKeyBytes)
-            throw new InvalidOperationException($"Jwt:SigningKey must be at least {MinimumSymmetricKeyBytes} bytes.");
-        return key;
-    }
-
-    private static string Pem(string value) => value.Replace("\\n", "\n", StringComparison.Ordinal).Trim();
 }

@@ -88,34 +88,54 @@ describe('session inactivity', () => {
     stop();
   });
 
-  it('keeps the last user activity when a background refresh replaces the token', async () => {
+  it('rotates the one-time refresh token in the background and keeps the last user activity', async () => {
     vi.useFakeTimers({ now: Date.parse('2026-10-06T12:00:00Z') });
     const http = await loadTab();
     const refreshed = token({ exp: secondsFromNow(30 * 60), jti: 'refreshed' });
-    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async input => (String(input).endsWith('/refresh')
-      ? new Response(JSON.stringify({ token: refreshed }), { status: 200 })
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async input => (String(input).endsWith('/connect/token')
+      ? new Response(JSON.stringify({ access_token: refreshed, refresh_token: 'refresh-2' }), { status: 200 })
       : new Response('{}', { status: 200 })));
-    http.setStoredToken(token({ exp: secondsFromNow(4 * 60) }));
+    http.setStoredTokens({ accessToken: token({ exp: secondsFromNow(4 * 60) }), refreshToken: 'refresh-1', idToken: 'id-1' });
     const signedInAt = http.getLastActivityAt();
 
     // The refresh timer fires inside the five-minute lead window without any user input.
     await vi.advanceTimersByTimeAsync(30 * 1000);
 
     await vi.waitFor(() => expect(session.getItem(http.tokenStorageKey)).toBe(refreshed));
-    expect(fetchMock.mock.calls.filter(([input]) => String(input).endsWith('/refresh'))).toHaveLength(1);
+    const refreshes = fetchMock.mock.calls.filter(([input]) => String(input).endsWith('/connect/token'));
+    expect(refreshes).toHaveLength(1);
+    const body = new URLSearchParams(String(refreshes[0][1]?.body));
+    expect(Object.fromEntries(body)).toEqual({ grant_type: 'refresh_token', refresh_token: 'refresh-1', client_id: 'cpnucleo-webclient' });
+    expect(session.getItem(http.refreshTokenStorageKey)).toBe('refresh-2');
     expect(http.getLastActivityAt()).toBe(signedInAt);
   });
 
-  it('ends the session when refresh is rejected after a password or login change', async () => {
+  it('ends the identity session when a refresh is rejected (password change, sign-out, replay)', async () => {
     const http = await loadTab();
-    http.setStoredToken(token({ exp: secondsFromNow(60) }));
+    http.setStoredTokens({ accessToken: token({ exp: secondsFromNow(60) }), refreshToken: 'refresh-1', idToken: 'id-1' });
     vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(new Response('{}', { status: 200 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify({ statusCode: 401, message: 'The session is no longer valid.' }), { status: 401 }));
+      .mockResolvedValueOnce(new Response(JSON.stringify({ error: 'invalid_grant' }), { status: 400 }));
 
     await http.requestJson('http://localhost:5100/api/projects');
-    await vi.waitFor(() => expect(win.location.assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F'));
+    await vi.waitFor(() => expect(win.location.assign).toHaveBeenCalledWith(
+      'http://localhost:5200/connect/endsession?id_token_hint=id-1&post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A5030%2Flogin%2F&state=%2Fprojects%2F'));
     expect(http.getStoredToken()).toBeNull();
+    expect(session.getItem(http.refreshTokenStorageKey)).toBeNull();
+  });
+
+  it('remembers an expired session so the guard can end the identity session too', async () => {
+    vi.useFakeTimers({ now: Date.parse('2026-10-06T12:00:00Z') });
+    const http = await loadTab();
+    http.setStoredTokens({ accessToken: token({ exp: secondsFromNow(8 * 60 * 60) }), refreshToken: 'refresh-1', idToken: 'id-1' });
+
+    vi.setSystemTime(Date.now() + http.sessionInactivityTimeoutMs + 1000);
+
+    expect(http.getStoredToken()).toBeNull();
+    expect(http.hasExpiredSession()).toBe(true);
+    http.redirectToLoginForExpiredSession();
+    expect(win.location.assign).toHaveBeenCalledWith(expect.stringMatching(/^http:\/\/localhost:5200\/connect\/endsession\?id_token_hint=id-1&/));
+    expect(http.hasExpiredSession()).toBe(false);
   });
 });
 
@@ -148,7 +168,7 @@ describe('cross-tab logout', () => {
     stopA(); stopB();
   });
 
-  it('redirects a tracked tab to login when another tab logs out', async () => {
+  it('shows the signed-out page in a tracked tab when another tab signs out', async () => {
     const tabA = await loadTab();
     const tabB = await loadTab();
     tabB.setStoredToken(token({ exp: secondsFromNow(1800) }));
@@ -156,8 +176,29 @@ describe('cross-tab logout', () => {
 
     tabA.logout();
 
-    await vi.waitFor(() => expect(win.location.assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F'));
+    // No automatic sign-in: the identity session may not have ended yet in the other tab.
+    await vi.waitFor(() => expect(win.location.assign).toHaveBeenCalledWith('/login/?signedOut=1'));
     stop();
+  });
+
+  it('signing out revokes the refresh token, signs out the other tabs and ends the identity session', async () => {
+    const tabA = await loadTab();
+    const tabB = await loadTab();
+    const onLogoutB = vi.fn();
+    const stopB = tabB.subscribeToCrossTabLogout(onLogoutB);
+    tabA.setStoredTokens({ accessToken: token({ exp: secondsFromNow(1800) }), refreshToken: 'refresh-1', idToken: 'id-1' });
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
+
+    await tabA.signOut();
+
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('http://localhost:5200/connect/revocation');
+    expect(Object.fromEntries(new URLSearchParams(String(init?.body)))).toEqual({ token: 'refresh-1', token_type_hint: 'refresh_token', client_id: 'cpnucleo-webclient' });
+    expect(win.location.assign).toHaveBeenCalledWith(
+      'http://localhost:5200/connect/endsession?id_token_hint=id-1&post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A5030%2Flogin%2F');
+    await vi.waitFor(() => expect(onLogoutB).toHaveBeenCalledTimes(1));
+    expect(tabA.getStoredToken()).toBeNull();
+    stopB();
   });
 
   it('falls back to storage events when BroadcastChannel is unavailable', async () => {

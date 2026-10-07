@@ -47,6 +47,8 @@ fi
 if [[ -n "${CPNUCLEO_IDENTITY_URL:-}" ]]; then
   check_url "IdentityApi health" "${CPNUCLEO_IDENTITY_URL%/}/healthz" "200"
   check_url "IdentityApi readiness" "${CPNUCLEO_IDENTITY_URL%/}/readyz" "200"
+  check_url "IdentityApi OpenID discovery" "${CPNUCLEO_IDENTITY_URL%/}/.well-known/openid-configuration" "200"
+  check_url "IdentityApi signing keys" "${CPNUCLEO_IDENTITY_URL%/}/.well-known/openid-configuration/jwks" "200"
 fi
 if [[ -n "${CPNUCLEO_GRPC_HEALTH_URL:-}" ]]; then
   check_url "Grpc health" "${CPNUCLEO_GRPC_HEALTH_URL}" "200"

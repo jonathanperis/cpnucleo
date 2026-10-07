@@ -7,9 +7,10 @@ This page maps technology to purpose. Exact package versions belong in executabl
 | Technology | Role | Version source |
 |---|---|---|
 | .NET / ASP.NET Core / C# | Service hosts, shared application/domain code | [global.json](https://github.com/jonathanperis/cpnucleo/blob/main/global.json), project target frameworks |
-| FastEndpoints / Swagger / Security | REST endpoints, OpenAPI and token issuance | [WebApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/WebApi/WebApi.csproj), [IdentityApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/IdentityApi/IdentityApi.csproj) |
+| FastEndpoints / Swagger | REST endpoints and OpenAPI | [WebApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/WebApi/WebApi.csproj), [IdentityApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/IdentityApi/IdentityApi.csproj) |
 | FastEndpoints Remote Messaging / MessagePack | HTTP/2 remote commands and serialization | [GrpcServer](https://github.com/jonathanperis/cpnucleo/blob/main/src/GrpcServer/GrpcServer.csproj), [contracts](https://github.com/jonathanperis/cpnucleo/blob/main/src/GrpcServer.Contracts/GrpcServer.Contracts.csproj) |
 | EF Core / Npgsql / Dapper | Shared PostgreSQL schema, ORM and SQL comparisons | [Infrastructure](https://github.com/jonathanperis/cpnucleo/blob/main/src/Infrastructure/Infrastructure.csproj) |
+| Open.IdentityServer | OpenID Connect provider: authorization code with PKCE, client credentials, refresh tokens, revocation, end session | [IdentityApi](https://github.com/jonathanperis/cpnucleo/blob/main/src/IdentityApi/IdentityApi.csproj) |
 | Argon2id | Password hashing | Infrastructure's `Konscious.Security.Cryptography.Argon2` reference |
 | Delta | Timestamp-based conditional HTTP requests | Infrastructure |
 | Mapperly / Dynamic LINQ | Generated DTO mapping and selected EF queries | WebApi / GrpcServer project files |

@@ -5,8 +5,9 @@ namespace Infrastructure.Security;
 
 /// <summary>
 /// Confirms that a validated JWT still describes a live session: the account is active, its
-/// credentials have not changed since the token was issued (security stamp) and an admin claim is
-/// still backed by configuration. Results are cached briefly so revocation takes effect within
+/// credentials have not changed since the token was issued (security stamp), an admin claim is
+/// still backed by configuration, and the sign-in session (<c>sid</c>) has not been ended by a
+/// sign-out or refresh token reuse. Service-client tokens carry no <c>sid</c>. Results are cached briefly so revocation takes effect within
 /// <see cref="CacheDuration"/> (<c>Auth:SessionValidationCacheSeconds</c>, 30 by default) without a
 /// database round trip per request.
 /// </summary>
@@ -39,7 +40,29 @@ public sealed class TokenSessionValidator(NpgsqlDataSource dataSource, IConfigur
             return "The account credentials changed; sign in again.";
         if (principal.HasClaim(CpnucleoClaimTypes.Admin, "true") && !AdminLogins.Contains(configuration, account.Login))
             return "Administrator access was revoked.";
+
+        if (principal.FindFirst(SessionIdClaimType)?.Value is { Length: > 0 } sessionId)
+        {
+            var live = await cache.GetOrCreateAsync(("cpnucleo-oidc-session", sessionId), async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = CacheDuration;
+                return await SessionIsLiveAsync(sessionId, cancellationToken).ConfigureAwait(false);
+            }).ConfigureAwait(false);
+            if (!live) return "The session was signed out; sign in again.";
+        }
+
         return null;
+    }
+
+    /// <summary>The OpenID Connect session id claim.</summary>
+    public const string SessionIdClaimType = "sid";
+
+    private async Task<bool> SessionIsLiveAsync(string sessionId, CancellationToken cancellationToken)
+    {
+        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken).ConfigureAwait(false);
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition(
+            """SELECT EXISTS (SELECT 1 FROM "IdentitySessions" WHERE "Id" = @sessionId AND "EndedAt" IS NULL)""",
+            new { sessionId }, cancellationToken: cancellationToken)).ConfigureAwait(false);
     }
 
     private async Task<SessionAccount?> LoadAsync(Guid userId, CancellationToken cancellationToken)
