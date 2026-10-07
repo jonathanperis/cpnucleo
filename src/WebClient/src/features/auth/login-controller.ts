@@ -29,13 +29,21 @@ export const mountLoginPage = async (
   const showError = (message: string) => { error.textContent = message; error.hidden = false; };
   const begin = async () => {
     status.textContent = 'Opening the sign-in…';
-    navigate(await buildAuthorizeUrl(returnUrl));
+    try {
+      navigate(await buildAuthorizeUrl(returnUrl));
+    } catch {
+      status.textContent = '';
+      showError('The sign-in could not start. Try again.');
+      restart.hidden = false;
+      restart.disabled = false;
+    }
   };
   restart.addEventListener('click', () => { restart.disabled = true; void begin(); });
+  // The form only ever posts to IdentityApi, which validates the pending request itself.
+  form.action = accountLoginUrl();
 
   const authRequest = parameters.get('authRequest');
   if (authRequest) {
-    form.action = accountLoginUrl();
     form.querySelector<HTMLInputElement>('[name="authRequest"]')!.value = authRequest;
     form.hidden = false;
     const code = parameters.get('error');
