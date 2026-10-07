@@ -83,12 +83,12 @@ public class FakeDataSeedingTests
     private static string GetRepositoryPath(string relativePath)
     {
         var currentDirectory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (currentDirectory is not null && !File.Exists(Path.Combine(currentDirectory.FullName, "cpnucleo.slnx")))
+        while (currentDirectory is not null && !File.Exists(Path.Join(currentDirectory.FullName, "cpnucleo.slnx")))
         {
             currentDirectory = currentDirectory.Parent;
         }
 
         currentDirectory.Should().NotBeNull("tests should run inside the repository checkout");
-        return Path.Combine(currentDirectory!.FullName, relativePath);
+        return Path.Join(currentDirectory!.FullName, relativePath);
     }
 }
