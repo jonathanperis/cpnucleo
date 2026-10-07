@@ -379,6 +379,63 @@ public class IdentityApiTests(WebAppFixture app)
         }
     }
 
+    [Fact]
+    public async Task SignIn_HappensOnThePageOfTheWebClientOriginThatAsked()
+    {
+        const string secondOrigin = "http://localhost:5030";
+        var login = await CreateUserAsync();
+        var (api, identity) = app.CreateHosts(new Dictionary<string, string?> { ["Cors:AllowedOrigins:1"] = secondOrigin });
+        await using (api)
+        await using (identity)
+        {
+            using var browser = WebAppFixture.CreateBrowserClient(identity);
+
+            var authorize = await browser.GetAsync(OidcBrowser.AuthorizeUrl(OidcBrowser.Pkce.Create(), $"{secondOrigin}/signin-callback/"), Cancellation);
+            authorize.StatusCode.ShouldBe(HttpStatusCode.Found);
+            authorize.Headers.Location!.GetLeftPart(UriPartial.Path).ShouldBe("https://localhost/api/account/login-page", "the server's login step chooses the page");
+
+            var signInPage = await OidcBrowser.AuthorizeAsync(browser, OidcBrowser.Pkce.Create(), $"{secondOrigin}/signin-callback/");
+            signInPage.GetLeftPart(UriPartial.Path).ShouldBe($"{secondOrigin}/login/");
+            var authRequest = OidcBrowser.Query(signInPage, "authRequest");
+            authRequest.ShouldStartWith("https://localhost/connect/authorize/callback?", Case.Sensitive, "the page posts the absolute pending request back");
+
+            // A failed sign-in from that page goes back to that page, and a good one completes the request.
+            var wrong = await OidcBrowser.PostSignInAsync(browser, login, "Wrong@12345", authRequest, secondOrigin);
+            wrong.Headers.Location!.GetLeftPart(UriPartial.Path).ShouldBe($"{secondOrigin}/login/");
+            var signedIn = await OidcBrowser.PostSignInAsync(browser, login, Password, authRequest, secondOrigin);
+            signedIn.StatusCode.ShouldBe(HttpStatusCode.Found);
+            var callback = await browser.GetAsync(signedIn.Headers.Location!, Cancellation);
+            callback.Headers.Location!.GetLeftPart(UriPartial.Path).ShouldBe($"{secondOrigin}/signin-callback/");
+
+            // The first origin keeps its own page.
+            using var other = WebAppFixture.CreateBrowserClient(identity);
+            (await OidcBrowser.AuthorizeAsync(other, OidcBrowser.Pkce.Create())).GetLeftPart(UriPartial.Path).ShouldBe($"{WebAppFixture.WebOrigin}/login/");
+        }
+    }
+
+    public static TheoryData<string, string> ForgedLoginPageRequests => new()
+    {
+        { "an unregistered redirect URI", "/connect/authorize/callback?client_id=cpnucleo-webclient&response_type=code&scope=openid&redirect_uri=https%3A%2F%2Fattacker.test%2Fsignin-callback%2F&code_challenge=abc&code_challenge_method=S256" },
+        { "another host", "https://attacker.test/connect/authorize/callback?client_id=cpnucleo-webclient" },
+        { "a protocol-relative URL", "//attacker.test/connect/authorize/callback" },
+        { "another local path", "/api/account/logout?logoutId=x" },
+        { "nothing", "" }
+    };
+
+    [Theory]
+    [MemberData(nameof(ForgedLoginPageRequests))]
+    public async Task TheLoginStep_NeverRedirectsOutsideTheConfiguredWebClientOrigins(string scenario, string authRequest)
+    {
+        using var browser = app.CreateIdentityClient();
+
+        var response = await browser.GetAsync($"/api/account/login-page?authRequest={Uri.EscapeDataString(authRequest)}", Cancellation);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Found, scenario);
+        response.Headers.Location!.GetLeftPart(UriPartial.Path).ShouldBe($"{WebAppFixture.WebOrigin}/login/", scenario);
+        OidcBrowser.Query(response.Headers.Location!, "error").ShouldBe("request", scenario);
+        OidcBrowser.Query(response.Headers.Location!, "authRequest").ShouldBeEmpty(scenario);
+    }
+
     private async Task<HttpStatusCode> CallApiAsync(string accessToken)
     {
         using var api = app.CreateClient();

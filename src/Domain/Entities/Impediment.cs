@@ -23,4 +23,6 @@ public sealed class Impediment : BaseEntity
     }
 
     public static void Remove(Impediment obj) => obj.MarkRemoved();
+
+    public static void Restore(Impediment obj) => obj.MarkRestored();
 }

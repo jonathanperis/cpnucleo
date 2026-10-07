@@ -36,6 +36,8 @@ The initial migration creates `CreatedAt` and foreign-key indexes. `LoginIntegri
 
 `RelationshipIntegrity` adds soft-delete aware relationship triggers. An active row may only reference active parents (SQLSTATE 23503, reported as HTTP 400 with the offending field). A parent with active dependent data can't be deactivated (SQLSTATE 23001, HTTP 409). `UserProjects` and `UserAssignments` rows are deactivated together with their user, project or assignment. Child checks take a `FOR SHARE` lock on the parent and deactivation runs under the parent's row lock, so a concurrent insert and removal can't both succeed. Legacy rows that already reference removed parents are only re-checked when their references change or they are reactivated.
 
+`RelationshipRestore` adds the reverse of the cascade: when a user, project or assignment is reactivated (the REST restore endpoints), the `UserProjects` and `UserAssignments` rows that were deactivated together with it (same `DeletedAt`) are reactivated too, as long as their other parent is active. It runs after the parent row changes, so the links' own active-parent checks see the restored parent. Restoring a row whose parent is still removed fails with SQLSTATE 23503 like any other write.
+
 `ListAndSearchIndexes` adds partial indexes on active rows (listing, counting, relationship checks and membership lookups) and `pg_trgm` GIN indexes for the bounded contains-search. The extension is trusted, so the database owner can create it. See the [migration sources](https://github.com/jonathanperis/cpnucleo/tree/main/src/Infrastructure/Migrations) for the authoritative schema.
 
 ## Connection configuration

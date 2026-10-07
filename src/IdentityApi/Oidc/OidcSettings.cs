@@ -40,6 +40,23 @@ public static class OidcSettings
     public static string LoginPageUrl(IConfiguration configuration) =>
         configuration["Identity:LoginPageUrl"] ?? $"{WebClientOrigins(configuration)[0]}/login/";
 
+    /// <summary>
+    /// The sign-in page for a WebClient on <paramref name="redirectUriOrOrigin"/>: <c>{origin}/login/</c>
+    /// when that origin is one of <see cref="WebClientOrigins"/>, so each configured WebClient signs in
+    /// on its own page. Any other origin (or none) gets <see cref="LoginPageUrl(IConfiguration)"/>, so
+    /// the result never points outside the configuration; <c>Identity:LoginPageUrl</c> always wins.
+    /// </summary>
+    public static string LoginPageUrl(IConfiguration configuration, string? redirectUriOrOrigin)
+    {
+        if (configuration["Identity:LoginPageUrl"] is not null ||
+            !Uri.TryCreate(redirectUriOrOrigin, UriKind.Absolute, out var uri) || uri.Scheme is not ("https" or "http"))
+            return LoginPageUrl(configuration);
+
+        var origin = uri.GetLeftPart(UriPartial.Authority);
+        var configured = WebClientOrigins(configuration).FirstOrDefault(candidate => string.Equals(candidate, origin, StringComparison.OrdinalIgnoreCase));
+        return configured is null ? LoginPageUrl(configuration) : $"{configured}/login/";
+    }
+
     public static string WebApiAudience(IConfiguration configuration) => JwtKeys.Audience(configuration);
 
     public static string GrpcAudience(IConfiguration configuration) =>

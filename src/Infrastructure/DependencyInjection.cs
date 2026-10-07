@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IProjectRepository, ProjectRepository>();
 
         services.AddScoped<IProjectCreateStore, ProjectCreateStore>();
+        services.AddScoped<AccountStore>();
 
         // Dapper Repository Advanced
         services.AddScoped(provider => new UnitOfWork(

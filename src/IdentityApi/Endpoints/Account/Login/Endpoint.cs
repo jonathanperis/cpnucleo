@@ -116,12 +116,15 @@ public class Endpoint(
         await Send.RedirectAsync(returnUrl, isPermanent: false, allowRemoteRedirects: false);
     }
 
-    private bool SubmittedFromWebClient()
+    private bool SubmittedFromWebClient() =>
+        OidcSettings.WebClientOrigins(configuration).Contains(SubmittingOrigin(), StringComparer.OrdinalIgnoreCase);
+
+    private string SubmittingOrigin()
     {
         var origin = HttpContext.Request.Headers.Origin.ToString();
         if (string.IsNullOrEmpty(origin) && Uri.TryCreate(HttpContext.Request.Headers.Referer.ToString(), UriKind.Absolute, out var referer))
             origin = referer.GetLeftPart(UriPartial.Authority);
-        return OidcSettings.WebClientOrigins(configuration).Contains(origin, StringComparer.OrdinalIgnoreCase);
+        return origin;
     }
 
     /// <summary>
@@ -147,7 +150,8 @@ public class Endpoint(
         var query = new Dictionary<string, string?> { ["error"] = error };
         if (!string.IsNullOrWhiteSpace(authRequest)) query["authRequest"] = authRequest;
         if (retryAfterSeconds is { } seconds) query["retryAfter"] = seconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
-        var url = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(OidcSettings.LoginPageUrl(configuration), query);
+        // Back to the sign-in page the form came from (a configured WebClient origin).
+        var url = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(OidcSettings.LoginPageUrl(configuration, SubmittingOrigin()), query);
         return Send.RedirectAsync(url, isPermanent: false, allowRemoteRedirects: true);
     }
 }

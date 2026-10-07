@@ -36,6 +36,101 @@ public class DomainContractTests
         valid.Problems().ShouldBeEmpty();
     }
 
+    [Test]
+    public void Pagination_ParsesRelationFiltersAsCanonicalColumns()
+    {
+        var project = Guid.NewGuid();
+        var user = Guid.NewGuid();
+        var pagination = PaginationParams.Require(new PaginationParams { ProjectId = $" {project} ", UserId = user.ToString().ToUpperInvariant(), WorkflowId = " " });
+
+        pagination.GetRelationFilters().ShouldBe([("ProjectId", project), ("UserId", user)]);
+        new PaginationParams().GetRelationFilters().ShouldBeEmpty();
+    }
+
+    [TestCase("organizationId")]
+    [TestCase("projectId")]
+    [TestCase("assignmentId")]
+    [TestCase("userId")]
+    [TestCase("workflowId")]
+    public void Pagination_RejectsMalformedRelationFiltersByField(string field)
+    {
+        var pagination = new PaginationParams();
+        typeof(PaginationParams).GetProperty(char.ToUpperInvariant(field[0]) + field[1..])!.SetValue(pagination, "not-a-uuid");
+
+        var error = Should.Throw<DomainException>(() => PaginationParams.Require(pagination));
+
+        error.Field.ShouldBe(field);
+        error.Message.ShouldBe($"{char.ToUpperInvariant(field[0]) + field[1..]} must be a UUID.");
+    }
+
+    [TestCase("2026-10-07", "2026-10-07T00:00:00Z")]
+    [TestCase("2026-10-07T10:30", "2026-10-07T10:30:00Z")]
+    [TestCase("2026-10-07T10:30:15Z", "2026-10-07T10:30:15Z")]
+    [TestCase("2026-10-07T10:30:15.1234567Z", "2026-10-07T10:30:15.1234567Z")]
+    [TestCase("2026-10-07T12:30:15+02:00", "2026-10-07T10:30:15Z")]
+    [TestCase("2026-10-07T07:30:15.5-03:00", "2026-10-07T10:30:15.5Z")]
+    [TestCase("2026-10-07T10:30:15", "2026-10-07T10:30:15Z")]
+    public void Pagination_ParsesIso8601InstantsAsUtc(string value, string expected)
+    {
+        var (from, to) = PaginationParams.Require(new PaginationParams { DateFrom = value, DateTo = value }).GetDateRange();
+
+        var instant = DateTime.Parse(expected, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal);
+        from.ShouldBe(instant);
+        to.ShouldBe(instant);
+        from!.Value.Kind.ShouldBe(DateTimeKind.Utc);
+    }
+
+    [TestCase("yesterday", "dateFrom")]
+    [TestCase("10/07/2026", "dateFrom")]
+    [TestCase("2026-13-01", "dateFrom")]
+    [TestCase("2026-10-07 10:30", "dateFrom")]
+    public void Pagination_RejectsDatesThatAreNotIso8601(string value, string field)
+    {
+        var error = Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { DateFrom = value }));
+
+        error.Field.ShouldBe(field);
+        error.Message.ShouldBe("DateFrom must be an ISO-8601 date and time.");
+        Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { DateTo = value })).Field.ShouldBe("dateTo");
+    }
+
+    [Test]
+    public void Pagination_RequiresAnOrderedDateRange()
+    {
+        var error = Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { DateFrom = "2026-10-08", DateTo = "2026-10-07" }));
+        error.Field.ShouldBe("dateTo");
+        error.Message.ShouldBe("DateTo must be on or after DateFrom.");
+
+        PaginationParams.Require(new PaginationParams { DateFrom = "2026-10-07" }).GetDateRange()
+            .ShouldBe((new DateTime(2026, 10, 7, 0, 0, 0, DateTimeKind.Utc), (DateTime?)null), "each bound is optional");
+    }
+
+    [Test]
+    public void Pagination_RejectsFiltersTheResourceCannotApply()
+    {
+        var id = Guid.NewGuid().ToString();
+
+        var error = Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { UserId = id }, typeof(Project)));
+        error.Field.ShouldBe("userId");
+        error.Message.ShouldBe("Projects cannot be filtered by userId.");
+        Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { DateTo = "2026-10-07" }, typeof(Organization)))
+            .Message.ShouldBe("Organizations cannot be filtered by dateTo.");
+        Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { ProjectId = id }, typeof(Impediment))).Field.ShouldBe("projectId");
+
+        PaginationParams.Require(new PaginationParams { OrganizationId = id }, typeof(Project)).GetRelationFilters().ShouldHaveSingleItem();
+        PaginationParams.Require(new PaginationParams { AssignmentId = id, UserId = id, DateFrom = "2026-10-07" }, typeof(Appointment));
+        PaginationParams.Require(new PaginationParams { ProjectId = id, WorkflowId = id, UserId = id, DateTo = "2026-10-07" }, typeof(Assignment));
+    }
+
+    [Test]
+    public void Pagination_KnowsWhichColumnsADateRangeAppliesTo()
+    {
+        PaginationParams.DateColumnsOf(typeof(Appointment)).ShouldBe(("KeepDate", "KeepDate"));
+        PaginationParams.DateColumnsOf(typeof(Assignment)).ShouldBe(("StartDate", "EndDate"));
+        PaginationParams.DateColumnsOf(typeof(Project)).ShouldBeNull();
+        PaginationParams.SupportsRelation(typeof(UserProject), "ProjectId").ShouldBeTrue();
+        PaginationParams.SupportsRelation(typeof(User), "UserId").ShouldBeFalse();
+    }
+
     [TestCase("50%", "%50\\%%")]
     [TestCase("snake_case", "%snake\\_case%")]
     [TestCase("back\\slash", "%back\\\\slash%")]
@@ -106,6 +201,21 @@ public class DomainContractTests
         workflow.DeletedAt.ShouldBe(deletedAt);
     }
 
+    [Test]
+    public void Restore_UndoesTheSoftDeleteOnly()
+    {
+        var workflow = Workflow.Create("Planned", 1);
+        Workflow.Remove(workflow);
+
+        Workflow.Restore(workflow);
+
+        workflow.Active.ShouldBeTrue();
+        workflow.DeletedAt.ShouldBeNull();
+        workflow.UpdatedAt.ShouldBeNull("restoring is not an edit: the version stays as it was");
+        Workflow.Restore(workflow);
+        workflow.Active.ShouldBeTrue();
+    }
+
     [TestCase("Short1!", false)]
     [TestCase("alllowercase1!", false)]
     [TestCase("NoDigits!!", false)]
@@ -133,5 +243,7 @@ public class DomainContractTests
         Should.Throw<DomainException>(() => BatchIds.Normalize([]));
         Should.Throw<DomainException>(() => BatchIds.Normalize([Guid.Empty]));
         Should.Throw<DomainException>(() => BatchIds.Normalize(Enumerable.Range(0, 101).Select(_ => Guid.NewGuid())));
+        Should.Throw<DomainException>(() => BatchIds.Normalize(Enumerable.Range(0, 101).Select(_ => Guid.NewGuid()), "restored"))
+            .Message.ShouldBe("At most 100 ids can be restored at once.");
     }
 }
