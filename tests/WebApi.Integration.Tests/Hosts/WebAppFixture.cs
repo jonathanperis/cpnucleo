@@ -116,6 +116,15 @@ public sealed class WebAppFixture : IAsyncLifetime
         return rootFactory;
     }
 
+    // Discovery clients live as long as the hosts that use them.
+    private readonly System.Collections.Concurrent.ConcurrentBag<HttpClient> discoveryClients = [];
+
+    private HttpClient Track(HttpClient client)
+    {
+        discoveryClients.Add(client);
+        return client;
+    }
+
     public ApplicationDbContext CreateDbContext() => new(new DbContextOptionsBuilder<ApplicationDbContext>()
         .UseNpgsql(ConnectionString).Options);
 
@@ -214,7 +223,7 @@ public sealed class WebAppFixture : IAsyncLifetime
             options.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
                 MetadataAddress,
                 new OpenIdConnectConfigurationRetriever(),
-                new HttpDocumentRetriever(new HttpClient(new IdentityServerHandler(() => identityFactory))) { RequireHttps = false });
+                new HttpDocumentRetriever(Track(new HttpClient(new IdentityServerHandler(() => identityFactory)))) { RequireHttps = false });
         }));
     }
 
@@ -312,6 +321,7 @@ public sealed class WebAppFixture : IAsyncLifetime
         await grpcFactory.DisposeAsync();
         await factory.DisposeAsync();
         foreach (var rootFactory in rootFactories) await rootFactory.DisposeAsync();
+        foreach (var client in discoveryClients) client.Dispose();
         await database.DisposeAsync();
     }
 

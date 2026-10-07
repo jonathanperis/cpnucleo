@@ -74,27 +74,39 @@ public sealed class SigningKeyRing(
             SELECT "Id", "ProtectedKey", "ActivatesAt" AS "ActivatesAtUtc", "RetiresAt" AS "RetiresAtUtc" FROM "IdentitySigningKeys" ORDER BY "ActivatesAt"
             """, transaction: transaction)).ToList();
 
-        var active = rows.LastOrDefault(row => row.ActivatesAt <= now);
+        // Keys encrypted under a previous key-encryption secret can't be used: drop them, so the
+        // ring creates a replacement below instead of failing every token request.
+        var keys = new List<RingKey>();
+        foreach (var row in rows)
+        {
+            if (TryDecrypt(row) is { } key) keys.Add(new RingKey(row.Id, key, row.ActivatesAt));
+            else
+            {
+                logger.LogWarning("Signing key {KeyId} cannot be decrypted with the current secret; it is removed.", row.Id);
+                await connection.ExecuteAsync("""DELETE FROM "IdentitySigningKeys" WHERE "Id" = @Id""", new { row.Id }, transaction);
+            }
+        }
+
+        var active = keys.LastOrDefault(key => key.ActivatesAt <= now);
         if (active is null)
         {
-            rows.Add(await CreateKeyAsync(connection, transaction, activatesAt: now));
+            keys.Add(await CreateKeyAsync(connection, transaction, activatesAt: now));
         }
-        else if (active.ActivatesAt + RotationPeriod - PublishAhead <= now && !rows.Any(row => row.ActivatesAt > active.ActivatesAt))
+        else if (active.ActivatesAt + RotationPeriod - PublishAhead <= now && !keys.Any(key => key.ActivatesAt > active.ActivatesAt))
         {
             var activatesAt = active.ActivatesAt + RotationPeriod;
-            rows.Add(await CreateKeyAsync(connection, transaction, activatesAt > now ? activatesAt : now));
+            keys.Add(await CreateKeyAsync(connection, transaction, activatesAt > now ? activatesAt : now));
         }
 
         await transaction.CommitAsync();
 
-        var keys = rows.Select(row => new RingKey(row.Id, Decrypt(row), row.ActivatesAt)).ToList();
         var signing = keys.Last(key => key.ActivatesAt <= now);
         // Refresh in time to switch to a successor that activates before the cache would expire.
         var nextActivation = keys.Where(key => key.ActivatesAt > now).Select(key => key.ActivatesAt).DefaultIfEmpty(DateTimeOffset.MaxValue).Min();
         return new Snapshot(signing, keys, now, nextActivation);
     }
 
-    private async Task<KeyRow> CreateKeyAsync(NpgsqlConnection connection, NpgsqlTransaction transaction, DateTimeOffset activatesAt)
+    private async Task<RingKey> CreateKeyAsync(NpgsqlConnection connection, NpgsqlTransaction transaction, DateTimeOffset activatesAt)
     {
         using var rsa = RSA.Create(KeySize);
         var row = new KeyRow
@@ -109,14 +121,21 @@ public sealed class SigningKeyRing(
             VALUES (@Id, @Algorithm, @ProtectedKey, @CreatedAt, @ActivatesAt, @RetiresAt)
             """, new { row.Id, Algorithm, row.ProtectedKey, CreatedAt = timeProvider.GetUtcNow().UtcDateTime, ActivatesAt = row.ActivatesAtUtc, RetiresAt = row.RetiresAtUtc }, transaction);
         logger.LogInformation("Created signing key {KeyId}, active from {ActivatesAt:O}.", row.Id, row.ActivatesAt);
-        return row;
+        return new RingKey(row.Id, new RsaSecurityKey(rsa.ExportParameters(includePrivateParameters: true)) { KeyId = row.Id }, row.ActivatesAt);
     }
 
-    private RsaSecurityKey Decrypt(KeyRow row)
+    private RsaSecurityKey? TryDecrypt(KeyRow row)
     {
-        using var rsa = RSA.Create();
-        rsa.ImportPkcs8PrivateKey(protector.Unprotect(row.ProtectedKey, Purpose), out _);
-        return new RsaSecurityKey(rsa.ExportParameters(includePrivateParameters: true)) { KeyId = row.Id };
+        try
+        {
+            using var rsa = RSA.Create();
+            rsa.ImportPkcs8PrivateKey(protector.Unprotect(row.ProtectedKey, Purpose), out _);
+            return new RsaSecurityKey(rsa.ExportParameters(includePrivateParameters: true)) { KeyId = row.Id };
+        }
+        catch (CryptographicException)
+        {
+            return null;
+        }
     }
 
     private static RsaSecurityKey ImportPem(string pem)

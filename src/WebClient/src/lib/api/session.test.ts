@@ -26,6 +26,8 @@ let session: ReturnType<typeof createStorage>;
 let local: ReturnType<typeof createStorage>;
 let win: ReturnType<typeof createWindow>;
 const originalBroadcastChannel = globalThis.BroadcastChannel;
+// Each test's "tabs" must not outlive it: a leftover channel would answer the next test's tabs.
+const openChannels: BroadcastChannel[] = [];
 
 /** Each import is an isolated "tab" (own timers, own BroadcastChannel object). */
 const loadTab = async (): Promise<HttpClientModule> => {
@@ -40,9 +42,17 @@ beforeEach(() => {
   Object.defineProperty(globalThis, 'sessionStorage', { value: session, configurable: true });
   Object.defineProperty(globalThis, 'localStorage', { value: local, configurable: true });
   Object.defineProperty(globalThis, 'window', { value: win, configurable: true });
+  Object.defineProperty(globalThis, 'BroadcastChannel', {
+    value: class extends originalBroadcastChannel {
+      constructor(name: string) { super(name); openChannels.push(this); }
+    },
+    configurable: true,
+    writable: true,
+  });
 });
 
 afterEach(() => {
+  openChannels.splice(0).forEach(channel => channel.close());
   vi.useRealTimers();
   vi.restoreAllMocks();
   Reflect.deleteProperty(globalThis, 'window');
@@ -218,5 +228,27 @@ describe('cross-tab logout', () => {
     win.dispatchEvent(Object.assign(new Event('storage'), { key: 'unrelated', newValue: '1' }));
     expect(onLogout).toHaveBeenCalledTimes(1);
     stop();
+  });
+});
+
+describe('duplicated tabs', () => {
+  it('a tab whose sessionStorage was copied from a live tab drops the copied tokens instead of reusing the refresh token', async () => {
+    // Both modules share one storage mock: exactly what a copied tab starts with.
+    const original = await loadTab();
+    original.setStoredTokens({ accessToken: token({ exp: secondsFromNow(1800) }), refreshToken: 'refresh-1', idToken: 'id-1' });
+    const stop = original.setupSessionActivityTracking();
+    const copy = await loadTab();
+
+    await expect(copy.detectDuplicatedTab()).resolves.toBe(true);
+    expect(session.getItem(copy.refreshTokenStorageKey)).toBeNull();
+    stop();
+  });
+
+  it('a tab without a live original keeps its tokens', async () => {
+    const http = await loadTab();
+    http.setStoredTokens({ accessToken: token({ exp: secondsFromNow(1800) }), refreshToken: 'refresh-1', idToken: 'id-1' });
+
+    await expect(http.detectDuplicatedTab(20)).resolves.toBe(false);
+    expect(session.getItem(http.refreshTokenStorageKey)).toBe('refresh-1');
   });
 });

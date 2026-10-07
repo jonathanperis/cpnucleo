@@ -2,7 +2,7 @@
 <p data-auth-loading role="status" class="p-6 text-muted">Checking your session…</p>
 <noscript><p class="p-6 text-danger">JavaScript is required to sign in and use this learning workspace.</p></noscript>
 <script>
-  import { getStoredToken, hasExpiredSession, redirectToLoginForExpiredSession, setupSessionActivityTracking, signOut } from '../lib/api/http-client';
+  import { detectDuplicatedTab, getStoredToken, hasExpiredSession, redirectToLoginForExpiredSession, setupSessionActivityTracking, signOut } from '../lib/api/http-client';
   import { getLoginRedirectTarget } from '../lib/auth-navigation';
   let stop = () => {};
   const initialize = () => {
@@ -16,6 +16,8 @@
     document.querySelectorAll<HTMLElement>('[data-auth-content]').forEach(element => { element.hidden = false; });
     document.querySelectorAll<HTMLElement>('[data-auth-loading]').forEach(element => { element.hidden = true; });
     stop = setupSessionActivityTracking();
+    // A tab copied from another (with its sessionStorage) signs in for its own tokens.
+    void detectDuplicatedTab().then(duplicate => { if (duplicate) window.location.replace(getLoginRedirectTarget(window.location)); });
   };
   // signOut() revokes the refresh token, signs out the other tabs (BroadcastChannel, storage-event
   // fallback) and ends the identity session through the end-session endpoint.

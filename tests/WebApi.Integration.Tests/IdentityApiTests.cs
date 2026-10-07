@@ -92,12 +92,13 @@ public class IdentityApiTests(WebAppFixture app)
         using var browser = app.CreateIdentityClient();
         var tokens = await OidcBrowser.SignInAsync(browser, login, Password);
 
-        var revoked = await browser.PostAsync("/connect/revocation", new FormUrlEncodedContent(new Dictionary<string, string>
+        using var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["token"] = tokens.RefreshToken,
             ["token_type_hint"] = "refresh_token",
             ["client_id"] = OidcBrowser.ClientId
-        }), Cancellation);
+        });
+        var revoked = await browser.PostAsync("/connect/revocation", form, Cancellation);
 
         revoked.StatusCode.ShouldBe(HttpStatusCode.OK);
         (await OidcBrowser.ErrorAsync(await OidcBrowser.RefreshAsync(browser, tokens.RefreshToken))).ShouldBe("invalid_grant");
@@ -258,6 +259,35 @@ public class IdentityApiTests(WebAppFixture app)
     }
 
     [Fact]
+    public async Task TheKeyRing_ReplacesKeysEncryptedUnderAnotherSecret()
+    {
+        var unreadable = $"unreadable-{Guid.NewGuid():N}";
+        await using (var connection = app.CreateConnection())
+        {
+            // A key left behind by a previous key-encryption secret, active right now.
+            await connection.ExecuteAsync("""
+                INSERT INTO "IdentitySigningKeys" ("Id", "Algorithm", "ProtectedKey", "CreatedAt", "ActivatesAt", "RetiresAt")
+                VALUES (@unreadable, 'RS256', @garbage, now(), now(), now() + interval '30 days')
+                """, new { unreadable, garbage = new byte[64] });
+        }
+
+        // An empty pinned key makes this host use the stored key ring.
+        var (api, identity) = app.CreateHosts(new Dictionary<string, string?> { ["Jwt:SigningPrivateKey"] = "" });
+        await using (api)
+        await using (identity)
+        {
+            using var client = identity.CreateClient();
+            var keys = await client.GetFromJsonAsync<JsonElement>("/.well-known/openid-configuration/jwks", Cancellation);
+            var published = keys.GetProperty("keys").EnumerateArray().Select(key => key.GetProperty("kid").GetString()).ToList();
+
+            published.ShouldNotBeEmpty("a replacement key is created");
+            published.ShouldNotContain(unreadable);
+            await using var connection = app.CreateConnection();
+            (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "IdentitySigningKeys" WHERE "Id" = @unreadable""", new { unreadable })).ShouldBe(0);
+        }
+    }
+
+    [Fact]
     public async Task ServiceClients_ActAsTheirServiceAccount_OnTheApiTheyRequested()
     {
         const string secret = "integration-service-client-secret-0123456789";
@@ -356,14 +386,14 @@ public class IdentityApiTests(WebAppFixture app)
         return (await api.GetAsync("/api/organizations?pageSize=1", Cancellation)).StatusCode;
     }
 
-    private static Task<HttpResponseMessage> ClientCredentialsAsync(HttpClient client, string clientId, string secret, string scope)
+    private static async Task<HttpResponseMessage> ClientCredentialsAsync(HttpClient client, string clientId, string secret, string scope)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/connect/token")
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/connect/token")
         {
             Content = new FormUrlEncodedContent(new Dictionary<string, string> { ["grant_type"] = "client_credentials", ["scope"] = scope })
         };
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{secret}")));
-        return client.SendAsync(request, Cancellation);
+        return await client.SendAsync(request, Cancellation);
     }
 
     // The fixture's session validation cache lasts one second (production: 30).
