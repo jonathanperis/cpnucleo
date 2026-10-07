@@ -14,18 +14,26 @@ public class DomainContractTests
     [TestCase(int.MaxValue, 10)]
     public void Pagination_RejectsUnboundedOrInvalidRequests(int page, int size)
     {
-        Should.Throw<DomainException>(() => new PaginationParams { PageNumber = page, PageSize = size });
+        // Binders and serializers can always build the object; Require enforces the bounds.
+        var pagination = new PaginationParams { PageNumber = page, PageSize = size };
+
+        pagination.Problems().ShouldNotBeEmpty();
+        Should.Throw<DomainException>(() => PaginationParams.Require(pagination));
     }
 
     [Test]
     public void Pagination_BoundsSearchAndIds()
     {
-        Should.Throw<DomainException>(() => new PaginationParams { Search = new string('x', 129) });
-        Should.Throw<DomainException>(() => new PaginationParams { Ids = "not-a-uuid" });
-        Should.Throw<DomainException>(() => new PaginationParams { Ids = string.Join(',', Enumerable.Range(0, 101).Select(_ => Guid.NewGuid())) });
+        Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { Search = new string('x', 129) })).Field.ShouldBe("search");
+        Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { Ids = "not-a-uuid" })).Field.ShouldBe("ids");
+        Should.Throw<DomainException>(() => PaginationParams.Require(new PaginationParams { Ids = string.Join(',', Enumerable.Range(0, 101).Select(_ => Guid.NewGuid())) }));
+        Should.Throw<DomainException>(() => PaginationParams.Require(null)).Field.ShouldBe("pagination");
 
         var id = Guid.NewGuid();
-        new PaginationParams { Ids = $"{id}, {id}" }.GetIds().ShouldBe([id]);
+        var valid = PaginationParams.Require(new PaginationParams { Ids = $"{id}, {id}", Search = "  term  " });
+        valid.GetIds().ShouldBe([id]);
+        valid.Search.ShouldBe("term");
+        valid.Problems().ShouldBeEmpty();
     }
 
     [TestCase("50%", "%50\\%%")]

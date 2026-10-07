@@ -6,11 +6,13 @@ public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHa
     public async Task<ListUsersResult> ExecuteAsync(ListUsersCommand command, CancellationToken cancellationToken)
     {
         Common.Security.UserAdministration.RequireAdmin(context);
+        // Invalid or missing paging is InvalidArgument, the same rule REST applies.
+        var pagination = PaginationParams.Require(command.Pagination);
         logger.LogInformation("Service started processing request.");
-        logger.LogInformation("Fetching all users with pagination page {PageNumber}, size {PageSize}", command.Pagination.PageNumber, command.Pagination.PageSize);
+        logger.LogInformation("Fetching all users with pagination page {PageNumber}, size {PageSize}", pagination.PageNumber, pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.User>();
-        var response = await repository.GetAllAsync(command.Pagination, cancellationToken);
+        var response = await repository.GetAllAsync(pagination, cancellationToken);
 
         logger.LogInformation("Fetched {Count} user records", response.Data?.Count() ?? 0);
         logger.LogInformation("Mapping entities to DTOs.");

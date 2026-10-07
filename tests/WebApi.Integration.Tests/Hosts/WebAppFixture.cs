@@ -172,6 +172,10 @@ public sealed class WebAppFixture : IAsyncLifetime
             signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)), SecurityAlgorithms.HmacSha256)));
     }
 
+    public IServiceProvider GrpcServices => grpcFactory.Services;
+
+    public HttpMessageHandler GrpcHandler() => grpcFactory.Server.CreateHandler();
+
     public HttpClient CreateClient() => factory.CreateClient();
 
     public HttpClient CreateClient(TestAccount account)

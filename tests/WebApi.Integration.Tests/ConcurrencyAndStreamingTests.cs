@@ -13,10 +13,11 @@ public class ConcurrencyAndStreamingTests(WebAppFixture app)
     public async Task Sse_ClosesWhenItsAccessTokenExpires()
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
-        timeout.CancelAfter(TimeSpan.FromSeconds(8));
+        timeout.CancelAfter(TimeSpan.FromSeconds(10));
         using var request = new HttpRequestMessage(HttpMethod.Get, "/api/projects?pageSize=1");
         request.Headers.Accept.ParseAdd("text/event-stream");
-        request.Headers.Authorization = new("Bearer", WebAppFixture.CreateToken(expiresAt: DateTime.UtcNow.AddSeconds(2)));
+        // JWT exp has one-second resolution: a 3-second token lives at least 2 seconds.
+        request.Headers.Authorization = new("Bearer", WebAppFixture.CreateToken(expiresAt: DateTime.UtcNow.AddSeconds(3)));
         var started = System.Diagnostics.Stopwatch.StartNew();
         using var response = await app.Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

@@ -15,8 +15,7 @@ public class Request
     {
         public Validator()
         {
-            RuleFor(x => x.Pagination)
-                .NotNull().WithMessage("Pagination is required.");;
+            RuleFor(x => x.Pagination).ValidPagination();
         }
     }     
 }

@@ -39,6 +39,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     private async Task<Response> BuildResponseAsync(Request request, CancellationToken cancellationToken)
     {
+        PaginationParams.Require(request.Pagination);
         Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 

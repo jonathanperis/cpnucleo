@@ -299,7 +299,7 @@ Access tokens last up to 30 minutes. `POST /api/refresh` requires an active acco
 
 ## Query and update contracts
 
-List query fields are flat: `pageNumber`, `pageSize` (1–100), `sortColumn`, `sortOrder`, `search` (up to 128 characters), and `ids` (up to 100 comma-separated UUIDs). For example: `/api/projects?pageSize=25&search=school`. FastEndpoints binds these scalar fields into the request's `Pagination` object; dotted `pagination.*` keys are not the canonical HTTP contract.
+List query fields are flat: `pageNumber`, `pageSize` (1–100), `sortColumn`, `sortOrder`, `search` (up to 128 characters), and `ids` (up to 100 comma-separated UUIDs). For example: `/api/projects?pageSize=25&search=school`. FastEndpoints binds these scalar fields into the request's `Pagination` object; dotted `pagination.*` keys are not the canonical HTTP contract. Out-of-bound values are a 400 with the offending field (`errors.pageSize`, `errors.ids`, ...). gRPC list commands apply the same rules and answer `InvalidArgument` with the same message, including for hand-crafted messages that bypass the typed contracts or omit `Pagination`.
 
 Project PATCH requests may include `expectedVersion`, using the last observed `updatedAt` or initial `createdAt`. A stale value returns HTTP 409. The corresponding gRPC command accepts `ExpectedVersion` and reports a failed result on a conflict. Omitting the field preserves legacy last-write-wins behavior.
 
