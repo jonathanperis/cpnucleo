@@ -42,7 +42,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="FastEndpoints.Security" />
+        <PackageReference Include="Open.IdentityServer" />
         <PackageReference Include="FastEndpoints.Swagger" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

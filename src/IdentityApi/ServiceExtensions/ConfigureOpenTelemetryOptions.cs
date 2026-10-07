@@ -23,6 +23,8 @@ public static class ConfigureOpenTelemetryOptions
                 }
 
                 tracing
+                    // Open.IdentityServer spans (token issuance, validation, stores).
+                    .AddSource("Open.IdentityServer", "Open.IdentityServer.Services", "Open.IdentityServer.Stores", "Open.IdentityServer.Validation")
                     .AddAspNetCoreInstrumentation(options =>
                     {
                         // Liveness/readiness probes run every minute per container; keep them out of traces.
@@ -102,7 +104,8 @@ public static class ConfigureOpenTelemetryOptions
                         "Microsoft.AspNetCore.Server.Kestrel",
                         "System.Net.Http",
                         "System.Net.NameResolution",
-                        "Npgsql")
+                        "Npgsql",
+                        "Open.IdentityServer")
                     .AddNpgsqlInstrumentation(_ => { })
                     .AddOtlpExporter(options => ConfigureOtlpExporter(builder, options));
             });

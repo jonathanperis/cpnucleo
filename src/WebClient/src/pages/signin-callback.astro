@@ -1,0 +1,41 @@
+---
+import '../global.css';
+import BrandMark from '../components/BrandMark.astro';
+---
+
+<html lang="en" data-theme="dark" style="color-scheme: dark;">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="referrer" content="no-referrer" />
+    <title>Signing in · Cpnucleo</title>
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('cpnucleo-theme');
+          const theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : 'dark';
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {}
+      })();
+    </script>
+  </head>
+  <body>
+    <main class="flex min-h-screen items-center justify-center px-6 text-ink">
+      <section data-signin-callback class="w-full max-w-sm text-center">
+        <BrandMark class="mx-auto size-11" />
+        <h1 class="mt-6 text-xl font-semibold tracking-tight">Signing you in</h1>
+        <p data-callback-status role="status" class="mt-2 text-sm text-muted">Completing the sign-in…</p>
+        <p data-callback-error role="alert" hidden class="mt-6 rounded-lg border border-danger/30 bg-danger/10 px-3.5 py-3 text-left text-sm text-danger"></p>
+        <a data-callback-retry hidden href="/login/" class="btn btn-primary mt-6 h-11 w-full text-[0.9375rem]">Sign in again</a>
+      </section>
+    </main>
+  </body>
+</html>
+<script>
+  import { mountSignInCallback } from '../features/auth/signin-callback';
+  void mountSignInCallback(document.querySelector<HTMLElement>('[data-signin-callback]')!);
+</script>

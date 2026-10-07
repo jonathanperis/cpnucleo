@@ -15,7 +15,7 @@ src/
   WebApi/                      REST endpoints and SSE listings
   GrpcServer/                  Remote command handlers
   GrpcServer.Contracts/        Commands, results and DTOs
-  IdentityApi/                 Login and bounded refresh
+  IdentityApi/                 OpenID Connect provider (Open.IdentityServer)
   WebClient/
     src/pages/                 Static Astro routes, including [resource].astro
     src/components/            Native login/auth/theme templates
@@ -26,7 +26,7 @@ src/
 tests/
   Architecture.Tests/          Real assembly boundaries and selected source checks
   Application.Unit.Tests/     Use cases and domain contracts
-  Security.Unit.Tests/        Hashing, login and session refresh
+  Security.Unit.Tests/        Hashing, sign-in protections, token validation, clients
   WebApi.Unit.Tests/          Endpoint orchestration
   WebApi.Integration.Tests/   Disposable PostgreSQL and HTTP/gRPC contracts
 labs/

@@ -26,6 +26,7 @@
     <PackageVersion Include="Npgsql" Version="10.0.3" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.3" />
+    <PackageVersion Include="Open.IdentityServer" Version="2.0.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.18.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.18.0" />

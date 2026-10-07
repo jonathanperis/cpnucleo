@@ -1,28 +1,21 @@
+using IdentityApi.Oidc;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Options;
+using Open.IdentityServer.Services;
+using Open.IdentityServer.Stores;
+
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.ConfigureOpenTelemetry();
 
-var allowedCorsOrigins = builder.Configuration
-    .GetSection("Cors:AllowedOrigins")
-    .Get<string[]>() is { Length: > 0 } configuredOrigins
-        ? configuredOrigins
-        : ["https://cpnucleo.jonathanperis.tech"];
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.MapInboundClaims = false;
-        options.TokenValidationParameters = JwtKeys.ValidationParameters(builder.Configuration);
-    });
-builder.Services.AddAuthorization();
-
 builder.Services.AddCors(options =>
 {
+    // Cors:AllowedOrigins (default https://cpnucleo.jonathanperis.tech): the WebClient origins.
     options.AddPolicy("CpnucleoWebClient", policy =>
     {
         policy
-            .WithOrigins(allowedCorsOrigins)
+            .WithOrigins(OidcSettings.WebClientOrigins(builder.Configuration))
             .AllowAnyHeader()
             .AllowAnyMethod()
             // Lets the browser client read how long to wait after a 429.
@@ -30,12 +23,67 @@ builder.Services.AddCors(options =>
     });
 });
 
-// IdentityApi reads accounts on behalf of the system (login, refresh); it exposes no resource CRUD.
+// IdentityApi reads accounts on behalf of the system; it exposes no resource CRUD.
 builder.Services.AddSingleton<Application.Common.Security.ICurrentUser>(Application.Common.Security.StaticCurrentUser.System);
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddSingleton<TokenIssuer>();
 builder.Services.AddSingleton<LoginThrottle>();
 builder.Services.AddSingleton<TimingSafePasswordCheck>();
+builder.Services.AddSingleton<IdentityKeyProtector>();
+builder.Services.AddSingleton<AccountDirectory>();
+builder.Services.AddSingleton<IdentitySessions>();
+builder.Services.AddSingleton<SigningKeyRing>();
+builder.Services.AddHostedService<IdentityMaintenance>();
+
+// OpenID Connect server: authorization code + PKCE for the WebClient, client credentials for
+// service clients, one-time refresh tokens, revocation, introspection and end session.
+builder.Services
+    .AddIdentityServer(options =>
+    {
+        options.IssuerUri = JwtKeys.Issuer(builder.Configuration);
+        // The sign-in UI is the WebClient's Astro page; errors are explained there too.
+        options.UserInteraction.LoginUrl = OidcSettings.LoginPageUrl(builder.Configuration);
+        options.UserInteraction.LoginReturnUrlParameter = "authRequest";
+        options.UserInteraction.ErrorUrl = OidcSettings.LoginPageUrl(builder.Configuration);
+        options.UserInteraction.ErrorIdParameter = "errorId";
+        options.UserInteraction.LogoutUrl = "/api/account/logout";
+        options.Authentication.CookieLifetime = OidcSettings.MaximumSessionLength;
+        options.Authentication.CookieSlidingExpiration = false;
+        options.Authentication.CookieSameSiteMode = SameSiteMode.Lax;
+        // The WebClient is same-site (subdomain or localhost port): Lax works over the lab's plain HTTP too.
+        options.Authentication.CheckSessionCookieSameSiteMode = SameSiteMode.Lax;
+        // No device flow. The session-check endpoint stays on: it is what stamps every token with the
+        // session id (sid) that sign-out revokes.
+        options.Endpoints.EnableDeviceAuthorizationEndpoint = false;
+        options.Events.RaiseErrorEvents = true;
+        options.Events.RaiseFailureEvents = true;
+    })
+    .AddInMemoryIdentityResources(OidcSettings.IdentityResources())
+    .AddInMemoryApiScopes(OidcSettings.ApiScopes())
+    .AddInMemoryApiResources([])
+    .AddInMemoryClients([])
+    .AddProfileService<CpnucleoProfileService>()
+    .AddPersistedGrantStore<PersistedGrantStore>()
+    .AddCustomTokenRequestValidator<CpnucleoTokenRequestValidator>();
+
+// Clients and API resources come from configuration when first used, after every source is loaded.
+builder.Services.AddSingleton<IEnumerable<Open.IdentityServer.Models.Client>>(services =>
+    OidcSettings.Clients(services.GetRequiredService<IConfiguration>()).ToList());
+builder.Services.AddSingleton<IEnumerable<Open.IdentityServer.Models.ApiResource>>(services =>
+    OidcSettings.ApiResources(services.GetRequiredService<IConfiguration>()).ToList());
+
+// Rotating signing keys published as JWKS; API hosts read them from the discovery document.
+builder.Services.AddSingleton<ISigningCredentialStore>(services => services.GetRequiredService<SigningKeyRing>());
+builder.Services.AddSingleton<IValidationKeysStore>(services => services.GetRequiredService<SigningKeyRing>());
+builder.Services.AddTransient<IRefreshTokenService, ReuseDetectingRefreshTokenService>();
+
+// Identity cookies survive restarts: Data Protection keys live in PostgreSQL, encrypted.
+builder.Services.AddDataProtection().SetApplicationName("cpnucleo-identity");
+builder.Services.AddSingleton<DataProtectionKeyStore>();
+builder.Services.AddSingleton<IConfigureOptions<KeyManagementOptions>>(services => new ConfigureOptions<KeyManagementOptions>(options =>
+{
+    options.XmlRepository = services.GetRequiredService<DataProtectionKeyStore>();
+    options.XmlEncryptor = new KeyEncryptionXmlEncryptor(services.GetRequiredService<IdentityKeyProtector>());
+}));
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -44,15 +92,17 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10, // Allow 10 requests
-                Window = TimeSpan.FromMinutes(1), // Per 1-minute window
-                QueueLimit = 5, // Queue up to 5 additional requests
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst, // Process oldest requests first
-                AutoReplenishment = true // Default: automatically replenish permits
+                // A sign-in takes four requests (authorize, form post, callback, token) and every tab
+                // refreshes on its own; brute force is bounded per login by LoginThrottle.
+                PermitLimit = 60,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 5,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                AutoReplenishment = true
             }));
 
     // Global cap on concurrent password verifications, independent of client addresses.
-    options.AddConcurrencyLimiter(IdentityApi.Endpoints.Login.Endpoint.ConcurrencyPolicy, limiter =>
+    options.AddConcurrencyLimiter(IdentityApi.Endpoints.Account.Login.Endpoint.ConcurrencyPolicy, limiter =>
     {
         limiter.PermitLimit = 4;
         limiter.QueueLimit = 16;
@@ -66,12 +116,7 @@ builder.Services.AddRateLimiter(options =>
         cancellationToken);
 });
 
-builder.Services.AddOutputCache(options =>
-{
-    options.AddBasePolicy(b => b.Expire(TimeSpan.FromSeconds(10)));
-    options.AddBasePolicy(b => b.Cache());
-});
-
+builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 
 builder.Services
@@ -79,24 +124,22 @@ builder.Services
     .AddFastEndpoints(o =>
     {
         o.DisableAutoDiscovery = true;
-        o.Assemblies = [typeof(IdentityApi.Endpoints.Login.Endpoint).Assembly];
+        o.Assemblies = [typeof(IdentityApi.Endpoints.Account.Login.Endpoint).Assembly];
     })
     .SwaggerDocument(o =>
     {
-        o.EnableJWTBearerAuth = true;
+        o.EnableJWTBearerAuth = false;
         o.ShortSchemaNames = true;
         o.AutoTagPathSegmentIndex = 1;
         o.TagDescriptions = tags =>
         {
-            tags["Login"] = "Authenticate users and issue Cpnucleo access tokens.";
-            tags["Refresh"] = "Refresh authenticated sessions and issued tokens.";
-            tags["Register"] = "Register new Cpnucleo users.";
+            tags["Account"] = "Sign-in and sign-out steps of the OpenID Connect flows. Protocol endpoints are listed in /.well-known/openid-configuration.";
         };
         o.DocumentSettings = s =>
         {
             s.DocumentName = "v1";
             s.Title = "Cpnucleo Identity API";
-            s.Description = "Authentication and authorization API for Cpnucleo users, tokens, and sessions.";
+            s.Description = "OpenID Connect provider for Cpnucleo: authorization code with PKCE, client credentials, refresh token rotation, revocation and end session.";
             s.Version = "v1";
             s.PostProcess = document =>
             {
@@ -120,8 +163,6 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options => options.ForwardLimit = 1);
 
 var app = builder.Build();
-
-app.UseOutputCache();
 
 app.Use(async (context, next) =>
 {
@@ -154,22 +195,10 @@ app.UseHealthChecks("/readyz");
 
 app.UseRateLimiter();
 
-app.UseAuthentication();
-
-app.Use(async (context, next) =>
-{
-    if (context.User.Identity?.IsAuthenticated == true &&
-        !context.User.HasClaim(claim => claim.Type == CpnucleoClaimTypes.Subject && !string.IsNullOrWhiteSpace(claim.Value)))
-    {
-        await ApiErrors.WriteAsync(context, StatusCodes.Status401Unauthorized, "Authenticated tokens must include a subject claim.");
-        return;
-    }
-
-    await next();
-});
-
+// Protocol endpoints (/connect/*, /.well-known/*) and the identity cookie authentication.
+app.UseIdentityServer();
 app.UseAuthorization();
-app.UseInfrastructure();
+// No UseInfrastructure(): its Delta ETags are for per-caller data listings, which this host doesn't serve.
 app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
 

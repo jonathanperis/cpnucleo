@@ -92,7 +92,7 @@ describe('WebClient build output', () => {
     const routes = filesUnder(resolve('dist')).filter(path => path.endsWith('index.html')).map(path => `/${relative(resolve('dist'), path).replace(/index\.html$/, '')}`).sort();
     expect(routes).toEqual([
       '/', '/api-health/', '/appointments/', '/assignment-impediments/', '/assignment-types/', '/assignments/', '/impediments/',
-      '/login/', '/organizations/', '/projects/', '/user-assignments/', '/user-projects/', '/users/', '/workflows/',
+      '/login/', '/organizations/', '/projects/', '/signin-callback/', '/user-assignments/', '/user-projects/', '/users/', '/workflows/',
     ]);
     // Every built page is a known route for login return URLs.
     for (const route of routes.filter(route => route !== '/')) expect(canonicalizeStaticRoute(route.slice(0, -1))).toBe(route);

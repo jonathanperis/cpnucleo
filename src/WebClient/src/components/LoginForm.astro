@@ -1,25 +1,28 @@
 ---
 import Icon from './Icon.astro';
 ---
-<section class="w-full max-w-sm">
+<section data-login class="w-full max-w-sm">
   <h1 class="text-2xl font-semibold tracking-tight">Sign in</h1>
   <p class="mt-2 text-sm leading-relaxed text-muted">Use your Cpnucleo account to open the workspace.</p>
   <p data-login-error role="alert" hidden class="reveal mt-6 rounded-lg border border-danger/30 bg-danger/10 px-3.5 py-3 text-sm text-danger"></p>
-  <p data-login-status role="status" class="mt-6 text-sm text-success empty:mt-0"></p>
-  <form data-login-form class="mt-6 space-y-4">
+  <p data-login-status role="status" class="mt-6 text-sm text-muted empty:mt-0"></p>
+  <!-- Posted by the browser to IdentityApi (OpenID Connect sign-in); the action is set at runtime. -->
+  <form data-login-form method="post" hidden class="mt-6 space-y-4">
+    <input type="hidden" name="authRequest" />
     <div>
       <label for="login-name" class="mb-1.5 block text-[0.8125rem] font-medium">Login</label>
-      <input id="login-name" required name="login" autocomplete="username" autocapitalize="none" spellcheck="false" class="field h-11" />
+      <input id="login-name" required name="login" maxlength="256" autocomplete="username" autocapitalize="none" spellcheck="false" class="field h-11" />
     </div>
     <div>
       <label for="login-password" class="mb-1.5 block text-[0.8125rem] font-medium">Password</label>
-      <input id="login-password" required name="password" type="password" autocomplete="current-password" class="field h-11" />
+      <input id="login-password" required name="password" maxlength="128" type="password" autocomplete="current-password" class="field h-11" />
     </div>
     <button type="submit" class="btn btn-primary h-11 w-full text-[0.9375rem]">Enter dashboard</button>
   </form>
-  <p class="mt-6 flex items-start gap-2 text-xs leading-relaxed text-subtle"><Icon name="shield" class="mt-px size-3.5 flex-none" />Sessions stay in this tab and end after 15 minutes without activity.</p>
+  <button type="button" data-login-restart hidden class="btn btn-primary mt-6 h-11 w-full text-[0.9375rem]">Sign in</button>
+  <p class="mt-6 flex items-start gap-2 text-xs leading-relaxed text-subtle"><Icon name="shield" class="mt-px size-3.5 flex-none" />Signing in goes through the Cpnucleo OpenID Connect server. Sessions end after 15 minutes without activity, and after 8 hours at most.</p>
 </section>
 <script>
-  import { mountLoginForm } from '../features/auth/login-controller';
-  mountLoginForm(document.querySelector<HTMLFormElement>('[data-login-form]')!);
+  import { mountLoginPage } from '../features/auth/login-controller';
+  void mountLoginPage(document.querySelector<HTMLElement>('[data-login]')!);
 </script>

@@ -157,66 +157,80 @@ The partition key is `HttpContext.Connection.RemoteIpAddress`; this is per proce
 
 Available at `/swagger`, currently enabled in all environments.
 
-### Login Endpoint
+### OpenID Connect provider
+
+IdentityApi is an OpenID Connect provider built on [Open.IdentityServer](https://github.com/RockSolidKnowledge/Open.IdentityServer) (Apache 2.0, the continuation of IdentityServer4). The protocol endpoints are listed in `/.well-known/openid-configuration`:
+
+| Endpoint | Route | Use |
+|----------|-------|-----|
+| Discovery | `/.well-known/openid-configuration` | Issuer, endpoints, grant types |
+| Signing keys (JWKS) | `/.well-known/openid-configuration/jwks` | Public RS256 keys the API hosts validate with |
+| Authorize | `/connect/authorize` | Authorization code flow with PKCE (S256) |
+| Token | `/connect/token` | `authorization_code`, `refresh_token`, `client_credentials` |
+| Revocation | `/connect/revocation` | Revokes a refresh token (RFC 7009) |
+| Introspection | `/connect/introspect` | Token introspection |
+| End session | `/connect/endsession` | Signs out of the identity session |
+| User info | `/connect/userinfo` | Profile claims |
+
+The device flow is disabled. The `implicit` grant appears in discovery because the framework supports it, but no client may use it.
+
+#### Clients
+
+| Client | Flow | Notes |
+|--------|------|-------|
+| `cpnucleo-webclient` | Authorization code + PKCE, no secret | Scopes `openid profile cpnucleo.api offline_access`; redirect `{origin}/signin-callback/` and post-logout `{origin}/login/` for each `Cors__AllowedOrigins__N` |
+| `Identity__ServiceClients__{id}` | Client credentials | Optional. `Secret` (32+ characters), `Login` (the service account) and `Scopes` (default `cpnucleo.api cpnucleo.grpc`) |
+
+A service client's token carries its service account's subject, login, admin claim and security stamp, so the API hosts apply the same rules as for people: deactivating the account or changing its credentials revokes the client. A client whose account isn't active gets no token.
+
+#### Sign-in and sign-out steps
+
+The sign-in page is the WebClient's Astro page; IdentityApi only adds three anonymous endpoints:
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `POST` | `/api/login` | Authenticate and receive JWT token |
+| `POST` | `/api/account/login` | Form post (`login`, `password`, `authRequest`) from the WebClient sign-in page. Redirects to the pending authorization request, or back to the sign-in page with `error=invalid`, `error=locked&retryAfter=N` or `error=request` |
+| `GET` | `/api/account/logout?logoutId=` | The end-session endpoint's logout step: ends the server-side session, removes the identity cookie, redirects to the post-logout URL |
+| `GET` | `/api/account/error?errorId=` | `{ "error", "errorDescription" }` for an authorization request the server rejected |
 
-**Request:**
+The sign-in post must come from a WebClient origin (`Origin`, or `Referer`); others get 403 with the error envelope. It only returns to a pending authorization request on this host. Unknown, ambiguous (legacy duplicates) and wrong credentials take the same Argon2id time and redirect identically. Five failures for one login within 15 minutes lock it for 15 minutes regardless of client address; at most four password verifications run at once. `Login` is limited to 256 characters and `Password` to 128.
 
-```http
-POST /api/login
-Content-Type: application/json
-
-{
-  "login": "user@example.com",
-  "password": "password123"
-}
-```
-
-**Response (200 OK):**
-
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIs..."
-}
-```
-
-**Response (404 Not Found):**
-
-Returned with the error envelope when the login is unknown, ambiguous (legacy duplicates) or the password is wrong. All three cases take the same Argon2id time and return the same body.
-
-**Response (429 Too Many Requests):**
-
-Returned after five failed attempts for the same login within 15 minutes, for 15 minutes, regardless of client address, and by the per-address limiter. At most four password verifications run at once; further attempts queue. `Login` is limited to 256 characters and `Password` to 128.
-
-### JWT Configuration
+### Tokens
 
 | Parameter | Value |
 |-----------|-------|
-| Issuer | `https://identity-cpnucleo.jonathanperis.tech` |
-| Audience | `https://api-cpnucleo.jonathanperis.tech` |
-| Access-token lifetime | 30 minutes; refresh is capped by the original eight-hour session |
-| Algorithm | HS256 with `Jwt__SigningKey` (at least 32 bytes) by default; RS256 when `Jwt__SigningPublicKey` (all hosts) and `Jwt__SigningPrivateKey` (IdentityApi only) are configured as PEM. Hosts accept only the configured algorithm |
+| Issuer | `https://identity-cpnucleo.jonathanperis.tech` (`Jwt__Issuer`) |
+| Audiences | WebApi: `https://api-cpnucleo.jonathanperis.tech` (scope `cpnucleo.api`); GrpcServer: `https://grpc-cpnucleo.jonathanperis.tech` (scope `cpnucleo.grpc`) |
+| Access token | RS256 JWT, `typ: at+jwt`, 30 minutes |
+| Refresh token | One-time use; each refresh returns a successor. Never valid past eight hours from sign-in |
+| Identity cookie | Absolute eight hours, not sliding, `SameSite=Lax` |
 
-Issuer and audience above are the checked-in defaults. All hosts must use matching `Jwt__Issuer`, `Jwt__Audience` and signing configuration. Raw `sub` claims are retained during validation. PEM values may encode line breaks as `\n` to fit one environment variable.
+Access tokens carry `sub`, `sid` (the sign-in session), `cpnucleo:login`, `cpnucleo:security_stamp` and, for administrators, `cpnucleo:admin`. The claims are recomputed from the account at every issuance, refreshes included.
 
-Tokens carry a `cpnucleo:security_stamp` claim derived from the account's password hash and login. After signature validation, WebApi and GrpcServer confirm that the account is active, the stamp still matches and an admin claim is still listed in `CPNUCLEO_ADMIN_LOGINS`. Results are cached for 30 seconds, so a password change, deactivation or admin removal takes effect within that window. Tokens issued before this check existed are rejected; sign in again.
+#### Signing keys
 
-### Refresh Endpoint
+IdentityApi signs with a rotating RSA key ring stored in `IdentitySigningKeys`. Each key signs for 90 days; its successor is published one day earlier, and a replaced key stays published for seven more days. Private keys are encrypted at rest with AES-256-GCM under a key derived from `Jwt__SigningKey` (or `Identity__KeyEncryptionSecret`). Data Protection keys (identity cookies) live encrypted in `IdentityDataProtectionKeys`, so restarts don't sign anyone out. `Jwt__SigningPrivateKey` (PEM) pins one externally managed key instead.
 
-`POST /api/refresh` accepts a valid bearer token and no request body, returning the same `{ "token": "..." }` envelope. It returns 401 (error envelope) for an inactive/missing account, changed credentials (security stamp mismatch), or a session outside the eight-hour boundary. It recalculates admin privileges from `CPNUCLEO_ADMIN_LOGINS`; legacy tokens without the session-start or security-stamp claim require a new login. There is no separate long-lived refresh token.
+#### Validation in the API hosts
+
+WebApi and GrpcServer read the keys from the discovery document (`Jwt__MetadataAddress`, defaulting to the issuer's public address) and refresh them when a token names an unknown `kid`. They pin RS256, `at+jwt`, the issuer, their own audience and the lifetime. Raw `sub` is retained (`MapInboundClaims = false`).
+
+After signature validation they confirm, with a 30-second cache, that the account is active, the security stamp still matches, an admin claim is still listed in `CPNUCLEO_ADMIN_LOGINS`, and the token's sign-in session (`sid`) hasn't ended. A password change, deactivation, admin removal, sign-out or refresh-token replay therefore takes effect within 30 seconds.
+
+#### Sessions and revocation
+
+| Event | Effect |
+|-------|--------|
+| Sign-out (end session) | Session ended, its refresh tokens deleted, identity cookie removed, its access tokens rejected by the APIs |
+| Refresh token replayed | Treated as theft: the whole session ends as above |
+| Revocation endpoint | The given refresh token stops working |
+| Password or login change | The identity cookie and refresh tokens stop working (security stamp); access tokens are rejected |
+| Eight hours after sign-in | Refresh tokens and the identity cookie expire |
 
 ### Rate Limiting
 
-- 10 requests per minute per IP address
-- Queue limit: 5 additional requests
-- Stricter than WebApi to protect against brute-force attacks; complemented by the per-login lockout and the login concurrency cap described above
-
-### Output Caching
-
-The host registers a 10-second base output-cache policy. ASP.NET Core's default eligibility rules still apply; this is not a promise to cache every response, and POST login/refresh responses are not cached by that default policy.
+- 60 requests per minute per IP address, queue limit 5. A sign-in takes four requests and every tab refreshes on its own.
+- Brute force is bounded per login by the lockout and the sign-in concurrency cap described above.
 
 ---
 
@@ -290,12 +304,13 @@ The API hosts map `GET /` to `"Hello World!"`; the gRPC host's fallback authoriz
 
 JWT authentication is enforced by WebApi and GrpcServer. User administration additionally requires the configured administrator claim on both transports:
 
-1. Client authenticates via `POST /api/login` on IdentityApi
-2. Receives JWT token
-3. Includes token in `Authorization: Bearer {token}` header for WebApi/GrpcServer requests
-4. Token validation checks issuer, audience, signing key, and expiration
+1. The WebClient starts the authorization code flow with PKCE at IdentityApi's `/connect/authorize`.
+2. Without a session, IdentityApi sends the browser to the WebClient sign-in page, which posts the credentials to `/api/account/login`.
+3. IdentityApi issues an authorization code to `{origin}/signin-callback/`; the WebClient redeems it at `/connect/token` with the PKCE verifier and gets an access token, a one-time refresh token and an identity token.
+4. The access token goes in `Authorization: Bearer {token}` for WebApi; service clients use `client_credentials` for WebApi or GrpcServer.
+5. The APIs validate signature (JWKS), issuer, audience, type and lifetime, then the account, stamp, admin claim and session.
 
-Access tokens last up to 30 minutes. `POST /api/refresh` requires an active account and an original session younger than eight hours; it recalculates admin privileges. Tokens created before the session-start claim was introduced require a fresh login when refreshing.
+Refreshes use the `refresh_token` grant; signing out uses `/connect/revocation` and `/connect/endsession`.
 
 ## Query and update contracts
 

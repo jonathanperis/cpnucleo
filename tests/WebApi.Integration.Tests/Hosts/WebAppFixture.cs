@@ -3,14 +3,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
-using System.Text;
+using System.Security.Cryptography;
 using System.Threading.RateLimiting;
 using Dapper;
 using Domain.Common.Security;
 using Domain.Entities;
 using Grpc.Core;
 using Infrastructure.Common.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
@@ -18,6 +20,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using Testcontainers.PostgreSql;
@@ -26,14 +30,23 @@ namespace WebApi.Integration.Tests.Hosts;
 
 /// <summary>
 /// Real WebApi, GrpcServer and IdentityApi hosts over one disposable PostgreSQL container with all
-/// migrations applied. Seeded accounts cover the three access levels: administrator, project
-/// member and outsider (an active user with no memberships).
+/// migrations applied. IdentityApi signs with a pinned test RSA key; the API hosts download it from
+/// IdentityApi's discovery document (JWKS) exactly as in production, so tests can also mint tokens
+/// for edge cases with the same key. Seeded accounts cover the three access levels: administrator,
+/// project member and outsider (an active user with no memberships).
 /// </summary>
 public sealed class WebAppFixture : IAsyncLifetime
 {
-    public const string SigningKey = "disposable-integration-signing-key-at-least-32-characters";
-    public const string Issuer = "cpnucleo-integration";
-    public const string Audience = "cpnucleo-integration";
+    public const string Issuer = "https://identity.integration.test";
+    public const string Audience = "https://api.integration.test";
+    public const string GrpcAudience = "https://grpc.integration.test";
+    public const string WebOrigin = "https://web.integration.test";
+    public const string KeyEncryptionSecret = "disposable-integration-key-encryption-secret";
+    private const string MetadataAddress = "http://localhost/.well-known/openid-configuration";
+
+    /// <summary>The identity server's signing key (pinned through <c>Jwt:SigningPrivateKey</c>).</summary>
+    public static readonly RSA SigningKey = RSA.Create(2048);
+    public static readonly string SigningKeyId = IdentityApi.Oidc.SigningKeyRing.KeyIdFor(SigningKey.ExportParameters(false));
 
     public static readonly TestAccount Admin = TestAccount.Create("admin", isAdmin: true);
     public static readonly TestAccount Member = TestAccount.Create("member");
@@ -43,7 +56,7 @@ public sealed class WebAppFixture : IAsyncLifetime
         .WithCommand("-c", "track_commit_timestamp=on").Build();
     private WebApplicationFactory<WebApiHost::Program> factory = null!;
     private WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler> grpcFactory = null!;
-    private WebApplicationFactory<IdentityApi.Security.TokenIssuer> identityFactory = null!;
+    private WebApplicationFactory<IdentityApi.Security.LoginThrottle> identityFactory = null!;
     public HttpClient Client { get; private set; } = null!;
     private readonly System.Collections.Concurrent.ConcurrentQueue<string> failures = new();
     public string FailureDetails => string.Join("\n", failures);
@@ -68,9 +81,15 @@ public sealed class WebAppFixture : IAsyncLifetime
             }
         }
 
+        // The API hosts read signing keys from this host, so it is started (and its key set served)
+        // before any of them handles a request, as a separately deployed IdentityApi would be.
+        identityFactory = CreateIdentityFactory(disableRateLimiting: true);
+        using (var warmUp = identityFactory.CreateClient())
+            (await warmUp.GetAsync("/.well-known/openid-configuration/jwks")).EnsureSuccessStatusCode();
+
         factory = Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(builder =>
         {
-            ConfigureApp(builder);
+            ConfigureApiHost(builder, Audience);
             builder.ConfigureServices(DisableRateLimiting);
         });
         Client = factory.CreateClient();
@@ -78,7 +97,7 @@ public sealed class WebAppFixture : IAsyncLifetime
 
         grpcFactory = Track(new WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler>()).WithWebHostBuilder(builder =>
         {
-            ConfigureApp(builder);
+            ConfigureApiHost(builder, GrpcAudience);
             builder.ConfigureServices(DisableRateLimiting);
         });
         grpcFactory.Services.MapRemoteCore("http://localhost", connection =>
@@ -86,8 +105,6 @@ public sealed class WebAppFixture : IAsyncLifetime
             connection.ChannelOptions.HttpHandler = grpcFactory.Server.CreateHandler();
             RegisterAllCommands(connection);
         });
-
-        identityFactory = CreateIdentityFactory(disableRateLimiting: true);
     }
 
     // WithWebHostBuilder returns a derived factory; the root factories are disposed with the fixture.
@@ -105,52 +122,109 @@ public sealed class WebAppFixture : IAsyncLifetime
     public NpgsqlConnection CreateConnection() => new(ConnectionString);
 
     /// <summary>WebApi and IdentityApi hosts with extra configuration (e.g. no admin list).</summary>
-    public (WebApplicationFactory<WebApiHost::Program> Api, WebApplicationFactory<IdentityApi.Security.TokenIssuer> Identity) CreateHosts(
+    public (WebApplicationFactory<WebApiHost::Program> Api, WebApplicationFactory<IdentityApi.Security.LoginThrottle> Identity) CreateHosts(
         IReadOnlyDictionary<string, string?> overrides)
     {
-        void Configure(IWebHostBuilder builder)
+        void Override(IWebHostBuilder builder)
         {
-            ConfigureApp(builder);
             builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(overrides));
             builder.ConfigureServices(DisableRateLimiting);
         }
 
-        return (Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(Configure),
-            Track(new WebApplicationFactory<IdentityApi.Security.TokenIssuer>()).WithWebHostBuilder(Configure));
+        return (Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(builder =>
+            {
+                ConfigureApiHost(builder, Audience);
+                Override(builder);
+            }),
+            Track(new WebApplicationFactory<IdentityApi.Security.LoginThrottle>()).WithWebHostBuilder(builder =>
+            {
+                ConfigureIdentityHost(builder);
+                Override(builder);
+            }));
     }
+
+    /// <summary>A GrpcServer host with extra configuration, for transport-specific checks.</summary>
+    public WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler> CreateGrpcHost() =>
+        Track(new WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler>()).WithWebHostBuilder(builder =>
+        {
+            ConfigureApiHost(builder, GrpcAudience);
+            builder.ConfigureServices(DisableRateLimiting);
+        });
 
     /// <summary>A WebApi host with production rate limiting, for quota tests.</summary>
     public WebApplicationFactory<WebApiHost::Program> CreateRateLimitedWebApiFactory() =>
         Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(builder =>
         {
-            ConfigureApp(builder);
+            ConfigureApiHost(builder, Audience);
             builder.ConfigureServices(CaptureFailures);
         });
 
     /// <summary>An IdentityApi host on the same database. Tests that exercise quotas get their own instance.</summary>
-    public WebApplicationFactory<IdentityApi.Security.TokenIssuer> CreateIdentityFactory(bool disableRateLimiting) =>
-        Track(new WebApplicationFactory<IdentityApi.Security.TokenIssuer>()).WithWebHostBuilder(builder =>
+    public WebApplicationFactory<IdentityApi.Security.LoginThrottle> CreateIdentityFactory(bool disableRateLimiting) =>
+        Track(new WebApplicationFactory<IdentityApi.Security.LoginThrottle>()).WithWebHostBuilder(builder =>
         {
-            ConfigureApp(builder);
+            ConfigureIdentityHost(builder);
             if (disableRateLimiting) builder.ConfigureServices(DisableRateLimiting);
             else builder.ConfigureServices(CaptureFailures);
         });
 
-    public HttpClient CreateIdentityClient() => identityFactory.CreateClient();
+    /// <summary>A browser-like identity client: cookies kept, redirects returned to the test.</summary>
+    public HttpClient CreateIdentityClient() => CreateBrowserClient(identityFactory);
 
-    private void ConfigureApp(IWebHostBuilder builder)
+    public static HttpClient CreateBrowserClient<T>(WebApplicationFactory<T> identity) where T : class =>
+        identity.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false, HandleCookies = true, BaseAddress = new Uri("https://localhost") });
+
+    private void ConfigureShared(IWebHostBuilder builder, IDictionary<string, string?> hostValues)
     {
         builder.UseEnvironment("Testing");
-        builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
+        var values = new Dictionary<string, string?>
         {
             ["DB_CONNECTION_STRING"] = ConnectionString,
-            ["Jwt:SigningKey"] = SigningKey,
             ["Jwt:Issuer"] = Issuer,
-            ["Jwt:Audience"] = Audience,
             ["CPNUCLEO_ADMIN_LOGINS"] = Admin.Login,
             // Short window so revocation tests don't wait the production 30 seconds.
             ["Auth:SessionValidationCacheSeconds"] = "1"
+        };
+        foreach (var (key, value) in hostValues) values[key] = value;
+        builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(values));
+    }
+
+    private void ConfigureIdentityHost(IWebHostBuilder builder) => ConfigureShared(builder, new Dictionary<string, string?>
+    {
+        ["Jwt:Audience"] = Audience,
+        ["Jwt:SigningPrivateKey"] = SigningKey.ExportPkcs8PrivateKeyPem(),
+        ["Identity:GrpcAudience"] = GrpcAudience,
+        ["Identity:KeyEncryptionSecret"] = KeyEncryptionSecret,
+        ["Cors:AllowedOrigins:0"] = WebOrigin
+    });
+
+    /// <summary>
+    /// An API host that validates tokens against the identity host's discovery document, fetched
+    /// through the in-memory test server instead of the network.
+    /// </summary>
+    private void ConfigureApiHost(IWebHostBuilder builder, string audience)
+    {
+        ConfigureShared(builder, new Dictionary<string, string?>
+        {
+            ["Jwt:Audience"] = audience,
+            ["Jwt:MetadataAddress"] = MetadataAddress
+        });
+        builder.ConfigureTestServices(services => services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+                MetadataAddress,
+                new OpenIdConnectConfigurationRetriever(),
+                new HttpDocumentRetriever(new HttpClient(new IdentityServerHandler(() => identityFactory))) { RequireHttps = false });
         }));
+    }
+
+    /// <summary>Forwards discovery requests to the identity test server, created lazily.</summary>
+    private sealed class IdentityServerHandler(Func<WebApplicationFactory<IdentityApi.Security.LoginThrottle>> identity) : HttpMessageHandler
+    {
+        private HttpMessageInvoker? invoker;
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            (invoker ??= new HttpMessageInvoker(identity().Server.CreateHandler())).SendAsync(request, cancellationToken);
     }
 
     private void CaptureFailures(IServiceCollection services) =>
@@ -181,8 +255,13 @@ public sealed class WebAppFixture : IAsyncLifetime
     public static string CreateToken(bool admin = true, DateTime? expiresAt = null) =>
         CreateToken(admin ? Admin : Member, expiresAt);
 
+    /// <summary>
+    /// An access token shaped like the identity server's (RS256, <c>typ: at+jwt</c>, its key id),
+    /// with knobs for the edge cases that a real sign-in can't produce.
+    /// </summary>
     public static string CreateToken(TestAccount account, DateTime? expiresAt = null, string? stamp = null,
-        bool? adminClaim = null, string issuer = Issuer, string audience = Audience, string signingKey = SigningKey)
+        bool? adminClaim = null, string issuer = Issuer, string audience = Audience, SecurityKey? signingKey = null,
+        string algorithm = SecurityAlgorithms.RsaSha256, string tokenType = "at+jwt", string? sessionId = null)
     {
         var claims = new List<Claim>
         {
@@ -191,9 +270,18 @@ public sealed class WebAppFixture : IAsyncLifetime
             new(CpnucleoClaimTypes.Login, account.Login)
         };
         if (adminClaim ?? account.IsAdmin) claims.Add(new(CpnucleoClaimTypes.Admin, "true"));
-        return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(
-            issuer, audience, claims, expires: expiresAt ?? DateTime.UtcNow.AddMinutes(10),
-            signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)), SecurityAlgorithms.HmacSha256)));
+        if (sessionId is not null) claims.Add(new("sid", sessionId));
+        var handler = new JwtSecurityTokenHandler();
+        return handler.WriteToken(handler.CreateJwtSecurityToken(new SecurityTokenDescriptor
+        {
+            Issuer = issuer,
+            Audience = audience,
+            Subject = new ClaimsIdentity(claims),
+            Expires = expiresAt ?? DateTime.UtcNow.AddMinutes(10),
+            NotBefore = (expiresAt ?? DateTime.UtcNow.AddMinutes(10)).AddMinutes(-30),
+            TokenType = tokenType,
+            SigningCredentials = new SigningCredentials(signingKey ?? new RsaSecurityKey(SigningKey) { KeyId = SigningKeyId }, algorithm)
+        }));
     }
 
     public IServiceProvider GrpcServices => grpcFactory.Services;
@@ -211,7 +299,7 @@ public sealed class WebAppFixture : IAsyncLifetime
 
     public static CallOptions GrpcOptions(bool admin = true) => GrpcOptions(admin ? Admin : Member);
 
-    public static CallOptions GrpcOptions(TestAccount account) => GrpcOptions(CreateToken(account));
+    public static CallOptions GrpcOptions(TestAccount account) => GrpcOptions(CreateToken(account, audience: GrpcAudience));
 
     public static CallOptions GrpcOptions(string? token) => new(
         headers: token is null ? [] : new Metadata { { "Authorization", $"Bearer {token}" } },
