@@ -59,10 +59,10 @@ public static class OidcBrowser
 
     public static string Query(Uri uri, string name) => QueryHelpers.ParseQuery(uri.Query).TryGetValue(name, out var value) ? value.ToString() : "";
 
-    public static Task<HttpResponseMessage> PostSignInAsync(HttpClient browser, string login, string password, string authRequest,
+    public static async Task<HttpResponseMessage> PostSignInAsync(HttpClient browser, string login, string password, string authRequest,
         string? origin = WebAppFixture.WebOrigin)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/api/account/login")
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/account/login")
         {
             Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -72,7 +72,7 @@ public static class OidcBrowser
             })
         };
         if (origin is not null) request.Headers.Add("Origin", origin);
-        return browser.SendAsync(request, Cancellation);
+        return await browser.SendAsync(request, Cancellation);
     }
 
     /// <summary>The whole sign-in: authorize, sign-in form, callback and code redemption.</summary>
@@ -149,10 +149,11 @@ public static class OidcBrowser
         return logout.Headers.Location!;
     }
 
-    private static Task<HttpResponseMessage> TokenRequestAsync(HttpClient browser, Dictionary<string, string> form)
+    private static async Task<HttpResponseMessage> TokenRequestAsync(HttpClient browser, Dictionary<string, string> form)
     {
         form["client_id"] = ClientId;
-        return browser.PostAsync("/connect/token", new FormUrlEncodedContent(form), Cancellation);
+        using var content = new FormUrlEncodedContent(form);
+        return await browser.PostAsync("/connect/token", content, Cancellation);
     }
 
     private static string Base64Url(byte[] bytes) => Convert.ToBase64String(bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_');

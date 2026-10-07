@@ -35,7 +35,7 @@ describe('http client token handling', () => {
       .mockResolvedValueOnce(new Response('{}', { status: 200 }))
       .mockImplementationOnce(() => new Promise<Response>(resolve => { complete = resolve; }));
     await requestJson('http://example.test/api');
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
     clearStoredToken();
     complete(new Response(JSON.stringify({ access_token: tokenWithIssuer(issuer, { exp: Math.floor(Date.now() / 1000) + 1800 }), refresh_token: 'refresh-2' }), { status: 200 }));
     await new Promise(resolve => setImmediate(resolve));

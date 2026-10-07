@@ -148,6 +148,8 @@ export interface SignInTokens {
 export const setStoredTokens = ({ accessToken, refreshToken, idToken }: SignInTokens): boolean => {
   if (typeof sessionStorage === 'undefined') return false;
   sessionStorage.removeItem(expiredSessionStorageKey);
+  // A new token family is a new tab identity (see detectDuplicatedTab).
+  sessionStorage.setItem(tabIdStorageKey, newTabId());
   sessionStorage.setItem(refreshTokenStorageKey, refreshToken);
   if (idToken) sessionStorage.setItem(idTokenStorageKey, idToken);
   return storeToken(accessToken, true);
@@ -239,7 +241,54 @@ let sessionChannel: BroadcastChannel | null | undefined;
 const getSessionChannel = (): BroadcastChannel | null => {
   if (sessionChannel !== undefined) return sessionChannel;
   sessionChannel = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel(sessionChannelName);
+  // Every tab answers "is this tab id yours?", so copies of it can recognize themselves.
+  sessionChannel?.addEventListener('message', event => {
+    const message = event.data as { type?: unknown; id?: unknown } | null;
+    if (message?.type === 'tab-query' && typeof message.id === 'string' && message.id === storedValue(tabIdStorageKey)) {
+      sessionChannel?.postMessage({ type: 'tab-present', id: message.id });
+    }
+  });
   return sessionChannel;
+};
+
+/** This tab's identity for its token family; copied along with sessionStorage into duplicated tabs. */
+export const tabIdStorageKey = 'cpnucleo.tabId';
+const newTabId = () => (typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${now()}-${Math.random()}`);
+let duplicateTabCheck: Promise<boolean> | undefined;
+
+/**
+ * Browsers copy sessionStorage into tabs opened from this one (links with an opener, window.open,
+ * "duplicate tab"). The copy must not use the original's one-time refresh token: whichever tab
+ * refreshes second would present a consumed token, which ends the session as a replay. A tab that
+ * finds its id answered by another live tab is a copy: it drops the copied tokens and signs in
+ * again through the existing identity session, without a password prompt. Returns true for a copy.
+ */
+export const detectDuplicatedTab = (waitMs = 150): Promise<boolean> => {
+  duplicateTabCheck ??= (async () => {
+    if (typeof sessionStorage === 'undefined') return false;
+    const channel = getSessionChannel();
+    const id = storedValue(tabIdStorageKey);
+    if (!id || !channel) return false;
+    const duplicate = await new Promise<boolean>(resolve => {
+      const onMessage = (event: MessageEvent) => {
+        const message = event.data as { type?: unknown; id?: unknown } | null;
+        if (message?.type !== 'tab-present' || message.id !== id) return;
+        clearTimeout(timer);
+        channel.removeEventListener('message', onMessage);
+        resolve(true);
+      };
+      const timer = setTimeout(() => { channel.removeEventListener('message', onMessage); resolve(false); }, waitMs);
+      channel.addEventListener('message', onMessage);
+      channel.postMessage({ type: 'tab-query', id });
+    });
+    if (duplicate) {
+      clearStoredToken();
+      sessionStorage.removeItem(expiredSessionStorageKey);
+      sessionStorage.removeItem(tabIdStorageKey);
+    }
+    return duplicate;
+  })();
+  return duplicateTabCheck;
 };
 
 const broadcastLogout = () => {
@@ -305,13 +354,15 @@ export const subscribeToCrossTabLogout = (onLogout: () => void): (() => void) =>
 
 /** Exchanges the one-time refresh token at the token endpoint (refresh_token grant). */
 const refreshStoredToken = async (baseUrl = IDENTITY_API_BASE_URL): Promise<boolean> => {
-  const token = getStoredToken();
-  const refreshToken = storedValue(refreshTokenStorageKey);
-  if (!token || !refreshToken) return false;
-
   if (refreshInFlight) return refreshInFlight;
 
   refreshInFlight = (async () => {
+    // A duplicated tab gets its own tokens instead of racing the original for the same refresh token.
+    if (await detectDuplicatedTab()) return false;
+    const token = getStoredToken();
+    const refreshToken = storedValue(refreshTokenStorageKey);
+    if (!token || !refreshToken) return false;
+
     let response: Response;
     try {
       response = await fetch(`${identityOrigin(baseUrl)}/connect/token`, {

@@ -24,9 +24,11 @@ public sealed class IdentityMaintenance(
             {
                 await RunOnceAsync(stoppingToken);
             }
-            catch (Exception ex) when (ex is NpgsqlException or TimeoutException or InvalidOperationException && !stoppingToken.IsCancellationRequested)
+            catch (Exception ex) when (ex is System.Data.Common.DbException or TimeoutException or InvalidOperationException
+                or System.Security.Cryptography.CryptographicException && !stoppingToken.IsCancellationRequested)
             {
-                // The database may not be ready yet (the migrator runs separately); try next time.
+                // Housekeeping must never stop the host (for example while the migrator hasn't run
+                // yet); it tries again next time and requests still load keys on demand.
                 logger.LogWarning(ex, "Identity maintenance did not complete.");
             }
         }
