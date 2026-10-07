@@ -4,13 +4,21 @@ The WebClient uses Astro static routes, native TypeScript and Tailwind CSS. Ther
 
 ## Implementation
 
-- `features/crud/CrudPage.astro`: semantic HTML, labels, per-field error slots, forms, table, pagination landmark and native details dialog.
+- `features/crud/CrudPage.astro`: semantic HTML, labels, per-field error slots, forms, table, pagination landmark and native details and delete-confirmation dialogs.
 - `features/crud/crud-controller.ts`: form events, loading, safe DOM rendering, pagination, cancellation, relation selection, authorization gating and focus management.
 - `lib/api/webapi-client.ts`: HTTP/SSE contracts, flat list parameters and singular item response normalization.
 - `lib/api/http-client.ts`: bearer handling, the error envelope, inactivity expiry, refresh, session claims and cross-tab logout.
 - `components/AuthGuard.astro`: authenticated workspace visibility and session lifecycle.
 - `components/LoginForm.astro`: native login form, with empty credentials.
+- `lib/navigation.ts`, `components/SidebarNav.astro`: one navigation model for the sidebar, mobile menu, breadcrumb and home overview.
+- `global.css`, `lib/icons.ts`, `components/Icon.astro`: design tokens, shared component classes and the stroke icon set used by templates and controllers.
 - `scripts/csp.mjs`, `scripts/static-server.mjs`, `scripts/preview.mjs`: build-time CSP manifest and the Node static server.
+
+## Visual design
+
+The theme is dark by default with an opt-in light theme (`data-theme`, stored per browser). Colors are OKLCH channel tokens in `global.css` (`--canvas`, `--surface`, `--raised`, `--ink`, `--muted`, `--subtle`, `--line`, `--accent` and status colors), mapped into Tailwind so utilities accept alpha (`bg-accent/10`). Cyan marks interaction only. Base element rules live in `@layer base` so Tailwind utilities always override them, and reusable pieces (`.btn`, `.field`, `.panel`, `.data-table`, `.page-button`, `.modal`) live in `@layer components`.
+
+Inter and JetBrains Mono are self-hosted variable fonts bundled by Vite from `@fontsource-variable/*`, so the CSP needs no external font origin. Lists lead with each record's own fields and show Created last; date-only fields render the UTC calendar day the form edits. Row actions are icon buttons with distinct accessible names and stay pinned to the right edge on wide tables. Motion is limited to short opacity/transform transitions and is disabled under `prefers-reduced-motion`.
 
 The former `/settings/types/` and `/settings/relations/` pages were removed. They stacked several CRUD screens (and several live streams) on one unlinked page, duplicating the routes in the Setup and People navigation groups, and were absent from the login return-route list.
 
@@ -56,7 +64,7 @@ Only real input (pointer, keyboard, touch, scroll) counts as activity. API calls
 
 ## Accessibility
 
-The details view uses native `<dialog>` behavior for focus, Escape and modality. API-controlled strings are assigned with `textContent` rather than interpolated into HTML. Per-row actions have distinct accessible names such as "Edit Atlas" (link records use their related labels). When the form closes after save or cancel, focus returns to the control that opened it; if live updates replace that row, focus follows to the equivalent button, or to the create button/heading when the row is gone.
+The details view and the delete confirmation use native `<dialog>` behavior for focus, Escape and modality; the confirmation replaces `window.confirm`, starts on Cancel and returns focus to the Delete button that opened it. API-controlled strings are assigned with `textContent` rather than interpolated into HTML. Per-row actions have distinct accessible names such as "Edit Atlas" (link records use their related labels). When the form closes after save or cancel, focus returns to the control that opened it; if live updates replace that row, focus follows to the equivalent button, or to the create button/heading when the row is gone.
 
 Errors use `role="alert"`. Routine progress such as "Loading options…" uses `role="status"`. The page summary is a polite live region updated only when its text changes, and the eleven home counters are not live regions: one status message summarizes them once loaded.
 

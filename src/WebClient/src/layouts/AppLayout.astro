@@ -2,24 +2,18 @@
 import '../global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import AuthGuard from '../components/AuthGuard.astro';
+import BrandMark from '../components/BrandMark.astro';
+import Icon from '../components/Icon.astro';
+import SidebarNav from '../components/SidebarNav.astro';
+import { locate } from '../lib/navigation';
 import { WEBAPI_BASE_URL } from '../lib/config';
 
-const groups = [
-  { name: 'Start', items: [
-    ['Home', '/'], ['Organizations', '/organizations/'], ['Projects', '/projects/'], ['Tasks', '/assignments/'], ['Progress steps', '/workflows/'], ['Calendar', '/appointments/'],
-  ] },
-  { name: 'People', items: [['Team members', '/users/'], ['People on tasks', '/user-assignments/'], ['People on projects', '/user-projects/']] },
-  { name: 'Setup', items: [['Task types', '/assignment-types/'], ['Blockers', '/impediments/'], ['Task blockers', '/assignment-impediments/']] },
-  { name: 'Status', items: [['Service health', '/api-health/']] },
-] as const;
-
-const { path = '/' } = Astro.props;
-const pathname = path.replace(/\/$/, '') || '/';
-const normalizePath = (href: string) => href.replace(/\/$/, '') || '/';
-const isActive = (href: string) => {
-  const normalizedHref = normalizePath(href);
-  return normalizedHref === '/' ? pathname === '/' : pathname === normalizedHref || pathname.startsWith(`${normalizedHref}/`);
-};
+interface Props { path?: string; title?: string }
+const { path = '/', title } = Astro.props;
+const location = locate(path);
+const pageTitle = title ?? location?.item.label;
+const local = WEBAPI_BASE_URL.startsWith('http://localhost:');
+const apiHost = new URL(WEBAPI_BASE_URL).host;
 ---
 
 <html lang="en" data-theme="dark" style="color-scheme: dark;">
@@ -27,7 +21,7 @@ const isActive = (href: string) => {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>Cpnucleo</title>
+    <title>{pageTitle ? `${pageTitle} · Cpnucleo` : 'Cpnucleo'}</title>
     <script is:inline>
       (() => {
         try {
@@ -42,60 +36,74 @@ const isActive = (href: string) => {
     </script>
   </head>
   <body>
-    <div class="min-h-screen bg-canvas text-ink">
-      <aside class="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-line bg-surface/95 px-5 py-6 shadow-soft lg:block">
-        <a href="/" class="mb-7 flex items-center gap-3">
-          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-sm font-bold text-canvas shadow-soft">JP</span>
-          <span>
-            <span class="block text-base font-semibold">Cpnucleo</span>
-            <span class="block text-xs text-muted">Project hub</span>
+    <a href="#main" class="sr-only z-50 rounded-md bg-accent px-3 py-2 text-sm font-semibold text-accent-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-3">Skip to content</a>
+    <div class="min-h-screen text-ink">
+      <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-line bg-surface/50 lg:flex">
+        <a href="/" class="flex h-16 items-center gap-3 px-5">
+          <BrandMark />
+          <span class="leading-tight">
+            <span class="block text-[0.9375rem] font-semibold tracking-tight">Cpnucleo</span>
+            <span class="block text-xs text-subtle">Project workspace</span>
           </span>
         </a>
-        <nav class="mt-7 space-y-6">
-          {groups.map((group) => (
-            <section>
-              <h2 class="px-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">{group.name}</h2>
-              <div class="mt-2 space-y-1">
-                {group.items.map(([label, href]) => (
-                  <a href={href} aria-current={isActive(href) ? 'page' : undefined} class:list={["block rounded-xl border px-3 py-2 text-sm font-medium transition", isActive(href) ? "border-accent/40 bg-accent/10 text-accent shadow-sm" : "border-transparent text-muted hover:border-line hover:bg-raised hover:text-ink"]}>{label}</a>
-                ))}
-              </div>
-            </section>
-          ))}
-        </nav>
+        <div class="quiet-scroll flex-1 overflow-y-auto px-3 pb-6 pt-4">
+          <SidebarNav path={path} idPrefix="sidebar" />
+        </div>
+        <div class="border-t border-line px-5 py-4" title={WEBAPI_BASE_URL}>
+          <p class="flex items-center gap-2 text-xs font-medium text-muted"><span class:list={['status-dot', local ? 'text-success' : 'text-accent']}></span>{local ? 'Local learning sandbox' : 'Remote API workspace'}</p>
+          <p class="mt-1 truncate pl-4 font-mono text-[0.6875rem] text-subtle">{apiHost}</p>
+        </div>
       </aside>
-      <div class="lg:pl-72">
-        <header class="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
-          <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-            <details class="relative lg:hidden">
-              <summary class="cursor-pointer list-none rounded-md border border-line px-3 py-2 text-sm">Menu</summary>
-              <div class="absolute left-0 top-12 z-50 w-80 rounded-xl border border-line bg-surface p-5 shadow-soft">
-                <nav class="space-y-5">
-                  {groups.map((group) => (
-                    <section>
-                      <h2 class="px-3 text-xs font-semibold uppercase tracking-[0.18em] text-muted">{group.name}</h2>
-                      <div class="mt-2 space-y-1">
-                        {group.items.map(([label, href]) => (
-                          <a href={href} aria-current={isActive(href) ? 'page' : undefined} class:list={["block rounded-xl border px-3 py-2 text-sm font-medium transition", isActive(href) ? "border-accent/40 bg-accent/10 text-accent shadow-sm" : "border-transparent text-muted hover:border-line hover:bg-raised hover:text-ink"]}>{label}</a>
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-                </nav>
+      <div class="lg:pl-64">
+        <header class="sticky top-0 z-30 border-b border-line bg-canvas/95">
+          <div class="flex h-14 items-center gap-3 px-4 sm:px-6 lg:px-10">
+            <details data-mobile-menu class="lg:hidden">
+              <summary class="btn btn-ghost btn-icon list-none [&::-webkit-details-marker]:hidden" aria-label="Navigation menu"><Icon name="menu" class="size-5" /></summary>
+              <div class="fixed inset-x-0 bottom-0 top-14 z-50 overflow-y-auto border-t border-line bg-surface px-3 py-5">
+                <SidebarNav path={path} idPrefix="menu" />
+                <p class="mt-6 flex items-center gap-2 px-2.5 text-xs text-muted" title={WEBAPI_BASE_URL}><span class:list={['status-dot', local ? 'text-success' : 'text-accent']}></span>{local ? 'Local learning sandbox' : 'Remote API workspace'}</p>
               </div>
             </details>
-            <div>
-              <h1 class="text-lg font-semibold">Application hub</h1>
-              <p class="text-xs text-muted" title={WEBAPI_BASE_URL}>{WEBAPI_BASE_URL.startsWith('http://localhost:') ? 'Local learning sandbox' : 'Remote API workspace'}</p>
-            </div>
-            <div class="flex items-center gap-2 text-sm">
+            <a href="/" class="lg:hidden" aria-label="Cpnucleo home"><BrandMark class="size-8" /></a>
+            <nav aria-label="Breadcrumb" class="min-w-0 flex-1">
+              <ol class="flex min-w-0 items-center gap-2 text-sm">
+                {location && location.item.href !== '/' && <li class="hidden text-subtle sm:block">{location.group.name}</li>}
+                {location && location.item.href !== '/' && <li aria-hidden="true" class="hidden text-line-strong sm:block">/</li>}
+                <li class="truncate font-medium" aria-current="page">{pageTitle ?? 'Home'}</li>
+              </ol>
+            </nav>
+            <div class="flex items-center gap-1.5">
               <ThemeToggle />
-              <button type="button" data-logout class="rounded-md border border-line px-3 py-2">Logout</button>
+              <span class="mx-1.5 hidden h-6 w-px bg-line sm:block" aria-hidden="true"></span>
+              <div data-session hidden class="hidden items-center gap-2.5 sm:flex">
+                <span data-session-initial aria-hidden="true" class="flex size-8 items-center justify-center rounded-full bg-raised text-xs font-semibold uppercase text-muted ring-1 ring-line-strong"></span>
+                <span class="hidden leading-tight md:block">
+                  <span data-session-login class="block max-w-48 truncate text-[0.8125rem] font-medium"></span>
+                  <span data-session-role class="block text-[0.6875rem] text-subtle"></span>
+                </span>
+              </div>
+              <button type="button" data-logout class="btn btn-ghost btn-sm" title="Sign out"><Icon name="logOut" /><span class="hidden sm:inline">Sign out</span><span class="sr-only sm:hidden">Sign out</span></button>
             </div>
           </div>
         </header>
-        <main class="px-4 py-8 sm:px-6 lg:px-8"><AuthGuard><slot /></AuthGuard></main>
+        <main id="main" class="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-10"><AuthGuard><slot /></AuthGuard></main>
       </div>
     </div>
   </body>
 </html>
+<script>
+  import { getSessionClaims } from '../lib/api/http-client';
+  const session = getSessionClaims();
+  const container = document.querySelector<HTMLElement>('[data-session]');
+  if (session && container) {
+    container.querySelector<HTMLElement>('[data-session-initial]')!.textContent = session.login.trim().charAt(0) || '?';
+    container.querySelector<HTMLElement>('[data-session-login]')!.textContent = session.login;
+    container.querySelector<HTMLElement>('[data-session-role]')!.textContent = session.isAdmin ? 'Administrator' : 'Member';
+    container.title = session.login;
+    container.hidden = false;
+  }
+  const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu?.open) { menu.open = false; menu.querySelector('summary')?.focus(); }
+  });
+</script>
