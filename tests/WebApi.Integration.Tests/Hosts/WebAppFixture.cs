@@ -68,7 +68,7 @@ public sealed class WebAppFixture : IAsyncLifetime
             }
         }
 
-        factory = new WebApplicationFactory<WebApiHost::Program>().WithWebHostBuilder(builder =>
+        factory = Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(builder =>
         {
             ConfigureApp(builder);
             builder.ConfigureServices(DisableRateLimiting);
@@ -76,7 +76,7 @@ public sealed class WebAppFixture : IAsyncLifetime
         Client = factory.CreateClient();
         Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateToken());
 
-        grpcFactory = new WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler>().WithWebHostBuilder(builder =>
+        grpcFactory = Track(new WebApplicationFactory<GrpcServer.Handlers.Project.CreateProjectHandler>()).WithWebHostBuilder(builder =>
         {
             ConfigureApp(builder);
             builder.ConfigureServices(DisableRateLimiting);
@@ -90,6 +90,15 @@ public sealed class WebAppFixture : IAsyncLifetime
         identityFactory = CreateIdentityFactory(disableRateLimiting: true);
     }
 
+    // WithWebHostBuilder returns a derived factory; the root factories are disposed with the fixture.
+    private readonly List<IAsyncDisposable> rootFactories = [];
+
+    private T Track<T>(T rootFactory) where T : IAsyncDisposable
+    {
+        rootFactories.Add(rootFactory);
+        return rootFactory;
+    }
+
     public ApplicationDbContext CreateDbContext() => new(new DbContextOptionsBuilder<ApplicationDbContext>()
         .UseNpgsql(ConnectionString).Options);
 
@@ -97,7 +106,7 @@ public sealed class WebAppFixture : IAsyncLifetime
 
     /// <summary>A WebApi host with production rate limiting, for quota tests.</summary>
     public WebApplicationFactory<WebApiHost::Program> CreateRateLimitedWebApiFactory() =>
-        new WebApplicationFactory<WebApiHost::Program>().WithWebHostBuilder(builder =>
+        Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(builder =>
         {
             ConfigureApp(builder);
             builder.ConfigureServices(CaptureFailures);
@@ -105,7 +114,7 @@ public sealed class WebAppFixture : IAsyncLifetime
 
     /// <summary>An IdentityApi host on the same database. Tests that exercise quotas get their own instance.</summary>
     public WebApplicationFactory<IdentityApi.Security.TokenIssuer> CreateIdentityFactory(bool disableRateLimiting) =>
-        new WebApplicationFactory<IdentityApi.Security.TokenIssuer>().WithWebHostBuilder(builder =>
+        Track(new WebApplicationFactory<IdentityApi.Security.TokenIssuer>()).WithWebHostBuilder(builder =>
         {
             ConfigureApp(builder);
             if (disableRateLimiting) builder.ConfigureServices(DisableRateLimiting);
@@ -199,6 +208,7 @@ public sealed class WebAppFixture : IAsyncLifetime
         await identityFactory.DisposeAsync();
         await grpcFactory.DisposeAsync();
         await factory.DisposeAsync();
+        foreach (var rootFactory in rootFactories) await rootFactory.DisposeAsync();
         await database.DisposeAsync();
     }
 

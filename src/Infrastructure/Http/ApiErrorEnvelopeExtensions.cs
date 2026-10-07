@@ -32,6 +32,6 @@ public static class ApiErrorEnvelopeExtensions
 
         context.RequestServices.GetRequiredService<ILoggerFactory>()
             .CreateLogger(loggerCategory)
-            .LogWarning("Rate limit exceeded for {Path}.", context.Request.Path);
+            .LogWarning("Rate limit exceeded for {Path}.", LogValues.Path(context.Request));
     }
 }

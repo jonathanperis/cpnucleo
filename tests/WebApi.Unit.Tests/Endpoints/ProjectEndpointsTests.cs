@@ -166,9 +166,7 @@ public class ProjectEndpointsTests
     {
         // Arrange
         var projectId = Guid.NewGuid();
-        var organizationId = Guid.NewGuid();
-        var project = Project.Create("Project to Delete", organizationId, projectId);
-        
+
         var fakeRepository = A.Fake<IProjectRepository>();
         A.CallTo(() => fakeRepository.RemoveManyAsync(A<IEnumerable<Guid>>._, A<CancellationToken>._)).Returns(true);
 
