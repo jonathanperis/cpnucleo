@@ -36,7 +36,7 @@ public sealed class CreateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Cre
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             logger.LogInformation("Adding appointment to repository.");
-            var createdId = await repository.AddAsync(newItem, cancellationToken);
+            await repository.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);

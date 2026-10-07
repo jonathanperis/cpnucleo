@@ -55,7 +55,8 @@ public class ApiContractTests(WebAppFixture app)
              "projectId":"{{graph.Project.Id}}","workflowId":"{{graph.Workflow.Id}}","userId":"{{graph.User.Id}}","assignmentTypeId":"{{graph.Type.Id}}"}
             """;
 
-        var response = await app.Client.PostAsync("/api/assignment", new StringContent(json, System.Text.Encoding.UTF8, "application/json"), Cancellation);
+        using var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var response = await app.Client.PostAsync("/api/assignment", content, Cancellation);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK, await response.Content.ReadAsStringAsync(Cancellation));
     }

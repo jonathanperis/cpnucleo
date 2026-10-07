@@ -31,7 +31,7 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             logger.LogInformation("Adding userProject to repository.");
-            var createdId = await repository.AddAsync(newItem, cancellationToken);
+            await repository.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);

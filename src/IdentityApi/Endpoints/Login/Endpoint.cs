@@ -44,7 +44,9 @@ public class Endpoint(
         // Ambiguous legacy logins never authenticate an arbitrary account.
         var item = matches.Count == 1 ? matches[0] : null;
 
-        if (!passwordCheck.Verify(req.Password, item?.Password) || item is null)
+        // Always verify (against a dummy hash when there's no single match) so timing is uniform.
+        var verified = passwordCheck.Verify(req.Password, item?.Password);
+        if (item is null || !verified)
         {
             throttle.RecordFailure(normalizedLogin);
             Logger.LogWarning("Login failed: unknown, ambiguous or wrong credentials.");

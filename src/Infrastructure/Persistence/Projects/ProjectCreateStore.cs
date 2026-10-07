@@ -33,8 +33,6 @@ public sealed class ProjectCreateStore(UnitOfWork unitOfWork) : IProjectCreateSt
             }
 
             await unitOfWork.CommitAsync(cancellationToken).ConfigureAwait(false);
-            transactionStarted = false;
-
             return project;
         }
         catch

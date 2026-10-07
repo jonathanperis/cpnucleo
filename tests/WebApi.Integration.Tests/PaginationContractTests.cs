@@ -69,7 +69,7 @@ public class PaginationContractTests(WebAppFixture app)
             .Single(endpoint => endpoint.RoutePattern.RawText == $"/{typeof(ListWorkflowsCommand).FullName}/");
         var method = new Method<byte[], byte[]>(MethodType.Unary, typeof(ListWorkflowsCommand).FullName!, string.Empty,
             Marshallers.Create(bytes => bytes, bytes => bytes), Marshallers.Create(bytes => bytes, bytes => bytes));
-        var payload = MessagePackSerializer.Serialize(body, MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance));
+        var payload = MessagePackSerializer.Serialize(body, MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance), Cancellation);
         using var channel = GrpcChannel.ForAddress("http://localhost", new GrpcChannelOptions { HttpHandler = app.GrpcHandler() });
 
         var status = StatusCode.OK;

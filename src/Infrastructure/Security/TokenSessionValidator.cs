@@ -17,6 +17,7 @@ public sealed class TokenSessionValidator(NpgsqlDataSource dataSource, IConfigur
     public TimeSpan CacheDuration { get; } = TimeSpan.FromSeconds(
         configuration.GetValue("Auth:SessionValidationCacheSeconds", DefaultCacheSeconds));
 
+    /// <summary>Checks that <paramref name="principal"/>'s session is still live.</summary>
     /// <returns>Null when the session is valid, otherwise the reason it is not.</returns>
     public async Task<string?> ValidateAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default)
     {

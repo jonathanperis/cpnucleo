@@ -52,6 +52,8 @@ describe('CSP manifest generation', () => {
     const inline = "\n  console.log('theme');\n";
     const html = `<head><script>${inline}</script><script type="module" src="/_astro/app.js"></script><script type="module">run()</script></head>`;
     expect(extractInlineScripts(html)).toEqual([inline, 'run()']);
+    // Browsers also end a script at an end tag carrying whitespace or junk before ">".
+    expect(extractInlineScripts('<script>a()</script >b<script>c()</script\t\n bar>')).toEqual(['a()', 'c()']);
     expect(hashInlineScript(inline)).toBe(`'sha256-${createHash('sha256').update(inline).digest('base64')}'`);
     const manifest = buildCspManifest({ htmlDocuments: [html, html], env: {} });
     expect(manifest.scriptHashes).toHaveLength(2);

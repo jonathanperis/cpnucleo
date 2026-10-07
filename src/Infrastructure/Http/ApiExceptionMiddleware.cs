@@ -17,7 +17,7 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
         }
         catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
         {
-            logger.LogDebug("Request {Method} {Path} was cancelled by the client.", context.Request.Method, context.Request.Path);
+            logger.LogDebug("Request {Method} {Path} was cancelled by the client.", LogValues.Method(context.Request), LogValues.Path(context.Request));
             if (!context.Response.HasStarted) context.Response.StatusCode = 499;
         }
         catch (Exception exception) when (!context.Response.HasStarted && Translate(exception) is { } error)
@@ -32,7 +32,7 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
         catch (Exception exception) when (!context.Response.HasStarted)
 #pragma warning restore CA1031
         {
-            logger.LogError(exception, "An unhandled exception occurred while processing {Method} {Path}.", context.Request.Method, context.Request.Path);
+            logger.LogError(exception, "An unhandled exception occurred while processing {Method} {Path}.", LogValues.Method(context.Request), LogValues.Path(context.Request));
             context.Response.Clear();
             await ApiErrors.WriteAsync(context, StatusCodes.Status500InternalServerError, cancellationToken: context.RequestAborted);
         }
