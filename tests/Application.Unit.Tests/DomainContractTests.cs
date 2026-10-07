@@ -100,8 +100,9 @@ public class DomainContractTests
         error.Field.ShouldBe("dateTo");
         error.Message.ShouldBe("DateTo must be on or after DateFrom.");
 
+        DateTime? noUpperBound = null;
         PaginationParams.Require(new PaginationParams { DateFrom = "2026-10-07" }).GetDateRange()
-            .ShouldBe((new DateTime(2026, 10, 7, 0, 0, 0, DateTimeKind.Utc), (DateTime?)null), "each bound is optional");
+            .ShouldBe((new DateTime(2026, 10, 7, 0, 0, 0, DateTimeKind.Utc), noUpperBound), "each bound is optional");
     }
 
     [Test]

@@ -4,7 +4,7 @@ import { accountClient } from '~/lib/api/account-client';
 import { ApiError } from '~/lib/api/http-client';
 import { signInNoticeStorageKey } from '~/features/auth/login-controller';
 import { showBuiltPage } from '~/test/page-markup';
-import { mountAccountPage, passwordChangedNotice } from './account-controller';
+import { credentialsChangedNotice, mountAccountPage } from './account-controller';
 
 let stop = () => {};
 const root = () => document.querySelector<HTMLElement>('[data-account]')!;
@@ -63,6 +63,6 @@ describe('account page', () => {
     submit('[data-password-form]');
     await vi.waitFor(() => expect(signedOut).toHaveBeenCalled());
     expect(change).toHaveBeenCalledWith('Old@12345', 'New@123456');
-    expect(sessionStorage.getItem(signInNoticeStorageKey)).toBe(passwordChangedNotice);
+    expect(sessionStorage.getItem(signInNoticeStorageKey)).toBe(credentialsChangedNotice);
   });
 });
