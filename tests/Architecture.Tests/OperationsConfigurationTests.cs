@@ -270,12 +270,12 @@ public class OperationsConfigurationTests
         var release = Read(".github/workflows/main-release.yml");
         var jobs = Jobs(release).ToDictionary(job => job.Name, job => job.Body);
 
-        jobs["scan-amd64"].Should().Contain("aquasecurity/trivy-action@");
+        jobs["scan-amd64"].Should().MatchRegex(@"aquasec/trivy:[\d.]+@sha256:[0-9a-f]{64}", "Trivy runs from a digest-pinned image");
         jobs["scan-amd64"].Should().Contain("security-events: write");
         jobs["scan-amd64"].Should().Contain("upload-sarif@");
         jobs["scan-amd64"].Should().Contain("GITHUB_STEP_SUMMARY");
-        jobs["scan-amd64"].Should().MatchRegex(@"severity: CRITICAL\s*\n\s*ignore-unfixed: true\s*\n\s*exit-code: '1'");
-        jobs["merge-manifest"].Should().Contain("sigstore/cosign-installer@");
+        jobs["scan-amd64"].Should().Contain("--severity CRITICAL --ignore-unfixed --exit-code 1");
+        jobs["merge-manifest"].Should().Contain("scripts/ci-install-cosign.sh");
         jobs["merge-manifest"].Should().Contain("cosign sign --yes");
         jobs["merge-manifest"].Should().Contain("id-token: write");
         jobs["merge-manifest"].Should().Contain("github.ref == 'refs/heads/main'", "only main may move mutable tags");
@@ -311,7 +311,7 @@ public class OperationsConfigurationTests
         buildCheck.Should().NotContain("# - name:", "stale commented-out steps must not linger");
         Regex.Matches(buildCheck, @"dotnet test ").Count.Should().Be(1);
         jobs["setup-build-test"].Should().Contain("--collect:\"XPlat Code Coverage\"");
-        jobs["setup-build-test"].Should().Contain("danielpalme/ReportGenerator-GitHub-Action@");
+        jobs["setup-build-test"].Should().Contain("dotnet-reportgenerator-globaltool --version");
         jobs["setup-build-test"].Should().Contain("SummaryGithub.md");
         jobs["coverage-upload"].Should().Contain("use_oidc: true");
         jobs["coverage-upload"].Should().Contain("id-token: write");
@@ -402,6 +402,34 @@ public class OperationsConfigurationTests
         }
 
         return string.Join('\n', body);
+    }
+
+    // Mirrors the repository's Actions policy ("allowed_actions: selected"): GitHub-owned actions plus
+    // these patterns. Anything else makes a workflow fail at startup before any job runs.
+    private static readonly string[] AllowedActionPrefixes =
+    [
+        "actions/", "github/", "codecov/codecov-action@", "docker/build-push-action@", "docker/login-action@",
+        "docker/setup-buildx-action@", "docker/setup-qemu-action@", "oven-sh/setup-bun@",
+        "jonathanperis/.github/.github/workflows/pages-docs-deploy.yml@"
+    ];
+
+    [Fact]
+    public void Workflows_ShouldOnlyUseActionsAllowedByTheRepositoryPolicy()
+    {
+        var violations = Directory.EnumerateFiles(RepositoryPath(".github/workflows"), "*.yml")
+            .SelectMany(path => Regex.Matches(File.ReadAllText(path), @"uses:\s*([^\s#]+)")
+                .Select(match => (File: Path.GetFileName(path), Action: match.Groups[1].Value)))
+            .Where(use => !AllowedActionPrefixes.Any(prefix => use.Action.StartsWith(prefix, StringComparison.Ordinal)))
+            .Select(use => $"{use.File}: {use.Action}")
+            .ToArray();
+
+        violations.Should().BeEmpty("install other tools with pinned, checksum-verified run steps instead");
+
+        var unpinned = Directory.EnumerateFiles(RepositoryPath(".github/workflows"), "*.yml")
+            .SelectMany(path => Regex.Matches(File.ReadAllText(path), @"uses:\s*([^\s#]+)").Select(match => match.Groups[1].Value))
+            .Where(action => !action.StartsWith("./", StringComparison.Ordinal) && !Regex.IsMatch(action, @"@[0-9a-f]{40}$"))
+            .ToArray();
+        unpinned.Should().BeEmpty("the repository requires actions pinned to full commit SHAs");
     }
 
     private static IEnumerable<(string Name, string Body)> Jobs(string workflow)

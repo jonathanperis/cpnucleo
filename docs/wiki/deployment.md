@@ -277,6 +277,8 @@ The Trivy gate is intentionally narrow (fixable CRITICAL only) so base-image noi
 
 Rollback lines are prefixed with `[rollback]` and raised as GitHub error annotations ("Deployment rolled back" or "Rollback failed"), and a successful rollback is added to the job summary. Rollback restores images and configuration only: additive migrations already applied by the new migrator stay in the database, which is why production migrations must remain backward compatible. A database-level undo needs the latest backup, so take one before every deploy (see below); the pipeline cannot run commands on the VPS itself.
 
+The repository's Actions policy allows only GitHub-owned actions and an explicit allowlist (enforced by `OperationsConfigurationTests`), so cosign, Trivy and ReportGenerator are installed as pinned tools in `run:` steps: a checksum-verified cosign binary (`scripts/ci-install-cosign.sh`), a digest-pinned Trivy container and a versioned .NET tool.
+
 Before deploying, the workflow verifies the keyless cosign signature of every `sha-<commit>-amd64` image (signed by the build jobs of this workflow on `main`). The `latest` and `sha-<commit>` multi-arch manifests are published only from `main` and only after the deploy succeeded (or was intentionally skipped), so `latest` never points at a release production rejected.
 
 ---

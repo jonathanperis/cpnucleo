@@ -100,14 +100,17 @@ jobs:
           --collect:"XPlat Code Coverage"
           --results-directory ./coverage
 
+      # ReportGenerator runs as a pinned .NET tool: the repository's Actions policy allows only
+      # GitHub-owned and explicitly listed actions.
       - name: Merge coverage reports
         if: matrix.service == 'WebApi'
-        uses: danielpalme/ReportGenerator-GitHub-Action@d3ebf1f760f7d8ab92cc44d9bcfee7ad73722a31 # 5.5.11
-        with:
-          reports: coverage/**/coverage.cobertura.xml
-          targetdir: coverage-report
-          reporttypes: Cobertura;MarkdownSummaryGithub
-          title: Cpnucleo .NET coverage
+        run: |
+          dotnet tool install --tool-path "${RUNNER_TEMP}/tools" dotnet-reportgenerator-globaltool --version 5.5.11
+          "${RUNNER_TEMP}/tools/reportgenerator" \
+            "-reports:coverage/**/coverage.cobertura.xml" \
+            "-targetdir:coverage-report" \
+            "-reporttypes:Cobertura;MarkdownSummaryGithub" \
+            "-title:Cpnucleo .NET coverage"
 
       - name: Publish coverage summary
         if: matrix.service == 'WebApi'
