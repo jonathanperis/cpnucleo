@@ -28,6 +28,8 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
 
     public async Task<PaginatedResult<Project?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
+        // Both transports reach here; invalid or missing paging is a domain rule violation (400 / InvalidArgument).
+        pagination = PaginationParams.Require(pagination);
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var ids = pagination.GetIds();
         var validSortOrder = pagination.SortOrder == "DESC" ? "DESC" : "ASC";
