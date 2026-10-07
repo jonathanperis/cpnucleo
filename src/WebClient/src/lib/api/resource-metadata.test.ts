@@ -17,7 +17,7 @@ describe('resource metadata', () => {
   it('keeps passwords out of tables and requires them only when creating users', () => {
     const users = resourceMetadata.find((resource) => resource.key === 'users');
     expect(users).toBeDefined();
-    expect(tableFields(users!).map((field) => field.name)).toEqual(['createdAt', 'name', 'login']);
+    expect(tableFields(users!).map((field) => field.name)).toEqual(['name', 'login', 'createdAt']);
     expect(formFields(users!).find(field => field.name === 'password')).toMatchObject({ type: 'password', requiredOnCreate: true });
   });
 

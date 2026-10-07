@@ -7,4 +7,4 @@ export function getStaticPaths() {
 }
 const { resource } = Astro.props;
 ---
-<AppLayout path={resource.routePath}><CrudPage resource={resource} /></AppLayout>
+<AppLayout path={resource.routePath} title={resource.pluralLabel}><CrudPage resource={resource} /></AppLayout>

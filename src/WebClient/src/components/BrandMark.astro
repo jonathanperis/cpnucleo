@@ -1,0 +1,12 @@
+---
+interface Props { class?: string }
+const { class: className = 'size-9' } = Astro.props;
+---
+<span class:list={['brand-mark', className]} aria-hidden="true">
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" class="size-[70%]">
+    <ellipse cx="16" cy="16" rx="12" ry="5" />
+    <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(60 16 16)" />
+    <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(120 16 16)" />
+    <circle cx="16" cy="16" r="2.6" fill="currentColor" stroke="none" />
+  </svg>
+</span>

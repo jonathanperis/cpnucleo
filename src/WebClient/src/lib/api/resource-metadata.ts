@@ -81,5 +81,9 @@ export const resources = resourceMetadata.map((resource) => resource.key) as Res
 export const resourceMap = Object.fromEntries(resourceMetadata.map((resource) => [resource.key, resource])) as Record<ResourceKey, ResourceMetadata>;
 
 export const findResource = (key: ResourceKey) => resourceMap[key];
-export const tableFields = (resource: ResourceMetadata) => resource.fields.filter((field) => field.table);
+/** Listed columns; Created goes last so each row leads with its own data. */
+export const tableFields = (resource: ResourceMetadata) => {
+  const listed = resource.fields.filter((field) => field.table);
+  return [...listed.filter((field) => field.name !== 'createdAt'), ...listed.filter((field) => field.name === 'createdAt')];
+};
 export const formFields = (resource: ResourceMetadata) => resource.fields.filter((field) => !field.readOnly);

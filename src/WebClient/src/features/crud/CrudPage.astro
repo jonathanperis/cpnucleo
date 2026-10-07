@@ -1,61 +1,109 @@
 ---
+import Icon from '../../components/Icon.astro';
 import { formFields, tableFields } from '../../lib/api/resource-metadata';
 import type { ResourceMetadata } from '../../lib/api/types';
+import { resourceIcons } from '../../lib/icons';
+import { locate } from '../../lib/navigation';
 import { DEFAULT_PAGE_SIZE } from './pagination';
 interface Props { resource: ResourceMetadata }
 const { resource } = Astro.props;
 const fields = formFields(resource);
 const headingId = `${resource.key}-heading`;
+const group = locate(resource.routePath)?.group.name;
 ---
 <section data-crud={resource.key} aria-labelledby={headingId} class="space-y-6">
-  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-    <div><p class="text-sm font-medium text-accent">{resource.pluralLabel}</p><h2 id={headingId} data-heading tabindex="-1" class="mt-1 text-3xl font-semibold tracking-tight">Manage {resource.pluralLabel.toLowerCase()}</h2><p class="mt-2 text-sm text-muted">{resource.description}</p></div>
-    <button type="button" data-action="create" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-canvas">New {resource.label}</button>
-  </div>
-  <p data-permission-note role="note" hidden class="rounded-lg border border-line bg-raised px-4 py-3 text-sm text-muted"></p>
-  <p data-error role="alert" hidden class="rounded-lg border border-danger/25 bg-danger/5 px-4 py-3 text-sm text-danger"></p>
-  <form data-form hidden aria-labelledby={`${resource.key}-form-title`} class="rounded-xl border border-line bg-surface p-5 shadow-soft">
-    <h3 id={`${resource.key}-form-title`} data-form-title class="mb-5 text-lg font-semibold">Create {resource.label}</h3>
-    <div class="grid gap-4 md:grid-cols-2">
+  <header class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+    <div class="flex items-start gap-4">
+      <span class="mt-1 hidden size-11 flex-none items-center justify-center rounded-xl bg-raised text-accent-text ring-1 ring-line-strong sm:flex"><Icon name={resourceIcons[resource.key]} class="size-5" /></span>
+      <div>
+        {group && <p class="eyebrow">{group}</p>}
+        <h1 id={headingId} data-heading tabindex="-1" class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">{resource.pluralLabel}</h1>
+        <p class="mt-1.5 text-[0.9375rem] text-muted">{resource.description}</p>
+      </div>
+    </div>
+    <button type="button" data-action="create" class="btn btn-primary self-start sm:self-auto"><Icon name="plus" />New {resource.label.toLowerCase()}</button>
+  </header>
+
+  <p data-permission-note role="note" hidden class="rounded-lg border border-line bg-raised/50 px-4 py-3 text-sm text-muted"></p>
+  <p data-error role="alert" hidden class="reveal rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"></p>
+
+  <form data-form hidden aria-labelledby={`${resource.key}-form-title`} class="panel reveal overflow-hidden">
+    <div class="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
+      <h2 id={`${resource.key}-form-title`} data-form-title class="text-base font-semibold tracking-tight">Create {resource.label}</h2>
+      <p class="text-xs text-subtle"><span aria-hidden="true" class="text-accent-text">*</span> Required</p>
+    </div>
+    <div class="grid gap-x-5 gap-y-5 px-5 py-5 sm:px-6 md:grid-cols-2">
       {fields.map(field => {
         const id = `${resource.key}-${field.name}`;
         const errorId = `${id}-error`;
         return <div class={field.type === 'textarea' ? 'md:col-span-2' : ''}>
-          <label for={id} class="mb-1 block text-sm font-medium">{field.label}{field.type === 'datetime-local' ? ' (UTC)' : ''}{field.required ? ' *' : ''}</label>
-          {field.relation ? <select id={id} name={field.name} required={field.required} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm"><option value="">Select {field.label.toLowerCase()}</option></select>
-            : field.type === 'textarea' ? <textarea id={id} name={field.name} required={field.required} rows="3" class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm"></textarea>
-            : <input id={id} name={field.name} required={field.required} type={field.type === 'guid' ? 'text' : field.type} step={field.type === 'number' ? '1' : undefined} min={field.type === 'number' ? String(field.min ?? 1) : undefined} autocomplete={field.type === 'password' ? 'new-password' : undefined} class="w-full rounded-lg border border-line bg-raised px-3 py-2 text-sm" />}
-          <p id={errorId} data-field-error={field.name} hidden class="mt-1 text-sm text-danger"></p>
-          {field.relation && <div data-relation={field.relation} data-field={field.name} class="mt-2 space-y-2">
-            <div data-relation-search class="flex gap-2"><input type="search" data-query aria-label={`Search ${field.label.toLowerCase()} options`} maxlength="128" class="min-w-0 flex-1 rounded-md border border-line bg-raised px-2 py-1 text-sm" /><button type="button" data-action="search" aria-label={`Search ${field.label.toLowerCase()} options`} class="rounded-md border border-line px-2 text-sm">Search</button><button type="button" data-action="more" hidden aria-label={`Load more ${field.label.toLowerCase()} options`} class="rounded-md border border-line px-2 text-sm">More</button></div>
-            <p data-relation-note hidden class="text-sm text-muted"></p>
-            <p data-relation-status role="status" class="text-sm text-muted"></p>
-            <p data-relation-error role="alert" class="text-sm text-danger"></p>
+          <label for={id} class="mb-1.5 block text-[0.8125rem] font-medium">{field.label}{field.type === 'datetime-local' ? ' (UTC)' : ''}{field.required ? <span class="text-accent-text"> *</span> : ''}</label>
+          {field.relation ? <select id={id} name={field.name} required={field.required} class="field"><option value="">Select {field.label.toLowerCase()}</option></select>
+            : field.type === 'textarea' ? <textarea id={id} name={field.name} required={field.required} rows="3" class="field"></textarea>
+            : <input id={id} name={field.name} required={field.required} type={field.type === 'guid' ? 'text' : field.type} step={field.type === 'number' ? '1' : undefined} min={field.type === 'number' ? String(field.min ?? 1) : undefined} autocomplete={field.type === 'password' ? 'new-password' : undefined} class="field" />}
+          <p id={errorId} data-field-error={field.name} hidden class="mt-1.5 flex items-center gap-1.5 text-[0.8125rem] text-danger"></p>
+          {field.relation && <div data-relation={field.relation} data-field={field.name} class="mt-2 space-y-1.5">
+            <div data-relation-search class="flex gap-1.5">
+              <div class="relative min-w-0 flex-1">
+                <Icon name="search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-subtle" />
+                <input type="search" data-query aria-label={`Search ${field.label.toLowerCase()} options`} placeholder={`Filter ${field.label.toLowerCase()} options`} maxlength="128" class="field field-sm pl-8" />
+              </div>
+              <button type="button" data-action="search" aria-label={`Search ${field.label.toLowerCase()} options`} class="btn btn-secondary btn-sm">Search</button>
+              <button type="button" data-action="more" hidden aria-label={`Load more ${field.label.toLowerCase()} options`} class="btn btn-ghost btn-sm">More</button>
+            </div>
+            <p data-relation-note hidden class="text-xs leading-relaxed text-subtle"></p>
+            <p data-relation-status role="status" class="text-xs text-subtle"></p>
+            <p data-relation-error role="alert" class="text-xs text-danger"></p>
           </div>}
         </div>;
       })}
     </div>
-    <div class="mt-5 flex justify-end gap-2"><button type="button" data-action="cancel" class="rounded-lg border border-line px-4 py-2 text-sm">Cancel</button><button type="submit" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-canvas">Save</button></div>
+    <div class="flex justify-end gap-2 border-t border-line bg-raised/30 px-5 py-3.5 sm:px-6">
+      <button type="button" data-action="cancel" class="btn btn-ghost">Cancel</button>
+      <button type="submit" class="btn btn-primary min-w-24">Save</button>
+    </div>
   </form>
-  <div data-listing class="overflow-hidden rounded-xl border border-line bg-surface shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
-      <p data-summary class="text-sm text-muted" aria-live="polite">Loading records…</p>
-      <div class="flex flex-wrap items-center gap-3">
-        <label class="text-sm text-muted">Rows <select data-page-size class="rounded-md border border-line bg-raised px-2 py-2 text-sm">{[10,25,50,100].map(size => <option value={size} selected={size === DEFAULT_PAGE_SIZE}>{size}</option>)}</select></label>
-        <nav data-pagination aria-label={`${resource.pluralLabel} pages`} class="flex items-center"></nav>
-        <button type="button" data-action="refresh" class="rounded-md border border-line px-3 py-2 text-sm">Refresh</button>
+
+  <div data-listing class="panel overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5">
+      <p class="flex items-center gap-2.5 text-[0.8125rem] text-muted"><span data-live-dot class="status-dot text-subtle" aria-hidden="true"></span><span data-summary aria-live="polite">Loading records…</span></p>
+      <button type="button" data-action="refresh" class="btn btn-ghost btn-sm" title="Refresh the list"><Icon name="refresh" />Refresh</button>
+    </div>
+    <div data-empty-state class="px-6 py-14 text-center">
+      <span class="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-raised text-subtle ring-1 ring-line"><Icon name={resourceIcons[resource.key]} class="size-[1.125rem]" /></span>
+      <p data-empty class="text-sm text-muted">Loading records…</p>
+    </div>
+    <div class="quiet-scroll overflow-x-auto"><table data-table hidden class="data-table min-w-full text-sm">
+      <caption class="sr-only">{resource.pluralLabel}</caption>
+      <thead><tr>{tableFields(resource).map(field => <th scope="col" class:list={[field.type === 'number' && 'text-right']}>{field.label}</th>)}<th scope="col" class="col-actions w-px text-right"><span class="sr-only">Actions</span></th></tr></thead>
+      <tbody data-records></tbody>
+    </table></div>
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-2.5 sm:px-5">
+      <label class="flex items-center gap-2 text-[0.8125rem] text-subtle">Rows per page <select data-page-size class="field field-sm w-auto">{[10,25,50,100].map(size => <option value={size} selected={size === DEFAULT_PAGE_SIZE}>{size}</option>)}</select></label>
+      <nav data-pagination aria-label={`${resource.pluralLabel} pages`} class="flex flex-wrap items-center gap-0.5"></nav>
+    </div>
+  </div>
+
+  <dialog data-details aria-labelledby={`${resource.key}-details-title`} class="modal m-auto max-h-[85vh] w-[calc(100%-2rem)] max-w-xl overflow-y-auto">
+    <div class="sticky top-0 flex items-center justify-between gap-4 border-b border-line bg-surface px-6 py-4">
+      <h2 id={`${resource.key}-details-title`} class="text-base font-semibold tracking-tight">{resource.label} details</h2>
+      <button type="button" data-action="close-details" class="btn btn-ghost btn-icon" aria-label="Close"><Icon name="close" /></button>
+    </div>
+    <dl data-detail-fields class="divide-y divide-line/70 px-6 py-2"></dl>
+  </dialog>
+
+  <dialog data-confirm aria-labelledby={`${resource.key}-confirm-title`} aria-describedby={`${resource.key}-confirm-message`} class="modal m-auto w-[calc(100%-2rem)] max-w-md">
+    <div class="flex gap-4 px-6 pb-5 pt-6">
+      <span class="flex size-10 flex-none items-center justify-center rounded-full bg-danger/12 text-danger ring-1 ring-danger/25"><Icon name="trash" class="size-[1.125rem]" /></span>
+      <div class="min-w-0">
+        <h2 id={`${resource.key}-confirm-title`} class="text-base font-semibold tracking-tight">Delete {resource.label.toLowerCase()}?</h2>
+        <p id={`${resource.key}-confirm-message`} data-confirm-message class="mt-1.5 break-words text-sm leading-relaxed text-muted"></p>
       </div>
     </div>
-    <p data-empty class="p-6 text-sm text-muted">Loading records…</p>
-    <div class="overflow-x-auto"><table data-table hidden class="min-w-full divide-y divide-line text-sm">
-      <caption class="sr-only">{resource.pluralLabel}</caption>
-      <thead class="bg-raised text-left text-xs font-semibold uppercase tracking-wide text-muted"><tr>{tableFields(resource).map(field => <th scope="col" class="px-4 py-3">{field.label}</th>)}<th scope="col" class="px-4 py-3 text-right">Actions</th></tr></thead>
-      <tbody data-records class="divide-y divide-line"></tbody>
-    </table></div>
-  </div>
-  <dialog data-details aria-labelledby={`${resource.key}-details-title`} class="m-auto max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl bg-surface p-6 text-ink shadow-soft backdrop:bg-black/30">
-    <div class="mb-4 flex items-center justify-between"><h3 id={`${resource.key}-details-title`} class="text-lg font-semibold">{resource.label} details</h3><button type="button" data-action="close-details" class="rounded-md border border-line px-3 py-2">Close</button></div>
-    <dl data-detail-fields class="divide-y divide-line rounded-lg border border-line"></dl>
+    <div class="flex justify-end gap-2 border-t border-line bg-raised/30 px-6 py-3.5">
+      <button type="button" data-confirm-cancel class="btn btn-ghost">Cancel</button>
+      <button type="button" data-confirm-accept class="btn btn-danger-solid">Delete</button>
+    </div>
   </dialog>
 </section>
 <script>

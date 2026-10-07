@@ -2,9 +2,14 @@ import type { ApiEntity, FieldMetadata, ResourceKey, ResourceMetadata } from '~/
 
 export type RelationRecords = Partial<Record<ResourceKey, ApiEntity[]>>;
 
+const timestampFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+
 export const formatValue = (value: unknown): string => {
   if (value === null || value === undefined || value === '') return '—';
-  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) return new Date(value).toLocaleString();
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : timestampFormat.format(date);
+  }
   return String(value);
 };
 
@@ -29,6 +34,17 @@ export const displayFieldValue = (value: unknown, relation: ResourceKey | undefi
   if (!relation) return formatValue(value);
   const related = relations[relation]?.find((entity) => String(entity.id ?? '') === String(value ?? ''));
   return related ? displayEntityLabel(related) : formatValue(value);
+};
+
+const calendarDayFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeZone: 'UTC' });
+
+/** Field text for lists and details; date-only fields show the UTC calendar day the form edits. */
+export const displayFieldText = (field: FieldMetadata, value: unknown, relations: RelationRecords): string => {
+  if (field.type === 'date' && typeof value === 'string') {
+    const date = new Date(value);
+    if (!Number.isNaN(date.getTime())) return calendarDayFormat.format(date);
+  }
+  return displayFieldValue(value, field.relation, relations);
 };
 
 export const collectMissingRelationIds = (items: ApiEntity[], fields: FieldMetadata[], relations: RelationRecords): Partial<Record<ResourceKey, string[]>> => {

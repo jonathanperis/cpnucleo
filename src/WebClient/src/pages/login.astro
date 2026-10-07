@@ -2,7 +2,19 @@
 import '../global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import LoginForm from '../components/LoginForm.astro';
+import BrandMark from '../components/BrandMark.astro';
 import { resourceMetadata } from '../lib/api/resource-metadata';
+
+// Service topology drawn on the sign-in panel: boxes in a 400x232 coordinate space.
+const services = [
+  { label: 'WebClient', detail: 'Astro', x: 140, y: 8 },
+  { label: 'IdentityApi', detail: 'JWT', x: 8, y: 96 },
+  { label: 'WebApi', detail: 'REST', x: 140, y: 96 },
+  { label: 'GrpcServer', detail: 'gRPC', x: 272, y: 96 },
+  { label: 'PostgreSQL', detail: 'EF Core · Dapper', x: 140, y: 184 },
+];
+// The WebClient only calls IdentityApi and WebApi; GrpcServer is an independent host on the same database.
+const edges = ['M200 48v48', 'M180 48 68 96', 'M68 136l112 48', 'M200 136v48', 'M332 136l-112 48'];
 ---
 
 <html lang="en" data-theme="dark" style="color-scheme: dark;">
@@ -25,39 +37,47 @@ import { resourceMetadata } from '../lib/api/resource-metadata';
     </script>
   </head>
   <body>
-    <main class="min-h-screen overflow-hidden bg-canvas text-ink">
-      <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,oklch(var(--accent)/0.14),transparent_34%),radial-gradient(circle_at_bottom_right,oklch(var(--success)/0.12),transparent_28%)]"></div>
-      <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 px-6 py-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
-        <section class="flex flex-col justify-between py-4 lg:py-8">
-          <div class="flex items-center justify-between">
-            <a href="/" class="flex items-center gap-3">
-              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent text-sm font-bold text-canvas shadow-soft">JP</span>
-              <span>
-                <span class="block text-base font-semibold">Cpnucleo</span>
-                <span class="block text-xs text-muted">Operations workspace</span>
-              </span>
-            </a>
-            <ThemeToggle />
-          </div>
+    <main class="grid min-h-screen text-ink lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <section class="login-panel relative hidden flex-col justify-between overflow-hidden border-r border-line p-10 lg:flex xl:p-14">
+        <a href="/" class="relative flex items-center gap-3">
+          <BrandMark />
+          <span class="leading-tight">
+            <span class="block text-[0.9375rem] font-semibold tracking-tight">Cpnucleo</span>
+            <span class="block text-xs text-subtle">Project workspace</span>
+          </span>
+        </a>
 
-          <div class="max-w-2xl py-12 lg:py-0">
-            <p class="mb-4 inline-flex rounded-full border border-line bg-surface px-3 py-1 text-sm font-semibold text-accent shadow-sm">Identity-first access</p>
-            <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">Sign in before entering the dashboard.</h1>
-            <p class="mt-5 max-w-xl text-base leading-7 text-muted sm:text-lg">A standalone login keeps the dashboard private. Sign in first, then choose what you want to review or update.</p>
-            <div class="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
-              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p data-work-area-count class="text-2xl font-semibold">{resourceMetadata.length}</p><p class="mt-1 text-sm text-muted">Work areas</p></div>
-              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">Secure</p><p class="mt-1 text-sm text-muted">Private session</p></div>
-              <div class="rounded-2xl border border-line bg-surface/80 p-4 shadow-soft"><p class="text-2xl font-semibold">Live</p><p class="mt-1 text-sm text-muted">Service access</p></div>
-            </div>
-          </div>
+        <div class="relative max-w-lg">
+          <p class="eyebrow">Learning laboratory</p>
+          <p class="mt-4 text-3xl font-semibold leading-tight tracking-tight text-balance xl:text-4xl">A project hub built to be read, tested and taken apart.</p>
+          <p class="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted">Every screen here talks to real services. Sign in, change a record, then follow it through the API and into PostgreSQL.</p>
+          <svg viewBox="0 0 400 232" role="img" aria-label="Service topology: the WebClient calls IdentityApi and WebApi; IdentityApi, WebApi and GrpcServer share PostgreSQL." class="mt-10 w-full max-w-md">
+            <g fill="none" stroke-width="1.25" stroke-dasharray="3 4" class="stroke-line-strong">{edges.map(d => <path d={d} />)}</g>
+            {services.map(service => (
+              <g>
+                <rect x={service.x} y={service.y} width="120" height="40" rx="8" class:list={['fill-surface', service.label === 'WebClient' ? 'stroke-accent' : 'stroke-line-strong']} />
+                <text x={service.x + 60} y={service.y + 18} text-anchor="middle" font-size="12" font-weight="600" class="fill-ink">{service.label}</text>
+                <text x={service.x + 60} y={service.y + 31} text-anchor="middle" font-size="9.5" class="fill-subtle font-mono">{service.detail}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
 
-          <p class="hidden text-sm text-muted lg:block">Protected dashboard · Light and dark mode ready</p>
-        </section>
+        <dl class="relative grid max-w-lg grid-cols-3 divide-x divide-line rounded-xl border border-line bg-surface/70">
+          <div class="px-5 py-4"><dt class="text-xs text-subtle">Work areas</dt><dd data-work-area-count class="mt-1 font-mono text-xl font-medium tabular-nums">{resourceMetadata.length}</dd></div>
+          <div class="px-5 py-4"><dt class="text-xs text-subtle">Transports</dt><dd class="mt-1 text-xl font-medium">REST · gRPC</dd></div>
+          <div class="px-5 py-4"><dt class="text-xs text-subtle">Session</dt><dd class="mt-1 text-xl font-medium">Private</dd></div>
+        </dl>
+      </section>
 
-        <section class="flex items-center justify-center pb-8 lg:pb-0">
-          <LoginForm />
-        </section>
-      </div>
+      <section class="flex min-h-screen flex-col px-6 py-6 sm:px-10">
+        <div class="flex items-center justify-between">
+          <a href="/" class="flex items-center gap-3 lg:invisible" aria-label="Cpnucleo home"><BrandMark class="size-8" /><span class="text-[0.9375rem] font-semibold tracking-tight">Cpnucleo</span></a>
+          <ThemeToggle />
+        </div>
+        <div class="flex flex-1 items-center justify-center py-12"><LoginForm /></div>
+        <p class="text-center text-xs text-subtle">Protected dashboard · Light and dark themes</p>
+      </section>
     </main>
   </body>
 </html>

@@ -1,0 +1,19 @@
+---
+import Icon from './Icon.astro';
+import { isActivePath, navigation } from '../lib/navigation';
+interface Props { path: string; idPrefix: string }
+const { path, idPrefix } = Astro.props;
+---
+<nav aria-label="Workspace" class="space-y-6">
+  {navigation.map(group => {
+    const id = `${idPrefix}-${group.name.toLowerCase()}`;
+    return <div>
+      <p id={id} class="eyebrow mb-1.5 px-2.5">{group.name}</p>
+      <ul aria-labelledby={id} class="space-y-0.5">
+        {group.items.map(item => (
+          <li><a href={item.href} class="nav-link" aria-current={isActivePath(path, item.href) ? 'page' : undefined}><Icon name={item.icon} />{item.label}</a></li>
+        ))}
+      </ul>
+    </div>;
+  })}
+</nav>

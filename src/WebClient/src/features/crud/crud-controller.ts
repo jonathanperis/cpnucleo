@@ -4,8 +4,9 @@ import { ApiError, getSessionClaims, type FieldErrors, type SessionClaims } from
 import type { ApiEntity, FieldMetadata, ResourceKey } from '~/lib/api/types';
 import { buildPaginationItems, DEFAULT_PAGE_SIZE, getLastPage } from './pagination';
 import { formatFormFieldValue, serializeFormValue, withSelectedRelationOption } from './crud-field-values';
-import { collectMissingRelationIds, displayEntityLabel, displayFieldValue, mergeRelationRecords, recordLabel } from './relation-display';
+import { collectMissingRelationIds, displayEntityLabel, displayFieldText, mergeRelationRecords, recordLabel } from './relation-display';
 import { watchListing } from './watch-list';
+import { createIcon, type IconName } from '~/lib/icons';
 
 const RELATION_PAGE_SIZE = 100;
 
@@ -28,6 +29,7 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
   const form = query<HTMLFormElement>('[data-form]');
   const alert = query<HTMLElement>('[data-error]');
   const dialog = query<HTMLDialogElement>('[data-details]');
+  const confirmDialog = query<HTMLDialogElement>('[data-confirm]');
   const createButton = query<HTMLButtonElement>('[data-action="create"]');
   const heading = query<HTMLElement>('[data-heading]');
   const permissionNote = query<HTMLElement>('[data-permission-note]');
@@ -126,13 +128,31 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
     (target && !hiddenWithinRoot(target) ? target : focusFallback()).focus();
   };
 
-  const actionButton = (label: string, action: string, id?: string, accessibleName?: string) => {
+  const actionButton = (icon: IconName, title: string, action: string, id: string, accessibleName: string, tone = '') => {
     const button = document.createElement('button');
-    button.type = 'button'; button.textContent = label; button.dataset.action = action;
-    if (id) button.dataset.id = id;
-    if (accessibleName) button.setAttribute('aria-label', accessibleName);
-    button.className = 'mr-2 text-accent';
+    button.type = 'button'; button.dataset.action = action; button.dataset.id = id; button.title = title;
+    button.setAttribute('aria-label', accessibleName);
+    button.className = `btn btn-ghost btn-icon ${tone}`;
+    button.append(createIcon(icon));
     return button;
+  };
+
+  /** Resolves true only when the user confirms in the styled dialog (Escape and Cancel decline). */
+  const confirmAction = (message: string) => new Promise<boolean>(resolve => {
+    query<HTMLElement>('[data-confirm-message]').textContent = message;
+    confirmDialog.returnValue = '';
+    confirmDialog.addEventListener('close', () => resolve(confirmDialog.returnValue === 'confirm'), { once: true });
+    confirmDialog.showModal();
+    query<HTMLButtonElement>('[data-confirm-cancel]').focus();
+  });
+
+  const statusTone: Record<string, string> = { Live: 'text-success', Updated: 'text-accent', Connecting: 'text-warning', Reconnecting: 'text-warning' };
+
+  const cellClass = (field: FieldMetadata, index: number) => {
+    if (field.name === 'createdAt') return 'whitespace-nowrap tabular-nums text-subtle';
+    if (field.type === 'number') return 'text-right tabular-nums text-muted';
+    if (field.type === 'date' || field.type === 'datetime-local') return 'whitespace-nowrap tabular-nums text-muted';
+    return index === 0 ? 'max-w-xs truncate font-medium text-ink' : 'max-w-xs truncate text-muted';
   };
 
   const render = () => {
@@ -140,9 +160,10 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
     if (summary !== renderedSummary) {
       renderedSummary = summary;
       query<HTMLElement>('[data-summary]').textContent = summary;
+      query<HTMLElement>('[data-live-dot]').className = `status-dot ${statusTone[status] ?? 'text-subtle'}`;
     }
     const body = query<HTMLTableSectionElement>('[data-records]');
-    const rowSignature = JSON.stringify([canWrite, items.map(item => [item.id, ...tableFields(resource).map(field => displayFieldValue(item[field.name], field.relation, relations))])]);
+    const rowSignature = JSON.stringify([canWrite, items.map(item => [item.id, ...tableFields(resource).map(field => displayFieldText(field, item[field.name], relations))])]);
     if (rowSignature !== renderedRows) {
       renderedRows = rowSignature;
       const active = document.activeElement as HTMLElement | null;
@@ -151,15 +172,20 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
         : null;
       body.replaceChildren(...items.map(item => {
         const row = document.createElement('tr');
-        row.className = 'hover:bg-raised/70';
-        for (const field of tableFields(resource)) {
-          const cell = row.insertCell(); cell.className = 'max-w-xs truncate px-4 py-3';
-          cell.textContent = displayFieldValue(item[field.name], field.relation, relations);
-        }
+        tableFields(resource).forEach((field, index) => {
+          const cell = row.insertCell();
+          const text = displayFieldText(field, item[field.name], relations);
+          cell.className = cellClass(field, index);
+          cell.textContent = text;
+          if (text.length > 32) cell.title = text;
+        });
         const label = recordLabel(resource, item, relations);
-        const actions = row.insertCell(); actions.className = 'whitespace-nowrap px-4 py-3 text-right';
-        actions.append(actionButton('Details', 'details', item.id, `Details for ${label}`));
-        if (canWrite) actions.append(actionButton('Edit', 'edit', item.id, `Edit ${label}`), actionButton('Delete', 'delete', item.id, `Delete ${label}`));
+        const id = String(item.id);
+        const actions = row.insertCell(); actions.className = 'col-actions whitespace-nowrap py-1.5 text-right';
+        const group = document.createElement('div'); group.className = 'inline-flex items-center gap-0.5';
+        group.append(actionButton('eye', 'Details', 'details', id, `Details for ${label}`));
+        if (canWrite) group.append(actionButton('pencil', 'Edit', 'edit', id, `Edit ${label}`), actionButton('trash', 'Delete', 'delete', id, `Delete ${label}`, 'btn-danger'));
+        actions.append(group);
         return row;
       }));
       // Live snapshots replace the rows; keep keyboard focus on the equivalent row button, or on a
@@ -173,7 +199,7 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
         if (document.activeElement === document.body || document.activeElement === null) restoreFocus();
       }
     }
-    query<HTMLElement>('[data-empty]').hidden = items.length > 0;
+    query<HTMLElement>('[data-empty-state]').hidden = items.length > 0;
     query<HTMLElement>('[data-empty]').textContent = `No ${resource.pluralLabel.toLowerCase()} on this page.`;
     query<HTMLTableElement>('[data-table]').hidden = items.length === 0;
     const nav = query<HTMLElement>('[data-pagination]');
@@ -184,17 +210,21 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
     renderedPages = pageSignature;
     nav.replaceChildren();
     const addPage = (label: string, target: number, disabled = false) => {
-      const button = actionButton(label, 'page'); button.dataset.page = String(target); button.disabled = disabled;
-      button.setAttribute('aria-label', label === 'Previous' || label === 'Next' ? `${label} Page` : `Page ${label}`);
+      const button = document.createElement('button');
+      button.type = 'button'; button.dataset.action = 'page'; button.dataset.page = String(target); button.disabled = disabled;
+      button.className = 'page-button';
+      const step = label === 'Previous' || label === 'Next';
+      if (step) button.append(createIcon(label === 'Previous' ? 'chevronLeft' : 'chevronRight'));
+      else button.textContent = label;
+      button.setAttribute('aria-label', step ? `${label} Page` : `Page ${label}`);
       button.setAttribute('aria-disabled', String(disabled));
-      button.className = 'mr-1 inline-flex h-8 min-w-8 items-center justify-center rounded-md px-1.5 py-2 text-sm font-normal disabled:opacity-40';
-      if (Number(label) === page) { button.setAttribute('aria-current', 'page'); button.classList.add('bg-[#0969da]', 'text-white'); }
+      if (Number(label) === page) button.setAttribute('aria-current', 'page');
       nav.append(button);
     };
     addPage('Previous', page - 1, page === 1);
     for (const value of buildPaginationItems(page, lastPage)) {
       if (typeof value === 'number') addPage(String(value), value);
-      else { const dots = document.createElement('span'); dots.textContent = '…'; dots.setAttribute('aria-hidden', 'true'); nav.append(dots); }
+      else { const dots = document.createElement('span'); dots.textContent = '…'; dots.className = 'px-1 text-subtle'; dots.setAttribute('aria-hidden', 'true'); nav.append(dots); }
     }
     addPage('Next', page + 1, page === lastPage);
   };
@@ -408,9 +438,11 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
         if (!item) break;
         const detailFields = query<HTMLElement>('[data-detail-fields]'); detailFields.replaceChildren();
         for (const field of resource.fields.filter(field => field.type !== 'password')) {
-          const row = document.createElement('div'); row.className = 'grid grid-cols-3 gap-3 px-4 py-3 text-sm';
-          const term = document.createElement('dt'); term.textContent = field.label;
-          const value = document.createElement('dd'); value.className = 'col-span-2 break-all'; value.textContent = displayFieldValue(item[field.name], field.relation, relations);
+          const row = document.createElement('div'); row.className = 'grid gap-1 py-3 text-sm sm:grid-cols-3 sm:gap-4';
+          const term = document.createElement('dt'); term.className = 'text-subtle'; term.textContent = field.label;
+          const value = document.createElement('dd');
+          value.className = field.type === 'guid' && !field.relation ? 'break-all font-mono text-[0.8125rem] text-muted sm:col-span-2' : 'break-words sm:col-span-2';
+          value.textContent = displayFieldText(field, item[field.name], relations);
           row.append(term, value); detailFields.append(row);
         }
         dialog.showModal(); break;
@@ -419,7 +451,10 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
       case 'delete': {
         if (!item?.id || !canWrite) break;
         const label = recordLabel(resource, item, relations);
-        if (!confirm(`Delete ${resource.label.toLowerCase()} “${label}”?`)) break;
+        const confirmed = await confirmAction(`“${label}” will be removed from ${resource.pluralLabel.toLowerCase()}. It stays in the database as a soft-deleted record.`);
+        // Not every browser returns focus to the trigger when a modal dialog closes.
+        target.focus();
+        if (!confirmed) break;
         target.disabled = true;
         alert.hidden = true;
         try {
@@ -434,6 +469,10 @@ export const mountCrudPage = (root: HTMLElement, session: SessionClaims | null =
       }
     }
   }, { signal: lifetime.signal });
+  // A click on the backdrop (the dialog element itself, outside its content) dismisses it.
+  for (const modal of [dialog, confirmDialog]) modal.addEventListener('click', event => { if (event.target === modal) modal.close(); }, { signal: lifetime.signal });
+  query<HTMLButtonElement>('[data-confirm-accept]').addEventListener('click', () => confirmDialog.close('confirm'), { signal: lifetime.signal });
+  query<HTMLButtonElement>('[data-confirm-cancel]').addEventListener('click', () => confirmDialog.close('cancel'), { signal: lifetime.signal });
   query<HTMLSelectElement>('[data-page-size]').addEventListener('change', event => {
     pageSize = Number((event.target as HTMLSelectElement).value); page = 1; refresh();
   }, { signal: lifetime.signal });

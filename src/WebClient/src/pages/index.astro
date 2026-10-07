@@ -1,17 +1,73 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
-import { resourceMetadata } from '../lib/api/resource-metadata';
+import Icon from '../components/Icon.astro';
+import { findResource } from '../lib/api/resource-metadata';
+import { navigation } from '../lib/navigation';
+
+const areas = navigation
+  .map(group => ({ name: group.name, items: group.items.filter(item => item.resource).map(item => ({ ...item, resource: findResource(item.resource!) })) }))
+  .filter(group => group.items.length > 0);
 ---
-<AppLayout path="/">
-  <div data-home class="space-y-8">
-    <section class="rounded-[2rem] border border-line bg-surface p-6 shadow-soft lg:p-8">
-      <p class="text-sm font-semibold text-accent">Application hub</p><h2 class="mt-5 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">Choose where to start in Cpnucleo.</h2>
-      <p class="mt-4 max-w-2xl text-muted">Explore projects, people, tasks, calendars, and the architecture behind them in this hands-on learning workspace.</p>
-      <div class="mt-7 flex flex-wrap gap-3"><a class="rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas" href="/projects/">Open projects</a><a class="rounded-xl border border-line px-5 py-3 text-sm" href="/api-health/">Service health</a><a class="rounded-xl border border-line px-5 py-3 text-sm" href="https://jonathanperis.github.io/cpnucleo/docs/learning-lab/">Learning paths</a></div>
+<AppLayout path="/" title="Home">
+  <div data-home class="space-y-10">
+    <section>
+      <div class="max-w-2xl">
+        <p class="eyebrow">Workspace overview</p>
+        <h1 class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Organizations, projects, tasks and the people behind them.</h1>
+        <p class="mt-3 max-w-xl text-[0.9375rem] leading-relaxed text-muted">A hands-on learning workspace. Every list below is served by the same API you can inspect, test and reset locally.</p>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <a class="btn btn-primary" href="/projects/"><Icon name="folder" />Open projects</a>
+        <a class="btn btn-secondary" href="/assignments/"><Icon name="task" />Review tasks</a>
+        <a class="btn btn-ghost" href="https://jonathanperis.github.io/cpnucleo/docs/learning-lab/"><Icon name="book" />Learning paths</a>
+      </div>
     </section>
-    <section aria-labelledby="work-areas-heading" aria-busy="true" data-work-areas><h3 id="work-areas-heading" class="mb-2 text-2xl font-semibold">Work areas</h3><p class="mb-4 text-sm text-muted">Dark by default · light-ready</p><p data-home-summary role="status" class="sr-only"></p><div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {resourceMetadata.map(resource => <a href={resource.routePath} class="rounded-2xl border border-line bg-surface p-5 shadow-soft hover:border-accent/40"><div class="flex items-center justify-between gap-3"><span class="font-semibold">{resource.pluralLabel}</span><span data-count={resource.key} class="rounded-full bg-raised px-2.5 py-1 text-xs text-muted">—</span></div><p class="mt-3 text-sm text-muted">{resource.description}</p></a>)}
-    </div></section>
+
+    <section aria-labelledby="work-areas-heading" aria-busy="true" data-work-areas>
+      <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="work-areas-heading" class="text-lg font-semibold tracking-tight">Work areas</h2>
+        <p class="text-xs text-subtle">Record counts per area · Dark by default · light-ready</p>
+      </div>
+      <p data-home-summary role="status" class="sr-only"></p>
+      <div class="grid gap-5 lg:grid-cols-2">
+        {areas.map((group, index) => (
+          <div class:list={['panel overflow-hidden', index === 0 && 'lg:row-span-2']}>
+            <p class="eyebrow border-b border-line px-5 py-3">{group.name}</p>
+            <ul class="divide-y divide-line/70">
+              {group.items.map(item => (
+                <li>
+                  <a href={item.href} class="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-raised/45">
+                    <span class="flex size-9 flex-none items-center justify-center rounded-lg bg-raised text-muted ring-1 ring-line transition-colors group-hover:text-accent-text group-hover:ring-accent/30"><Icon name={item.icon} class="size-[1.125rem]" /></span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block text-sm font-medium">{item.resource.pluralLabel}</span>
+                      <span class="mt-0.5 block truncate text-xs text-subtle">{item.resource.description}</span>
+                    </span>
+                    <span data-count={item.resource.key} class="flex-none text-right font-mono text-sm tabular-nums text-muted">—</span>
+                    <Icon name="chevronRight" class="size-4 flex-none text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-muted" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section aria-labelledby="explore-heading" class="panel grid gap-px overflow-hidden bg-line sm:grid-cols-3">
+      <h2 id="explore-heading" class="sr-only">Explore the system</h2>
+      <a href="/api-health/" class="group flex gap-4 bg-surface p-5 transition-colors hover:bg-raised/45">
+        <Icon name="activity" class="mt-0.5 size-5 flex-none text-subtle group-hover:text-accent-text" />
+        <span><span class="block text-sm font-medium">Service health</span><span class="mt-1 block text-xs leading-relaxed text-subtle">Liveness and readiness of WebApi and IdentityApi.</span></span>
+      </a>
+      <a href="/workflows/" class="group flex gap-4 bg-surface p-5 transition-colors hover:bg-raised/45">
+        <Icon name="steps" class="mt-0.5 size-5 flex-none text-subtle group-hover:text-accent-text" />
+        <span><span class="block text-sm font-medium">Progress steps</span><span class="mt-1 block text-xs leading-relaxed text-subtle">The ordered path every task moves through.</span></span>
+      </a>
+      <a href="https://github.com/jonathanperis/cpnucleo" class="group flex gap-4 bg-surface p-5 transition-colors hover:bg-raised/45">
+        <Icon name="external" class="mt-0.5 size-5 flex-none text-subtle group-hover:text-accent-text" />
+        <span><span class="block text-sm font-medium">Inspect the source</span><span class="mt-1 block text-xs leading-relaxed text-subtle">REST and gRPC, EF Core and Dapper, side by side.</span></span>
+      </a>
+    </section>
   </div>
 </AppLayout>
 <script>
