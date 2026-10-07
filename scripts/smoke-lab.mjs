@@ -44,7 +44,10 @@ authorize.search = new URLSearchParams({
   redirect_uri: redirectUri, state: randomUUID(), nonce: randomUUID(),
   code_challenge: createHash('sha256').update(verifier).digest('base64url'), code_challenge_method: 'S256',
 }).toString();
-const signInPage = location(await browse(authorize));
+// IdentityApi's login step picks the sign-in page of the WebClient origin that started the request.
+const loginStep = location(await browse(authorize));
+assert.equal(`${loginStep.origin}${loginStep.pathname}`, new URL('/api/account/login-page', identity).href, 'Authorize must go through the IdentityApi sign-in step.');
+const signInPage = location(await browse(loginStep));
 assert.equal(`${signInPage.origin}${signInPage.pathname}`, `${webOrigin}/login/`, 'Authorize must send the browser to the WebClient sign-in page.');
 
 // 2. The sign-in form post, as the WebClient page sends it.

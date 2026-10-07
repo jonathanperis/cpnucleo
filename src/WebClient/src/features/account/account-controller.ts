@@ -4,8 +4,8 @@ import { formatUtcDay } from '~/lib/dates';
 import { showToast } from '~/lib/ui/toast';
 import { signInNoticeStorageKey } from '~/features/auth/login-controller';
 
-/** One-time message for the sign-in page after a credential change ended the session. */
-export const passwordChangedNotice = 'Your password was changed and every session was signed out. Sign in with the new password.';
+/** Notice code for the sign-in page after a credential change ended the session. */
+export const credentialsChangedNotice = 'credentials-changed';
 
 const fieldMessages = (error: unknown, field: string) =>
   error instanceof ApiError ? (Object.entries(error.fieldErrors).find(([key]) => key.toLowerCase() === field.toLowerCase())?.[1] ?? []) : [];
@@ -93,7 +93,7 @@ export const mountAccountPage = (root: HTMLElement, session: SessionClaims | nul
       await accountClient.changePassword(current, newPassword.value);
       if (lifetime.signal.aborted) return;
       passwordForm.reset();
-      try { sessionStorage.setItem(signInNoticeStorageKey, passwordChangedNotice); } catch { /* storage unavailable */ }
+      try { sessionStorage.setItem(signInNoticeStorageKey, credentialsChangedNotice); } catch { /* storage unavailable */ }
       // The new password changed the security stamp: every token of the account is now invalid.
       onPasswordChanged();
     } catch (error) {

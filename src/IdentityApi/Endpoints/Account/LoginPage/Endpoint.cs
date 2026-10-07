@@ -37,10 +37,9 @@ public class Endpoint(IIdentityServerInteractionService interaction, IConfigurat
 
     public override async Task HandleAsync(Request req, CancellationToken cancellationToken)
     {
-        var returnUrl = LocalAuthorizeCallback(req.AuthRequest);
         // The context is the re-validated authorization request: its redirect URI is registered for the client.
-        var context = returnUrl is null ? null : await interaction.GetAuthorizationContextAsync(returnUrl);
-        if (returnUrl is null || context is null)
+        if (LocalAuthorizeCallback(req.AuthRequest) is not { } returnUrl ||
+            await interaction.GetAuthorizationContextAsync(returnUrl) is not { } context)
         {
             Logger.LogWarning("Sign-in page requested without a valid pending authorization request.");
             await Send.RedirectAsync(QueryHelpers.AddQueryString(OidcSettings.LoginPageUrl(configuration), "error", "request"),
