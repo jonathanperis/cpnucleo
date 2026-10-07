@@ -43,6 +43,8 @@ public sealed class Appointment : BaseEntity
 
     public static void Remove(Appointment obj) => obj.MarkRemoved();
 
+    public static void Restore(Appointment obj) => obj.MarkRestored();
+
     private void Apply(string? description, DateTime keepDate, int amountHours, Guid assignmentId, Guid userId)
     {
         Description = Guard.Required(description, nameof(Description), Guard.DescriptionMaxLength);

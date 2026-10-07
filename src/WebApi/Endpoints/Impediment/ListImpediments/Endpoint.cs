@@ -39,7 +39,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     private async Task<Response> BuildResponseAsync(Request request, CancellationToken cancellationToken)
     {
-        PaginationParams.Require(request.Pagination);
+        // Impediments have no relation or date columns: any such filter is rejected, never ignored.
+        PaginationParams.Require(request.Pagination, typeof(Domain.Entities.Impediment));
         Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 

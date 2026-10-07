@@ -28,14 +28,19 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
 
     public async Task<PaginatedResult<Project?>> GetAllAsync(PaginationParams pagination, CancellationToken cancellationToken = default)
     {
-        // Both transports reach here; invalid or missing paging is a domain rule violation (400 / InvalidArgument).
-        pagination = PaginationParams.Require(pagination);
+        // Both transports reach here; invalid or missing paging, or a filter projects can't apply
+        // (only organizationId is supported), is a domain rule violation (400 / InvalidArgument).
+        pagination = PaginationParams.Require(pagination, typeof(Project));
         var validSortColumn = ValidateSortColumn(pagination.SortColumn);
         var ids = pagination.GetIds();
         var validSortOrder = pagination.SortOrder == "DESC" ? "DESC" : "ASC";
-        const string filter = $"""
+        var organizationId = pagination.GetRelationFilters()
+            .Where(filter => filter.Column == nameof(Project.OrganizationId))
+            .Select(filter => (Guid?)filter.Value).SingleOrDefault();
+        var organizationClause = organizationId is null ? string.Empty : """ AND "OrganizationId" = @OrganizationId""";
+        var filter = $"""
             WHERE "Active" = true AND (@Search IS NULL OR "Name" ILIKE @Search ESCAPE '\')
-              AND (NOT @FilterIds OR "Id" = ANY(@Ids)) {Visibility}
+              AND (NOT @FilterIds OR "Id" = ANY(@Ids)){organizationClause} {Visibility}
             """;
 
         var sql = $"""
@@ -52,7 +57,8 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
             pagination.PageSize,
             Search = pagination.GetSearchPattern(),
             FilterIds = ids.Length > 0,
-            Ids = ids
+            Ids = ids,
+            OrganizationId = organizationId
         }), cancellationToken: cancellationToken);
 
         await using var multi = await connection.QueryMultipleAsync(command);
@@ -102,6 +108,9 @@ public class ProjectRepository(NpgsqlConnection connection, ICurrentUser current
 
     public Task<bool> RemoveManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default) =>
         CreateGenericRepository().RemoveManyAsync(ids.ToArray(), cancellationToken);
+
+    public Task<bool> RestoreManyAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default) =>
+        CreateGenericRepository().RestoreManyAsync(ids.ToArray(), cancellationToken);
 
     public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
     {

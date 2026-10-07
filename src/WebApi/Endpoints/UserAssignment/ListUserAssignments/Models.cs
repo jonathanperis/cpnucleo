@@ -15,7 +15,7 @@ public class Request
     {
         public Validator()
         {
-            RuleFor(x => x.Pagination).ValidPagination();
+            RuleFor(x => x.Pagination).ValidPagination(typeof(Domain.Entities.UserAssignment));
         }
     }    
 }

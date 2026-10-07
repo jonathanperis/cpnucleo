@@ -107,6 +107,14 @@ builder.Services.AddRateLimiter(options =>
                 AutoReplenishment = true // Default: automatically replenish permits
             }));
 
+    // Global cap on concurrent password verifications (self-service password changes).
+    options.AddConcurrencyLimiter(WebApi.Endpoints.Account.ChangePassword.Endpoint.ConcurrencyPolicy, limiter =>
+    {
+        limiter.PermitLimit = 4;
+        limiter.QueueLimit = 16;
+        limiter.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+
     options.OnRejected = (context, cancellationToken) => ApiErrorEnvelopeExtensions.WriteRateLimitRejectionAsync(
         context.HttpContext,
         context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter) ? retryAfter : null,
@@ -116,6 +124,7 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<ListingChangeNotifier>();
+builder.Services.AddSingleton(_ => new PasswordChangeThrottle(TimeProvider.System));
 
 builder.Services
     // Only this host's endpoints: other API assemblies loaded in the same process must not be mapped.
@@ -131,6 +140,7 @@ builder.Services
         o.AutoTagPathSegmentIndex = 1;
         o.TagDescriptions = tags =>
         {
+            tags["Account"] = "The signed-in user's own profile and password.";
             tags["Appointment"] = "Manage appointments and scheduling records.";
             tags["Assignment"] = "Manage work assignments and ownership.";
             tags["AssignmentImpediment"] = "Track impediments attached to assignments.";

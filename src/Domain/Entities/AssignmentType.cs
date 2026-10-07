@@ -23,4 +23,6 @@ public sealed class AssignmentType : BaseEntity
     }
 
     public static void Remove(AssignmentType obj) => obj.MarkRemoved();
+
+    public static void Restore(AssignmentType obj) => obj.MarkRestored();
 }

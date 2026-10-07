@@ -83,6 +83,28 @@ public class OidcSettingsTests
         Should.Throw<InvalidOperationException>(() => OidcSettings.Clients(configuration).ToList());
     }
 
+    [TestCase("http://localhost:5400/signin-callback/", "http://localhost:5400/login/")]
+    [TestCase("https://WEB.unit.test/signin-callback/", "https://web.unit.test/login/")]
+    [TestCase("https://attacker.test/signin-callback/", "https://web.unit.test/login/")]
+    [TestCase("https://web.unit.test.attacker.test/signin-callback/", "https://web.unit.test/login/")]
+    [TestCase("http://localhost:5401/signin-callback/", "https://web.unit.test/login/")]
+    [TestCase("javascript:alert(1)", "https://web.unit.test/login/")]
+    [TestCase("/signin-callback/", "https://web.unit.test/login/")]
+    [TestCase(null, "https://web.unit.test/login/")]
+    public void TheSignInPage_IsOnTheWebClientOriginThatAsked_AndNeverOutsideTheConfiguredOrigins(string? redirectUri, string expected)
+    {
+        OidcSettings.LoginPageUrl(TestSupport.Configuration(TwoOrigins), redirectUri).ShouldBe(expected);
+    }
+
+    [Test]
+    public void AnExplicitLoginPageUrl_AlwaysWins()
+    {
+        var configuration = TestSupport.Configuration(new Dictionary<string, string?>(TwoOrigins) { ["Identity:LoginPageUrl"] = "https://login.unit.test/sign-in/" });
+
+        OidcSettings.LoginPageUrl(configuration, "http://localhost:5400/signin-callback/").ShouldBe("https://login.unit.test/sign-in/");
+        OidcSettings.LoginPageUrl(configuration).ShouldBe("https://login.unit.test/sign-in/");
+    }
+
     private static Client WebClient(Microsoft.Extensions.Configuration.IConfiguration configuration) =>
         OidcSettings.Clients(configuration).Single(client => client.ClientId == OidcSettings.WebClientId);
 }

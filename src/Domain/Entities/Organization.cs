@@ -26,4 +26,6 @@ public sealed class Organization : BaseEntity
     }
 
     public static void Remove(Organization obj) => obj.MarkRemoved();
+
+    public static void Restore(Organization obj) => obj.MarkRestored();
 }

@@ -35,6 +35,8 @@ public sealed class AssignmentImpediment : BaseEntity
 
     public static void Remove(AssignmentImpediment obj) => obj.MarkRemoved();
 
+    public static void Restore(AssignmentImpediment obj) => obj.MarkRestored();
+
     private void Apply(string? description, Guid assignmentId, Guid impedimentId)
     {
         Description = Guard.Required(description, nameof(Description), Guard.DescriptionMaxLength);

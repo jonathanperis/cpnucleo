@@ -26,4 +26,6 @@ public sealed class Workflow : BaseEntity
     }
 
     public static void Remove(Workflow obj) => obj.MarkRemoved();
+
+    public static void Restore(Workflow obj) => obj.MarkRestored();
 }

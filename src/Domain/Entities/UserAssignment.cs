@@ -28,4 +28,6 @@ public sealed class UserAssignment : BaseEntity
     }
 
     public static void Remove(UserAssignment obj) => obj.MarkRemoved();
+
+    public static void Restore(UserAssignment obj) => obj.MarkRestored();
 }

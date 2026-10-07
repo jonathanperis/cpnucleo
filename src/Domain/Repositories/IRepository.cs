@@ -9,5 +9,10 @@ public interface IRepository<T> where T : BaseEntity
     Task<bool> UpdateIfVersionAsync(T entity, DateTime expectedVersion, CancellationToken cancellationToken = default);
     /// <summary>Soft-deletes every id or none: returns false (and changes nothing) when any id is missing.</summary>
     Task<bool> RemoveManyAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Undoes the soft delete of every id or none: returns false (and changes nothing) when any id is
+    /// missing, still active or not visible to the caller.
+    /// </summary>
+    Task<bool> RestoreManyAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
 }
