@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, type SessionClaims } from '~/lib/api/http-client';
 import { webApiClient } from '~/lib/api/webapi-client';
 import type { ApiEntity, PaginatedResult } from '~/lib/api/types';
-import { mountCrudPage } from './crud-controller';
+import { mountCrudPage, SEARCH_DEBOUNCE_MS } from './crud-controller';
 
 const admin: SessionClaims = { sub: 'admin-1', login: 'admin@cpnucleo.test', isAdmin: true };
 const member: SessionClaims = { sub: 'user-7', login: 'learner@cpnucleo.test', isAdmin: false };
@@ -15,17 +15,28 @@ const pageMarkup = (route: string) => new DOMParser().parseFromString(
   readFileSync(resolve('dist', route, 'index.html'), 'utf8'), 'text/html').body.innerHTML;
 
 let rows: ApiEntity[] = [];
-const mount = (route: string, session: SessionClaims | null = admin) => {
+let history = { state: null as unknown, replaceState: vi.fn() };
+const mount = (route: string, session: SessionClaims | null = admin, search = '') => {
   document.body.innerHTML = pageMarkup(route);
   // AuthGuard reveals the workspace once a session exists; mirror that for the generated markup.
   document.querySelector<HTMLElement>('[data-auth-content]')!.hidden = false;
   const root = document.querySelector<HTMLElement>('[data-crud]')!;
-  stop = mountCrudPage(root, session);
+  history = { state: null, replaceState: vi.fn() };
+  stop = mountCrudPage(root, session, { location: { pathname: `/${route}/`, search, hash: '' }, history });
   return root;
 };
+/** The URL the page last wrote (search and filters live in the address bar). */
+const lastUrl = () => String(history.replaceState.mock.calls.at(-1)?.[2] ?? '');
 const field = <T extends Element>(root: HTMLElement, name: string) => root.querySelector<HTMLFormElement>('[data-form]')!.elements.namedItem(name) as unknown as T;
 const submit = (root: HTMLElement) => root.querySelector<HTMLFormElement>('[data-form]')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 const relation = (root: HTMLElement, key: string) => root.querySelector<HTMLElement>(`[data-relation="${key}"]`)!;
+const formOpen = (root: HTMLElement) => root.querySelector<HTMLDialogElement>('[data-form-dialog]')!.open;
+/** Types into a picker's filter and presses Enter (filters immediately instead of after the debounce). */
+const searchOptions = (container: HTMLElement, text: string) => {
+  const input = container.querySelector<HTMLInputElement>('[data-query]')!;
+  input.value = text;
+  input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+};
 const deferred = <T,>() => {
   let resolve!: (value: T) => void;
   const promise = new Promise<T>(done => { resolve = done; });
@@ -76,7 +87,7 @@ describe('CRUD page basics', () => {
     await vi.waitFor(() => expect(field<HTMLSelectElement>(root, 'organizationId').value).toBe('org'));
     submit(root);
     await vi.waitFor(() => expect(update).toHaveBeenCalledWith('projects', 'one', { name: 'Updated project', organizationId: 'org', expectedVersion: '2026-09-16T10:00:00Z' }));
-    await vi.waitFor(() => expect(root.querySelector<HTMLFormElement>('[data-form]')!.hidden).toBe(true));
+    await vi.waitFor(() => expect(formOpen(root)).toBe(false));
   });
 
   it('keeps the password blank and requires it for creation, but not ordinary user edits', () => {
@@ -135,8 +146,8 @@ describe('server errors in forms', () => {
     expect(message.hidden).toBe(false);
     expect(message.textContent).toBe('Name is too long.');
     expect(document.activeElement).toBe(name);
-    expect(root.querySelector('[data-error]')?.textContent).toBe('The project is archived. Name is too long.');
-    expect(root.querySelector('[data-error]')?.getAttribute('role')).toBe('alert');
+    expect(root.querySelector('[data-form-error]')?.textContent).toBe('The project is archived. Name is too long.');
+    expect(root.querySelector('[data-form-error]')?.getAttribute('role')).toBe('alert');
 
     name.value = 'Short';
     submit(root);
@@ -155,9 +166,9 @@ describe('server errors in forms', () => {
     root.querySelector<HTMLButtonElement>('[data-action="edit"]')!.click();
     await vi.waitFor(() => expect(field<HTMLSelectElement>(root, 'organizationId').value).toBe('org'));
     submit(root);
-    await vi.waitFor(() => expect(root.querySelector('[data-error]')?.textContent).toBe(text));
-    expect(root.querySelector<HTMLElement>('[data-error]')!.hidden).toBe(false);
-    expect(root.querySelector<HTMLFormElement>('[data-form]')!.hidden).toBe(false);
+    await vi.waitFor(() => expect(root.querySelector('[data-form-error]')?.textContent).toBe(text));
+    expect(root.querySelector<HTMLElement>('[data-form-error]')!.hidden).toBe(false);
+    expect(formOpen(root)).toBe(true);
   });
 
   it('asks for confirmation in a dialog and keeps the record when the user cancels', async () => {
@@ -200,7 +211,7 @@ describe('server errors in forms', () => {
     await vi.waitFor(() => expect(root.querySelector('[data-action="delete"]')).not.toBeNull());
     await deleteRow(root, root.querySelector<HTMLButtonElement>('[data-action="delete"]')!);
     await vi.waitFor(() => expect(root.querySelector('[data-error]')?.textContent).toBe('The project still has active tasks.'));
-    expect(remove).toHaveBeenCalledWith('projects', 'one');
+    expect(remove).toHaveBeenCalledWith('projects', ['one']);
   });
 
   it('rejects a task whose end date is before its start date before calling the API', async () => {
@@ -230,6 +241,36 @@ describe('server errors in forms', () => {
 });
 
 describe('relation pickers', () => {
+  const byName = { sort: { column: 'Name', order: 'ASC' } };
+
+  it('hides the filter when every option fits in the picker', async () => {
+    const root = mount('projects');
+    root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
+    const container = relation(root, 'organizations');
+    await vi.waitFor(() => expect([...field<HTMLSelectElement>(root, 'organizationId').options].map(option => option.textContent)).toContain('School'));
+    expect(container.querySelector<HTMLElement>('[data-relation-search]')!.hidden).toBe(true);
+    expect(container.querySelector('[data-relation-status]')?.textContent).toBe('');
+  });
+
+  it('filters as the person types, after a short pause, without submitting the form', async () => {
+    vi.useFakeTimers();
+    try {
+      const root = mount('projects');
+      const create = vi.spyOn(webApiClient, 'create').mockResolvedValue({});
+      root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
+      const input = relation(root, 'organizations').querySelector<HTMLInputElement>('[data-query]')!;
+      input.value = 'Sch';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      expect(webApiClient.list).not.toHaveBeenCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'Sch', byName);
+      await vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS);
+      expect(webApiClient.list).toHaveBeenCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'Sch', byName);
+      const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      input.dispatchEvent(enter);
+      expect(enter.defaultPrevented).toBe(true);
+      expect(create).not.toHaveBeenCalled();
+    } finally { vi.useRealTimers(); }
+  });
+
   it('searches and paginates relation options beyond the first page', async () => {
     vi.mocked(webApiClient.list).mockResolvedValue({ items: [{ id: 'org', name: 'School' }], totalCount: 150 });
     const root = mount('projects');
@@ -237,10 +278,10 @@ describe('relation pickers', () => {
     const container = relation(root, 'organizations');
     await vi.waitFor(() => expect(container.querySelector<HTMLButtonElement>('[data-action="more"]')!.hidden).toBe(false));
     container.querySelector<HTMLButtonElement>('[data-action="more"]')!.click();
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('organizations', 2, 100, expect.any(AbortSignal), ''));
-    container.querySelector<HTMLInputElement>('[data-query]')!.value = 'School';
-    container.querySelector<HTMLButtonElement>('[data-action="search"]')!.click();
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'School'));
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('organizations', 2, 100, expect.any(AbortSignal), '', byName));
+    expect(container.querySelector<HTMLElement>('[data-relation-search]')!.hidden).toBe(false);
+    searchOptions(container, 'School');
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'School', byName));
   });
 
   it('keeps the human label of a selected relation that is not in the search results', async () => {
@@ -251,7 +292,7 @@ describe('relation pickers', () => {
     await vi.waitFor(() => expect(root.querySelector('[data-records]')?.textContent).toContain('Faraway Org'));
     root.querySelector<HTMLButtonElement>('[data-action="edit"]')!.click();
     const select = field<HTMLSelectElement>(root, 'organizationId');
-    await vi.waitFor(() => expect(relation(root, 'organizations').querySelector('[data-relation-status]')?.textContent).toContain('options loaded'));
+    await vi.waitFor(() => expect([...select.options].map(option => option.textContent)).toContain('Nearby Org'));
     expect(select.value).toBe('org-far');
     expect(select.selectedOptions[0].textContent).toBe('Faraway Org');
     expect([...select.options].map(option => option.textContent)).toContain('Nearby Org');
@@ -265,10 +306,9 @@ describe('relation pickers', () => {
     select.value = '';
     select.dispatchEvent(new Event('change', { bubbles: true }));
     const container = relation(root, 'organizations');
-    container.querySelector<HTMLInputElement>('[data-query]')!.value = 'Sch';
-    container.querySelector<HTMLButtonElement>('[data-action="search"]')!.click();
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'Sch'));
-    await vi.waitFor(() => expect(container.querySelector('[data-relation-status]')?.textContent).toContain('for “Sch”'));
+    searchOptions(container, 'Sch');
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'Sch', byName));
+    await vi.waitFor(() => expect(container.querySelector('[data-relation-status]')?.textContent).toContain('match “Sch”'));
     expect(select.value).toBe('');
   });
 
@@ -281,8 +321,7 @@ describe('relation pickers', () => {
       .mockImplementationOnce(() => second.promise);
     root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
     const container = relation(root, 'organizations');
-    container.querySelector<HTMLInputElement>('[data-query]')!.value = 'Beta';
-    container.querySelector<HTMLButtonElement>('[data-action="search"]')!.click();
+    searchOptions(container, 'Beta');
 
     const firstSignal = vi.mocked(webApiClient.list).mock.calls[0][3]!;
     const secondSignal = vi.mocked(webApiClient.list).mock.calls[1][3]!;
@@ -306,17 +345,16 @@ describe('relation pickers', () => {
     root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
     const container = relation(root, 'organizations');
     const queryInput = container.querySelector<HTMLInputElement>('[data-query]')!;
-    queryInput.value = 'Alpha';
-    container.querySelector<HTMLButtonElement>('[data-action="search"]')!.click();
-    await vi.waitFor(() => expect(container.querySelector('[data-relation-status]')?.textContent).toContain('for “Alpha”'));
+    searchOptions(container, 'Alpha');
+    await vi.waitFor(() => expect(container.querySelector('[data-relation-status]')?.textContent).toContain('match “Alpha”'));
     queryInput.value = 'Beta'; // typed, but not searched yet
     container.querySelector<HTMLButtonElement>('[data-action="more"]')!.click();
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenLastCalledWith('organizations', 2, 100, expect.any(AbortSignal), 'Alpha'));
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenLastCalledWith('organizations', 2, 100, expect.any(AbortSignal), 'Alpha', byName));
     await vi.waitFor(() => expect(container.querySelector('[data-relation-status]')?.textContent).toContain('2 of 250'));
     container.querySelector<HTMLButtonElement>('[data-action="more"]')!.click();
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenLastCalledWith('organizations', 3, 100, expect.any(AbortSignal), 'Alpha'));
-    container.querySelector<HTMLButtonElement>('[data-action="search"]')!.click();
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenLastCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'Beta'));
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenLastCalledWith('organizations', 3, 100, expect.any(AbortSignal), 'Alpha', byName));
+    searchOptions(container, 'Beta');
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenLastCalledWith('organizations', 1, 100, expect.any(AbortSignal), 'Beta', byName));
   });
 });
 
@@ -360,7 +398,7 @@ describe('authorization in the UI', () => {
     const picker = relation(root, 'users');
     expect(picker.querySelector<HTMLElement>('[data-relation-search]')!.hidden).toBe(true);
     expect(picker.querySelector<HTMLElement>('[data-relation-note]')!.hidden).toBe(false);
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('assignments', 1, 100, expect.any(AbortSignal), ''));
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('assignments', 1, 100, expect.any(AbortSignal), '', { sort: { column: 'Name', order: 'ASC' } }));
     expect(vi.mocked(webApiClient.list).mock.calls.some(([key]) => key === 'users')).toBe(false);
     expect(vi.mocked(webApiClient.lookup).mock.calls.some(([key]) => key === 'users')).toBe(false);
     expect([...person.options].map(option => option.value)).toEqual(['', 'user-7']);
@@ -371,7 +409,7 @@ describe('authorization in the UI', () => {
     const root = mount('appointments', admin);
     root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
     expect(field<HTMLSelectElement>(root, 'userId').value).toBe('admin-1');
-    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('users', 1, 100, expect.any(AbortSignal), ''));
+    await vi.waitFor(() => expect(webApiClient.list).toHaveBeenCalledWith('users', 1, 100, expect.any(AbortSignal), '', { sort: { column: 'Name', order: 'ASC' } }));
   });
 });
 
@@ -437,5 +475,167 @@ describe('accessibility', () => {
     await vi.waitFor(() => expect(container.querySelector('[data-relation-error]')?.textContent).toBe('An unexpected error occurred.'));
     expect(container.querySelector('[data-relation-error]')?.getAttribute('role')).toBe('alert');
     expect(container.querySelector('[data-relation-status]')?.textContent).toBe('');
+  });
+});
+
+describe('list controls', () => {
+  const org = 'a1b2c3d4-0000-4000-8000-00000000000a';
+  const lastOptions = () => vi.mocked(webApiClient.subscribeList).mock.calls.at(-1)?.[5];
+
+  it('lists newest first and sorts by a column header, reflecting it in aria-sort and the URL', async () => {
+    const root = mount('projects');
+    expect(lastOptions()).toMatchObject({ sort: { column: 'CreatedAt', order: 'DESC' } });
+    const header = root.querySelector<HTMLButtonElement>('[data-sort="name"]')!;
+    expect(header.closest('th')!.getAttribute('aria-sort')).toBe('none');
+    header.click();
+    expect(lastOptions()).toMatchObject({ sort: { column: 'Name', order: 'ASC' } });
+    expect(header.closest('th')!.getAttribute('aria-sort')).toBe('ascending');
+    expect(lastUrl()).toBe('/projects/?sort=name&order=asc');
+    header.click();
+    expect(lastOptions()).toMatchObject({ sort: { column: 'Name', order: 'DESC' } });
+    expect(header.closest('th')!.getAttribute('aria-sort')).toBe('descending');
+  });
+
+  it('searches the list after a pause and restores the search from the URL', async () => {
+    vi.useFakeTimers();
+    try {
+      const root = mount('projects');
+      const input = root.querySelector<HTMLInputElement>('[data-list-search]')!;
+      input.value = 'atlas';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      expect(lastOptions()).toMatchObject({ search: '' });
+      await vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS);
+      expect(lastOptions()).toMatchObject({ search: 'atlas' });
+      expect(lastUrl()).toBe('/projects/?search=atlas');
+    } finally { vi.useRealTimers(); }
+    stop();
+    const root = mount('projects', admin, '?search=atlas&page=2');
+    expect(root.querySelector<HTMLInputElement>('[data-list-search]')!.value).toBe('atlas');
+    expect(vi.mocked(webApiClient.subscribeList).mock.calls.at(-1)?.[1]).toBe(2);
+  });
+
+  it('narrows the list to a related record, shows it as a removable chip and prefills new records', async () => {
+    vi.mocked(webApiClient.lookup).mockResolvedValue([{ id: org, name: 'School' }]);
+    const root = mount('projects', admin, `?organizationId=${org}`);
+    expect(lastOptions()).toMatchObject({ filters: { organizationId: org } });
+    await vi.waitFor(() => expect(root.querySelector('[data-filter-chips]')?.textContent).toBe('Organization: School'));
+    root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
+    expect(field<HTMLSelectElement>(root, 'organizationId').value).toBe(org);
+    root.querySelector<HTMLButtonElement>('[data-action="cancel"]')!.click();
+    root.querySelector<HTMLButtonElement>('[data-action="remove-filter"]')!.click();
+    expect(lastOptions()).toMatchObject({ filters: {} });
+    expect(lastUrl()).toBe('/projects/');
+  });
+
+  it('explains an empty filtered list and offers to clear it', async () => {
+    rows = [];
+    const root = mount('projects', admin, '?search=zzz');
+    await vi.waitFor(() => expect(root.querySelector('[data-empty]')?.textContent).toBe('No projects match the current search and filters.'));
+    const reset = root.querySelector<HTMLButtonElement>('[data-action="reset-view"]')!;
+    expect(reset.hidden).toBe(false);
+    reset.click();
+    expect(lastOptions()).toMatchObject({ search: '', filters: {} });
+  });
+
+  it('deletes selected records together and undoes it from the notification', async () => {
+    rows = [
+      { id: 'a', createdAt: '2026-09-16T10:00:00Z', name: 'Atlas', organizationId: 'org' },
+      { id: 'b', createdAt: '2026-09-16T10:00:00Z', name: 'Borealis', organizationId: 'org' },
+    ];
+    const remove = vi.spyOn(webApiClient, 'delete').mockResolvedValue(undefined);
+    const restore = vi.spyOn(webApiClient, 'restore').mockResolvedValue(undefined);
+    const root = mount('projects');
+    await vi.waitFor(() => expect(root.querySelectorAll('[data-select]')).toHaveLength(2));
+    const selectAll = root.querySelector<HTMLInputElement>('[data-select-all]')!;
+    selectAll.checked = true;
+    selectAll.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(root.querySelector('[data-selection-count]')?.textContent).toBe('2 projects selected');
+    expect(root.querySelector<HTMLElement>('[data-selection-bar]')!.hidden).toBe(false);
+    root.querySelector<HTMLButtonElement>('[data-action="delete-selected"]')!.click();
+    await vi.waitFor(() => expect(root.querySelector<HTMLDialogElement>('[data-confirm]')!.open).toBe(true));
+    expect(root.querySelector('[data-confirm-title]')?.textContent).toBe('Delete 2 projects?');
+    root.querySelector<HTMLButtonElement>('[data-confirm-accept]')!.click();
+    await vi.waitFor(() => expect(remove).toHaveBeenCalledWith('projects', ['a', 'b']));
+    const undo = await vi.waitFor(() => { const button = document.querySelector<HTMLButtonElement>('[data-toasts] [data-toast-action]'); expect(button).not.toBeNull(); return button!; });
+    expect(document.querySelector('[data-toasts]')?.textContent).toContain('2 projects deleted.');
+    undo.click();
+    await vi.waitFor(() => expect(restore).toHaveBeenCalledWith('projects', ['a', 'b']));
+    await vi.waitFor(() => expect(document.querySelector('[data-toasts]')?.textContent).toContain('2 projects restored.'));
+  });
+
+  it('asks before discarding unsaved changes', async () => {
+    const root = mount('projects');
+    root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
+    field<HTMLInputElement>(root, 'name').value = 'Half-written';
+    root.querySelector<HTMLButtonElement>('[data-action="cancel"]')!.click();
+    await vi.waitFor(() => expect(root.querySelector<HTMLDialogElement>('[data-confirm]')!.open).toBe(true));
+    expect(root.querySelector('[data-confirm-title]')?.textContent).toBe('Discard unsaved changes?');
+    root.querySelector<HTMLButtonElement>('[data-confirm-cancel]')!.click();
+    await vi.waitFor(() => expect(formOpen(root)).toBe(true));
+    expect(field<HTMLInputElement>(root, 'name').value).toBe('Half-written');
+    root.querySelector<HTMLButtonElement>('[data-action="cancel"]')!.click();
+    await vi.waitFor(() => expect(root.querySelector<HTMLDialogElement>('[data-confirm]')!.open).toBe(true));
+    root.querySelector<HTMLButtonElement>('[data-confirm-accept]')!.click();
+    await vi.waitFor(() => expect(formOpen(root)).toBe(false));
+  });
+
+  it('keeps the form open for the next record with “Save and add another”, and confirms the save', async () => {
+    const create = vi.spyOn(webApiClient, 'create').mockResolvedValue({});
+    const root = mount('organizations');
+    root.querySelector<HTMLButtonElement>('[data-action="create"]')!.click();
+    field<HTMLInputElement>(root, 'name').value = 'Guild';
+    const another = root.querySelector<HTMLButtonElement>('[data-submit="another"]')!;
+    expect(another.hidden).toBe(false);
+    root.querySelector<HTMLFormElement>('[data-form]')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true, submitter: another }));
+    await vi.waitFor(() => expect(create).toHaveBeenCalledWith('organizations', expect.objectContaining({ id: expect.any(String), name: 'Guild' })));
+    await vi.waitFor(() => expect(document.querySelector('[data-toasts]')?.textContent).toContain('Organization “Guild” created.'));
+    expect(formOpen(root)).toBe(true);
+    expect(field<HTMLInputElement>(root, 'name').value).toBe('');
+  });
+
+  it('opens the form from links: ?new=1 for a new record and ?edit= for an existing one', async () => {
+    const root = mount('projects', admin, '?new=1');
+    await vi.waitFor(() => expect(formOpen(root)).toBe(true));
+    expect(root.querySelector('[data-form-title]')?.textContent).toBe('New project');
+    expect(lastUrl()).toBe('/projects/');
+    stop();
+    const get = vi.spyOn(webApiClient, 'get').mockResolvedValue({ id: org, name: 'Elsewhere', organizationId: 'org' });
+    const edit = mount('projects', admin, `?edit=${org}`);
+    await vi.waitFor(() => expect(formOpen(edit)).toBe(true));
+    expect(get).toHaveBeenCalledWith('projects', org, expect.any(AbortSignal));
+    expect(field<HTMLInputElement>(edit, 'name').value).toBe('Elsewhere');
+  });
+
+  it('hides and shows columns, remembering the choice', async () => {
+    localStorage.clear();
+    const root = mount('assignments');
+    expect(root.querySelector<HTMLElement>('th[data-col="description"]')!.hidden).toBe(true);
+    const toggle = root.querySelector<HTMLInputElement>('[data-column-toggle="startDate"]')!;
+    expect(toggle.checked).toBe(true);
+    toggle.checked = false;
+    toggle.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(root.querySelector<HTMLElement>('th[data-col="startDate"]')!.hidden).toBe(true);
+    expect(JSON.parse(localStorage.getItem('cpnucleo.columns.assignments')!)).toContain('startDate');
+    expect(root.querySelector<HTMLInputElement>('[data-column-toggle="name"]')!.disabled).toBe(true);
+    localStorage.clear();
+  });
+
+  it('labels each cell for the small-screen card layout and links related projects to their page', async () => {
+    rows = [{ id: 'task', createdAt: '2026-09-16T10:00:00Z', name: 'Plan', projectId: 'project-1' }];
+    vi.mocked(webApiClient.lookup).mockResolvedValue([{ id: 'project-1', name: 'Atlas' }]);
+    const root = mount('assignments');
+    await vi.waitFor(() => expect(root.querySelector('[data-records] a')?.textContent).toBe('Atlas'));
+    expect(root.querySelector<HTMLAnchorElement>('[data-records] a')!.getAttribute('href')).toBe('/projects/view/?id=project-1');
+    expect([...root.querySelectorAll<HTMLElement>('[data-records] td[data-label]')].map(cell => cell.dataset.label)).toContain('Project');
+  });
+
+  it('shows a placeholder, not a raw id, while a related name loads', async () => {
+    const lookup = deferred<ApiEntity[]>();
+    vi.mocked(webApiClient.lookup).mockImplementation(() => lookup.promise);
+    const root = mount('projects');
+    await vi.waitFor(() => expect(root.querySelector('[data-records] .skeleton')).not.toBeNull());
+    expect(root.querySelector('[data-records]')?.textContent).not.toContain('org');
+    lookup.resolve([]);
+    await vi.waitFor(() => expect(root.querySelector('[data-records]')?.textContent).toContain('Unavailable'));
   });
 });

@@ -1,0 +1,44 @@
+---
+import Icon from './Icon.astro';
+---
+<dialog data-session-warning aria-labelledby="session-warning-title" aria-describedby="session-warning-message" class="modal w-[calc(100%-2rem)] max-w-md">
+  <div class="flex gap-4 px-6 pb-5 pt-6">
+    <span class="flex size-10 flex-none items-center justify-center rounded-full bg-warning/12 text-warning ring-1 ring-warning/25"><Icon name="clock" class="size-[1.125rem]" /></span>
+    <div class="min-w-0">
+      <h2 id="session-warning-title" class="text-base font-semibold tracking-tight">Still there?</h2>
+      <p id="session-warning-message" class="mt-1.5 text-sm leading-relaxed text-muted">You will be signed out in <span data-session-countdown class="font-medium tabular-nums text-ink">1:00</span> because of inactivity. Unsaved changes would be lost.</p>
+    </div>
+  </div>
+  <div class="flex justify-end gap-2 border-t border-line bg-raised/30 px-6 py-3.5">
+    <button type="button" data-session-signout class="btn btn-ghost">Sign out</button>
+    <button type="button" data-session-stay class="btn btn-primary">Stay signed in</button>
+  </div>
+</dialog>
+<script>
+  import { sessionExpiringEvent, sessionExtendedEvent, signOut } from '../lib/api/http-client';
+  const dialog = document.querySelector<HTMLDialogElement>('[data-session-warning]');
+  if (dialog) {
+    const countdown = dialog.querySelector<HTMLElement>('[data-session-countdown]')!;
+    let ticker: ReturnType<typeof setInterval> | undefined;
+    const stop = () => { clearInterval(ticker); ticker = undefined; if (dialog.open) dialog.close(); };
+    const format = (ms: number) => {
+      const seconds = Math.max(0, Math.ceil(ms / 1000));
+      return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    };
+    window.addEventListener(sessionExpiringEvent, event => {
+      const { expiresAt } = (event as CustomEvent<{ expiresAt: number }>).detail;
+      const tick = () => { countdown.textContent = format(expiresAt - Date.now()); };
+      tick();
+      clearInterval(ticker);
+      ticker = setInterval(tick, 1000);
+      if (!dialog.open) dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-session-stay]')!.focus();
+    });
+    // Any real activity (including the click on "Stay signed in") extends the session.
+    window.addEventListener(sessionExtendedEvent, stop);
+    dialog.querySelector('[data-session-stay]')!.addEventListener('click', stop);
+    dialog.querySelector('[data-session-signout]')!.addEventListener('click', () => { stop(); void signOut(); });
+    // Escape counts as "stay": the keydown already extended the session.
+    dialog.addEventListener('cancel', stop);
+  }
+</script>

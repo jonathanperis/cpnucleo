@@ -1,5 +1,8 @@
 import { accountLoginUrl, buildAuthorizeUrl, describeSignInError } from '~/lib/api/oidc';
 
+/** Set by the account page when a password change ended the session; shown once at sign-in. */
+export const signInNoticeStorageKey = 'cpnucleo.signInNotice';
+
 const formatSeconds = (seconds: number) => {
   if (seconds < 60) return `${seconds} second${seconds === 1 ? '' : 's'}`;
   const minutes = Math.ceil(seconds / 60);
@@ -43,6 +46,12 @@ export const mountLoginPage = async (
   form.action = accountLoginUrl();
 
   const authRequest = parameters.get('authRequest');
+  // A credential change (account page) ended the session; say why a sign-in is needed again.
+  const notice = sessionStorage.getItem(signInNoticeStorageKey);
+  if (authRequest && notice) {
+    sessionStorage.removeItem(signInNoticeStorageKey);
+    status.textContent = notice;
+  }
   if (authRequest) {
     form.querySelector<HTMLInputElement>('[name="authRequest"]')!.value = authRequest;
     form.hidden = false;

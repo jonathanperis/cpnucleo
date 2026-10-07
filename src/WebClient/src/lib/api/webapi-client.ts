@@ -1,7 +1,8 @@
 import { WEBAPI_BASE_URL } from '../config';
 import { findResource } from './resource-metadata';
 import { ApiError, getStoredToken, readErrorResponse, requestJson } from './http-client';
-import type { ApiEntity, PaginatedResult, ResourceKey } from './types';
+import { beginRequest } from './request-log';
+import type { ApiEntity, ListOptions, PaginatedResult, ResourceKey } from './types';
 
 const normalizeBase = (baseUrl: string) => baseUrl.replace(/\/$/, '');
 const withQuery = (url: string, params?: Record<string, string | number | undefined>) => {
@@ -50,15 +51,24 @@ export const parseServerSentEventData = (event: string): string[] => {
   return dataLines.length > 0 ? [dataLines.join('\n')] : [];
 };
 
-/** Stable default order for every list request: canonical persisted column + direction. */
+/** Stable default order for lookups and pickers: canonical persisted column + direction. */
 export const DEFAULT_SORT = { sortColumn: 'CreatedAt', sortOrder: 'ASC' } as const;
+/** Listings show the newest records first, so a record just created is on the first page. */
+export const DEFAULT_LIST_SORT = { column: 'CreatedAt', order: 'DESC' } as const;
 export const MAX_PAGE_SIZE = 100;
 
+/** API sort keys are the persisted PascalCase column names. */
+export const toSortColumn = (fieldName: string) => fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+
 // Flat scalar query keys only (nested `pagination.*` keys break FastEndpoints query binding).
-const listParams = (pageNumber: number, pageSize: number, extra: Record<string, string | undefined> = {}) => ({
+const listParams = (pageNumber: number, pageSize: number, extra: Record<string, string | undefined> = {}, options: ListOptions = {}) => ({
   pageNumber,
   pageSize,
   ...DEFAULT_SORT,
+  ...(options.sort ? { sortColumn: options.sort.column, sortOrder: options.sort.order } : {}),
+  ...options.filters,
+  dateFrom: options.dateFrom,
+  dateTo: options.dateTo,
   ...extra,
 });
 
@@ -97,6 +107,17 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
   const token = getStoredToken();
   if (token) headers.set('Authorization', `Bearer ${token}`);
 
+  const log = beginRequest('GET', url, 'stream');
+  try {
+    await readListStream(url, headers, log, onPage, signal);
+    log.finish();
+  } catch (error) {
+    log.finish(signal?.aborted ? undefined : error instanceof Error ? error.message : 'Stream failed');
+    throw error;
+  }
+};
+
+const readListStream = async <T extends ApiEntity>(url: string, headers: Headers, log: ReturnType<typeof beginRequest>, onPage: ListSubscriber<T>, signal?: AbortSignal): Promise<void> => {
   let response: Response;
   try {
     response = await fetch(url, { headers, signal });
@@ -105,6 +126,7 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
     throw new ApiError(0, 'Network error. Please check your connection and try again.', error);
   }
 
+  log.respond(response.status);
   if (!response.ok) throw await readErrorResponse(response);
   throwIfAborted(signal);
 
@@ -131,6 +153,7 @@ const streamList = async <T extends ApiEntity>(url: string, onPage: ListSubscrib
       throwIfAborted(signal);
       const page = parseListPage<T>(data);
       receivedData = true;
+      log.event();
       onPage(page, { live: true });
     }
   };
@@ -160,8 +183,8 @@ const uniqueIds = (ids: string[]) => [...new Set(ids.map(id => id.trim()).filter
 
 export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
   const root = normalizeBase(baseUrl);
-  const listUrl = (resourceKey: ResourceKey, pageNumber: number, pageSize: number, extra?: Record<string, string | undefined>) =>
-    withQuery(`${root}${findResource(resourceKey).listPath}`, listParams(pageNumber, pageSize, extra));
+  const listUrl = (resourceKey: ResourceKey, pageNumber: number, pageSize: number, extra?: Record<string, string | undefined>, options?: ListOptions) =>
+    withQuery(`${root}${findResource(resourceKey).listPath}`, listParams(pageNumber, pageSize, extra, options));
   return {
     /** Batched label lookup through the flat `ids` filter, at most 100 ids per request. */
     async lookup(resourceKey: ResourceKey, ids: string[], signal?: AbortSignal): Promise<ApiEntity[]> {
@@ -172,12 +195,24 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
         normalizeList(await requestJson<ListEnvelope<ApiEntity>>(listUrl(resourceKey, 1, MAX_PAGE_SIZE, { ids: batch.join(',') }), { signal })).items ?? []));
       return pages.flat();
     },
-    async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal, search?: string) {
-      const payload = await requestJson<ListEnvelope<T>>(listUrl(resourceKey, pageNumber, pageSize, { search: search?.trim() || undefined }), { signal });
+    async list<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber = 1, pageSize = 25, signal?: AbortSignal, search?: string, options?: ListOptions) {
+      const payload = await requestJson<ListEnvelope<T>>(listUrl(resourceKey, pageNumber, pageSize, { search: search?.trim() || undefined }, options), { signal });
       return normalizeList<T>(payload);
     },
-    async subscribeList<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber: number, pageSize: number, onPage: ListSubscriber<T>, signal?: AbortSignal) {
-      await streamList<T>(listUrl(resourceKey, pageNumber, pageSize), onPage, signal);
+    /** Every record matching the options, page by page (at most `limit`). */
+    async listAll<T extends ApiEntity>(resourceKey: ResourceKey, options: ListOptions = {}, signal?: AbortSignal, limit = 500) {
+      const items: T[] = [];
+      for (let page = 1; items.length < limit; page += 1) {
+        const result = await this.list<T>(resourceKey, page, MAX_PAGE_SIZE, signal, undefined, options);
+        const loaded = result.items ?? [];
+        items.push(...loaded);
+        if (loaded.length < MAX_PAGE_SIZE || items.length >= (result.totalCount ?? 0)) break;
+      }
+      return items.slice(0, limit);
+    },
+    async subscribeList<T extends ApiEntity>(resourceKey: ResourceKey, pageNumber: number, pageSize: number, onPage: ListSubscriber<T>, signal?: AbortSignal, options?: ListOptions & { search?: string; ids?: string[] }) {
+      const extra = { search: options?.search?.trim() || undefined, ids: options?.ids?.length ? uniqueIds(options.ids).join(',') : undefined };
+      await streamList<T>(listUrl(resourceKey, pageNumber, pageSize, extra, options), onPage, signal);
     },
     async get<T extends ApiEntity>(resourceKey: ResourceKey, id: string, signal?: AbortSignal) {
       const resource = findResource(resourceKey);
@@ -198,6 +233,13 @@ export const createWebApiClient = (baseUrl = WEBAPI_BASE_URL) => {
       if (distinct.length < 1 || distinct.length > MAX_PAGE_SIZE) throw new ApiError(400, `Select between 1 and ${MAX_PAGE_SIZE} records to delete.`);
       const resource = findResource(resourceKey);
       await requestJson<unknown>(`${root}${resource.itemPath}`, { method: 'DELETE', body: JSON.stringify({ ids: distinct }) });
+    },
+    /** Undoes a soft delete: the same 1–100 distinct ids, restored atomically. */
+    async restore(resourceKey: ResourceKey, ids: string | string[]) {
+      const distinct = uniqueIds(Array.isArray(ids) ? ids : [ids]);
+      if (distinct.length < 1 || distinct.length > MAX_PAGE_SIZE) throw new ApiError(400, `Select between 1 and ${MAX_PAGE_SIZE} records to restore.`);
+      const resource = findResource(resourceKey);
+      await requestJson<unknown>(`${root}${resource.itemPath}/restore`, { method: 'POST', body: JSON.stringify({ ids: distinct }) });
     },
   };
 };

@@ -24,6 +24,21 @@ export interface FieldMetadata {
   readOnly?: boolean;
   /** Minimum for number inputs (whole numbers). */
   min?: number;
+  /** Listed column that starts hidden; people can show it from the Columns menu. */
+  hiddenByDefault?: boolean;
+}
+
+/** Flat list filters the APIs accept (`?projectId=…`); each narrows a list to one related record. */
+export const relationFilterKeys = ['organizationId', 'projectId', 'assignmentId', 'userId', 'workflowId'] as const;
+export type RelationFilterKey = typeof relationFilterKeys[number];
+
+export interface ListOptions {
+  /** Persisted canonical column (PascalCase) and direction. */
+  sort?: { column: string; order: 'ASC' | 'DESC' };
+  filters?: Partial<Record<RelationFilterKey, string>>;
+  /** ISO-8601 instants: `KeepDate` within the range, or start/end dates overlapping it. */
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export interface ResourceAccess {

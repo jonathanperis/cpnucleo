@@ -60,6 +60,31 @@ afterEach(() => {
 });
 
 describe('session inactivity', () => {
+  it('warns a minute before the inactivity sign-out and withdraws the warning on activity', async () => {
+    vi.useFakeTimers({ now: Date.parse('2026-10-06T12:00:00Z') });
+    const http = await loadTab();
+    const expiring = vi.fn();
+    const extended = vi.fn();
+    win.addEventListener(http.sessionExpiringEvent, expiring);
+    win.addEventListener(http.sessionExtendedEvent, extended);
+    http.setStoredToken(token({ exp: secondsFromNow(8 * 60 * 60) }));
+    const stop = http.setupSessionActivityTracking();
+
+    await vi.advanceTimersByTimeAsync(http.sessionInactivityTimeoutMs - http.sessionWarningLeadMs - 1000);
+    expect(expiring).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(expiring).toHaveBeenCalledTimes(1);
+    expect((expiring.mock.calls[0][0] as CustomEvent<{ expiresAt: number }>).detail.expiresAt).toBe(Date.parse('2026-10-06T12:15:00Z'));
+
+    win.dispatchEvent(new Event('keydown'));
+    expect(extended).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(http.sessionWarningLeadMs);
+    expect(win.location.assign).not.toHaveBeenCalled();
+    expect(http.getStoredToken()).not.toBeNull();
+    stop();
+  });
+
+
   it('only real user input extends the session; the timer re-checks activity before logging out', async () => {
     vi.useFakeTimers({ now: Date.parse('2026-10-06T12:00:00Z') });
     const http = await loadTab();
