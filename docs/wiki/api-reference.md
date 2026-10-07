@@ -43,7 +43,7 @@ The same rules apply to REST and gRPC and to every persistence style:
 | Assignments, UserProjects | Members of the row's project | Members of the project (both the old and the new project when moving a row) |
 | Appointments, AssignmentImpediments, UserAssignments | Members of the assignment's project | Members; non-administrators may only record or change their own appointments |
 
-Administrators (`cpnucleo:admin` claim backed by `CPNUCLEO_ADMIN_LOGINS`) see and change everything. Rows the caller can't see behave like missing rows (404 on GET, excluded from lists); writes the caller isn't allowed to make return 403 (gRPC `PermissionDenied`).
+Administrators (`cpnucleo:admin` claim backed by `CPNUCLEO_ADMIN_LOGINS`; when that list is empty, the seeded `demo@cpnucleo.local` account is the administrator) see and change everything. Rows the caller can't see behave like missing rows (404 on GET, excluded from lists); writes the caller isn't allowed to make return 403 (gRPC `PermissionDenied`).
 
 ### Removal
 

@@ -57,7 +57,8 @@ public class FakeDataSeedingTests
         importer.Should().Contain("FROM STDIN WITH (FORMAT CSV)");
         importer.Should().Contain("__FakeDataCsvImports");
         importer.Should().Contain("TRUNCATE TABLE");
-        importer.Should().Contain("DefaultDemoLogin = \"demo@cpnucleo.local\"");
+        importer.Should().Contain("DefaultDemoLogin = AdminLogins.DefaultLogin");
+        Infrastructure.Security.AdminLogins.DefaultLogin.Should().Be("demo@cpnucleo.local");
         importer.Should().Contain("DemoPasswordEnvironmentVariable");
         importer.Should().Contain("Environment.GetEnvironmentVariable(DemoPasswordEnvironmentVariable)");
         importer.Should().NotContain("DefaultDemoPassword");

@@ -46,8 +46,9 @@ x-dotnet-runtime-env: &dotnet-runtime-env
   # Optional RS256 verification key. Empty means "not configured" (HS256 via Jwt__SigningKey).
   Jwt__SigningPublicKey: ${Jwt__SigningPublicKey:-}
   # IdentityApi grants admin claims from this list; WebApi and GrpcServer re-check it on every
-  # session validation so removing a login revokes admin access within 30 seconds.
-  CPNUCLEO_ADMIN_LOGINS: ${CPNUCLEO_ADMIN_LOGINS:-}
+  # session validation so removing a login revokes admin access within 30 seconds. Unset, the
+  # seeded demo account is the administrator.
+  CPNUCLEO_ADMIN_LOGINS: ${CPNUCLEO_ADMIN_LOGINS:-demo@cpnucleo.local}
   Cors__AllowedOrigins__0: ${Cors__AllowedOrigins__0:-https://cpnucleo.jonathanperis.tech}
   OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
   OTEL_METRIC_EXPORT_INTERVAL: ${OTEL_METRIC_EXPORT_INTERVAL:-30000}

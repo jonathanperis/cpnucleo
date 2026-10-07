@@ -474,9 +474,9 @@ missing = sorted(required - active.keys())
 if missing:
     raise SystemExit("Missing required env keys: " + ", ".join(missing))
 
-# An empty admin list is valid (nobody administers users or catalog data), but rarely intended.
+# Without an explicit list the seeded demo account is the administrator; make that visible.
 if not active.get("CPNUCLEO_ADMIN_LOGINS", "").strip():
-    print("::warning title=No administrators::CPNUCLEO_ADMIN_LOGINS is empty; no account can administer users or catalog data.")
+    print("::notice title=Default administrator::CPNUCLEO_ADMIN_LOGINS is not set; demo@cpnucleo.local administers users and catalog data.")
 
 text = "\n".join(lines).rstrip() + "\n"
 if len(text) > 8192:

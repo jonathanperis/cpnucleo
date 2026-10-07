@@ -104,6 +104,21 @@ public sealed class WebAppFixture : IAsyncLifetime
 
     public NpgsqlConnection CreateConnection() => new(ConnectionString);
 
+    /// <summary>WebApi and IdentityApi hosts with extra configuration (e.g. no admin list).</summary>
+    public (WebApplicationFactory<WebApiHost::Program> Api, WebApplicationFactory<IdentityApi.Security.TokenIssuer> Identity) CreateHosts(
+        IReadOnlyDictionary<string, string?> overrides)
+    {
+        void Configure(IWebHostBuilder builder)
+        {
+            ConfigureApp(builder);
+            builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(overrides));
+            builder.ConfigureServices(DisableRateLimiting);
+        }
+
+        return (Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(Configure),
+            Track(new WebApplicationFactory<IdentityApi.Security.TokenIssuer>()).WithWebHostBuilder(Configure));
+    }
+
     /// <summary>A WebApi host with production rate limiting, for quota tests.</summary>
     public WebApplicationFactory<WebApiHost::Program> CreateRateLimitedWebApiFactory() =>
         Track(new WebApplicationFactory<WebApiHost::Program>()).WithWebHostBuilder(builder =>

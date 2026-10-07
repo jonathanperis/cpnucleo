@@ -147,4 +147,33 @@ public class IdentityApiTests(WebAppFixture app)
         response.StatusCode.ShouldBe(HttpStatusCode.OK, await response.Content.ReadAsStringAsync(Cancellation));
         return (await response.Content.ReadFromJsonAsync<JsonElement>(Cancellation)).GetProperty("token").GetString()!;
     }
+
+    [Fact]
+    public async Task WithoutAnAdminList_TheSeededDemoAccountAdministersBothApis()
+    {
+        await using (var connection = app.CreateConnection())
+        {
+            await connection.ExecuteAsync("""
+                INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
+                VALUES (@Id, 'Cpnucleo Demo', @login, @hash, '', now(), true)
+                ON CONFLICT DO NOTHING
+                """, new { Id = Guid.CreateVersion7(), login = Infrastructure.Security.AdminLogins.DefaultLogin, hash = new Argon2PasswordHasher().Hash(Password).Hash });
+        }
+
+        var (api, identity) = app.CreateHosts(new Dictionary<string, string?> { [Infrastructure.Security.AdminLogins.ConfigurationKey] = "" });
+        await using (api)
+        await using (identity)
+        {
+            using var identityClient = identity.CreateClient();
+            var token = await LoginAsync(identityClient, Infrastructure.Security.AdminLogins.DefaultLogin);
+            new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().ReadJwtToken(token).Claims
+                .ShouldContain(claim => claim.Type == "cpnucleo:admin" && claim.Value == "true");
+
+            using var apiClient = api.CreateClient();
+            apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            (await apiClient.GetAsync("/api/users?pageSize=1", Cancellation)).StatusCode.ShouldBe(HttpStatusCode.OK, "user administration is admin-only");
+            (await apiClient.PostAsJsonAsync("/api/workflow", new { id = Guid.NewGuid(), name = "Demo admin workflow", order = 1 }, Cancellation))
+                .StatusCode.ShouldBe(HttpStatusCode.OK, "catalog writes are admin-only");
+        }
+    }
 }

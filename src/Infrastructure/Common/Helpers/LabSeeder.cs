@@ -14,7 +14,7 @@ public static class LabSeeder
             throw new InvalidOperationException("Lab seeding requires an empty database. Reset the disposable lab explicitly first.");
 
         var organization = Organization.Create("Learning school", "Disposable practice workspace");
-        var user = User.Create("Learning administrator", "demo@cpnucleo.local", new Argon2PasswordHasher().Hash(password));
+        var user = User.Create("Learning administrator", AdminLogins.DefaultLogin, new Argon2PasswordHasher().Hash(password));
         var workflow = Workflow.Create("Planned", 1);
         var type = AssignmentType.Create("Exercise");
         var impediment = Impediment.Create("Needs investigation");
