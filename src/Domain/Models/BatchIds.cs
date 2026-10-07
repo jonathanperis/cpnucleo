@@ -9,6 +9,7 @@ public static class BatchIds
 {
     public const int MaximumCount = 100;
 
+    /// <summary>The distinct ids of a batch; throws when it is empty or larger than <see cref="MaximumCount"/>.</summary>
     /// <param name="ids">The requested ids.</param>
     /// <param name="action">How the batch is described in the limit message ("removed", "restored").</param>
     public static Guid[] Normalize(IEnumerable<Guid>? ids, string action = "removed")

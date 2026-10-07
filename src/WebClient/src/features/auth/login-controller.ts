@@ -2,6 +2,10 @@ import { accountLoginUrl, buildAuthorizeUrl, describeSignInError } from '~/lib/a
 
 /** Set by the account page when a password change ended the session; shown once at sign-in. */
 export const signInNoticeStorageKey = 'cpnucleo.signInNotice';
+/** Known notice codes; stored values are codes, never text to display. */
+export const signInNotices: Record<string, string> = {
+  'credentials-changed': 'Your password was changed and every session was signed out. Sign in with the new password.',
+};
 
 const formatSeconds = (seconds: number) => {
   if (seconds < 60) return `${seconds} second${seconds === 1 ? '' : 's'}`;
@@ -47,11 +51,9 @@ export const mountLoginPage = async (
 
   const authRequest = parameters.get('authRequest');
   // A credential change (account page) ended the session; say why a sign-in is needed again.
-  const notice = sessionStorage.getItem(signInNoticeStorageKey);
-  if (authRequest && notice) {
-    sessionStorage.removeItem(signInNoticeStorageKey);
-    status.textContent = notice;
-  }
+  const notice = signInNotices[sessionStorage.getItem(signInNoticeStorageKey) ?? ''];
+  if (authRequest) sessionStorage.removeItem(signInNoticeStorageKey);
+  if (authRequest && notice) status.textContent = notice;
   if (authRequest) {
     form.querySelector<HTMLInputElement>('[name="authRequest"]')!.value = authRequest;
     form.hidden = false;
