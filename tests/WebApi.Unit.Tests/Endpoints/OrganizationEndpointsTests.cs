@@ -123,8 +123,7 @@ public class OrganizationEndpointsTests
     {
         // Arrange
         var organizationId = Guid.NewGuid();
-        var organization = Organization.Create("Organization to Delete", "Description", organizationId);
-        
+
         var fakeRepository = A.Fake<IRepository<Organization>>();
         A.CallTo(() => fakeRepository.RemoveManyAsync(A<IReadOnlyCollection<Guid>>._, A<CancellationToken>._)).Returns(true);
 

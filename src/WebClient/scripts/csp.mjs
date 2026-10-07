@@ -31,7 +31,9 @@ export const connectSourcesFromEnv = (env = {}) => [...new Set([
   env.PUBLIC_IDENTITY_API_BASE_URL || DEFAULT_IDENTITY_API_BASE_URL,
 ].map(serviceOrigin))];
 
-const scriptElementPattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+// Browsers end a script at "</script" followed by whitespace, "/" or ">", even with junk before
+// the ">" (e.g. "</script \t\n bar>"), so the end-tag pattern accepts any attributes.
+const scriptElementPattern = /<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi;
 
 /** Returns the text of every inline (non-src) script element, exactly as the browser hashes it. */
 export const extractInlineScripts = (html) => {

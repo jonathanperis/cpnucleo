@@ -31,7 +31,7 @@ public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Create
             await unitOfWork.BeginTransactionAsync(cancellationToken);
 
             logger.LogInformation("Adding workflow to repository.");
-            var createdId = await repository.AddAsync(newItem, cancellationToken);
+            await repository.AddAsync(newItem, cancellationToken);
 
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
