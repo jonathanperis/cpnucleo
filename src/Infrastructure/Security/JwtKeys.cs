@@ -23,9 +23,10 @@ public static class JwtKeys
     {
         if (UsesAsymmetricSigning(configuration))
         {
-            var rsa = RSA.Create();
+            // Keep only the public parameters; the temporary RSA object is disposed right away.
+            using var rsa = RSA.Create();
             rsa.ImportFromPem(Pem(configuration["Jwt:SigningPublicKey"]!));
-            return new RsaSecurityKey(rsa);
+            return new RsaSecurityKey(rsa.ExportParameters(includePrivateParameters: false));
         }
 
         return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SymmetricKey(configuration)));
