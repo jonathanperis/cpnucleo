@@ -279,6 +279,8 @@ PY
 check_logs() {
   local prefix="$1"
   api_curl "${HOSTINGER_API}/virtual-machines/${HOSTINGER_VPS_ID}/docker/${HOSTINGER_PROJECT_NAME}/logs" > "${logs_file}" || true
+  # Data migrations report their row counts (no secrets) through the migrator log.
+  grep -oE 'Demo workspace names: [^"\\]*' "${logs_file}" | sort -u | sed "s/^/${prefix} /" || true
   if grep -Eiq 'Unhandled exception|panic:|segmentation fault|no space left on device' "${logs_file}"; then
     echo "${prefix} Potential startup failure markers found in Hostinger logs:" >&2
     redact < "${logs_file}" | tail -200 >&2
