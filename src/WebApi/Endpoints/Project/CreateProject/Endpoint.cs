@@ -1,6 +1,6 @@
 namespace WebApi.Endpoints.Project.CreateProject;
 
-public class Endpoint(CreateProjectHandler handler) : Endpoint<Request, Response>
+public class Endpoint(CreateProjectHandler handler, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -33,7 +33,7 @@ public class Endpoint(CreateProjectHandler handler) : Endpoint<Request, Response
                 OrganizationId = result.Project.OrganizationId
             };
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
+        listings.NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
 
         await Send.OkAsync(Response, cancellationToken);
     }

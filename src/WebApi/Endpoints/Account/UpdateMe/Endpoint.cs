@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Account.UpdateMe;
 
 // Dapper (self-service account store)
-public class Endpoint(AccountStore accounts) : Endpoint<Request, Response>
+public class Endpoint(AccountStore accounts, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -34,7 +34,7 @@ public class Endpoint(AccountStore accounts) : Endpoint<Request, Response>
         }
 
         Logger.LogInformation("User {UserId} changed their display name.", user.Id);
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.User));
+        listings.NotifyChanged(nameof(Domain.Entities.User));
 
         await Send.OkAsync(Response, cancellationToken);
     }

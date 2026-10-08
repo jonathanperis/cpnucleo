@@ -361,7 +361,7 @@ Project PATCH requests may include `expectedVersion`, using the last observed `u
 
 All normal removal paths soft-delete, and `POST /api/{entity}/restore` undoes them. Project batches are atomic. The database rejects conflicting normalized active logins on new/changed accounts; authentication rejects ambiguous legacy logins rather than choosing an arbitrary account.
 
-`/healthz` is liveness only. `/readyz` checks database/schema availability. SSE listings refresh periodically so writes through other instances/transports converge within a refresh cycle.
+`/healthz` is liveness only. `/readyz` checks database/schema availability. SSE listings refresh periodically so writes through other instances/transports converge within a refresh cycle. Streams are sent with FastEndpoints' event-stream sender: each `listing` event carries an `id`, proxy buffering is disabled (`X-Accel-Buffering: no`), and streams end when the token expires, the client disconnects or the host shuts down.
 
 ## Source of truth
 

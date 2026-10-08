@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Workflow.CreateWorkflow;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {WorkflowId}", request.Name, request.Id);
-
         Logger.LogInformation("Checking if an workflow entity exists with Id: {WorkflowId}", request.Id);
         var itemExists = await dbContext.Workflows!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -43,9 +41,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Response.Workflow = createdItem!.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Workflow));
+        listings.NotifyChanged(nameof(Domain.Entities.Workflow));
 
         await Send.OkAsync(Response, cancellationToken);
     }

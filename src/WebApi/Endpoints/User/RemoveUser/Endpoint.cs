@@ -1,13 +1,12 @@
 namespace WebApi.Endpoints.User.RemoveUser;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserRequest, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<RemoveUserRequest, Response>
 {
     public override void Configure()
     {
         Delete("/user");
-        Description(x => x.WithTags("Users"));
-        Policies("UserAdministration");
+        Group<UserAdministrationGroup>();
 
         Summary(s =>
         {
@@ -20,8 +19,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserRequ
 
     public override async Task HandleAsync(RemoveUserRequest request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         Logger.LogInformation("Checking if user entities exist for Ids: {UserIds}", string.Join(",", request.Ids));
         var ids = BatchIds.Normalize(request.Ids);
         var items = await dbContext.Users!.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
@@ -40,9 +37,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserRequ
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Remove result: {Success}", Response.Success);
-        Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.User), nameof(Domain.Entities.UserProject), nameof(Domain.Entities.UserAssignment));
+        if (Response.Success) listings.NotifyChanged(nameof(Domain.Entities.User), nameof(Domain.Entities.UserProject), nameof(Domain.Entities.UserAssignment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Impediment.CreateImpediment;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {ImpedimentId}", request.Name, request.Id);
-
         Logger.LogInformation("Checking if an impediment entity exists with Id: {ImpedimentId}", request.Id);
         var itemExists = await dbContext.Impediments!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -43,9 +41,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Response.Impediment = createdItem!.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Impediment));
+        listings.NotifyChanged(nameof(Domain.Entities.Impediment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

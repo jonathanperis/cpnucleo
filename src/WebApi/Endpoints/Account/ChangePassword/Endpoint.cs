@@ -7,7 +7,7 @@ namespace WebApi.Endpoints.Account.ChangePassword;
 /// every token and sign-in session issued before the change stops working, exactly as when an
 /// administrator changes the password. Passwords and login names are never logged.
 /// </summary>
-public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, PasswordChangeThrottle throttle) : Endpoint<Request, Response>
+public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, PasswordChangeThrottle throttle, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public const string ConcurrencyPolicy = "password-change-concurrency";
 
@@ -63,7 +63,7 @@ public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, Pas
         }
 
         Logger.LogInformation("User {UserId} changed their password.", user.Id);
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.User));
+        listings.NotifyChanged(nameof(Domain.Entities.User));
 
         await Send.OkAsync(Response, cancellationToken);
     }

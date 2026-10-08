@@ -1,6 +1,6 @@
 namespace WebApi.Endpoints.Project.RestoreProject;
 
-public class Endpoint(IProjectRepository repository) : Endpoint<RestoreProjectRequest, Response>
+public class Endpoint(IProjectRepository repository, ListingChangeNotifier listings) : Endpoint<RestoreProjectRequest, Response>
 {
     public override void Configure()
     {
@@ -23,7 +23,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RestoreProjectRe
             return;
         }
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
+        listings.NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
         await Send.OkAsync(Response, cancellationToken);
     }
 }

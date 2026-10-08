@@ -19,23 +19,23 @@ public class RestoreEndpointsTests
     public static IEnumerable<Case> Cases()
     {
         yield return new("Appointment", () => Appointment.Create("Review", DateTime.UtcNow, 1, AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Appointment.RestoreAppointment.Endpoint>(db), new WebApi.Endpoints.Appointment.RestoreAppointment.RestoreAppointmentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Appointment.RestoreAppointment.Endpoint>(db), new WebApi.Endpoints.Appointment.RestoreAppointment.RestoreAppointmentRequest { Ids = [.. ids] }));
         yield return new("Assignment", () => Assignment.Create("Task", "Description", DateTime.UtcNow, DateTime.UtcNow, 1, AnyId, AnyId, AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Assignment.RestoreAssignment.Endpoint>(db), new WebApi.Endpoints.Assignment.RestoreAssignment.RestoreAssignmentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Assignment.RestoreAssignment.Endpoint>(db), new WebApi.Endpoints.Assignment.RestoreAssignment.RestoreAssignmentRequest { Ids = [.. ids] }));
         yield return new("AssignmentImpediment", () => AssignmentImpediment.Create("Blocked", AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.AssignmentImpediment.RestoreAssignmentImpediment.Endpoint>(db), new WebApi.Endpoints.AssignmentImpediment.RestoreAssignmentImpediment.RestoreAssignmentImpedimentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.AssignmentImpediment.RestoreAssignmentImpediment.Endpoint>(db), new WebApi.Endpoints.AssignmentImpediment.RestoreAssignmentImpediment.RestoreAssignmentImpedimentRequest { Ids = [.. ids] }));
         yield return new("AssignmentType", () => AssignmentType.Create("Exercise"),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.AssignmentType.RestoreAssignmentType.Endpoint>(db), new WebApi.Endpoints.AssignmentType.RestoreAssignmentType.RestoreAssignmentTypeRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.AssignmentType.RestoreAssignmentType.Endpoint>(db), new WebApi.Endpoints.AssignmentType.RestoreAssignmentType.RestoreAssignmentTypeRequest { Ids = [.. ids] }));
         yield return new("Impediment", () => Impediment.Create("Blocked"),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Impediment.RestoreImpediment.Endpoint>(db), new WebApi.Endpoints.Impediment.RestoreImpediment.RestoreImpedimentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Impediment.RestoreImpediment.Endpoint>(db), new WebApi.Endpoints.Impediment.RestoreImpediment.RestoreImpedimentRequest { Ids = [.. ids] }));
         yield return new("User", () => User.Create("Learner", $"learner-{Guid.NewGuid():N}", new PasswordHash("hash", "")),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.User.RestoreUser.Endpoint>(db), new WebApi.Endpoints.User.RestoreUser.RestoreUserRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.User.RestoreUser.Endpoint>(db), new WebApi.Endpoints.User.RestoreUser.RestoreUserRequest { Ids = [.. ids] }));
         yield return new("UserAssignment", () => UserAssignment.Create(AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.UserAssignment.RestoreUserAssignment.Endpoint>(db), new WebApi.Endpoints.UserAssignment.RestoreUserAssignment.RestoreUserAssignmentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.UserAssignment.RestoreUserAssignment.Endpoint>(db), new WebApi.Endpoints.UserAssignment.RestoreUserAssignment.RestoreUserAssignmentRequest { Ids = [.. ids] }));
         yield return new("UserProject", () => UserProject.Create(AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.UserProject.RestoreUserProject.Endpoint>(db), new WebApi.Endpoints.UserProject.RestoreUserProject.RestoreUserProjectRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.UserProject.RestoreUserProject.Endpoint>(db), new WebApi.Endpoints.UserProject.RestoreUserProject.RestoreUserProjectRequest { Ids = [.. ids] }));
         yield return new("Workflow", () => Workflow.Create("Planned", 1),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Workflow.RestoreWorkflow.Endpoint>(db), new WebApi.Endpoints.Workflow.RestoreWorkflow.RestoreWorkflowRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Workflow.RestoreWorkflow.Endpoint>(db), new WebApi.Endpoints.Workflow.RestoreWorkflow.RestoreWorkflowRequest { Ids = [.. ids] }));
     }
 
     [TestCaseSource(nameof(Cases))]
@@ -107,7 +107,6 @@ public class RestoreEndpointsTests
         where TRequest : notnull
         where TResponse : WebApi.Common.Models.RestoreResponse
     {
-        endpoint.WithListingServices();
         await endpoint.HandleAsync(request, default);
         return (endpoint.HttpContext.Response.StatusCode, endpoint.Response?.Success ?? false);
     }

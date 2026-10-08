@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Organization.UpdateOrganization;
 
 // Dapper Repository Advanced
-public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
+public class Endpoint(IUnitOfWork unitOfWork, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         Logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
         var item = await repository.GetByIdAsync(request.Id, cancellationToken);
@@ -42,9 +40,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Committing transaction.");
         await unitOfWork.CommitAsync(cancellationToken);
 
-        Logger.LogInformation("Service completed successfully.");
-
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Organization));
+        if (Response.Success) listings.NotifyChanged(nameof(Domain.Entities.Organization));
 
         await Send.OkAsync(Response, cancellationToken);
     }

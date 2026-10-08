@@ -18,19 +18,24 @@ public static class ListingSseExtensions
         MediaTypeWithQualityHeaderValue.TryParse(part, out var mediaType) ? mediaType : null;
 
     /// <summary>
-    /// A live listing for the current request. Before every refresh the caller's session is validated
-    /// again, so a deactivated account or revoked admin stops receiving data within one refresh.
+    /// Streams the current request's live listing as server-sent <c>listing</c> events through
+    /// FastEndpoints, which marks the response started, disables proxy buffering, numbers the events
+    /// and ends the stream on application shutdown. Before every refresh the caller's session is
+    /// validated again, so a deactivated account or revoked admin stops receiving data within one refresh.
     /// </summary>
-    public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
+    public static Task ListingStreamAsync<TResponse>(
+        this IResponseSender sender,
         string resource,
         Func<CancellationToken, Task<TResponse>> getSnapshot,
-        HttpContext context,
+        ListingChangeNotifier listingChanges,
         ILogger logger,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken) where TResponse : notnull
     {
+        var context = sender.HttpContext;
         var sessions = context.RequestServices.GetRequiredService<TokenSessionValidator>();
-        return CreateListingStream(resource, getSnapshot, context.RequestServices.GetRequiredService<ListingChangeNotifier>(),
-            logger, cancellationToken, async token => await sessions.ValidateAsync(context.User, token) is null);
+        var stream = CreateListingStream(resource, getSnapshot, listingChanges, logger, cancellationToken,
+            async token => await sessions.ValidateAsync(context.User, token) is null);
+        return context.Response.SendEventStreamAsync("listing", stream, cancellationToken);
     }
 
     public static IAsyncEnumerable<TResponse> CreateListingStream<TResponse>(
