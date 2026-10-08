@@ -22,6 +22,9 @@ public class OpenApiSnapshotTests(WebAppFixture app)
     {
         var document = JsonNode.Parse(await FetchFromStandaloneHostAsync(host))!.AsObject();
         document.Remove("servers"); // Depends on the host's address, not on the contract.
+        // Canonical form (object keys sorted; key order carries no meaning in OpenAPI): endpoint
+        // discovery order must not churn the snapshot, only contract changes.
+        document = (JsonObject)Canonical(document);
         var actual = document.ToJsonString(new JsonSerializerOptions { WriteIndented = true }).ReplaceLineEndings("\n") + "\n";
 
         var path = Path.Join(RepositoryRoot(), "docs", "openapi", $"{snapshot}.v1.json");
@@ -95,6 +98,15 @@ public class OpenApiSnapshotTests(WebAppFixture app)
             await process.WaitForExitAsync(Cancellation);
         }
     }
+
+    private static JsonNode Canonical(JsonNode node) => node switch
+    {
+        JsonObject properties => new JsonObject(properties
+            .OrderBy(property => property.Key, StringComparer.Ordinal)
+            .Select(property => KeyValuePair.Create(property.Key, property.Value is null ? null : Canonical(property.Value)))),
+        JsonArray items => new JsonArray(items.Select(item => item is null ? null : Canonical(item)).ToArray()),
+        _ => node.DeepClone()
+    };
 
     private static int FreePort()
     {
