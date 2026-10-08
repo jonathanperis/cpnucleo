@@ -32,5 +32,6 @@
     <Project Path="labs/PersistenceLab/PersistenceLab.csproj" />
     <Project Path="labs/OutboxLab/OutboxLab.csproj" />
     <Project Path="labs/JobQueueLab/JobQueueLab.csproj" />
+    <Project Path="labs/ApiReferenceLab/ApiReferenceLab.csproj" />
   </Folder>
 </Solution>
