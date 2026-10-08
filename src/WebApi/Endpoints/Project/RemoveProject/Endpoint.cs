@@ -1,6 +1,6 @@
 namespace WebApi.Endpoints.Project.RemoveProject;
 
-public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectRequest, Response>
+public class Endpoint(IProjectRepository repository, ListingChangeNotifier listings) : Endpoint<RemoveProjectRequest, Response>
 {
     public override void Configure()
     {
@@ -24,7 +24,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
             return;
         }
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
+        listings.NotifyChanged(nameof(Domain.Entities.Project), nameof(Domain.Entities.UserProject));
         await Send.OkAsync(Response, cancellationToken);
     }
 }

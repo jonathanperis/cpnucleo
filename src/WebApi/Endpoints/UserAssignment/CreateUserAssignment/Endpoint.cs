@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.UserAssignment.CreateUserAssignment;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", request.UserId, request.AssignmentId, request.Id);
-
         Logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", request.Id);
         var itemExists = await dbContext.UserAssignments!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -43,9 +41,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Response.UserAssignment = createdItem!.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.UserAssignment));
+        listings.NotifyChanged(nameof(Domain.Entities.UserAssignment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

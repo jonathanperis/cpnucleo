@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Impediment.UpdateImpediment;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         Logger.LogInformation("Checking if an impediment entity exists with Id: {ImpedimentId}", request.Id);
         var item = await dbContext.Impediments!.FindAsync([request.Id], cancellationToken: cancellationToken);
 
@@ -35,9 +33,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Update result: {Success}", Response.Success);
-        Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Impediment));
+        if (Response.Success) listings.NotifyChanged(nameof(Domain.Entities.Impediment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

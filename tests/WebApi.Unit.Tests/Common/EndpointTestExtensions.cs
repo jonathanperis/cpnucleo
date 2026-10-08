@@ -1,20 +1,21 @@
 namespace WebApi.Unit.Tests.Common;
 
-public static class EndpointTestExtensions
+public static class TestEndpoints
 {
-    private static readonly IServiceProvider ListingServices = new ServiceCollection()
-        .AddLogging()
-        .AddSingleton<ListingChangeNotifier>()
-        .BuildServiceProvider();
-
-    public static TEndpoint WithListingServices<TEndpoint>(this TEndpoint endpoint)
+    /// <summary>
+    /// Creates an endpoint for a handler test. Constructor dependencies are matched by type from
+    /// <paramref name="dependencies"/>; a <see cref="ListingChangeNotifier"/> is supplied when none is
+    /// given, and is also a request service (FastEndpoints' AddTestServices) for anything resolving it.
+    /// </summary>
+    public static TEndpoint Create<TEndpoint>(params object[] dependencies) where TEndpoint : class, IEndpoint
     {
-        if (endpoint is null) throw new ArgumentNullException(nameof(endpoint));
-
-        var httpContext = (HttpContext?)endpoint.GetType().GetProperty(nameof(HttpContext))?.GetValue(endpoint)
-            ?? throw new InvalidOperationException("Endpoint test instance does not expose HttpContext.");
-
-        httpContext.RequestServices = ListingServices;
-        return endpoint;
+        var notifier = dependencies.OfType<ListingChangeNotifier>().FirstOrDefault() ?? new ListingChangeNotifier();
+        var arguments = typeof(TEndpoint).GetConstructors().Single().GetParameters()
+            .Select(parameter => parameter.ParameterType == typeof(ListingChangeNotifier)
+                ? notifier
+                : dependencies.FirstOrDefault(parameter.ParameterType.IsInstanceOfType)
+                  ?? throw new ArgumentException($"{typeof(TEndpoint).FullName} needs a {parameter.ParameterType.Name}."))
+            .ToArray();
+        return Factory.Create<TEndpoint>(context => context.AddTestServices(services => services.AddLogging().AddSingleton(notifier)), arguments);
     }
 }

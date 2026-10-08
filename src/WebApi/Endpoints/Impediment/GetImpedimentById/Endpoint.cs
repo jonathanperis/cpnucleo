@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         Logger.LogInformation("Fetching impediment entity with Id: {ImpedimentId}", request.Id);
         var item = await dbContext.Impediments!
             .AsNoTracking()
@@ -33,8 +31,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Mapping entity to DTO and setting response for Id: {ImpedimentId}", request.Id);
         Response.Impediment = item.MapToDto();
-
-        Logger.LogInformation("Service completed successfully.");
 
         await Send.OkAsync(Response, cancellationToken);
     }

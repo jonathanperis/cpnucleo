@@ -1,13 +1,12 @@
 namespace WebApi.Endpoints.User.CreateUser;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordHasher, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
         Post("/user");
-        Description(x => x.WithTags("Users"));
-        Policies("UserAdministration");
+        Group<UserAdministrationGroup>();
 
         Summary(s =>
         {
@@ -18,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", request.Name, request.Id);
-
         Logger.LogInformation("Checking if an user entity exists with Id: {UserId}", request.Id);
         var itemExists = await dbContext.Users!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -45,9 +42,7 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
 
         Response.User = createdItem!.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.User));
+        listings.NotifyChanged(nameof(Domain.Entities.User));
 
         await Send.OkAsync(Response, cancellationToken);
     }

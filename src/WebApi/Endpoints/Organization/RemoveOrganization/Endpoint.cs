@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Organization.RemoveOrganization;
 
 // Dapper Repository Advanced
-public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationRequest, Response>
+public class Endpoint(IUnitOfWork unitOfWork, ListingChangeNotifier listings) : Endpoint<RemoveOrganizationRequest, Response>
 {
     public override void Configure()
     {
@@ -18,8 +18,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
 
     public override async Task HandleAsync(RemoveOrganizationRequest request, CancellationToken cancellationToken)
     {        
-        Logger.LogInformation("Service started processing request.");
-
         var ids = BatchIds.Normalize(request.Ids);
 
         Logger.LogInformation("Beginning transaction.");
@@ -39,9 +37,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
 
         Logger.LogInformation("Committing transaction.");
         await unitOfWork.CommitAsync(cancellationToken);
-        Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Organization));
+        if (Response.Success) listings.NotifyChanged(nameof(Domain.Entities.Organization));
 
         await Send.OkAsync(Response, cancellationToken);
     }

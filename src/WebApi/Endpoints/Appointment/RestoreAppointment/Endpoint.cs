@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Appointment.RestoreAppointment;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RestoreAppointmentRequest, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<RestoreAppointmentRequest, Response>
 {
     public override void Configure()
     {
@@ -18,8 +18,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RestoreAppoint
 
     public override async Task HandleAsync(RestoreAppointmentRequest request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         var ids = BatchIds.Normalize(request.Ids, "restored");
         Logger.LogInformation("Checking that {Count} appointment entities are removed.", ids.Length);
         var items = await dbContext.Appointments!.IgnoreQueryFilters().Where(x => ids.Contains(x.Id) && !x.Active).ToListAsync(cancellationToken);
@@ -39,9 +37,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RestoreAppoint
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Restore result: {Success}", Response.Success);
-        Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Appointment));
+        if (Response.Success) listings.NotifyChanged(nameof(Domain.Entities.Appointment));
 
         await Send.OkAsync(Response, cancellationToken);
     }

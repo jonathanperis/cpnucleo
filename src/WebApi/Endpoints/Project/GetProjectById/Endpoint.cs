@@ -16,8 +16,6 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {        
-        Logger.LogInformation("Service started processing request.");
-        
         Logger.LogInformation("Fetching project entity with Id: {ProjectId}", request.Id);
         var item = await repository.GetByIdAsync(request.Id, cancellationToken);        
         
@@ -31,8 +29,6 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         Logger.LogInformation("Mapping entity to DTO and setting response for Id: {ProjectId}", request.Id);
         Response.Project = item.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-        
         await Send.OkAsync(Response, cancellationToken);
     }
 }
