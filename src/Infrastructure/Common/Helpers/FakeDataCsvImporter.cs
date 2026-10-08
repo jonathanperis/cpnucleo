@@ -2,7 +2,7 @@ namespace Infrastructure.Common.Helpers;
 
 public static class FakeDataCsvImporter
 {
-    private const string SeedVersion = "fake-data-csv-v3-20260528-tenant-scoped";
+    private const string SeedVersion = "fake-data-csv-v4-20261008-workspace-names";
     private const string DefaultDemoLogin = AdminLogins.DefaultLogin;
     private const string DemoPasswordEnvironmentVariable = "CPNUCLEO_DEMO_PASSWORD";
     private const string DefaultDemoName = "Cpnucleo Demo";
@@ -77,6 +77,8 @@ public static class FakeDataCsvImporter
         await ImportUserAssignmentsAsync(connection, userIds, userOrganizationIndexMap, assignmentIds, assignmentOrganizationIds, random, logger, cancellationToken).ConfigureAwait(false);
         await ImportAssignmentImpedimentsAsync(connection, assignmentIds, impedimentIds, random, logger, cancellationToken).ConfigureAwait(false);
         await ImportAppointmentsAsync(connection, assignmentIds, assignmentOrganizationIds, userIds, userOrganizationIndexMap, random, logger, cancellationToken).ConfigureAwait(false);
+        // Bogus supplies volume, relations and dates; the shared script gives the rows workspace names.
+        await DemoWorkspaceNames.ApplyAsync(connection, transaction, logger, cancellationToken).ConfigureAwait(false);
         await SetRelationshipTriggersAsync(connection, enabled: true, cancellationToken).ConfigureAwait(false);
         await MarkSeedAppliedAsync(connection, startedAt, cancellationToken).ConfigureAwait(false);
         await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);

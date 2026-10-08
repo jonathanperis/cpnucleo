@@ -303,6 +303,18 @@ The script:
 
 `scripts/verify-backup.sh [backup-dir]` proves restorability: it checks `SHA256SUMS` and the config archive, starts a throwaway `postgres:16.15` container with `--network none` and a random password, restores the latest complete dump with `--exit-on-error`, and prints `__EFMigrationsHistory` contents and row counts for key tables. It accepts no host or connection string and refuses to run commands in any container it did not create, so it cannot touch production. Run it after backups (for example weekly from cron) and alert on a non-zero exit.
 
+### Renaming existing demo data
+
+A database seeded before the workspace names still shows Bogus text ("monitor transmitting back-end"). `scripts/apply-demo-workspace-names.sh` applies the shared [`DemoWorkspaceNames.sql`](../database/#seed-and-recovery-tools) through `psql` in the `db` container. Nothing runs it automatically. Without arguments it is a dry run: it prints how many rows it would change and rolls back. Take and verify a backup first, then commit with `--apply`:
+
+```sh
+./scripts/backup-hostinger.sh && ./scripts/verify-backup.sh
+COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=cpnucleo SQL_FILE=./DemoWorkspaceNames.sql ./apply-demo-workspace-names.sh
+COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=cpnucleo SQL_FILE=./DemoWorkspaceNames.sql ./apply-demo-workspace-names.sh --apply
+```
+
+It runs in one transaction with a 5-second lock timeout and touches only rows that still carry generated text, so people's rows and the demo account are kept and a repeated run changes nothing. On the full dataset (about 1.37 million rows) it takes two to three minutes on a laptop, mostly maintaining the trigram search indexes, and locks the rows it rewrites meanwhile, so run it at a quiet time. Open lists pick the new names up through the 15-second SSE refresh. To undo it, restore the backup.
+
 ---
 
 ## Environment Variables
