@@ -80,6 +80,28 @@ public class FakeDataSeedingTests
         compose.Should().NotContain("command: [\"--run-fake-data-csv-import\"]");
     }
 
+    [Fact]
+    public void DemoWorkspaceNames_ShouldBeOneScriptSharedByEveryDemoDataPath()
+    {
+        var script = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Common/Helpers/DemoWorkspaceNames.sql"));
+        var legacyInitScript = File.ReadAllText(GetRepositoryPath("docker-entrypoint-initdb.d/004-demo-workspace-names.sql"));
+        var project = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Infrastructure.csproj"));
+        var importer = File.ReadAllText(GetRepositoryPath("src/Infrastructure/Common/Helpers/FakeDataCsvImporter.cs"));
+        var operatorScript = File.ReadAllText(GetRepositoryPath("scripts/apply-demo-workspace-names.sh"));
+        var productionCompose = File.ReadAllText(GetRepositoryPath("compose.prod.yaml"));
+
+        legacyInitScript.Should().Be(script, "the legacy compose.yaml init directory runs a copy of the shared script");
+        project.Should().Contain("<EmbeddedResource Include=\"Common\\Helpers\\DemoWorkspaceNames.sql\"");
+        importer.Should().NotContain("fake-data-csv-v3-", "databases seeded before the workspace names must be able to reseed");
+        var lastImport = importer.IndexOf("await ImportAppointmentsAsync(", StringComparison.Ordinal);
+        var rename = importer.IndexOf("await DemoWorkspaceNames.ApplyAsync(connection, transaction", StringComparison.Ordinal);
+        var triggersBack = importer.IndexOf("SetRelationshipTriggersAsync(connection, enabled: true", StringComparison.Ordinal);
+        rename.Should().BeGreaterThan(lastImport, "the rename needs every generated row");
+        triggersBack.Should().BeGreaterThan(rename, "the rename runs inside the import transaction");
+        operatorScript.Should().Contain("ROLLBACK", "the operator script dry-runs unless --apply is given");
+        productionCompose.Should().NotContain("demo-workspace-names", "production never renames automatically");
+    }
+
     private static string GetRepositoryPath(string relativePath)
     {
         var currentDirectory = new DirectoryInfo(AppContext.BaseDirectory);
