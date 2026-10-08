@@ -31,7 +31,7 @@ The seed command requires an empty database. The default `tiny` profile creates 
 docker compose -f compose.lab.yaml run --rm seed --reset-lab --Seed:Profile=realistic
 ```
 
-`--reset-lab` drops the configured database and is accepted only in Development. Do not point Development configuration at valuable data. The large CSV importer is a separate advanced exercise and remains explicitly opt-in.
+`--reset-lab` drops the configured database and is accepted only in Development. Do not point Development configuration at valuable data. The large CSV importer is a separate advanced exercise and remains explicitly opt-in; it ends by giving the generated rows [workspace names](../database/#seed-and-recovery-tools).
 
 ## Source development
 
