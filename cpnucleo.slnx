@@ -34,5 +34,6 @@
     <Project Path="labs/JobQueueLab/JobQueueLab.csproj" />
     <Project Path="labs/ApiReferenceLab/ApiReferenceLab.csproj" />
     <Project Path="labs/OpenApiLab/OpenApiLab.csproj" />
+    <Project Path="labs/GrpcStreamingLab/GrpcStreamingLab.csproj" />
   </Folder>
 </Solution>
