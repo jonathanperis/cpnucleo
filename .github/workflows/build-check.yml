@@ -145,6 +145,10 @@ jobs:
         run: |
           dotnet run --project labs/OutboxLab -c Release
           dotnet run --project labs/PersistenceLab -c Release -- --rows 200 --iterations 5
+          dotnet run --project labs/JobQueueLab -c Release
+          dotnet run --project labs/GrpcStreamingLab -c Release
+          dotnet run --project labs/OpenApiLab -c Release
+          dotnet run --project labs/ApiReferenceLab -c Release
 
       - name: Audit WebClient dependencies
         if: matrix.service == 'WebClient'

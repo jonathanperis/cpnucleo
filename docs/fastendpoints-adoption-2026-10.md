@@ -113,12 +113,15 @@ Ordered by value and risk. "Contract" means a client could observe the change; e
 
 ### Lab-only experiments
 
-Each belongs under `labs/`, labelled as an experiment, never presented as a guarantee:
-- **Job queues:** FastEndpoints job queues with a Dapper/PostgreSQL storage provider, next to `labs/OutboxLab`. Compare lease-based claiming with the hand-written `FOR UPDATE SKIP LOCKED` outbox. Queued jobs are not transactional with the business write unless the provider joins the transaction.
-- **Native AOT:** source-generated serializer contexts and `NativeAotTestMode` black-box tests, as part of the explicit AOT experiment `AGENTS.md` requires.
-- **`FastEndpoints.OpenApi`:** migrating from `FastEndpoints.Swagger` (NSwag) to it, which uses `Microsoft.AspNetCore.OpenApi`. The Swagger pins in `FastEndpointsConfigurationTests` and the `/swagger` docs would change.
-- **Scalar:** Scalar as an alternative API reference UI (adds a package and CSP changes).
-- **gRPC server streaming:** as the gRPC counterpart to REST SSE listings.
+Each lives under `labs/` and is labelled as an experiment, never as a guarantee. They are documented in the learning lab (sections 8–12); all but Native AOT run in CI.
+
+| Experiment | Lab | Result |
+|---|---|---|
+| Job queues | `labs/JobQueueLab` | `QueueJobAsync` is **not** a transactional outbox: a rolled-back business write still leaves its job queued, and a job can run before the write is visible. Writing `CreateJob<T>()` through the business transaction and triggering after commit is atomic. Leases, idempotent queueing and crash retry work; delivery stays at-least-once with no retry cap. |
+| gRPC server streaming | `labs/GrpcStreamingLab` | LISTEN/NOTIFY pushes an external write in about 4–15 ms (SSE: up to 15 s), with fallback refresh and re-subscribe covering missed notifications and a killed listener. One LISTEN connection per stream does not scale; not wired into GrpcServer. |
+| `FastEndpoints.OpenApi` | `labs/OpenApiLab` | Same 69 operations, but generation fails out of the box (`[DefaultValue]` strings on `Guid`s), and even with our processors ported the contract would change in formats, constraints and schemas. Not recommended now. |
+| Scalar | `labs/ApiReferenceLab` | Scripts ship in the package; only fonts come from a CDN by default. A hardened profile renders with a nonce-only `script-src`, but styles need `'unsafe-inline'`. Not wired into the hosts. |
+| Native AOT | `labs/NativeAotLab` | FastEndpoints.Swagger's build targets suppress trim/AOT warnings; lifted, the publish reports 1,050 (mostly EF Core). The native WebApi binary gets past generated endpoint discovery and stops in Delta's static constructor (`Assembly.Location`); the native migrator needs an EF Core compiled model. Manual; not in CI. |
 
 ## Deliberately not adopted
 
