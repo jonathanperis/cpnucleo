@@ -5,8 +5,6 @@ public sealed class GetAssignmentTypeByIdHandler(IUnitOfWork unitOfWork, ILogger
 {
     public async Task<GetAssignmentTypeByIdResult> ExecuteAsync(GetAssignmentTypeByIdCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching assignmentType entity with Id: {AssignmentTypeId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentType>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -28,8 +26,6 @@ public sealed class GetAssignmentTypeByIdHandler(IUnitOfWork unitOfWork, ILogger
             Message = "AssignmentType fetched successfully.",
             AssignmentType = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

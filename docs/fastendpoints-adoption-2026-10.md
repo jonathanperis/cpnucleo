@@ -16,6 +16,27 @@ A page-by-page comparison of the [FastEndpoints documentation](https://fast-endp
 - **Production:** the OpenAPI and anonymous-request findings were re-checked against the production API on 2026-10-08.
 - **Status:** item 1 (the defect below) is fixed together with this document; the other items are implemented in follow-up pull requests.
 
+## Implementation status
+
+The backlog below was implemented in five stacked pull requests:
+
+| PR | Items | Result |
+|---|---|---|
+| #271 | 1 | Delta runs only for signed-in callers; anonymous `/`, `/swagger` and the OpenAPI document are served again. |
+| #272 | 2, 3, 4, 14 | No `required` request members (architecture test); validation errors built by `ApiErrors.ValidationResponse` through `ErrorOptions`; senders mark the response started; duplicate ids are 409. |
+| #273 | 6–11 | One tag per operation with descriptions, readable operation ids and schema names, documented error statuses and flat pagination keys, and `docs/openapi` snapshots checked by `OpenApiSnapshotTests`. |
+| #274 | 5, 13, 15, 16 | Constructor-injected notifier, FastEndpoints event-stream sender, boilerplate logs removed, `UserAdministrationGroup`. |
+| #275 | 12, 17, 18 | Source-generated discovery and `Warmup()`; `[Authorize]` on gRPC user handlers with the denial message kept; per-call gRPC timing; `FastEndpoints.Testing` replaced by `Microsoft.AspNetCore.Mvc.Testing`. |
+
+Decisions taken while implementing:
+
+- **#17** keeps the client-facing message. A gRPC-aware authorization result handler answers a forbidden call with `PermissionDenied` and "User administration requires an administrator.", so moving to `[Authorize]` changed nothing for clients.
+- **#18** drops `FastEndpoints.Testing`. Its `AppFixture` is single-host, and the suite deliberately runs IdentityApi, WebApi and GrpcServer together with real tokens.
+- **#19 is not adopted.** FastEndpoints keeps event handlers in a process-wide static dictionary and creates them through a process-wide service resolver. The integration tests host several APIs in one process, so a listing event handler would resolve its dependencies from whichever host started first, and the tests would no longer exercise what production runs. #5 already removed the service-locator calls the event bus would have replaced.
+- **#11** compares the document served by each host in its own process. A document generated inside the shared test process differs, for the same reason as below.
+
+**Finding from the implementation:** FastEndpoints applies `UseFastEndpoints(...)` settings once per process, and the integration fixture starts IdentityApi first. Until #273, WebApi in tests silently ran with IdentityApi's settings; it only worked because they matched. The block is now identical in both hosts, pinned by `ApiHosts_ShouldConfigureFastEndpointsIdentically`, and per-host OpenAPI behaviour lives in NSwag processors.
+
 ## Verdict summary
 
 | Verdict | Meaning | Count |
@@ -88,7 +109,7 @@ Ordered by value and risk. "Contract" means a client could observe the change; e
 | 16 | Group shared endpoint settings: a `Users` group carrying `Policies("UserAdministration")` and its tag. | Configuration: endpoint groups | `Policies("UserAdministration")` repeated in 6 endpoints. | S | Use an empty group prefix: routes mix `/user` and `/users` and must keep their paths. |
 | 17 | GrpcServer: use `[Authorize(Policy = "UserAdministration")]` on the 5 User handlers' `ExecuteAsync`; the handler server copies those attributes into endpoint metadata. Move gRPC start/finish logging into the existing interceptor. | Remote procedure calls | `UserAdministration.RequireAdmin(IHttpContextAccessor)` inside each handler. | S | The status stays `PermissionDenied`, but the custom message "User administration requires an administrator." is lost. Decide whether that matters. |
 | 18 | Testing package: either adopt `AppFixture<Program>` (Testcontainers in `PreSetupAsync`, cached hosts), or reference `Microsoft.AspNetCore.Mvc.Testing` directly and drop the unused `FastEndpoints.Testing`. | Integration & unit testing | Referenced and globally imported, 0 uses. A hand-written three-host `WebAppFixture` with one serial collection. | S (drop) / M–L (adopt) | `AppFixture` is single-host, while the suite deliberately runs IdentityApi, WebApi and GrpcServer together with real tokens. Running classes in parallel changes the deliberately serial "Database" collection; decide that explicitly. Recommendation: drop the package. |
-| 19 | Optional, after #5: publish an in-process `ListingChanged` event (`IEvent` + one `IEventHandler`) instead of calling the notifier. Assert writes with `RegisterTestEventReceivers()`. | Event bus | Direct notifier calls. | M | The 15-second external-write convergence stays the cross-instance guarantee. |
+| 19 | **Not adopted (see Implementation status).** Optional, after #5: publish an in-process `ListingChanged` event (`IEvent` + one `IEventHandler`) instead of calling the notifier. Assert writes with `RegisterTestEventReceivers()`. | Event bus | Direct notifier calls. | M | The 15-second external-write convergence stays the cross-instance guarantee. |
 
 ### Lab-only experiments
 

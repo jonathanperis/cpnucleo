@@ -5,8 +5,6 @@ public sealed class UpdateAssignmentTypeHandler(IUnitOfWork unitOfWork, ILogger<
 {
     public async Task<UpdateAssignmentTypeResult> ExecuteAsync(UpdateAssignmentTypeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an assignmentType entity exists with Id: {AssignmentTypeId}", command.Id);
@@ -35,8 +33,6 @@ public sealed class UpdateAssignmentTypeHandler(IUnitOfWork unitOfWork, ILogger<
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateAssignmentTypeResult 
             { 

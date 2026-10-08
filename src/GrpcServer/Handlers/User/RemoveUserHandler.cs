@@ -1,12 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUserHandler> logger, IHttpContextAccessor context) : ICommandHandler<RemoveUserCommand, RemoveUserResult>
+public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUserHandler> logger) : ICommandHandler<RemoveUserCommand, RemoveUserResult>
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = Common.Security.UserAdministration.Policy)]
     public async Task<RemoveUserResult> ExecuteAsync(RemoveUserCommand command, CancellationToken cancellationToken)
     {
-        Common.Security.UserAdministration.RequireAdmin(context);
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -32,7 +31,6 @@ public sealed class RemoveUserHandler(IUnitOfWork unitOfWork, ILogger<RemoveUser
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveUserResult
             {
                 Success = true,

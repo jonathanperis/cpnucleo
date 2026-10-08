@@ -5,8 +5,6 @@ public sealed class UpdateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Upd
 {
     public async Task<UpdateUserProjectResult> ExecuteAsync(UpdateUserProjectCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an userProject entity exists with Id: {UserProjectId}", command.Id);
@@ -35,8 +33,6 @@ public sealed class UpdateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Upd
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateUserProjectResult 
             { 

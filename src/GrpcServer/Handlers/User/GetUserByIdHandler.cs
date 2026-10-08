@@ -1,13 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserByIdHandler> logger, IHttpContextAccessor context) : ICommandHandler<GetUserByIdCommand, GetUserByIdResult>
+public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserByIdHandler> logger) : ICommandHandler<GetUserByIdCommand, GetUserByIdResult>
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = Common.Security.UserAdministration.Policy)]
     public async Task<GetUserByIdResult> ExecuteAsync(GetUserByIdCommand command, CancellationToken cancellationToken)
     {
-        Common.Security.UserAdministration.RequireAdmin(context);
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching user entity with Id: {UserId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.User>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -29,8 +27,6 @@ public sealed class GetUserByIdHandler(IUnitOfWork unitOfWork, ILogger<GetUserBy
             Message = "User fetched successfully.",
             User = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

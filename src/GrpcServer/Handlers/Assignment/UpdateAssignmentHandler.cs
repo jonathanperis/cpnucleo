@@ -5,8 +5,6 @@ public sealed class UpdateAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Upda
 {
     public async Task<UpdateAssignmentResult> ExecuteAsync(UpdateAssignmentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an assignment entity exists with Id: {AssignmentId}", command.Id);
@@ -44,8 +42,6 @@ public sealed class UpdateAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Upda
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateAssignmentResult 
             { 

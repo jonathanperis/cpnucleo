@@ -1,14 +1,13 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHandler> logger, IHttpContextAccessor context) : ICommandHandler<ListUsersCommand, ListUsersResult>
+public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHandler> logger) : ICommandHandler<ListUsersCommand, ListUsersResult>
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = Common.Security.UserAdministration.Policy)]
     public async Task<ListUsersResult> ExecuteAsync(ListUsersCommand command, CancellationToken cancellationToken)
     {
-        Common.Security.UserAdministration.RequireAdmin(context);
         // Invalid or missing paging is InvalidArgument, the same rule REST applies.
         var pagination = PaginationParams.Require(command.Pagination);
-        logger.LogInformation("Service started processing request.");
         logger.LogInformation("Fetching all users with pagination page {PageNumber}, size {PageSize}", pagination.PageNumber, pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.User>();
@@ -25,7 +24,6 @@ public sealed class ListUsersHandler(IUnitOfWork unitOfWork, ILogger<ListUsersHa
         };
 
         logger.LogInformation("Mapping complete, setting response result.");
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

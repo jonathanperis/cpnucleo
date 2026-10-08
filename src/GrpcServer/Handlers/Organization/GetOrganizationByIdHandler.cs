@@ -5,8 +5,6 @@ public sealed class GetOrganizationByIdHandler(IUnitOfWork unitOfWork, ILogger<G
 {
     public async Task<GetOrganizationByIdResult> ExecuteAsync(GetOrganizationByIdCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching organization entity with Id: {OrganizationId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Organization>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -28,8 +26,6 @@ public sealed class GetOrganizationByIdHandler(IUnitOfWork unitOfWork, ILogger<G
             Message = "Organization fetched successfully.",
             Organization = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

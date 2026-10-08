@@ -12,7 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="FastEndpoints.Testing" />
+      <!-- Real hosts through WebApplicationFactory; FastEndpoints.Testing's AppFixture is single-host and was unused. -->
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
       <PackageReference Include="Testcontainers.PostgreSql" />
       <PackageReference Include="coverlet.collector">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

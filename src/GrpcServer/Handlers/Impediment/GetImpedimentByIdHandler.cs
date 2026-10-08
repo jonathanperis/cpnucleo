@@ -5,8 +5,6 @@ public sealed class GetImpedimentByIdHandler(IUnitOfWork unitOfWork, ILogger<Get
 {
     public async Task<GetImpedimentByIdResult> ExecuteAsync(GetImpedimentByIdCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching impediment entity with Id: {ImpedimentId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Impediment>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -28,8 +26,6 @@ public sealed class GetImpedimentByIdHandler(IUnitOfWork unitOfWork, ILogger<Get
             Message = "Impediment fetched successfully.",
             Impediment = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

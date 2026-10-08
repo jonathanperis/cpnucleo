@@ -5,8 +5,6 @@ public sealed class CreateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Cr
 {
     public async Task<CreateOrganizationResult> ExecuteAsync(CreateOrganizationCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request with payload Name: {Name}, Description: {Description}, Id: {OrganizationId}", command.Name, command.Description, command.Id);
-
         try
         {
             logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", command.Id);
@@ -45,8 +43,6 @@ public sealed class CreateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Cr
                 Message = "Organization created successfully.",
                 Organization = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }
