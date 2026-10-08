@@ -513,7 +513,11 @@ public class FastEndpointsConfigurationTests
     {
         var program = File.ReadAllText(GetRepositoryPath(programPath));
 
-        program.Should().Contain("UseFastEndpoints(c => c.Endpoints.RoutePrefix = \"api\")");
+        program.Should().Contain("app.UseFastEndpoints(c =>");
+        program.Should().Contain("c.Endpoints.RoutePrefix = \"api\";");
+        // Validation failures share the error envelope with every other error.
+        program.Should().Contain("ApiErrors.ValidationResponse(");
+        program.Should().Contain("c.Errors.ContentType = \"application/json\";");
     }
 
     [Theory]

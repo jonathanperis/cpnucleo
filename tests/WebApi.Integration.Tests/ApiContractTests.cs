@@ -28,6 +28,34 @@ public class ApiContractTests(WebAppFixture app)
     }
 
     [Fact]
+    public async Task ValidationErrors_UseTheSharedEnvelope_EvenWhenAFieldIsMissing()
+    {
+        // No "name" at all: the validator reports the field instead of a serializer error naming internal types.
+        var response = await app.Client.PostAsJsonAsync("/api/workflow", new { id = Guid.NewGuid(), order = 1 }, Cancellation);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        response.Content.Headers.ContentType!.MediaType.ShouldBe("application/json");
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>(Cancellation);
+        body.GetProperty("statusCode").GetInt32().ShouldBe(400);
+        body.GetProperty("message").GetString().ShouldBe("The request is invalid.");
+        body.GetProperty("errors").TryGetProperty("name", out _).ShouldBeTrue(body.ToString());
+        body.GetProperty("errors").TryGetProperty("serializerErrors", out _).ShouldBeFalse(body.ToString());
+        body.ToString().ShouldNotContain("WebApi.Endpoints");
+    }
+
+    [Fact]
+    public async Task CreatingWithAnIdInUse_IsAConflictOnTheIdField()
+    {
+        var graph = await app.CreateGraphAsync();
+        var response = await app.Client.PostAsJsonAsync("/api/workflow", new { id = graph.Workflow.Id, name = "Duplicate", order = 1 }, Cancellation);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>(Cancellation);
+        body.GetProperty("statusCode").GetInt32().ShouldBe(409);
+        body.GetProperty("errors").GetProperty("id")[0].GetString().ShouldBe("this Id is already in use!");
+    }
+
+    [Fact]
     public async Task DomainRules_ReportTheOffendingField()
     {
         var graph = await app.CreateGraphAsync();

@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the description of the assignmentImpediment.
     /// </summary>
     [DefaultValue("AssignmentImpediment description goes here")]
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the unique identifier for the assignment.

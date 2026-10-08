@@ -25,10 +25,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (itemExists)
         {
             Logger.LogWarning("Impediment Id conflict for Id: {ImpedimentId}", request.Id);
-            AddError(r => r.Id, "this Id is already in use!");
+            ThrowError(r => r.Id, "this Id is already in use!", StatusCodes.Status409Conflict);
         }
-
-        ThrowIfAnyErrors();
 
         Logger.LogInformation("Validation passed, proceeding to create new impediment entity.");
         var newItem = Domain.Entities.Impediment.Create(request.Name, request.Id);

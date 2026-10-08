@@ -44,6 +44,7 @@ public class CreateProjectHandlerTests
 
         result.Success.ShouldBeFalse();
         result.Message.ShouldBe("this Id is already in use!");
+        result.IdInUse.ShouldBeTrue();
         result.Project.ShouldBeNull();
         A.CallTo(() => store.AddAsync(A<Project>._, A<Guid?>._, A<CancellationToken>._)).MustNotHaveHappened();
     }

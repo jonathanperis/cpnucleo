@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the name of the workflow.
     /// </summary>
     [DefaultValue("Updated Workflow")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the order of the workflow.

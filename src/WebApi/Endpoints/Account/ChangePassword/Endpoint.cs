@@ -37,10 +37,8 @@ public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, Pas
         if (throttle.RetryAfter(user.Id) is { } retryAfter)
         {
             Logger.LogWarning("Password change rejected for user {UserId}: too many wrong current passwords.", user.Id);
-            var seconds = Math.Max(1, (int)Math.Ceiling(retryAfter.TotalSeconds));
-            HttpContext.Response.Headers.RetryAfter = seconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            await ApiErrors.WriteAsync(HttpContext, StatusCodes.Status429TooManyRequests,
-                $"Too many incorrect passwords. Try again in {seconds} seconds.", cancellationToken: cancellationToken);
+            await Send.TooManyRequestsEnvelopeAsync(retryAfter,
+                seconds => $"Too many incorrect passwords. Try again in {seconds} seconds.", cancellationToken);
             return;
         }
 
@@ -49,8 +47,7 @@ public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, Pas
         {
             throttle.RecordFailure(user.Id);
             Logger.LogWarning("Password change rejected for user {UserId}: wrong current password.", user.Id);
-            AddError(r => r.CurrentPassword, "The current password is incorrect.");
-            ThrowIfAnyErrors();
+            ThrowError(r => r.CurrentPassword, "The current password is incorrect.");
         }
 
         throttle.RecordSuccess(user.Id);
@@ -60,8 +57,7 @@ public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, Pas
         Response.Success = await accounts.SavePasswordAsync(user, verifiedHash!, cancellationToken);
         if (!Response.Success)
         {
-            await ApiErrors.WriteAsync(HttpContext, StatusCodes.Status409Conflict,
-                "The account changed concurrently. Sign in again and retry.", cancellationToken: cancellationToken);
+            await Send.ConflictEnvelopeAsync("The account changed concurrently. Sign in again and retry.", cancellationToken);
             return;
         }
 

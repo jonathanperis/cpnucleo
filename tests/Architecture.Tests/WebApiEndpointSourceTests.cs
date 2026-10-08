@@ -33,6 +33,22 @@ public class WebApiEndpointSourceTests
     }
 
     [Fact]
+    public void WebApi_Request_Dtos_Should_Not_Use_Required_Members()
+    {
+        var repoRoot = LocateRepositoryRoot();
+        var files = new[] { Path.Join(repoRoot, "src", "WebApi", "Endpoints"), Path.Join(repoRoot, "src", "WebApi", "Common", "Models") }
+            .SelectMany(directory => Directory.GetFiles(directory, "*.cs", SearchOption.AllDirectories));
+
+        var offenders = files
+            .Where(path => File.ReadAllText(path).Contains("public required "))
+            .Select(path => Path.GetRelativePath(repoRoot, path))
+            .OrderBy(path => path)
+            .ToArray();
+
+        offenders.Should().BeEmpty("a missing required member makes System.Text.Json reject the body before validation, so clients get a serializer message naming internal types instead of the field error from the validator");
+    }
+
+    [Fact]
     public void WebApi_Endpoints_Should_Not_Pass_CancellationToken_As_FindAsync_Key()
     {
         var repoRoot = LocateRepositoryRoot();

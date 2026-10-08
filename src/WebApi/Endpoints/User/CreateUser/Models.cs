@@ -15,19 +15,19 @@ public class Request
     /// Gets or sets the name of the user.
     /// </summary>
     [DefaultValue("New User")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the login of the user.
     /// </summary>
     [DefaultValue("verysecretusername")]
-    public required string Login { get; set; }
+    public string Login { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the password of the user.
     /// </summary>
     [DefaultValue("veryverysecretpassword")]
-    public required string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
     public class Validator : Validator<Request>
     {

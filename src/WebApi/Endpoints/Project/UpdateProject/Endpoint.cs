@@ -38,8 +38,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         if (!Response.Success && request.ExpectedVersion is not null)
         {
             Logger.LogInformation("Project {ProjectId} changed since version {ExpectedVersion}.", request.Id, request.ExpectedVersion);
-            await ApiErrors.WriteAsync(HttpContext, StatusCodes.Status409Conflict,
-                "The project changed. Reload before saving your changes.", cancellationToken: cancellationToken);
+            await Send.ConflictEnvelopeAsync("The project changed. Reload before saving your changes.", cancellationToken);
             return;
         }
 

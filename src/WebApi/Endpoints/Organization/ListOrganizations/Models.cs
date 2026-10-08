@@ -9,7 +9,7 @@ public class Request
     /// Gets or sets the pagination parameters for the request.
     /// </summary>
     [FromQuery]
-    public required PaginationParams Pagination { get; set; }
+    public PaginationParams Pagination { get; set; } = new();
     
     public class Validator : Validator<Request>
     {

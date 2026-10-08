@@ -25,10 +25,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (itemExists)
         {
             Logger.LogWarning("UserAssignment Id conflict for Id: {UserAssignmentId}", request.Id);
-            AddError(r => r.Id, "this Id is already in use!");
+            ThrowError(r => r.Id, "this Id is already in use!", StatusCodes.Status409Conflict);
         }
-
-        ThrowIfAnyErrors();
 
         Logger.LogInformation("Validation passed, proceeding to create new userAssignment entity.");
         var newItem = Domain.Entities.UserAssignment.Create(request.UserId, request.AssignmentId, request.Id);

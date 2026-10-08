@@ -25,10 +25,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
         if (itemExists)
         {
             Logger.LogWarning("UserProject Id conflict for Id: {UserProjectId}", request.Id);
-            AddError(r => r.Id, "this Id is already in use!");
+            ThrowError(r => r.Id, "this Id is already in use!", StatusCodes.Status409Conflict);
         }
-
-        ThrowIfAnyErrors();
 
         Logger.LogInformation("Validation passed, proceeding to create new userProject entity.");
         var newItem = Domain.Entities.UserProject.Create(request.UserId, request.ProjectId, request.Id);

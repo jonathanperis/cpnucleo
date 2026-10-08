@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the name of the project.
     /// </summary>
     [DefaultValue("New Project")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the unique identifier for the organization.
