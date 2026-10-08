@@ -8,7 +8,7 @@
 | Application.Unit.Tests | Shared project creation (including creator membership), pagination and search escaping, domain invariants on every factory, UTC normalization, password policy, security stamps and batch ids |
 | Security.Unit.Tests | Argon2 hashing, timing-safe password checks, per-login lockout, API token validation (RS256 `at+jwt` only, issuer, per-API audience), encrypted key storage, and the OpenID Connect client registry (PKCE, one-time refresh tokens, eight-hour bound, service clients) |
 | WebApi.Unit.Tests | Endpoint orchestration, atomic EF batch removal for every resource, per-resource listing notifications and SSE `Accept` parsing |
-| WebApi.Integration.Tests | Real WebApi, GrpcServer and IdentityApi hosts on PostgreSQL: CRUD on both transports for every resource with soft-delete checks, restore of every resource (atomicity, triggers, access), relation and date list filters on both transports, the self-service account endpoints, authorization (admin, member, outsider), relationship triggers and their races, JWT negatives and session revocation, the OpenID Connect flows end to end (authorization code with PKCE, the sign-in page of the requesting WebClient origin, refresh rotation and replay detection, revocation, sign-out, login CSRF, service clients), rate limiting, the error envelope, security headers, readiness, dates, search, sorting, project concurrency and SSE external writes |
+| WebApi.Integration.Tests | Real WebApi, GrpcServer and IdentityApi hosts on PostgreSQL: CRUD on both transports for every resource with soft-delete checks, restore of every resource (atomicity, triggers, access), relation and date list filters on both transports, the self-service account endpoints, authorization (admin, member, outsider), relationship triggers and their races, JWT negatives and session revocation, the OpenID Connect flows end to end (authorization code with PKCE, the sign-in page of the requesting WebClient origin, refresh rotation and replay detection, revocation, sign-out, login CSRF, service clients), rate limiting, the error envelope, security headers, readiness, dates, search, sorting, project concurrency, SSE external writes, and the OpenAPI documents against their committed snapshots |
 
 Run `dotnet test cpnucleo.slnx`. Docker must be available for the integration suite. It provisions its own PostgreSQL container with commit timestamps enabled and applies real migrations. It neither reads nor mutates your application database.
 
@@ -25,6 +25,7 @@ dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~Persiste
 dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~ConcurrencyAndStreamingTests
 dotnet test tests/WebApi.Integration.Tests/ --filter "FullyQualifiedName~AuthorizationTests|FullyQualifiedName~AuthenticationTests"
 dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~RelationshipIntegrityTests
+UPDATE_OPENAPI_SNAPSHOTS=1 dotnet test tests/WebApi.Integration.Tests/ --filter FullyQualifiedName~OpenApiSnapshotTests  # rewrite docs/openapi after an intended contract change
 ```
 
 The fixture seeds three accounts: an administrator (listed in `CPNUCLEO_ADMIN_LOGINS`), a member and an outsider. Test tokens carry the accounts' real security stamps, so they pass the same session validation as production tokens.

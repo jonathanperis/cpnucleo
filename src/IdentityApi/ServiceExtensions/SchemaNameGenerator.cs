@@ -1,6 +1,6 @@
 using NJsonSchema.Generation;
 
-namespace WebApi.ServiceExtensions;
+namespace IdentityApi.ServiceExtensions;
 
 internal sealed class SchemaNameGenerator : ISchemaNameGenerator
 {
@@ -8,8 +8,8 @@ internal sealed class SchemaNameGenerator : ISchemaNameGenerator
     {
         if (!type.IsGenericType)
         {
-            // Every endpoint folder has its own Request/Response: prefix the feature (UpdateProjectRequest).
-            return type is { Name: "Request" or "Response", Namespace: { } ns } && ns.StartsWith("WebApi.Endpoints.", StringComparison.Ordinal)
+            // Every endpoint folder has its own Request/Response: prefix the feature (LoginRequest).
+            return type is { Name: "Request" or "Response", Namespace: { } ns } && ns.StartsWith("IdentityApi.Endpoints.", StringComparison.Ordinal)
                 ? ns[(ns.LastIndexOf('.') + 1)..] + type.Name
                 : type.Name;
         }

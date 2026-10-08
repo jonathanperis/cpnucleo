@@ -15,7 +15,7 @@ The WebApi uses [FastEndpoints](https://fast-endpoints.com/) to define REST endp
 
 ### Swagger
 
-Available at `/swagger`; `UseSwaggerGen()` is currently enabled in all environments. Request/response schemas are generated from the endpoint models.
+Available at `/swagger`; `UseSwaggerGen()` is currently enabled in all environments. Request/response schemas are generated from the endpoint models. Each operation carries one tag, a readable id (the feature folder, such as `UpdateProject`), the flat query keys list endpoints accept (only the relation and date filters that resource supports), and every error status it can return with the shared envelope. The committed snapshots in `docs/openapi/` (`webapi.v1.json`, `identityapi.v1.json`) are the reviewed contract: `OpenApiSnapshotTests` starts each host in its own process and fails when the served document differs. After an intended change, run the integration tests with `UPDATE_OPENAPI_SNAPSHOTS=1` and commit the updated files.
 
 ### Endpoint Pattern
 

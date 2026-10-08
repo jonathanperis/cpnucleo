@@ -1,0 +1,191 @@
+{
+  "x-generator": "NSwag v14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cpnucleo Identity API",
+    "description": "OpenID Connect provider for Cpnucleo: authorization code with PKCE, client credentials, refresh token rotation, revocation and end session.",
+    "termsOfService": "https://cpnucleo.jonathanperis.tech",
+    "contact": {
+      "name": "Cpnucleo Identity Support",
+      "url": "https://cpnucleo.jonathanperis.tech"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://cpnucleo.jonathanperis.tech"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/account/logout": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Sign out of the identity session",
+        "description": "Reached through the OpenID Connect end-session endpoint. Ends the session and redirects to the post-logout URL.",
+        "operationId": "Logout",
+        "parameters": [
+          {
+            "name": "logoutId",
+            "in": "query",
+            "description": "The logout context created by the end-session endpoint.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/account/login-page": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Send the browser to the WebClient sign-in page",
+        "description": "The OpenID Connect login URL. Redirects to {origin}/login/?authRequest=... for the configured WebClient origin of the pending authorization request.",
+        "operationId": "LoginPage",
+        "parameters": [
+          {
+            "name": "authRequest",
+            "in": "query",
+            "description": "The pending authorization request the server wants the user to sign in for.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/account/login": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Sign in for a pending authorization request",
+        "description": "Form post from the WebClient sign-in page. Redirects to the authorization request on success, or back to the sign-in page with an error code.",
+        "operationId": "Login",
+        "requestBody": {
+          "x-name": "Request",
+          "description": "",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/account/error": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Describe a rejected authorization request",
+        "operationId": "Error",
+        "parameters": [
+          {
+            "name": "errorId",
+            "in": "query",
+            "description": "The error id the server appended when it redirected to the sign-in page.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LogoutRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "LoginPageRequest": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "LoginRequest": {
+        "type": "object",
+        "description": "The sign-in form posted by the WebClient\u0027s Astro login page (application/x-www-form-urlencoded).",
+        "additionalProperties": false,
+        "properties": {
+          "login": {
+            "type": "string",
+            "description": "The login of the user trying to sign in.",
+            "default": "test-user"
+          },
+          "password": {
+            "type": "string",
+            "description": "The password of the user trying to sign in.",
+            "default": "not-too-strong-password"
+          },
+          "authRequest": {
+            "type": "string",
+            "description": "The pending authorization request (the URL the server sent the browser to sign in for)."
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "The OAuth/OpenID Connect error code, for example invalid_request.",
+            "nullable": true
+          },
+          "errorDescription": {
+            "type": "string",
+            "description": "A short explanation safe to show users.",
+            "nullable": true
+          }
+        }
+      },
+      "ErrorRequest": {
+        "type": "object",
+        "additionalProperties": false
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Sign-in and sign-out steps of the OpenID Connect flows. Protocol endpoints are listed in /.well-known/openid-configuration."
+    }
+  ]
+}

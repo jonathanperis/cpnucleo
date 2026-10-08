@@ -11,6 +11,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RemoveOrganizationReque
         Summary(s => {
             s.Summary = "Delete organizations by Ids";
             s.Description = "Deletes the organizations specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.";
+            s.Responses[404] = "An id is missing or not visible; nothing was removed.";
+            s.Responses[409] = "A record still has active dependent data; nothing was removed.";
         });   
     }
 
