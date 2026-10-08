@@ -33,5 +33,6 @@
     <Project Path="labs/OutboxLab/OutboxLab.csproj" />
     <Project Path="labs/JobQueueLab/JobQueueLab.csproj" />
     <Project Path="labs/ApiReferenceLab/ApiReferenceLab.csproj" />
+    <Project Path="labs/OpenApiLab/OpenApiLab.csproj" />
   </Folder>
 </Solution>
