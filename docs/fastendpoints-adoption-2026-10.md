@@ -14,7 +14,7 @@ A page-by-page comparison of the [FastEndpoints documentation](https://fast-endp
 - **Source:** counts come from grepping the source.
 - **Behaviour:** checked in a scratch FastEndpoints 8.3.0 app and on a local Debug build of WebApi.
 - **Production:** the OpenAPI and anonymous-request findings were re-checked against the production API on 2026-10-08.
-- **Not done:** nothing here has been implemented yet.
+- **Status:** item 1 (the defect below) is fixed together with this document; the other items are implemented in follow-up pull requests.
 
 ## Verdict summary
 
@@ -43,7 +43,7 @@ The gaps sit in four places:
 
 ## Defect found during the review
 
-**Anonymous `GET /`, `/swagger/index.html` and `/swagger/v1/swagger.json` return 500 on WebApi, in production too.**
+**Anonymous `GET /`, `/swagger/index.html` and `/swagger/v1/swagger.json` returned 500 on WebApi, in production too.** Fixed in #271.
 
 - **Cause:** `UseInfrastructure()` runs Delta (ETag caching) with a per-caller `suffix` callback (`src/Infrastructure/DependencyInjection.cs:49-58`). Delta throws "A suffix callback was provided but the user is not authenticated" for any anonymous GET that reaches it.
 - **Not affected:**
@@ -162,7 +162,7 @@ Each belongs under `labs/`, labelled as an experiment, never presented as a guar
 
 ## Suggested pull requests
 
-1. **Fix:** anonymous 500 (#1), with its integration test.
+1. **Fix:** anonymous 500 (#1), with its integration test. Done in #271, together with this document.
 2. **Contract hygiene:** #2, #3, #4 and #14, with the envelope tests.
 3. **OpenAPI accuracy:** #6–#10, then the exported snapshot (#11).
 4. **Endpoint plumbing:** #5, #13, #15 and #16, mostly mechanical.
