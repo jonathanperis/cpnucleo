@@ -121,12 +121,9 @@ builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
 
 builder.Services
-    // Only this host's endpoints: other API assemblies loaded in the same process must not be mapped.
-    .AddFastEndpoints(o =>
-    {
-        o.DisableAutoDiscovery = true;
-        o.Assemblies = [typeof(IdentityApi.Endpoints.Account.Login.Endpoint).Assembly];
-    })
+    // Only this host's endpoints, validators and groups, listed at compile time by FastEndpoints.Generator
+    // (no assembly scanning): other API assemblies loaded in the same process must not be mapped.
+    .AddFastEndpoints(IdentityApi.DiscoveredTypes.All)
     .SwaggerDocument(o =>
     {
         o.EnableJWTBearerAuth = false;
@@ -210,6 +207,8 @@ app.UseMiddleware<ElapsedTimeMiddleware>();
 app.UseFastEndpoints(c =>
 {
     c.Endpoints.RoutePrefix = "api";
+    // Build validators, binders and compiled delegates at startup, before /readyz reports ready.
+    c.Endpoints.Warmup();
     // Operation ids and route names are the feature folder (UpdateProject); every class is named Endpoint.
     c.Endpoints.NameGenerator = context => context.EndpointType.Namespace!.Split('.')[^1];
     // Validation failures use the same envelope, message and content type as every other error.

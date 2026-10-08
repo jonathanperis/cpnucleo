@@ -5,7 +5,6 @@ public sealed class RemoveAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Remo
 {
     public async Task<RemoveAssignmentResult> ExecuteAsync(RemoveAssignmentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveAssignmentHandler(IUnitOfWork unitOfWork, ILogger<Remo
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveAssignmentResult
             {
                 Success = true,

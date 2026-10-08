@@ -5,8 +5,6 @@ public sealed class CreateImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Crea
 {
     public async Task<CreateImpedimentResult> ExecuteAsync(CreateImpedimentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {ImpedimentId}", command.Name, command.Id);
-
         try
         {
             logger.LogInformation("Checking if an impediment entity exists with Id: {ImpedimentId}", command.Id);
@@ -45,8 +43,6 @@ public sealed class CreateImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Crea
                 Message = "Impediment created successfully.",
                 Impediment = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

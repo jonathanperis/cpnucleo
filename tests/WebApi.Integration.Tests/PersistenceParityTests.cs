@@ -97,6 +97,7 @@ public class PersistenceParityTests(WebAppFixture app)
         var command = new GrpcServer.Contracts.Commands.User.ListUsersCommand { Pagination = new PaginationParams() };
         var rejected = await Should.ThrowAsync<Grpc.Core.RpcException>(() => command.RemoteExecuteAsync(WebAppFixture.GrpcOptions(admin: false)));
         rejected.StatusCode.ShouldBe(Grpc.Core.StatusCode.PermissionDenied);
+        rejected.Status.Detail.ShouldBe("User administration requires an administrator.");
         (await command.RemoteExecuteAsync(WebAppFixture.GrpcOptions())).Success.ShouldBeTrue();
     }
 

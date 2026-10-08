@@ -30,7 +30,13 @@ builder.Services.AddAuthorization(options =>
         .RequireAuthenticatedUser()
         .RequireClaim(CpnucleoClaimTypes.Subject)
         .Build();
+    // The same admin claim WebApi requires; user handlers declare it with [Authorize].
+    options.AddPolicy(GrpcServer.Common.Security.UserAdministration.Policy, policy => policy
+        .RequireAuthenticatedUser()
+        .RequireClaim(CpnucleoClaimTypes.Subject)
+        .RequireClaim(CpnucleoClaimTypes.Admin, "true"));
 });
+builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationMiddlewareResultHandler, GrpcServer.Common.Security.GrpcAuthorizationResultHandler>();
 
 builder.Services.AddRateLimiter(options =>
 {

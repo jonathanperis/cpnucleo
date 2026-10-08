@@ -5,8 +5,6 @@ public sealed class CreateAssignmentTypeHandler(IUnitOfWork unitOfWork, ILogger<
 {
     public async Task<CreateAssignmentTypeResult> ExecuteAsync(CreateAssignmentTypeCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AssignmentTypeId}", command.Name, command.Id);
-
         try
         {
             logger.LogInformation("Checking if an assignmentType entity exists with Id: {AssignmentTypeId}", command.Id);
@@ -45,8 +43,6 @@ public sealed class CreateAssignmentTypeHandler(IUnitOfWork unitOfWork, ILogger<
                 Message = "AssignmentType created successfully.",
                 AssignmentType = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

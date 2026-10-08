@@ -1,13 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUserHandler> logger, IPasswordHasher passwordHasher, IHttpContextAccessor context) : ICommandHandler<UpdateUserCommand, UpdateUserResult>
+public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUserHandler> logger, IPasswordHasher passwordHasher) : ICommandHandler<UpdateUserCommand, UpdateUserResult>
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = Common.Security.UserAdministration.Policy)]
     public async Task<UpdateUserResult> ExecuteAsync(UpdateUserCommand command, CancellationToken cancellationToken)
     {
-        Common.Security.UserAdministration.RequireAdmin(context);
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an user entity exists with Id: {UserId}", command.Id);
@@ -44,8 +42,6 @@ public sealed class UpdateUserHandler(IUnitOfWork unitOfWork, ILogger<UpdateUser
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateUserResult 
             { 
