@@ -308,10 +308,15 @@ The script:
 A database seeded before the workspace names still shows Bogus text ("monitor transmitting back-end"). `scripts/apply-demo-workspace-names.sh` applies the shared [`DemoWorkspaceNames.sql`](../database/#seed-and-recovery-tools) through `psql` in the `db` container. Nothing runs it automatically. Without arguments it is a dry run: it prints how many rows it would change and rolls back. Take and verify a backup first, then commit with `--apply`:
 
 ```sh
-./scripts/backup-hostinger.sh && ./scripts/verify-backup.sh
-COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=cpnucleo SQL_FILE=./DemoWorkspaceNames.sql ./apply-demo-workspace-names.sh
-COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=cpnucleo SQL_FILE=./DemoWorkspaceNames.sql ./apply-demo-workspace-names.sh --apply
+cd /docker/cpnucleo
+export COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=cpnucleo
+/opt/cpnucleo/scripts/backup-hostinger.sh
+/opt/cpnucleo/scripts/verify-backup.sh /opt/backups/cpnucleo
+/opt/cpnucleo/scripts/apply-demo-workspace-names.sh          # dry run
+/opt/cpnucleo/scripts/apply-demo-workspace-names.sh --apply
 ```
+
+The script reads `src/Infrastructure/Common/Helpers/DemoWorkspaceNames.sql` from the checkout it lives in; set `SQL_FILE` only when the SQL file is elsewhere.
 
 It runs in one transaction with a 5-second lock timeout and touches only rows that still carry generated text, so people's rows and the demo account are kept and a repeated run changes nothing. On the full dataset (about 1.37 million rows) it takes two to three minutes on a laptop, mostly maintaining the trigram search indexes, and locks the rows it rewrites meanwhile, so run it at a quiet time. Open lists pick the new names up through the 15-second SSE refresh. To undo it, restore the backup.
 

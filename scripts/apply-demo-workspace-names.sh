@@ -10,8 +10,9 @@ set -Eeuo pipefail
 #   ./scripts/apply-demo-workspace-names.sh            # dry run: prints counts, then rolls back
 #   ./scripts/apply-demo-workspace-names.sh --apply    # commits (take a verified backup first)
 # Hostinger Docker Manager keeps the project as /docker/<project>/docker-compose.yaml:
-#   COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=<project> SQL_FILE=./DemoWorkspaceNames.sql \
-#     ./apply-demo-workspace-names.sh --apply
+#   cd /docker/<project> && COMPOSE_FILE=docker-compose.yaml COMPOSE_PROJECT_NAME=<project> \
+#     /opt/cpnucleo/scripts/apply-demo-workspace-names.sh --apply
+# SQL_FILE defaults to the DemoWorkspaceNames.sql of the checkout this script lives in.
 
 COMPOSE_FILE=${COMPOSE_FILE:-compose.prod.yaml}
 ENV_FILE=${ENV_FILE:-.env}
