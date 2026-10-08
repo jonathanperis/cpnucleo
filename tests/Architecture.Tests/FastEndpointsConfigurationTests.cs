@@ -168,7 +168,7 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("s.DocumentName = \"v1\"");
         program.Should().Contain("s.Description =");
         program.Should().Contain("s.Version = \"v1\"");
-        program.Should().Contain("s.PostProcess = document =>");
+        program.Should().Contain("s.PostProcess += document =>");
         program.Should().Contain("document.Info.Contact");
         program.Should().Contain("document.Info.License");
         program.Should().Contain("document.Info.TermsOfService");
@@ -518,6 +518,22 @@ public class FastEndpointsConfigurationTests
         // Validation failures share the error envelope with every other error.
         program.Should().Contain("ApiErrors.ValidationResponse(");
         program.Should().Contain("c.Errors.ContentType = \"application/json\";");
+    }
+
+    [Fact]
+    public void ApiHosts_ShouldConfigureFastEndpointsIdentically()
+    {
+        // FastEndpoints applies UseFastEndpoints settings once per process. The integration tests host
+        // WebApi and IdentityApi together, so a setting only one host had would silently not be tested.
+        static string Block(string programPath)
+        {
+            var program = File.ReadAllText(GetRepositoryPath(programPath));
+            var start = program.IndexOf("app.UseFastEndpoints(c =>", StringComparison.Ordinal);
+            start.Should().BeGreaterThanOrEqualTo(0, $"{programPath} configures FastEndpoints");
+            return program[start..program.IndexOf("\n});", start, StringComparison.Ordinal)];
+        }
+
+        Block("src/IdentityApi/Program.cs").Should().Be(Block("src/WebApi/Program.cs"));
     }
 
     [Theory]

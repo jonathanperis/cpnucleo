@@ -131,7 +131,9 @@ builder.Services
     {
         o.EnableJWTBearerAuth = false;
         o.ShortSchemaNames = true;
-        o.AutoTagPathSegmentIndex = 1;
+        o.ExcludeNonFastEndpoints = true;
+        // Endpoints tag themselves (WithTags); route-segment auto-tagging would add a second tag.
+        o.AutoTagPathSegmentIndex = 0;
         o.TagDescriptions = tags =>
         {
             tags["Account"] = "Sign-in and sign-out steps of the OpenID Connect flows. Protocol endpoints are listed in /.well-known/openid-configuration.";
@@ -139,10 +141,12 @@ builder.Services
         o.DocumentSettings = s =>
         {
             s.DocumentName = "v1";
+            s.SchemaSettings.SchemaNameGenerator = new IdentityApi.ServiceExtensions.SchemaNameGenerator();
             s.Title = "Cpnucleo Identity API";
             s.Description = "OpenID Connect provider for Cpnucleo: authorization code with PKCE, client credentials, refresh token rotation, revocation and end session.";
             s.Version = "v1";
-            s.PostProcess = document =>
+            // Added to (not replacing) FastEndpoints' own post-processing, which emits the tag descriptions.
+            s.PostProcess += document =>
             {
                 document.Info.Contact = new NSwag.OpenApiContact
                 {
@@ -201,9 +205,13 @@ app.UseIdentityServer();
 app.UseAuthorization();
 // No UseInfrastructure(): its Delta ETags are for per-caller data listings, which this host doesn't serve.
 app.UseMiddleware<ElapsedTimeMiddleware>();
+// FastEndpoints applies this configuration once per process, and the integration tests host WebApi
+// and IdentityApi together: keep the block identical in both hosts (FastEndpointsConfigurationTests).
 app.UseFastEndpoints(c =>
 {
     c.Endpoints.RoutePrefix = "api";
+    // Operation ids and route names are the feature folder (UpdateProject); every class is named Endpoint.
+    c.Endpoints.NameGenerator = context => context.EndpointType.Namespace!.Split('.')[^1];
     // Validation failures use the same envelope, message and content type as every other error.
     c.Errors.ContentType = "application/json";
     c.Errors.ProducesMetadataType = typeof(ApiErrorResponse);
