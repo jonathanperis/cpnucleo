@@ -334,7 +334,7 @@ BEGIN
             WHEN now() - start_date < (end_date - start_date) * 0.5 THEN 3
             WHEN now() - start_date < (end_date - start_date) * 0.8 THEN 4
             ELSE 5 END;
-    ELSE
+    ELSIF EXISTS (SELECT 1 FROM demo_names_task) THEN
         RAISE NOTICE 'Demo workspace names: task schedules kept because the six board columns are not all active.';
     END IF;
 

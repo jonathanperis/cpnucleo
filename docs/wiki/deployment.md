@@ -305,7 +305,7 @@ The script:
 
 ### Renaming existing demo data
 
-A database seeded before the workspace names still shows Bogus text ("monitor transmitting back-end"). `scripts/apply-demo-workspace-names.sh` applies the shared [`DemoWorkspaceNames.sql`](../database/#seed-and-recovery-tools) through `psql` in the `db` container. Nothing runs it automatically. Without arguments it is a dry run: it prints how many rows it would change and rolls back. Take and verify a backup first, then commit with `--apply`:
+A database seeded before the workspace names showed Bogus text ("monitor transmitting back-end"). The data migration `20261008000100_DemoWorkspaceNames` renames it once when the one-shot migrator upgrades the database, so the first deploy that ships it keeps the APIs waiting for a few extra minutes on the full dataset (the migrator allows commands up to 30 minutes; it rebuilds the trigram search indexes in bulk around the rename). The migrator logs the per-table counts, and the deploy job repeats the `Demo workspace names:` line from the Hostinger logs. For a database you manage by hand, `scripts/apply-demo-workspace-names.sh` applies the same [`DemoWorkspaceNames.sql`](../database/#seed-and-recovery-tools) through `psql` in the `db` container; nothing runs that script automatically. Without arguments it is a dry run: it prints how many rows it would change and rolls back. Take and verify a backup first, then commit with `--apply`:
 
 ```sh
 cd /docker/cpnucleo

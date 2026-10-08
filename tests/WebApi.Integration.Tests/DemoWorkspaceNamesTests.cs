@@ -119,6 +119,29 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "Impediments" WHERE "Name" = 'sensor calculating haptic'""")).ShouldBe(121, "the failed run changes nothing");
     }
 
+    [Fact]
+    public async Task Migration_RenamesADatabaseSeededBeforeTheWorkspaceNames()
+    {
+        var connectionString = await database.CreateDatabaseAsync();
+        await using (var db = IsolatedDatabase.Context(connectionString))
+        {
+            await Microsoft.EntityFrameworkCore.Infrastructure.AccessorExtensions.GetService<Microsoft.EntityFrameworkCore.Migrations.IMigrator>(db).MigrateAsync("20261007000200_RelationshipRestore", Cancellation);
+            db.AddRange(Organization.Create("driver indexing cross-platform", "We need to navigate the cross-platform SAS firewall!"),
+                Workflow.Create("transmitter copying virtual", 1), User.Create("Fanny Waters", "learner-007566", new PasswordHash("hash", "salt")));
+            await db.SaveChangesAsync(Cancellation);
+        }
+
+        // The production upgrade path: the one-shot migrator applies pending migrations.
+        await using (var db = IsolatedDatabase.Context(connectionString))
+            await db.Database.MigrateAsync(Cancellation);
+
+        await using var connection = new NpgsqlConnection(connectionString);
+        (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261008000100_DemoWorkspaceNames'""")).ShouldBe(1);
+        (await connection.ExecuteScalarAsync<string>("""SELECT "Name" FROM "Organizations" """)).ShouldNotStartWith("driver ");
+        (await connection.ExecuteScalarAsync<string>("""SELECT "Name" FROM "Workflows" """)).ShouldBe("Backlog");
+        (await connection.ExecuteScalarAsync<string>("""SELECT "Login" FROM "Users" """)).ShouldBe("fanny.waters@cpnucleo.example");
+    }
+
     private sealed record Seeded(Guid PeopleOrganization, Guid PeopleProject, Guid PeopleTask, Guid PeopleEntry, Guid PeopleImpediment, Guid PeopleUser, Guid DemoUser);
 
     private static async Task<Seeded> SeedAsync(string connectionString)

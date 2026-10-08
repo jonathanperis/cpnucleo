@@ -16,6 +16,10 @@ if (args.Contains("--migrate-database", StringComparer.OrdinalIgnoreCase))
 {
     await using var database = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
         .UseNpgsql(builder.Configuration["DB_CONNECTION_STRING"] ?? throw new InvalidOperationException("DB_CONNECTION_STRING is required.")).Options);
+    // Data migrations such as DemoWorkspaceNames rewrite large demo datasets; the 30-second default is too short.
+    database.Database.SetCommandTimeout(TimeSpan.FromMinutes(30));
+    // Their PostgreSQL notices (row counts) go to the container log, where the deploy reports them.
+    ((NpgsqlConnection)database.Database.GetDbConnection()).Notice += (_, notice) => Console.WriteLine($"[migrate] {notice.Notice.MessageText}");
     await database.Database.MigrateAsync();
     return;
 }
