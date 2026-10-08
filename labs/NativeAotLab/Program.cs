@@ -90,97 +90,109 @@ var generated = InspectGeneratedSources(Path.Join(work, "native-aot", "artifacts
 // 3. Run what was produced against a disposable database.
 var probes = new Dictionary<string, RunResult>();
 string migrationNote = "not attempted (no binary was produced)";
-if (new[] { native, guided, jit }.Any(p => p?.Binary is not null))
+// A probe setup failure (Docker unavailable, database errors) must not lose the publish results:
+// the report is still written and the scratch folder removed, and the exit code says the run failed.
+Exception? probeSetupFailure = null;
+try
 {
-    await using var database = new PostgreSqlBuilder("postgres:16.15").WithCommand("-c", "track_commit_timestamp=on").Build();
-    await database.StartAsync();
-    var connectionString = database.GetConnectionString();
-
-    // EF Core migrations are applied by the JIT lab process so readiness can be probed even if the
-    // native migrator fails. The native "--migrate-database" path is tried on a separate database.
-    await using (var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(connectionString).Options))
-        await context.Database.MigrateAsync();
-    var latestMigration = DatabaseReadinessCheck.LatestMigrationId;
-
-    const string login = "aot-lab@cpnucleo.local";
-    const string passwordHash = "not-a-real-hash-native-aot-lab";
-    var userId = Guid.CreateVersion7();
-    await using (var connection = new NpgsqlConnection(connectionString))
+    if (new[] { native, guided, jit }.Any(p => p?.Binary is not null))
     {
-        await connection.OpenAsync();
-        await using var insert = new NpgsqlCommand("""
-            INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
-            VALUES (@id, @login, @login, @password, '', now(), true)
-            """, connection);
-        insert.Parameters.AddWithValue("id", userId);
-        insert.Parameters.AddWithValue("login", login);
-        insert.Parameters.AddWithValue("password", passwordHash);
-        await insert.ExecuteNonQueryAsync();
-        // CREATE DATABASE cannot share a batch (implicit transaction) with other statements.
-        await using var create = new NpgsqlCommand("CREATE DATABASE native_migrate_probe", connection);
-        await create.ExecuteNonQueryAsync();
-    }
+        await using var database = new PostgreSqlBuilder("postgres:16.15").WithCommand("-c", "track_commit_timestamp=on").Build();
+        await database.StartAsync();
+        var connectionString = database.GetConnectionString();
 
-    if (native.Binary is not null)
-    {
-        var probeDb = new NpgsqlConnectionStringBuilder(connectionString) { Database = "native_migrate_probe" }.ConnectionString;
-        var (exit, output, elapsed) = await RunToExitAsync(native.Binary, ["--migrate-database"], native.PublishDir,
-            new() { ["DB_CONNECTION_STRING"] = probeDb, ["ASPNETCORE_ENVIRONMENT"] = "Production" }, TimeSpan.FromMinutes(3));
-        File.WriteAllLines(Path.Join(reportDir, "native-migrate.log"), output);
-        bool applied;
-        try
+        // EF Core migrations are applied by the JIT lab process so readiness can be probed even if the
+        // native migrator fails. The native "--migrate-database" path is tried on a separate database.
+        await using (var context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(connectionString).Options))
+            await context.Database.MigrateAsync();
+        var latestMigration = DatabaseReadinessCheck.LatestMigrationId;
+
+        const string login = "aot-lab@cpnucleo.local";
+        const string passwordHash = "not-a-real-hash-native-aot-lab";
+        var userId = Guid.CreateVersion7();
+        await using (var connection = new NpgsqlConnection(connectionString))
         {
-            await using var check = new NpgsqlConnection(probeDb);
-            await check.OpenAsync();
-            await using var command = new NpgsqlCommand("""SELECT EXISTS (SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = @id)""", check);
-            command.Parameters.AddWithValue("id", latestMigration);
-            applied = (bool)(await command.ExecuteScalarAsync() ?? false);
+            await connection.OpenAsync();
+            await using var insert = new NpgsqlCommand("""
+                INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Salt", "CreatedAt", "Active")
+                VALUES (@id, @login, @login, @password, '', now(), true)
+                """, connection);
+            insert.Parameters.AddWithValue("id", userId);
+            insert.Parameters.AddWithValue("login", login);
+            insert.Parameters.AddWithValue("password", passwordHash);
+            await insert.ExecuteNonQueryAsync();
+            // CREATE DATABASE cannot share a batch (implicit transaction) with other statements.
+            await using var create = new NpgsqlCommand("CREATE DATABASE native_migrate_probe", connection);
+            await create.ExecuteNonQueryAsync();
         }
-        catch (PostgresException) { applied = false; }
-        migrationNote = $"native `--migrate-database` exit code {exit?.ToString() ?? "timeout"} after {elapsed.TotalSeconds:F1}s; latest migration `{latestMigration}` applied: **{(applied ? "yes" : "no")}**"
-            + (applied ? "" : $". First error: `{Shorten(FirstError(output), 300).Replace('`', '\'')}`");
+
+        if (native.Binary is not null)
+        {
+            var probeDb = new NpgsqlConnectionStringBuilder(connectionString) { Database = "native_migrate_probe" }.ConnectionString;
+            var (exit, output, elapsed) = await RunToExitAsync(native.Binary, ["--migrate-database"], native.PublishDir,
+                new() { ["DB_CONNECTION_STRING"] = probeDb, ["ASPNETCORE_ENVIRONMENT"] = "Production" }, TimeSpan.FromMinutes(3));
+            File.WriteAllLines(Path.Join(reportDir, "native-migrate.log"), output);
+            bool applied;
+            try
+            {
+                await using var check = new NpgsqlConnection(probeDb);
+                await check.OpenAsync();
+                await using var command = new NpgsqlCommand("""SELECT EXISTS (SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = @id)""", check);
+                command.Parameters.AddWithValue("id", latestMigration);
+                applied = (bool)(await command.ExecuteScalarAsync() ?? false);
+            }
+            catch (PostgresException) { applied = false; }
+            migrationNote = $"native `--migrate-database` exit code {exit?.ToString() ?? "timeout"} after {elapsed.TotalSeconds:F1}s; latest migration `{latestMigration}` applied: **{(applied ? "yes" : "no")}**"
+                + (applied ? "" : $". First error: `{Shorten(FirstError(output), 300).Replace('`', '\'')}`");
+        }
+
+        // A stand-in OpenID Connect discovery document + JWKS, so the API host can validate a token
+        // shaped like IdentityApi's (RS256, typ at+jwt) without starting IdentityApi.
+        using var rsa = RSA.Create(2048);
+        const string issuer = "https://identity.nativeaot.lab";
+        const string audience = "https://api.nativeaot.lab";
+        var keyId = Convert.ToHexString(SHA256.HashData(rsa.ExportSubjectPublicKeyInfo()))[..16];
+        var discoveryPort = FreePort();
+        using var discovery = new HttpListener();
+        discovery.Prefixes.Add($"http://127.0.0.1:{discoveryPort}/");
+        discovery.Start();
+        using var discoveryStop = new CancellationTokenSource();
+        var discoveryTask = ServeDiscoveryAsync(discovery, issuer, $"http://127.0.0.1:{discoveryPort}/jwks", rsa, keyId, discoveryStop.Token);
+        var token = MintToken(rsa, keyId, issuer, audience, userId, login, SecurityStamp.Compute(passwordHash, login));
+
+        var environment = new Dictionary<string, string>
+        {
+            ["ASPNETCORE_ENVIRONMENT"] = "Production",
+            ["DB_CONNECTION_STRING"] = connectionString,
+            ["Jwt__Issuer"] = issuer,
+            ["Jwt__Audience"] = audience,
+            ["Jwt__MetadataAddress"] = $"http://127.0.0.1:{discoveryPort}/.well-known/openid-configuration",
+            ["CPNUCLEO_ADMIN_LOGINS"] = login,
+            // No collector runs; the exporter keeps failing quietly, as with an unreachable collector.
+            ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://127.0.0.1:9"
+        };
+        if (native.Binary is not null) probes["native-aot"] = await ProbeAsync("native-aot", native, environment, token);
+        if (guided?.Binary is not null) probes[guided.Variant] = await ProbeAsync(guided.Variant, guided, environment, token);
+        if (jit?.Binary is not null) probes["jit-baseline"] = await ProbeAsync("jit-baseline", jit, environment, token);
+
+        discoveryStop.Cancel();
+        discovery.Stop();
+        try { await discoveryTask; }
+        catch (Exception e) when (e is OperationCanceledException or HttpListenerException or ObjectDisposedException)
+        {
+            // Expected: stopping the discovery listener ends its accept loop.
+        }
     }
-
-    // A stand-in OpenID Connect discovery document + JWKS, so the API host can validate a token
-    // shaped like IdentityApi's (RS256, typ at+jwt) without starting IdentityApi.
-    using var rsa = RSA.Create(2048);
-    const string issuer = "https://identity.nativeaot.lab";
-    const string audience = "https://api.nativeaot.lab";
-    var keyId = Convert.ToHexString(SHA256.HashData(rsa.ExportSubjectPublicKeyInfo()))[..16];
-    var discoveryPort = FreePort();
-    using var discovery = new HttpListener();
-    discovery.Prefixes.Add($"http://127.0.0.1:{discoveryPort}/");
-    discovery.Start();
-    using var discoveryStop = new CancellationTokenSource();
-    var discoveryTask = ServeDiscoveryAsync(discovery, issuer, $"http://127.0.0.1:{discoveryPort}/jwks", rsa, keyId, discoveryStop.Token);
-    var token = MintToken(rsa, keyId, issuer, audience, userId, login, SecurityStamp.Compute(passwordHash, login));
-
-    var environment = new Dictionary<string, string>
-    {
-        ["ASPNETCORE_ENVIRONMENT"] = "Production",
-        ["DB_CONNECTION_STRING"] = connectionString,
-        ["Jwt__Issuer"] = issuer,
-        ["Jwt__Audience"] = audience,
-        ["Jwt__MetadataAddress"] = $"http://127.0.0.1:{discoveryPort}/.well-known/openid-configuration",
-        ["CPNUCLEO_ADMIN_LOGINS"] = login,
-        // No collector runs; the exporter keeps failing quietly, as with an unreachable collector.
-        ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://127.0.0.1:9"
-    };
-    if (native.Binary is not null) probes["native-aot"] = await ProbeAsync("native-aot", native, environment, token);
-    if (guided?.Binary is not null) probes[guided.Variant] = await ProbeAsync(guided.Variant, guided, environment, token);
-    if (jit?.Binary is not null) probes["jit-baseline"] = await ProbeAsync("jit-baseline", jit, environment, token);
-
-    discoveryStop.Cancel();
-    discovery.Stop();
-    try { await discoveryTask; }
-    catch (Exception e) when (e is OperationCanceledException or HttpListenerException or ObjectDisposedException)
-    {
-        // Expected: stopping the discovery listener ends its accept loop.
-    }
+}
+catch (Exception failure) when (failure is not OperationCanceledException)
+{
+    probeSetupFailure = failure;
 }
 
 // 4. Report.
 var report = BuildReport();
+if (probeSetupFailure is not null)
+    report += $"\n\n**The runtime probes did not complete:** `{probeSetupFailure.GetType().Name}: {Shorten(probeSetupFailure.Message, 300).Replace('`', '\'')}`. Publish results above are still valid.\n";
 var reportPath = Path.Join(reportDir, "native-aot-report.md");
 await File.WriteAllTextAsync(reportPath, report);
 Console.WriteLine();
@@ -193,7 +205,7 @@ if (!keepArtifacts)
     catch (IOException e) { Console.WriteLine($"Could not delete scratch folder {work}: {e.Message}"); }
 }
 else Console.WriteLine($"Publish artifacts kept in {work}");
-return 0;
+return probeSetupFailure is null ? 0 : 1;
 
 // ---------------------------------------------------------------------------------------------
 
