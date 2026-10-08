@@ -28,7 +28,9 @@ const options = [
     for (const menu of menus) {
       menu.querySelector<HTMLElement>('[data-theme-icon="light"]')!.hidden = theme !== 'light';
       menu.querySelector<HTMLElement>('[data-theme-icon="dark"]')!.hidden = theme !== 'dark';
-      const label = preference === 'system' ? `system (${theme})` : theme === 'light' ? 'light' : 'dark';
+      // Spoken names match the menu: Paper (light) and Night (dark).
+      const name = theme === 'light' ? 'paper' : 'night';
+      const label = preference === 'system' ? `system (${name})` : name;
       menu.querySelector('summary')!.setAttribute('aria-label', `Theme: ${label}`);
       for (const choice of menu.querySelectorAll<HTMLButtonElement>('[data-theme-choice]')) choice.setAttribute('aria-pressed', String(choice.dataset.themeChoice === preference));
     }

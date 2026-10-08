@@ -376,7 +376,7 @@ public class FastEndpointsConfigurationTests
         loginPage.Should().Contain("<html lang=\"en\" data-theme=\"light\" style=\"color-scheme: light;\">");
         loginPage.Should().Contain(": 'light';");
         themeToggle.Should().Contain("dataset.theme === 'dark'");
-        themeToggle.Should().Contain(": 'dark';");
+        themeToggle.Should().Contain("theme === 'light' ? 'paper' : 'night'");
         dashboard.Should().NotContain("Dark by default · light-ready");
 
         // Renovate may pin the base image digest (node:26.9.0-alpine@sha256:...).
