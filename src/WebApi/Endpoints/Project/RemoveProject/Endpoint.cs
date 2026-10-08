@@ -10,6 +10,8 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RemoveProjectReq
         {
             s.Summary = "Soft-delete projects atomically";
             s.Description = "All supplied active projects are removed in one transaction. A missing project leaves the whole batch unchanged.";
+            s.Responses[404] = "An id is missing or not visible; nothing was removed.";
+            s.Responses[409] = "A record still has active dependent data; nothing was removed.";
         });
     }
 

@@ -12,6 +12,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RestoreAssignm
         {
             s.Summary = "Restore removed assignment impediments by Ids";
             s.Description = "Undoes the soft delete of the assignment impediments specified by the provided Ids in one transaction. If any id is missing, still active or not visible, nothing is restored.";
+            s.Responses[404] = "An id is missing, active or not visible; nothing was restored.";
         });
     }
 

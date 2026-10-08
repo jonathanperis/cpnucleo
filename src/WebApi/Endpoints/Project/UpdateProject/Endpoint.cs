@@ -12,6 +12,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<Request, Respons
         {
             s.Summary = "Update an existing project";
             s.Description = "Updates the project identified by the provided Id with given data. Validates existence and returns whether the update was successful.";
+            s.Responses[409] = "expectedVersion is stale: the project changed after it was read.";
         });
     }
 

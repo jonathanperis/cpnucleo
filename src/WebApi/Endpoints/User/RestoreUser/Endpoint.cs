@@ -13,6 +13,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RestoreUserReq
         {
             s.Summary = "Restore removed users by Ids";
             s.Description = "Undoes the soft delete of the users specified by the provided Ids in one transaction. If any id is missing, still active or not visible, nothing is restored.";
+            s.Responses[404] = "An id is missing, active or not visible; nothing was restored.";
         });
     }
 

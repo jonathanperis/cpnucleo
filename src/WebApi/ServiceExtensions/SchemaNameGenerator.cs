@@ -8,7 +8,10 @@ internal sealed class SchemaNameGenerator : ISchemaNameGenerator
     {
         if (!type.IsGenericType)
         {
-            return type.Name;
+            // Every endpoint folder has its own Request/Response: prefix the feature (UpdateProjectRequest).
+            return type is { Name: "Request" or "Response", Namespace: { } ns } && ns.StartsWith("WebApi.Endpoints.", StringComparison.Ordinal)
+                ? ns[(ns.LastIndexOf('.') + 1)..] + type.Name
+                : type.Name;
         }
 
         var backtickIndex = type.Name.IndexOf('`');

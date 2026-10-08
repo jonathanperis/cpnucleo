@@ -22,6 +22,7 @@ public class Endpoint(AccountStore accounts, IPasswordHasher passwordHasher, Pas
         {
             s.Summary = "Change the signed-in user's password";
             s.Description = "Verifies the current password and stores the new one. Existing tokens and sessions of the account stop working, so the client signs in again. Five wrong current passwords in 15 minutes lock password changes for 15 minutes (429 with Retry-After).";
+            s.Responses[429] = "Too many incorrect current passwords; Retry-After gives the seconds to wait.";
         });
     }
 

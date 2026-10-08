@@ -13,6 +13,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveUserRequ
         {
             s.Summary = "Delete users by Ids";
             s.Description = "Deletes the users specified by the provided Ids. Validates existence of each, removes them, updates the repository, and commits the transaction.";
+            s.Responses[404] = "An id is missing or not visible; nothing was removed.";
+            s.Responses[409] = "A record still has active dependent data; nothing was removed.";
         });
     }
 

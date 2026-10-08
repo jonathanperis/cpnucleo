@@ -10,6 +10,7 @@ public class Endpoint(IProjectRepository repository) : Endpoint<RestoreProjectRe
         {
             s.Summary = "Restore removed projects atomically";
             s.Description = "All supplied removed projects are restored in one transaction, with the memberships removed together with them. A missing, active or invisible project leaves the whole batch unchanged.";
+            s.Responses[404] = "An id is missing, active or not visible; nothing was restored.";
         });
     }
 

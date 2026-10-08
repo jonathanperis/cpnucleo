@@ -137,21 +137,23 @@ builder.Services
     {
         o.EnableJWTBearerAuth = true;
         o.ShortSchemaNames = true;
-        o.AutoTagPathSegmentIndex = 1;
+        o.ExcludeNonFastEndpoints = true;
+        // Endpoints tag themselves (WithTags); route-segment auto-tagging would add a second tag.
+        o.AutoTagPathSegmentIndex = 0;
         o.TagDescriptions = tags =>
         {
             tags["Account"] = "The signed-in user's own profile and password.";
-            tags["Appointment"] = "Manage appointments and scheduling records.";
-            tags["Assignment"] = "Manage work assignments and ownership.";
-            tags["AssignmentImpediment"] = "Track impediments attached to assignments.";
-            tags["AssignmentType"] = "Manage assignment classification data.";
-            tags["Impediment"] = "Manage project and workflow blockers.";
-            tags["Organization"] = "Manage tenant organizations.";
-            tags["Project"] = "Manage projects and project metadata.";
-            tags["User"] = "Manage users exposed by the Web API.";
-            tags["UserAssignment"] = "Manage user-to-assignment relationships.";
-            tags["UserProject"] = "Manage user-to-project relationships.";
-            tags["Workflow"] = "Manage workflow definitions and transitions.";
+            tags["Appointments"] = "Manage appointments and scheduling records.";
+            tags["Assignments"] = "Manage work assignments and ownership.";
+            tags["AssignmentImpediments"] = "Track impediments attached to assignments.";
+            tags["AssignmentTypes"] = "Manage assignment classification data.";
+            tags["Impediments"] = "Manage project and workflow blockers.";
+            tags["Organizations"] = "Manage tenant organizations.";
+            tags["Projects"] = "Manage projects and project metadata.";
+            tags["Users"] = "Manage users exposed by the Web API.";
+            tags["UserAssignments"] = "Manage user-to-assignment relationships.";
+            tags["UserProjects"] = "Manage user-to-project relationships.";
+            tags["Workflows"] = "Manage workflow definitions and transitions.";
         };
         o.DocumentSettings = s =>
         {
@@ -160,7 +162,10 @@ builder.Services
             s.Description = "Authenticated REST API for Cpnucleo project, workflow, assignment, organization, and user management.";
             s.Version = "v1";
             s.SchemaSettings.SchemaNameGenerator = new SchemaNameGenerator();
-            s.PostProcess = document =>
+            s.OperationProcessors.Add(new PaginationQueryProcessor());
+            s.OperationProcessors.Add(new ErrorResponsesProcessor());
+            // Added to (not replacing) FastEndpoints' own post-processing, which emits the tag descriptions.
+            s.PostProcess += document =>
             {
                 document.Info.Contact = new NSwag.OpenApiContact
                 {
@@ -173,6 +178,8 @@ builder.Services
                     Url = "https://cpnucleo.jonathanperis.tech"
                 };
                 document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
+                // List operations describe pagination as flat query keys (PaginationQueryProcessor).
+                document.Components.Schemas.Remove(nameof(PaginationParams));
             };
         };
     });
@@ -242,9 +249,13 @@ app.Use(async (context, next) =>
 app.UseAuthorization();
 app.UseInfrastructure();
 app.UseMiddleware<ElapsedTimeMiddleware>();
+// FastEndpoints applies this configuration once per process, and the integration tests host WebApi
+// and IdentityApi together: keep the block identical in both hosts (FastEndpointsConfigurationTests).
 app.UseFastEndpoints(c =>
 {
     c.Endpoints.RoutePrefix = "api";
+    // Operation ids and route names are the feature folder (UpdateProject); every class is named Endpoint.
+    c.Endpoints.NameGenerator = context => context.EndpointType.Namespace!.Split('.')[^1];
     // Validation failures use the same envelope, message and content type as every other error.
     c.Errors.ContentType = "application/json";
     c.Errors.ProducesMetadataType = typeof(ApiErrorResponse);
