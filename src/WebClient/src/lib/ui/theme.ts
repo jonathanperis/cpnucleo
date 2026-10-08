@@ -1,13 +1,13 @@
 export type ThemePreference = 'light' | 'dark' | 'system';
 export const themeStorageKey = 'cpnucleo-theme';
 
-/** The stored choice; dark is the workspace default when nothing was chosen. */
+/** The stored choice; paper (light) is the workspace default when nothing was chosen. */
 export const readThemePreference = (): ThemePreference => {
   try {
     const stored = localStorage.getItem(themeStorageKey);
-    return stored === 'light' || stored === 'system' ? stored : 'dark';
+    return stored === 'dark' || stored === 'system' ? stored : 'light';
   } catch {
-    return 'dark';
+    return 'light';
   }
 };
 

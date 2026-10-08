@@ -1,0 +1,17 @@
+---
+import Mark from './Mark.astro';
+interface Props { current?: 'home' | 'docs' }
+const { current = 'home' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<header class="masthead">
+  <div class="masthead-bar">
+    <a class="wordmark" href={`${base}/`} aria-label="Cpnucleo home"><Mark />Cpnucleo</a>
+    <nav aria-label="Primary">
+      <a href={`${base}/docs/`} aria-current={current === 'docs' ? 'page' : undefined}>Documentation</a>
+      <a href="https://github.com/jonathanperis/cpnucleo">Source</a>
+      <a href="https://cpnucleo.jonathanperis.tech/" target="_blank" rel="noopener noreferrer">Live demo</a>
+    </nav>
+  </div>
+  <p class="folio"><span>A .NET 10 architecture laboratory</span><span>Open source, MIT licence</span></p>
+</header>

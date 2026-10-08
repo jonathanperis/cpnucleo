@@ -1,0 +1,46 @@
+---
+// Fig. 1 drawn on a 460 x 392 grid. Boxes are 140 x 48; edges are orthogonal like a drafting sheet.
+const boxes = [
+  { name: 'WebClient', note: 'Astro, static', x: 160, y: 10, kind: 'focus' },
+  { name: 'IdentityApi', note: 'OpenID Connect', x: 0, y: 120 },
+  { name: 'NGINX', note: 'least_conn', x: 160, y: 120 },
+  { name: 'GrpcServer', note: 'Remote Messaging', x: 320, y: 120 },
+  { name: 'WebApi × 2', note: 'FastEndpoints REST', x: 160, y: 222, stacked: true },
+  { name: 'PostgreSQL', note: 'EF Core · Dapper', x: 160, y: 334, kind: 'store' },
+];
+const edges = [
+  'M180 58V89H70v29',
+  'M230 58v60',
+  'M390 54v64',
+  'M230 168v46',
+  'M230 270v62',
+  'M70 168v190h88',
+  'M390 168v190h-88',
+];
+const tags = [
+  { text: 'sign-in', x: 86, y: 82 },
+  { text: 'REST', x: 238, y: 100 },
+  { text: 'gRPC clients', x: 390, y: 40, anchor: 'middle' },
+];
+---
+<figure class="figure">
+  <svg viewBox="0 0 460 392" role="img" aria-labelledby="fig1-title">
+    <title id="fig1-title">Service map: the WebClient calls IdentityApi and, through NGINX, two WebApi instances; gRPC clients call GrpcServer; IdentityApi, WebApi and GrpcServer share PostgreSQL.</title>
+    <defs>
+      <marker id="fig1-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path class="head" d="M0 0 8 4 0 8z" />
+      </marker>
+    </defs>
+    <g>{edges.map((d) => <path class="edge" d={d} marker-end="url(#fig1-arrow)" />)}</g>
+    {tags.map((tag) => <text class="tag" x={tag.x} y={tag.y} text-anchor={tag.anchor ?? 'start'}>{tag.text}</text>)}
+    {boxes.map((box) => (
+      <g>
+        {box.stacked && <rect class="box" x={box.x + 6} y={box.y - 6} width="140" height="48" rx="1" />}
+        <rect class:list={['box', box.kind]} x={box.x} y={box.y} width="140" height="48" rx="1" />
+        <text class="name" x={box.x + 70} y={box.y + 21} text-anchor="middle">{box.name}</text>
+        <text class="note" x={box.x + 70} y={box.y + 36} text-anchor="middle">{box.note}</text>
+      </g>
+    ))}
+  </svg>
+  <figcaption><b>Fig. 1.</b> Request paths in production. The WebClient is static; its scripts sign in through IdentityApi and call the REST API through NGINX. GrpcServer is an independent host on the same database.</figcaption>
+</figure>

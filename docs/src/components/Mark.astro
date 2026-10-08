@@ -1,0 +1,10 @@
+---
+/** Registration mark around a nucleus; the shared Cpnucleo brand (also in the WebClient's BrandMark). */
+interface Props { size?: number }
+const { size = 26 } = Astro.props;
+---
+<svg class="mark" width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+  <circle cx="16" cy="16" r="9" />
+  <path d="M16 1.5v8M16 22.5v8M1.5 16h8M22.5 16h8" stroke-linecap="square" />
+  <circle class="nucleus" cx="16" cy="16" r="3.4" stroke="none" />
+</svg>

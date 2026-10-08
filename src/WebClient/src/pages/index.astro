@@ -13,7 +13,7 @@ const areas = navigation
     <section class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
       <div class="max-w-2xl">
         <p class="eyebrow">Workspace overview</p>
-        <h1 data-greeting class="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-[2.125rem]">Welcome back</h1>
+        <h1 data-greeting class="mt-2 page-title page-title-lg text-balance">Welcome back</h1>
         <p class="mt-2 max-w-xl text-[0.9375rem] leading-relaxed text-muted">Your open work first, then every area of the learning workspace. Each list is served by the same API you can inspect, test and reset locally.</p>
       </div>
       <div class="flex flex-wrap gap-2">
@@ -31,9 +31,9 @@ const areas = navigation
           <a data-my-tasks-all href="/assignments/" class="btn btn-ghost btn-sm">All your tasks<Icon name="arrowRight" /></a>
         </div>
         <dl class="grid grid-cols-3 divide-x divide-line border-b border-line">
-          <div class="px-5 py-3"><dt class="text-xs text-subtle">Open</dt><dd data-my-stat="open" class="mt-0.5 font-mono text-xl tabular-nums">—</dd></div>
-          <div class="px-5 py-3"><dt class="text-xs text-subtle">Overdue</dt><dd data-my-stat="overdue" class="mt-0.5 font-mono text-xl tabular-nums">—</dd></div>
-          <div class="px-5 py-3"><dt class="text-xs text-subtle">Due in 7 days</dt><dd data-my-stat="soon" class="mt-0.5 font-mono text-xl tabular-nums">—</dd></div>
+          <div class="px-5 py-3"><dt class="text-xs text-subtle">Open</dt><dd data-my-stat="open" class="mt-0.5 stat-num text-[1.75rem]">—</dd></div>
+          <div class="px-5 py-3"><dt class="text-xs text-subtle">Overdue</dt><dd data-my-stat="overdue" class="mt-0.5 stat-num text-[1.75rem]">—</dd></div>
+          <div class="px-5 py-3"><dt class="text-xs text-subtle">Due in 7 days</dt><dd data-my-stat="soon" class="mt-0.5 stat-num text-[1.75rem]">—</dd></div>
         </dl>
         <ul data-my-tasks class="divide-y divide-line/70"><li class="px-5 py-4"><span class="skeleton block h-4 w-2/3"></span></li></ul>
       </div>
@@ -42,7 +42,7 @@ const areas = navigation
           <p class="eyebrow">Your hours this week</p>
           <a href="/calendar/" class="btn btn-ghost btn-sm">Calendar<Icon name="arrowRight" /></a>
         </div>
-        <p class="mt-3 font-mono text-3xl font-medium tabular-nums"><span data-my-hours>—</span><span class="text-base text-subtle"> h</span></p>
+        <p class="mt-3 stat-num text-[2.75rem]"><span data-my-hours>—</span><span class="text-base text-subtle"> h</span></p>
         <p data-my-hours-note class="mt-1 text-xs text-subtle">&nbsp;</p>
       </div>
       <div class="panel overflow-hidden">
@@ -53,8 +53,8 @@ const areas = navigation
 
     <section aria-labelledby="work-areas-heading" aria-busy="true" data-work-areas>
       <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="work-areas-heading" class="text-lg font-semibold tracking-tight">Work areas</h2>
-        <p class="text-xs text-subtle">Record counts per area · Dark by default · light-ready</p>
+        <h2 id="work-areas-heading" class="section-title">Work areas</h2>
+        <p class="font-display text-[0.9375rem] italic text-subtle">Record counts per area</p>
       </div>
       <p data-home-summary role="status" class="sr-only"></p>
       <div class="grid gap-5 lg:grid-cols-2">

@@ -1,35 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Mark from '@/components/Mark.astro';
+import Contents from '@/components/Contents.astro';
 import '../../styles/docs.css';
-import { SECTION_CATEGORIES, SECTION_ORDER } from '../../lib/sidebar.config';
-
-const SLUG_LABEL: Record<string, string> = {
-  home: 'Project Overview',
-  'learning-lab': 'Learning Lab',
-  architecture: 'Architecture',
-  'api-reference': 'API Reference',
-  'webclient-crud': 'WebClient CRUD',
-  database: 'Database',
-  'getting-started': 'Getting Started',
-  'project-structure': 'Project Structure',
-  technologies: 'Technologies',
-  testing: 'Testing',
-  deployment: 'Deployment',
-};
-
-const DOC_SUMMARIES: Record<string, string> = {
-  home: 'Project overview, feature map, and repository entry points.',
-  'learning-lab': 'Guided learning paths, verified examples, experiments, benchmarks and recovery.',
-  architecture: 'Layer boundaries, Clean Architecture constraints, and service split.',
-  'api-reference': 'REST endpoints, Identity API, and gRPC command contracts.',
-  'webclient-crud': 'Astro and native TypeScript CRUD, relation search, concurrency and live updates.',
-  database: 'PostgreSQL setup, EF Core, Dapper, migrations, and seed scripts.',
-  'getting-started': 'Prerequisites, local build, Docker Compose, and first run path.',
-  'project-structure': 'Repository tree, source projects, tests, infrastructure, and docs.',
-  technologies: 'Runtime, libraries, infrastructure, observability, and deployment stack.',
-  testing: 'Architecture tests, unit tests, integration tests, and coverage workflow.',
-  deployment: 'Docker, GHCR, GitHub Actions, NGINX, Hostinger, and release pipeline.'
-};
+import { DOC_SUMMARIES, SECTION_CATEGORIES, SECTION_ORDER, SLUG_LABEL, chapterNumber } from '../../lib/sidebar.config';
 
 const globResult = import.meta.glob('../../../wiki/*.md', { eager: true });
 
@@ -43,19 +17,12 @@ const availableSlugs = new Set(Object.keys(pagesBySlug));
 for (const cat of SECTION_CATEGORIES) {
   for (const id of cat.ids) {
     if (!availableSlugs.has(id)) {
-      const catName = cat.label || 'root';
       throw new Error(
-        `SECTION_CATEGORIES references id "${id}" (category: "${catName}") but no matching wiki/${id}.md was found. Available slugs: ${Array.from(availableSlugs).join(', ')}`
+        `SECTION_CATEGORIES references id "${id}" (category: "${cat.label}") but no matching wiki/${id}.md was found. Available slugs: ${Array.from(availableSlugs).join(', ')}`
       );
     }
   }
 }
-
-const requestedSlug = Astro.params.slug;
-const isRoot = requestedSlug === undefined;
-const requestedKey = requestedSlug ?? 'home';
-const selectedPage = pagesBySlug[requestedKey];
-const sectionsToRender = !isRoot && selectedPage ? [{ slug: requestedKey, page: selectedPage }] : [];
 
 export function getStaticPaths() {
   return [
@@ -64,103 +31,120 @@ export function getStaticPaths() {
   ];
 }
 
-const pageTitle = isRoot ? 'cpnucleo - Documentation' : `${SLUG_LABEL[requestedKey] ?? requestedKey} - cpnucleo`;
-const base = import.meta.env.BASE_URL;
-const docsBase = base.replace(/\/$/, '') + '/docs';
-const backHomeUrl = base.replace(/\/$/, '') + '/';
-const currentId = isRoot ? '' : requestedKey;
-const docsGroups = SECTION_CATEGORIES.map((cat) => ({
-  label: cat.label || 'Start',
-  ids: cat.ids,
-}));
+const requestedSlug = Astro.params.slug;
+const isRoot = requestedSlug === undefined;
+const currentId = isRoot ? '' : requestedSlug;
+const page = isRoot ? undefined : pagesBySlug[currentId];
+const Content = page?.default;
+const headings: { depth: number; slug: string; text: string }[] = page?.getHeadings?.() ?? [];
+const sections = headings.filter((heading) => heading.depth === 2);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const docsBase = `${base}/docs`;
+const position = SECTION_ORDER.indexOf(currentId);
+const previous = position > 0 ? SECTION_ORDER[position - 1] : undefined;
+const next = position >= 0 && position < SECTION_ORDER.length - 1 ? SECTION_ORDER[position + 1] : undefined;
+const partIndex = SECTION_CATEGORIES.findIndex((category) => (category.ids as readonly string[]).includes(currentId));
+const parts = ['I', 'II', 'III', 'IV'];
+
+const pageTitle = isRoot ? 'Documentation | Cpnucleo' : `${SLUG_LABEL[currentId] ?? currentId} | Cpnucleo`;
 ---
 
-<BaseLayout title={pageTitle} description={isRoot ? 'Learning paths and technical documentation for the Cpnucleo .NET laboratory.' : DOC_SUMMARIES[requestedKey]}>
+<BaseLayout title={pageTitle} description={isRoot ? 'Eleven chapters on how the Cpnucleo .NET laboratory is built, tested and shipped.' : DOC_SUMMARIES[currentId]}>
+  <a class="skip-link" href="#mainContent">Skip to content</a>
+
   <div class="mobile-header">
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-controls="sidebar" aria-expanded="false">
-      <span></span>
+    <button class="menu-toggle" id="menuToggle" aria-label="Contents" aria-controls="sidebar" aria-expanded="false">
       <span></span>
       <span></span>
     </button>
-    <div class="repo-title">cpnucleo</div>
+    <a class="wordmark" href={`${base}/`}><Mark size={22} />Cpnucleo</a>
   </div>
 
   <div class="overlay" id="overlay"></div>
 
-  <aside class="sidebar" id="sidebar" data-current-id={currentId}>
-    <div class="sidebar-header">
-      <a class="repo-title" href={docsBase + '/'}>cpnucleo</a>
-      <p class="repo-description">A .NET 10 learning laboratory with REST, gRPC, Astro, PostgreSQL, and Hostinger deployment.</p>
-      <input type="text" id="searchInput" class="search-box" placeholder="Filter documentation" aria-label="Filter documentation" />
-      <p class="search-empty" id="searchEmpty" role="status" hidden>No docs entry matches that filter.</p>
-    </div>
-    <div class="sidebar-nav-container">
-      {SECTION_CATEGORIES.map((cat) => (
-        <div class="sidebar-category-group" data-category>
-          {cat.label && <div class="sidebar-category">{cat.label}</div>}
-          <ul>
-            {cat.ids.map((id) => {
-              const href = `${docsBase}/${id}/`;
-              return (
+  <div class="docs">
+    <aside class="sidebar" id="sidebar" data-current-id={currentId}>
+      <div class="sidebar-header">
+        <a class="wordmark" href={`${base}/`}><Mark />Cpnucleo</a>
+        <a class="rail-title" href={`${docsBase}/`} aria-current={isRoot ? 'page' : undefined}>Documentation</a>
+        <label class="search" for="searchInput">
+          <span class="visually-hidden">Filter documentation</span>
+          <input type="search" id="searchInput" class="search-box" placeholder="Filter chapters" autocomplete="off" />
+        </label>
+        <p class="search-empty" id="searchEmpty" role="status" hidden>No chapter matches that filter.</p>
+      </div>
+      <nav class="sidebar-nav-container" aria-label="Chapters">
+        {SECTION_CATEGORIES.map((cat, index) => (
+          <div class="sidebar-category-group" data-category>
+            <p class="sidebar-category"><span>Part {parts[index]}</span>{cat.label}</p>
+            <ol>
+              {cat.ids.map((id) => (
                 <li>
-                  <a class:list={["nav-item", currentId === id && "active"]} href={href} data-nav-id={id} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
-                    {SLUG_LABEL[id]}
+                  <a class:list={["nav-item", currentId === id && "active"]} href={`${docsBase}/${id}/`} aria-current={currentId === id ? 'page' : undefined} data-nav-id={id} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
+                    <span class="num">{chapterNumber(id)}</span>{SLUG_LABEL[id]}
                   </a>
                 </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
-    </div>
-    <div class="sidebar-footer">
-      <a href={backHomeUrl} class="back-home">Back to home</a>
-      <a href="https://github.com/jonathanperis/cpnucleo" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-      <div>Built by Jonathan Peris</div>
-    </div>
-  </aside>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </nav>
+      <div class="sidebar-footer">
+        <a href="https://github.com/jonathanperis/cpnucleo">Source on GitHub</a>
+        <a href="https://cpnucleo.jonathanperis.tech/" target="_blank" rel="noopener noreferrer">Live demo</a>
+      </div>
+    </aside>
 
-  <div class="content-wrapper">
     <main class="content" id="mainContent">
       {isRoot ? (
-        <section class="docs-command" aria-labelledby="docs-title">
-          <p class="eyebrow">documentation command center</p>
-          <h1 id="docs-title">Choose the proof trail you need</h1>
-          <p class="lead">The docs are grouped for architecture review, implementation study, and deployment checks. Start with the route that matches your question instead of scanning one compiled page.</p>
-
-          <div class="docs-group-grid">
-            {docsGroups.map((group) => (
-              <section class="docs-group" data-doc-group>
-                <h2>{group.label}</h2>
-                <div class="docs-link-list">
-                  {group.ids.map((id) => {
-                    const href = `${docsBase}/${id}/`;
-                    return (
-                      <a class="docs-link-card" href={href} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
-                        <span>{SLUG_LABEL[id]}</span>
-                        <p>{DOC_SUMMARIES[id]}</p>
-                      </a>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
-          </div>
+        <section class="docs-index" aria-labelledby="docs-title">
+          <p class="running-head"><span>Cpnucleo documentation</span><span>{SECTION_ORDER.length} chapters</span></p>
+          <h1 id="docs-title">Contents</h1>
+          <p class="lead">How Cpnucleo is built, tested and shipped. Start with the overview or the learning lab; the other chapters work as reference and can be read in any order.</p>
+          <Contents headingLevel="h2" />
         </section>
       ) : (
-        sectionsToRender.map(({ slug, page: wikiPage }) => {
-          const Content = wikiPage.default ?? wikiPage;
-          return (
-            <section id={slug} class="doc-section">
-              <Content />
-            </section>
-          );
-        })
+        <>
+          <p class="running-head">
+            <span>Part {parts[partIndex]}, {SECTION_CATEGORIES[partIndex]?.label}</span>
+            <span>Chapter {chapterNumber(currentId)} of {SECTION_ORDER.length}</span>
+          </p>
+          <article id={currentId} class="doc-section prose">
+            {Content && <Content />}
+          </article>
+          <nav class="pager" aria-label="Chapters">
+            {previous ? (
+              <a class="pager-link" href={`${docsBase}/${previous}/`} rel="prev">
+                <span class="pager-label">← Previous, {chapterNumber(previous)}</span>
+                <span class="pager-title">{SLUG_LABEL[previous]}</span>
+              </a>
+            ) : <span></span>}
+            {next ? (
+              <a class="pager-link next" href={`${docsBase}/${next}/`} rel="next">
+                <span class="pager-label">Next, {chapterNumber(next)} →</span>
+                <span class="pager-title">{SLUG_LABEL[next]}</span>
+              </a>
+            ) : <span></span>}
+          </nav>
+        </>
       )}
+      <footer class="docs-colophon">
+        <p>Cpnucleo by <a href="https://github.com/jonathanperis">Jonathan Peris</a>, MIT licence. Set in Newsreader and IBM Plex.</p>
+      </footer>
     </main>
+
+    {sections.length > 1 && (
+      <aside class="toc" aria-labelledby="toc-title">
+        <p class="toc-title" id="toc-title">On this page</p>
+        <ol>
+          {sections.map((heading) => <li><a href={`#${heading.slug}`} data-toc-link={heading.slug}>{heading.text}</a></li>)}
+        </ol>
+      </aside>
+    )}
   </div>
 
-  <script is:inline define:vars={{ currentId: currentId }}>
+  <script is:inline>
     document.addEventListener('DOMContentLoaded', () => {
       const menuToggle = document.getElementById('menuToggle');
       const sidebar = document.getElementById('sidebar');
@@ -174,11 +158,16 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
 
       if (menuToggle) menuToggle.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
       if (overlay) overlay.addEventListener('click', () => setMenu(false));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && sidebar.classList.contains('open')) {
+          setMenu(false);
+          menuToggle?.focus();
+        }
+      });
 
       document.querySelectorAll('.nav-item').forEach((item) => {
-        item.classList.toggle('active', item.dataset.navId === currentId);
         item.addEventListener('click', () => {
-          if (window.innerWidth <= 768) setMenu(false);
+          if (window.innerWidth <= 860) setMenu(false);
         });
       });
 
@@ -196,7 +185,7 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
             const match = !query || item.dataset.searchText.toLowerCase().includes(query);
             const container = item.closest('li') || item;
             container.hidden = !match;
-            if (match) visible++;
+            if (match && item.closest('#sidebar')) visible++;
           });
 
           groups.forEach((group) => {
@@ -205,6 +194,22 @@ const docsGroups = SECTION_CATEGORIES.map((cat) => ({
           });
 
           if (searchEmpty) searchEmpty.hidden = query === '' || visible > 0;
+        });
+      }
+
+      // Marks the section being read in the "On this page" margin.
+      const tocLinks = new Map(Array.from(document.querySelectorAll('[data-toc-link]')).map((link) => [link.dataset.tocLink, link]));
+      if (tocLinks.size > 0 && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            tocLinks.forEach((link) => link.removeAttribute('aria-current'));
+            tocLinks.get(entry.target.id)?.setAttribute('aria-current', 'true');
+          });
+        }, { rootMargin: '0px 0px -70% 0px' });
+        tocLinks.forEach((_, id) => {
+          const heading = document.getElementById(id);
+          if (heading) observer.observe(heading);
         });
       }
     });

@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'cpnucleo | .NET architecture workbench',
-  description = 'Source-backed learning paths for .NET 10, REST, gRPC, Astro, PostgreSQL, Docker, Hostinger, and automated architecture tests.'
+  title = 'Cpnucleo | a .NET 10 architecture laboratory',
+  description = 'One project tracker, built several ways: REST and gRPC, EF Core and Dapper, an OpenID Connect provider and an Astro client on PostgreSQL.'
 } = Astro.props;
 
 const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://jonathanperis.github.io${Astro.url.pathname}`;
@@ -17,18 +17,19 @@ const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const assetPath = (path: string) => `${basePath}/${path.replace(/^\//, '')}`;
 const absoluteAsset = (path: string) => new URL(assetPath(path), Astro.site ?? 'https://jonathanperis.github.io').href;
 const faviconHref = assetPath('favicon.ico');
+const faviconSvgHref = assetPath('favicon.svg');
 const faviconPngHref = assetPath('favicon.png');
 const favicon32Href = assetPath('favicon-32x32.png');
 const appleTouchIconHref = assetPath('apple-touch-icon.png');
 const socialImageUrl = absoluteAsset('social-preview.png');
 const thumbnailHref = assetPath('thumbnail.png');
 const thumbnailUrl = absoluteAsset('thumbnail.png');
-const socialImageAlt = 'CPnucleo dark cyan architecture workbench preview with .NET service topology';
+const socialImageAlt = 'Cpnucleo: one project tracker, built several ways. A serif title on warm paper beside a drafted service map.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareSourceCode',
-  'name': 'cpnucleo',
+  'name': 'Cpnucleo',
   'description': description,
   'url': pageUrl,
   'image': socialImageUrl,
@@ -50,25 +51,24 @@ const jsonLd = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
     <meta name="description" content={description} />
     <meta name="keywords" content=".NET 10, Clean Architecture, CQRS, DDD, FastEndpoints, Astro, Hostinger, gRPC, PostgreSQL, Docker, C#" />
     <link rel="canonical" href={pageUrl} />
     <link rel="icon" href={faviconHref} sizes="any" />
+    <link rel="icon" type="image/svg+xml" href={faviconSvgHref} />
     <link rel="icon" type="image/png" href={faviconPngHref} />
     <link rel="icon" type="image/png" sizes="32x32" href={favicon32Href} />
     <link rel="apple-touch-icon" href={appleTouchIconHref} />
     <link rel="image_src" href={socialImageUrl} />
     <link rel="thumbnail" href={thumbnailHref} />
-    <meta name="theme-color" content="#061427" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f3ea" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1d1915" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
-    <meta property="og:site_name" content="cpnucleo" />
+    <meta property="og:site_name" content="Cpnucleo" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content={socialImageUrl} />
     <meta property="og:image:secure_url" content={socialImageUrl} />

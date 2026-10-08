@@ -10,6 +10,10 @@ export default defineConfig({
   outDir: 'out',
   site: 'https://jonathanperis.github.io',
   base: isProd ? '/cpnucleo' : '',
+  markdown: {
+    // Paper and night listings; docs.css swaps to the dark palette with prefers-color-scheme.
+    shikiConfig: { themes: { light: 'rose-pine-dawn', dark: 'rose-pine' } },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

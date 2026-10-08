@@ -5,32 +5,33 @@ import LoginForm from '../components/LoginForm.astro';
 import BrandMark from '../components/BrandMark.astro';
 import { resourceMetadata } from '../lib/api/resource-metadata';
 
-// Service topology drawn on the sign-in panel: boxes in a 400x232 coordinate space.
+// Fig. 1 on the sign-in panel: boxes in a 400 x 232 grid with orthogonal edges, like the docs site's service map.
 const services = [
-  { label: 'WebClient', detail: 'Astro', x: 140, y: 8 },
+  { label: 'WebClient', detail: 'Astro', x: 140, y: 8, kind: 'focus' },
   { label: 'IdentityApi', detail: 'OpenID Connect', x: 8, y: 96 },
   { label: 'WebApi', detail: 'REST', x: 140, y: 96 },
   { label: 'GrpcServer', detail: 'gRPC', x: 272, y: 96 },
-  { label: 'PostgreSQL', detail: 'EF Core · Dapper', x: 140, y: 184 },
+  { label: 'PostgreSQL', detail: 'EF Core · Dapper', x: 140, y: 184, kind: 'store' },
 ];
 // The WebClient only calls IdentityApi and WebApi; GrpcServer is an independent host on the same database.
-const edges = ['M200 48v48', 'M180 48 68 96', 'M68 136l112 48', 'M200 136v48', 'M332 136l-112 48'];
+const edges = ['M200 48v46', 'M170 48v20H68v26', 'M68 136v68h70', 'M200 136v46', 'M332 136v68h-70'];
 ---
 
-<html lang="en" data-theme="dark" style="color-scheme: dark;">
+<html lang="en" data-theme="light" style="color-scheme: light;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Sign in · Cpnucleo</title>
     <script is:inline>
       (() => {
         try {
           const stored = localStorage.getItem('cpnucleo-theme');
-          // Dark unless the person chose light, or chose to follow the operating system.
+          // Paper (light) unless the person chose night, or chose to follow the operating system.
           const theme = stored === 'dark' || stored === 'light'
             ? stored
-            : stored === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            : stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {}
@@ -40,44 +41,45 @@ const edges = ['M200 48v48', 'M180 48 68 96', 'M68 136l112 48', 'M200 136v48', '
   <body>
     <main class="grid min-h-screen text-ink lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
       <section class="login-panel relative hidden flex-col justify-between overflow-hidden border-r border-line p-10 lg:flex xl:p-14">
-        <a href="/" class="relative flex items-center gap-3">
-          <BrandMark />
-          <span class="leading-tight">
-            <span class="block text-[0.9375rem] font-semibold tracking-tight">Cpnucleo</span>
-            <span class="block text-xs text-subtle">Project workspace</span>
-          </span>
+        <a href="/" class="flex items-center gap-3 self-start">
+          <BrandMark class="size-7" />
+          <span class="wordmark text-[1.3125rem] leading-none">Cpnucleo</span>
         </a>
 
-        <div class="relative max-w-lg">
-          <p class="eyebrow">Learning laboratory</p>
-          <p class="mt-4 text-3xl font-semibold leading-tight tracking-tight text-balance xl:text-4xl">A project hub built to be read, tested and taken apart.</p>
-          <p class="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted">Every screen here talks to real services. Sign in, change a record, then follow it through the API and into PostgreSQL.</p>
-          <svg viewBox="0 0 400 232" role="img" aria-label="Service topology: the WebClient calls IdentityApi and WebApi; IdentityApi, WebApi and GrpcServer share PostgreSQL." class="mt-10 w-full max-w-md">
-            <g fill="none" stroke-width="1.25" stroke-dasharray="3 4" class="stroke-line-strong">{edges.map(d => <path d={d} />)}</g>
-            {services.map(service => (
-              <g>
-                <rect x={service.x} y={service.y} width="120" height="40" rx="8" class:list={['fill-surface', service.label === 'WebClient' ? 'stroke-accent' : 'stroke-line-strong']} />
-                <text x={service.x + 60} y={service.y + 18} text-anchor="middle" font-size="12" font-weight="600" class="fill-ink">{service.label}</text>
-                <text x={service.x + 60} y={service.y + 31} text-anchor="middle" font-size="9.5" class="fill-subtle font-mono">{service.detail}</text>
-              </g>
-            ))}
-          </svg>
+        <div class="max-w-lg">
+          <p class="eyebrow">A learning laboratory</p>
+          <p class="mt-4 font-display text-[2.75rem] font-[370] leading-[1.04] tracking-[-0.025em] text-balance xl:text-[3.25rem]">A project hub built to be read, tested and <em class="text-accent-text">taken apart.</em></p>
+          <p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-muted">Every screen here talks to real services. Sign in, change a record, then follow it through the API and into PostgreSQL.</p>
+          <figure class="login-figure mt-10 max-w-md">
+            <svg viewBox="0 0 400 232" role="img" aria-label="Service topology: the WebClient calls IdentityApi and WebApi; IdentityApi, WebApi and GrpcServer share PostgreSQL." class="w-full overflow-visible">
+              <defs><marker id="login-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 8 4 0 8z" /></marker></defs>
+              <g>{edges.map(d => <path class="edge" d={d} marker-end="url(#login-arrow)" />)}</g>
+              {services.map(service => (
+                <g>
+                  <rect x={service.x} y={service.y} width="120" height="40" rx="1" class:list={['box', service.kind]} />
+                  <text x={service.x + 60} y={service.y + 18} text-anchor="middle" font-size="12" font-weight="560" class="fill-ink">{service.label}</text>
+                  <text x={service.x + 60} y={service.y + 31} text-anchor="middle" font-size="9.5" class="fill-subtle font-mono">{service.detail}</text>
+                </g>
+              ))}
+            </svg>
+            <figcaption class="mt-4 border-t border-line pt-3 text-xs leading-relaxed text-subtle"><b class="font-semibold text-ink">Fig. 1.</b> What this page talks to. GrpcServer is a separate host on the same database.</figcaption>
+          </figure>
         </div>
 
-        <dl class="relative grid max-w-lg grid-cols-3 divide-x divide-line rounded-xl border border-line bg-surface/70">
-          <div class="px-5 py-4"><dt class="text-xs text-subtle">Work areas</dt><dd data-work-area-count class="mt-1 font-mono text-xl font-medium tabular-nums">{resourceMetadata.length}</dd></div>
-          <div class="px-5 py-4"><dt class="text-xs text-subtle">Transports</dt><dd class="mt-1 text-xl font-medium">REST · gRPC</dd></div>
-          <div class="px-5 py-4"><dt class="text-xs text-subtle">Session</dt><dd class="mt-1 text-xl font-medium">Private</dd></div>
+        <dl class="grid max-w-lg grid-cols-3 border-y border-ink/80">
+          <div class="py-4 pr-5"><dt class="font-display text-[0.9375rem] italic text-subtle">Work areas</dt><dd data-work-area-count class="mt-1 stat-num text-[1.5rem]">{resourceMetadata.length}</dd></div>
+          <div class="border-l border-line px-5 py-4"><dt class="font-display text-[0.9375rem] italic text-subtle">Transports</dt><dd class="mt-1 stat-num whitespace-nowrap text-[1.5rem]">REST · gRPC</dd></div>
+          <div class="border-l border-line px-5 py-4"><dt class="font-display text-[0.9375rem] italic text-subtle">Session</dt><dd class="mt-1 stat-num text-[1.5rem]">Private</dd></div>
         </dl>
       </section>
 
       <section class="flex min-h-screen flex-col px-6 py-6 sm:px-10">
         <div class="flex items-center justify-between">
-          <a href="/" class="flex items-center gap-3 lg:invisible" aria-label="Cpnucleo home"><BrandMark class="size-8" /><span class="text-[0.9375rem] font-semibold tracking-tight">Cpnucleo</span></a>
+          <a href="/" class="flex items-center gap-3 lg:invisible" aria-label="Cpnucleo home"><BrandMark class="size-7" /><span class="wordmark text-[1.25rem] leading-none">Cpnucleo</span></a>
           <ThemeToggle />
         </div>
         <div class="flex flex-1 items-center justify-center py-12"><LoginForm /></div>
-        <p class="text-center text-xs text-subtle">Protected dashboard · Light and dark themes</p>
+        <p class="text-center font-display text-[0.875rem] italic text-subtle">Cpnucleo, an open-source .NET laboratory</p>
       </section>
     </main>
   </body>
