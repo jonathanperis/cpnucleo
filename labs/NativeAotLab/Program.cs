@@ -35,12 +35,12 @@ var singleWarn = Flag("--single-warn"); // default ILC behaviour: one IL2104/IL3
 var stamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
 // Canonical path: on macOS the temp folder sits behind the /var -> /private/var symlink, and NuGet
 // restore would otherwise see the copied project references under two different paths.
-var work = Path.Combine(RealPath(Path.GetTempPath()), "cpnucleo-nativeaot-lab", stamp);
-var reportDir = Path.Combine(AppContext.BaseDirectory, "reports", stamp);
+var work = Path.Join(RealPath(Path.GetTempPath()), "cpnucleo-nativeaot-lab", stamp);
+var reportDir = Path.Join(AppContext.BaseDirectory, "reports", stamp);
 Directory.CreateDirectory(work);
 Directory.CreateDirectory(reportDir);
 var totalWatch = Stopwatch.StartNew();
-var webApiProject = Path.Combine(repoRoot, "src", "WebApi", "WebApi.csproj");
+var webApiProject = Path.Join(repoRoot, "src", "WebApi", "WebApi.csproj");
 
 Console.WriteLine($"Native AOT lab: dotnet={dotnet} rid={rid}");
 Console.WriteLine($"Scratch: {work}");
@@ -78,14 +78,14 @@ var jit = skipJit ? null : await PublishAsync("jit-baseline", webApiProject, ["-
 // FastEndpoints guidance on a scratch copy: source-generated discovery (DiscoveredTypes.All), the
 // generated binding reflection cache, and reflection-based System.Text.Json re-enabled as a stand-in
 // for generated serializer contexts (those need FastEndpoints' CLI tool and committed sources).
-var (guidedProject, guidedPatches) = skipGuided ? ((string?)null, new List<string>()) : PrepareGuidedCopy();
+(string? guidedProject, List<string> guidedPatches) = skipGuided ? (null, []) : PrepareGuidedCopy();
 var guided = guidedProject is null ? null
     : await PublishAsync("native-aot-fe-guidance", guidedProject, [.. aotArguments, "-p:JsonSerializerIsReflectionEnabledByDefault=true"]);
 List<IlWarning> guidedWarnings = guided is null ? [] : WarningSummary.Parse(guided.Output);
 
 // 2. Warning summary.
 var warnings = WarningSummary.Parse(native.Output);
-var generated = InspectGeneratedSources(Path.Combine(work, "native-aot", "artifacts"));
+var generated = InspectGeneratedSources(Path.Join(work, "native-aot", "artifacts"));
 
 // 3. Run what was produced against a disposable database.
 var probes = new Dictionary<string, RunResult>();
@@ -126,7 +126,7 @@ if (new[] { native, guided, jit }.Any(p => p?.Binary is not null))
         var probeDb = new NpgsqlConnectionStringBuilder(connectionString) { Database = "native_migrate_probe" }.ConnectionString;
         var (exit, output, elapsed) = await RunToExitAsync(native.Binary, ["--migrate-database"], native.PublishDir,
             new() { ["DB_CONNECTION_STRING"] = probeDb, ["ASPNETCORE_ENVIRONMENT"] = "Production" }, TimeSpan.FromMinutes(3));
-        File.WriteAllLines(Path.Combine(reportDir, "native-migrate.log"), output);
+        File.WriteAllLines(Path.Join(reportDir, "native-migrate.log"), output);
         bool applied;
         try
         {
@@ -172,12 +172,16 @@ if (new[] { native, guided, jit }.Any(p => p?.Binary is not null))
 
     discoveryStop.Cancel();
     discovery.Stop();
-    try { await discoveryTask; } catch (Exception e) when (e is OperationCanceledException or HttpListenerException or ObjectDisposedException) { }
+    try { await discoveryTask; }
+    catch (Exception e) when (e is OperationCanceledException or HttpListenerException or ObjectDisposedException)
+    {
+        // Expected: stopping the discovery listener ends its accept loop.
+    }
 }
 
 // 4. Report.
 var report = BuildReport();
-var reportPath = Path.Combine(reportDir, "native-aot-report.md");
+var reportPath = Path.Join(reportDir, "native-aot-report.md");
 await File.WriteAllTextAsync(reportPath, report);
 Console.WriteLine();
 Console.WriteLine(report);
@@ -195,21 +199,21 @@ return 0;
 
 async Task<PublishResult> PublishAsync(string variant, string project, string[] extra)
 {
-    var publishDir = Path.Combine(work, variant, "publish");
+    var publishDir = Path.Join(work, variant, "publish");
     string[] arguments =
     [
         "publish", project, "-c", "Release", "-r", rid, "-o", publishDir,
         // Keeps bin/obj out of src/ so the experiment never disturbs the developer's build.
-        "--artifacts-path", Path.Combine(work, variant, "artifacts"),
+        "--artifacts-path", Path.Join(work, variant, "artifacts"),
         "-tl:off", "-clp:NoSummary", "-nologo", .. extra
     ];
     Console.WriteLine($"[{variant}] dotnet {string.Join(' ', arguments)}");
     var watch = Stopwatch.StartNew();
     var (exit, output, _) = await RunToExitAsync(dotnet, arguments, repoRoot, [], TimeSpan.FromMinutes(30), echo: variant);
     watch.Stop();
-    var logPath = Path.Combine(reportDir, $"publish-{variant}.log");
+    var logPath = Path.Join(reportDir, $"publish-{variant}.log");
     await File.WriteAllLinesAsync(logPath, output);
-    var binaryPath = Path.Combine(publishDir, OperatingSystem.IsWindows() ? "WebApi.exe" : "WebApi");
+    var binaryPath = Path.Join(publishDir, OperatingSystem.IsWindows() ? "WebApi.exe" : "WebApi");
     var binary = exit == 0 && File.Exists(binaryPath) ? binaryPath : null;
     var nativeStarted = output.Any(line => line.Contains("Generating native code", StringComparison.Ordinal) || line.Contains("ILC", StringComparison.Ordinal));
     var toolingFailed = exit is null || (exit != 0 && variant == "native-aot" && !nativeStarted);
@@ -242,7 +246,10 @@ async Task<RunResult> ProbeAsync(string variant, PublishResult publish, Dictiona
                 using var ready = await http.GetAsync("/healthz");
                 if (ready.StatusCode == HttpStatusCode.OK) { startup = watch.Elapsed; break; }
             }
-            catch (HttpRequestException) { }
+            catch (HttpRequestException)
+            {
+                // Not listening yet; poll again.
+            }
             await Task.Delay(25);
         }
         if (startup is not null)
@@ -288,7 +295,7 @@ async Task<RunResult> ProbeAsync(string variant, PublishResult publish, Dictiona
     finally
     {
         if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); }
-        await File.WriteAllLinesAsync(Path.Combine(reportDir, $"run-{variant}.log"), Snapshot());
+        await File.WriteAllLinesAsync(Path.Join(reportDir, $"run-{variant}.log"), Snapshot());
     }
 
     List<string> Snapshot() { lock (output) return [.. output]; }
@@ -371,7 +378,7 @@ string BuildReport()
     sb.AppendLine();
     sb.AppendLine("Checked statically (the lab does not change `src/`). Guidance: https://fast-endpoints.com/docs/native-aot");
     sb.AppendLine();
-    var program = File.ReadAllText(Path.Combine(repoRoot, "src", "WebApi", "Program.cs"));
+    var program = File.ReadAllText(Path.Join(repoRoot, "src", "WebApi", "Program.cs"));
     var csproj = File.ReadAllText(webApiProject);
     sb.AppendLine("| Guidance | Observed |");
     sb.AppendLine("|---|---|");
@@ -380,7 +387,7 @@ string BuildReport()
     sb.AppendLine($"| `GenerateSerializerContexts` + `AddSerializerContextsFrom...` (committed `JsonSerializerContext`s) | {(csproj.Contains("GenerateSerializerContexts") || program.Contains("AddSerializerContextsFrom") ? "present" : "absent: request/response DTOs rely on reflection-based System.Text.Json, which Native AOT disables by default")} |");
     sb.AppendLine($"| `Binding.ReflectionCache.AddFrom...` (generated binding/reflection data) | {(program.Contains("ReflectionCache") ? "present" : "absent")}; generator output: {generated.ReflectionData} |");
     sb.AppendLine($"| `InvariantGlobalization` | {(csproj.Contains("<InvariantGlobalization>true") ? "set in WebApi.csproj (ExtraOptimize only)" : "not set")}; not passed by this lab |");
-    sb.AppendLine($"| AOT black-box tests (`AppFixture` + `NativeAotTestMode`) | {(Directory.Exists(Path.Combine(repoRoot, "tests")) && Directory.EnumerateFiles(Path.Combine(repoRoot, "tests"), "*.csproj", SearchOption.AllDirectories).Any(f => File.ReadAllText(f).Contains("NativeAotTestMode")) ? "present" : "absent; integration tests use WebApplicationFactory, which cannot host a native binary")} |");
+    sb.AppendLine($"| AOT black-box tests (`AppFixture` + `NativeAotTestMode`) | {(Directory.Exists(Path.Join(repoRoot, "tests")) && Directory.EnumerateFiles(Path.Join(repoRoot, "tests"), "*.csproj", SearchOption.AllDirectories).Any(f => File.ReadAllText(f).Contains("NativeAotTestMode")) ? "present" : "absent; integration tests use WebApplicationFactory, which cannot host a native binary")} |");
     sb.AppendLine($"| Dapper.AOT interceptors in Infrastructure | {generated.DapperAot} |");
     sb.AppendLine();
     if (skipGuided) sb.AppendLine("The guided variant was skipped (`--skip-guided`).");
@@ -462,22 +469,22 @@ string BuildReport()
 
 (string? Project, List<string> Patches) PrepareGuidedCopy()
 {
-    var root = Path.Combine(work, "guided-src");
+    var root = Path.Join(work, "guided-src");
     var patches = new List<string>();
-    File.Copy(Path.Combine(repoRoot, "global.json"), Path.Combine(root, "global.json").EnsureDirectory());
-    File.Copy(Path.Combine(repoRoot, "src", "Directory.Packages.props"), Path.Combine(root, "src", "Directory.Packages.props").EnsureDirectory());
+    File.Copy(Path.Join(repoRoot, "global.json"), Path.Join(root, "global.json").EnsureDirectory());
+    File.Copy(Path.Join(repoRoot, "src", "Directory.Packages.props"), Path.Join(root, "src", "Directory.Packages.props").EnsureDirectory());
     foreach (var project in new[] { "Domain", "Application", "Infrastructure", "WebApi" })
     {
-        var source = Path.Combine(repoRoot, "src", project);
+        var source = Path.Join(repoRoot, "src", project);
         foreach (var file in Directory.EnumerateFiles(source, "*", SearchOption.AllDirectories))
         {
             var relative = Path.GetRelativePath(source, file);
             if (relative.Split(Path.DirectorySeparatorChar)[0] is "bin" or "obj") continue;
-            File.Copy(file, Path.Combine(root, "src", project, relative).EnsureDirectory());
+            File.Copy(file, Path.Join(root, "src", project, relative).EnsureDirectory());
         }
     }
 
-    var programPath = Path.Combine(root, "src", "WebApi", "Program.cs");
+    var programPath = Path.Join(root, "src", "WebApi", "Program.cs");
     var program = File.ReadAllText(programPath);
     if (program.Contains("DiscoveredTypes.All", StringComparison.Ordinal)) patches.Add("`AddFastEndpoints(DiscoveredTypes.All)`: already used by this tree (unchanged).");
     else
@@ -496,17 +503,17 @@ string BuildReport()
     else { patches.Add("Could not find the `UseFastEndpoints(...)` call to patch; variant skipped."); return (null, patches); }
     patches.Add("`c.Binding.ReflectionCache.AddFromWebApi()` (the generated `WebApi.GeneratedReflection` extension) added to `UseFastEndpoints` (generated binding/reflection data).");
     File.WriteAllText(programPath, program);
-    return (Path.Combine(root, "src", "WebApi", "WebApi.csproj"), patches);
+    return (Path.Join(root, "src", "WebApi", "WebApi.csproj"), patches);
 }
 
 string FindSwaggerSuppression()
 {
-    var props = File.ReadAllText(Path.Combine(repoRoot, "src", "Directory.Packages.props"));
+    var props = File.ReadAllText(Path.Join(repoRoot, "src", "Directory.Packages.props"));
     var version = System.Text.RegularExpressions.Regex.Match(props, "\"FastEndpoints.Swagger\" Version=\"([^\"]+)\"").Groups[1].Value;
     var packages = Environment.GetEnvironmentVariable("NUGET_PACKAGES") is { Length: > 0 } configured
         ? configured
-        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
-    var targets = Path.Combine(packages, "fastendpoints.swagger", version, "build", "FastEndpoints.Swagger.targets");
+        : Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
+    var targets = Path.Join(packages, "fastendpoints.swagger", version, "build", "FastEndpoints.Swagger.targets");
     if (!File.Exists(targets)) return $"not inspected (`{targets}` not found)";
     var text = File.ReadAllText(targets);
     return text.Contains("<SuppressTrimAnalysisWarnings>true", StringComparison.Ordinal) && text.Contains("<SuppressAotAnalysisWarnings>true", StringComparison.Ordinal)
@@ -522,7 +529,7 @@ static string FirstError(List<string> log) =>
 GeneratedInfo InspectGeneratedSources(string artifacts)
 {
     string discovered = "not found", reflection = "not found", dapper = "not found";
-    var objRoot = Path.Combine(artifacts, "obj");
+    var objRoot = Path.Join(artifacts, "obj");
     if (!Directory.Exists(objRoot)) return new(discovered, reflection, dapper);
     var files = Directory.EnumerateFiles(objRoot, "*.cs", SearchOption.AllDirectories)
         .Where(f => f.Contains($"{Path.DirectorySeparatorChar}generated{Path.DirectorySeparatorChar}", StringComparison.Ordinal)).ToList();
@@ -643,7 +650,7 @@ static string RealPath(string path)
     var current = Path.GetPathRoot(full)!;
     foreach (var segment in full[current.Length..].Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
     {
-        current = Path.Combine(current, segment);
+        current = Path.Join(current, segment);
         if (new DirectoryInfo(current).ResolveLinkTarget(returnFinalTarget: true) is { } target) current = target.FullName;
     }
     return current;
@@ -654,7 +661,7 @@ static string ResolveDotnet()
     if (Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") is { Length: > 0 } host && File.Exists(host)) return host;
     var name = OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet";
     foreach (var directory in (Environment.GetEnvironmentVariable("PATH") ?? "").Split(Path.PathSeparator))
-        if (directory.Length > 0 && File.Exists(Path.Combine(directory, name))) return Path.Combine(directory, name);
+        if (directory.Length > 0 && File.Exists(Path.Join(directory, name))) return Path.Join(directory, name);
     return name;
 }
 
@@ -662,7 +669,7 @@ static string FindRepoRoot()
 {
     foreach (var start in new[] { Environment.CurrentDirectory, AppContext.BaseDirectory })
         for (var directory = new DirectoryInfo(start); directory is not null; directory = directory.Parent)
-            if (File.Exists(Path.Combine(directory.FullName, "cpnucleo.slnx"))) return directory.FullName;
+            if (File.Exists(Path.Join(directory.FullName, "cpnucleo.slnx"))) return directory.FullName;
     throw new InvalidOperationException("Run the lab from inside the Cpnucleo repository.");
 }
 
