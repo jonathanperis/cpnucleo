@@ -55,7 +55,7 @@ app.Use(async (context, next) =>
 
 // The committed contracts, read from the repository on every request.
 app.MapGet("/openapi/{name}.json", (string name) => documents.Contains(name)
-    ? Results.File(Path.Combine(repository, "docs", "openapi", $"{name}.v1.json"), "application/json")
+    ? Results.File(Path.Join(repository, "docs", "openapi", $"{name}.v1.json"), "application/json")
     : Results.NotFound());
 
 app.MapScalarApiReference("/scalar-defaults", options => options.AddDocuments(documents));
@@ -80,14 +80,14 @@ var failures = new List<string>();
 void Require(bool condition, string failure) { if (!condition) failures.Add(failure); }
 
 var scalarVersion = typeof(ScalarOptions).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0];
-Console.WriteLine($"Scalar.AspNetCore {scalarVersion}; host {origin}; contracts from {Path.Combine(repository, "docs", "openapi")}");
+Console.WriteLine($"Scalar.AspNetCore {scalarVersion}; host {origin}; contracts from {Path.Join(repository, "docs", "openapi")}");
 
 // 1. Documents: byte-identical to the committed files and recognisable OpenAPI 3 documents.
 foreach (var name in documents)
 {
     using var response = await http.GetAsync($"/openapi/{name}.json");
     var bytes = await response.Content.ReadAsByteArrayAsync();
-    var committed = await File.ReadAllBytesAsync(Path.Combine(repository, "docs", "openapi", $"{name}.v1.json"));
+    var committed = await File.ReadAllBytesAsync(Path.Join(repository, "docs", "openapi", $"{name}.v1.json"));
     using var json = JsonDocument.Parse(bytes);
     var title = json.RootElement.GetProperty("info").GetProperty("title").GetString();
     var paths = json.RootElement.GetProperty("paths").EnumerateObject().Count();
@@ -216,7 +216,7 @@ static string FindRepository()
 {
     foreach (var start in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
         for (var directory = new DirectoryInfo(start); directory is not null; directory = directory.Parent)
-            if (File.Exists(Path.Combine(directory.FullName, "cpnucleo.slnx")) && Directory.Exists(Path.Combine(directory.FullName, "docs", "openapi")))
+            if (File.Exists(Path.Join(directory.FullName, "cpnucleo.slnx")) && Directory.Exists(Path.Join(directory.FullName, "docs", "openapi")))
                 return directory.FullName;
     throw new InvalidOperationException("Run from inside the Cpnucleo repository: docs/openapi was not found.");
 }

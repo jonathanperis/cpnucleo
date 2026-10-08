@@ -58,7 +58,7 @@ public sealed class ProjectStore(string connectionString)
 public sealed class LabProbe
 {
     private TaskCompletionSource<long> _listenerLost = NewSource<long>();
-    private TaskCompletionSource<StreamEnd> _streamEnded = NewSource<StreamEnd>();
+    private readonly TaskCompletionSource<StreamEnd> _streamEnded = NewSource<StreamEnd>();
     private int _notifications;
     private int _listenerPid;
 
@@ -132,6 +132,7 @@ public sealed class ProjectsListener(string connectionString, LabProbe probe) : 
         }
         catch (OperationCanceledException) when (stop.IsCancellationRequested)
         {
+            // Expected: the stream ended and stopped the wait loop.
         }
         catch (Exception)
         {
@@ -233,11 +234,9 @@ public sealed class WatchProjectsHandler(ProjectStore store, LabProbe probe, Str
                 if (signal.Cancelled) yield break;
                 if (signal.Lost) continue; // back off for ReconnectDelay before re-subscribing
 
-                string reason;
-                if (!listener.IsListening)
-                    reason = await listener.TryRestartAsync(ct) ? "resubscribe" : "degraded";
-                else
-                    reason = signal.Notifications > 0 ? "notify" : "fallback";
+                var reason = !listener.IsListening
+                    ? await listener.TryRestartAsync(ct) ? "resubscribe" : "degraded"
+                    : signal.Notifications > 0 ? "notify" : "fallback";
 
                 var next = await TrySnapshotAsync(reason, signal.Notifications, ct);
                 if (next is null) yield break;
