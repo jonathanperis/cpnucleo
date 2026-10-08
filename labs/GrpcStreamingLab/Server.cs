@@ -134,7 +134,7 @@ public sealed class ProjectsListener(string connectionString, LabProbe probe) : 
         {
             // Expected: the stream ended and stopped the wait loop.
         }
-        catch (Exception)
+        catch (Exception lost) when (lost is NpgsqlException or IOException or ObjectDisposedException or InvalidOperationException)
         {
             // pg_terminate_backend, a failover or a network drop: NOTIFY messages sent from now until a new
             // LISTEN commits are lost for this stream. The handler must refresh after re-subscribing.

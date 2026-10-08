@@ -117,6 +117,7 @@ foreach (var (prefix, label) in new[] { ("/scalar-defaults", "Scalar defaults un
             .Select(m => (Src: Attribute(m.Groups[1].Value, "src"), Nonce: Attribute(m.Groups[1].Value, "nonce"), Inline: m.Groups[2].Value.Trim())).ToList();
         var configJson = Regex.Match(html, @"initialize\(\s*'([^']*)',\s*(true|false),\s*(\{.*\}),\s*'[^']*'\)", RegexOptions.Singleline);
         Require(configJson.Success, $"{pageUri.AbsolutePath}: Scalar configuration not found in the page");
+        if (!configJson.Success) continue; // Recorded as a failure; the remaining pages and profiles are still checked.
         using var config = JsonDocument.Parse(configJson.Groups[3].Value);
         var initPath = Uri.UnescapeDataString(configJson.Groups[1].Value);
         // scalar.aspnetcore.js resolves relative sources against origin + (page path minus the initialize path) + "/".

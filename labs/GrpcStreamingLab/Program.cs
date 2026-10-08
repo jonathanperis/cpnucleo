@@ -27,9 +27,10 @@ try
     Console.WriteLine($"All checks passed in {Stopwatch.GetElapsedTime(started).TotalSeconds:0.0} s.");
     return 0;
 }
-catch (Exception failure)
+catch (LabFailure failure)
 {
-    Console.Error.WriteLine($"FAILED: {(failure is LabFailure ? failure.Message : failure.ToString())}");
+    // A claimed property did not hold. Anything else (Docker unavailable, ...) surfaces as an unhandled exception.
+    Console.Error.WriteLine($"FAILED: {failure.Message}");
     return 1;
 }
 
@@ -115,6 +116,7 @@ async Task RunAsync()
         }
         catch (OperationCanceledException) when (pollingStop.IsCancellationRequested)
         {
+            // Expected: the comparison loop is stopped at the end of the run.
         }
     });
 
