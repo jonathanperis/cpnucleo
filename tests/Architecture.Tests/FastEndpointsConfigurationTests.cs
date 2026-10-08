@@ -362,21 +362,22 @@ public class FastEndpointsConfigurationTests
         telemetry.Should().Contain("OTLPMetricExporter");
         telemetry.Should().Contain("OTLPLogExporter");
 
-        appLayout.Should().Contain("<html lang=\"en\" data-theme=\"dark\" style=\"color-scheme: dark;\">");
-        appLayout.Should().Contain(": 'dark';");
-        globalCss.Should().Contain("--accent: 78% 0.17 215;");
-        globalCss.Should().Contain("--accent-hover: 83% 0.17 210;");
-        globalCss.Should().Contain("scrollbar-color: oklch(var(--accent-hover)) oklch(var(--canvas));");
+        // Paper (light) is the default theme; the pre-paint script, the static markup and the toggle agree.
+        appLayout.Should().Contain("<html lang=\"en\" data-theme=\"light\" style=\"color-scheme: light;\">");
+        appLayout.Should().Contain(": 'light';");
+        globalCss.Should().Contain("--accent: 58% 0.19 34;");
+        globalCss.Should().Contain("--accent-hover: 52% 0.18 33;");
+        globalCss.Should().Contain(":root[data-theme='dark']");
+        globalCss.Should().Contain("scrollbar-color: oklch(var(--scrollbar-thumb)) oklch(var(--canvas));");
         globalCss.Should().Contain("scrollbar-width: thin;");
         globalCss.Should().Contain("::-webkit-scrollbar");
         globalCss.Should().Contain("::-webkit-scrollbar-thumb:hover { background: oklch(var(--accent-hover)); }");
         appLayout.Should().NotContain("Built as a clear place to review work, people, data, and releases without reading code first.");
-        loginPage.Should().Contain("<html lang=\"en\" data-theme=\"dark\" style=\"color-scheme: dark;\">");
-        loginPage.Should().Contain(": 'dark';");
+        loginPage.Should().Contain("<html lang=\"en\" data-theme=\"light\" style=\"color-scheme: light;\">");
+        loginPage.Should().Contain(": 'light';");
         themeToggle.Should().Contain("dataset.theme === 'dark'");
         themeToggle.Should().Contain(": 'dark';");
-        dashboard.Should().Contain("Dark by default · light-ready");
-        dashboard.Should().NotContain("Light by default · dark-ready");
+        dashboard.Should().NotContain("Dark by default · light-ready");
 
         // Renovate may pin the base image digest (node:26.9.0-alpine@sha256:...).
         dockerfile.Should().MatchRegex(@"FROM node:26\.9\.0-alpine(@sha256:[0-9a-f]{64})? AS runtime");

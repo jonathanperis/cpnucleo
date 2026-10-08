@@ -1,12 +1,12 @@
 ---
+// Registration mark around a nucleus: the shared Cpnucleo brand (also docs/src/components/Mark.astro).
 interface Props { class?: string }
 const { class: className = 'size-9' } = Astro.props;
 ---
 <span class:list={['brand-mark', className]} aria-hidden="true">
-  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" class="size-[70%]">
-    <ellipse cx="16" cy="16" rx="12" ry="5" />
-    <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(60 16 16)" />
-    <ellipse cx="16" cy="16" rx="12" ry="5" transform="rotate(120 16 16)" />
-    <circle cx="16" cy="16" r="2.6" fill="currentColor" stroke="none" />
+  <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" class="size-full">
+    <circle cx="16" cy="16" r="9" />
+    <path d="M16 1.5v8M16 22.5v8M1.5 16h8M22.5 16h8" stroke-linecap="square" />
+    <circle class="nucleus" cx="16" cy="16" r="3.4" stroke="none" />
   </svg>
 </span>

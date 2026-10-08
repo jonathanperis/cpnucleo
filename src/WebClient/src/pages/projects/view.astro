@@ -18,7 +18,7 @@ const stats = [
           <span class="mt-1 hidden size-11 flex-none items-center justify-center rounded-xl bg-raised text-accent-text ring-1 ring-line-strong sm:flex"><Icon name="folder" class="size-5" /></span>
           <div class="min-w-0">
             <p class="eyebrow"><a href="/projects/" class="hover:text-ink">Projects</a></p>
-            <h1 data-title tabindex="-1" class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-[1.75rem]"><span class="skeleton inline-block h-7 w-56 align-middle"></span></h1>
+            <h1 data-title tabindex="-1" class="mt-1.5 page-title"><span class="skeleton inline-block h-7 w-56 align-middle"></span></h1>
             <p data-organization class="mt-1.5 text-[0.9375rem] text-muted">&nbsp;</p>
           </div>
         </div>
@@ -31,7 +31,7 @@ const stats = [
 
       <dl class="panel grid grid-cols-2 gap-px overflow-hidden bg-line sm:grid-cols-5">
         {stats.map(stat => (
-          <div class="bg-surface px-5 py-4"><dt class="text-xs text-subtle">{stat.label}</dt><dd data-stat={stat.key} class="mt-1 font-mono text-xl font-medium tabular-nums">—</dd></div>
+          <div class="bg-surface px-5 py-4"><dt class="text-xs text-subtle">{stat.label}</dt><dd data-stat={stat.key} class="mt-1 stat-num text-[1.75rem]">—</dd></div>
         ))}
       </dl>
 

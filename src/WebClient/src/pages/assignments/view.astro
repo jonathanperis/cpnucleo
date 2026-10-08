@@ -11,7 +11,7 @@ import Icon from '../../components/Icon.astro';
           <span class="mt-1 hidden size-11 flex-none items-center justify-center rounded-xl bg-raised text-accent-text ring-1 ring-line-strong sm:flex"><Icon name="task" class="size-5" /></span>
           <div class="min-w-0">
             <p class="eyebrow"><a href="/assignments/" class="hover:text-ink">Tasks</a></p>
-            <h1 data-title tabindex="-1" class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-[1.75rem]"><span class="skeleton inline-block h-7 w-56 align-middle"></span></h1>
+            <h1 data-title tabindex="-1" class="mt-1.5 page-title"><span class="skeleton inline-block h-7 w-56 align-middle"></span></h1>
             <p data-description class="mt-1.5 max-w-2xl whitespace-pre-line text-[0.9375rem] text-muted"></p>
           </div>
         </div>
@@ -29,7 +29,7 @@ import Icon from '../../components/Icon.astro';
         </section>
         <section aria-labelledby="task-hours" class="panel self-start p-5">
           <h2 id="task-hours" class="text-sm font-semibold">Hours</h2>
-          <p class="mt-3 font-mono text-2xl font-medium tabular-nums"><span data-hours-logged>—</span><span class="text-base text-subtle"> / <span data-hours-estimate>—</span> h</span></p>
+          <p class="mt-3 stat-num text-[2.25rem]"><span data-hours-logged>—</span><span class="text-base text-subtle"> / <span data-hours-estimate>—</span> h</span></p>
           <div data-hours-bar role="meter" aria-label="Hours logged against the estimate" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="mt-3 h-2 overflow-hidden rounded-full bg-raised">
             <div data-hours-meter class="h-full rounded-full bg-accent transition-[width]" style="width: 0%"></div>
           </div>

@@ -1,0 +1,15 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<footer class="colophon">
+  <div>
+    <p class="title">Colophon</p>
+    <p>Cpnucleo is written by <a href="https://github.com/jonathanperis">Jonathan Peris</a> and released under the MIT licence.</p>
+    <p>Set in Newsreader and IBM Plex. Built with Astro and published on GitHub Pages.</p>
+  </div>
+  <nav aria-label="Footer">
+    <a href={`${base}/docs/`}>Documentation</a>
+    <a href="https://github.com/jonathanperis/cpnucleo">Source</a>
+    <a href="https://cpnucleo.jonathanperis.tech/" target="_blank" rel="noopener noreferrer">Live demo</a>
+  </nav>
+</footer>

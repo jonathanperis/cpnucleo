@@ -19,20 +19,21 @@ const local = WEBAPI_BASE_URL.startsWith('http://localhost:');
 const apiHost = new URL(WEBAPI_BASE_URL).host;
 ---
 
-<html lang="en" data-theme="dark" style="color-scheme: dark;">
+<html lang="en" data-theme="light" style="color-scheme: light;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{pageTitle ? `${pageTitle} · Cpnucleo` : 'Cpnucleo'}</title>
     <script is:inline>
       (() => {
         try {
           const stored = localStorage.getItem('cpnucleo-theme');
-          // Dark unless the person chose light, or chose to follow the operating system.
+          // Paper (light) unless the person chose night, or chose to follow the operating system.
           const theme = stored === 'dark' || stored === 'light'
             ? stored
-            : stored === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            : stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch {}
@@ -42,12 +43,12 @@ const apiHost = new URL(WEBAPI_BASE_URL).host;
   <body>
     <a href="#main" class="sr-only z-50 rounded-md bg-accent px-3 py-2 text-sm font-semibold text-accent-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-3">Skip to content</a>
     <div class="min-h-screen text-ink">
-      <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-line bg-surface/50 lg:flex">
-        <a href="/" class="flex h-16 items-center gap-3 px-5">
-          <BrandMark />
-          <span class="leading-tight">
-            <span class="block text-[0.9375rem] font-semibold tracking-tight">Cpnucleo</span>
-            <span class="block text-xs text-subtle">Project workspace</span>
+      <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-line bg-raised/60 lg:flex">
+        <a href="/" class="mx-5 flex h-16 items-center gap-3 border-b-[3px] border-double border-line-strong">
+          <BrandMark class="size-7" />
+          <span class="leading-none">
+            <span class="wordmark block text-[1.3125rem]">Cpnucleo</span>
+            <span class="mt-1 block font-display text-[0.875rem] italic text-subtle">Project workspace</span>
           </span>
         </a>
         <div class="quiet-scroll flex-1 overflow-y-auto px-3 pb-6 pt-4">
@@ -68,7 +69,7 @@ const apiHost = new URL(WEBAPI_BASE_URL).host;
                 <p class="mt-6 flex items-center gap-2 px-2.5 text-xs text-muted" title={WEBAPI_BASE_URL}><span class:list={['status-dot', local ? 'text-success' : 'text-accent']}></span>{local ? 'Local learning sandbox' : 'Remote API workspace'}</p>
               </div>
             </details>
-            <a href="/" class="lg:hidden" aria-label="Cpnucleo home"><BrandMark class="size-8" /></a>
+            <a href="/" class="lg:hidden" aria-label="Cpnucleo home"><BrandMark class="size-7" /></a>
             <nav aria-label="Breadcrumb" class="min-w-0 flex-1">
               <ol class="flex min-w-0 items-center gap-2 text-sm">
                 {location && location.item.href !== '/' && <li class="hidden text-subtle sm:block">{location.group.name}</li>}
@@ -85,7 +86,7 @@ const apiHost = new URL(WEBAPI_BASE_URL).host;
               <span class="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden="true"></span>
               <details data-session hidden class="menu relative">
                 <summary class="flex cursor-pointer list-none items-center gap-2.5 rounded-lg p-1 hover:bg-raised [&::-webkit-details-marker]:hidden" aria-label="Your account">
-                  <span data-session-initial aria-hidden="true" class="flex size-8 items-center justify-center rounded-full bg-raised text-xs font-semibold uppercase text-muted ring-1 ring-line-strong"></span>
+                  <span data-session-initial aria-hidden="true" class="flex size-8 items-center justify-center rounded-full bg-raised font-display text-[0.9375rem] font-medium uppercase text-ink ring-1 ring-line-strong"></span>
                   <span class="hidden pr-1 leading-tight md:block">
                     <span data-session-login class="block max-w-48 truncate text-[0.8125rem] font-medium"></span>
                     <span data-session-role class="block text-[0.6875rem] text-subtle"></span>
