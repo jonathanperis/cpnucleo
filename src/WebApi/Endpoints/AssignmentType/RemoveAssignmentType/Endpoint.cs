@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.AssignmentType.RemoveAssignmentType;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignmentTypeRequest, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<RemoveAssignmentTypeRequest, Response>
 {
     public override void Configure()
     {
@@ -19,8 +19,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignme
 
     public override async Task HandleAsync(RemoveAssignmentTypeRequest request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         Logger.LogInformation("Checking if assignmentType entities exist for Ids: {AssignmentTypeIds}", string.Join(",", request.Ids));
         var ids = BatchIds.Normalize(request.Ids);
         var items = await dbContext.AssignmentTypes!.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
@@ -39,9 +37,8 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<RemoveAssignme
         Response.Success = await dbContext.SaveChangesAsync(cancellationToken);
 
         Logger.LogInformation("Remove result: {Success}", Response.Success);
-        Logger.LogInformation("Service completed successfully.");
 
-        if (Response.Success) HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.AssignmentType));
+        if (Response.Success) listings.NotifyChanged(nameof(Domain.Entities.AssignmentType));
 
         await Send.OkAsync(Response, cancellationToken);
     }

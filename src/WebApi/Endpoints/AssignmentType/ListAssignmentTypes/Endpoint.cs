@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.AssignmentType.ListAssignmentTypes;
 
 // Dapper Repository Advanced
-public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
+public class Endpoint(IUnitOfWork unitOfWork, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -19,9 +19,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     {
         if (HttpContext.Request.AcceptsServerSentEvents())
         {
-            await TypedResults
-                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.AssignmentType), ct => BuildResponseAsync(request, ct), HttpContext, Logger, cancellationToken), "listing")
-                .ExecuteAsync(HttpContext);
+            await Send.ListingStreamAsync(nameof(Domain.Entities.AssignmentType), ct => BuildResponseAsync(request, ct), listings, Logger, cancellationToken);
             return;
         }
 
@@ -31,7 +29,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
     private async Task<Response> BuildResponseAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all assignmentTypes with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentType>();
@@ -40,9 +37,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         Logger.LogInformation("Fetched {Count} assignmentType records", response.Data?.Count() ?? 0);
         Logger.LogInformation("Mapping entities to DTOs.");
 
-
         Logger.LogInformation("Mapping complete, setting response result.");
-        Logger.LogInformation("Service completed successfully.");
 
         return new Response { Result = response.MapToDto(x => x?.MapToDto()) };
     }

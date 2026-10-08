@@ -20,7 +20,7 @@ public class WorkflowEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Workflow>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.GetWorkflowById.Endpoint>(fakeUnitOfWork).WithListingServices();
+        var ep = TestEndpoints.Create<WebApi.Endpoints.Workflow.GetWorkflowById.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Workflow.GetWorkflowById.Request { Id = workflowId };
 
         // Act
@@ -46,7 +46,7 @@ public class WorkflowEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Workflow>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.GetWorkflowById.Endpoint>(fakeUnitOfWork).WithListingServices();
+        var ep = TestEndpoints.Create<WebApi.Endpoints.Workflow.GetWorkflowById.Endpoint>(fakeUnitOfWork);
         var req = new WebApi.Endpoints.Workflow.GetWorkflowById.Request { Id = workflowId };
 
         // Act
@@ -70,7 +70,7 @@ public class WorkflowEndpointsTests
         A.CallTo(() => fakeDbSet.FindAsync(A<object[]>._, A<CancellationToken>._)).Returns(new ValueTask<Workflow?>(workflow));
         A.CallTo(() => fakeDbContext.SaveChangesAsync(A<CancellationToken>._)).Returns(true);
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.UpdateWorkflow.Endpoint>(fakeDbContext).WithListingServices();
+        var ep = TestEndpoints.Create<WebApi.Endpoints.Workflow.UpdateWorkflow.Endpoint>(fakeDbContext);
         var req = new WebApi.Endpoints.Workflow.UpdateWorkflow.Request
         {
             Id = workflowId,
@@ -110,7 +110,7 @@ public class WorkflowEndpointsTests
         var fakeUnitOfWork = A.Fake<IUnitOfWork>();
         A.CallTo(() => fakeUnitOfWork.GetRepository<Workflow>()).Returns(fakeRepository);
 
-        var ep = Factory.Create<WebApi.Endpoints.Workflow.ListWorkflows.Endpoint>(fakeUnitOfWork).WithListingServices();
+        var ep = TestEndpoints.Create<WebApi.Endpoints.Workflow.ListWorkflows.Endpoint>(fakeUnitOfWork);
         
         // Initialize response manually due to required property
         ep.Response = new WebApi.Endpoints.Workflow.ListWorkflows.Response 

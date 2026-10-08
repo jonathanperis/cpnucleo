@@ -18,23 +18,23 @@ public class RemoveEndpointsTests
     public static IEnumerable<Case> Cases()
     {
         yield return new("Appointment", () => Appointment.Create("Review", DateTime.UtcNow, 1, AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Appointment.RemoveAppointment.Endpoint>(db), new WebApi.Endpoints.Appointment.RemoveAppointment.RemoveAppointmentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Appointment.RemoveAppointment.Endpoint>(db), new WebApi.Endpoints.Appointment.RemoveAppointment.RemoveAppointmentRequest { Ids = [.. ids] }));
         yield return new("Assignment", () => Assignment.Create("Task", "Description", DateTime.UtcNow, DateTime.UtcNow, 1, AnyId, AnyId, AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Assignment.RemoveAssignment.Endpoint>(db), new WebApi.Endpoints.Assignment.RemoveAssignment.RemoveAssignmentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Assignment.RemoveAssignment.Endpoint>(db), new WebApi.Endpoints.Assignment.RemoveAssignment.RemoveAssignmentRequest { Ids = [.. ids] }));
         yield return new("AssignmentImpediment", () => AssignmentImpediment.Create("Blocked", AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.AssignmentImpediment.RemoveAssignmentImpediment.Endpoint>(db), new WebApi.Endpoints.AssignmentImpediment.RemoveAssignmentImpediment.RemoveAssignmentImpedimentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.AssignmentImpediment.RemoveAssignmentImpediment.Endpoint>(db), new WebApi.Endpoints.AssignmentImpediment.RemoveAssignmentImpediment.RemoveAssignmentImpedimentRequest { Ids = [.. ids] }));
         yield return new("AssignmentType", () => AssignmentType.Create("Exercise"),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.AssignmentType.RemoveAssignmentType.Endpoint>(db), new WebApi.Endpoints.AssignmentType.RemoveAssignmentType.RemoveAssignmentTypeRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.AssignmentType.RemoveAssignmentType.Endpoint>(db), new WebApi.Endpoints.AssignmentType.RemoveAssignmentType.RemoveAssignmentTypeRequest { Ids = [.. ids] }));
         yield return new("Impediment", () => Impediment.Create("Blocked"),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Impediment.RemoveImpediment.Endpoint>(db), new WebApi.Endpoints.Impediment.RemoveImpediment.RemoveImpedimentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Impediment.RemoveImpediment.Endpoint>(db), new WebApi.Endpoints.Impediment.RemoveImpediment.RemoveImpedimentRequest { Ids = [.. ids] }));
         yield return new("User", () => User.Create("Learner", $"learner-{Guid.NewGuid():N}", new PasswordHash("hash", "")),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(db), new WebApi.Endpoints.User.RemoveUser.RemoveUserRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.User.RemoveUser.Endpoint>(db), new WebApi.Endpoints.User.RemoveUser.RemoveUserRequest { Ids = [.. ids] }));
         yield return new("UserAssignment", () => UserAssignment.Create(AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.UserAssignment.RemoveUserAssignment.Endpoint>(db), new WebApi.Endpoints.UserAssignment.RemoveUserAssignment.RemoveUserAssignmentRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.UserAssignment.RemoveUserAssignment.Endpoint>(db), new WebApi.Endpoints.UserAssignment.RemoveUserAssignment.RemoveUserAssignmentRequest { Ids = [.. ids] }));
         yield return new("UserProject", () => UserProject.Create(AnyId, AnyId),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.UserProject.RemoveUserProject.Endpoint>(db), new WebApi.Endpoints.UserProject.RemoveUserProject.RemoveUserProjectRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.UserProject.RemoveUserProject.Endpoint>(db), new WebApi.Endpoints.UserProject.RemoveUserProject.RemoveUserProjectRequest { Ids = [.. ids] }));
         yield return new("Workflow", () => Workflow.Create("Planned", 1),
-            (db, ids) => Run(Factory.Create<WebApi.Endpoints.Workflow.RemoveWorkflow.Endpoint>(db), new WebApi.Endpoints.Workflow.RemoveWorkflow.RemoveWorkflowRequest { Ids = [.. ids] }));
+            (db, ids) => Run(TestEndpoints.Create<WebApi.Endpoints.Workflow.RemoveWorkflow.Endpoint>(db), new WebApi.Endpoints.Workflow.RemoveWorkflow.RemoveWorkflowRequest { Ids = [.. ids] }));
     }
 
     [TestCaseSource(nameof(Cases))]
@@ -79,7 +79,6 @@ public class RemoveEndpointsTests
         where TRequest : notnull
         where TResponse : WebApi.Common.Models.RemoveResponse
     {
-        endpoint.WithListingServices();
         await endpoint.HandleAsync(request, default);
         return (endpoint.HttpContext.Response.StatusCode, endpoint.Response?.Success ?? false);
     }

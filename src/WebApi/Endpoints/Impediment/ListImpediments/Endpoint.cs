@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Impediment.ListImpediments;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     // Cache reflection results to avoid repeated GetProperties calls
     private static readonly Lazy<Dictionary<string, string>> CachedPropertyNames = new(() =>
@@ -27,9 +27,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         if (HttpContext.Request.AcceptsServerSentEvents())
         {
-            await TypedResults
-                .ServerSentEvents(ListingSseExtensions.CreateListingStream(nameof(Domain.Entities.Impediment), ct => BuildResponseAsync(request, ct), HttpContext, Logger, cancellationToken), "listing")
-                .ExecuteAsync(HttpContext);
+            await Send.ListingStreamAsync(nameof(Domain.Entities.Impediment), ct => BuildResponseAsync(request, ct), listings, Logger, cancellationToken);
             return;
         }
 
@@ -41,7 +39,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
     {
         // Impediments have no relation or date columns: any such filter is rejected, never ignored.
         PaginationParams.Require(request.Pagination, typeof(Domain.Entities.Impediment));
-        Logger.LogInformation("Service started processing request.");
         Logger.LogInformation("Fetching all impediments with pagination page {PageNumber}, size {PageSize}", request.Pagination.PageNumber, request.Pagination.PageSize);
 
         var query = dbContext.Impediments?.AsNoTracking().AsQueryable();
@@ -64,8 +61,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Logger.LogInformation("Fetched {Count} impediment records", response.Count);
         Logger.LogInformation("Mapping entities to DTOs.");
-
-        Logger.LogInformation("Service completed successfully.");
 
         return new Response
         {

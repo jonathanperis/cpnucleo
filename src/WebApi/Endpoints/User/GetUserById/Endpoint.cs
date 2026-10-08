@@ -6,8 +6,7 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
     public override void Configure()
     {
         Get("/user");
-        Description(x => x.WithTags("Users"));
-        Policies("UserAdministration");
+        Group<UserAdministrationGroup>();
 
         Summary(s =>
         {
@@ -18,8 +17,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         Logger.LogInformation("Fetching user entity with Id: {UserId}", request.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.User>();
         var item = await repository.GetByIdAsync(request.Id, cancellationToken);
@@ -33,8 +30,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
 
         Logger.LogInformation("Mapping entity to DTO and setting response for Id: {UserId}", request.Id);
         Response.User = item.MapToDto();
-
-        Logger.LogInformation("Service completed successfully.");
 
         await Send.OkAsync(Response, cancellationToken);
     }

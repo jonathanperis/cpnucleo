@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.AssignmentType.CreateAssignmentType;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AssignmentTypeId}", request.Name, request.Id);
-
         Logger.LogInformation("Checking if an assignmentType entity exists with Id: {AssignmentTypeId}", request.Id);
         var itemExists = await dbContext.AssignmentTypes!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -43,9 +41,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Response.AssignmentType = createdItem!.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.AssignmentType));
+        listings.NotifyChanged(nameof(Domain.Entities.AssignmentType));
 
         await Send.OkAsync(Response, cancellationToken);
     }

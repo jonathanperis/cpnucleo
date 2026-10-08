@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Organization.RestoreOrganization;
 
 // Dapper Repository Advanced
-public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RestoreOrganizationRequest, Response>
+public class Endpoint(IUnitOfWork unitOfWork, ListingChangeNotifier listings) : Endpoint<RestoreOrganizationRequest, Response>
 {
     public override void Configure()
     {
@@ -18,8 +18,6 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RestoreOrganizationRequ
 
     public override async Task HandleAsync(RestoreOrganizationRequest request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request.");
-
         var ids = BatchIds.Normalize(request.Ids, "restored");
 
         Logger.LogInformation("Beginning transaction.");
@@ -39,9 +37,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<RestoreOrganizationRequ
 
         Logger.LogInformation("Committing transaction.");
         await unitOfWork.CommitAsync(cancellationToken);
-        Logger.LogInformation("Service completed successfully.");
 
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Organization));
+        listings.NotifyChanged(nameof(Domain.Entities.Organization));
 
         await Send.OkAsync(Response, cancellationToken);
     }

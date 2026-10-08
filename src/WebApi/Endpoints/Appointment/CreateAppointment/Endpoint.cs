@@ -1,7 +1,7 @@
 namespace WebApi.Endpoints.Appointment.CreateAppointment;
 
 // EF Core
-public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Response>
+public class Endpoint(IApplicationDbContext dbContext, ListingChangeNotifier listings) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -17,8 +17,6 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AppointmentId}", request.Name, request.Id);
-
         Logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", request.Id);
         var itemExists = await dbContext.Appointments!.IgnoreQueryFilters().AnyAsync(x => x.Id == request.Id, cancellationToken);
 
@@ -48,9 +46,7 @@ public class Endpoint(IApplicationDbContext dbContext) : Endpoint<Request, Respo
 
         Response.Appointment = createdItem!.MapToDto();
 
-        Logger.LogInformation("Service completed successfully.");
-
-        HttpContext.RequestServices.GetRequiredService<ListingChangeNotifier>().NotifyChanged(nameof(Domain.Entities.Appointment));
+        listings.NotifyChanged(nameof(Domain.Entities.Appointment));
 
         await Send.OkAsync(Response, cancellationToken);
     }
