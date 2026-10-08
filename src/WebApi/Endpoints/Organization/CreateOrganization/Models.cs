@@ -15,13 +15,13 @@ public class Request
     /// Gets or sets the name of the organization.
     /// </summary>
     [DefaultValue("New Organization")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the organization.
     /// </summary>
     [DefaultValue("Organization description goes here")]
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     public class Validator : Validator<Request>
     {

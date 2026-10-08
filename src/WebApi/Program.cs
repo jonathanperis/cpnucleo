@@ -242,7 +242,15 @@ app.Use(async (context, next) =>
 app.UseAuthorization();
 app.UseInfrastructure();
 app.UseMiddleware<ElapsedTimeMiddleware>();
-app.UseFastEndpoints(c => c.Endpoints.RoutePrefix = "api");
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    // Validation failures use the same envelope, message and content type as every other error.
+    c.Errors.ContentType = "application/json";
+    c.Errors.ProducesMetadataType = typeof(ApiErrorResponse);
+    c.Errors.ResponseBuilder = (failures, _, statusCode) =>
+        ApiErrors.ValidationResponse(statusCode, failures.Select(failure => (failure.PropertyName, failure.ErrorMessage)));
+});
 
 app.MapGet("/", () => "Hello World!");
 

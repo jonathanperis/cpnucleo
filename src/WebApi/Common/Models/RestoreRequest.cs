@@ -2,7 +2,7 @@ namespace WebApi.Common.Models;
 
 public class RestoreRequest
 {
-    public required List<Guid> Ids { get; set; }
+    public List<Guid> Ids { get; set; } = [];
 }
 
 /// <summary>

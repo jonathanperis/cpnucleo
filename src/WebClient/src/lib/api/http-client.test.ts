@@ -120,7 +120,7 @@ describe('unified error envelope', () => {
   it('prefers field errors and general errors over the generic summary', () => {
     const error = createApiError(400, {
       statusCode: 400,
-      message: 'One or more errors occurred.',
+      message: 'The request is invalid.',
       errors: { Name: ['Name is required.'], endDate: ['End date must be after start date.'], generalErrors: ['The project is archived.'] },
     });
     expect(error.fieldErrors).toEqual({ name: ['Name is required.'], endDate: ['End date must be after start date.'] });

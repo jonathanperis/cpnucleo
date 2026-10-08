@@ -21,7 +21,7 @@ public class Request
     /// Gets or sets the description of the appointment.
     /// </summary>
     [DefaultValue("Appointment description goes here")]
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the date and time when the appointment should be kept.

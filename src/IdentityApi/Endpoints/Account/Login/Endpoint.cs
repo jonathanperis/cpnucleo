@@ -44,8 +44,7 @@ public class Endpoint(
         // Login CSRF defense: only the WebClient's own sign-in page may submit credentials.
         if (!SubmittedFromWebClient())
         {
-            await ApiErrors.WriteAsync(HttpContext, StatusCodes.Status403Forbidden,
-                "Sign-in must be submitted from the Cpnucleo sign-in page.", cancellationToken: cancellationToken);
+            await Send.ForbiddenEnvelopeAsync("Sign-in must be submitted from the Cpnucleo sign-in page.", cancellationToken);
             return;
         }
 

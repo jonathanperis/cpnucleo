@@ -26,10 +26,8 @@ public class Endpoint(IUnitOfWork unitOfWork) : Endpoint<Request, Response>
         if (itemExists)
         {
             Logger.LogWarning("Organization Id conflict for Id: {OrganizationId}", request.Id);
-            AddError(r => r.Id, "this Id is already in use!");
+            ThrowError(r => r.Id, "this Id is already in use!", StatusCodes.Status409Conflict);
         }
-
-        ThrowIfAnyErrors();
 
         Logger.LogInformation("Validation passed, proceeding to create new organization entity.");
         var newItem = Domain.Entities.Organization.Create(request.Name, request.Description, request.Id);
