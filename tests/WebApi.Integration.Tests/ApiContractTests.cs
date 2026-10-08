@@ -80,6 +80,17 @@ public class ApiContractTests(WebAppFixture app)
         (await anonymous.GetAsync("/readyz", Cancellation)).StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
+    [Theory]
+    [InlineData("/")]
+    [InlineData("/swagger/index.html")]
+    [InlineData("/swagger/v1/swagger.json")]
+    public async Task AnonymousNonApiRoutes_AreServed(string path)
+    {
+        // Per-caller ETag caching (Delta) needs a signed-in user; anonymous routes must bypass it.
+        using var anonymous = app.CreateClient();
+        (await anonymous.GetAsync(path, Cancellation)).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
     [Fact]
     public async Task Search_TreatsWildcardsLiterally()
     {
