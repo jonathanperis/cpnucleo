@@ -32,6 +32,11 @@ tests/
 labs/
   PersistenceLab/             Comparable EF/Dapper measurements
   OutboxLab/                  Simulated delivery, crash/retry and deduplication
+  JobQueueLab/                FastEndpoints job queues on PostgreSQL, compared with the outbox
+  GrpcStreamingLab/           gRPC server streaming driven by LISTEN/NOTIFY
+  OpenApiLab/                 FastEndpoints.OpenApi compared with the NSwag contract
+  ApiReferenceLab/            Scalar API reference and its CSP needs
+  NativeAotLab/               Native AOT publish and probe of WebApi (manual, not in CI)
 scripts/                      Deployment, smoke, backup, restore and docs checks
 docs/wiki/                    Published technical and learning material
 docs/adr/                     Architecture decisions
