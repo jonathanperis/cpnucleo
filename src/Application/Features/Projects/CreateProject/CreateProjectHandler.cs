@@ -2,6 +2,10 @@ namespace Application.Features.Projects.CreateProject;
 
 public sealed record CreateProjectRequest(Guid Id, string? Name, Guid OrganizationId);
 
+/// <summary>The outcome of creating a project; <paramref name="Project"/> is set on success.</summary>
+/// <param name="Success">Whether the project was created.</param>
+/// <param name="Message">A client-safe description of the outcome.</param>
+/// <param name="Project">The created project, on success.</param>
 /// <param name="IdInUse">The failure is a duplicate client-supplied Id (a conflict, not invalid input).</param>
 public sealed record CreateProjectResult(bool Success, string Message, ProjectDetails? Project = null, bool IdInUse = false);
 
