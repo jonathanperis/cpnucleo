@@ -53,8 +53,11 @@ public static class DependencyInjection
             suffix: httpContext => httpContext.User.FindFirst(CpnucleoClaimTypes.Subject)?.Value
                 + "|" + httpContext.User.FindFirst(CpnucleoClaimTypes.Admin)?.Value
                 + "|" + httpContext.User.FindFirst(CpnucleoClaimTypes.SecurityStamp)?.Value,
-            // Live listing streams outlive any single snapshot; ETags only make sense for plain GETs.
-            shouldExecute: httpContext => !httpContext.Request.Headers.Accept.Any(value =>
-                value?.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase) == true));
+            // Only signed-in callers have cached data (and a suffix): anonymous requests (Swagger, "/")
+            // would otherwise fail inside Delta. Live listing streams outlive any single snapshot;
+            // ETags only make sense for plain GETs.
+            shouldExecute: httpContext => httpContext.User.Identity?.IsAuthenticated == true
+                && !httpContext.Request.Headers.Accept.Any(value =>
+                    value?.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase) == true));
     }
 }
