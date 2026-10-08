@@ -18,7 +18,7 @@ public sealed class ListAndSearchIndexes : Migration
         "Assignments", "Appointments", "AssignmentImpediments", "UserAssignments", "UserProjects"
     ];
 
-    private static readonly (string Table, string Column)[] SearchColumns =
+    internal static readonly (string Table, string Column)[] SearchColumns =
     [
         ("Organizations", "Name"), ("Organizations", "Description"),
         ("Projects", "Name"),
@@ -44,13 +44,18 @@ public sealed class ListAndSearchIndexes : Migration
         migrationBuilder.Sql("""CREATE INDEX "IX_UserProjects_Membership" ON "UserProjects" ("UserId", "ProjectId") WHERE "Active";""");
 
         foreach (var (table, column) in SearchColumns)
-            migrationBuilder.Sql($"""CREATE INDEX "IX_{table}_{column}_Trgm" ON "{table}" USING gin ("{column}" gin_trgm_ops) WHERE "Active";""");
+            migrationBuilder.Sql(CreateTrigramIndexSql(table, column));
     }
+
+    internal static string CreateTrigramIndexSql(string table, string column) =>
+        $"""CREATE INDEX "IX_{table}_{column}_Trgm" ON "{table}" USING gin ("{column}" gin_trgm_ops) WHERE "Active";""";
+
+    internal static string DropTrigramIndexSql(string table, string column) => $"""DROP INDEX "IX_{table}_{column}_Trgm";""";
 
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         foreach (var (table, column) in SearchColumns)
-            migrationBuilder.Sql($"""DROP INDEX "IX_{table}_{column}_Trgm";""");
+            migrationBuilder.Sql(DropTrigramIndexSql(table, column));
 
         migrationBuilder.Sql("""DROP INDEX "IX_UserProjects_Membership";""");
 
