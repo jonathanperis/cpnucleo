@@ -55,10 +55,8 @@ static partial class WarningSummary
     public static List<IlWarning> Parse(IEnumerable<string> lines)
     {
         var unique = new Dictionary<string, IlWarning>(StringComparer.Ordinal);
-        foreach (var line in lines)
+        foreach (var match in lines.Select(line => Diagnostic().Match(line)).Where(match => match.Success))
         {
-            var match = Diagnostic().Match(line);
-            if (!match.Success) continue;
             var code = match.Groups["code"].Value;
             var location = match.Groups["location"].Value.Trim();
             var message = match.Groups["message"].Value.Trim();

@@ -16,15 +16,16 @@ internal static class DefaultValueAlignment
 {
     public static void Modify(JsonTypeInfo typeInfo)
     {
-        foreach (var property in typeInfo.Properties)
+        var candidates = typeInfo.Properties
+            .Select(property => (Property: property, Info: property.AttributeProvider as PropertyInfo))
+            .Select(entry => (entry.Property, entry.Info, Text: entry.Info?.GetCustomAttribute<DefaultValueAttribute>()?.Value as string))
+            .Where(entry => entry.Info is not null && entry.Text is not null);
+        foreach (var (property, info, text) in candidates)
         {
-            if (property.AttributeProvider is not PropertyInfo info ||
-                info.GetCustomAttribute<DefaultValueAttribute>() is not { Value: string text })
-                continue;
             var target = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
             if (target == typeof(string) || target == typeof(object)) continue;
-            var converted = TypeDescriptor.GetConverter(target).ConvertFromString(null, CultureInfo.InvariantCulture, text);
-            property.AttributeProvider = new AlignedProperty(info, new DefaultValueAttribute(converted));
+            var converted = TypeDescriptor.GetConverter(target).ConvertFromString(null, CultureInfo.InvariantCulture, text!);
+            property.AttributeProvider = new AlignedProperty(info!, new DefaultValueAttribute(converted));
         }
     }
 

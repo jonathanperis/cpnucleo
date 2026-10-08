@@ -184,9 +184,8 @@ internal sealed class Comparison(JsonObject nswag, JsonObject candidate)
     {
         var operations = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var (path, item) in document["paths"]!.AsObject())
-            foreach (var verb in Verbs)
-                if (item?[verb] is JsonObject operation)
-                    operations[$"{verb.ToUpperInvariant()} {path}"] = operation;
+            foreach (var verb in Verbs.Where(verb => item?[verb] is JsonObject))
+                operations[$"{verb.ToUpperInvariant()} {path}"] = (JsonObject)item![verb]!;
         return operations;
     }
 
