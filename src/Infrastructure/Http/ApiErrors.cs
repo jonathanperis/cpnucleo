@@ -40,6 +40,19 @@ public static class ApiErrors
             cancellationToken);
     }
 
+    /// <summary>
+    /// The envelope for request validation failures; FastEndpoints' error response builder in both
+    /// REST hosts. Field keys are camelCased per segment (as <see cref="FieldError"/>); unnamed
+    /// failures are general errors.
+    /// </summary>
+    public static ApiErrorResponse ValidationResponse(int statusCode, IEnumerable<(string Field, string Message)> failures) =>
+        new(statusCode, DefaultMessage(statusCode), failures
+            .GroupBy(failure => string.IsNullOrWhiteSpace(failure.Field) ? GeneralErrorsKey : CamelCase(failure.Field))
+            .ToDictionary(group => group.Key, group => group.Select(failure => failure.Message).ToArray()));
+
+    private static string CamelCase(string field) =>
+        string.Join('.', field.Split('.').Select(JsonNamingPolicy.CamelCase.ConvertName));
+
     /// <summary>Field errors keyed by camelCase request property name, or <see cref="GeneralErrorsKey"/>.</summary>
     public static IReadOnlyDictionary<string, string[]> FieldError(string? field, string message) =>
         new Dictionary<string, string[]>

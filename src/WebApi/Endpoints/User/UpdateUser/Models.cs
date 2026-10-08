@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the name of the user.
     /// </summary>
     [DefaultValue("Updated User")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the login of the user.

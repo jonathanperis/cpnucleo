@@ -2,7 +2,8 @@ namespace Application.Features.Projects.CreateProject;
 
 public sealed record CreateProjectRequest(Guid Id, string? Name, Guid OrganizationId);
 
-public sealed record CreateProjectResult(bool Success, string Message, ProjectDetails? Project = null);
+/// <param name="IdInUse">The failure is a duplicate client-supplied Id (a conflict, not invalid input).</param>
+public sealed record CreateProjectResult(bool Success, string Message, ProjectDetails? Project = null, bool IdInUse = false);
 
 public interface IProjectCreateStore
 {
@@ -39,7 +40,7 @@ public sealed class CreateProjectHandler(IProjectCreateStore store, ICurrentUser
         if (itemExists)
         {
             logger.LogWarning("Project Id conflict for Id: {ProjectId}", request.Id);
-            return new CreateProjectResult(false, "this Id is already in use!");
+            return new CreateProjectResult(false, "this Id is already in use!", IdInUse: true);
         }
 
         logger.LogInformation("Validation passed, proceeding to create new project entity.");

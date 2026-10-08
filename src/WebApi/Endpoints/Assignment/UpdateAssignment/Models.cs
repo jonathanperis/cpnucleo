@@ -15,13 +15,13 @@ public class Request
     /// Gets or sets the name of the assignment.
     /// </summary>
     [DefaultValue("Updated Assignment")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the assignment.
     /// </summary>
     [DefaultValue("Updated Assignment Description goes here")]
-    public required string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the start date of the assignment.

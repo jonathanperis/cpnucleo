@@ -26,10 +26,8 @@ public class Endpoint(IApplicationDbContext dbContext, IPasswordHasher passwordH
         if (itemExists)
         {
             Logger.LogWarning("User Id conflict for Id: {UserId}", request.Id);
-            AddError(r => r.Id, "this Id is already in use!");
+            ThrowError(r => r.Id, "this Id is already in use!", StatusCodes.Status409Conflict);
         }
-
-        ThrowIfAnyErrors();
 
         Logger.LogInformation("Validation passed, proceeding to create new user entity.");
         var passwordHash = passwordHasher.Hash(request.Password);

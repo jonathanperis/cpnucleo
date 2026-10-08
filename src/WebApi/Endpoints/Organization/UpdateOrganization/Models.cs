@@ -15,7 +15,7 @@ public class Request
     /// Gets or sets the name of the organization.
     /// </summary>
     [DefaultValue("Updated Organization")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the organization.

@@ -21,10 +21,7 @@ public class Endpoint(CreateProjectHandler handler) : Endpoint<Request, Response
             cancellationToken);
 
         if (!result.Success)
-        {
-            AddError(r => r.Id, result.Message);
-            ThrowIfAnyErrors();
-        }
+            ThrowError(r => r.Id, result.Message, result.IdInUse ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest);
 
         Response.Project = result.Project is null
             ? null
