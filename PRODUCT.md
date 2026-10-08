@@ -33,7 +33,7 @@ Users usually arrive in evaluation mode. They are skeptical, time constrained, a
 Use these facts only when the source remains true in README, AGENTS.md, solution files, or docs:
 
 - Runtime: .NET 10.
-- UI: Astro static templates plus native TypeScript and Tailwind CSS, using Catalyst-inspired product patterns.
+- UI: Astro static templates plus native TypeScript and Tailwind CSS, styled with the shared paper-and-ink design system.
 - REST: FastEndpoints with EF Core, explicit Dapper and generic Dapper/UoW examples.
 - gRPC style messaging: FastEndpoints Remote Messaging with Dapper through GrpcServer.
 - Authentication: dedicated IdentityApi as an OpenID Connect provider (authorization code with PKCE, client credentials) with Argon2id-hashed credentials.
@@ -60,31 +60,19 @@ Copy principles:
 
 ## Anti-references
 
-- Generic cyberpunk developer landing pages with neon particles, glowing grids, and gradient headings.
+- Generic dark developer landing pages: neon accents, glowing grids, gradient headings, uppercase monospace eyebrows and pill chips.
 - SaaS hero pages built around big metrics without proof links.
 - Docs pages that concatenate every article into one dense wall.
 - Decorative terminal cosplay that hides the real architecture.
 - Repetitive icon card grids and side-stripe callouts.
 
-## Current aesthetic to preserve
+## Aesthetic
 
-- Dark technical environment.
-- Cyan as the primary system accent.
-- Thin-line architecture diagrams.
-- Code and command panels.
-- Compact proof chips.
-- A sense of an engineering console or architecture workbench.
+A printed technical manual rather than a developer console: warm paper, near-black ink, one vermilion signal, Newsreader headlines with IBM Plex for the interface and code. The docs site and the WebClient share it. `DESIGN.md` holds the palette, type roles and recurring devices (registration-mark brand, numbered sections, ruled ledgers, captioned figures, colophon).
 
 ## Current-site maintenance
 
-The site has a proof ledger, docs-first CTAs, a grouped documentation index, individual article routes and empty search feedback. Keep the learning-laboratory identity, runnable quick start and source-backed claims consistent with the repository. See `docs/audit-2026-09.md` for the current enhancement plan.
-
-## A/B testing hypotheses
-
-- Hero proof density: a proof-led hero should increase docs and GitHub clicks compared with a broad marketing hero.
-- CTA hierarchy: docs-first ordering should better match GitHub Pages visitor intent than demo-first ordering.
-- Docs root model: a command center should improve orientation compared with one long concatenated page.
-- Visual noise level: a quieter console aesthetic should improve credibility without losing technical identity.
+The home page leads with a headline and a captioned service map, then a ledger of what the lab compares, the contents and a runnable quick start. The documentation index is a contents page with numbered chapters; articles have running heads, an "On this page" margin and previous/next links. Keep the learning-laboratory identity, runnable quick start and source-backed claims consistent with the repository. See `docs/audit-2026-09.md` for the current enhancement plan.
 
 ## Merge and review policy
 

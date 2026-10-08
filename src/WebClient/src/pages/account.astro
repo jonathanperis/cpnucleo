@@ -8,7 +8,7 @@ import Icon from '../components/Icon.astro';
       <span data-profile-initial aria-hidden="true" class="flex size-14 flex-none items-center justify-center rounded-full bg-raised text-xl font-semibold uppercase text-muted ring-1 ring-line-strong"></span>
       <div class="min-w-0">
         <p class="eyebrow">Account</p>
-        <h1 id="account-heading" class="mt-1 truncate text-2xl font-semibold tracking-tight"><span data-profile-name>Your account</span></h1>
+        <h1 id="account-heading" class="mt-1 truncate page-title"><span data-profile-name>Your account</span></h1>
       </div>
     </header>
     <p data-account-error role="alert" hidden class="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger"></p>
@@ -21,7 +21,7 @@ import Icon from '../components/Icon.astro';
 
     <form data-name-form class="panel overflow-hidden" aria-labelledby="name-heading">
       <div class="border-b border-line px-5 py-4 sm:px-6">
-        <h2 id="name-heading" class="text-base font-semibold tracking-tight">Display name</h2>
+        <h2 id="name-heading" class="dialog-title">Display name</h2>
         <p class="mt-1 text-sm text-muted">Shown on tasks, calendar items and project member lists. Your login does not change.</p>
       </div>
       <div class="space-y-4 px-5 py-5 sm:px-6">
@@ -37,7 +37,7 @@ import Icon from '../components/Icon.astro';
 
     <form data-password-form class="panel overflow-hidden" aria-labelledby="password-heading">
       <div class="border-b border-line px-5 py-4 sm:px-6">
-        <h2 id="password-heading" class="text-base font-semibold tracking-tight">Password</h2>
+        <h2 id="password-heading" class="dialog-title">Password</h2>
         <p class="mt-1 text-sm text-muted">Changing it signs you out everywhere, including this tab. Repeated wrong current passwords lock this form for a while.</p>
       </div>
       <div class="grid gap-5 px-5 py-5 sm:grid-cols-2 sm:px-6">

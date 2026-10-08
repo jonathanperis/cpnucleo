@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <style>.r{stroke:#2a211b}.n{fill:#d24a2c}@media (prefers-color-scheme:dark){.r{stroke:#f3ece0}.n{fill:#ec7a4f}}</style>
+  <g class="r" stroke-width="2.2" stroke-linecap="square"><circle cx="16" cy="16" r="9"/><path d="M16 1.5v7M16 23.5v7M1.5 16h7M23.5 16h7"/></g>
+  <circle class="n" cx="16" cy="16" r="3.8"/>
+</svg>

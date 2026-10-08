@@ -5,9 +5,9 @@ import { applyThemePreference, readThemePreference, resolveTheme, themeStorageKe
 afterEach(() => { localStorage.clear(); vi.unstubAllGlobals(); });
 
 describe('theme preference', () => {
-  it('is dark by default and follows the operating system only when asked to', () => {
+  it('is paper (light) by default and follows the operating system only when asked to', () => {
     vi.stubGlobal('matchMedia', (query: string) => ({ matches: query.includes('light') }));
-    expect(readThemePreference()).toBe('dark');
+    expect(readThemePreference()).toBe('light');
     expect(resolveTheme('system')).toBe('light');
     applyThemePreference('system');
     expect(localStorage.getItem(themeStorageKey)).toBe('system');

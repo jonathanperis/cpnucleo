@@ -144,9 +144,8 @@ def main(built_site=False):
     astro_pages = {label: check_astro_site(ROOT / path, label) for label, path in ASTRO_SITES.items()}
 
     sidebar = read("docs/src/lib/sidebar.config.ts")
-    page = read("docs/src/pages/docs/[...slug].astro")
-    labels = page.split("const SLUG_LABEL", 1)[1].split("const DOC_SUMMARIES", 1)[0]
-    summaries = page.split("const DOC_SUMMARIES", 1)[1].split("const globResult", 1)[0]
+    labels = sidebar.split("const SLUG_LABEL", 1)[1].split("const DOC_SUMMARIES", 1)[0]
+    summaries = sidebar.split("const DOC_SUMMARIES", 1)[1].split("const SECTION_CATEGORIES", 1)[0]
     slugs = {path.stem for path in (ROOT / "docs/wiki").glob("*.md")}
     for path in (ROOT / "docs/wiki").glob("*.md"):
         slug = path.stem

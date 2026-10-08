@@ -20,7 +20,7 @@ const plural = resource.pluralLabel.toLowerCase();
       <span class="mt-1 hidden size-11 flex-none items-center justify-center rounded-xl bg-raised text-accent-text ring-1 ring-line-strong sm:flex"><Icon name={resourceIcons[resource.key]} class="size-5" /></span>
       <div>
         {group && <p class="eyebrow">{group}</p>}
-        <h1 id={headingId} data-heading tabindex="-1" class="mt-1.5 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">{resource.pluralLabel}</h1>
+        <h1 id={headingId} data-heading tabindex="-1" class="mt-1.5 page-title">{resource.pluralLabel}</h1>
         <p class="mt-1.5 text-[0.9375rem] text-muted">{resource.description}</p>
       </div>
     </div>
@@ -81,7 +81,7 @@ const plural = resource.pluralLabel.toLowerCase();
   <dialog data-form-dialog aria-labelledby={`${resource.key}-form-title`} class="modal sheet">
     <form data-form class="flex max-h-[inherit] flex-col">
       <div class="flex items-center justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
-        <h2 id={`${resource.key}-form-title`} data-form-title class="text-base font-semibold tracking-tight">Create {resource.label}</h2>
+        <h2 id={`${resource.key}-form-title`} data-form-title class="dialog-title">Create {resource.label}</h2>
         <div class="flex items-center gap-3">
           <p class="hidden text-xs text-subtle sm:block"><span aria-hidden="true" class="text-accent-text">*</span> Required</p>
           <button type="button" data-action="cancel" class="btn btn-ghost btn-icon" aria-label="Close the form"><Icon name="close" /></button>
@@ -125,7 +125,7 @@ const plural = resource.pluralLabel.toLowerCase();
 
   <dialog data-details aria-labelledby={`${resource.key}-details-title`} class="modal m-auto max-h-[85vh] w-[calc(100%-2rem)] max-w-xl overflow-y-auto">
     <div class="sticky top-0 flex items-center justify-between gap-4 border-b border-line bg-surface px-6 py-4">
-      <h2 id={`${resource.key}-details-title`} class="text-base font-semibold tracking-tight">{resource.label} details</h2>
+      <h2 id={`${resource.key}-details-title`} class="dialog-title">{resource.label} details</h2>
       <button type="button" data-action="close-details" class="btn btn-ghost btn-icon" aria-label="Close"><Icon name="close" /></button>
     </div>
     <dl data-detail-fields class="divide-y divide-line/70 px-6 py-2"></dl>
@@ -136,7 +136,7 @@ const plural = resource.pluralLabel.toLowerCase();
     <div class="flex gap-4 px-6 pb-5 pt-6">
       <span class="flex size-10 flex-none items-center justify-center rounded-full bg-danger/12 text-danger ring-1 ring-danger/25"><Icon name="trash" class="size-[1.125rem]" /></span>
       <div class="min-w-0">
-        <h2 id={`${resource.key}-confirm-title`} data-confirm-title class="text-base font-semibold tracking-tight">Delete {resource.label.toLowerCase()}?</h2>
+        <h2 id={`${resource.key}-confirm-title`} data-confirm-title class="dialog-title">Delete {resource.label.toLowerCase()}?</h2>
         <p id={`${resource.key}-confirm-message`} data-confirm-message class="mt-1.5 break-words text-sm leading-relaxed text-muted"></p>
       </div>
     </div>

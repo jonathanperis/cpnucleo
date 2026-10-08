@@ -1,153 +1,88 @@
-# CPnucleo design context
+# Cpnucleo design context
 
 ## Design intent
 
-The CPnucleo GitHub Pages site is a technical brand and documentation surface. It should feel like an architecture workbench: dark, precise, inspectable, and source-backed. The design is allowed to be expressive, but proof and readability come before spectacle.
+Cpnucleo looks like a well-made technical manual: warm paper, near-black ink, one vermilion signal colour and a serif voice. The same system covers the GitHub Pages site (`docs/`) and the WebClient (`src/WebClient/`), so moving from the documentation into the running app feels like turning a page, not changing products.
 
-## Physical scene sentence
+The previous dark cyan "architecture console" look was retired in October 2026. It read as generic and machine-made: glowing grids, uppercase monospace eyebrows, pill chips, gradient panels and A/B controls exposed to visitors.
 
-A senior .NET engineer is reviewing the repository late in the evening on a desktop monitor, deciding whether to clone it, study its service boundaries, or trust its deployment practices.
+## Physical scene
 
-Dark theme is correct because the scene is focused technical evaluation in a low-light work environment. The tone should be calm and exact, not nightclub neon.
+An engineer reads the docs on a laptop in daylight, sometimes late at night, deciding whether to clone the repository or study one boundary. The page should feel calm, exact and edited by a person. Paper is the default; night is a warm charcoal version of the same page, not a separate neon theme.
 
-## Visual anchors
+## Palette
 
-- Architecture console.
-- Release notebook.
-- Service topology map.
-- Build pipeline ledger.
-- Astro, native TypeScript, and Tailwind CSS on the live app side, with semantic forms and dialogs while the Pages site remains a static docs and learning surface.
+Paper, ink and vermilion. Values are OKLCH; the WebClient stores them as channel triplets (`--canvas: 97.2% 0.012 85`) so Tailwind utilities can apply alpha.
 
-## Color strategy
-
-Restrained dark technical system with one cyan accent and one secondary blue-violet status role.
-
-Use OKLCH tokens for new work:
-
-```css
-:root {
-  --ink-950: oklch(13% 0.025 255);
-  --ink-900: oklch(17% 0.03 255);
-  --ink-850: oklch(21% 0.035 255);
-  --ink-800: oklch(25% 0.04 255);
-  --line: oklch(42% 0.06 250 / 0.42);
-  --line-strong: oklch(62% 0.12 225 / 0.58);
-  --text-main: oklch(94% 0.018 245);
-  --text-body: oklch(82% 0.028 245);
-  --text-muted: oklch(66% 0.035 245);
-  --cyan: oklch(78% 0.17 215);
-  --cyan-soft: oklch(78% 0.17 215 / 0.14);
-  --violet: oklch(70% 0.14 285);
-  --success: oklch(73% 0.14 160);
-}
-```
+| Role | Paper (default) | Night | Docs token | WebClient token |
+|---|---|---|---|---|
+| Page | `oklch(97.2% 0.012 85)` | `oklch(19% 0.012 60)` | `--paper` | `--canvas` |
+| Sheet (cards, inputs) | `oklch(98.8% 0.006 85)` | `oklch(22.5% 0.013 60)` | `--sheet` | `--surface` |
+| Sunken (rails, code) | `oklch(94.6% 0.016 82)` | `oklch(16.5% 0.011 60)` docs, `oklch(26% 0.014 60)` app | `--paper-sunk` | `--raised` |
+| Ink | `oklch(23% 0.02 55)` | `oklch(93.5% 0.016 85)` | `--ink` | `--ink` |
+| Body / muted | `oklch(36–50% 0.02 60)` | `oklch(68–83% 0.016 80)` | `--ink-body`, `--ink-muted` | `--muted`, `--subtle` |
+| Rules | `oklch(86–88% 0.02 78)` | `oklch(31–32% 0.012 60)` | `--rule` | `--line` |
+| Signal | `oklch(58% 0.19 34)` | `oklch(68% 0.17 40)` | `--signal` | `--accent` |
+| Signal text | `oklch(50% 0.17 33)` | `oklch(75% 0.14 45)` | `--signal-text` | `--accent-text` |
+| Primary action | ink fill, paper text | paper fill, charcoal text | `--button` | `--action` |
 
 Rules:
 
-- No pure black or pure white.
-- No gradient text.
-- Cyan should mark interaction, proof, and diagram edges, not decorate every surface.
-- Background grids can remain subtle, under 6 percent visual weight.
-- Remove floating particles and decorative glow fields unless they communicate system state.
+- Vermilion is a signal, not a fill. It marks the brand nucleus, focus rings, the current place (active chapter, today, current page), section numbers and the one italic phrase in a headline. Primary buttons are inked.
+- Errors use a crimson (`--danger`, hue 14) distinct from the vermilion, always with text, never colour alone.
+- No gradients, glows, background grids, blurred backdrops or decorative particles.
+- Shadows are almost absent: a 1–2px lift on panels, a soft drop under dialogs and menus.
+- Radii stay near square: 2–4px for controls and panels, 6px for dialogs. Only avatars are round.
 
 ## Typography
 
-Use a readable sans for body and navigation. Use mono only for code, commands, compact labels, and technical IDs.
+| Role | Face | Use |
+|---|---|---|
+| Display | Newsreader (variable, optical sizes, italic) | Headlines, page titles, section names, running heads, figures and stat numbers |
+| Interface and body | IBM Plex Sans (variable) | Paragraphs, navigation, forms, tables |
+| Code | IBM Plex Mono 400/500 | Code, commands, identifiers, chapter numbers |
 
-Recommended roles:
+All three are self-hosted through Fontsource (the WebClient CSP allows fonts only from `'self'`).
 
-- Body and UI: `Atkinson Hyperlegible`, system sans fallback.
-- Display and section headings: `Rajdhani`, used sparingly for the product name, hero, and proof labels.
-- Code and terminal blocks: `JetBrains Mono`.
+- Headlines are light (weight 370–420), tight (`letter-spacing` around -0.02em) and solid colour. One italic phrase may carry the signal colour.
+- Section labels are serif italic ("What it compares"), paired with a small mono number in vermilion ("§1", "1.2", "03"). Do not reintroduce uppercase tracked monospace eyebrows.
+- Body copy stays within 60–72 characters per line.
 
-Hierarchy:
+## Recurring devices
 
-- Hero h1: fluid clamp, strong weight, solid color.
-- Body: 65 to 75 character line length where possible.
-- Docs body: larger and calmer than the current all-mono setting.
-- Labels: uppercase only for short system labels, not paragraph copy.
+- **Masthead and double rule.** The wordmark and navigation sit above a 3px double rule, then a thin italic folio line.
+- **Registration mark.** The brand is a printer's registration mark around a vermilion nucleus (`docs/src/components/Mark.astro`, `src/WebClient/src/components/BrandMark.astro`). Change both together.
+- **Numbered sections and chapters.** `§1`, `1.1`, `01`, Part I/II/III. Chapter numbers come from `chapterNumber()` in `docs/src/lib/sidebar.config.ts`.
+- **Ledgers and contents.** Rows separated by hairlines under a solid ink rule; the contents uses dot leaders. Prefer these to card grids.
+- **Figures with captions.** Diagrams are drawn as thin-line boxes with orthogonal edges and a "Fig. 1." caption. Code samples on the home page are captioned listings.
+- **Running heads.** Docs pages open with "Part II, Overview" and "Chapter 03 of 11" in italic.
+- **Colophon.** The site ends with a short colophon naming the author, licence and typefaces.
 
-## Layout principles
+## Layout
 
-- Home is a proof path, not a generic landing page.
-- Default route order: hero, proof ledger, architecture map, docs paths, quick start.
-- Use asymmetry through proof columns and diagrams, not random card grids.
-- Prefer ledgers, rows, maps, and command panels over repeated feature cards.
-- Docs root should be a command center linking to individual pages.
-- Individual docs pages should support long-form reading, tables, code, and sidebar navigation.
-
-## Component direction
-
-### Hero
-
-- Headline: `A hands-on architecture laboratory for .NET 10`.
-- Subcopy should name REST, gRPC, Astro, PostgreSQL, Docker, Hostinger, and tests without overclaiming.
-- CTA hierarchy: Documentation, GitHub, Live Demo.
-- Include visible A/B variant controls when testing.
-
-### Proof ledger
-
-Use compact evidence rows instead of standalone metric cards. Good rows:
-
-- REST and gRPC parity.
-- Architecture tests.
-- Service topology.
-- CI/CD and deployment path.
-
-### Architecture diagram
-
-Use service boxes and connecting lines. Keep it semantic and readable. Avoid decorative pseudo-metrics.
-
-### Docs cards
-
-Use grouped documentation paths with descriptions and route links. Avoid identical icon-card grids.
-
-### Code panels
-
-Use tinted dark panels, clear labels, and horizontal scroll. No pure black terminal blocks.
-
-### Blockquotes and callouts
-
-No side-stripe accents. Use full borders, subtle background tint, or inline labels.
+- Home: masthead, hero (headline, lede, actions, Fig. 1), §1 ledger of what the lab compares, §2 contents, §3 run it, colophon.
+- Docs: a sunken rail with Parts and numbered chapters and a filter; a reading column with running head, article and previous/next links; an "On this page" margin from 1280px.
+- WebClient: the same sunken rail for workspace navigation, serif page titles, italic section labels, ruled panels and inked primary actions. Dense data stays in Plex Sans.
 
 ## Motion
 
-- Motion should be brief and purposeful.
-- Animate opacity and transform, not width, height, padding, or margin.
-- Respect `prefers-reduced-motion`.
-- Avoid perpetual particles and ambient drift for this site.
+Brief opacity and transform transitions (160–220ms). No perpetual animation besides loading skeletons. Everything is disabled under `prefers-reduced-motion`.
 
-## Accessibility standards
+## Accessibility
 
-- Keyboard-visible focus on all links, buttons, search fields, and menu controls.
-- Body and docs text must meet WCAG AA contrast on dark backgrounds.
-- Mobile sidebar must expose `aria-expanded` state and close predictably.
-- Search must provide an empty-result message.
-- Code and tables must support horizontal overflow without layout breakage.
+- Visible focus on every interactive element (2px vermilion outline).
+- Body text meets WCAG AA on both paper and night. Use `--signal-text` / `--accent-text`, not the raw signal, for text.
+- The docs drawer exposes `aria-expanded`, closes on Escape and overlay click; the filter announces empty results.
+- Code blocks and tables scroll horizontally without breaking the layout.
 
-## Copy standards
+## Copy
 
-- No em dashes in new interface copy.
-- No generic filler like production-ready without nearby proof.
-- Use exact artifact names: `Architecture.Tests`, `compose.yaml`, `main-release.yml`, `WebApi`, `GrpcServer`, `IdentityApi`, `WebClient`.
-- Avoid claiming complete test coverage unless verified by reports.
-- Prefer action labels: Read docs, Inspect GitHub, Open live demo.
+- Plain, specific and short. Name the artifact behind a claim (`Architecture.Tests`, `compose.lab.yaml`, `main-release.yml`, `WebApi`, `GrpcServer`, `IdentityApi`, `WebClient`).
+- No em dashes in interface copy. No "production-ready", "command center", "proof trail" or similar filler.
+- Action labels read like sentences: "Read the documentation", "Inspect the source", "Open the live demo".
 
-## Current implementation and review boundaries
+## Review checklist
 
-- Navigation configuration lives in `docs/src/lib/sidebar.config.ts`, outside Astro's route tree.
-- The documentation root is a grouped index; articles have independent routes and summaries.
-- Source includes readable body fonts, an empty search state and an accessible menu-state attribute.
-- Historical detector findings and A/B hypotheses live in `docs/IMPECCABLE_OVERHAUL_PLAN.md`. Validate visual/accessibility outcomes in an explicitly requested browser review; source inspection alone does not prove them.
-
-## Quality bar
-
-Before a Pages design PR is considered ready:
-
-- Root `PRODUCT.md` and `DESIGN.md` load through the Impeccable context loader.
-- `git diff --check` passes.
-- `bun run build` passes from `docs/`.
-- Impeccable detector has no new high-signal UI anti-patterns.
-- Browser smoke covers home, docs root, one individual docs page, search, mobile navigation, and console errors.
-- Temporary preview servers are stopped.
-- PR is opened or updated, but not merged without explicit approval.
+- `bun run build` in `docs/` and `bun run test` in `src/WebClient/` pass; `python3 scripts/check-docs-drift.py --built-site` passes.
+- Look at both themes on home, docs index, one article, sign-in, the workspace home, one CRUD list and one dialog, at desktop and phone widths. jsdom output is not a browser check.
+- Stop temporary preview servers afterwards.

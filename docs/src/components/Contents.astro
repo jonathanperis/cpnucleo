@@ -1,0 +1,26 @@
+---
+import { DOC_SUMMARIES, SECTION_CATEGORIES, SLUG_LABEL, chapterNumber } from '../lib/sidebar.config';
+interface Props { headingLevel?: 'h2' | 'h3' }
+const { headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const docsBase = import.meta.env.BASE_URL.replace(/\/$/, '') + '/docs';
+const parts = ['I', 'II', 'III', 'IV'];
+---
+<div class="contents">
+  {SECTION_CATEGORIES.map((category, index) => (
+    <section class="contents-part" data-doc-group>
+      <Heading class="part-title"><span class="num">Part {parts[index]}</span>{category.label}</Heading>
+      <ol>
+        {category.ids.map((id) => (
+          <li>
+            <a href={`${docsBase}/${id}/`} data-search-text={`${SLUG_LABEL[id]} ${DOC_SUMMARIES[id]}`}>
+              <span class="num">{chapterNumber(id)}</span>
+              <span class="title"><span>{SLUG_LABEL[id]}</span><span class="go" aria-hidden="true">→</span></span>
+              <span class="summary">{DOC_SUMMARIES[id]}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</div>
