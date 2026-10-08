@@ -5,8 +5,6 @@ public sealed class UpdateImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Upda
 {
     public async Task<UpdateImpedimentResult> ExecuteAsync(UpdateImpedimentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an impediment entity exists with Id: {ImpedimentId}", command.Id);
@@ -35,8 +33,6 @@ public sealed class UpdateImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Upda
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateImpedimentResult 
             { 

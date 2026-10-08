@@ -7,8 +7,6 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
     {
         try
         {
-            logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserProjectId: {UserProjectId}, Id: {Id}", command.UserId, command.ProjectId, command.Id);
-
             logger.LogInformation("Checking if an userProject entity exists with Id: {UserProjectId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
             var itemExists = await repository.ExistsAsync(command.Id, cancellationToken);
@@ -45,8 +43,6 @@ public sealed class CreateUserProjectHandler(IUnitOfWork unitOfWork, ILogger<Cre
                 Message = "UserProject created successfully.",
                 UserProject = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

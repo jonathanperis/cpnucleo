@@ -1,13 +1,11 @@
 namespace GrpcServer.Handlers.User;
 
 // Dapper Repository Advanced
-public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger, IPasswordHasher passwordHasher, IHttpContextAccessor context) : ICommandHandler<CreateUserCommand, CreateUserResult>
+public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUserHandler> logger, IPasswordHasher passwordHasher) : ICommandHandler<CreateUserCommand, CreateUserResult>
 {
+    [Microsoft.AspNetCore.Authorization.Authorize(Policy = Common.Security.UserAdministration.Policy)]
     public async Task<CreateUserResult> ExecuteAsync(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        Common.Security.UserAdministration.RequireAdmin(context);
-        logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {UserId}", command.Name, command.Id);
-
         try
         {
             logger.LogInformation("Checking if an user entity exists with Id: {UserId}", command.Id);
@@ -48,8 +46,6 @@ public sealed class CreateUserHandler(IUnitOfWork unitOfWork, ILogger<CreateUser
                 Message = "User created successfully.",
                 User = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

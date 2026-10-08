@@ -7,8 +7,6 @@ public sealed class CreateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Cre
     {
         try
         {
-            logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {AppointmentId}", command.Name, command.Id);
-
             logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
             var itemExists = await repository.ExistsAsync(command.Id, cancellationToken);
@@ -51,8 +49,6 @@ public sealed class CreateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Cre
                 Appointment = createdItem!.MapToDto()
             };
             
-            logger.LogInformation("Service completed successfully.");
-
             return result;
         }
         catch

@@ -5,7 +5,6 @@ public sealed class RemoveAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
 {
     public async Task<RemoveAssignmentImpedimentResult> ExecuteAsync(RemoveAssignmentImpedimentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveAssignmentImpedimentResult
             {
                 Success = true,

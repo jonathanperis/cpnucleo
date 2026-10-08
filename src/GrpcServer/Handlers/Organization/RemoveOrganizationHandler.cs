@@ -5,7 +5,6 @@ public sealed class RemoveOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Re
 {
     public async Task<RemoveOrganizationResult> ExecuteAsync(RemoveOrganizationCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Re
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveOrganizationResult
             {
                 Success = true,

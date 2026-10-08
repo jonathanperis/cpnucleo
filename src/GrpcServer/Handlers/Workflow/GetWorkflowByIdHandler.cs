@@ -5,8 +5,6 @@ public sealed class GetWorkflowByIdHandler(IUnitOfWork unitOfWork, ILogger<GetWo
 {
     public async Task<GetWorkflowByIdResult> ExecuteAsync(GetWorkflowByIdCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching workflow entity with Id: {WorkflowId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -28,8 +26,6 @@ public sealed class GetWorkflowByIdHandler(IUnitOfWork unitOfWork, ILogger<GetWo
             Message = "Workflow fetched successfully.",
             Workflow = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

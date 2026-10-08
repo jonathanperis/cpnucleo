@@ -5,8 +5,6 @@ public sealed class UpdateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Update
 {
     public async Task<UpdateWorkflowResult> ExecuteAsync(UpdateWorkflowCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an workflow entity exists with Id: {WorkflowId}", command.Id);
@@ -35,8 +33,6 @@ public sealed class UpdateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Update
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateWorkflowResult 
             { 

@@ -5,8 +5,6 @@ public sealed class UpdateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Upd
 {
     public async Task<UpdateAppointmentResult> ExecuteAsync(UpdateAppointmentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an appointment entity exists with Id: {AppointmentId}", command.Id);
@@ -39,8 +37,6 @@ public sealed class UpdateAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Upd
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateAppointmentResult 
             { 

@@ -5,7 +5,6 @@ public sealed class RemoveProjectHandler(IUnitOfWork unitOfWork, ILogger<RemoveP
 {
     public async Task<RemoveProjectResult> ExecuteAsync(RemoveProjectCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveProjectHandler(IUnitOfWork unitOfWork, ILogger<RemoveP
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveProjectResult
             {
                 Success = true,

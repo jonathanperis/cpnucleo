@@ -31,7 +31,7 @@ The projects have independent dependency graphs. Use a real supported Node runti
 
 - xUnit + NetArchTest + FluentAssertions: assembly architecture checks.
 - NUnit + FakeItEasy + Shouldly: application, endpoint and security unit tests.
-- xUnit v3 + FastEndpoints.Testing + Testcontainers.PostgreSql: isolated HTTP/gRPC/PostgreSQL contracts.
+- xUnit v3 + `WebApplicationFactory` (Microsoft.AspNetCore.Mvc.Testing) + Testcontainers.PostgreSql: isolated HTTP/gRPC/PostgreSQL contracts with real WebApi, GrpcServer and IdentityApi hosts.
 - Docker Compose: minimal lab, legacy load-balanced development example and standalone production.
 - PostgreSQL, NGINX, Grafana LGTM and OpenTelemetry Collector: image tags live in the [Compose files](https://github.com/jonathanperis/cpnucleo/blob/main/compose.prod.yaml).
 - GitHub Actions, GHCR and Hostinger Docker Manager: build, immutable image publication and deployment. Pages uses its own pinned reusable workflow.

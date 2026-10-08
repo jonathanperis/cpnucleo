@@ -5,7 +5,6 @@ public sealed class RemoveImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Remo
 {
     public async Task<RemoveImpedimentResult> ExecuteAsync(RemoveImpedimentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveImpedimentHandler(IUnitOfWork unitOfWork, ILogger<Remo
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveImpedimentResult
             {
                 Success = true,

@@ -5,7 +5,6 @@ public sealed class RemoveWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Remove
 {
     public async Task<RemoveWorkflowResult> ExecuteAsync(RemoveWorkflowCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Remove
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveWorkflowResult
             {
                 Success = true,

@@ -5,7 +5,6 @@ public sealed class RemoveAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Rem
 {
     public async Task<RemoveAppointmentResult> ExecuteAsync(RemoveAppointmentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
         var ids = BatchIds.Normalize(command.Ids);
 
         try
@@ -31,7 +30,6 @@ public sealed class RemoveAppointmentHandler(IUnitOfWork unitOfWork, ILogger<Rem
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
 
-            logger.LogInformation("Service completed successfully.");
             return new RemoveAppointmentResult
             {
                 Success = true,

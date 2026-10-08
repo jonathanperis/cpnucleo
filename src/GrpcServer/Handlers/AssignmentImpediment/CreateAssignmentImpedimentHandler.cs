@@ -5,8 +5,6 @@ public sealed class CreateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
 {
     public async Task<CreateAssignmentImpedimentResult> ExecuteAsync(CreateAssignmentImpedimentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request with payload Description: {Description}, Id: {AssignmentImpedimentId}", command.Description, command.Id);
-
         try
         {
             logger.LogInformation("Checking if an assignmentImpediment entity exists with Id: {AssignmentImpedimentId}", command.Id);
@@ -45,8 +43,6 @@ public sealed class CreateAssignmentImpedimentHandler(IUnitOfWork unitOfWork, IL
                 Message = "AssignmentImpediment created successfully.",
                 AssignmentImpediment = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

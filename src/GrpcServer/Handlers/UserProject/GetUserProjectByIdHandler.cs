@@ -5,8 +5,6 @@ public sealed class GetUserProjectByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
 {
     public async Task<GetUserProjectByIdResult> ExecuteAsync(GetUserProjectByIdCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching userProject entity with Id: {UserProjectId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.UserProject>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -28,8 +26,6 @@ public sealed class GetUserProjectByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
             Message = "UserProject fetched successfully.",
             UserProject = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

@@ -5,8 +5,6 @@ public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Up
 {
     public async Task<UpdateOrganizationResult> ExecuteAsync(UpdateOrganizationCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         try
         {
             logger.LogInformation("Checking if an organization entity exists with Id: {OrganizationId}", command.Id);
@@ -35,8 +33,6 @@ public sealed class UpdateOrganizationHandler(IUnitOfWork unitOfWork, ILogger<Up
             logger.LogInformation("Update result: {Success}", success);
             logger.LogInformation("Committing transaction.");
             await unitOfWork.CommitAsync(cancellationToken);
-
-            logger.LogInformation("Service completed successfully.");
 
             return new UpdateOrganizationResult 
             { 

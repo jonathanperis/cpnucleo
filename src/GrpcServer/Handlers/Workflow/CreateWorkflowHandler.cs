@@ -7,8 +7,6 @@ public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Create
     {
         try
         {
-            logger.LogInformation("Service started processing request with payload Name: {Name}, Id: {WorkflowId}", command.Name, command.Id);
-
             logger.LogInformation("Checking if an workflow entity exists with Id: {WorkflowId}", command.Id);
             var repository = unitOfWork.GetRepository<Domain.Entities.Workflow>();
             var itemExists = await repository.ExistsAsync(command.Id, cancellationToken);
@@ -45,8 +43,6 @@ public sealed class CreateWorkflowHandler(IUnitOfWork unitOfWork, ILogger<Create
                 Message = "Workflow created successfully.",
                 Workflow = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

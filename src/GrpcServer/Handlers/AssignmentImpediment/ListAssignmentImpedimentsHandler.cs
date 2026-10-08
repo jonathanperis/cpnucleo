@@ -7,7 +7,6 @@ public sealed class ListAssignmentImpedimentsHandler(IUnitOfWork unitOfWork, ILo
     {
         // Invalid or missing paging is InvalidArgument, the same rule REST applies.
         var pagination = PaginationParams.Require(command.Pagination);
-        logger.LogInformation("Service started processing request.");
         logger.LogInformation("Fetching all assignmentImpediments with pagination page {PageNumber}, size {PageSize}", pagination.PageNumber, pagination.PageSize);
 
         var repository = unitOfWork.GetRepository<Domain.Entities.AssignmentImpediment>();
@@ -24,7 +23,6 @@ public sealed class ListAssignmentImpedimentsHandler(IUnitOfWork unitOfWork, ILo
         };
 
         logger.LogInformation("Mapping complete, setting response result.");
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }

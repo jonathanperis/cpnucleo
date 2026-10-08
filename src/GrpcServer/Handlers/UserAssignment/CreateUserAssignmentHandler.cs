@@ -5,8 +5,6 @@ public sealed class CreateUserAssignmentHandler(IUnitOfWork unitOfWork, ILogger<
 {
     public async Task<CreateUserAssignmentResult> ExecuteAsync(CreateUserAssignmentCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request with payload UserId: {UserId}, UserAssignmentId: {UserAssignmentId}, Id: {Id}", command.UserId, command.AssignmentId, command.Id);
-
         try
         {
             logger.LogInformation("Checking if an userAssignment entity exists with Id: {UserAssignmentId}", command.Id);
@@ -45,8 +43,6 @@ public sealed class CreateUserAssignmentHandler(IUnitOfWork unitOfWork, ILogger<
                 Message = "UserAssignment created successfully.",
                 UserAssignment = createdItem!.MapToDto()
             };
-
-            logger.LogInformation("Service completed successfully.");
 
             return result;
         }

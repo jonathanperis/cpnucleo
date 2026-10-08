@@ -5,8 +5,6 @@ public sealed class GetAppointmentByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
 {
     public async Task<GetAppointmentByIdResult> ExecuteAsync(GetAppointmentByIdCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Service started processing request.");
-
         logger.LogInformation("Fetching appointment entity with Id: {AppointmentId}", command.Id);
         var repository = unitOfWork.GetRepository<Domain.Entities.Appointment>();
         var item = await repository.GetByIdAsync(command.Id, cancellationToken);
@@ -28,8 +26,6 @@ public sealed class GetAppointmentByIdHandler(IUnitOfWork unitOfWork, ILogger<Ge
             Message = "Appointment fetched successfully.",
             Appointment = item.MapToDto()
         };
-
-        logger.LogInformation("Service completed successfully.");
 
         return result;
     }
