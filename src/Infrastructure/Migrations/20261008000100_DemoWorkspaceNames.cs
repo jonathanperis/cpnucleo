@@ -16,7 +16,14 @@ namespace Infrastructure.Migrations;
 [Migration("20261008000100_DemoWorkspaceNames")]
 public sealed class DemoWorkspaceNamesData : Migration
 {
-    protected override void Up(MigrationBuilder migrationBuilder)
+    protected override void Up(MigrationBuilder migrationBuilder) => Apply(migrationBuilder);
+
+    // The replaced Bogus text has no value and is not kept, so there is nothing to restore.
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+    }
+
+    internal static void Apply(MigrationBuilder migrationBuilder)
     {
         foreach (var (table, column) in ListAndSearchIndexes.SearchColumns)
             migrationBuilder.Sql(ListAndSearchIndexes.DropTrigramIndexSql(table, column));
@@ -25,10 +32,5 @@ public sealed class DemoWorkspaceNamesData : Migration
 
         foreach (var (table, column) in ListAndSearchIndexes.SearchColumns)
             migrationBuilder.Sql(ListAndSearchIndexes.CreateTrigramIndexSql(table, column));
-    }
-
-    // The replaced Bogus text has no value and is not kept, so there is nothing to restore.
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
     }
 }

@@ -1,21 +1,32 @@
--- Rewrites the Bogus-generated demo dataset into a coherent project workspace:
--- industry companies, their products and initiatives, a delivery board (Backlog .. Done),
--- feature/bug/chore tasks with matching time entries and blocker notes, readable logins,
--- and task schedules whose board column follows their dates.
+-- Rewrites the Bogus-generated demo dataset into a coherent project workspace: industry companies,
+-- their products and initiatives, feature/bug/chore tasks with matching time entries and blocker
+-- notes, readable logins, and task schedules whose board column follows their dates.
 --
--- Only rows that still carry generated text are touched: names made of Bogus Hacker words
--- ("monitor transmitting back-end"), Hacker.Phrase descriptions, blank legacy descriptions and
--- "learner-NNNNNN" logins. Rows created by people, the demo account, Ids, relations, Active,
--- DeletedAt, CreatedAt and UpdatedAt are never changed, so running it again changes nothing.
+-- Generated rows are recognised by their text: Bogus Hacker names ("monitor transmitting back-end"),
+-- Hacker.Phrase and blank legacy descriptions, "learner-NNNNNN" logins, the one password hash the
+-- importer gives every fake user, and this script's own catalog names and sentence templates. Its own
+-- output is recomputed deterministically, so a newer version (or a run that sees more of the dataset)
+-- converges every generated row and a repeated run changes nothing. Rows people created, the demo
+-- account, Ids, relations, Active, DeletedAt, CreatedAt and UpdatedAt are never changed; board
+-- columns and assignment types keep any name that isn't generated. Schedules are only set for tasks
+-- that don't have one yet, and their column follows the active board columns in order.
 --
 -- One statement, so it is atomic with or without an explicit transaction. It runs at the end of
--- FakeDataCsvImporter, as the legacy compose.yaml init script, and by hand on an existing
--- database through scripts/apply-demo-workspace-names.sh. Keep docker-entrypoint-initdb.d/
--- 004-demo-workspace-names.sql identical to this file.
+-- FakeDataCsvImporter, through the DemoWorkspaceNames data migrations, as the legacy compose.yaml
+-- init script, and by hand through scripts/apply-demo-workspace-names.sh. Keep
+-- docker-entrypoint-initdb.d/004-demo-workspace-names.sql identical to this file.
 DO $demo_workspace_names$
 DECLARE
     hacker_name constant text := '^(alarm|application|array|bandwidth|bus|capacitor|card|circuit|driver|feed|firewall|hard drive|interface|matrix|microchip|monitor|panel|pixel|port|program|protocol|sensor|system|transmitter) (backing up|bypassing|calculating|compressing|connecting|copying|generating|hacking|indexing|navigating|overriding|parsing|programming|quantifying|synthesizing|transmitting) (1080p|auxiliary|back-end|bluetooth|cross-platform|digital|haptic|mobile|multi-byte|neural|online|open-source|optical|primary|redundant|solid state|virtual|wireless)$';
     hacker_phrase constant text := '^(If we |We need to |Try to |You can''t |Use the |The |I''ll |[a-z]+ing (up )?the ).*!$';
+    -- LIKE patterns for this script's own task descriptions (plain matching keeps the scan cheap).
+    task_patterns constant text[] := ARRAY[
+        'Deliver % in %. Done when it is covered by tests, reviewed and demoed to the product owner.',
+        'Users of % report % in %. Reproduce it on staging, fix the root cause and add a regression test.',
+        'Maintenance on % for %. No user-facing change expected; keep the build green.'];
+    learner_login constant text := '^learner-[0-9]+$';
+    demo_login constant text := 'demo@cpnucleo.local';
+    shared_hash_minimum constant int := 50;
     stem_count constant int := 60;
     industry_count constant int := 14;
     systems_per_industry constant int := 12;
@@ -24,10 +35,16 @@ DECLARE
     features_per_project constant int := 40;
     workflow_names constant text[] := ARRAY['Backlog', 'To Do', 'In Progress', 'In Review', 'Testing', 'Done'];
     type_names constant text[] := ARRAY['Feature', 'Bug', 'Chore', 'Spike', 'Support', 'Research'];
+    entry_patterns text[];
+    note_patterns text[];
     workflow_ids uuid[];
+    board_columns int;
+    first_active int;
+    last_active int;
     overflow bigint;
     changed bigint;
     summary text := '';
+    board text;
 BEGIN
     IF to_regclass('public."Assignments"') IS NULL OR to_regclass('public."Users"') IS NULL THEN
         RAISE NOTICE 'Demo workspace names skipped: the Cpnucleo schema does not exist.';
@@ -189,66 +206,68 @@ BEGIN
 
     ANALYZE demo_names_catalog;
 
-    -- Capacity guards: refuse to produce duplicates instead of silently repeating names.
-    SELECT count(*) INTO overflow FROM "Organizations" WHERE "Name" ~ hacker_name;
+    -- LIKE patterns for this script's own time entries and blocker notes (the templates contain no % or _).
+    SELECT array_agg(replace(replace(val, '%1$s', '%'), '%2$s', '%') || '.') INTO entry_patterns FROM demo_names_catalog WHERE kind = 'entry';
+    SELECT array_agg(replace(val, '%s', '%')) INTO note_patterns FROM demo_names_catalog WHERE kind = 'note';
+
+    -- Organizations: brand stem x industry, a bijection for up to 840 generated rows.
+    CREATE TEMP TABLE demo_names_org (id uuid PRIMARY KEY, generated boolean, industry int, name text, description text);
+    INSERT INTO demo_names_org (id, generated)
+    SELECT o."Id", o."Name" ~ hacker_name OR EXISTS (
+               SELECT 1 FROM demo_names_catalog s JOIN demo_names_catalog i ON i.kind = 'industry'
+               WHERE s.kind = 'stem' AND o."Name" = s.val || ' ' || i.val AND o."Description" LIKE i.detail || ' based in %.')
+    FROM "Organizations" o;
+    SELECT count(*) INTO overflow FROM demo_names_org WHERE generated;
     IF overflow > stem_count * industry_count THEN
         RAISE EXCEPTION 'Demo workspace names: % generated organizations exceed the % available names.', overflow, stem_count * industry_count;
     END IF;
-    SELECT count(*) INTO overflow FROM "Impediments" WHERE "Name" ~ hacker_name;
-    IF overflow > 120 THEN
-        RAISE EXCEPTION 'Demo workspace names: % generated impediments exceed the 120 available names.', overflow;
-    END IF;
-    SELECT count(*) INTO overflow FROM "AssignmentTypes" WHERE "Name" ~ hacker_name;
-    IF overflow > cardinality(type_names) THEN
-        RAISE EXCEPTION 'Demo workspace names: % generated assignment types exceed the % available names.', overflow, cardinality(type_names);
-    END IF;
-
-    -- Organizations: brand stem x industry, a bijection for up to 840 rows.
-    CREATE TEMP TABLE demo_names_org (id uuid PRIMARY KEY, industry int, name text, description text, generated boolean);
-    INSERT INTO demo_names_org
-    SELECT o."Id", (o.n / stem_count + o.n % stem_count) % industry_count,
-           s.val || ' ' || i.val, i.detail || ' based in ' || c.val || '.', true
-    FROM (SELECT "Id", row_number() OVER (ORDER BY "Id") - 1 AS n FROM "Organizations" WHERE "Name" ~ hacker_name) o
-    JOIN demo_names_catalog s ON s.kind = 'stem' AND s.idx = o.n % stem_count
-    JOIN demo_names_catalog i ON i.kind = 'industry' AND i.idx = (o.n / stem_count + o.n % stem_count) % industry_count
-    JOIN demo_names_catalog c ON c.kind = 'city' AND c.idx = o.n % 16;
-    INSERT INTO demo_names_org
-    SELECT "Id", abs(hashtext("Id"::text)) % industry_count, "Name", "Description", false
-    FROM "Organizations" x WHERE NOT EXISTS (SELECT 1 FROM demo_names_org m WHERE m.id = x."Id");
+    UPDATE demo_names_org m
+    SET industry = (g.n / stem_count + g.n % stem_count) % industry_count,
+        name = s.val || ' ' || i.val,
+        description = i.detail || ' based in ' || c.val || '.'
+    FROM (SELECT id, row_number() OVER (ORDER BY id) - 1 AS n FROM demo_names_org WHERE generated) g
+    JOIN demo_names_catalog s ON s.kind = 'stem' AND s.idx = g.n % stem_count
+    JOIN demo_names_catalog i ON i.kind = 'industry' AND i.idx = (g.n / stem_count + g.n % stem_count) % industry_count
+    JOIN demo_names_catalog c ON c.kind = 'city' AND c.idx = g.n % 16
+    WHERE g.id = m.id;
+    UPDATE demo_names_org SET industry = abs(hashtext(id::text)) % industry_count WHERE NOT generated;
     ANALYZE demo_names_org;
 
     UPDATE "Organizations" t SET "Name" = m.name, "Description" = m.description
-    FROM demo_names_org m WHERE m.id = t."Id" AND m.generated;
+    FROM demo_names_org m
+    WHERE m.id = t."Id" AND m.generated AND (t."Name", t."Description") IS DISTINCT FROM (m.name, m.description);
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format('Organizations=%s', changed);
 
     -- Projects: an industry product x initiative, unique within and across industries (the stride 7
     -- is coprime with 32, so each product gets distinct initiatives).
-    CREATE TEMP TABLE demo_names_project (id uuid PRIMARY KEY, industry int, name text, generated boolean);
-    INSERT INTO demo_names_project
-    SELECT p.id, p.industry, s.val || ' ' || i.val, true
-    FROM (SELECT x."Id" AS id, o.industry,
-                 row_number() OVER (PARTITION BY o.industry ORDER BY x."Id") - 1 AS j
-          FROM "Projects" x JOIN demo_names_org o ON o.id = x."OrganizationId"
-          WHERE x."Name" ~ hacker_name) p
-    JOIN demo_names_catalog s ON s.kind = 'system' AND s.grp = p.industry AND s.idx = p.j % systems_per_industry
-    JOIN demo_names_catalog i ON i.kind = 'initiative'
-        AND i.idx = ((p.j / systems_per_industry) * 7 + (p.j % systems_per_industry) * 5 + p.industry * 3) % initiative_count;
-    SELECT count(*) - (SELECT count(*) FROM demo_names_project) INTO overflow FROM "Projects" WHERE "Name" ~ hacker_name;
+    CREATE TEMP TABLE demo_names_project (id uuid PRIMARY KEY, generated boolean, industry int, name text);
+    INSERT INTO demo_names_project (id, generated, industry, name)
+    SELECT p."Id",
+           p."Name" ~ hacker_name OR p."Name" IN (
+               SELECT s.val || ' ' || i.val FROM demo_names_catalog s JOIN demo_names_catalog i ON i.kind = 'initiative' WHERE s.kind = 'system'),
+           o.industry, p."Name"
+    FROM "Projects" p JOIN demo_names_org o ON o.id = p."OrganizationId";
+    SELECT count(*) INTO overflow FROM (
+        SELECT industry FROM demo_names_project WHERE generated GROUP BY industry HAVING count(*) > systems_per_industry * initiative_count) x;
     IF overflow > 0 THEN
-        RAISE EXCEPTION 'Demo workspace names: % generated projects exceed the % names available per industry.', overflow, systems_per_industry * initiative_count;
+        RAISE EXCEPTION 'Demo workspace names: generated projects exceed the % names available per industry.', systems_per_industry * initiative_count;
     END IF;
-    INSERT INTO demo_names_project
-    SELECT x."Id", o.industry, x."Name", false
-    FROM "Projects" x JOIN demo_names_org o ON o.id = x."OrganizationId"
-    WHERE NOT EXISTS (SELECT 1 FROM demo_names_project m WHERE m.id = x."Id");
+    UPDATE demo_names_project m SET name = s.val || ' ' || i.val
+    FROM (SELECT id, industry, row_number() OVER (PARTITION BY industry ORDER BY id) - 1 AS j FROM demo_names_project WHERE generated) g
+    JOIN demo_names_catalog s ON s.kind = 'system' AND s.grp = g.industry AND s.idx = g.j % systems_per_industry
+    JOIN demo_names_catalog i ON i.kind = 'initiative'
+        AND i.idx = ((g.j / systems_per_industry) * 7 + (g.j % systems_per_industry) * 5 + g.industry * 3) % initiative_count
+    WHERE g.id = m.id;
     ANALYZE demo_names_project;
 
-    UPDATE "Projects" t SET "Name" = m.name FROM demo_names_project m WHERE m.id = t."Id" AND m.generated;
+    UPDATE "Projects" t SET "Name" = m.name FROM demo_names_project m
+    WHERE m.id = t."Id" AND m.generated AND t."Name" IS DISTINCT FROM m.name;
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Projects=%s', changed);
 
-    -- Workflows become the board columns in their order (legacy datasets number them from 2062).
+    -- Generated workflows become the board columns in their order (legacy datasets number them from
+    -- 2062); columns with any other name are kept.
     WITH ranked AS (
         SELECT "Id", row_number() OVER (ORDER BY "Order", "Id")::int AS position
         FROM "Workflows" WHERE "Name" ~ hacker_name)
@@ -258,96 +277,126 @@ BEGIN
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Workflows=%s', changed);
 
-    -- Assignment types: Feature, Bug, Chore. Each type has a role that picks the task wording.
-    CREATE TEMP TABLE demo_names_type (id uuid PRIMARY KEY, role int);
+    -- Generated assignment types become Feature, Bug and Chore. Every type's name picks the task
+    -- wording: bug-like names get bug reports, chore-like names maintenance, the rest features.
+    SELECT count(*) INTO overflow FROM "AssignmentTypes" WHERE "Name" ~ hacker_name;
+    IF overflow > cardinality(type_names) THEN
+        RAISE EXCEPTION 'Demo workspace names: % generated assignment types exceed the % available names.', overflow, cardinality(type_names);
+    END IF;
     WITH named AS (
         SELECT "Id", type_names[row_number() OVER (ORDER BY "Id")::int] AS name
         FROM "AssignmentTypes" WHERE "Name" ~ hacker_name)
     UPDATE "AssignmentTypes" t SET "Name" = named.name FROM named WHERE named."Id" = t."Id";
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', AssignmentTypes=%s', changed);
+    CREATE TEMP TABLE demo_names_type (id uuid PRIMARY KEY, name text, role int);
     INSERT INTO demo_names_type
-    SELECT "Id", COALESCE((array_position(type_names, "Name") - 1) % 3, abs(hashtext("Id"::text)) % 3) FROM "AssignmentTypes";
-    ANALYZE demo_names_type;
+    SELECT "Id", "Name", CASE
+        WHEN "Name" ~* '(bug|defect|fix|incident|issue|problem|erro|falha|defeito)' THEN 1
+        WHEN "Name" ~* '(chore|task|maint|tech|debt|ops|support|refactor|tarefa|manuten|suporte)' THEN 2
+        ELSE 0 END
+    FROM "AssignmentTypes";
 
     -- Impediments: blocker x area.
-    WITH named AS (
-        SELECT x."Id", format(b.val, a.val) AS name
-        FROM (SELECT "Id", row_number() OVER (ORDER BY "Id") - 1 AS n FROM "Impediments" WHERE "Name" ~ hacker_name) x
-        JOIN demo_names_catalog b ON b.kind = 'blocker' AND b.idx = x.n % 10
-        JOIN demo_names_catalog a ON a.kind = 'area' AND a.idx = (x.n / 10 + x.n % 10) % 12)
-    UPDATE "Impediments" t SET "Name" = named.name FROM named WHERE named."Id" = t."Id";
+    CREATE TEMP TABLE demo_names_impediment (id uuid PRIMARY KEY, name text);
+    INSERT INTO demo_names_impediment
+    SELECT x."Id", format(b.val, a.val)
+    FROM (SELECT "Id", row_number() OVER (ORDER BY "Id") - 1 AS n FROM "Impediments"
+          WHERE "Name" ~ hacker_name OR "Name" IN (
+              SELECT format(b.val, a.val) FROM demo_names_catalog b JOIN demo_names_catalog a ON a.kind = 'area' WHERE b.kind = 'blocker')) x
+    JOIN demo_names_catalog b ON b.kind = 'blocker' AND b.idx = x.n % 10
+    JOIN demo_names_catalog a ON a.kind = 'area' AND a.idx = (x.n / 10 + x.n % 10) % 12;
+    SELECT count(*) INTO overflow FROM "Impediments" WHERE "Name" ~ hacker_name OR "Name" IN (
+        SELECT format(b.val, a.val) FROM demo_names_catalog b JOIN demo_names_catalog a ON a.kind = 'area' WHERE b.kind = 'blocker');
+    IF overflow > 120 THEN
+        RAISE EXCEPTION 'Demo workspace names: % generated impediments exceed the 120 available names.', overflow;
+    END IF;
+    UPDATE "Impediments" t SET "Name" = m.name FROM demo_names_impediment m
+    WHERE m.id = t."Id" AND t."Name" IS DISTINCT FROM m.name;
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Impediments=%s', changed);
 
     -- Tasks: wording by role; the subject comes from the project's industry or the shared pool.
     -- The stride 7 is coprime with 40, so names are unique within a project and type for up to 480 tasks.
     CREATE TEMP TABLE demo_names_task (
-        id uuid PRIMARY KEY, project_id uuid, role int, hours int, has_entries boolean,
+        id uuid PRIMARY KEY, project_id uuid, role int, hours int, has_entries boolean, scheduled boolean, k int, shift int,
         subject text, defect text, name text, description text,
-        start_date timestamptz, end_date timestamptz, workflow_order int);
-    INSERT INTO demo_names_task (id, project_id, role, hours, has_entries, subject, defect, name, description)
-    SELECT a.id, a.project_id, a.role, a.hours, a.has_entries, f.val, v.val,
-           CASE a.role WHEN 1 THEN 'Fix ' || v.val || ' in ' || f.val ELSE v.val || ' ' || f.val END,
-           CASE a.role
-               WHEN 0 THEN format('Deliver %s in %s. Done when it is covered by tests, reviewed and demoed to the product owner.', f.val, p.name)
-               WHEN 1 THEN format('Users of %s report %s in %s. Reproduce it on staging, fix the root cause and add a regression test.', p.name, v.detail, f.val)
-               ELSE format('Maintenance on %s for %s. No user-facing change expected; keep the build green.', f.val, p.name) END
-    FROM (SELECT x."Id" AS id, x."ProjectId" AS project_id, ty.role, x."AmountHours" AS hours,
-                 EXISTS (SELECT 1 FROM "Appointments" e WHERE e."AssignmentId" = x."Id") AS has_entries,
-                 row_number() OVER (PARTITION BY x."ProjectId", x."AssignmentTypeId" ORDER BY x."Id") - 1 AS k,
-                 abs(hashtext(x."ProjectId"::text)) % features_per_project AS shift
-          FROM "Assignments" x JOIN demo_names_type ty ON ty.id = x."AssignmentTypeId"
-          WHERE x."Name" ~ hacker_name) a
-    JOIN demo_names_project p ON p.id = a.project_id
-    JOIN demo_names_catalog v ON v.kind = 'verb' AND v.grp = a.role AND v.idx = a.k % verbs_per_role
-    JOIN demo_names_catalog f ON f.kind = 'feature'
-        AND f.idx = ((a.k / verbs_per_role) * 7 + (a.k % verbs_per_role) * 3 + a.shift) % features_per_project
-        AND f.grp = CASE WHEN ((a.k / verbs_per_role) * 7 + (a.k % verbs_per_role) * 3 + a.shift) % features_per_project < 24 THEN p.industry ELSE -1 END;
-    SELECT count(*) - (SELECT count(*) FROM demo_names_task) INTO overflow FROM "Assignments" WHERE "Name" ~ hacker_name;
+        start_date timestamptz, end_date timestamptz, column_index int);
+    INSERT INTO demo_names_task (id, project_id, role, hours, has_entries, scheduled, k, shift)
+    SELECT x."Id", x."ProjectId", ty.role, x."AmountHours",
+           EXISTS (SELECT 1 FROM "Appointments" e WHERE e."AssignmentId" = x."Id"),
+           (x."StartDate" AT TIME ZONE 'UTC')::time = '09:00' AND (x."EndDate" AT TIME ZONE 'UTC')::time = '17:00',
+           row_number() OVER (PARTITION BY x."ProjectId", x."AssignmentTypeId" ORDER BY x."Id") - 1,
+           abs(hashtext(x."ProjectId"::text)) % features_per_project
+    FROM "Assignments" x JOIN demo_names_type ty ON ty.id = x."AssignmentTypeId"
+    WHERE x."Name" ~ hacker_name OR x."Description" LIKE ANY (task_patterns);
+    SELECT count(*) INTO overflow FROM demo_names_task WHERE k >= verbs_per_role * features_per_project;
     IF overflow > 0 THEN
         RAISE EXCEPTION 'Demo workspace names: % generated tasks exceed the % names available per project and type.', overflow, verbs_per_role * features_per_project;
     END IF;
+    UPDATE demo_names_task t
+    SET subject = f.val, defect = v.val,
+        name = CASE t.role WHEN 1 THEN 'Fix ' || v.val || ' in ' || f.val ELSE v.val || ' ' || f.val END,
+        description = CASE t.role
+            WHEN 0 THEN format('Deliver %s in %s. Done when it is covered by tests, reviewed and demoed to the product owner.', f.val, p.name)
+            WHEN 1 THEN format('Users of %s report %s in %s. Reproduce it on staging, fix the root cause and add a regression test.', p.name, v.detail, f.val)
+            ELSE format('Maintenance on %s for %s. No user-facing change expected; keep the build green.', f.val, p.name) END
+    FROM demo_names_project p, demo_names_catalog v, demo_names_catalog f
+    WHERE p.id = t.project_id
+      AND v.kind = 'verb' AND v.grp = t.role AND v.idx = t.k % verbs_per_role
+      AND f.kind = 'feature'
+      AND f.idx = ((t.k / verbs_per_role) * 7 + (t.k % verbs_per_role) * 3 + t.shift) % features_per_project
+      AND f.grp = CASE WHEN ((t.k / verbs_per_role) * 7 + (t.k % verbs_per_role) * 3 + t.shift) % features_per_project < 24 THEN p.industry ELSE -1 END;
     ANALYZE demo_names_task;
 
-    -- Schedules: spread each project's generated tasks from 270 days ago to 90 days ahead (tasks
-    -- with time entries first), size them by their hours, and put them in the column their dates
-    -- imply. Skipped when the six board columns are not all present and active.
-    SELECT array_agg(w."Id" ORDER BY o.n) INTO workflow_ids
-    FROM generate_series(1, 6) AS o(n)
-    CROSS JOIN LATERAL (SELECT "Id" FROM "Workflows" WHERE "Active" AND "Name" = workflow_names[o.n] ORDER BY "Order", "Id" LIMIT 1) w;
-    IF cardinality(workflow_ids) = 6 THEN
+    -- Schedules for generated tasks that have none yet. Tasks with time entries are spread over the
+    -- past 270 days (the latest still in flight), the others from 60 days ago to 90 days ahead; each
+    -- is sized by its hours and put in the active board column its dates imply: the first columns
+    -- before it starts, the middle ones while it runs, the last once it is done.
+    SELECT array_agg("Id" ORDER BY "Order", "Id"), string_agg("Name", ' | ' ORDER BY "Order", "Id")
+    INTO workflow_ids, board FROM "Workflows" WHERE "Active";
+    board_columns := COALESCE(cardinality(workflow_ids), 0);
+    IF board_columns >= 2 THEN
+        first_active := CASE WHEN board_columns >= 5 THEN 3 WHEN board_columns >= 3 THEN 2 ELSE 1 END;
+        last_active := greatest(first_active, board_columns - 1);
         WITH placed AS (
             SELECT id, hours,
-                   date_trunc('day', now(), 'UTC') - interval '270 days' + interval '9 hours'
-                       + floor((row_number() OVER (PARTITION BY project_id ORDER BY has_entries DESC, id) - 1) * 360.0
-                               / count(*) OVER (PARTITION BY project_id)) * interval '1 day' AS start_date
-            FROM demo_names_task)
+                   date_trunc('day', now(), 'UTC') + interval '9 hours'
+                       + CASE WHEN has_entries THEN -270 ELSE -60 END * interval '1 day'
+                       + floor((row_number() OVER (PARTITION BY project_id, has_entries ORDER BY id) - 1)
+                               * CASE WHEN has_entries THEN 267.0 ELSE 150.0 END
+                               / count(*) OVER (PARTITION BY project_id, has_entries)) * interval '1 day' AS start_date
+            FROM demo_names_task WHERE NOT scheduled)
         UPDATE demo_names_task t
         SET start_date = placed.start_date,
             end_date = placed.start_date + (greatest(ceil(placed.hours / 4.0), 1) - 1) * interval '1 day' + interval '8 hours'
         FROM placed WHERE placed.id = t.id;
-        UPDATE demo_names_task SET workflow_order = CASE
-            WHEN end_date < now() THEN 6
+        UPDATE demo_names_task SET column_index = CASE
+            WHEN end_date < now() THEN board_columns
             WHEN start_date > now() + interval '30 days' THEN 1
-            WHEN start_date > now() THEN 2
-            WHEN now() - start_date < (end_date - start_date) * 0.5 THEN 3
-            WHEN now() - start_date < (end_date - start_date) * 0.8 THEN 4
-            ELSE 5 END;
-    ELSIF EXISTS (SELECT 1 FROM demo_names_task) THEN
-        RAISE NOTICE 'Demo workspace names: task schedules kept because the six board columns are not all active.';
+            WHEN start_date > now() THEN CASE WHEN board_columns >= 5 THEN 2 ELSE 1 END
+            ELSE least(last_active, first_active + floor(extract(epoch FROM now() - start_date)
+                       / extract(epoch FROM end_date - start_date) * (last_active - first_active + 1))::int) END
+        WHERE start_date IS NOT NULL;
+    ELSIF EXISTS (SELECT 1 FROM demo_names_task WHERE NOT scheduled) THEN
+        RAISE NOTICE 'Demo workspace names: task schedules kept because fewer than two board columns are active.';
     END IF;
 
     UPDATE "Assignments" x
     SET "Name" = t.name, "Description" = t.description,
         "StartDate" = COALESCE(t.start_date, x."StartDate"),
         "EndDate" = COALESCE(t.end_date, x."EndDate"),
-        "WorkflowId" = COALESCE(workflow_ids[t.workflow_order], x."WorkflowId")
-    FROM demo_names_task t WHERE t.id = x."Id";
+        "WorkflowId" = COALESCE(workflow_ids[t.column_index], x."WorkflowId")
+    FROM demo_names_task t
+    WHERE t.id = x."Id"
+      AND (x."Name", x."Description", x."StartDate", x."EndDate", x."WorkflowId") IS DISTINCT FROM
+          (t.name, t.description, COALESCE(t.start_date, x."StartDate"), COALESCE(t.end_date, x."EndDate"),
+           COALESCE(workflow_ids[t.column_index], x."WorkflowId"));
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Assignments=%s', changed);
 
-    -- Time entries: a work-log line matching the task, dated inside the task's worked window.
+    -- Time entries: a work-log line matching the task; newly scheduled tasks also get their entries
+    -- dated inside the worked window.
     CREATE TEMP TABLE demo_names_entry (id uuid PRIMARY KEY, description text, keep_date timestamptz);
     INSERT INTO demo_names_entry
     SELECT e.id, format(c.val, t.defect, t.subject) || '.',
@@ -358,16 +407,17 @@ BEGIN
                              + (9 + abs(hashtext(e.id::text)) % 8) * interval '1 hour',
                          t.start_date), least(t.end_date, now())) END
     FROM (SELECT "Id" AS id, "AssignmentId" AS task_id, "KeepDate" AS keep_date,
-                 row_number() OVER (PARTITION BY "AssignmentId" ORDER BY "KeepDate", "Id") - 1 AS q,
+                 row_number() OVER (PARTITION BY "AssignmentId" ORDER BY "Id") - 1 AS q,
                  count(*) OVER (PARTITION BY "AssignmentId") AS c
           FROM "Appointments"
-          WHERE "Description" IS NULL OR btrim("Description") = '' OR "Description" ~ hacker_phrase) e
+          WHERE "Description" IS NULL OR btrim("Description") = '' OR "Description" ~ hacker_phrase OR "Description" LIKE ANY (entry_patterns)) e
     JOIN demo_names_task t ON t.id = e.task_id
     JOIN demo_names_catalog c ON c.kind = 'entry' AND c.grp = t.role AND c.idx = e.q % 8;
-
     ANALYZE demo_names_entry;
+
     UPDATE "Appointments" x SET "Description" = e.description, "KeepDate" = e.keep_date
-    FROM demo_names_entry e WHERE e.id = x."Id";
+    FROM demo_names_entry e
+    WHERE e.id = x."Id" AND (x."Description", x."KeepDate") IS DISTINCT FROM (e.description, e.keep_date);
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Appointments=%s', changed);
 
@@ -376,41 +426,54 @@ BEGIN
         SELECT x."Id", format(c.val, i."Name") AS description
         FROM (SELECT "Id", "ImpedimentId", row_number() OVER (ORDER BY "Id") - 1 AS n
               FROM "AssignmentImpediments"
-              WHERE "Description" IS NULL OR btrim("Description") = '' OR "Description" ~ hacker_phrase) x
+              WHERE "Description" IS NULL OR btrim("Description") = '' OR "Description" ~ hacker_phrase OR "Description" LIKE ANY (note_patterns)) x
         JOIN "Impediments" i ON i."Id" = x."ImpedimentId"
         JOIN demo_names_catalog c ON c.kind = 'note' AND c.idx = x.n % 4)
-    UPDATE "AssignmentImpediments" t SET "Description" = noted.description FROM noted WHERE noted."Id" = t."Id";
+    UPDATE "AssignmentImpediments" t SET "Description" = noted.description
+    FROM noted WHERE noted."Id" = t."Id" AND t."Description" IS DISTINCT FROM noted.description;
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', AssignmentImpediments=%s', changed);
 
-    -- Logins: first.last at the domain of the user's first organization (reserved .example TLD).
-    WITH people AS (
-        SELECT u."Id",
-               regexp_replace(btrim(regexp_replace(lower(u."Name"), '[^a-z ]', '', 'g')), ' +', '.', 'g') AS local_part,
-               COALESCE((SELECT btrim(regexp_replace(lower(o."Name"), '[^a-z0-9]+', '-', 'g'), '-')
-                         FROM "UserProjects" up
-                         JOIN "Projects" p ON p."Id" = up."ProjectId"
-                         JOIN "Organizations" o ON o."Id" = p."OrganizationId"
-                         WHERE up."UserId" = u."Id"
-                         ORDER BY up."Active" DESC, up."Id" LIMIT 1), 'cpnucleo') || '.example' AS domain
-        FROM "Users" u WHERE u."Login" ~ '^learner-[0-9]+$'),
-    candidates AS (
-        SELECT "Id", CASE WHEN local_part = '' THEN 'member' ELSE local_part END AS local_part, domain,
-               row_number() OVER (PARTITION BY CASE WHEN local_part = '' THEN 'member' ELSE local_part END, domain ORDER BY "Id") AS rn
-        FROM people),
-    logins AS (
-        SELECT c."Id",
-               CASE WHEN c.rn = 1 AND NOT EXISTS (
-                        SELECT 1 FROM "Users" o WHERE o."Login" !~ '^learner-[0-9]+$'
-                          AND lower(btrim(o."Login")) = c.local_part || chr(64) || c.domain)
-                    THEN c.local_part || chr(64) || c.domain
-                    ELSE c.local_part || '.' || substr(md5(c."Id"::text), 1, 6) || chr(64) || c.domain END AS login
-        FROM candidates c)
-    UPDATE "Users" t SET "Login" = logins.login FROM logins WHERE logins."Id" = t."Id";
+    -- Logins: first.last at the domain of the user's first organization (reserved .example TLD), for
+    -- generated users only: learner-NNNNNN logins or the password hash the importer shares among all
+    -- its fake users (people's salted hashes are unique).
+    CREATE TEMP TABLE demo_names_user (id uuid PRIMARY KEY, local_part text, domain text, login text);
+    INSERT INTO demo_names_user (id, local_part, domain)
+    SELECT u."Id",
+           COALESCE(NULLIF(regexp_replace(btrim(regexp_replace(lower(u."Name"), '[^a-z ]', '', 'g')), ' +', '.', 'g'), ''), 'member'),
+           COALESCE((SELECT btrim(regexp_replace(lower(o."Name"), '[^a-z0-9]+', '-', 'g'), '-')
+                     FROM "UserProjects" up
+                     JOIN "Projects" p ON p."Id" = up."ProjectId"
+                     JOIN "Organizations" o ON o."Id" = p."OrganizationId"
+                     WHERE up."UserId" = u."Id"
+                     ORDER BY up."Active" DESC, up."Id" LIMIT 1), 'cpnucleo') || '.example'
+    FROM "Users" u
+    WHERE lower(btrim(u."Login")) <> demo_login
+      AND (u."Login" ~ learner_login OR (u."Password", u."Salt") IN (
+              SELECT "Password", "Salt" FROM "Users" GROUP BY "Password", "Salt" HAVING count(*) >= shared_hash_minimum));
+    CREATE TEMP TABLE demo_names_taken (login text PRIMARY KEY);
+    INSERT INTO demo_names_taken
+    SELECT DISTINCT lower(btrim(u."Login")) FROM "Users" u
+    WHERE NOT EXISTS (SELECT 1 FROM demo_names_user g WHERE g.id = u."Id");
+    ANALYZE demo_names_user;
+    ANALYZE demo_names_taken;
+    UPDATE demo_names_user g
+    SET login = CASE WHEN c.rn = 1 AND t.login IS NULL
+                     THEN c.local_part || chr(64) || c.domain
+                     ELSE c.local_part || '.' || substr(md5(c.id::text), 1, 6) || chr(64) || c.domain END
+    FROM (SELECT id, local_part, domain, row_number() OVER (PARTITION BY local_part, domain ORDER BY id) AS rn FROM demo_names_user) c
+    LEFT JOIN demo_names_taken t ON t.login = c.local_part || chr(64) || c.domain
+    WHERE c.id = g.id;
+    UPDATE "Users" t SET "Login" = g.login FROM demo_names_user g
+    WHERE g.id = t."Id" AND t."Login" IS DISTINCT FROM g.login;
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Users=%s', changed);
 
-    DROP TABLE pg_temp.demo_names_catalog, pg_temp.demo_names_org, pg_temp.demo_names_project, pg_temp.demo_names_type, pg_temp.demo_names_task, pg_temp.demo_names_entry;
+    RAISE NOTICE 'Demo workspace names: board columns [%], type wording [%]', COALESCE(board, ''),
+        COALESCE((SELECT string_agg(name || '=' || (ARRAY['feature', 'bug', 'chore'])[role + 1], ', ' ORDER BY name) FROM demo_names_type), '');
+    DROP TABLE pg_temp.demo_names_catalog, pg_temp.demo_names_org, pg_temp.demo_names_project, pg_temp.demo_names_type,
+        pg_temp.demo_names_impediment, pg_temp.demo_names_task, pg_temp.demo_names_entry, pg_temp.demo_names_user,
+        pg_temp.demo_names_taken;
     RAISE NOTICE 'Demo workspace names: %', summary;
 END
 $demo_workspace_names$;

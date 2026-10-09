@@ -195,7 +195,9 @@ submit_project() {
   fi
 
   echo "${prefix} Hostinger action id: ${action_id}"
-  for attempt in {1..60}; do
+  # Up to 15 minutes: the one-shot migrator runs inside the action, and data migrations on the full
+  # demo dataset take minutes. Deploy plus rollback still fit the job's 45-minute timeout.
+  for attempt in {1..90}; do
     api_curl "${HOSTINGER_API}/virtual-machines/${HOSTINGER_VPS_ID}/actions/${action_id}" > "${action_file}" || true
     terminal_state="$(json_value "${action_file}" 'state|status|data.state|data.status' || true)"
     echo "${prefix} Hostinger action poll ${attempt}: ${terminal_state:-unknown}"
