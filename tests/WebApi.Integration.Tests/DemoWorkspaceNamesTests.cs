@@ -159,8 +159,8 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         {
             await db.Database.MigrateAsync(Cancellation);
             var organization = Organization.Create("alarm hacking bluetooth", faker.Hacker.Phrase());
-            var columns = new[] { "Ideas", "Doing", "Shipped" }.Select((name, i) => Workflow.Create(name, i + 1)).ToList();
-            var types = new[] { "Story", "Defect", "Task" }.Select(name => AssignmentType.Create(name)).ToList();
+            var columns = Board.Select((name, i) => Workflow.Create(name, i + 1)).ToList();
+            var types = new[] { "Task", "Bug", "Chore" }.Select(name => AssignmentType.Create(name)).ToList();
             var fakes = Enumerable.Range(0, 60).Select(i => User.Create(faker.Name.FullName(), $"{faker.Internet.UserName()}{i}", shared)).ToList();
             var person = User.Create("Ana Souza", "ana@example.com", new PasswordHash("own-hash", "own-salt"));
             peopleUserId = person.Id;
@@ -193,8 +193,8 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         var checkedAt = DateTime.UtcNow;
 
         // Hand-named columns and types are kept; generated users get workspace logins, people keep theirs.
-        (await connection.QueryAsync<string>("""SELECT "Name" FROM "Workflows" ORDER BY "Order" """)).ShouldBe(["Ideas", "Doing", "Shipped"]);
-        (await connection.QueryAsync<string>("""SELECT "Name" FROM "AssignmentTypes" ORDER BY "Name" """)).ShouldBe(["Defect", "Story", "Task"]);
+        (await connection.QueryAsync<string>("""SELECT "Name" FROM "Workflows" ORDER BY "Order" """)).ShouldBe(Board);
+        (await connection.QueryAsync<string>("""SELECT "Name" FROM "AssignmentTypes" ORDER BY "Name" """)).ShouldBe(["Bug", "Chore", "Task"]);
         (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "Users" WHERE "Login" LIKE '%@%.example'""")).ShouldBe(60);
         (await connection.ExecuteScalarAsync<string>("""SELECT "Login" FROM "Users" WHERE "Id" = @id""", new { id = peopleUserId })).ShouldBe("ana@example.com");
 
@@ -204,12 +204,11 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
             FROM "Assignments" a JOIN "AssignmentTypes" t ON t."Id" = a."AssignmentTypeId" JOIN "Workflows" w ON w."Id" = a."WorkflowId"
             """)).ToList();
         tasks.Count.ShouldBe(30);
-        tasks.Where(t => t.Type == "Defect").ShouldAllBe(t => t.Name.StartsWith("Fix ") && t.Description.StartsWith("Users of "));
-        tasks.Where(t => t.Type == "Task").ShouldAllBe(t => !t.Name.StartsWith("Fix ") && t.Description.StartsWith("Maintenance on "));
-        tasks.Where(t => t.Type == "Story").ShouldAllBe(t => t.Description.StartsWith("Deliver "));
+        tasks.Where(t => t.Type == "Bug").ShouldAllBe(t => t.Name.StartsWith("Fix ") && t.Description.StartsWith("Users of "));
+        tasks.Where(t => t.Type == "Chore").ShouldAllBe(t => !t.Name.StartsWith("Fix ") && t.Description.StartsWith("Maintenance on "));
+        tasks.Where(t => t.Type == "Task").ShouldAllBe(t => t.Description.StartsWith("Deliver "));
         tasks.ShouldAllBe(t => t.StartDate.TimeOfDay == TimeSpan.FromHours(9) && t.EndDate.TimeOfDay == TimeSpan.FromHours(17));
-        tasks.ShouldAllBe(t => (t.EndDate < checkedAt) == (t.Column == "Shipped"));
-        tasks.ShouldAllBe(t => t.StartDate <= checkedAt || t.Column == "Ideas");
+        ShouldFollowTheBoard(tasks.Select(t => (t.Column, t.StartDate, t.EndDate)), checkedAt);
         (await connection.ExecuteScalarAsync<int>("""
             SELECT count(*) FROM "Appointments" e JOIN "Assignments" a ON a."Id" = e."AssignmentId"
             WHERE e."KeepDate" < a."StartDate" OR e."KeepDate" > a."EndDate" OR e."KeepDate" > now()
@@ -278,6 +277,76 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         (await Login(jordan)).ShouldBe("jordan.lee@cpnucleo.example");
         (await Login(mia)).ShouldBe("mia.chen@cpnucleo.example");
         (await Login(kenji)).ShouldBe("kenji.sato@cpnucleo.example", "an organization slug without Latin letters falls back to cpnucleo");
+    }
+
+    [Fact]
+    public async Task BoardMigration_RePlacesScheduledGeneratedTasksOnce()
+    {
+        // The state the convergence migration left in production: scheduled generated tasks whose
+        // finished ones landed in the last active column, Blocked.
+        var connectionString = await database.CreateDatabaseAsync();
+        var now = DateTime.UtcNow;
+        var today = now.Date;
+        Guid manualTask;
+        await using (var db = IsolatedDatabase.Context(connectionString))
+        {
+            await Microsoft.EntityFrameworkCore.Infrastructure.AccessorExtensions.GetService<Microsoft.EntityFrameworkCore.Migrations.IMigrator>(db)
+                .MigrateAsync("20261008000200_DemoWorkspaceConvergence", Cancellation);
+            var organization = Organization.Create("Lakeshore Bank", "Regional retail bank based in Amsterdam.");
+            var project = Project.Create("Mobile Banking Redesign", organization.Id);
+            var columns = Board.Select((name, i) => Workflow.Create(name, i + 1)).ToList();
+            var type = AssignmentType.Create("Task");
+            var user = User.Create("Ana Souza", "ana@example.com", new PasswordHash("own-hash", "own-salt"));
+            db.AddRange(organization, project, type, user);
+            db.AddRange(columns);
+            const string description = "Deliver card freeze in Mobile Banking Redesign. Done when it is covered by tests, reviewed and demoed to the product owner.";
+            foreach (var offset in new[] { -200, -120, -40, -2, 20, 60 })
+            {
+                var start = today.AddDays(offset).AddHours(9);
+                db.Add(Assignment.Create("Add card freeze", description, start, start.AddDays(5).AddHours(8), 24, project.Id, columns[5].Id, user.Id, type.Id));
+            }
+            var manual = Assignment.Create("Add card freeze", description, today.AddDays(-300).AddHours(9), today.AddDays(-295).AddHours(17), 24,
+                project.Id, columns[5].Id, user.Id, type.Id);
+            manualTask = manual.Id;
+            db.Add(manual);
+            await db.SaveChangesAsync(Cancellation);
+        }
+
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(Cancellation);
+        // A normal run keeps how scheduled tasks are placed (people may have moved them).
+        await DemoWorkspaceNames.ApplyAsync(connection, null, NullLogger.Instance, Cancellation);
+        (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "Assignments" a JOIN "Workflows" w ON w."Id" = a."WorkflowId" WHERE w."Name" = 'Blocked'""")).ShouldBe(7);
+
+        await using (var db = IsolatedDatabase.Context(connectionString))
+            await db.Database.MigrateAsync(Cancellation);
+        var checkedAt = DateTime.UtcNow;
+        var tasks = (await connection.QueryAsync<(string Column, DateTime StartDate, DateTime EndDate)>("""
+            SELECT w."Name", a."StartDate", a."EndDate" FROM "Assignments" a JOIN "Workflows" w ON w."Id" = a."WorkflowId"
+            """)).ToList();
+        ShouldFollowTheBoard(tasks, checkedAt);
+        tasks.Select(t => t.Column).Distinct().Count().ShouldBeGreaterThan(2);
+
+        // Once applied, later runs leave the board alone again.
+        await connection.ExecuteAsync("""UPDATE "Assignments" SET "WorkflowId" = (SELECT "Id" FROM "Workflows" WHERE "Name" = 'Blocked') WHERE "Id" = @id""", new { id = manualTask });
+        await DemoWorkspaceNames.ApplyAsync(connection, null, NullLogger.Instance, Cancellation);
+        (await connection.ExecuteScalarAsync<string>("""
+            SELECT w."Name" FROM "Assignments" a JOIN "Workflows" w ON w."Id" = a."WorkflowId" WHERE a."Id" = @id
+            """, new { id = manualTask })).ShouldBe("Blocked");
+    }
+
+    // Production's board: the last active column is Blocked, which is not a stage.
+    private static readonly string[] Board = ["Spec Ready", "Dev Ready", "In Progress", "Test Ready", "Done", "Blocked"];
+
+    private static void ShouldFollowTheBoard(IEnumerable<(string Column, DateTime StartDate, DateTime EndDate)> tasks, DateTime checkedAt)
+    {
+        foreach (var (column, start, end) in tasks)
+        {
+            column.ShouldNotBe("Blocked");
+            if (end < checkedAt) column.ShouldBe("Done");
+            else if (start > checkedAt) column.ShouldBeOneOf("Spec Ready", "Dev Ready");
+            else column.ShouldBeOneOf("In Progress", "Test Ready");
+        }
     }
 
     private sealed record Seeded(Guid PeopleOrganization, Guid PeopleProject, Guid PeopleTask, Guid PeopleEntry, Guid PeopleImpediment, Guid PeopleUser, Guid DemoUser);
