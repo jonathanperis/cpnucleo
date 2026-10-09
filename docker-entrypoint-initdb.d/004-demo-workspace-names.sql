@@ -441,7 +441,7 @@ BEGIN
     INSERT INTO demo_names_user (id, local_part, domain)
     SELECT u."Id",
            COALESCE(NULLIF(regexp_replace(btrim(regexp_replace(lower(u."Name"), '[^a-z ]', '', 'g')), ' +', '.', 'g'), ''), 'member'),
-           COALESCE((SELECT btrim(regexp_replace(lower(o."Name"), '[^a-z0-9]+', '-', 'g'), '-')
+           COALESCE((SELECT NULLIF(btrim(regexp_replace(lower(o."Name"), '[^a-z0-9]+', '-', 'g'), '-'), '')
                      FROM "UserProjects" up
                      JOIN "Projects" p ON p."Id" = up."ProjectId"
                      JOIN "Organizations" o ON o."Id" = p."OrganizationId"
@@ -464,9 +464,13 @@ BEGIN
     FROM (SELECT id, local_part, domain, row_number() OVER (PARTITION BY local_part, domain ORDER BY id) AS rn FROM demo_names_user) c
     LEFT JOIN demo_names_taken t ON t.login = c.local_part || chr(64) || c.domain
     WHERE c.id = g.id;
-    UPDATE "Users" t SET "Login" = g.login FROM demo_names_user g
+    -- Two phases: the login trigger checks uniqueness row by row, so logins swapping between
+    -- generated users first move to placeholders no one else can hold.
+    UPDATE "Users" t SET "Login" = 'renaming-' || t."Id" FROM demo_names_user g
     WHERE g.id = t."Id" AND t."Login" IS DISTINCT FROM g.login;
     GET DIAGNOSTICS changed = ROW_COUNT;
+    UPDATE "Users" t SET "Login" = g.login FROM demo_names_user g
+    WHERE g.id = t."Id" AND t."Login" = 'renaming-' || t."Id";
     summary := summary || format(', Users=%s', changed);
 
     RAISE NOTICE 'Demo workspace names: board columns [%], type wording [%]', COALESCE(board, ''),

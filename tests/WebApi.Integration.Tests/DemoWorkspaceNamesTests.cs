@@ -247,6 +247,39 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "Assignments" WHERE "Name" = 'firewall transmitting auxiliary'""")).ShouldBe(481);
     }
 
+    [Fact]
+    public async Task Rename_SwapsLoginsAndFallsBackForOrganizationsWithoutLatinLetters()
+    {
+        var connectionString = await database.CreateDatabaseAsync();
+        var shared = new PasswordHash("shared-hash", "shared-salt");
+        Guid jordan, mia, kenji;
+        await using (var db = IsolatedDatabase.Context(connectionString))
+        {
+            await db.Database.MigrateAsync(Cancellation);
+            // Jordan should get the login Mia holds, so the rename has to release it first.
+            var jordanUser = User.Create("Jordan Lee", "Jordan42", shared);
+            var miaUser = User.Create("Mia Chen", "jordan.lee@cpnucleo.example", shared);
+            var kenjiUser = User.Create("Kenji Sato", "Kenji7", shared);
+            var fillers = Enumerable.Range(0, 50).Select(i => User.Create($"Filler {(char)('a' + i % 26)}", $"Filler{i}", shared)).ToList();
+            var organization = Organization.Create("日本商事", "Trading company");
+            var project = Project.Create("Website relaunch", organization.Id);
+            db.AddRange(jordanUser, miaUser, kenjiUser, organization, project);
+            db.AddRange(fillers);
+            db.Add(UserProject.Create(kenjiUser.Id, project.Id));
+            await db.SaveChangesAsync(Cancellation);
+            (jordan, mia, kenji) = (jordanUser.Id, miaUser.Id, kenjiUser.Id);
+        }
+
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(Cancellation);
+        await DemoWorkspaceNames.ApplyAsync(connection, null, NullLogger.Instance, Cancellation);
+
+        async Task<string> Login(Guid id) => (await connection.ExecuteScalarAsync<string>("""SELECT "Login" FROM "Users" WHERE "Id" = @id""", new { id }))!;
+        (await Login(jordan)).ShouldBe("jordan.lee@cpnucleo.example");
+        (await Login(mia)).ShouldBe("mia.chen@cpnucleo.example");
+        (await Login(kenji)).ShouldBe("kenji.sato@cpnucleo.example", "an organization slug without Latin letters falls back to cpnucleo");
+    }
+
     private sealed record Seeded(Guid PeopleOrganization, Guid PeopleProject, Guid PeopleTask, Guid PeopleEntry, Guid PeopleImpediment, Guid PeopleUser, Guid DemoUser);
 
     private static async Task<Seeded> SeedAsync(string connectionString)
