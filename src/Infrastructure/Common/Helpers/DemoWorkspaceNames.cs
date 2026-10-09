@@ -34,16 +34,22 @@ public static class DemoWorkspaceNames
     /// </summary>
     public static async Task<string> ReportAsync(NpgsqlConnection connection, CancellationToken cancellationToken = default)
     {
-        const string sql = """
+        // Count of names that still carry a Bogus verb, plus up to three of them, so a leftover can be found.
+        static string Left(string table) => $"""
+            ((SELECT count(*) FROM "{table}" WHERE "Name" ILIKE ANY (@names))
+             || COALESCE(' [' || (SELECT string_agg(left(n, 80), '; ') FROM (
+                    SELECT "Name" AS n FROM "{table}" WHERE "Name" ILIKE ANY (@names) ORDER BY "Id" LIMIT 3) x) || ']', ''))
+            """;
+        var sql = $$"""
             WITH shared AS (SELECT "Password", "Salt" FROM "Users" GROUP BY "Password", "Salt" HAVING count(*) >= 50)
             SELECT 'Demo workspace names: report board ['
                 || COALESCE((SELECT string_agg(w."Name" || '=' || (SELECT count(*) FROM "Assignments" a WHERE a."WorkflowId" = w."Id" AND a."Active"),
                                                ', ' ORDER BY w."Order", w."Id")
                              FROM "Workflows" w WHERE w."Active"), '')
-                || '], generated names left: organizations=' || (SELECT count(*) FROM "Organizations" WHERE "Name" LIKE ANY (@names))
-                || ', projects=' || (SELECT count(*) FROM "Projects" WHERE "Name" LIKE ANY (@names))
-                || ', impediments=' || (SELECT count(*) FROM "Impediments" WHERE "Name" LIKE ANY (@names))
-                || ', tasks=' || (SELECT count(*) FROM "Assignments" WHERE "Name" LIKE ANY (@names))
+                || '], generated names left: organizations=' || {{Left("Organizations")}}
+                || ', projects=' || {{Left("Projects")}}
+                || ', impediments=' || {{Left("Impediments")}}
+                || ', tasks=' || {{Left("Assignments")}}
                 || ', time entries=' || (SELECT count(*) FROM "Appointments" WHERE "Description" LIKE '%!')
                 || ', generated logins=' || (SELECT count(*) FROM "Users" u
                                              WHERE u."Login" NOT LIKE '%@%' AND (u."Password", u."Salt") IN (SELECT "Password", "Salt" FROM shared))

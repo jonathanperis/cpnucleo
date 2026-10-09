@@ -2,8 +2,9 @@
 -- their products and initiatives, feature/bug/chore tasks with matching time entries and blocker
 -- notes, readable logins, and task schedules whose board column follows their dates.
 --
--- Generated rows are recognised by their text: Bogus Hacker names ("monitor transmitting back-end"),
--- Hacker.Phrase and blank legacy descriptions, "learner-NNNNNN" logins, the one password hash the
+-- Generated rows are recognised by their text: Bogus Hacker names ("monitor transmitting back-end",
+-- in any letter case and spacing), Hacker.Phrase and blank legacy descriptions, "learner-NNNNNN"
+-- logins, the one password hash the
 -- importer gives every fake user, and this script's own catalog names and sentence templates. Its own
 -- output is recomputed deterministically, so a newer version (or a run that sees more of the dataset)
 -- converges every generated row and a repeated run changes nothing. Rows people created, the demo
@@ -217,7 +218,7 @@ BEGIN
     -- Organizations: brand stem x industry, a bijection for up to 840 generated rows.
     CREATE TEMP TABLE demo_names_org (id uuid PRIMARY KEY, generated boolean, industry int, name text, description text);
     INSERT INTO demo_names_org (id, generated)
-    SELECT o."Id", o."Name" ~ hacker_name OR EXISTS (
+    SELECT o."Id", regexp_replace(lower(btrim(o."Name")), '\s+', ' ', 'g') ~ hacker_name OR EXISTS (
                SELECT 1 FROM demo_names_catalog s JOIN demo_names_catalog i ON i.kind = 'industry'
                WHERE s.kind = 'stem' AND o."Name" = s.val || ' ' || i.val AND o."Description" LIKE i.detail || ' based in %.')
     FROM "Organizations" o;
@@ -248,7 +249,7 @@ BEGIN
     CREATE TEMP TABLE demo_names_project (id uuid PRIMARY KEY, generated boolean, industry int, name text);
     INSERT INTO demo_names_project (id, generated, industry, name)
     SELECT p."Id",
-           p."Name" ~ hacker_name OR p."Name" IN (
+           regexp_replace(lower(btrim(p."Name")), '\s+', ' ', 'g') ~ hacker_name OR p."Name" IN (
                SELECT s.val || ' ' || i.val FROM demo_names_catalog s JOIN demo_names_catalog i ON i.kind = 'initiative' WHERE s.kind = 'system'),
            o.industry, p."Name"
     FROM "Projects" p JOIN demo_names_org o ON o.id = p."OrganizationId";
@@ -274,7 +275,7 @@ BEGIN
     -- 2062); columns with any other name are kept.
     WITH ranked AS (
         SELECT "Id", row_number() OVER (ORDER BY "Order", "Id")::int AS position
-        FROM "Workflows" WHERE "Name" ~ hacker_name)
+        FROM "Workflows" WHERE regexp_replace(lower(btrim("Name")), '\s+', ' ', 'g') ~ hacker_name)
     UPDATE "Workflows" t
     SET "Name" = CASE WHEN ranked.position <= cardinality(workflow_names) THEN workflow_names[ranked.position] ELSE 'Stage ' || ranked.position END
     FROM ranked WHERE ranked."Id" = t."Id";
@@ -284,13 +285,13 @@ BEGIN
     -- Generated assignment types become Feature, Bug and Chore. Every type's name picks the task
     -- wording: bug-like names get bug reports, chore-like names maintenance, the rest (Feature, Story,
     -- Task...) features.
-    SELECT count(*) INTO overflow FROM "AssignmentTypes" WHERE "Name" ~ hacker_name;
+    SELECT count(*) INTO overflow FROM "AssignmentTypes" WHERE regexp_replace(lower(btrim("Name")), '\s+', ' ', 'g') ~ hacker_name;
     IF overflow > cardinality(type_names) THEN
         RAISE EXCEPTION 'Demo workspace names: % generated assignment types exceed the % available names.', overflow, cardinality(type_names);
     END IF;
     WITH named AS (
         SELECT "Id", type_names[row_number() OVER (ORDER BY "Id")::int] AS name
-        FROM "AssignmentTypes" WHERE "Name" ~ hacker_name)
+        FROM "AssignmentTypes" WHERE regexp_replace(lower(btrim("Name")), '\s+', ' ', 'g') ~ hacker_name)
     UPDATE "AssignmentTypes" t SET "Name" = named.name FROM named WHERE named."Id" = t."Id";
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', AssignmentTypes=%s', changed);
@@ -307,11 +308,11 @@ BEGIN
     INSERT INTO demo_names_impediment
     SELECT x."Id", format(b.val, a.val)
     FROM (SELECT "Id", row_number() OVER (ORDER BY "Id") - 1 AS n FROM "Impediments"
-          WHERE "Name" ~ hacker_name OR "Name" IN (
+          WHERE regexp_replace(lower(btrim("Name")), '\s+', ' ', 'g') ~ hacker_name OR "Name" IN (
               SELECT format(b.val, a.val) FROM demo_names_catalog b JOIN demo_names_catalog a ON a.kind = 'area' WHERE b.kind = 'blocker')) x
     JOIN demo_names_catalog b ON b.kind = 'blocker' AND b.idx = x.n % 10
     JOIN demo_names_catalog a ON a.kind = 'area' AND a.idx = (x.n / 10 + x.n % 10) % 12;
-    SELECT count(*) INTO overflow FROM "Impediments" WHERE "Name" ~ hacker_name OR "Name" IN (
+    SELECT count(*) INTO overflow FROM "Impediments" WHERE regexp_replace(lower(btrim("Name")), '\s+', ' ', 'g') ~ hacker_name OR "Name" IN (
         SELECT format(b.val, a.val) FROM demo_names_catalog b JOIN demo_names_catalog a ON a.kind = 'area' WHERE b.kind = 'blocker');
     IF overflow > 120 THEN
         RAISE EXCEPTION 'Demo workspace names: % generated impediments exceed the 120 available names.', overflow;
@@ -334,7 +335,7 @@ BEGIN
            row_number() OVER (PARTITION BY x."ProjectId", x."AssignmentTypeId" ORDER BY x."Id") - 1,
            abs(hashtext(x."ProjectId"::text)) % features_per_project
     FROM "Assignments" x JOIN demo_names_type ty ON ty.id = x."AssignmentTypeId"
-    WHERE x."Name" ~ hacker_name OR x."Description" LIKE ANY (task_patterns);
+    WHERE regexp_replace(lower(btrim(x."Name")), '\s+', ' ', 'g') ~ hacker_name OR x."Description" LIKE ANY (task_patterns);
     SELECT count(*) INTO overflow FROM demo_names_task WHERE k >= verbs_per_role * features_per_project;
     IF overflow > 0 THEN
         RAISE EXCEPTION 'Demo workspace names: % generated tasks exceed the % names available per project and type.', overflow, verbs_per_role * features_per_project;
