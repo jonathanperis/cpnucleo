@@ -136,10 +136,115 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
             await db.Database.MigrateAsync(Cancellation);
 
         await using var connection = new NpgsqlConnection(connectionString);
-        (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261008000100_DemoWorkspaceNames'""")).ShouldBe(1);
+        (await connection.ExecuteScalarAsync<int>("""
+            SELECT count(*) FROM "__EFMigrationsHistory"
+            WHERE "MigrationId" IN ('20261008000100_DemoWorkspaceNames', '20261008000200_DemoWorkspaceConvergence')
+            """)).ShouldBe(2);
         (await connection.ExecuteScalarAsync<string>("""SELECT "Name" FROM "Organizations" """)).ShouldNotStartWith("driver ");
         (await connection.ExecuteScalarAsync<string>("""SELECT "Name" FROM "Workflows" """)).ShouldBe("Backlog");
         (await connection.ExecuteScalarAsync<string>("""SELECT "Login" FROM "Users" """)).ShouldBe("fanny.waters@cpnucleo.example");
+    }
+
+    [Fact]
+    public async Task Rename_ConvergesAProductionShapedDatabase()
+    {
+        // Production: hand-named board columns and types, Bogus user-name logins sharing the importer's
+        // one password hash, and tasks an earlier version already renamed but never scheduled.
+        var connectionString = await database.CreateDatabaseAsync();
+        var faker = new Faker { Random = new Randomizer(42) };
+        var shared = new PasswordHash("shared-hash", "shared-salt");
+        var now = DateTime.UtcNow;
+        Guid peopleUserId;
+        await using (var db = IsolatedDatabase.Context(connectionString))
+        {
+            await db.Database.MigrateAsync(Cancellation);
+            var organization = Organization.Create("alarm hacking bluetooth", faker.Hacker.Phrase());
+            var columns = new[] { "Ideas", "Doing", "Shipped" }.Select((name, i) => Workflow.Create(name, i + 1)).ToList();
+            var types = new[] { "Story", "Defect", "Task" }.Select(name => AssignmentType.Create(name)).ToList();
+            var fakes = Enumerable.Range(0, 60).Select(i => User.Create(faker.Name.FullName(), $"{faker.Internet.UserName()}{i}", shared)).ToList();
+            var person = User.Create("Ana Souza", "ana@example.com", new PasswordHash("own-hash", "own-salt"));
+            peopleUserId = person.Id;
+            db.Add(organization);
+            db.AddRange(columns);
+            db.AddRange(types);
+            db.AddRange(fakes);
+            db.Add(person);
+            var project = Project.Create("Checkout v2 Launch", organization.Id);
+            db.Add(project);
+            db.Add(UserProject.Create(fakes[0].Id, project.Id));
+            for (var i = 0; i < 30; i++)
+            {
+                var start = now.AddDays(-faker.Random.Number(300, 700)).AddSeconds(faker.Random.Number(1, 3000));
+                var description = i % 2 == 0
+                    ? "Deliver CSV export in Checkout v2 Launch. Done when it is covered by tests, reviewed and demoed to the product owner."
+                    : faker.Hacker.Phrase();
+                var task = Assignment.Create(i % 2 == 0 ? $"Add CSV export {i}" : $"{faker.Hacker.Noun()} {faker.Hacker.IngVerb()} {faker.Hacker.Adjective()}",
+                    description, start, start.AddDays(faker.Random.Number(100, 300)), faker.Random.Number(12, 60),
+                    project.Id, columns[i % 3].Id, fakes[i % 60].Id, types[i % 3].Id);
+                db.Add(task);
+                db.Add(Appointment.Create("Wrote unit tests for CSV export.", start.AddDays(1), 2, task.Id, task.UserId));
+            }
+            await db.SaveChangesAsync(Cancellation);
+        }
+
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(Cancellation);
+        await DemoWorkspaceNames.ApplyAsync(connection, null, NullLogger.Instance, Cancellation);
+        var checkedAt = DateTime.UtcNow;
+
+        // Hand-named columns and types are kept; generated users get workspace logins, people keep theirs.
+        (await connection.QueryAsync<string>("""SELECT "Name" FROM "Workflows" ORDER BY "Order" """)).ShouldBe(["Ideas", "Doing", "Shipped"]);
+        (await connection.QueryAsync<string>("""SELECT "Name" FROM "AssignmentTypes" ORDER BY "Name" """)).ShouldBe(["Defect", "Story", "Task"]);
+        (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "Users" WHERE "Login" LIKE '%@%.example'""")).ShouldBe(60);
+        (await connection.ExecuteScalarAsync<string>("""SELECT "Login" FROM "Users" WHERE "Id" = @id""", new { id = peopleUserId })).ShouldBe("ana@example.com");
+
+        // Wording follows each type's name, and every task is scheduled into the column its dates imply.
+        var tasks = (await connection.QueryAsync<(string Name, string Description, string Type, string Column, DateTime StartDate, DateTime EndDate)>("""
+            SELECT a."Name", a."Description", t."Name", w."Name", a."StartDate", a."EndDate"
+            FROM "Assignments" a JOIN "AssignmentTypes" t ON t."Id" = a."AssignmentTypeId" JOIN "Workflows" w ON w."Id" = a."WorkflowId"
+            """)).ToList();
+        tasks.Count.ShouldBe(30);
+        tasks.Where(t => t.Type == "Defect").ShouldAllBe(t => t.Name.StartsWith("Fix ") && t.Description.StartsWith("Users of "));
+        tasks.Where(t => t.Type == "Task").ShouldAllBe(t => !t.Name.StartsWith("Fix ") && t.Description.StartsWith("Maintenance on "));
+        tasks.Where(t => t.Type == "Story").ShouldAllBe(t => t.Description.StartsWith("Deliver "));
+        tasks.ShouldAllBe(t => t.StartDate.TimeOfDay == TimeSpan.FromHours(9) && t.EndDate.TimeOfDay == TimeSpan.FromHours(17));
+        tasks.ShouldAllBe(t => (t.EndDate < checkedAt) == (t.Column == "Shipped"));
+        tasks.ShouldAllBe(t => t.StartDate <= checkedAt || t.Column == "Ideas");
+        (await connection.ExecuteScalarAsync<int>("""
+            SELECT count(*) FROM "Appointments" e JOIN "Assignments" a ON a."Id" = e."AssignmentId"
+            WHERE e."KeepDate" < a."StartDate" OR e."KeepDate" > a."EndDate" OR e."KeepDate" > now()
+            """)).ShouldBe(0);
+
+        var everything = await SnapshotAsync(connection, lifecycleOnly: false);
+        await DemoWorkspaceNames.ApplyAsync(connection, null, NullLogger.Instance, Cancellation);
+        (await SnapshotAsync(connection, lifecycleOnly: false)).ShouldBe(everything, "a repeated run changes nothing");
+    }
+
+    [Fact]
+    public async Task Rename_RefusesToRepeatTaskNamesWithinAProjectAndType()
+    {
+        var connectionString = await database.CreateDatabaseAsync();
+        var hash = new PasswordHash("hash", "salt");
+        var now = DateTime.UtcNow;
+        await using (var db = IsolatedDatabase.Context(connectionString))
+        {
+            await db.Database.MigrateAsync(Cancellation);
+            var organization = Organization.Create("alarm hacking bluetooth", "We need to parse the optical SQL firewall!");
+            var project = Project.Create("monitor transmitting back-end", organization.Id);
+            var workflow = Workflow.Create("Doing", 1);
+            var type = AssignmentType.Create("Feature");
+            var user = User.Create("Ana Souza", "ana@example.com", hash);
+            db.AddRange(organization, project, workflow, type, user);
+            db.AddRange(Enumerable.Range(0, 481).Select(_ => Assignment.Create("firewall transmitting auxiliary", "We need to index the multi-byte CSS driver!",
+                now.AddDays(-10), now.AddDays(-5), 12, project.Id, workflow.Id, user.Id, type.Id)));
+            await db.SaveChangesAsync(Cancellation);
+        }
+
+        await using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(Cancellation);
+        var error = await Should.ThrowAsync<PostgresException>(() => DemoWorkspaceNames.ApplyAsync(connection, null, NullLogger.Instance, Cancellation));
+        error.MessageText.ShouldContain("exceed the 480 names available per project and type");
+        (await connection.ExecuteScalarAsync<int>("""SELECT count(*) FROM "Assignments" WHERE "Name" = 'firewall transmitting auxiliary'""")).ShouldBe(481);
     }
 
     private sealed record Seeded(Guid PeopleOrganization, Guid PeopleProject, Guid PeopleTask, Guid PeopleEntry, Guid PeopleImpediment, Guid PeopleUser, Guid DemoUser);
