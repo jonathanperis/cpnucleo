@@ -3,8 +3,8 @@
 -- notes, readable logins, and task schedules whose board column follows their dates.
 --
 -- Generated rows are recognised by their text: Bogus Hacker names ("monitor transmitting back-end",
--- also re-capitalised or padded),
--- Hacker.Phrase and blank legacy descriptions, "learner-NNNNNN" logins, the one password hash the
+-- in any letter case and spacing), Hacker.Phrase and blank legacy descriptions, "learner-NNNNNN"
+-- logins, the one password hash the
 -- importer gives every fake user, and this script's own catalog names and sentence templates. Its own
 -- output is recomputed deterministically, so a newer version (or a run that sees more of the dataset)
 -- converges every generated row and a repeated run changes nothing. Rows people created, the demo
