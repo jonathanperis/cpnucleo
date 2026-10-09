@@ -21,6 +21,14 @@ if (args.Contains("--migrate-database", StringComparer.OrdinalIgnoreCase))
     // Their PostgreSQL notices (row counts) go to the container log, where the deploy reports them.
     ((NpgsqlConnection)database.Database.GetDbConnection()).Notice += (_, notice) => Console.WriteLine($"[migrate] {notice.Notice.MessageText}");
     await database.Database.MigrateAsync();
+    try
+    {
+        Console.WriteLine($"[migrate] {await DemoWorkspaceNames.ReportAsync((NpgsqlConnection)database.Database.GetDbConnection())}");
+    }
+    catch (NpgsqlException exception)
+    {
+        Console.WriteLine($"[migrate] Demo workspace names: report skipped ({exception.Message})");
+    }
     return;
 }
 
