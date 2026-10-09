@@ -340,16 +340,17 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
     public async Task Rename_RecognisesRecapitalisedBogusNamesAndReportsWhatIsLeft()
     {
         var connectionString = await database.CreateDatabaseAsync();
-        Guid organizationId, generatedProject, peopleProject;
+        Guid organizationId, generatedProject, suffixedProject, peopleProject;
         await using (var db = IsolatedDatabase.Context(connectionString))
         {
             await db.Database.MigrateAsync(Cancellation);
             var organization = Organization.Create("Driver Indexing Cross-Platform", "We need to navigate the cross-platform SAS firewall!");
             var generated = Project.Create("  Monitor  Transmitting Back-End ", organization.Id);
+            var suffixed = Project.Create("feed indexing redundant x", organization.Id);
             var people = Project.Create("Learning programming basics", organization.Id);
-            db.AddRange(organization, generated, people);
+            db.AddRange(organization, generated, suffixed, people);
             await db.SaveChangesAsync(Cancellation);
-            (organizationId, generatedProject, peopleProject) = (organization.Id, generated.Id, people.Id);
+            (organizationId, generatedProject, suffixedProject, peopleProject) = (organization.Id, generated.Id, suffixed.Id, people.Id);
         }
 
         await using var connection = new NpgsqlConnection(connectionString);
@@ -359,6 +360,7 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         async Task<string> Name(string table, Guid id) => (await connection.ExecuteScalarAsync<string>($"""SELECT "Name" FROM "{table}" WHERE "Id" = @id""", new { id }))!;
         (await Name("Organizations", organizationId)).ShouldNotContain("Indexing", Case.Insensitive);
         (await Name("Projects", generatedProject)).ShouldNotContain("Transmitting", Case.Insensitive);
+        (await Name("Projects", suffixedProject)).ShouldNotContain("indexing", Case.Insensitive);
         (await Name("Projects", peopleProject)).ShouldBe("Learning programming basics");
         (await DemoWorkspaceNames.ReportAsync(connection, Cancellation)).ShouldContain(
             "organizations=0, projects=1 [Learning programming basics], impediments=0, tasks=0");
