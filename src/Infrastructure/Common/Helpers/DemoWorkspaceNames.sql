@@ -3,9 +3,9 @@
 -- notes, readable logins, and task schedules whose board column follows their dates.
 --
 -- Generated rows are recognised by their text: Bogus Hacker names ("monitor transmitting back-end",
--- in any letter case and spacing), Hacker.Phrase and blank legacy descriptions, "learner-NNNNNN"
--- logins, the one password hash the
--- importer gives every fake user, and this script's own catalog names and sentence templates. Its own
+-- in any letter case and spacing, even with words appended), Hacker.Phrase and blank legacy
+-- descriptions, "learner-NNNNNN" logins, the one password hash the importer gives every fake user,
+-- and this script's own catalog names and sentence templates. Its own
 -- output is recomputed deterministically, so a newer version (or a run that sees more of the dataset)
 -- converges every generated row and a repeated run changes nothing. Rows people created, the demo
 -- account, Ids, relations, Active, DeletedAt, CreatedAt and UpdatedAt are never changed; board
@@ -18,7 +18,7 @@
 -- docker-entrypoint-initdb.d/004-demo-workspace-names.sql identical to this file.
 DO $demo_workspace_names$
 DECLARE
-    hacker_name constant text := '^(alarm|application|array|bandwidth|bus|capacitor|card|circuit|driver|feed|firewall|hard drive|interface|matrix|microchip|monitor|panel|pixel|port|program|protocol|sensor|system|transmitter) (backing up|bypassing|calculating|compressing|connecting|copying|generating|hacking|indexing|navigating|overriding|parsing|programming|quantifying|synthesizing|transmitting) (1080p|auxiliary|back-end|bluetooth|cross-platform|digital|haptic|mobile|multi-byte|neural|online|open-source|optical|primary|redundant|solid state|virtual|wireless)$';
+    hacker_name constant text := '^(alarm|application|array|bandwidth|bus|capacitor|card|circuit|driver|feed|firewall|hard drive|interface|matrix|microchip|monitor|panel|pixel|port|program|protocol|sensor|system|transmitter) (backing up|bypassing|calculating|compressing|connecting|copying|generating|hacking|indexing|navigating|overriding|parsing|programming|quantifying|synthesizing|transmitting) (1080p|auxiliary|back-end|bluetooth|cross-platform|digital|haptic|mobile|multi-byte|neural|online|open-source|optical|primary|redundant|solid state|virtual|wireless)( .+)?$';
     hacker_phrase constant text := '^(If we |We need to |Try to |You can''t |Use the |The |I''ll |[a-z]+ing (up )?the ).*!$';
     -- LIKE patterns for this script's own task descriptions (plain matching keeps the scan cheap).
     task_patterns constant text[] := ARRAY[
