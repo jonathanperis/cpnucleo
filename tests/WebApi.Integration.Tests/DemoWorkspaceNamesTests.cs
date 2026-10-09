@@ -300,11 +300,10 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
             db.AddRange(organization, project, type, user);
             db.AddRange(columns);
             const string description = "Deliver card freeze in Mobile Banking Redesign. Done when it is covered by tests, reviewed and demoed to the product owner.";
-            foreach (var offset in new[] { -200, -120, -40, -2, 20, 60 })
-            {
-                var start = today.AddDays(offset).AddHours(9);
-                db.Add(Assignment.Create("Add card freeze", description, start, start.AddDays(5).AddHours(8), 24, project.Id, columns[5].Id, user.Id, type.Id));
-            }
+            db.AddRange(new[] { -200, -120, -40, -2, 20, 60 }
+                .Select(offset => today.AddDays(offset).AddHours(9))
+                .Select(start => Assignment.Create("Add card freeze", description, start, start.AddDays(5).AddHours(8), 24,
+                    project.Id, columns[5].Id, user.Id, type.Id)));
             var manual = Assignment.Create("Add card freeze", description, today.AddDays(-300).AddHours(9), today.AddDays(-295).AddHours(17), 24,
                 project.Id, columns[5].Id, user.Id, type.Id);
             manualTask = manual.Id;
