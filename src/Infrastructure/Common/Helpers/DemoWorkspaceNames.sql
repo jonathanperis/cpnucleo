@@ -37,10 +37,14 @@ DECLARE
     type_names constant text[] := ARRAY['Feature', 'Bug', 'Chore', 'Spike', 'Support', 'Research'];
     entry_patterns text[];
     note_patterns text[];
-    workflow_ids uuid[];
-    board_columns int;
+    blocked_column constant text := '(block|on hold|hold|waiting|imped|parked|stuck|bloque|aguard|espera)';
+    done_column constant text := '(done|closed|complete|shipped|resolved|finished|released|deployed|conclu|feito|pronto|entregue)';
+    flow_ids uuid[];
+    flow_columns int;
+    done_id uuid;
+    done_name text;
     first_active int;
-    last_active int;
+    realign boolean;
     overflow bigint;
     changed bigint;
     summary text := '';
@@ -278,7 +282,8 @@ BEGIN
     summary := summary || format(', Workflows=%s', changed);
 
     -- Generated assignment types become Feature, Bug and Chore. Every type's name picks the task
-    -- wording: bug-like names get bug reports, chore-like names maintenance, the rest features.
+    -- wording: bug-like names get bug reports, chore-like names maintenance, the rest (Feature, Story,
+    -- Task...) features.
     SELECT count(*) INTO overflow FROM "AssignmentTypes" WHERE "Name" ~ hacker_name;
     IF overflow > cardinality(type_names) THEN
         RAISE EXCEPTION 'Demo workspace names: % generated assignment types exceed the % available names.', overflow, cardinality(type_names);
@@ -293,7 +298,7 @@ BEGIN
     INSERT INTO demo_names_type
     SELECT "Id", "Name", CASE
         WHEN "Name" ~* '(bug|defect|fix|incident|issue|problem|erro|falha|defeito)' THEN 1
-        WHEN "Name" ~* '(chore|task|maint|tech|debt|ops|support|refactor|tarefa|manuten|suporte)' THEN 2
+        WHEN "Name" ~* '(chore|maint|tech|debt|ops|support|refactor|manuten|suporte)' THEN 2
         ELSE 0 END
     FROM "AssignmentTypes";
 
@@ -321,9 +326,9 @@ BEGIN
     CREATE TEMP TABLE demo_names_task (
         id uuid PRIMARY KEY, project_id uuid, role int, hours int, has_entries boolean, scheduled boolean, k int, shift int,
         subject text, defect text, name text, description text,
-        start_date timestamptz, end_date timestamptz, column_index int);
-    INSERT INTO demo_names_task (id, project_id, role, hours, has_entries, scheduled, k, shift)
-    SELECT x."Id", x."ProjectId", ty.role, x."AmountHours",
+        cur_start timestamptz, cur_end timestamptz, start_date timestamptz, end_date timestamptz, workflow_id uuid);
+    INSERT INTO demo_names_task (id, project_id, role, hours, cur_start, cur_end, has_entries, scheduled, k, shift)
+    SELECT x."Id", x."ProjectId", ty.role, x."AmountHours", x."StartDate", x."EndDate",
            EXISTS (SELECT 1 FROM "Appointments" e WHERE e."AssignmentId" = x."Id"),
            (x."StartDate" AT TIME ZONE 'UTC')::time = '09:00' AND (x."EndDate" AT TIME ZONE 'UTC')::time = '17:00',
            row_number() OVER (PARTITION BY x."ProjectId", x."AssignmentTypeId" ORDER BY x."Id") - 1,
@@ -349,16 +354,26 @@ BEGIN
       AND f.grp = CASE WHEN ((t.k / verbs_per_role) * 7 + (t.k % verbs_per_role) * 3 + t.shift) % features_per_project < 24 THEN p.industry ELSE -1 END;
     ANALYZE demo_names_task;
 
+    -- The board: active columns in order. Blocked-style columns (blocked, on hold, waiting...) are
+    -- not a stage; the done column is the last one named like done (else the last stage), and the
+    -- columns before it are the stages a task passes through.
+    SELECT string_agg("Name", ' | ' ORDER BY "Order", "Id") INTO board FROM "Workflows" WHERE "Active";
+    SELECT "Id", "Name" INTO done_id, done_name FROM "Workflows"
+    WHERE "Active" AND "Name" !~* blocked_column
+    ORDER BY ("Name" ~* done_column) DESC, "Order" DESC, "Id" DESC LIMIT 1;
+    SELECT array_agg(w."Id" ORDER BY w."Order", w."Id") INTO flow_ids
+    FROM "Workflows" w JOIN "Workflows" d ON d."Id" = done_id
+    WHERE w."Active" AND w."Name" !~* blocked_column AND (w."Order", w."Id") < (d."Order", d."Id");
+    flow_columns := COALESCE(cardinality(flow_ids), 0);
+    -- Set only by the DemoWorkspaceBoard migration: re-place already scheduled generated tasks once.
+    realign := COALESCE(current_setting('cpnucleo.demo_realign_board', true), '') = 'on';
+
     -- Schedules for generated tasks that have none yet. Tasks with time entries are spread over the
     -- past 270 days (the latest still in flight), the others from 60 days ago to 90 days ahead; each
-    -- is sized by its hours and put in the active board column its dates imply: the first columns
-    -- before it starts, the middle ones while it runs, the last once it is done.
-    SELECT array_agg("Id" ORDER BY "Order", "Id"), string_agg("Name", ' | ' ORDER BY "Order", "Id")
-    INTO workflow_ids, board FROM "Workflows" WHERE "Active";
-    board_columns := COALESCE(cardinality(workflow_ids), 0);
-    IF board_columns >= 2 THEN
-        first_active := CASE WHEN board_columns >= 5 THEN 3 WHEN board_columns >= 3 THEN 2 ELSE 1 END;
-        last_active := greatest(first_active, board_columns - 1);
+    -- is sized by its hours and put in the column its dates imply: the first stages before it
+    -- starts, the later ones while it runs, the done column once it ends.
+    IF flow_columns >= 1 THEN
+        first_active := CASE WHEN flow_columns >= 4 THEN 3 WHEN flow_columns >= 2 THEN 2 ELSE 1 END;
         WITH placed AS (
             SELECT id, hours,
                    date_trunc('day', now(), 'UTC') + interval '9 hours'
@@ -371,27 +386,29 @@ BEGIN
         SET start_date = placed.start_date,
             end_date = placed.start_date + (greatest(ceil(placed.hours / 4.0), 1) - 1) * interval '1 day' + interval '8 hours'
         FROM placed WHERE placed.id = t.id;
-        UPDATE demo_names_task SET column_index = CASE
-            WHEN end_date < now() THEN board_columns
-            WHEN start_date > now() + interval '30 days' THEN 1
-            WHEN start_date > now() THEN CASE WHEN board_columns >= 5 THEN 2 ELSE 1 END
-            ELSE least(last_active, first_active + floor(extract(epoch FROM now() - start_date)
-                       / extract(epoch FROM end_date - start_date) * (last_active - first_active + 1))::int) END
-        WHERE start_date IS NOT NULL;
+        UPDATE demo_names_task SET workflow_id = CASE
+            WHEN COALESCE(end_date, cur_end) < now() THEN done_id
+            WHEN COALESCE(start_date, cur_start) > now() + interval '30 days' THEN flow_ids[1]
+            WHEN COALESCE(start_date, cur_start) > now() THEN flow_ids[CASE WHEN flow_columns >= 4 THEN 2 ELSE 1 END]
+            ELSE flow_ids[least(flow_columns, first_active + floor(
+                     extract(epoch FROM now() - COALESCE(start_date, cur_start))
+                     / extract(epoch FROM COALESCE(end_date, cur_end) - COALESCE(start_date, cur_start))
+                     * (flow_columns - first_active + 1))::int)] END
+        WHERE start_date IS NOT NULL OR (realign AND scheduled);
     ELSIF EXISTS (SELECT 1 FROM demo_names_task WHERE NOT scheduled) THEN
-        RAISE NOTICE 'Demo workspace names: task schedules kept because fewer than two board columns are active.';
+        RAISE NOTICE 'Demo workspace names: task schedules kept because the board has no stage before its done column.';
     END IF;
 
     UPDATE "Assignments" x
     SET "Name" = t.name, "Description" = t.description,
         "StartDate" = COALESCE(t.start_date, x."StartDate"),
         "EndDate" = COALESCE(t.end_date, x."EndDate"),
-        "WorkflowId" = COALESCE(workflow_ids[t.column_index], x."WorkflowId")
+        "WorkflowId" = COALESCE(t.workflow_id, x."WorkflowId")
     FROM demo_names_task t
     WHERE t.id = x."Id"
       AND (x."Name", x."Description", x."StartDate", x."EndDate", x."WorkflowId") IS DISTINCT FROM
           (t.name, t.description, COALESCE(t.start_date, x."StartDate"), COALESCE(t.end_date, x."EndDate"),
-           COALESCE(workflow_ids[t.column_index], x."WorkflowId"));
+           COALESCE(t.workflow_id, x."WorkflowId"));
     GET DIAGNOSTICS changed = ROW_COUNT;
     summary := summary || format(', Assignments=%s', changed);
 
@@ -473,7 +490,7 @@ BEGIN
     WHERE g.id = t."Id" AND t."Login" = 'renaming-' || t."Id";
     summary := summary || format(', Users=%s', changed);
 
-    RAISE NOTICE 'Demo workspace names: board columns [%], type wording [%]', COALESCE(board, ''),
+    RAISE NOTICE 'Demo workspace names: board columns [%], done column [%], type wording [%]', COALESCE(board, ''), COALESCE(done_name, ''),
         COALESCE((SELECT string_agg(name || '=' || (ARRAY['feature', 'bug', 'chore'])[role + 1], ', ' ORDER BY name) FROM demo_names_type), '');
     DROP TABLE pg_temp.demo_names_catalog, pg_temp.demo_names_org, pg_temp.demo_names_project, pg_temp.demo_names_type,
         pg_temp.demo_names_impediment, pg_temp.demo_names_task, pg_temp.demo_names_entry, pg_temp.demo_names_user,
