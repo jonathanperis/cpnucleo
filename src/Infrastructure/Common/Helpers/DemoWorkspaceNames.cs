@@ -28,6 +28,47 @@ public static class DemoWorkspaceNames
         }
     }
 
+    /// <summary>
+    /// A read-only summary of the demo data: active tasks per active board column and the generated
+    /// text still left. The migrator prints it, so deploy logs show what the database holds.
+    /// </summary>
+    public static async Task<string> ReportAsync(NpgsqlConnection connection, CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            WITH shared AS (SELECT "Password", "Salt" FROM "Users" GROUP BY "Password", "Salt" HAVING count(*) >= 50)
+            SELECT 'Demo workspace names: report board ['
+                || COALESCE((SELECT string_agg(w."Name" || '=' || (SELECT count(*) FROM "Assignments" a WHERE a."WorkflowId" = w."Id" AND a."Active"),
+                                               ', ' ORDER BY w."Order", w."Id")
+                             FROM "Workflows" w WHERE w."Active"), '')
+                || '], generated names left: organizations=' || (SELECT count(*) FROM "Organizations" WHERE "Name" LIKE ANY (@names))
+                || ', projects=' || (SELECT count(*) FROM "Projects" WHERE "Name" LIKE ANY (@names))
+                || ', impediments=' || (SELECT count(*) FROM "Impediments" WHERE "Name" LIKE ANY (@names))
+                || ', tasks=' || (SELECT count(*) FROM "Assignments" WHERE "Name" LIKE ANY (@names))
+                || ', time entries=' || (SELECT count(*) FROM "Appointments" WHERE "Description" LIKE '%!')
+                || ', generated logins=' || (SELECT count(*) FROM "Users" u
+                                             WHERE u."Login" NOT LIKE '%@%' AND (u."Password", u."Salt") IN (SELECT "Password", "Salt" FROM shared))
+            """;
+        var opened = connection.State != System.Data.ConnectionState.Open;
+        if (opened) await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            await using var command = new NpgsqlCommand(sql, connection) { CommandTimeout = 300 };
+            command.Parameters.AddWithValue("names", BogusVerbs.Select(verb => $"% {verb} %").ToArray());
+            return (string)(await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false))!;
+        }
+        finally
+        {
+            if (opened) await connection.CloseAsync().ConfigureAwait(false);
+        }
+    }
+
+    // The "-ing" verbs of Bogus Hacker names ("monitor transmitting back-end").
+    private static readonly string[] BogusVerbs =
+    [
+        "backing up", "bypassing", "calculating", "compressing", "connecting", "copying", "generating", "hacking",
+        "indexing", "navigating", "overriding", "parsing", "programming", "quantifying", "synthesizing", "transmitting"
+    ];
+
     private static string LoadScript()
     {
         using var stream = typeof(DemoWorkspaceNames).Assembly.GetManifestResourceStream(ResourceName)

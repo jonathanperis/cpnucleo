@@ -209,6 +209,8 @@ public class DemoWorkspaceNamesTests(IsolatedDatabase database) : IClassFixture<
         tasks.Where(t => t.Type == "Task").ShouldAllBe(t => t.Description.StartsWith("Deliver "));
         tasks.ShouldAllBe(t => t.StartDate.TimeOfDay == TimeSpan.FromHours(9) && t.EndDate.TimeOfDay == TimeSpan.FromHours(17));
         ShouldFollowTheBoard(tasks.Select(t => (t.Column, t.StartDate, t.EndDate)), checkedAt);
+        (await DemoWorkspaceNames.ReportAsync(connection, Cancellation)).ShouldEndWith(
+            "generated names left: organizations=0, projects=0, impediments=0, tasks=0, time entries=0, generated logins=0");
         (await connection.ExecuteScalarAsync<int>("""
             SELECT count(*) FROM "Appointments" e JOIN "Assignments" a ON a."Id" = e."AssignmentId"
             WHERE e."KeepDate" < a."StartDate" OR e."KeepDate" > a."EndDate" OR e."KeepDate" > now()
