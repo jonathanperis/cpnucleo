@@ -1,0 +1,6 @@
+version: 1
+triggers:
+  drafts: false
+  frequency: everyPush
+prSummary:
+  mode: comment
