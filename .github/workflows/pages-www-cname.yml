@@ -1,0 +1,117 @@
+# One-shot: move www from the Hostinger address to GitHub Pages. Do not merge this file.
+name: Point www at GitHub Pages
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/pages-www-cname.yml
+
+permissions:
+  contents: read
+
+jobs:
+  records:
+    name: Replace the www address with a Pages CNAME
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install Hostinger CLI
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/hostinger.tar.gz https://github.com/hostinger/api-cli/releases/download/v4.1.4/hostinger-4.1.4-linux-amd64.tar.gz
+          echo "0c69621a4f70b929dfd876c29100dc11b4afd535a657d5b8270ecb5aa09c8f81  /tmp/hostinger.tar.gz" | sha256sum -c
+          tar -xzf /tmp/hostinger.tar.gz -C /tmp
+          install -m 0755 /tmp/hostinger /usr/local/bin/hostinger
+          hostinger version
+
+      - name: Replace www
+        env:
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          hostinger dns records list jonathanperis.tech --format json > /tmp/zone.json
+          python3 - << 'PY'
+          import json, subprocess, sys
+          raw = json.load(open("/tmp/zone.json"))
+          if isinstance(raw, list):
+              records = raw
+          elif isinstance(raw, dict):
+              records = raw.get("zone") or raw.get("records") or []
+              if isinstance(records, dict):
+                  records = records.get("zone") or records.get("records") or []
+          else:
+              records = []
+          if not isinstance(records, list) or not records or not isinstance(records[0], dict):
+              raise SystemExit(f"unexpected zone shape: {type(raw).__name__}")
+
+          def contents_of(item):
+              nested = item.get("records")
+              if isinstance(nested, list):
+                  return [str(rec.get("content", "") if isinstance(rec, dict) else rec).rstrip(".") for rec in nested]
+              if item.get("content") is not None:
+                  return [str(item.get("content")).rstrip(".")]
+              return []
+
+          existing = {}
+          for item in records:
+              name = str(item.get("name", ""))
+              typ = str(item.get("type", ""))
+              existing.setdefault(name, []).append((typ, contents_of(item)))
+              print(f"{typ:8} {name}")
+
+          apex = existing.get("@") or existing.get("") or existing.get("jonathanperis.tech") or []
+          if not any(typ == "A" and "2.57.91.91" in contents for typ, contents in apex):
+              raise SystemExit(f"refusing to continue: apex is not 2.57.91.91: {apex}")
+          for required in ("api-cpnucleo", "identity-cpnucleo", "grpc-cpnucleo", "app-cpnucleo"):
+              if not any(typ == "A" for typ, _contents in existing.get(required, [])):
+                  raise SystemExit(f"refusing to continue: {required} A record is missing")
+
+          www = existing.get("www", [])
+          if any(typ == "CNAME" and "jonathanperis.github.io" in contents for typ, contents in www):
+              print("www already points at GitHub Pages")
+              sys.exit(0)
+          if not (len(www) == 1 and www[0][0] == "A" and www[0][1] == ["2.57.91.91"]):
+              raise SystemExit(f"refusing to replace www: {www}")
+
+          print("deleting www A")
+          subprocess.run([
+              "hostinger", "dns", "records", "delete", "jonathanperis.tech",
+              "--filters", json.dumps([{"name": "www", "type": "A"}]),
+          ], check=True)
+          print("adding www CNAME")
+          try:
+              subprocess.run([
+                  "hostinger", "dns", "records", "update", "jonathanperis.tech",
+                  "--overwrite=false",
+                  "--zone", json.dumps([{
+                      "name": "www",
+                      "type": "CNAME",
+                      "ttl": 300,
+                      "records": [{"content": "jonathanperis.github.io."}],
+                  }]),
+              ], check=True)
+          except subprocess.CalledProcessError:
+              print("CNAME add failed; restoring www A")
+              subprocess.run([
+                  "hostinger", "dns", "records", "update", "jonathanperis.tech",
+                  "--overwrite=false",
+                  "--zone", json.dumps([{
+                      "name": "www",
+                      "type": "A",
+                      "ttl": 300,
+                      "records": [{"content": "2.57.91.91"}],
+                  }]),
+              ], check=False)
+              raise
+          PY
+          hostinger dns records list jonathanperis.tech --format json > /tmp/zone-after.json
+          python3 - << 'PY'
+          import json
+          raw = json.load(open("/tmp/zone-after.json"))
+          text = json.dumps(raw)
+          if "jonathanperis.github.io" not in text or "2.57.91.91" not in text:
+              raise SystemExit("zone lost the Pages target or the apex address")
+          if "api-cpnucleo" not in text or "app-cpnucleo" not in text:
+              raise SystemExit("zone lost an application name")
+          print("www CNAME and apex address are both present")
+          PY
