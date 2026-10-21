@@ -19,22 +19,25 @@ class GeneratedLinksTests(unittest.TestCase):
             article = root / "docs" / "article"
             article.mkdir(parents=True)
             (root / "asset.css").write_text("body {}")
-            (root / "index.html").write_text('<a href="/cpnucleo/docs/article/#section">Read</a>')
+            (root / "index.html").write_text('<a href="/docs/article/#section">Read</a>')
             article_file = article / "index.html"
-            valid = '<h1 id="section">Title</h1><a href="../../">Home</a><a href="/cpnucleo">Base</a><link href="../../asset.css"><a href="https://example.org/">External</a>'
+            valid = '<h1 id="section">Title</h1><a href="../../">Home</a><a href="/">Base</a><link href="../../asset.css"><a href="https://example.org/">External</a>'
             article_file.write_text(valid)
             check_built_site(root)
             for link, message in [
                 ("../missing/", "missing local target"),
                 ("#absent", "missing fragment"),
-                ("/docs/article/", "escapes the Pages base"),
-                ("../../../missing/", "escapes the Pages base"),
                 ("../../missing.png", "missing local target"),
             ]:
                 with self.subTest(link=link):
                     article_file.write_text(valid + f'<a href="{link}">Broken</a>')
                     with self.assertRaisesRegex(SystemExit, message):
                         check_built_site(root)
+            # A site that still has a path prefix rejects links that leave it.
+            prefixed = root / "prefixed.html"
+            prefixed.write_text('<a href="/elsewhere/">Broken</a>')
+            with self.assertRaisesRegex(SystemExit, "escapes the Pages base"):
+                check_built_site(root, "https://example.test/cpnucleo/")
 
 
 def make_astro_site(root):

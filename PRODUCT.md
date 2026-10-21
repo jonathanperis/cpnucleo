@@ -41,7 +41,7 @@ Use these facts only when the source remains true in README, AGENTS.md, solution
 - Reverse proxy: NGINX with least-connection load balancing.
 - Observability: OpenTelemetry with OTLP export and optional Grafana LGTM stack.
 - CI/CD: GitHub Actions, GHCR, CodeQL, Hostinger Docker Manager.
-- Public docs: `https://jonathanperis.github.io/cpnucleo/`.
+- Public docs: `https://cpnucleo.jonathanperis.tech/`.
 - Live demo: canonical Hostinger URL from README and docs navigation.
 
 Avoid unsupported claims like full coverage unless the current test reports prove them.

@@ -4,7 +4,7 @@
 
 [![Build Check](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/build-check.yml) [![Main Release](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/main-release.yml) [![CodeQL](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml/badge.svg)](https://github.com/jonathanperis/cpnucleo/actions/workflows/codeql.yml)
 
-**[Learning paths](https://jonathanperis.github.io/cpnucleo/docs/learning-lab/)** · **[Pages documentation](https://jonathanperis.github.io/cpnucleo/docs/)** · **[Live demo](https://app-cpnucleo.jonathanperis.tech/)**
+**[Learning paths](https://cpnucleo.jonathanperis.tech/docs/learning-lab/)** · **[Pages documentation](https://cpnucleo.jonathanperis.tech/docs/)** · **[Live demo](https://app-cpnucleo.jonathanperis.tech/)**
 
 ## Purpose
 
