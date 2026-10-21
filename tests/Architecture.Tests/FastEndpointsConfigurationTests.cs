@@ -117,7 +117,7 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("AddCors(options =>");
         program.Should().Contain("CpnucleoWebClient");
         program.Should().Contain("Cors:AllowedOrigins");
-        program.Should().Contain("https://cpnucleo.jonathanperis.tech");
+        program.Should().Contain("https://app-cpnucleo.jonathanperis.tech");
         program.Should().Contain("AllowAnyHeader()");
         program.Should().Contain("AllowAnyMethod()");
         program.Should().Contain("UseRateLimiter()");

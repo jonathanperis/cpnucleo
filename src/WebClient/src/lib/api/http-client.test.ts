@@ -97,7 +97,7 @@ describe('http client token handling', () => {
           pathname: '/projects',
           search: '?page=2',
           hash: '',
-          origin: 'https://cpnucleo.jonathanperis.tech:5030',
+          origin: 'https://app-cpnucleo.jonathanperis.tech:5030',
           assign,
         },
       },
@@ -109,7 +109,7 @@ describe('http client token handling', () => {
 
     expect(assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F%3Fpage%3D2');
     expect(assign.mock.calls[0][0]).not.toContain('5030');
-    expect(assign.mock.calls[0][0]).not.toContain('cpnucleo.jonathanperis.tech');
+    expect(assign.mock.calls[0][0]).not.toContain('app-cpnucleo.jonathanperis.tech');
   });
 });
 

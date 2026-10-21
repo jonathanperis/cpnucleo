@@ -11,7 +11,7 @@ builder.ConfigureOpenTelemetry();
 
 builder.Services.AddCors(options =>
 {
-    // Cors:AllowedOrigins (default https://cpnucleo.jonathanperis.tech): the WebClient origins.
+    // Cors:AllowedOrigins (default https://app-cpnucleo.jonathanperis.tech): the WebClient origins.
     options.AddPolicy("CpnucleoWebClient", policy =>
     {
         policy
@@ -148,14 +148,14 @@ builder.Services
                 document.Info.Contact = new NSwag.OpenApiContact
                 {
                     Name = "Cpnucleo Identity Support",
-                    Url = "https://cpnucleo.jonathanperis.tech"
+                    Url = "https://app-cpnucleo.jonathanperis.tech"
                 };
                 document.Info.License = new NSwag.OpenApiLicense
                 {
                     Name = "MIT",
-                    Url = "https://cpnucleo.jonathanperis.tech"
+                    Url = "https://app-cpnucleo.jonathanperis.tech"
                 };
-                document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
+                document.Info.TermsOfService = "https://app-cpnucleo.jonathanperis.tech";
             };
         };
     });
