@@ -12,10 +12,10 @@ const {
   description = 'One project tracker, built several ways: REST and gRPC, EF Core and Dapper, an OpenID Connect provider and an Astro client on PostgreSQL.'
 } = Astro.props;
 
-const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://jonathanperis.github.io${Astro.url.pathname}`;
+const pageUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : `https://cpnucleo.jonathanperis.tech${Astro.url.pathname}`;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const assetPath = (path: string) => `${basePath}/${path.replace(/^\//, '')}`;
-const absoluteAsset = (path: string) => new URL(assetPath(path), Astro.site ?? 'https://jonathanperis.github.io').href;
+const absoluteAsset = (path: string) => new URL(assetPath(path), Astro.site ?? 'https://cpnucleo.jonathanperis.tech').href;
 const faviconHref = assetPath('favicon.ico');
 const faviconSvgHref = assetPath('favicon.svg');
 const faviconPngHref = assetPath('favicon.png');
@@ -40,7 +40,7 @@ const jsonLd = {
   'author': {
     '@type': 'Person',
     'name': 'Jonathan Peris',
-    'url': 'https://jonathanperis.github.io/'
+    'url': 'https://www.jonathanperis.tech/'
   }
 };
 ---
