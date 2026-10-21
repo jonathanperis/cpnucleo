@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jonathanperis.github.io/cpnucleo/sitemap-index.xml
+Sitemap: https://cpnucleo.jonathanperis.tech/sitemap-index.xml
