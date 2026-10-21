@@ -1,0 +1,77 @@
+# One-shot: add the super-mango-editor CNAME. Do not merge this file.
+name: Super Mango DNS CNAME
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/super-mango-dns.yml
+
+permissions:
+  contents: read
+
+jobs:
+  cname:
+    name: Add super-mango-editor CNAME
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install Hostinger CLI
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/hostinger.tar.gz https://github.com/hostinger/api-cli/releases/download/v4.1.4/hostinger-4.1.4-linux-amd64.tar.gz
+          echo "0c69621a4f70b929dfd876c29100dc11b4afd535a657d5b8270ecb5aa09c8f81  /tmp/hostinger.tar.gz" | sha256sum -c
+          tar -xzf /tmp/hostinger.tar.gz -C /tmp
+          install -m 0755 /tmp/hostinger /usr/local/bin/hostinger
+          hostinger version
+
+      - name: Create the CNAME
+        env:
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          hostinger dns records list jonathanperis.tech --format json > /tmp/zone.json
+          python3 - << 'PY'
+          import json
+          raw = json.load(open("/tmp/zone.json"))
+          if isinstance(raw, dict):
+              records = raw.get("zone") or raw.get("records") or raw.get("data") or []
+              if isinstance(records, dict):
+                  records = records.get("zone") or records.get("records") or []
+          else:
+              records = raw
+          if not isinstance(records, list):
+              keys = list(raw)[:12] if isinstance(raw, dict) else []
+              raise SystemExit(f"unexpected zone shape: {type(raw).__name__} keys={keys}")
+          print(f"record groups: {len(records)}")
+          found = None
+          for item in records:
+              name = str(item.get("name", ""))
+              typ = str(item.get("type", ""))
+              contents = [str(rec.get("content", "")) for rec in (item.get("records") or [])]
+              print(f"{typ:8} {name}")
+              if name in ("super-mango-editor", "super-mango-editor.jonathanperis.tech"):
+                  found = (typ, contents)
+          open("/tmp/existing.txt", "w").write(
+              "" if found is None else f"{found[0]} {' '.join(found[1])}"
+          )
+          PY
+          existing="$(cat /tmp/existing.txt)"
+          if printf '%s' "$existing" | grep -q 'jonathanperis.github.io'; then
+            echo "CNAME already points at GitHub Pages: $existing"
+            exit 0
+          fi
+          if [ -n "$existing" ]; then
+            echo "Refusing to replace existing super-mango-editor record: $existing"
+            exit 1
+          fi
+          hostinger dns records update jonathanperis.tech \
+            --overwrite=false \
+            --zone '[{"name":"super-mango-editor","type":"CNAME","ttl":300,"records":[{"content":"jonathanperis.github.io."}]}]'
+          hostinger dns records list jonathanperis.tech --format json > /tmp/zone-after.json
+          python3 - << 'PY'
+          import json
+          text = open("/tmp/zone-after.json").read()
+          if "super-mango-editor" not in text or "jonathanperis.github.io" not in text:
+              raise SystemExit("CNAME missing after update")
+          print("CNAME present in the Hostinger zone")
+          PY
