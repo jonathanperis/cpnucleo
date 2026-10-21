@@ -33,16 +33,29 @@ jobs:
           python3 - << 'PY'
           import json, subprocess, sys
           raw = json.load(open("/tmp/zone.json"))
-          records = raw.get("zone") or raw.get("records") or raw if isinstance(raw, list) else []
-          if isinstance(records, dict):
-              records = records.get("zone") or records.get("records") or []
-          if not isinstance(records, list):
+          if isinstance(raw, list):
+              records = raw
+          elif isinstance(raw, dict):
+              records = raw.get("zone") or raw.get("records") or []
+              if isinstance(records, dict):
+                  records = records.get("zone") or records.get("records") or []
+          else:
+              records = []
+          if not isinstance(records, list) or not records or not isinstance(records[0], dict):
               raise SystemExit(f"unexpected zone shape: {type(raw).__name__}")
           existing = {}
           for item in records:
+              if not isinstance(item, dict):
+                  raise SystemExit(f"unexpected record shape: {type(item).__name__}")
               name = str(item.get("name", ""))
               typ = str(item.get("type", ""))
-              contents = [str(rec.get("content", "")).rstrip(".") for rec in (item.get("records") or [])]
+              nested = item.get("records")
+              if isinstance(nested, list):
+                  contents = [str(rec.get("content", "") if isinstance(rec, dict) else rec).rstrip(".") for rec in nested]
+              elif item.get("content") is not None:
+                  contents = [str(item.get("content")).rstrip(".")]
+              else:
+                  contents = []
               existing.setdefault(name, []).append((typ, contents))
               print(f"{typ:8} {name}")
           for required in ("api-cpnucleo", "identity-cpnucleo", "grpc-cpnucleo", "grafana-cpnucleo"):
