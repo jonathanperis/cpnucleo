@@ -6,7 +6,7 @@ Cpnucleo uses Docker Compose for containerized deployment and GitHub Actions for
 
 ## Toolchain
 
-`global.json` pins SDK `10.0.401` with `rollForward: latestMinor`: any installed .NET 10 SDK at feature band 4xx or later works, but a 10.0.1xx SDK cannot satisfy it (roll-forward never goes backwards). Node.js comes from `.nvmrc` and Bun is pinned to 1.4.2. Container builds need Docker with Compose v2 and BuildKit.
+`global.json` pins SDK `10.0.402` with `rollForward: latestMinor`: any installed .NET 10 SDK at feature band 4xx or later works, but a 10.0.1xx SDK cannot satisfy it (roll-forward never goes backwards). Node.js comes from `.nvmrc` and Bun is pinned to 1.4.2. Container builds need Docker with Compose v2 and BuildKit.
 
 ---
 
