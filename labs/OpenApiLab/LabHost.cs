@@ -116,9 +116,9 @@ internal static class LabHost
             openApi.AddDocumentTransformer((document, _, _) =>
             {
                 document.Info.Description = "Authenticated REST API for Cpnucleo project, workflow, assignment, organization, and user management.";
-                document.Info.Contact = new OpenApiContact { Name = "Cpnucleo API Support", Url = new Uri("https://cpnucleo.jonathanperis.tech") };
-                document.Info.License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://cpnucleo.jonathanperis.tech") };
-                document.Info.TermsOfService = new Uri("https://cpnucleo.jonathanperis.tech");
+                document.Info.Contact = new OpenApiContact { Name = "Cpnucleo API Support", Url = new Uri("https://app-cpnucleo.jonathanperis.tech") };
+                document.Info.License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://app-cpnucleo.jonathanperis.tech") };
+                document.Info.TermsOfService = new Uri("https://app-cpnucleo.jonathanperis.tech");
                 return Task.CompletedTask;
             });
             if (!transformers) return;

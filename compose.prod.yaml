@@ -49,7 +49,9 @@ x-dotnet-runtime-env: &dotnet-runtime-env
   # session validation so removing a login revokes admin access within 30 seconds. Unset, the
   # seeded demo account is the administrator.
   CPNUCLEO_ADMIN_LOGINS: ${CPNUCLEO_ADMIN_LOGINS:-demo@cpnucleo.local}
-  Cors__AllowedOrigins__0: ${Cors__AllowedOrigins__0:-https://cpnucleo.jonathanperis.tech}
+  Cors__AllowedOrigins__0: ${Cors__AllowedOrigins__0:-https://app-cpnucleo.jonathanperis.tech}
+  # The bare name still reaches this client until the Pages site takes it.
+  Cors__AllowedOrigins__1: ${Cors__AllowedOrigins__1:-https://cpnucleo.jonathanperis.tech}
   OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
   OTEL_METRIC_EXPORT_INTERVAL: ${OTEL_METRIC_EXPORT_INTERVAL:-30000}
   # parentbased_always_on matches the in-code default; set e.g. parentbased_traceidratio + ARG to sample less.
@@ -255,7 +257,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
-      - "traefik.http.routers.cpnucleo-web.rule=Host(`${CPNUCLEO_WEB_HOST:?Set CPNUCLEO_WEB_HOST}`)"
+      - "traefik.http.routers.cpnucleo-web.rule=Host(`${CPNUCLEO_WEB_HOST:?Set CPNUCLEO_WEB_HOST}`) || Host(`app-cpnucleo.jonathanperis.tech`)"
       - "traefik.http.routers.cpnucleo-web.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-web.tls=true"
       - "traefik.http.routers.cpnucleo-web.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"

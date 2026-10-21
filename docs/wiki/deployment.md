@@ -261,7 +261,8 @@ The Trivy gate is intentionally narrow (fixable CRITICAL only) so base-image noi
 
 | Surface | Public URL | Backing service |
 |---------|------------|-----------------|
-| WebClient | `https://cpnucleo.jonathanperis.tech/` | `webclient-cpnucleo` |
+| WebClient | `https://app-cpnucleo.jonathanperis.tech/` | `webclient-cpnucleo` |
+| WebClient, until Pages takes the name | `https://cpnucleo.jonathanperis.tech/` | `webclient-cpnucleo` |
 | WebApi | `https://api-cpnucleo.jonathanperis.tech/` | `webapi1-cpnucleo` / `webapi2-cpnucleo` |
 | IdentityApi | `https://identity-cpnucleo.jonathanperis.tech/` | `identityapi-cpnucleo` |
 | gRPC health | `https://grpc-cpnucleo.jonathanperis.tech/healthz` | `grpcserver-cpnucleo` |
@@ -343,7 +344,8 @@ It runs in one transaction with a 5-second lock timeout and touches only rows th
 | `Identity__ServiceClients__{id}__Secret` / `__Login` / `__Scopes` | Optional client-credentials clients acting as a service account | none |
 | `OTEL_TRACES_SAMPLER` / `OTEL_TRACES_SAMPLER_ARG` | Standard OpenTelemetry sampler selection, honored by the .NET hosts | `parentbased_always_on` / `1.0` |
 | `OTEL_METRIC_EXPORT_INTERVAL` | Metric export interval (ms) | 30000 |
-| `Cors__AllowedOrigins__0` | Browser origin allowed by WebApi/IdentityApi | `https://cpnucleo.jonathanperis.tech` |
+| `Cors__AllowedOrigins__0` | Browser origin allowed by WebApi/IdentityApi | `https://app-cpnucleo.jonathanperis.tech` |
+| `Cors__AllowedOrigins__1` | Previous WebClient origin, kept until Pages takes that name | `https://cpnucleo.jonathanperis.tech` |
 | `CPNUCLEO_ADMIN_LOGINS` | Comma-separated admin logins. IdentityApi issues admin claims from it; WebApi and GrpcServer re-check it during session validation. Empty means the default: the seeded `demo@cpnucleo.local` account; a list replaces it | `demo@cpnucleo.local` |
 | `BACKUP_DIR` / `BACKUP_RETENTION_DAYS` / `BACKUP_REMOTE` | Backup location, local retention and optional rsync target | `/opt/backups/cpnucleo` / 14 / empty |
 
