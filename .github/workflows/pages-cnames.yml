@@ -1,0 +1,92 @@
+# One-shot: add the app address and the Pages CNAMEs. Do not merge this file.
+name: Pages custom-domain records
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/pages-cnames.yml
+
+permissions:
+  contents: read
+
+jobs:
+  records:
+    name: Add app address and Pages CNAMEs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install Hostinger CLI
+        run: |
+          set -euo pipefail
+          curl -fsSL -o /tmp/hostinger.tar.gz https://github.com/hostinger/api-cli/releases/download/v4.1.4/hostinger-4.1.4-linux-amd64.tar.gz
+          echo "0c69621a4f70b929dfd876c29100dc11b4afd535a657d5b8270ecb5aa09c8f81  /tmp/hostinger.tar.gz" | sha256sum -c
+          tar -xzf /tmp/hostinger.tar.gz -C /tmp
+          install -m 0755 /tmp/hostinger /usr/local/bin/hostinger
+          hostinger version
+
+      - name: Add missing records
+        env:
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          hostinger dns records list jonathanperis.tech --format json > /tmp/zone.json
+          python3 - << 'PY'
+          import json, subprocess, sys
+          raw = json.load(open("/tmp/zone.json"))
+          records = raw.get("zone") or raw.get("records") or raw if isinstance(raw, list) else []
+          if isinstance(records, dict):
+              records = records.get("zone") or records.get("records") or []
+          if not isinstance(records, list):
+              raise SystemExit(f"unexpected zone shape: {type(raw).__name__}")
+          existing = {}
+          for item in records:
+              name = str(item.get("name", ""))
+              typ = str(item.get("type", ""))
+              contents = [str(rec.get("content", "")).rstrip(".") for rec in (item.get("records") or [])]
+              existing.setdefault(name, []).append((typ, contents))
+              print(f"{typ:8} {name}")
+          for required in ("api-cpnucleo", "identity-cpnucleo", "grpc-cpnucleo", "grafana-cpnucleo"):
+              if not any(typ == "A" for typ, _contents in existing.get(required, [])):
+                  raise SystemExit(f"refusing to continue: {required} A record is missing")
+          app_address = next((contents[0] for typ, contents in existing.get("cpnucleo", []) if typ == "A" and contents), "")
+          if not app_address:
+              raise SystemExit("refusing to continue: cpnucleo A record is missing")
+          missing = []
+          found = existing.get("app-cpnucleo", [])
+          if not found:
+              missing.append({"name": "app-cpnucleo", "type": "A", "ttl": 300, "records": [{"content": app_address}]})
+          elif not any(typ == "A" and app_address in contents for typ, contents in found):
+              raise SystemExit(f"refusing to replace app-cpnucleo: {found}")
+          else:
+              print("keep app-cpnucleo")
+          cnames = {
+              "speedy-bird-lynx": "jonathanperis.github.io",
+              "blazor-mudblazor-starter": "jonathanperis.github.io",
+              "solar-system-simulator": "jonathanperis.github.io",
+          }
+          for name, target in cnames.items():
+              found = existing.get(name, [])
+              if not found:
+                  missing.append({"name": name, "type": "CNAME", "ttl": 300, "records": [{"content": target + "."}]})
+                  continue
+              if not any(typ == "CNAME" and target in contents for typ, contents in found):
+                  raise SystemExit(f"refusing to replace {name}: {found}")
+              print(f"keep {name}")
+          if not missing:
+              print("app address and Pages CNAMEs already present")
+              sys.exit(0)
+          payload = json.dumps(missing)
+          print("adding", [item["name"] for item in missing])
+          subprocess.run([
+              "hostinger", "dns", "records", "update", "jonathanperis.tech",
+              "--overwrite=false", "--zone", payload,
+          ], check=True)
+          PY
+          hostinger dns records list jonathanperis.tech --format json > /tmp/zone-after.json
+          python3 - << 'PY'
+          text = open("/tmp/zone-after.json").read()
+          for name in ("app-cpnucleo", "speedy-bird-lynx", "blazor-mudblazor-starter", "solar-system-simulator", "api-cpnucleo"):
+              if name not in text:
+                  raise SystemExit(f"missing after update: {name}")
+          print("app address and Pages CNAMEs present")
+          PY
