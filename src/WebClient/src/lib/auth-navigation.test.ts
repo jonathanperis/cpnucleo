@@ -3,15 +3,15 @@ import { canonicalizeStaticRoute, getLoginPath, getLoginRedirectTarget, getPostL
 
 describe('auth navigation', () => {
   it('redirects protected pages to the trailing-slash login route without leaking the internal container port', () => {
-    const target = getLoginRedirectTarget({ pathname: '/', search: '', origin: 'https://cpnucleo.jonathanperis.tech:5030' });
+    const target = getLoginRedirectTarget({ pathname: '/', search: '', origin: 'https://app-cpnucleo.jonathanperis.tech:5030' });
 
     expect(target).toBe('/login/');
     expect(target).not.toContain('5030');
-    expect(target).not.toContain('cpnucleo.jonathanperis.tech');
+    expect(target).not.toContain('app-cpnucleo.jonathanperis.tech');
   });
 
   it('keeps protected return urls relative', () => {
-    expect(getLoginRedirectTarget({ pathname: '/projects', search: '?page=2', origin: 'https://cpnucleo.jonathanperis.tech:5030' }))
+    expect(getLoginRedirectTarget({ pathname: '/projects', search: '?page=2', origin: 'https://app-cpnucleo.jonathanperis.tech:5030' }))
       .toBe('/login/?returnUrl=%2Fprojects%2F%3Fpage%3D2');
   });
 

@@ -6,12 +6,13 @@ type: reference
 
 ## Hostinger Deployment
 
-Live demo: https://cpnucleo.jonathanperis.tech/
+Live demo: https://app-cpnucleo.jonathanperis.tech/
 
 Production is deployed through Hostinger Docker Manager with the repository production Compose configuration and immutable amd64 GHCR images.
 
 Public surfaces:
-- WebClient: https://cpnucleo.jonathanperis.tech/
+- WebClient: https://app-cpnucleo.jonathanperis.tech/
+- WebClient, until Pages takes the name: https://cpnucleo.jonathanperis.tech/
 - WebApi: https://api-cpnucleo.jonathanperis.tech/
 - IdentityApi: https://identity-cpnucleo.jonathanperis.tech/
 - gRPC health: https://grpc-cpnucleo.jonathanperis.tech/healthz

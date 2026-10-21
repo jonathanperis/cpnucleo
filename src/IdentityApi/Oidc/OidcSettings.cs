@@ -23,7 +23,7 @@ public static class OidcSettings
     public const string WebApiScope = "cpnucleo.api";
     public const string GrpcScope = "cpnucleo.grpc";
     public const string DefaultGrpcAudience = "https://grpc-cpnucleo.jonathanperis.tech";
-    public const string DefaultWebClientOrigin = "https://cpnucleo.jonathanperis.tech";
+    public const string DefaultWebClientOrigin = "https://app-cpnucleo.jonathanperis.tech";
 
     /// <summary>Client property naming the service account a client-credentials client acts as.</summary>
     public const string ServiceAccountProperty = "cpnucleo:service_login";
@@ -34,7 +34,7 @@ public static class OidcSettings
     public static string[] WebClientOrigins(IConfiguration configuration) =>
         configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() is { Length: > 0 } origins
             ? origins.Select(origin => origin.TrimEnd('/')).ToArray()
-            : [DefaultWebClientOrigin];
+            : [DefaultWebClientOrigin, "https://cpnucleo.jonathanperis.tech"];
 
     /// <summary>The Astro sign-in page the server redirects to (the first WebClient origin by default).</summary>
     public static string LoginPageUrl(IConfiguration configuration) =>

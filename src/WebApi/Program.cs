@@ -60,7 +60,7 @@ var allowedCorsOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>() is { Length: > 0 } configuredOrigins
         ? configuredOrigins
-        : ["https://cpnucleo.jonathanperis.tech"];
+        : ["https://app-cpnucleo.jonathanperis.tech", "https://cpnucleo.jonathanperis.tech"];
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -179,14 +179,14 @@ builder.Services
                 document.Info.Contact = new NSwag.OpenApiContact
                 {
                     Name = "Cpnucleo API Support",
-                    Url = "https://cpnucleo.jonathanperis.tech"
+                    Url = "https://app-cpnucleo.jonathanperis.tech"
                 };
                 document.Info.License = new NSwag.OpenApiLicense
                 {
                     Name = "MIT",
-                    Url = "https://cpnucleo.jonathanperis.tech"
+                    Url = "https://app-cpnucleo.jonathanperis.tech"
                 };
-                document.Info.TermsOfService = "https://cpnucleo.jonathanperis.tech";
+                document.Info.TermsOfService = "https://app-cpnucleo.jonathanperis.tech";
                 // List operations describe pagination as flat query keys (PaginationQueryProcessor).
                 document.Components.Schemas.Remove(nameof(PaginationParams));
             };
