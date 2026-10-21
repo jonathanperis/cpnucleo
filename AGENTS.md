@@ -23,7 +23,7 @@ docker compose -f compose.lab.yaml run --rm seed
 docker compose --env-file .env -f compose.prod.yaml up -d
 ```
 
-`global.json` requires .NET SDK 10.0.401 or newer (`rollForward: latestMinor`); a 10.0.1xx SDK cannot satisfy it. Run `bun run typecheck`, `bun run test`, and `bun audit` from `src/WebClient` with a real Node 26 on `PATH` (a Bun `node` shim breaks jsdom). The test command builds Astro and tests generated markup with jsdom. Run `bun run build` and `bun audit` from `docs`, and `python3 scripts/check-docs-drift.py` from the root.
+`global.json` requires .NET SDK 10.0.402 or newer (`rollForward: latestMinor`); a 10.0.1xx SDK cannot satisfy it. Run `bun run typecheck`, `bun run test`, and `bun audit` from `src/WebClient` with a real Node 26 on `PATH` (a Bun `node` shim breaks jsdom). The test command builds Astro and tests generated markup with jsdom. Run `bun run build` and `bun audit` from `docs`, and `python3 scripts/check-docs-drift.py` from the root.
 
 Integration tests require Docker and own disposable PostgreSQL containers. Never point them or lab reset tools at production. Do not claim a real-browser check from jsdom evidence.
 
