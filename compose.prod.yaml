@@ -257,7 +257,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${TRAEFIK_NETWORK:-traefik}"
-      - "traefik.http.routers.cpnucleo-web.rule=Host(`${CPNUCLEO_WEB_HOST:?Set CPNUCLEO_WEB_HOST}`) || Host(`app-cpnucleo.jonathanperis.tech`)"
+      # Both names stay on this router. CPNUCLEO_WEB_HOST is the app host in the
+      # documented env, so the legacy name cannot be left to that variable.
+      - "traefik.http.routers.cpnucleo-web.rule=Host(`cpnucleo.jonathanperis.tech`) || Host(`app-cpnucleo.jonathanperis.tech`)"
       - "traefik.http.routers.cpnucleo-web.entrypoints=websecure"
       - "traefik.http.routers.cpnucleo-web.tls=true"
       - "traefik.http.routers.cpnucleo-web.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}"
