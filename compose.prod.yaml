@@ -123,6 +123,10 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD}
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_USERS_ALLOW_SIGN_UP: "false"
+      # Cap trace/profile retention at 24h (defaults: tempo 336h, pyroscope 31d) so the
+      # otel_lgtm_data volume stays small on the 200GB VPS.
+      TEMPO_EXTRA_ARGS: "-backend-scheduler.provider.work.compaction.block-retention=24h -backend-worker.compaction.block-retention=24h"
+      PYROSCOPE_EXTRA_ARGS: "-retention-period=24h"
     expose:
       - "3000"
       - "4317"
