@@ -477,7 +477,7 @@ public class FastEndpointsConfigurationTests
         var previewServer = File.ReadAllText(GetRepositoryPath("src/WebClient/scripts/preview.mjs"));
 
         TrackedFiles(".env").Should().BeEmpty("dotenv files with credentials must not be tracked (a local untracked .env is fine)");
-        deployWorkflow.Should().Contain("pages-docs-deploy.yml@d7e3c753530db86cb01b9510ab045c99b172ba03");
+        deployWorkflow.Should().Contain("pages-docs-deploy.yml@ce757b38d232b90b90ab3ae4947483ef564aa66d");
         deployWorkflow.Should().NotContain("secrets: inherit");
         prodCompose.Should().NotContain("seed-csv-cpnucleo:");
         prodCompose.Should().Contain("cpnucleo-security-headers");
