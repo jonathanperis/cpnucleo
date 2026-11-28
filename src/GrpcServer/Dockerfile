@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0.13 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.15@sha256:aac50ceef10391e78a899e3d2ccd00bbafa2dcb56ccf4586cbccf00edb84fc21 AS base
 
 LABEL maintainer="Jonathan Peris"
 
@@ -14,7 +14,7 @@ WORKDIR /app
 # this through the host Crossgen2 package, so local multi-arch builds avoid
 # emulating the whole SDK. Native AOT (AOT=true) is an experiment that needs a
 # native builder for the target architecture; the release runs native runners.
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0.402 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0.404@sha256:8c6edfb26c85153f236d26efebd9ad349aec403583f343f201ee67838b23658d AS build
 
 ARG AOT=false
 ARG TRIM=false
