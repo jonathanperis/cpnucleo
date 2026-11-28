@@ -28,7 +28,7 @@ afterEach(() => {
 
 describe('http client token handling', () => {
   it('does not resurrect a logged-out session when an in-flight refresh completes', async () => {
-    const issuer = 'https://identity-cpnucleo.jonathanperis.tech';
+    const issuer = 'https://identity-cpnucleo.jonathanperis.dev';
     setStoredTokens({ accessToken: tokenWithIssuer(issuer, { exp: Math.floor(Date.now() / 1000) + 60 }), refreshToken: 'refresh-1' });
     let complete!: (response: Response) => void;
     const fetchMock = vi.spyOn(globalThis, 'fetch')
@@ -42,7 +42,7 @@ describe('http client token handling', () => {
     expect(getStoredToken()).toBeNull();
   });
   it('stores only tokens emitted by IdentityApi', () => {
-    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.dev'));
     expect(getStoredToken()).toBeTruthy();
 
     setStoredToken(tokenWithIssuer('https://evil.test'));
@@ -56,7 +56,7 @@ describe('http client token handling', () => {
     await requestJson('http://example.test');
     expect(new Headers(fetchMock.mock.calls[0][1]?.headers).has('Authorization')).toBe(false);
 
-    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.dev'));
     await requestJson('http://example.test');
     expect(new Headers(fetchMock.mock.calls[1][1]?.headers).get('Authorization')).toMatch(/^Bearer /);
   });
@@ -64,7 +64,7 @@ describe('http client token handling', () => {
   it('omits bearer tokens when a request explicitly disables auth', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
 
-    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech'));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.dev'));
     await requestJson('http://example.test/login', { method: 'POST', token: null });
 
     expect(new Headers(fetchMock.mock.calls[0][1]?.headers).has('Authorization')).toBe(false);
@@ -72,7 +72,7 @@ describe('http client token handling', () => {
 
   it('removes the token after 15 minutes of inactivity', () => {
     vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-05-25T12:00:00Z'));
-    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech', { exp: Math.floor(Date.now() / 1000) + 1800 }));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.dev', { exp: Math.floor(Date.now() / 1000) + 1800 }));
     expect(getStoredToken()).toBeTruthy();
 
     sessionStorage.setItem(lastActivityStorageKey, String(Date.now() - sessionInactivityTimeoutMs - 1));
@@ -84,7 +84,7 @@ describe('http client token handling', () => {
   it('does not keep already expired 30-minute tokens', () => {
     vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-05-25T12:00:00Z'));
 
-    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech', { exp: Math.floor(Date.now() / 1000) - 1 }));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.dev', { exp: Math.floor(Date.now() / 1000) - 1 }));
 
     expect(getStoredToken()).toBeNull();
   });
@@ -97,7 +97,7 @@ describe('http client token handling', () => {
           pathname: '/projects',
           search: '?page=2',
           hash: '',
-          origin: 'https://app-cpnucleo.jonathanperis.tech:5030',
+          origin: 'https://app-cpnucleo.jonathanperis.dev:5030',
           assign,
         },
       },
@@ -109,7 +109,7 @@ describe('http client token handling', () => {
 
     expect(assign).toHaveBeenCalledWith('/login/?returnUrl=%2Fprojects%2F%3Fpage%3D2');
     expect(assign.mock.calls[0][0]).not.toContain('5030');
-    expect(assign.mock.calls[0][0]).not.toContain('app-cpnucleo.jonathanperis.tech');
+    expect(assign.mock.calls[0][0]).not.toContain('app-cpnucleo.jonathanperis.dev');
   });
 });
 
@@ -136,7 +136,7 @@ describe('unified error envelope', () => {
   });
 
   it('shows the permission message on 403 without ending the session', async () => {
-    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.tech', { exp: Math.floor(Date.now() / 1000) + 1800 }));
+    setStoredToken(tokenWithIssuer('https://identity-cpnucleo.jonathanperis.dev', { exp: Math.floor(Date.now() / 1000) + 1800 }));
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(403, { statusCode: 403, message: 'Administrator access is required.' }));
     await expect(requestJson('http://example.test/api/organization', { method: 'POST', body: '{}' }))
       .rejects.toMatchObject({ status: 403, message: 'Administrator access is required.' });

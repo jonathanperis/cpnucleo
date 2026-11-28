@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildAuthorizeUrl, completeSignIn, pendingSignInStorageKey, SignInError } from './oidc';
 import { getStoredToken, idTokenStorageKey, refreshTokenStorageKey } from './http-client';
 
-const issuer = 'https://identity-cpnucleo.jonathanperis.tech';
+const issuer = 'https://identity-cpnucleo.jonathanperis.dev';
 const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
 const jwt = (payload: Record<string, unknown>) => `${encode({ alg: 'RS256', typ: 'JWT' })}.${encode(payload)}.signature`;
 const seconds = (offset: number) => Math.floor(Date.now() / 1000) + offset;

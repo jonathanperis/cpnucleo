@@ -3002,14 +3002,14 @@
   "info": {
     "contact": {
       "name": "Cpnucleo API Support",
-      "url": "https://app-cpnucleo.jonathanperis.tech"
+      "url": "https://app-cpnucleo.jonathanperis.dev"
     },
     "description": "Authenticated REST API for Cpnucleo project, workflow, assignment, organization, and user management.",
     "license": {
       "name": "MIT",
-      "url": "https://app-cpnucleo.jonathanperis.tech"
+      "url": "https://app-cpnucleo.jonathanperis.dev"
     },
-    "termsOfService": "https://app-cpnucleo.jonathanperis.tech",
+    "termsOfService": "https://app-cpnucleo.jonathanperis.dev",
     "title": "Cpnucleo Web API",
     "version": "v1"
   },

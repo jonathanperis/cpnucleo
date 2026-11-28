@@ -1,6 +1,6 @@
 # Documentation site
 
-Astro static documentation and landing site, published at <https://cpnucleo.jonathanperis.tech/>. The application UI is the separate `src/WebClient` project.
+Astro static documentation and landing site, published at <https://jonathanperis.dev/cpnucleo/>. The application UI is the separate `src/WebClient` project.
 
 ## Develop and verify
 
@@ -11,7 +11,7 @@ bun install --frozen-lockfile
 bun run dev
 ```
 
-Development, preview, and production serve the host root:
+Development, preview, and production serve the `/cpnucleo` base (GitHub Pages project site under jonathanperis.dev):
 
 ```sh
 bun run build
@@ -20,7 +20,7 @@ python3 ../scripts/check-docs-drift.py --built-site
 bun run preview
 ```
 
-Open `http://localhost:4321/` for production preview. `out/`, `.astro/` and `node_modules/` are generated and ignored. Run `python3 scripts/check-docs-drift.py` from the repository root for source-only checks. Pages must stay `.astro` files without client UI framework dependencies; the drift check rejects anything else and, with `--built-site`, requires Astro's generator marker in every built HTML file.
+Open `http://localhost:4321/cpnucleo/` for production preview. `out/`, `.astro/` and `node_modules/` are generated and ignored. Run `python3 scripts/check-docs-drift.py` from the repository root for source-only checks. Pages must stay `.astro` files without client UI framework dependencies; the drift check rejects anything else and, with `--built-site`, requires Astro's generator marker in every built HTML file.
 
 ## Content ownership
 

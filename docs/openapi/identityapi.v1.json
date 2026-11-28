@@ -55,14 +55,14 @@
   "info": {
     "contact": {
       "name": "Cpnucleo Identity Support",
-      "url": "https://app-cpnucleo.jonathanperis.tech"
+      "url": "https://app-cpnucleo.jonathanperis.dev"
     },
     "description": "OpenID Connect provider for Cpnucleo: authorization code with PKCE, client credentials, refresh token rotation, revocation and end session.",
     "license": {
       "name": "MIT",
-      "url": "https://app-cpnucleo.jonathanperis.tech"
+      "url": "https://app-cpnucleo.jonathanperis.dev"
     },
-    "termsOfService": "https://app-cpnucleo.jonathanperis.tech",
+    "termsOfService": "https://app-cpnucleo.jonathanperis.dev",
     "title": "Cpnucleo Identity API",
     "version": "v1"
   },

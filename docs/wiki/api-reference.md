@@ -227,8 +227,8 @@ The sign-in post must come from a WebClient origin (`Origin`, or `Referer`); oth
 
 | Parameter | Value |
 |-----------|-------|
-| Issuer | `https://identity-cpnucleo.jonathanperis.tech` (`Jwt__Issuer`) |
-| Audiences | WebApi: `https://api-cpnucleo.jonathanperis.tech` (scope `cpnucleo.api`); GrpcServer: `https://grpc-cpnucleo.jonathanperis.tech` (scope `cpnucleo.grpc`) |
+| Issuer | `https://identity-cpnucleo.jonathanperis.dev` (`Jwt__Issuer`) |
+| Audiences | WebApi: `https://api-cpnucleo.jonathanperis.dev` (scope `cpnucleo.api`); GrpcServer: `https://grpc-cpnucleo.jonathanperis.dev` (scope `cpnucleo.grpc`) |
 | Access token | RS256 JWT, `typ: at+jwt`, 30 minutes |
 | Refresh token | One-time use; each refresh returns a successor. Never valid past eight hours from sign-in |
 | Identity cookie | Absolute eight hours, not sliding, `SameSite=Lax` |

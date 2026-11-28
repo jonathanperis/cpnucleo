@@ -14,7 +14,7 @@ COPY WebClient/ ./
 # file (Development included) sets to the identity domain below.
 ARG PUBLIC_WEBAPI_BASE_URL=http://localhost:5100/api
 ARG PUBLIC_IDENTITY_API_BASE_URL=http://localhost:5200/api
-ARG PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.tech
+ARG PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.dev
 ENV PUBLIC_WEBAPI_BASE_URL=$PUBLIC_WEBAPI_BASE_URL \
     PUBLIC_IDENTITY_API_BASE_URL=$PUBLIC_IDENTITY_API_BASE_URL \
     PUBLIC_IDENTITY_API_ISSUER=$PUBLIC_IDENTITY_API_ISSUER

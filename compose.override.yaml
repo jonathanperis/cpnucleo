@@ -123,7 +123,7 @@ services:
       args:
         PUBLIC_WEBAPI_BASE_URL: http://localhost:9999/api
         PUBLIC_IDENTITY_API_BASE_URL: http://localhost:5200/api
-        PUBLIC_IDENTITY_API_ISSUER: https://identity-cpnucleo.jonathanperis.tech
+        PUBLIC_IDENTITY_API_ISSUER: https://identity-cpnucleo.jonathanperis.dev
         CACHE: "true"
         AOT: false
         TRIM: false
