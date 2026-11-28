@@ -34,10 +34,10 @@ check_url() {
   return 1
 }
 
-CPNUCLEO_WEB_URL="${CPNUCLEO_WEB_URL:-https://app-cpnucleo.jonathanperis.tech/}"
-CPNUCLEO_API_URL="${CPNUCLEO_API_URL:-https://api-cpnucleo.jonathanperis.tech}"
-CPNUCLEO_IDENTITY_URL="${CPNUCLEO_IDENTITY_URL:-https://identity-cpnucleo.jonathanperis.tech}"
-CPNUCLEO_GRPC_HEALTH_URL="${CPNUCLEO_GRPC_HEALTH_URL:-https://grpc-cpnucleo.jonathanperis.tech/healthz}"
+CPNUCLEO_WEB_URL="${CPNUCLEO_WEB_URL:-https://app-cpnucleo.jonathanperis.dev/}"
+CPNUCLEO_API_URL="${CPNUCLEO_API_URL:-https://api-cpnucleo.jonathanperis.dev}"
+CPNUCLEO_IDENTITY_URL="${CPNUCLEO_IDENTITY_URL:-https://identity-cpnucleo.jonathanperis.dev}"
+CPNUCLEO_GRPC_HEALTH_URL="${CPNUCLEO_GRPC_HEALTH_URL:-https://grpc-cpnucleo.jonathanperis.dev/healthz}"
 
 check_url "WebClient" "${CPNUCLEO_WEB_URL:-}" "200,301,302"
 if [[ -n "${CPNUCLEO_API_URL:-}" ]]; then

@@ -1,5 +1,5 @@
-const PUBLIC_WEB_ORIGIN = 'https://app-cpnucleo.jonathanperis.tech';
-const PUBLIC_IDENTITY_API_ISSUER = 'https://identity-cpnucleo.jonathanperis.tech';
+const PUBLIC_WEB_ORIGIN = 'https://app-cpnucleo.jonathanperis.dev';
+const PUBLIC_IDENTITY_API_ISSUER = 'https://identity-cpnucleo.jonathanperis.dev';
 
 const localhostServicePattern = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?/i;
 

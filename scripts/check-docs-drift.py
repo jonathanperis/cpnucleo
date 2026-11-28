@@ -35,7 +35,7 @@ class PageLinks(HTMLParser):
                 self.links.append(attrs[name])
 
 
-def check_built_site(output, site_url="https://cpnucleo.jonathanperis.tech/"):
+def check_built_site(output, site_url="https://jonathanperis.dev/cpnucleo/"):
     pages = {path: PageLinks(path.read_text(encoding="utf-8")) for path in output.rglob("*.html")}
     require(output / "index.html" in pages, "build docs before checking generated links")
     site = urlsplit(site_url)

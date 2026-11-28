@@ -87,7 +87,7 @@ services:
       args:
         PUBLIC_WEBAPI_BASE_URL: http://localhost:5100/api
         PUBLIC_IDENTITY_API_BASE_URL: http://localhost:5200/api
-        PUBLIC_IDENTITY_API_ISSUER: https://identity-cpnucleo.jonathanperis.tech
+        PUBLIC_IDENTITY_API_ISSUER: https://identity-cpnucleo.jonathanperis.dev
     ports: ["127.0.0.1:5400:5030"]
     environment:
       OTEL_EXPORTER_OTLP_HTTP_ENDPOINT: http://otel-lgtm:4318

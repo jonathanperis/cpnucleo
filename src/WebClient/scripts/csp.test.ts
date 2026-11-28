@@ -33,9 +33,9 @@ describe('CSP manifest generation', () => {
   it('derives connect-src from the build-time service URLs for the lab and production', () => {
     expect(connectSourcesFromEnv({})).toEqual(['http://localhost:5100', 'http://localhost:5200']);
     expect(connectSourcesFromEnv({
-      PUBLIC_WEBAPI_BASE_URL: 'https://api-cpnucleo.jonathanperis.tech/api',
-      PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.tech/api',
-    })).toEqual(['https://api-cpnucleo.jonathanperis.tech', 'https://identity-cpnucleo.jonathanperis.tech']);
+      PUBLIC_WEBAPI_BASE_URL: 'https://api-cpnucleo.jonathanperis.dev/api',
+      PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.dev/api',
+    })).toEqual(['https://api-cpnucleo.jonathanperis.dev', 'https://identity-cpnucleo.jonathanperis.dev']);
     expect(connectSourcesFromEnv({ PUBLIC_WEBAPI_BASE_URL: 'https://same.test/api', PUBLIC_IDENTITY_API_BASE_URL: 'https://same.test/identity' }))
       .toEqual(['https://same.test']);
     expect(() => connectSourcesFromEnv({ PUBLIC_WEBAPI_BASE_URL: 'javascript:alert(1)' })).toThrow(/http or https/);
@@ -106,16 +106,16 @@ describe('preview security headers', () => {
 
   it('keeps production hosts when the build targets production', () => {
     const policy = buildContentSecurityPolicy({ connectSrc: connectSourcesFromEnv({
-      PUBLIC_WEBAPI_BASE_URL: 'https://api-cpnucleo.jonathanperis.tech/api',
-      PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.tech/api',
+      PUBLIC_WEBAPI_BASE_URL: 'https://api-cpnucleo.jonathanperis.dev/api',
+      PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.dev/api',
     }), scriptHashes: [] });
-    expect(directive(policy, 'connect-src')).toBe("connect-src 'self' https://api-cpnucleo.jonathanperis.tech https://identity-cpnucleo.jonathanperis.tech");
+    expect(directive(policy, 'connect-src')).toBe("connect-src 'self' https://api-cpnucleo.jonathanperis.dev https://identity-cpnucleo.jonathanperis.dev");
   });
 
   it('lets forms post only to this origin and the identity server', () => {
-    const env = { PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.tech/api' };
+    const env = { PUBLIC_IDENTITY_API_BASE_URL: 'https://identity-cpnucleo.jonathanperis.dev/api' };
     const policy = buildContentSecurityPolicy({ connectSrc: connectSourcesFromEnv(env), formAction: formActionsFromEnv(env), scriptHashes: [] });
-    expect(directive(policy, 'form-action')).toBe("form-action 'self' https://identity-cpnucleo.jonathanperis.tech");
+    expect(directive(policy, 'form-action')).toBe("form-action 'self' https://identity-cpnucleo.jonathanperis.dev");
     expect(directive(buildContentSecurityPolicy({ connectSrc: [], scriptHashes: [] }), 'form-action')).toBe("form-action 'self'");
     expect(() => validateCspManifest({ connectSrc: [], formAction: ["https://ok.test; script-src *"], scriptHashes: [] })).toThrow(/form-action/);
   });

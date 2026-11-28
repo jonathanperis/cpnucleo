@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 type HttpClientModule = typeof import('./http-client');
 
-const issuer = 'https://identity-cpnucleo.jonathanperis.tech';
+const issuer = 'https://identity-cpnucleo.jonathanperis.dev';
 const encode = (value: unknown) => Buffer.from(JSON.stringify(value)).toString('base64url');
 const token = (payload: Record<string, unknown>) => `${encode({ alg: 'HS256', typ: 'JWT' })}.${encode({ iss: issuer, sub: 'user-1', ...payload })}.signature`;
 const secondsFromNow = (seconds: number) => Math.floor(Date.now() / 1000) + seconds;

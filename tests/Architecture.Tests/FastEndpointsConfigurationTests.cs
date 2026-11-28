@@ -117,7 +117,7 @@ public class FastEndpointsConfigurationTests
         program.Should().Contain("AddCors(options =>");
         program.Should().Contain("CpnucleoWebClient");
         program.Should().Contain("Cors:AllowedOrigins");
-        program.Should().Contain("https://app-cpnucleo.jonathanperis.tech");
+        program.Should().Contain("https://app-cpnucleo.jonathanperis.dev");
         program.Should().Contain("AllowAnyHeader()");
         program.Should().Contain("AllowAnyMethod()");
         program.Should().Contain("UseRateLimiter()");
@@ -187,9 +187,9 @@ public class FastEndpointsConfigurationTests
     {
         var appSettings = File.ReadAllText(GetRepositoryPath(appSettingsPath));
 
-        appSettings.Should().Contain("\"Issuer\": \"https://identity-cpnucleo.jonathanperis.tech\"");
+        appSettings.Should().Contain("\"Issuer\": \"https://identity-cpnucleo.jonathanperis.dev\"");
         // Each API host accepts only tokens issued for its own audience.
-        appSettings.Should().Contain($"\"Audience\": \"https://{audienceHost}-cpnucleo.jonathanperis.tech\"");
+        appSettings.Should().Contain($"\"Audience\": \"https://{audienceHost}-cpnucleo.jonathanperis.dev\"");
         appSettings.Should().NotContain("peris-studio.dev");
     }
 
@@ -392,9 +392,9 @@ public class FastEndpointsConfigurationTests
         prodCompose.Should().NotContain("PUBLIC_IDENTITY_API_ISSUER:");
 
         var releaseWorkflow = File.ReadAllText(GetRepositoryPath(".github/workflows/main-release.yml"));
-        releaseWorkflow.Should().Contain("PUBLIC_WEBAPI_BASE_URL=https://api-cpnucleo.jonathanperis.tech/api");
-        releaseWorkflow.Should().Contain("PUBLIC_IDENTITY_API_BASE_URL=https://identity-cpnucleo.jonathanperis.tech/api");
-        releaseWorkflow.Should().Contain("PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.tech");
+        releaseWorkflow.Should().Contain("PUBLIC_WEBAPI_BASE_URL=https://api-cpnucleo.jonathanperis.dev/api");
+        releaseWorkflow.Should().Contain("PUBLIC_IDENTITY_API_BASE_URL=https://identity-cpnucleo.jonathanperis.dev/api");
+        releaseWorkflow.Should().Contain("PUBLIC_IDENTITY_API_ISSUER=https://identity-cpnucleo.jonathanperis.dev");
         releaseWorkflow.Should().NotContain("PUBLIC_IDENTITY_API_BASE_URL=http://localhost:5200/api");
     }
 
