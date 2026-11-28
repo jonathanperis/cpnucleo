@@ -23,7 +23,9 @@ class GeneratedLinksTests(unittest.TestCase):
             article_file = article / "index.html"
             valid = '<h1 id="section">Title</h1><a href="../../">Home</a><a href="/">Base</a><link href="../../asset.css"><a href="https://example.org/">External</a>'
             article_file.write_text(valid)
-            check_built_site(root)
+            # Root-served fixture; the production default carries the /cpnucleo/ base.
+            root_site = "https://example.test/"
+            check_built_site(root, root_site)
             for link, message in [
                 ("../missing/", "missing local target"),
                 ("#absent", "missing fragment"),
@@ -32,7 +34,7 @@ class GeneratedLinksTests(unittest.TestCase):
                 with self.subTest(link=link):
                     article_file.write_text(valid + f'<a href="{link}">Broken</a>')
                     with self.assertRaisesRegex(SystemExit, message):
-                        check_built_site(root)
+                        check_built_site(root, root_site)
             # A site that still has a path prefix rejects links that leave it.
             prefixed = root / "prefixed.html"
             prefixed.write_text('<a href="/elsewhere/">Broken</a>')
